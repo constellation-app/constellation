@@ -47,6 +47,7 @@
                 <package>Lib.xml.sax.drivers2</package>
                 <package>au.com.objectix.jgridshift</package>
                 <package>au.com.objectix.jgridshift.jca</package>
+                <package>co.elastic.apm.api</package>
                 <package>com.ctc.wstx.api</package>
                 <package>com.ctc.wstx.cfg</package>
                 <package>com.ctc.wstx.compat</package>
@@ -3162,6 +3163,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/SparseBitSet-1.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/SparseBitSet-1.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/apm-agent-api-1.25.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/apm-agent-api-1.25.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/assertj-core-3.20.2.jar</runtime-relative-path>

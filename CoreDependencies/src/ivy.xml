@@ -86,6 +86,7 @@
         <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.7"/>
         <dependency org="org.testfx" name="openjfx-monocle" rev="jdk-11+26" transitive="false" />
         <dependency org="org.testfx" name="testfx-core" rev="4.0.16-alpha" />
+        
         <dependency org="co.elastic.apm" name="apm-agent-api" rev="1.25.0" />
 
         <!-- Downloaded Manually -->

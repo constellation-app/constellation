@@ -63,6 +63,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer) {
         final Transaction transaction = ElasticApm.startTransaction();
         transaction.setName(plugin.getName());
+        transaction.addLabel("tag", plugin.getTags()[0]);
         transaction.setType(Transaction.TYPE_REQUEST);
 
         if (graph == null) {
@@ -188,6 +189,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     public Object executePluginNow(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
         final Transaction transaction = ElasticApm.startTransaction();
         transaction.setName(plugin.getName());
+        transaction.addLabel("tag", plugin.getTags()[0]);
         transaction.setType(Transaction.TYPE_REQUEST);
 
         if (graph == null) {
@@ -266,6 +268,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     public Object executeEditPluginNow(final GraphWriteMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
         final Transaction transaction = ElasticApm.startTransaction();
         transaction.setName(plugin.getName());
+        transaction.addLabel("tag", plugin.getTags()[0]);
         transaction.setType(Transaction.TYPE_REQUEST);
 
         if (graph == null) {
@@ -334,6 +337,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     public Object executeReadPluginNow(final GraphReadMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
         final Transaction transaction = ElasticApm.startTransaction();
         transaction.setName(plugin.getName());
+        transaction.addLabel("tag", plugin.getTags()[0]);
         transaction.setType(Transaction.TYPE_REQUEST);
 
         if (graph == null) {
