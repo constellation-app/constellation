@@ -20,12 +20,15 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateDataTask;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -41,13 +44,16 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
+import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -456,7 +462,7 @@ public class TableNGTest {
                 "source.COLUMN_C", column4
         );
         
-        // Mock out the re-population of the column index from the graph
+        // Mock out the re-population of the column index from the graph. This excludes column 4.
         final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> sourceColumnIndex
                 = new CopyOnWriteArrayList<>();
         sourceColumnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
@@ -470,11 +476,11 @@ public class TableNGTest {
         transactionColumnIndex.add(ThreeTuple.create(columnType3, attribute3, column3));
         
         doReturn(sourceColumnIndex).when(table)
-                .populateColumnIndex(readableGraph, GraphElementType.VERTEX, "source.", columnReferenceMap);
+                .createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "source.", columnReferenceMap);
         doReturn(destinationColumnIndex).when(table)
-                .populateColumnIndex(readableGraph, GraphElementType.VERTEX, "destination.", columnReferenceMap);
+                .createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "destination.", columnReferenceMap);
         doReturn(transactionColumnIndex).when(table)
-                .populateColumnIndex(readableGraph, GraphElementType.TRANSACTION, "transaction.", columnReferenceMap);
+                .createColumnIndexPart(readableGraph, GraphElementType.TRANSACTION, "transaction.", columnReferenceMap);
         
         // Set up the table state
         final TableViewState tableViewState = new TableViewState();
@@ -509,7 +515,75 @@ public class TableNGTest {
     }
     
     @Test
-    public void populateColumnIndex() {
+    public void updateColumnsStateColumnsNotSet() {
+        final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
+        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
+        
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+        
+        // Set up the initial column index.
+        final String columnType1 = "source.";
+        final Attribute attribute1 = mock(Attribute.class);
+        final TableColumn<ObservableList<String>, String> column1 = mock(TableColumn.class);
+        when(column1.getText()).thenReturn("source.COLUMN_A");
+        
+        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
+                = new CopyOnWriteArrayList<>();
+        columnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
+        
+        when(table.getColumnIndex()).thenReturn(columnIndex);
+        
+        // This is a reference of the old column index that will be used whilst the new
+        // index is being created. Because that creation is mocked this is used only as a
+        // vertification that the parameter is being correctly constructed.
+        final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap = Map.of(
+                "source.COLUMN_A", column1
+        );
+        
+        // Mock out the re-population of the column index from the graph
+        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> sourceColumnIndex
+                = new CopyOnWriteArrayList<>();
+        sourceColumnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
+        
+        doReturn(sourceColumnIndex).when(table)
+                .createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "source.", columnReferenceMap);
+        
+        // Set up the table state
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.VERTEX);
+        
+        // When this is null, the update is interrupted and the user is asked to select
+        // which columns they want visible
+        tableViewState.setColumnAttributes(null);
+        
+        // Don't want it trying to open the menu to select which columns to show
+        doNothing().when(table).openColumnVisibilityMenu();
+        
+        table.updateColumns(graph, tableViewState, tableSelectionListener, selectedOnlySelectionListener);
+        
+        // Verify the new column index
+        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> expectedColumnIndex
+                = new CopyOnWriteArrayList<>();
+        expectedColumnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
+        
+        assertEquals(expectedColumnIndex, columnIndex);
+        
+        // Because the state element type is set to vertex, only the source columns are populated
+        verify(table, times(0)).createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "destination.", columnReferenceMap);
+        verify(table, times(0)).createColumnIndexPart(readableGraph, GraphElementType.TRANSACTION, "transaction.", columnReferenceMap);
+        
+        // Verify the menu open method was called
+        verify(table).openColumnVisibilityMenu();
+        
+        // Verify that the new column index did not have its factories set
+        verify(column1, times(0)).setCellValueFactory(any(Callback.class));
+        verify(column1, times(0)).setCellFactory(any(Callback.class));
+        
+    }
+    
+    @Test
+    public void createColumnIndexPart() {
         final ReadableGraph readableGraph = mock(ReadableGraph.class);
         
         // Build the graph that the columns will be extracted from. There are two
@@ -567,8 +641,331 @@ public class TableNGTest {
         
         transactionColumnIndex.add(ThreeTuple.create("transaction.", attribute3, column3));
         
-        assertEquals(sourceColumnIndex, table.populateColumnIndex(readableGraph, GraphElementType.VERTEX, "source.", columnReferenceMap));
-        assertEquals(destinationColumnIndex, table.populateColumnIndex(readableGraph, GraphElementType.VERTEX, "destination.", columnReferenceMap));
-        assertEquals(transactionColumnIndex, table.populateColumnIndex(readableGraph, GraphElementType.TRANSACTION, "transaction.", columnReferenceMap));
+        assertEquals(sourceColumnIndex, table.createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "source.", columnReferenceMap));
+        assertEquals(destinationColumnIndex, table.createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "destination.", columnReferenceMap));
+        assertEquals(transactionColumnIndex, table.createColumnIndexPart(readableGraph, GraphElementType.TRANSACTION, "transaction.", columnReferenceMap));
     }
+    
+    @Test
+    public void updateDataGraphNull() {
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            table.updateData(null, new TableViewState(), null, null, null);
+            
+            platformMockedStatic.verifyNoInteractions();
+        }
+    }
+    
+    @Test
+    public void updateDataStateNull() {
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            table.updateData(graph, null, null, null, null);
+            
+            platformMockedStatic.verifyNoInteractions();
+        }
+    }
+    
+    @Test(expectedExceptions = IllegalStateException.class)
+    public void updateDataOnFxThread() {
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(true);
+            
+            table.updateData(graph, new TableViewState(), null, null, null);
+        }
+    }
+    
+    @Test(expectedExceptions = IllegalStateException.class)
+    public void updateDataOnSwingThread() {
+        try (final MockedStatic<SwingUtilities> swingUtilsMockedStatic = Mockito.mockStatic(SwingUtilities.class)) {
+            swingUtilsMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
+            
+            table.updateData(graph, new TableViewState(), null, null, null);
+        }
+    }
+    
+    @Test
+    public void updateDataTransactionStateNotSelectedOnly() {
+        final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
+        final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
+        
+        testUpdateData(GraphElementType.TRANSACTION, false, row1, row2, null, null, List.of(row1, row2));
+    }
+    
+    @Test
+    public void updateDataTransactionStateSelectedOnly() {
+        final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
+        final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
+        
+        testUpdateData(GraphElementType.TRANSACTION, true, row1, row2, null, null, List.of(row2));
+    }
+    
+    @Test
+    public void updateDataVertexStateNotSelectedOnly() {
+        final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
+        final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
+        
+        testUpdateData(GraphElementType.VERTEX, false, null, null, row1, row2, List.of(row1, row2));
+    }
+    
+    @Test
+    public void updateDataVertexStateSelectedOnly() {
+        final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
+        final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
+        
+        testUpdateData(GraphElementType.VERTEX, true, null, null, row1, row2, List.of(row2));
+    }
+    
+    @Test
+    public void getRowDataForVertex() {
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        
+        final Map<Integer, ObservableList<String>> elementIdToRowIndex = new HashMap<>();
+        final Map<ObservableList<String>, Integer> rowToElementIdIndex = new HashMap<>();
+        
+        doReturn(elementIdToRowIndex).when(tableService).getElementIdToRowIndex();
+        doReturn(rowToElementIdIndex).when(tableService).getRowToElementIdIndex();
+        
+        final int vertexId = 42;
+        
+        // Set up the attributes for each column
+        when(readableGraph.getAttribute(GraphElementType.VERTEX, "COLUMN_A")).thenReturn(101);
+        when(readableGraph.getAttributeName(101)).thenReturn("COLUMN_A");
+        when(readableGraph.getAttributeElementType(101)).thenReturn(GraphElementType.VERTEX);
+        when(readableGraph.getAttributeType(101)).thenReturn("string");
+        
+        final Object objectValue1 = new Object();
+        when(readableGraph.getObjectValue(101, vertexId)).thenReturn(objectValue1);
+        
+        final Attribute attribute1 = new GraphAttribute(readableGraph, 101);
+        
+        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
+                = new CopyOnWriteArrayList<>();
+        columnIndex.add(ThreeTuple.create(null, attribute1, null));
+        
+        when(table.getColumnIndex()).thenReturn(columnIndex);
+        
+        try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic
+                = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
+            final AbstractAttributeInteraction interaction = mock(AbstractAttributeInteraction.class);
+            attrInteractionMockedStatic.when(() -> AbstractAttributeInteraction.getInteraction("string")).thenReturn(interaction);
+
+            when(interaction.getDisplayText(objectValue1)).thenReturn("column1Value");
+            
+            assertEquals(FXCollections.observableArrayList("column1Value"),
+                    table.getRowDataForVertex(readableGraph, vertexId));
+            
+            assertEquals(Map.of(vertexId, FXCollections.observableArrayList("column1Value")), elementIdToRowIndex);
+            assertEquals(Map.of(FXCollections.observableArrayList("column1Value"), vertexId), rowToElementIdIndex);
+        }
+    }
+    
+    @Test
+    public void getRowDataForTransaction() {
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        
+        final Map<Integer, ObservableList<String>> elementIdToRowIndex = new HashMap<>();
+        final Map<ObservableList<String>, Integer> rowToElementIdIndex = new HashMap<>();
+        
+        doReturn(elementIdToRowIndex).when(tableService).getElementIdToRowIndex();
+        doReturn(rowToElementIdIndex).when(tableService).getRowToElementIdIndex();
+        
+        final int transactionId = 42;
+        
+        final int sourceVertexId = 52;
+        final int destinationVertexId = 62;
+        
+        // Set up the attributes for each column
+        when(readableGraph.getAttribute(GraphElementType.VERTEX, "COLUMN_1")).thenReturn(101);
+        when(readableGraph.getAttributeName(101)).thenReturn("COLUMN_1");
+        when(readableGraph.getAttributeElementType(101)).thenReturn(GraphElementType.VERTEX);
+        when(readableGraph.getAttributeType(101)).thenReturn("string");
+        
+        final Attribute attribute1 = new GraphAttribute(readableGraph, 101);
+        
+        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "COLUMN_2")).thenReturn(102);
+        when(readableGraph.getAttributeName(102)).thenReturn("COLUMN_2");
+        when(readableGraph.getAttributeElementType(102)).thenReturn(GraphElementType.TRANSACTION);
+        when(readableGraph.getAttributeType(102)).thenReturn("string");
+        
+        final Attribute attribute2 = new GraphAttribute(readableGraph, 102);
+        
+        // There are 2 columns. One called COLUMN_1 and the other COLUMN_2. COLUMN_1
+        // is present on source and destination verticies. COLUMN_2 is present on transactions
+        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
+                = new CopyOnWriteArrayList<>();
+        columnIndex.add(ThreeTuple.create("source.", attribute1, null));
+        columnIndex.add(ThreeTuple.create("destination.", attribute1, null));
+        columnIndex.add(ThreeTuple.create("transaction.", attribute2, null));
+        
+        when(table.getColumnIndex()).thenReturn(columnIndex);
+        
+        // When looking at a source vertex column, it gets the source vertex of
+        // the transaction and extracts the value for the column from that vertex
+        final Object sourceVertexCoulmnValue = new Object();
+        when(readableGraph.getTransactionSourceVertex(transactionId)).thenReturn(sourceVertexId);
+        when(readableGraph.getObjectValue(101, sourceVertexId)).thenReturn(sourceVertexCoulmnValue);
+        
+        // When looking at a destination vertex column, it gets the destination vertex of
+        // the transaction and extracts the value for the column from that vertex
+        final Object destinationVertexCoulmnValue = new Object();
+        when(readableGraph.getTransactionDestinationVertex(transactionId)).thenReturn(destinationVertexId);
+        when(readableGraph.getObjectValue(101, destinationVertexId)).thenReturn(destinationVertexCoulmnValue);
+        
+        // When looking at a transaction column, it extracts the value from the passed transaction
+        final Object transactionCoulmnValue = new Object();
+        when(readableGraph.getObjectValue(102, transactionId)).thenReturn(transactionCoulmnValue);
+        
+        try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic
+                = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
+            final AbstractAttributeInteraction interaction = mock(AbstractAttributeInteraction.class);
+            attrInteractionMockedStatic.when(() -> AbstractAttributeInteraction.getInteraction("string")).thenReturn(interaction);
+
+            when(interaction.getDisplayText(sourceVertexCoulmnValue)).thenReturn("sourceVertex_COLUMN_1_Value");
+            when(interaction.getDisplayText(destinationVertexCoulmnValue)).thenReturn("destinationVertext_COLUMN_1_Value");
+            when(interaction.getDisplayText(transactionCoulmnValue)).thenReturn("transaction_COLUMN_2_Value");
+            
+            assertEquals(
+                    FXCollections.observableArrayList(
+                            "sourceVertex_COLUMN_1_Value",
+                            "destinationVertext_COLUMN_1_Value",
+                            "transaction_COLUMN_2_Value"
+                    ),
+                    table.getRowDataForTransaction(readableGraph, transactionId)
+            );
+            
+            assertEquals(
+                    Map.of(
+                            transactionId, 
+                            FXCollections.observableArrayList(
+                                    "sourceVertex_COLUMN_1_Value",
+                                    "destinationVertext_COLUMN_1_Value",
+                                    "transaction_COLUMN_2_Value"
+                            )
+                    ),
+                    elementIdToRowIndex
+            );
+            
+            assertEquals(
+                    Map.of(
+                            FXCollections.observableArrayList(
+                                    "sourceVertex_COLUMN_1_Value",
+                                    "destinationVertext_COLUMN_1_Value",
+                                    "transaction_COLUMN_2_Value"
+                            ),
+                            transactionId
+                    ),
+                    rowToElementIdIndex);
+        }
+    }
+    
+    @Test
+    public void createColumn() {
+        final TableColumn<ObservableList<String>, String> column = table.createColumn("COLUMN_A");
+        assertEquals("COLUMN_A", column.getText());
+    }
+    
+    @Test
+    public void openColumnVisibilityMenu() {
+        // TODO refactor so its not created every time and is testable
+    }
+    
+    /**
+     * 
+     * @param stateElementType
+     * @param isSelectedOnlyMode
+     * @param transactionRow1
+     * @param transactionRow2
+     * @param vertexRow1
+     * @param vertexRow2
+     * @param expectedRows 
+     */
+    private void testUpdateData(final GraphElementType stateElementType,
+                                final boolean isSelectedOnlyMode,
+                                final ObservableList<String> transactionRow1,
+                                final ObservableList<String> transactionRow2,
+                                final ObservableList<String> vertexRow1,
+                                final ObservableList<String> vertexRow2,
+                                final List<ObservableList<String>> expectedRows) {
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(stateElementType);
+        tableViewState.setSelectedOnly(isSelectedOnlyMode);
+        
+        final BorderPane progressPane = mock(BorderPane.class);
+        
+        final ProgressBar progressBar = mock(ProgressBar.class);
+        when(progressBar.getProgressPane()).thenReturn(progressPane);
+        
+        final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
+        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
+        
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+        
+        // Initialize row and element ID mappers and place some fake data in
+        // to ensure that it is cleared during the update
+        final Map<Integer, ObservableList<String>> elementIdToRowIndex = new HashMap<>();
+        elementIdToRowIndex.put(42, FXCollections.observableArrayList());
+        
+        final Map<ObservableList<String>, Integer> rowToElementIdIndex = new HashMap<>();
+        rowToElementIdIndex.put(FXCollections.observableArrayList(), 42);
+        
+        doReturn(elementIdToRowIndex).when(tableService).getElementIdToRowIndex();
+        doReturn(rowToElementIdIndex).when(tableService).getRowToElementIdIndex();
+        
+        // Mock graph to extract transaction element IDs
+        when(readableGraph.getAttribute(stateElementType, "selected")).thenReturn(22);
+        
+        when(readableGraph.getTransactionCount()).thenReturn(2);
+        when(readableGraph.getVertexCount()).thenReturn(2);
+        
+        when(readableGraph.getTransaction(0)).thenReturn(101);
+        when(readableGraph.getTransaction(1)).thenReturn(102);
+        
+        when(readableGraph.getVertex(0)).thenReturn(201);
+        when(readableGraph.getVertex(1)).thenReturn(202);
+        
+        when(readableGraph.getBooleanValue(22, 101)).thenReturn(false);
+        when(readableGraph.getBooleanValue(22, 102)).thenReturn(true);
+        
+        when(readableGraph.getBooleanValue(22, 201)).thenReturn(false);
+        when(readableGraph.getBooleanValue(22, 202)).thenReturn(true);
+        
+        // Mock the transaction row creation
+        doReturn(transactionRow1).when(table).getRowDataForTransaction(readableGraph, 101);
+        doReturn(transactionRow2).when(table).getRowDataForTransaction(readableGraph, 102);
+        
+        doReturn(vertexRow1).when(table).getRowDataForVertex(readableGraph, 201);
+        doReturn(vertexRow2).when(table).getRowDataForVertex(readableGraph, 202);
+        
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
+                    .then(mockitoInvocation -> {
+                        final Runnable runnable = (Runnable) mockitoInvocation.getArgument(0);
+                        
+                        if (runnable instanceof UpdateDataTask) {
+                            final UpdateDataTask updateDataTask = (UpdateDataTask) runnable;
+                            
+                            // If this is not called then the test will halt forever
+                            updateDataTask.getUpdateDataLatch().countDown();
+                            
+                            assertEquals(expectedRows, updateDataTask.getRows());
+                        } else {
+                            // Progress Bar
+                            runnable.run();
+                        }
+                        
+                        return null;
+                    });
+            
+            table.updateData(graph, tableViewState, progressBar, tableSelectionListener, selectedOnlySelectionListener);
+        }
+        
+        assertTrue(elementIdToRowIndex.isEmpty());
+        assertTrue(rowToElementIdIndex.isEmpty());
+        
+        verify(tablePane).setCenter(progressPane);
+        
+        verify(readableGraph).release();
+    }
+    
+    
 }

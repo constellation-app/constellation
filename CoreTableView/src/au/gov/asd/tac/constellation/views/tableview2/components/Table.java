@@ -57,6 +57,9 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
+ * Representation of the table. This wraps the JavaFX UI {@link TableView} component
+ * and provides methods for performing updates based on the current state and
+ * graph.
  *
  * @author formalhaunt
  */
@@ -82,6 +85,12 @@ public class Table {
     
     private final UpdateColumnsTask updateColumnsTask;
     
+    /**
+     * 
+     * @param tableTopComponent
+     * @param tablePane
+     * @param tableService 
+     */
     public Table(final TableViewTopComponent tableTopComponent,
                  final TableViewPane tablePane,
                  final TableService tableService) {
@@ -104,16 +113,18 @@ public class Table {
     }
     
     /**
-     * 
-     * @return 
+     * Gets the underlying JavaFX table component.
+     *
+     * @return the JavaFX table
      */
     public final TableView<ObservableList<String>> getTableView() {
         return tableView;
     }
     
     /**
-     * 
-     * @return 
+     * Gets the currently selected row in the table.
+     *
+     * @return the currently selected row
      */
     public final ReadOnlyObjectProperty<ObservableList<String>> getSelectedProperty() {
         return tableView.getSelectionModel().selectedItemProperty();
@@ -146,7 +157,7 @@ public class Table {
                     throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
-                // clear current columnIndex, but cache the column objects for reuse
+                // Clear current columnIndex, but cache the column objects for reuse
                 final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap =
                         getColumnIndex().stream()
                                 .collect(
@@ -158,32 +169,36 @@ public class Table {
                                 );
                 getColumnIndex().clear();
 
-                // update columnIndex based on graph attributes
+                // Update columnIndex based on graph attributes
                 final ReadableGraph readableGraph = graph.getReadableGraph();
                 try {
-                    getColumnIndex().addAll(populateColumnIndex(readableGraph, GraphElementType.VERTEX,
+                    // Creates "source." columns from vertex attributes
+                    getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                             GraphRecordStoreUtilities.SOURCE, columnReferenceMap));
 
                     if (state.getElementType() == GraphElementType.TRANSACTION) {
-                        getColumnIndex().addAll(populateColumnIndex(readableGraph, GraphElementType.TRANSACTION,
+                        // Creates "transaction." columns from transaction attributes
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.TRANSACTION,
                                 GraphRecordStoreUtilities.TRANSACTION, columnReferenceMap));
-                        getColumnIndex().addAll(populateColumnIndex(readableGraph, GraphElementType.VERTEX,
+                        
+                        // Creates "destination." columns from vertex attributes
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                                 GraphRecordStoreUtilities.DESTINATION, columnReferenceMap));
                     }
                 } finally {
                     readableGraph.release();
                 }
 
-                // if there are no visible columns specified, write the key columns to the state
+                // If there are no visible columns specified, write the key columns to the state
                 if (state.getColumnAttributes() == null) {
                     openColumnVisibilityMenu();
                     return;
                 }
 
-                // sort columns in columnIndex by state, prefix and attribute name
+                // Sort columns in columnIndex by state, prefix and attribute name
                 getColumnIndex().sort(new ColumnIndexSort(state));
 
-                // style and format columns in columnIndex
+                // Style and format columns in columnIndex
                 getColumnIndex().forEach(columnTuple -> {
                     final TableColumn<ObservableList<String>, String> column = columnTuple.getThird();
 
@@ -197,7 +212,7 @@ public class Table {
                         }
                     });
 
-                    // assign values and styles to cells
+                    // Assign values and styles to cells
                     column.setCellFactory(cellColumn -> new TableCellFactory(cellColumn, this));
                 });
 
@@ -235,16 +250,16 @@ public class Table {
                     throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
-                // set progress indicator
+                // Set progress indicator
                 Platform.runLater(() -> {
                     tablePane.setCenter(progressBar.getProgressPane());
                 });
 
-                // update data on a new thread so as to not interrupt the progress indicator
+                // Clear the current row and element mappings
                 tableService.getElementIdToRowIndex().clear();
                 tableService.getRowToElementIdIndex().clear();
 
-                // build table data based on attribute values on the graph
+                // Build table data based on attribute values on the graph
                 final List<ObservableList<String>> rows = new ArrayList<>();
                 final ReadableGraph readableGraph = graph.getReadableGraph();
                 try {
@@ -261,7 +276,7 @@ public class Table {
                             }
                             
                             if (!state.isSelectedOnly() || isSelected) {
-                                extractRowDataMaybe(readableGraph, rows, transactionId);
+                                rows.add(getRowDataForTransaction(readableGraph, transactionId));
                             }
                         });
                     } else {
@@ -277,7 +292,7 @@ public class Table {
                             }
                             
                             if (!state.isSelectedOnly() || isSelected) {
-                                extractOtherRowDataMaybe(readableGraph, rows, vertexId);
+                                rows.add(getRowDataForVertex(readableGraph, vertexId));
                             }
                         }
                     }
@@ -410,21 +425,23 @@ public class Table {
     }
     
     /**
-     * 
-     * @param readableGraph
-     * @param rows
-     * @param vertexId 
+     * For a given vertex on the graph construct a row for the table give the
+     * current column settings. If the column is a transaction column then a
+     * null value will be inserted for that element of the row.
+     *
+     * @param readableGraph the graph to build the row from
+     * @param vertexId the ID of the vertex in the graph to build the row from
+     * @return the built row
      */
-    public void extractOtherRowDataMaybe(final ReadableGraph readableGraph,
-                                         final List<ObservableList<String>> rows,
-                                         final int vertexId) {
+    protected ObservableList<String> getRowDataForVertex(final ReadableGraph readableGraph,
+                                                         final int vertexId) {
         final ObservableList<String> rowData = FXCollections.observableArrayList();
                                 
-        columnIndex.forEach(columnTuple -> {
+        getColumnIndex().forEach(columnTuple -> {
             final int attributeId = readableGraph
                     .getAttribute(columnTuple.getSecond().getElementType(),
                             columnTuple.getSecond().getName());
-            final AbstractAttributeInteraction<?> interaction= AbstractAttributeInteraction
+            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction
                     .getInteraction(columnTuple.getSecond().getAttributeType());
             final Object attributeValue = readableGraph
                     .getObjectValue(attributeId, vertexId);
@@ -436,21 +453,27 @@ public class Table {
         tableService.getElementIdToRowIndex().put(vertexId, rowData);
         tableService.getRowToElementIdIndex().put(rowData, vertexId);
 
-        rows.add(rowData);
+        return rowData;
     }
     
     /**
-     * 
-     * @param readableGraph
-     * @param rows
-     * @param transactionId 
+     * For a given transaction on the graph construct a row for the table given
+     * the current column settings. In the case of source and destination columns
+     * the value entered will be sourced from the source and destination vertices
+     * respectively.
+     * <p/>
+     * During this the {@link TableService#elementIdToRowIndex} and
+     * {@link TableService#rowToElementIdIndex} maps are populated.
+     *
+     * @param readableGraph the graph to build the row from
+     * @param transactionId the ID of the transaction in the graph to build the row from
+     * @return the built row
      */
-    public void extractRowDataMaybe(final ReadableGraph readableGraph,
-                                    final List<ObservableList<String>> rows,
-                                    final int transactionId) {
+    protected ObservableList<String> getRowDataForTransaction(final ReadableGraph readableGraph,
+                                                              final int transactionId) {
         final ObservableList<String> rowData = FXCollections.observableArrayList();
         
-        columnIndex.forEach(columnTuple -> {
+        getColumnIndex().forEach(columnTuple -> {
             final int attributeId = readableGraph.getAttribute(
                     columnTuple.getSecond().getElementType(), columnTuple.getSecond().getName());
             final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction
@@ -480,20 +503,31 @@ public class Table {
         tableService.getElementIdToRowIndex().put(transactionId, rowData);
         tableService.getRowToElementIdIndex().put(rowData, transactionId);
         
-        rows.add(rowData);
+        return rowData;
     }
     
     /**
-     * 
-     * @param readableGraph
-     * @param elementType
-     * @param attributeNamePrefix
-     * @param columnReferenceMap 
+     * For the specified element type (vertex or transaction), iterates through
+     * that element types attributes in the graph and generates columns for each one.
+     * <p/>
+     * The column name will be the attribute name prefixed by the passed {@code attributeNamePrefix}
+     * parameter. This parameter will be one of "source.", "destination." or "transaction.".
+     * <p/>
+     * The column reference map contains previously generated columns and is used as
+     * a reference so that new column objects are not created needlessly.
+     *
+     * @param readableGraph the graph to extract the attributes from
+     * @param elementType the type of elements that the attributes will be extracted from,
+     *     {@link GraphElementType#VERTEX} or {@link GraphElementType#TRANSACTION}
+     * @param attributeNamePrefix the string that will prefix the attribute name in the
+     *     column name, will be one of "source.", "destination." or "transaction."
+     * @param columnReferenceMap a map of existing columns that can be used instead of
+     *     creating new ones if the column names match up
      */
-    protected CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> populateColumnIndex(final ReadableGraph readableGraph,
-                                                                                                                                   final GraphElementType elementType,
-                                                                                                                                   final String attributeNamePrefix,
-                                                                                                                                   final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
+    protected CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> createColumnIndexPart(final ReadableGraph readableGraph,
+                                                                                                                                     final GraphElementType elementType,
+                                                                                                                                     final String attributeNamePrefix,
+                                                                                                                                     final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
         final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> tmpColumnIndex
                 = new CopyOnWriteArrayList<>();
         
@@ -518,25 +552,42 @@ public class Table {
         return tmpColumnIndex;
     }
     
+    /**
+     * Creates a new column with the given name. This has been primarily created for
+     * unit testing to allow the insertion of mocked versions into the calling code.
+     *
+     * @param attributeName the name of the column
+     * @return the newly created column
+     */
     protected TableColumn<ObservableList<String>, String> createColumn(final String attributeName) {
         return new TableColumn<>(attributeName);
     }
 
     /**
+     * Gets a list representing the current column setup of the table and how it relates to the graph. The
+     * list describes how each column relates to either a source vertex, destination vertex or transaction.
+     *
+     * TODO Improve this description!!
      * 
-     * @return 
+     * @return the table column representation
      */
     public final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> getColumnIndex() {
         return columnIndex;
     }
     
+    /**
+     * Gets the context menu describing the columns that make a vertex or transaction
+     * unique. In other words the primary columns. Then manually triggers a click
+     * event causing those columns to be made visible.
+     *
+     * @see ColumnVisibilityContextMenu#getShowPrimaryColumnsMenu() 
+     */
     protected void openColumnVisibilityMenu() {
         final ColumnVisibilityContextMenu columnVisibilityContextMenu
                 = new ColumnVisibilityContextMenu(tableTopComponent, this, tableService);
         columnVisibilityContextMenu.init();
                     
-        final MenuItem keyColumns = columnVisibilityContextMenu.getContextMenu()
-                .getItems().get(2);
+        final MenuItem keyColumns = columnVisibilityContextMenu.getShowPrimaryColumnsMenu();
         keyColumns.fire();
     }
 }

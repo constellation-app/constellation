@@ -130,4 +130,12 @@ public class UpdateDataTask implements Runnable {
                 .addListener(selectedOnlySelectionListener);
         table.getSelectedProperty().addListener(tableSelectionListener);
     }
+
+    public CountDownLatch getUpdateDataLatch() {
+        return updateDataLatch;
+    }
+
+    public List<ObservableList<String>> getRows() {
+        return rows;
+    }
 }
