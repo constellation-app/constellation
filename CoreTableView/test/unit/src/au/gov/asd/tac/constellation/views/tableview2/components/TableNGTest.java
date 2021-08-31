@@ -48,7 +48,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.MockedStatic;

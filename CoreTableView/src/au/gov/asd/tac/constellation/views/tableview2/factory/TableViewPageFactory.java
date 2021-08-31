@@ -123,7 +123,6 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
 
             sortedRowList.comparatorProperty().bind(table.getTableView().comparatorProperty());
             updateSelectionFromFXThread(tableTopComponent.getCurrentGraph(), tableTopComponent.getCurrentState());
-
             if (tableTopComponent.getCurrentState() != null 
                     && tableTopComponent.getCurrentState().isSelectedOnly()) {
                 final int[] selectedIndices = selectedOnlySelectedRows.stream()
@@ -164,10 +163,10 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      * A version of the updateSelection(Graph, TableViewState) function which is
      * to be run on the JavaFX Application Thread
      *
-     * @param graph the graph to read selection from.
-     * @param state the current table view state.
+     * @param graph the graph to read selection from
+     * @param state the current table view state
      */
-    private void updateSelectionFromFXThread(final Graph graph, final TableViewState state) {
+    protected void updateSelectionFromFXThread(final Graph graph, final TableViewState state) {
         if (graph != null && state != null) {
 
             if (!Platform.isFxApplicationThread()) {
@@ -181,12 +180,14 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                 final Thread selectedIdsThread = new Thread("Update Selection from FX Thread: Get Selected Ids") {
                     @Override
                     public void run() {
-                        final ReadableGraph readableGraph = graph.getReadableGraph();
-                        addToSelectedIds(selectedIds, readableGraph, state);
+                        selectedIds.addAll(getSelectedIds(graph, state));
 
                         // update table selection
-                        selectedIndices[0] = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
-                                .map(row -> table.getTableView().getItems().indexOf(row)).mapToInt(i -> i).toArray();
+                        selectedIndices[0] = selectedIds.stream()
+                                .map(id -> elementIdToRowIndex.get(id))
+                                .map(row -> table.getTableView().getItems().indexOf(row))
+                                .mapToInt(i -> i)
+                                .toArray();
                     }
                 };
                 selectedIdsThread.start();
@@ -206,14 +207,17 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
     }
     
     /**
-     * Adds vertex/transaction ids from a graph to a list of ids if the
-     * vertex/transaction is selected
+     * Based on the tables current element type (vertex or transaction) get all
+     * selected elements of that type in the graph and return their element IDs.
      *
-     * @param selectedIds the list that is being added to
-     * @param readableGraph the graph to read from
-     * @param state the current table view state
+     * @param graph the graph to read from
+     * @param state the current table state
+     * @return the IDs of the selected elements
      */
-    private void addToSelectedIds(final List<Integer> selectedIds, final ReadableGraph readableGraph, final TableViewState state) {
+    protected List<Integer> getSelectedIds(final Graph graph,
+                                           final TableViewState state) {
+        final List<Integer> selectedIds = new ArrayList<>();
+        final ReadableGraph readableGraph = graph.getReadableGraph();
         try {
             final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
             final int selectedAttributeId = isVertex
@@ -231,6 +235,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                     selectedIds.add(elementId);
                 }
             }
+            return selectedIds;
         } finally {
             readableGraph.release();
         }

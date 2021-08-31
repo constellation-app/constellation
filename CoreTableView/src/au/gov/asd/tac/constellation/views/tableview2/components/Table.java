@@ -352,7 +352,9 @@ public class Table {
                     // update table selection
                     final int[] selectedIndices = selectedIds.stream()
                             .map(id-> tableService.getElementIdToRowIndex().get(id))
-                            .map(row -> getTableView().getItems().indexOf(row)).mapToInt(i -> i).toArray();
+                            .map(row -> getTableView().getItems().indexOf(row))
+                            .mapToInt(i -> i)
+                            .toArray();
 
                     Platform.runLater(() -> {
                         getSelectedProperty().removeListener(tableSelectionListener);
@@ -396,6 +398,7 @@ public class Table {
      *
      * @param graph the graph to read from
      * @param state the current table state
+     * @return the IDs of the selected elements
      */
     protected List<Integer> getSelectedIds(final Graph graph,
                                            final TableViewState state) {
