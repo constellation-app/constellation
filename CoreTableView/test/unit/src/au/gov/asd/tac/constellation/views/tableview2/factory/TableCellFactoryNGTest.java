@@ -15,10 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.factory;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.views.tableview2.components.RightClickContextMenu;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
+import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javafx.collections.FXCollections;
@@ -102,8 +101,7 @@ public class TableCellFactoryNGTest {
         final ObservableList<String> styleClass = spy(FXCollections.observableArrayList());
         doReturn(styleClass).when(tableCellFactory).getStyleClass();
         
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
-                = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
         
         when(table.getColumnIndex()).thenReturn(columnIndex);
         
@@ -134,8 +132,7 @@ public class TableCellFactoryNGTest {
     
     @Test
     public void updateItemTestMouseClickWrongButton() {
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
-                = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
         
         when(table.getColumnIndex()).thenReturn(columnIndex);
         
@@ -178,11 +175,11 @@ public class TableCellFactoryNGTest {
         final ObservableList<String> styleClass = spy(FXCollections.observableArrayList());
         doReturn(styleClass).when(tableCellFactory).getStyleClass();
         
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
+        final CopyOnWriteArrayList<Column> columnIndex
                 = new CopyOnWriteArrayList<>();
-        columnIndex.add(ThreeTuple.create("source.", null, mock(TableColumn.class)));
-        columnIndex.add(ThreeTuple.create(columnPrefix, null, cellColumn));
-        columnIndex.add(ThreeTuple.create("transaction.", null, mock(TableColumn.class)));
+        columnIndex.add(new Column("source.", null, mock(TableColumn.class)));
+        columnIndex.add(new Column(columnPrefix, null, cellColumn));
+        columnIndex.add(new Column("transaction.", null, mock(TableColumn.class)));
         
         when(table.getColumnIndex()).thenReturn(columnIndex);
         

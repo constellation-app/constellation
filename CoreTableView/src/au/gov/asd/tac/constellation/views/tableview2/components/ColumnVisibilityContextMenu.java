@@ -26,13 +26,13 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
@@ -42,7 +42,6 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -121,7 +120,7 @@ public class ColumnVisibilityContextMenu {
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
             tableService.updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
                     extractColumnAttributes(table.getColumnIndex().stream()
-                            .filter(columnTuple -> Character.isUpperCase(columnTuple.getSecond().getName().charAt(0)))
+                            .filter(column -> Character.isUpperCase(column.getAttribute().getName().charAt(0)))
                             .collect(Collectors.toList())), UpdateMethod.REPLACE);
             e.consume();
         });
@@ -142,18 +141,25 @@ public class ColumnVisibilityContextMenu {
                 } finally {
                     readableGraph.release();
                 }
-                tableService.updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
-                        extractColumnAttributes(table.getColumnIndex().stream()
-                                .filter(columnTuple -> keyAttributes.stream()
-                                .anyMatch(keyAttribute -> keyAttribute.equals(columnTuple.getSecond())))
-                                .collect(Collectors.toList())), UpdateMethod.REPLACE);
+                tableService.updateVisibleColumns(
+                        parent.getCurrentGraph(),
+                        parent.getCurrentState(),
+                        extractColumnAttributes(
+                                table.getColumnIndex().stream()
+                                        .filter(column ->  keyAttributes.stream()
+                                                .anyMatch(keyAttribute -> keyAttribute.equals(column.getAttribute()))
+                                        )
+                                .collect(Collectors.toList())
+                        ),
+                        UpdateMethod.REPLACE
+                );
                 e.consume();
             }
         });
         
         hideAllColumnsMenu = createCustomMenu(NO_COLUMNS, e -> {
-            table.getColumnIndex().forEach(columnTuple -> {
-                columnTuple.getThird().setVisible(false);
+            table.getColumnIndex().forEach(column -> {
+                column.getTableColumn().setVisible(false);
             });
             tableService.updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
                     Collections.emptyList(), UpdateMethod.REPLACE);
@@ -189,7 +195,7 @@ public class ColumnVisibilityContextMenu {
         // Generate check boxes for each column and separate them into their groups
         
         table.getColumnIndex().forEach(columnTuple -> {
-            final String columnHeading = columnTuple.getFirst();
+            final String columnHeading = columnTuple.getAttributeNamePrefix();
             if (null != columnHeading) {
                 switch (columnHeading) {
                     case GraphRecordStoreUtilities.SOURCE:
@@ -305,9 +311,9 @@ public class ColumnVisibilityContextMenu {
      * @param column the column to create the check box for
      * @return the created menu item wrapping the check box
      */
-    protected CustomMenuItem createColumnVisibilityMenu(final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> column) {
-        final CheckBox columnCheckbox = new CheckBox(column.getThird().getText());
-        columnCheckbox.selectedProperty().bindBidirectional(column.getThird().visibleProperty());
+    protected CustomMenuItem createColumnVisibilityMenu(final Column column) {
+        final CheckBox columnCheckbox = new CheckBox(column.getTableColumn().getText());
+        columnCheckbox.selectedProperty().bindBidirectional(column.getTableColumn().visibleProperty());
         
         columnCheckbox.setOnAction(e -> {
             tableService.updateVisibleColumns(
@@ -321,7 +327,7 @@ public class ColumnVisibilityContextMenu {
 
         final CustomMenuItem columnVisibility = new CustomMenuItem(columnCheckbox);
         columnVisibility.setHideOnClick(false);
-        columnVisibility.setId(column.getThird().getText());
+        columnVisibility.setId(column.getTableColumn().getText());
         
         return columnVisibility;
     }
@@ -363,7 +369,7 @@ public class ColumnVisibilityContextMenu {
      * @param column the {@link ThreeTuple} to convert
      * @return the generated list containing the new {@link Tuple}
      */
-    private List<Tuple<String, Attribute>> extractColumnAttributes(final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> column) {
+    private List<Tuple<String, Attribute>> extractColumnAttributes(final Column column) {
         return extractColumnAttributes(List.of(column));
     }
     
@@ -375,12 +381,12 @@ public class ColumnVisibilityContextMenu {
      * @param columns the {@link ThreeTuple}s to convert
      * @return the generated list of {@link Tuple}s
      */
-    private List<Tuple<String, Attribute>> extractColumnAttributes(final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columns) {
+    private List<Tuple<String, Attribute>> extractColumnAttributes(final List<Column> columns) {
         return columns.stream()
-                .map(columnTuple
+                .map(column
                         -> Tuple.create(
-                                columnTuple.getFirst(),
-                                columnTuple.getSecond())
+                                column.getAttributeNamePrefix(),
+                                column.getAttribute())
                 )
                 .collect(Collectors.toList());
     }

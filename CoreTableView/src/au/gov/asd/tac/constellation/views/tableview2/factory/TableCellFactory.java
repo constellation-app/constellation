@@ -79,8 +79,8 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
             this.getStyleClass().remove(ELEMENT_TRANSACTION_CLASS);
             this.getStyleClass().remove(ELEMENT_DESTINATION_CLASS);
             final String columnPrefix = table.getColumnIndex().stream()
-                    .filter(columnTuple -> columnTuple.getThird().equals(cellColumn))
-                    .map(columnTuple -> columnTuple.getFirst())
+                    .filter(column -> column.getTableColumn().equals(cellColumn))
+                    .map(column -> column.getAttributeNamePrefix())
                     .findFirst().orElse("");
             switch (columnPrefix) {
                 case GraphRecordStoreUtilities.SOURCE:

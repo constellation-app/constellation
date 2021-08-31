@@ -19,13 +19,13 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.Collections;
@@ -266,12 +266,11 @@ public class PreferenceMenuNGTest {
             final Attribute attribute3 = mock(Attribute.class);
             final Attribute attribute4 = mock(Attribute.class);
             
-            final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
-                = new CopyOnWriteArrayList<>();
-            columnIndex.add(ThreeTuple.create("type1", attribute1, column1));
-            columnIndex.add(ThreeTuple.create("type2", attribute2, column2));
-            columnIndex.add(ThreeTuple.create("type3", attribute3, column3));
-            columnIndex.add(ThreeTuple.create("type4", attribute4, column4));
+            final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
+            columnIndex.add(new Column("type1", attribute1, column1));
+            columnIndex.add(new Column("type2", attribute2, column2));
+            columnIndex.add(new Column("type3", attribute3, column3));
+            columnIndex.add(new Column("type4", attribute4, column4));
             
             when(table.getColumnIndex()).thenReturn(columnIndex);
             

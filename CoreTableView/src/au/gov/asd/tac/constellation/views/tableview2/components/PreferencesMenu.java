@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.tableview2.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
@@ -25,6 +24,7 @@ import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.T
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import java.util.ArrayList;
 import java.util.List;
@@ -312,19 +312,19 @@ public class PreferencesMenu {
                 // the names of the columns in the loaded preferences.
                 final List<Tuple<String, Attribute>> orderedColumns
                         = newColumnOrder.stream()
-                                .map(c -> {
-                                    for (final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : table.getColumnIndex()) {
-                                        if (c.getText().equals(col.getThird().getText())) {
-                                            return col;
+                                .map(tableColumn -> {
+                                    for (final Column column : table.getColumnIndex()) {
+                                        if (tableColumn.getText().equals(column.getTableColumn().getText())) {
+                                            return column;
                                         }
                                     }
                                     
                                     // TODO This seems like a bad fallback. I think returning null
                                     //      and adding a filter for nonNull objects would be better
-                                    return table.getColumnIndex().get(newColumnOrder.indexOf(c));
-                                }).map(columnTuple -> Tuple.create(
-                                        columnTuple.getFirst(),
-                                        columnTuple.getSecond()
+                                    return table.getColumnIndex().get(newColumnOrder.indexOf(tableColumn));
+                                }).map(column -> Tuple.create(
+                                        column.getAttributeNamePrefix(),
+                                        column.getAttribute()
                                 ))
                                 .collect(Collectors.toList());
                 

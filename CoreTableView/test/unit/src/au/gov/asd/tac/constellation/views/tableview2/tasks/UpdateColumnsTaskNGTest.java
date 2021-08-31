@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -135,13 +135,12 @@ public class UpdateColumnsTaskNGTest {
         attribute5 = mock(Attribute.class);
         column5 = mock(TableColumn.class);
         
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
-                = new CopyOnWriteArrayList<>();
-        columnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
-        columnIndex.add(ThreeTuple.create(columnType2, attribute2, column2));
-        columnIndex.add(ThreeTuple.create(columnType3, attribute3, column3));
-        columnIndex.add(ThreeTuple.create(columnType4, attribute4, column4));
-        columnIndex.add(ThreeTuple.create(columnType5, attribute5, column5));
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
+        columnIndex.add(new Column(columnType1, attribute1, column1));
+        columnIndex.add(new Column(columnType2, attribute2, column2));
+        columnIndex.add(new Column(columnType3, attribute3, column3));
+        columnIndex.add(new Column(columnType4, attribute4, column4));
+        columnIndex.add(new Column(columnType5, attribute5, column5));
         
         updateColumnsTask = spy(new UpdateColumnsTask(tableTopComponent, tableView, columnIndex, tableService));
     }

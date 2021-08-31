@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateDataTask;
@@ -442,12 +443,11 @@ public class TableNGTest {
         final TableColumn<ObservableList<String>, String> column4 = mock(TableColumn.class);
         when(column4.getText()).thenReturn("source.COLUMN_C");
         
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
-                = new CopyOnWriteArrayList<>();
-        columnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
-        columnIndex.add(ThreeTuple.create(columnType2, attribute2, column2));
-        columnIndex.add(ThreeTuple.create(columnType3, attribute3, column3));
-        columnIndex.add(ThreeTuple.create(columnType4, attribute4, column4));
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
+        columnIndex.add(new Column(columnType1, attribute1, column1));
+        columnIndex.add(new Column(columnType2, attribute2, column2));
+        columnIndex.add(new Column(columnType3, attribute3, column3));
+        columnIndex.add(new Column(columnType4, attribute4, column4));
         
         when(table.getColumnIndex()).thenReturn(columnIndex);
         
@@ -462,17 +462,17 @@ public class TableNGTest {
         );
         
         // Mock out the re-population of the column index from the graph. This excludes column 4.
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> sourceColumnIndex
+        final CopyOnWriteArrayList<Column> sourceColumnIndex
                 = new CopyOnWriteArrayList<>();
-        sourceColumnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
+        sourceColumnIndex.add(new Column(columnType1, attribute1, column1));
         
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> destinationColumnIndex
+        final CopyOnWriteArrayList<Column> destinationColumnIndex
                 = new CopyOnWriteArrayList<>();
-        destinationColumnIndex.add(ThreeTuple.create(columnType2, attribute2, column2));
+        destinationColumnIndex.add(new Column(columnType2, attribute2, column2));
         
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> transactionColumnIndex
+        final CopyOnWriteArrayList<Column> transactionColumnIndex
                 = new CopyOnWriteArrayList<>();
-        transactionColumnIndex.add(ThreeTuple.create(columnType3, attribute3, column3));
+        transactionColumnIndex.add(new Column(columnType3, attribute3, column3));
         
         doReturn(sourceColumnIndex).when(table)
                 .createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "source.", columnReferenceMap);
@@ -496,11 +496,11 @@ public class TableNGTest {
         table.updateColumns(graph, tableViewState, tableSelectionListener, selectedOnlySelectionListener);
         
         // Verify the new column index
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> expectedColumnIndex
+        final CopyOnWriteArrayList<Column> expectedColumnIndex
                 = new CopyOnWriteArrayList<>();
-        expectedColumnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
-        expectedColumnIndex.add(ThreeTuple.create(columnType3, attribute3, column3));
-        expectedColumnIndex.add(ThreeTuple.create(columnType2, attribute2, column2));
+        expectedColumnIndex.add(new Column(columnType1, attribute1, column1));
+        expectedColumnIndex.add(new Column(columnType3, attribute3, column3));
+        expectedColumnIndex.add(new Column(columnType2, attribute2, column2));
         
         assertEquals(expectedColumnIndex, columnIndex);
         
@@ -527,9 +527,8 @@ public class TableNGTest {
         final TableColumn<ObservableList<String>, String> column1 = mock(TableColumn.class);
         when(column1.getText()).thenReturn("source.COLUMN_A");
         
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
-                = new CopyOnWriteArrayList<>();
-        columnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
+        columnIndex.add(new Column(columnType1, attribute1, column1));
         
         when(table.getColumnIndex()).thenReturn(columnIndex);
         
@@ -623,22 +622,22 @@ public class TableNGTest {
         when(table.createColumn("destination.COLUMN_A")).thenReturn(newColumn2);
         
         // Create the expected outputs for source, destination and trasaction column creations
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> sourceColumnIndex
+        final CopyOnWriteArrayList<Column> sourceColumnIndex
                 = new CopyOnWriteArrayList<>();
         
-        sourceColumnIndex.add(ThreeTuple.create("source.", attribute1, column1));
-        sourceColumnIndex.add(ThreeTuple.create("source.", attribute2, newColumn1));
+        sourceColumnIndex.add(new Column("source.", attribute1, column1));
+        sourceColumnIndex.add(new Column("source.", attribute2, newColumn1));
         
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> destinationColumnIndex
+        final CopyOnWriteArrayList<Column> destinationColumnIndex
                 = new CopyOnWriteArrayList<>();
         
-        destinationColumnIndex.add(ThreeTuple.create("destination.", attribute1, newColumn2));
-        destinationColumnIndex.add(ThreeTuple.create("destination.", attribute2, column2));
+        destinationColumnIndex.add(new Column("destination.", attribute1, newColumn2));
+        destinationColumnIndex.add(new Column("destination.", attribute2, column2));
 
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> transactionColumnIndex
+        final CopyOnWriteArrayList<Column> transactionColumnIndex
                 = new CopyOnWriteArrayList<>();
         
-        transactionColumnIndex.add(ThreeTuple.create("transaction.", attribute3, column3));
+        transactionColumnIndex.add(new Column("transaction.", attribute3, column3));
         
         assertEquals(sourceColumnIndex, table.createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "source.", columnReferenceMap));
         assertEquals(destinationColumnIndex, table.createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "destination.", columnReferenceMap));
@@ -736,9 +735,8 @@ public class TableNGTest {
         
         final Attribute attribute1 = new GraphAttribute(readableGraph, 101);
         
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
-                = new CopyOnWriteArrayList<>();
-        columnIndex.add(ThreeTuple.create(null, attribute1, null));
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
+        columnIndex.add(new Column(null, attribute1, null));
         
         when(table.getColumnIndex()).thenReturn(columnIndex);
         
@@ -789,11 +787,10 @@ public class TableNGTest {
         
         // There are 2 columns. One called COLUMN_1 and the other COLUMN_2. COLUMN_1
         // is present on source and destination verticies. COLUMN_2 is present on transactions
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
-                = new CopyOnWriteArrayList<>();
-        columnIndex.add(ThreeTuple.create("source.", attribute1, null));
-        columnIndex.add(ThreeTuple.create("destination.", attribute1, null));
-        columnIndex.add(ThreeTuple.create("transaction.", attribute2, null));
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
+        columnIndex.add(new Column("source.", attribute1, null));
+        columnIndex.add(new Column("destination.", attribute1, null));
+        columnIndex.add(new Column("transaction.", attribute2, null));
         
         when(table.getColumnIndex()).thenReturn(columnIndex);
         

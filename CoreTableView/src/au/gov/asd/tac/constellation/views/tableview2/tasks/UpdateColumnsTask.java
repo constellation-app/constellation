@@ -17,10 +17,10 @@ package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
 import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class UpdateColumnsTask implements Runnable {
     private final TableViewTopComponent parent;
     private final TableView<ObservableList<String>> tableView;
     
-    private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
+    private final CopyOnWriteArrayList<Column> columnIndex;
 
     private final TableService tableService;
     
@@ -66,7 +66,7 @@ public class UpdateColumnsTask implements Runnable {
      */
     public UpdateColumnsTask(final TableViewTopComponent parent,
                              final TableView<ObservableList<String>> tableView,
-                             final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex,
+                             final CopyOnWriteArrayList<Column> columnIndex,
                              final TableService tableService) {
         this.parent = parent;
         this.tableView = tableView;
@@ -106,17 +106,20 @@ public class UpdateColumnsTask implements Runnable {
         columnReferenceMap.forEach((columnName, column) -> column.setGraphic(null));
 
         // set column visibility in columnIndex based on the state
-        columnIndex.forEach(columnTuple -> {
-            columnTuple.getThird().setVisible(state.getColumnAttributes().stream()
-                    .anyMatch(a -> a.getFirst().equals(columnTuple.getFirst())
-                    && a.getSecond().equals(columnTuple.getSecond())));
+        columnIndex.forEach(column -> {
+            column.getTableColumn().setVisible(state.getColumnAttributes().stream()
+                    .anyMatch(columnAttr -> 
+                            columnAttr.getFirst().equals(column.getAttributeNamePrefix())
+                                    && columnAttr.getSecond().equals(column.getAttribute())
+                    )
+            );
         });
 
         // add columns to table
         tableView.getColumns().clear();
         tableView.getColumns().addAll(
                 columnIndex.stream()
-                        .map(t -> t.getThird())
+                        .map(column -> column.getTableColumn())
                         .collect(Collectors.toList())
         );
 
@@ -129,19 +132,27 @@ public class UpdateColumnsTask implements Runnable {
                         
                         final List<TableColumn<ObservableList<String>, String>> columnIndexColumns
                                 = columnIndex.stream()
-                                        .map(ci -> ci.getThird())
+                                        .map(column -> column.getTableColumn())
                                         .collect(Collectors.toList());
                         
                         final List<Tuple<String, Attribute>> orderedColumns
                                 = change.getAddedSubList().stream()
                                         .map(c -> columnIndex.get(columnIndexColumns.indexOf(c)))
-                                        .map(c -> Tuple.create(c.getFirst(), c.getSecond()))
-                                        .filter(c -> (parent.getCurrentState().getColumnAttributes().contains(Tuple.create(c.getFirst(), c.getSecond()))))
+                                        .map(column -> Tuple.create(
+                                                column.getAttributeNamePrefix(), 
+                                                column.getAttribute()
+                                        ))
+                                        .filter(columnAttr -> 
+                                                parent.getCurrentState().getColumnAttributes()
+                                                        .contains(columnAttr)
+                                        )
                                         .collect(Collectors.toList());
                         
                         tableService.updateVisibleColumns(
-                                parent.getCurrentGraph(), parent.getCurrentState(),
-                                orderedColumns, UpdateMethod.REPLACE
+                                parent.getCurrentGraph(),
+                                parent.getCurrentState(),
+                                orderedColumns,
+                                UpdateMethod.REPLACE
                         );
                     }
                 }

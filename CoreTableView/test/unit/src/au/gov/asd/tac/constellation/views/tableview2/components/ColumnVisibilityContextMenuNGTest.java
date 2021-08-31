@@ -20,11 +20,11 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -160,13 +160,12 @@ public class ColumnVisibilityContextMenuNGTest {
         column5 = mock(TableColumn.class);
         when(column5.getText()).thenReturn("Text from Column 5");
         
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
-                = new CopyOnWriteArrayList<>();
-        columnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
-        columnIndex.add(ThreeTuple.create(columnType2, attribute2, column2));
-        columnIndex.add(ThreeTuple.create(columnType3, attribute3, column3));
-        columnIndex.add(ThreeTuple.create(columnType4, attribute4, column4));
-        columnIndex.add(ThreeTuple.create(columnType5, attribute5, column5));
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
+        columnIndex.add(new Column(columnType1, attribute1, column1));
+        columnIndex.add(new Column(columnType2, attribute2, column2));
+        columnIndex.add(new Column(columnType3, attribute3, column3));
+        columnIndex.add(new Column(columnType4, attribute4, column4));
+        columnIndex.add(new Column(columnType5, attribute5, column5));
         
         when(table.getColumnIndex()).thenReturn(columnIndex);
         
@@ -203,19 +202,19 @@ public class ColumnVisibilityContextMenuNGTest {
         final CustomMenuItem columnVisibilityMenuItemColumn5 = mock(CustomMenuItem.class);
         
         doReturn(columnVisibilityMenuItemColumn1).when(columnVisibilityContextMenu)
-                .createColumnVisibilityMenu(ThreeTuple.create(columnType1, attribute1, column1));
+                .createColumnVisibilityMenu(new Column(columnType1, attribute1, column1));
         
         doReturn(columnVisibilityMenuItemColumn2).when(columnVisibilityContextMenu)
-                .createColumnVisibilityMenu(ThreeTuple.create(columnType2, attribute2, column2));
+                .createColumnVisibilityMenu(new Column(columnType2, attribute2, column2));
         
         doReturn(columnVisibilityMenuItemColumn3).when(columnVisibilityContextMenu)
-                .createColumnVisibilityMenu(ThreeTuple.create(columnType3, attribute3, column3));
+                .createColumnVisibilityMenu(new Column(columnType3, attribute3, column3));
         
         doReturn(columnVisibilityMenuItemColumn4).when(columnVisibilityContextMenu)
-                .createColumnVisibilityMenu(ThreeTuple.create(columnType4, attribute4, column4));
+                .createColumnVisibilityMenu(new Column(columnType4, attribute4, column4));
         
         doReturn(columnVisibilityMenuItemColumn5).when(columnVisibilityContextMenu)
-                .createColumnVisibilityMenu(ThreeTuple.create(columnType5, attribute5, column5));
+                .createColumnVisibilityMenu(new Column(columnType5, attribute5, column5));
         
         columnVisibilityContextMenu.init();
         
@@ -337,7 +336,7 @@ public class ColumnVisibilityContextMenuNGTest {
         when(column1.visibleProperty()).thenReturn(new SimpleBooleanProperty(isSelected));
         
         final CustomMenuItem columnVisibilityMenuItem = columnVisibilityContextMenu
-                .createColumnVisibilityMenu(ThreeTuple.create(columnType1, attribute1, column1));
+                .createColumnVisibilityMenu(new Column(columnType1, attribute1, column1));
         
         verifyColumnVisibilityCheckBox(columnVisibilityMenuItem, isSelected, columnText,
                 List.of(Tuple.create(columnType1, attribute1)), UpdateMethod.ADD);
@@ -352,7 +351,7 @@ public class ColumnVisibilityContextMenuNGTest {
         when(column1.visibleProperty()).thenReturn(new SimpleBooleanProperty(isSelected));
         
         final CustomMenuItem columnVisibilityMenuItem = columnVisibilityContextMenu
-                .createColumnVisibilityMenu(ThreeTuple.create(columnType1, attribute1, column1));
+                .createColumnVisibilityMenu(new Column(columnType1, attribute1, column1));
         
         verifyColumnVisibilityCheckBox(columnVisibilityMenuItem, isSelected, columnText,
                 List.of(Tuple.create(columnType1, attribute1)), UpdateMethod.REMOVE);

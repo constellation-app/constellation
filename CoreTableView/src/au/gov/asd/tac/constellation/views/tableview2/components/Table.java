@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -24,11 +23,11 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttribut
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableCellFactory;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateColumnsTask;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateDataTask;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
@@ -75,7 +74,7 @@ public class Table {
     
     private final TableService tableService;
     
-    private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
+    private final CopyOnWriteArrayList<Column> columnIndex;
     
     /**
      * Cache strings used in table cells to significantly reduce memory used by
@@ -162,8 +161,8 @@ public class Table {
                         getColumnIndex().stream()
                                 .collect(
                                         Collectors.toMap(
-                                                columnTuple -> columnTuple.getThird().getText(),
-                                                c -> c.getThird(),
+                                                column -> column.getTableColumn().getText(),
+                                                column -> column.getTableColumn(),
                                                 (e1, e2) -> e1
                                         )
                                 );
@@ -200,7 +199,7 @@ public class Table {
 
                 // Style and format columns in columnIndex
                 getColumnIndex().forEach(columnTuple -> {
-                    final TableColumn<ObservableList<String>, String> column = columnTuple.getThird();
+                    final TableColumn<ObservableList<String>, String> column = columnTuple.getTableColumn();
 
                     // assign cells to columns
                     column.setCellValueFactory(cellData -> {
@@ -440,12 +439,12 @@ public class Table {
                                                          final int vertexId) {
         final ObservableList<String> rowData = FXCollections.observableArrayList();
                                 
-        getColumnIndex().forEach(columnTuple -> {
+        getColumnIndex().forEach(column -> {
             final int attributeId = readableGraph
-                    .getAttribute(columnTuple.getSecond().getElementType(),
-                            columnTuple.getSecond().getName());
+                    .getAttribute(column.getAttribute().getElementType(),
+                            column.getAttribute().getName());
             final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction
-                    .getInteraction(columnTuple.getSecond().getAttributeType());
+                    .getInteraction(column.getAttribute().getAttributeType());
             final Object attributeValue = readableGraph
                     .getObjectValue(attributeId, vertexId);
             final String displayableValue = interaction.getDisplayText(attributeValue);
@@ -476,14 +475,16 @@ public class Table {
                                                               final int transactionId) {
         final ObservableList<String> rowData = FXCollections.observableArrayList();
         
-        getColumnIndex().forEach(columnTuple -> {
+        getColumnIndex().forEach(column -> {
             final int attributeId = readableGraph.getAttribute(
-                    columnTuple.getSecond().getElementType(), columnTuple.getSecond().getName());
+                    column.getAttribute().getElementType(),
+                    column.getAttribute().getName()
+            );
             final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction
-                    .getInteraction(columnTuple.getSecond().getAttributeType());
+                    .getInteraction(column.getAttribute().getAttributeType());
             
             final Object attributeValue;
-            switch (columnTuple.getFirst()) {
+            switch (column.getAttributeNamePrefix()) {
                 case GraphRecordStoreUtilities.SOURCE:
                     final int sourceVertexId = readableGraph.getTransactionSourceVertex(transactionId);
                     attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
@@ -527,12 +528,11 @@ public class Table {
      * @param columnReferenceMap a map of existing columns that can be used instead of
      *     creating new ones if the column names match up
      */
-    protected CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> createColumnIndexPart(final ReadableGraph readableGraph,
-                                                                                                                                     final GraphElementType elementType,
-                                                                                                                                     final String attributeNamePrefix,
-                                                                                                                                     final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> tmpColumnIndex
-                = new CopyOnWriteArrayList<>();
+    protected CopyOnWriteArrayList<Column> createColumnIndexPart(final ReadableGraph readableGraph,
+                                                                 final GraphElementType elementType,
+                                                                 final String attributeNamePrefix,
+                                                                 final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
+        final CopyOnWriteArrayList<Column> tmpColumnIndex = new CopyOnWriteArrayList<>();
         
         final int attributeCount = readableGraph.getAttributeCount(elementType);
 
@@ -544,7 +544,7 @@ public class Table {
             final TableColumn<ObservableList<String>, String> column = columnReferenceMap.containsKey(attributeName)
                     ? columnReferenceMap.get(attributeName) : createColumn(attributeName);
 
-            tmpColumnIndex.add(ThreeTuple.create(
+            tmpColumnIndex.add(new Column(
                     attributeNamePrefix,
                     new GraphAttribute(readableGraph, attributeId),
                     column
@@ -574,7 +574,7 @@ public class Table {
      * 
      * @return the table column representation
      */
-    public final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> getColumnIndex() {
+    public final CopyOnWriteArrayList<Column> getColumnIndex() {
         return columnIndex;
     }
     
