@@ -98,7 +98,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     protected void handleGraphClosed(final Graph graph) {
         if (needsUpdate() && graph != null) {
-            notesViewPane.closeEdit();
             notesViewPane.clearNotes();
         }
     }
@@ -116,7 +115,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        notesViewPane.closeEdit();
+        //notesViewPane.selectAllFilters();
     }
 
     @Override
