@@ -34,7 +34,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public final class TablePreferences {
     
     @JsonProperty(value = "PageSize")
-    private Integer maxRowsPerPage;
+    private Integer maxRowsPerPage = null;
     
     @JsonProperty("ColumnOrder")
     private List<String> columnOrder = new ArrayList<>();

@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -26,7 +27,8 @@ import java.util.Comparator;
  *
  * @author formalhaunt
  */
-public class ColumnIndexSort implements Comparator<Column> {
+public class ColumnIndexSort implements Comparator<Column>, Serializable{
+    private static final long serialVersionUID = 1;
     
     private final TableViewState state;
     

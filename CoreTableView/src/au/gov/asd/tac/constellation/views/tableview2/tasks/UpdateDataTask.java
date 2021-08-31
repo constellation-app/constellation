@@ -48,8 +48,6 @@ public class UpdateDataTask implements Runnable {
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
     private final ListChangeListener selectedOnlySelectionListener;
     
-    private TableFilter<ObservableList<String>> filter;
-    
     private List<ObservableList<String>> filteredRowList;
     
     /**
@@ -96,7 +94,8 @@ public class UpdateDataTask implements Runnable {
         table.getTableView().setItems(FXCollections.observableArrayList(tableService.getSortedRowList()));
 
         // add user defined filter to the table
-        filter = TableFilter.forTableView(table.getTableView()).lazy(true).apply();
+        final TableFilter<ObservableList<String>> filter
+                = TableFilter.forTableView(table.getTableView()).lazy(true).apply();
         filter.setSearchStrategy((t, u) -> {
             try {
                 return u.toLowerCase().startsWith(t.toLowerCase());
@@ -113,16 +112,12 @@ public class UpdateDataTask implements Runnable {
             
             tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage(),
                     tableService.getSortedRowList());
-            Platform.runLater(() -> {
-                tablePane.setCenter(tableService.getPagination());
-            });
+            Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
         });
         
         tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage(),
                 tableService.getSortedRowList());
-        Platform.runLater(() -> {
-            tablePane.setCenter(tableService.getPagination());
-        });
+        Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
         
         updateDataLatch.countDown();
 

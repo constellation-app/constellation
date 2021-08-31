@@ -50,6 +50,13 @@ public final class Column {
         
     }
     
+    /**
+     * Creates a new column.
+     *
+     * @param attributeNamePrefix the prefix for the attribute name when set to the column
+     * @param attribute the attribute the column represents
+     * @param tableColumn the actual JavaFX column in the table
+     */
     public Column(final String attributeNamePrefix,
                   final Attribute attribute,
                   final TableColumn<ObservableList<String>, String> tableColumn) {

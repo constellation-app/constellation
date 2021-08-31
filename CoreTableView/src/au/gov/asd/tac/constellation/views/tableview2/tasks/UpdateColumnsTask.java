@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import javafx.beans.value.ChangeListener;
@@ -44,7 +45,7 @@ public class UpdateColumnsTask implements Runnable {
     private final TableViewTopComponent parent;
     private final TableView<ObservableList<String>> tableView;
     
-    private final CopyOnWriteArrayList<Column> columnIndex;
+    private final List<Column> columnIndex;
 
     private final TableService tableService;
     
@@ -66,7 +67,7 @@ public class UpdateColumnsTask implements Runnable {
      */
     public UpdateColumnsTask(final TableViewTopComponent parent,
                              final TableView<ObservableList<String>> tableView,
-                             final CopyOnWriteArrayList<Column> columnIndex,
+                             final List<Column> columnIndex,
                              final TableService tableService) {
         this.parent = parent;
         this.tableView = tableView;
@@ -94,9 +95,8 @@ public class UpdateColumnsTask implements Runnable {
     
     @Override
     public void run() {
-        if (columnReferenceMap == null) {
-            throw new RuntimeException("Update columns was started before reset was called.");
-        }
+        Objects.requireNonNull(columnReferenceMap, "Update columns was started "
+                + "before reset was called.");
         
         tableView.getSelectionModel().selectedItemProperty()
                 .removeListener(tableSelectionListener);
@@ -106,14 +106,14 @@ public class UpdateColumnsTask implements Runnable {
         columnReferenceMap.forEach((columnName, column) -> column.setGraphic(null));
 
         // set column visibility in columnIndex based on the state
-        columnIndex.forEach(column -> {
+        columnIndex.forEach(column ->
             column.getTableColumn().setVisible(state.getColumnAttributes().stream()
                     .anyMatch(columnAttr -> 
                             columnAttr.getFirst().equals(column.getAttributeNamePrefix())
                                     && columnAttr.getSecond().equals(column.getAttribute())
                     )
-            );
-        });
+            )
+        );
 
         // add columns to table
         tableView.getColumns().clear();

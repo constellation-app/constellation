@@ -37,10 +37,10 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
     
     private static final String NO_VALUE_TEXT = "<No Value>";
     
-    private static RightClickContextMenu rightClickContextMenuInstance;
-    
     private final TableColumn<ObservableList<String>, String> cellColumn;
     private final Table table;
+    
+    private RightClickContextMenu rightClickContextMenuInstance;
     
     /**
      * Creates a new table cell factory.

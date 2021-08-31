@@ -133,9 +133,7 @@ public class PreferencesMenu {
                 }
                 
                 tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
-                Platform.runLater(() -> {
-                    tablePane.setCenter(tableService.getPagination());
-                });
+                Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
             }
             e.consume();
         });
@@ -214,9 +212,7 @@ public class PreferencesMenu {
                                 if (tableService.getTablePreferences().getMaxRowsPerPage() != pageSize) {
                                     tableService.getTablePreferences().setMaxRowsPerPage(pageSize);
                                     tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
-                                    Platform.runLater(() -> {
-                                        tablePane.setCenter(tableService.getPagination());
-                                    });
+                                    Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
                                 }
                             });
                             if (pageSize == DEFAULT_MAX_ROWS_PER_PAGE) {
@@ -299,14 +295,14 @@ public class PreferencesMenu {
                 // Loop through column names in the loaded preferences and add the
                 // associated columns to newColumnOrder (if found). Also set the
                 // found columns to visible.
-                tablePrefs.getColumnOrder().forEach(columnName -> {
+                tablePrefs.getColumnOrder().forEach(columnName ->
                     table.getTableView().getColumns().stream()
                             .filter(column -> column.getText().equals(columnName))
                             .forEachOrdered(column -> {
                                 column.setVisible(true);
                                 newColumnOrder.add(column);
-                            });
-                });
+                            })
+                );
 
                 // Populate orderedColumns with entries from column index that match
                 // the names of the columns in the loaded preferences.

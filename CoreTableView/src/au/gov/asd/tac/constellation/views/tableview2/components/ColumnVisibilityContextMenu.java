@@ -158,9 +158,7 @@ public class ColumnVisibilityContextMenu {
         });
         
         hideAllColumnsMenu = createCustomMenu(NO_COLUMNS, e -> {
-            table.getColumnIndex().forEach(column -> {
-                column.getTableColumn().setVisible(false);
-            });
+            table.getColumnIndex().forEach(column -> column.getTableColumn().setVisible(false));
             tableService.updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
                     Collections.emptyList(), UpdateMethod.REPLACE);
             e.consume();

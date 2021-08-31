@@ -250,9 +250,7 @@ public class Table {
                 }
 
                 // Set progress indicator
-                Platform.runLater(() -> {
-                    tablePane.setCenter(progressBar.getProgressPane());
-                });
+                Platform.runLater(() -> tablePane.setCenter(progressBar.getProgressPane()));
 
                 // Clear the current row and element mappings
                 tableService.getElementIdToRowIndex().clear();
@@ -567,14 +565,14 @@ public class Table {
     }
 
     /**
-     * Gets a list representing the current column setup of the table and how it relates to the graph. The
-     * list describes how each column relates to either a source vertex, destination vertex or transaction.
-     *
-     * TODO Improve this description!!
+     * Gets a list representing the current column setup of the table and how it relates
+     * to the graph. The list describes how each column relates to either a source vertex,
+     * destination vertex or transaction.
      * 
      * @return the table column representation
+     * @see Column
      */
-    public final CopyOnWriteArrayList<Column> getColumnIndex() {
+    public final List<Column> getColumnIndex() {
         return columnIndex;
     }
     

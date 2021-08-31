@@ -63,9 +63,9 @@ public class TableSortTypeListener implements ChangeListener<TableColumn.SortTyp
         if (!tableService.isSortingListenerActive()) {
             tableService.setSortingListenerActive(true);
             tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
-            Platform.runLater(() -> {
-                tablePane.setCenter(tableService.getPagination());
-            });
+            
+            Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
+            
             tableService.setSortingListenerActive(false);
         }
     }

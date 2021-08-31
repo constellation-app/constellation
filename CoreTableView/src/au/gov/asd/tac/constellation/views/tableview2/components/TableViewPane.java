@@ -49,8 +49,6 @@ import javafx.scene.layout.BorderPane;
  * @author antares
  */
 public final class TableViewPane extends BorderPane {
-    private static final Logger LOGGER = Logger.getLogger(TableViewPane.class.getName());
-
     private final Table table;
     private final TableToolbar tableToolbar;
     private final ProgressBar progressBar;
@@ -128,9 +126,7 @@ public final class TableViewPane extends BorderPane {
         
         // Initiate table update and initialisation
         tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
-        Platform.runLater(() -> {
-            setCenter(tableService.getPagination());
-        });
+        Platform.runLater(() -> setCenter(tableService.getPagination()));
     }
 
     /**
@@ -150,13 +146,9 @@ public final class TableViewPane extends BorderPane {
                 getTable().updateColumns(graph, state, getTableSelectionListener(), getSelectedOnlySelectionListener());
                 getTable().updateData(graph, state, getProgressBar(), getTableSelectionListener(), getSelectedOnlySelectionListener());
                 getTable().updateSelection(graph, state, getTableSelectionListener(), getSelectedOnlySelectionListener());
-                Platform.runLater(() -> {
-                    getTable().updateSortOrder();
-                });
+                Platform.runLater(() -> getTable().updateSortOrder());
             } else {
-                Platform.runLater(() -> {
-                    getTable().getTableView().getColumns().clear();
-                });
+                Platform.runLater(() -> getTable().getTableView().getColumns().clear());
             }
         }, 0, TimeUnit.MILLISECONDS);
     }
