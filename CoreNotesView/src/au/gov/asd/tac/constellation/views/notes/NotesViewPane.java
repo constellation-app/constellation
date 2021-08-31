@@ -571,6 +571,11 @@ public class NotesViewPane extends BorderPane {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
         });
+
+        synchronized (LOCK) {
+            notesViewEntries.clear();
+            notesDateTimeCache.clear();
+        }
     }
 
     /**
