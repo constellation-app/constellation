@@ -24,6 +24,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.input.MouseButton;
 
 /**
+ * A {@link TableCell} that updates the cells text and style classes on change.
+ * It also sets up the right click context menu for cell clicks.
  *
  * @author formalhaunt
  */
@@ -35,16 +37,30 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
     
     private static final String NO_VALUE_TEXT = "<No Value>";
     
+    private static RightClickContextMenu rightClickContextMenuInstance;
     
     private final TableColumn<ObservableList<String>, String> cellColumn;
     private final Table table;
     
+    /**
+     * Creates a new table cell factory.
+     *
+     * @param cellColumn the column that the cells belong to
+     * @param table the table that the cells belong to
+     */
     public TableCellFactory(final TableColumn<ObservableList<String>, String> cellColumn,
                             final Table table) {
         this.cellColumn = cellColumn;
         this.table = table;
     }
     
+    /**
+     * Sets the cells text to the passed item and then updates the cells style
+     * classes based on the cells column attributes.
+     *
+     * @param item the string to set the cells text to
+     * @param empty true and the item will not be set to the cells text, false and it will
+     */
     @Override
     public void updateItem(final String item, final boolean empty) {
         super.updateItem(item, empty);
@@ -84,14 +100,28 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
             // enable context menu on right-click
             this.setOnMouseClicked(me -> {
                 if (me.getButton() == MouseButton.SECONDARY) {
-                    final RightClickContextMenu rightClickContextMenu = new RightClickContextMenu(table);
-                    rightClickContextMenu.init(this);
+                    final RightClickContextMenu rightClickContextMenu = getRightClickContextMenu();
                     
                     rightClickContextMenu.getContextMenu()
                             .show(table.getTableView(), me.getScreenX(), me.getScreenY());
                 }
             });
         }
+    }
+    
+    /**
+     * Gets a initialized {@link RightClickContextMenu}. If the context menu has
+     * already been initialized it will use that otherwise it will create and
+     * initialize the menu.
+     *
+     * @return the right click context menu for this cell
+     */
+    protected final RightClickContextMenu getRightClickContextMenu() {
+        if (rightClickContextMenuInstance == null) {
+            rightClickContextMenuInstance = new RightClickContextMenu(table);
+            rightClickContextMenuInstance.init(this);
+        }
+        return rightClickContextMenuInstance;
     }
     
 }
