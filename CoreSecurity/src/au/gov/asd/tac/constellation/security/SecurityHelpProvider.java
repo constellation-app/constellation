@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.preferences.utilities;
+package au.gov.asd.tac.constellation.security;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import java.util.ArrayList;
@@ -24,13 +24,13 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Provider to get help pages for the preferences module
+ * Provider to get help pages for the security module
  *
  * @author Delphinus8821
  */
 @ServiceProvider(service = HelpPageProvider.class)
-@NbBundle.Messages("PreferencesHelpProvider=Preference Help Provider")
-public class PreferencesHelpProvider extends HelpPageProvider {
+@NbBundle.Messages("SecurityHelpProvider=Security Help Provider")
+public class SecurityHelpProvider extends HelpPageProvider {
 
     @Override
     public List<String> getHelpPages() {
