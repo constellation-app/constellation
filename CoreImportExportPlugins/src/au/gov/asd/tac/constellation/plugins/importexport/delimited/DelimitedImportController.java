@@ -101,7 +101,7 @@ public class DelimitedImportController extends ImportController {
     }
 
     @Override
-    public List<File> processImport() throws PluginException {
+    public void processImport() throws PluginException {
         final List<ImportDefinition> definitions = configurationPane.createDefinitions();
         final Graph importGraph = currentDestination.getGraph();
         final boolean schema = schemaInitialised;
@@ -149,7 +149,6 @@ public class DelimitedImportController extends ImportController {
                     .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
                     .executeWriteLater(importGraph);
         }
-        return files;
     }
 
     @Override
