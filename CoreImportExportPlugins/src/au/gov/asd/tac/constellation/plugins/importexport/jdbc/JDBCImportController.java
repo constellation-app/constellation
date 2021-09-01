@@ -89,7 +89,7 @@ public class JDBCImportController extends ImportController {
 
     @Override
     public void processImport() throws PluginException {
-        final List<ImportDefinition> definitions = configurationPane.createDefinitions();
+        final List<ImportDefinition> definitions = configurationPane.createDefinitions(false);
         final Graph importGraph = currentDestination.getGraph();
         final boolean schema = schemaInitialised;
 
