@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -376,12 +375,20 @@ public abstract class ImportController<D> {
         return configurationPane.createDefinitions(isFilesIncludeHeadersEnabled);
     }
 
-    public abstract List<File> processImport() throws PluginException;
+    /**
+     * Process the full list of records that will be imported to the graph
+     *
+     * @throws PluginException
+     */
+    public abstract void processImport() throws PluginException;
 
     public void cancelImport() {
         SwingUtilities.invokeLater(() -> importPane.close());
     }
 
+    /**
+     * Prepare the sample data used to show in the preview pane
+     */
     protected abstract void updateSampleData();
 
     public void createNewRun() {
