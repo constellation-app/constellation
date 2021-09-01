@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.help.utilities.toc.TreeNode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.openide.util.Lookup;
 import org.openide.windows.OnShowing;
 
@@ -33,13 +34,23 @@ import org.openide.windows.OnShowing;
 @OnShowing()
 public class Generator implements Runnable {
 
+    private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
+
     @Override
     public void run() {
         // Get the current directory and make the file within the help module.
         final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final String tocPath = userDir + sep + ".." + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "toc.md";
+        String tocPath;
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        if ("constellation".equals(substr)) {
+            tocPath = userDir + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "toc.md";
+        } else {
+            tocPath = userDir + sep + ".." + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "toc.md";
+        }
 
         // Create TOCGenerator with the location of the resources file
         final TOCGenerator tocGenerator = new TOCGenerator(tocPath);

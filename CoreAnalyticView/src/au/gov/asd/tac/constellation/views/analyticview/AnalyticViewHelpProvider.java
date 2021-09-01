@@ -116,8 +116,18 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final String analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analyticview-toc.xml";
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String analyticViewPath;
+        if ("constellation".equals(substr)) {
+            analyticViewPath = userDir + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analyticview-toc.xml";
+
+        } else {
+            analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analyticview-toc.xml";
+        }
+
         return analyticViewPath;
     }
 }

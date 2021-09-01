@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,6 +47,9 @@ public class TOCParser {
      * @param root the root node to place items into
      */
     public static void parse(final File xmlFromFile, final TreeNode root) {
+        if (StringUtils.isEmpty(xmlFromFile.getPath())) {
+            return;
+        }
 
         try {
             TreeNode currentParent = root;

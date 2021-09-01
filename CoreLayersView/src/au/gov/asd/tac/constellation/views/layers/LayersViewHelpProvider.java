@@ -77,8 +77,17 @@ public class LayersViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final String layersViewPath = userDir + sep + ".." + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-toc.xml";
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String layersViewPath;
+        if ("constellation".equals(substr)) {
+            layersViewPath = userDir + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-toc.xml";
+
+        } else {
+            layersViewPath = userDir + sep + ".." + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-toc.xml";
+        }
         return layersViewPath;
     }
 }
