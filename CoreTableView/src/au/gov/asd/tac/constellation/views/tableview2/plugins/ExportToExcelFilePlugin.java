@@ -198,7 +198,10 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
         final int[] rowIndex = new int[1];
         rowIndex[0] = startIndex;
         data.forEach(item -> {
-            final Row itemRow = sheet.createRow(rowIndex[0]++);
+            rowIndex[0]++;
+            
+            final Row itemRow = sheet.createRow(rowIndex[0]);
+            
             visibleIndices.forEach(index -> {
                 final Cell itemCell = itemRow.createCell(visibleIndices.indexOf(index));
                 itemCell.setCellValue(item.get(index));

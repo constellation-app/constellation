@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;

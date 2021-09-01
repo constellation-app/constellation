@@ -71,9 +71,9 @@ public class SelectionToGraphPlugin extends SimpleEditPlugin {
         
         final int selectedAttributeId = isVertex ? VisualConcept.VertexAttribute.SELECTED.ensure(graph) : VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
         
-        elements.forEach(element -> {
-            graph.setBooleanValue(selectedAttributeId, element, selectedElements.contains(element));
-        });
+        elements.forEach(element ->
+            graph.setBooleanValue(selectedAttributeId, element, selectedElements.contains(element))
+        );
     }
 
     @Override

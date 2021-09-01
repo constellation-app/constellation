@@ -27,9 +27,7 @@ import java.util.Comparator;
  *
  * @author formalhaunt
  */
-public class ColumnIndexSort implements Comparator<Column>, Serializable{
-    private static final long serialVersionUID = 1;
-    
+public class ColumnIndexSort implements Comparator<Column>, Serializable {
     private final TableViewState state;
     
     /**

@@ -27,9 +27,11 @@ import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.g
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Plugin that exports the contents of the table as a CSV.
@@ -71,7 +73,7 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
         final Thread outputThread = new Thread("Export to CSV File: Writing File") {
             @Override
             public void run() {
-                try (final FileWriter fileWriter = new FileWriter(getFile())) {
+                try (final FileWriter fileWriter = new FileWriter(getFile(), StandardCharsets.UTF_8)) {
                     fileWriter.write(csvData);
                 } catch (final IOException ex) {
                     interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());

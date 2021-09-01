@@ -85,6 +85,11 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
         this.maxRowsPerPage = maxRowsPerPage;
     }
     
+    /**
+     * 
+     * @param pageIndex
+     * @return 
+     */
     @Override
     public Node call(Integer pageIndex) {
         if (newRowList != null) {

@@ -16,7 +16,8 @@
 package au.gov.asd.tac.constellation.views.tableview2;
 
 /**
- *
+ * TODO This is used in the table service column visibility method.
+ * 
  * @author formalhaunt
  */
 public enum UpdateMethod {

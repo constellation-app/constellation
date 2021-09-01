@@ -99,7 +99,12 @@ public class ExportMenu {
                 EXPORT_CSV_FILE_CHOOSER_TITLE,
                 CSV_EXT,
                 EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
-                (file) -> new ExportToCsvFilePlugin(file, table.getTableView(), tableService.getPagination(), false)
+                file -> new ExportToCsvFilePlugin(
+                        file,
+                        table.getTableView(),
+                        tableService.getPagination(),
+                        false
+                )
         );
         
         exportCsvSelectionMenu = createExportMenu(
@@ -107,7 +112,12 @@ public class ExportMenu {
                 EXPORT_CSV_FILE_CHOOSER_TITLE,
                 CSV_EXT,
                 EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
-                (file) -> new ExportToCsvFilePlugin(file, table.getTableView(), tableService.getPagination(), true)
+                file -> new ExportToCsvFilePlugin(
+                        file,
+                        table.getTableView(),
+                        tableService.getPagination(),
+                        true
+                )
         );
         
         exportExcelMenu = createExportMenu(
@@ -115,7 +125,7 @@ public class ExportMenu {
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
                 XLSX_EXT,
                 EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
-                (file) -> new ExportToExcelFilePlugin(
+                file -> new ExportToExcelFilePlugin(
                         file,
                         table.getTableView(),
                         tableService.getPagination(),
@@ -130,7 +140,7 @@ public class ExportMenu {
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
                 XLSX_EXT,
                 EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
-                (file) -> new ExportToExcelFilePlugin(
+                file -> new ExportToExcelFilePlugin(
                         file, 
                         table.getTableView(), 
                         tableService.getPagination(),
@@ -297,7 +307,6 @@ public class ExportMenu {
          * @return the created file chooser
          */
         public ExportFileChooser getExportFileChooser() {
-            System.out.println("INSIDE GET EXPORT FILE CHOOSER");
             return new ExportFileChooser(
                     fileChooserTitle,
                     expectedFileExtension,

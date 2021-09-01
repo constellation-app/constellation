@@ -59,10 +59,13 @@ public class TableService {
      */
     private final Set<ObservableList<String>> selectedOnlySelectedRows;
     
+    /**
+     * 
+     */
     private TableViewPageFactory pageFactory;
     
     /**
-     * 
+     * A sorted list of all the rows in the table.
      */
     private SortedList<ObservableList<String>> sortedRowList;
     
