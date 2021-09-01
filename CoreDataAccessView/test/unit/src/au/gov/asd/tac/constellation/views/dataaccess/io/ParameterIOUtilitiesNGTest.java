@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -34,6 +33,7 @@ import org.junit.BeforeClass;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -49,19 +49,22 @@ public class ParameterIOUtilitiesNGTest {
     }
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws Exception {
     }
 
     @AfterClass
-    public static void tearDownClass() {
+    public static void tearDownClass() throws Exception {
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.showStage();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        FxToolkit.hideStage();
     }
 
     /**
@@ -70,7 +73,6 @@ public class ParameterIOUtilitiesNGTest {
     @Test
     public void testsaveDataAccessState() throws Exception {
         System.out.println("testsaveDataAccessState");
-        new JFXPanel();
 
         // mock Tab
         final Tab tab = mock(Tab.class);
@@ -113,5 +115,4 @@ public class ParameterIOUtilitiesNGTest {
         verify(wGraph).setObjectValue(0, 0, expectedTab);
 
     }
-
 }
