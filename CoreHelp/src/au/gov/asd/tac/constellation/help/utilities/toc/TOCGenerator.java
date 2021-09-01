@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.help.utilities;
+package au.gov.asd.tac.constellation.help.utilities.toc;
 
 import com.jogamp.common.os.Platform;
 import java.io.File;
@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +53,7 @@ public class TOCGenerator {
             throw new IllegalArgumentException("Null file path used for creation of Table of Contents file");
         }
         try {
-            boolean wasDeleted = Files.deleteIfExists(FileSystems.getDefault().getPath(filePath));
+            final boolean wasDeleted = Files.deleteIfExists(FileSystems.getDefault().getPath(filePath));
             if (wasDeleted) {
                 LOGGER.log(Level.FINE, "Previous Table of Contents file was replaced at: {0}", filePath);
             }
@@ -73,31 +74,16 @@ public class TOCGenerator {
     }
 
     /**
-     * // WARNING THIS IS HARDCODED TEST CODE FOR POC // Remove me once done
-     *
-     * @param xmlFromFile File of XML mappings
-     */
-    public void convertXMLMappingsTEST(final File tocLocation) {
-        final FileWriter writer;
-        try {
-            writer = new FileWriter(toc);
-            convertXMLMappingsHARDCODED(tocLocation, writer);
-            writer.close();
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to write mappings to file", ex);
-        }
-    }
-
-    /**
      * Writes the converted XML mappings to the toc file
      *
      * @param xmlFromFile File of XML mappings
      */
-    public void convertXMLMappings(final File xmlFromFile) {
+    public void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode root) {
         final FileWriter writer;
         try {
             writer = new FileWriter(toc);
-            convertXMLMappings(xmlFromFile, writer);
+            convertXMLMappings(xmlsFromFile, writer, root);
+            writer.close();
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, "Failed to write mappings to file", ex);
         }
@@ -106,16 +92,16 @@ public class TOCGenerator {
     /**
      * Generate a table of contents from the XML mapping file
      */
-    public static void convertXMLMappings(final File xmlFromFile, final FileWriter markdownOutput) {
-        //TOCParser.parse(xmlFromFile);
+    public static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode root) {
+        writeText(markdownOutput, "# Table of Contents");
+        writeText(markdownOutput, Platform.NEWLINE);
+        writeText(markdownOutput, Platform.NEWLINE);
 
-        // TODO: Implement this
-        // open the file
-        // parse using xml parser
-        // loop each entry
-        // if <tocitem> then check if text val exists
-        // if exists then set text to parent
-        // read more entries and place under child
+        // Parse XML to tree structure
+        xmlsFromFile.forEach(file -> TOCParser.parse(file, root));
+
+        // Write tree structure to the output
+        TreeNode.writeTree(root, markdownOutput, 0);
     }
 
     /**
@@ -165,11 +151,13 @@ public class TOCGenerator {
         writeText(markdownWriter, Platform.NEWLINE);
         writeItem(markdownWriter, generateLink("Layers View", ".\\CoreLayersView\\src\\au\\gov\\asd\\tac\\constellation\\views\\layers\\docs\\layers-view.md"), 2);
         writeText(markdownWriter, Platform.NEWLINE);
-
     }
 
     /**
      * Generate a markdown style link from a title and a url
+     *
+     * @param title the @String title to include as the links title
+     * @param url the url to link to
      */
     public static String generateLink(final String title, final String url) {
         final StringBuilder sb = new StringBuilder();
@@ -218,6 +206,15 @@ public class TOCGenerator {
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, "Failed to write to file", ex);
         }
+    }
+
+    /**
+     * Add default content pages here, this will be hard-coded for now.
+     *
+     * @param root the root toc element to add the items to.
+     */
+    public static void addDefaultContents(final TreeNode root) {
+        // TODO: This section can be used to add default contents not within providers.
     }
 
 }

@@ -16,14 +16,17 @@
 package au.gov.asd.tac.constellation.help.utilities;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import au.gov.asd.tac.constellation.help.utilities.toc.TOCGenerator;
+import au.gov.asd.tac.constellation.help.utilities.toc.TOCItem;
+import au.gov.asd.tac.constellation.help.utilities.toc.TreeNode;
 import java.io.File;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import org.openide.util.Lookup;
-import org.openide.util.NbPreferences;
 import org.openide.windows.OnShowing;
 
 /**
- * Generates help file mappings
+ * Generates help file mappings and creates application-wide table of contents
  *
  * @author aldebaran30701
  */
@@ -32,12 +35,6 @@ public class Generator implements Runnable {
 
     @Override
     public void run() {
-        var prefs = NbPreferences.forModule(Generator.class);
-        prefs.put("onlineHelp", "true");
-
-        // Get mappings of help pages
-        final Map<String, String> mappings = HelpMapper.getMappings();
-
         // Get the current directory and make the file within the help module.
         final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
@@ -47,22 +44,21 @@ public class Generator implements Runnable {
         // Create TOCGenerator with the location of the resources file
         final TOCGenerator tocGenerator = new TOCGenerator(tocPath);
 
-        // Loop all providers and generate Application-wide TOC based on each modules TOC
+        // Create the root node for application-wide table of contents
+        final TreeNode root = new TreeNode(new TOCItem("Help", ""));
+
+        // Add default contents pages to the root level
+        TOCGenerator.addDefaultContents(root);
+
+        // Loop all providers and add files to the tocXMLFiles list
+        final List<File> tocXMLFiles = new ArrayList<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
-            final File tocXMLFile = new File(provider.getHelpTOC());
-            tocGenerator.convertXMLMappings(tocXMLFile);
+            tocXMLFiles.add(new File(provider.getHelpTOC()));
         });
 
-        // Generate .md file from hardcoded writes
-        // TODO: Remove this test code and uncomment below.
-        //tocGenerator.convertXMLMappingsTEST();
-        // Uncomment this when implemented
-        // address must locate the *-toc.xml file for each module
-        // file must be of that address
-        // tocGenerator will read that file and generate a markdown represenation of it
-        //final String exampleXMLFileAddress = ".\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\docs\\analyticview-toc.xml";
-        //final File exampleXMLFile = new File(exampleXMLFileAddress);
-        //tocGenerator.convertXMLMappings(exampleXMLFile);
+        // Generate Application-wide TOC based on each modules TOC
+        // Stores it within the root TreeNode
+        tocGenerator.convertXMLMappings(tocXMLFiles, root);
     }
 
 }

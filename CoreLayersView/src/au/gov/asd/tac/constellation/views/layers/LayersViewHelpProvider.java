@@ -69,6 +69,7 @@ public class LayersViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
+        map.put("au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent", "au.gov.asd.tac.constellation.views.layers.docs.layers-view.md");
         return map;
     }
 
