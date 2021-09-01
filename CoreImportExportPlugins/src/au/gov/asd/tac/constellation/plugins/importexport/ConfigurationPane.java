@@ -191,7 +191,7 @@ public class ConfigurationPane extends AnchorPane {
      * @return A List&lt;ImportDefinition&gt; where each list element
      * corresponds to a RunPane tab.
      */
-    public List<ImportDefinition> createDefinitions(boolean isFilesIncludeHeadersEnabled) {
+    public List<ImportDefinition> createDefinitions(final boolean isFilesIncludeHeadersEnabled) {
         List<ImportDefinition> definitions = new ArrayList<>(tabPane.getTabs().size());
 
         for (Tab tab : tabPane.getTabs()) {

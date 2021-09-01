@@ -372,7 +372,7 @@ public abstract class ImportController<D> {
      * @return A List&lt;ImportDefinition&gt; where each list element
      * corresponds to a RunPane tab.
      */
-    public List<ImportDefinition> getDefinitions(boolean isFilesIncludeHeadersEnabled) {
+    public List<ImportDefinition> getDefinitions(final boolean isFilesIncludeHeadersEnabled) {
         return configurationPane.createDefinitions(isFilesIncludeHeadersEnabled);
     }
 

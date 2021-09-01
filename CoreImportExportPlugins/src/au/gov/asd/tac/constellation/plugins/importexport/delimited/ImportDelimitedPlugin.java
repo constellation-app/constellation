@@ -104,7 +104,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
         final PluginParameter<BooleanParameterValue> schemaParam = BooleanParameterType.build(SCHEMA_PARAMETER_ID);
         schemaParam.setName("Complete with Schema");
-        schemaParam.setDescription("True if the graph should run the schema rules, default is True");
+        schemaParam.setDescription("True if the graph should run the schema rules");
         schemaParam.setBooleanValue(true);
         params.addParameter(schemaParam);
 
@@ -114,8 +114,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         params.addParameter(parserParameters);
 
         final PluginParameter<BooleanParameterValue> filesIncludeHeadersParam = BooleanParameterType.build(FILES_INCLUDE_HEADERS_PARAMETER_ID);
-        filesIncludeHeadersParam.setName("files Include Headers");
-        filesIncludeHeadersParam.setDescription("True if the files include headers in the first row, default is True");
+        filesIncludeHeadersParam.setName("Files Include Headers");
+        filesIncludeHeadersParam.setDescription("True if the files include headers in the first row");
         filesIncludeHeadersParam.setBooleanValue(true);
         params.addParameter(filesIncludeHeadersParam);
 
@@ -181,9 +181,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final List<File> files = (List<File>) parameters.getParameters().get(FILES_PARAMETER_ID).getObjectValue();
         @SuppressWarnings("unchecked") //definitions will be a list of import defintions which extends from object type
         final List<ImportDefinition> definitions = (List<ImportDefinition>) parameters.getParameters().get(DEFINITIONS_PARAMETER_ID).getObjectValue();
-        final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
+        final boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
         final PluginParameters parserParameters = (PluginParameters) parameters.getParameters().get(PARSER_PARAMETER_IDS_PARAMETER_ID).getObjectValue();
-        final Boolean filesIncludeHeaders = parameters.getParameters().get(FILES_INCLUDE_HEADERS_PARAMETER_ID).getBooleanValue();
+        final boolean filesIncludeHeaders = parameters.getParameters().get(FILES_INCLUDE_HEADERS_PARAMETER_ID).getBooleanValue();
         final List<Integer> newVertices = new ArrayList<>();
         boolean positionalAtrributesExist = false;
         final List<String> validFiles = new ArrayList<>();
