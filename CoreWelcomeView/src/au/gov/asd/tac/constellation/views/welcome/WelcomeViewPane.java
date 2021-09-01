@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.Rece
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.io.File;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -36,6 +35,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -47,7 +47,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
@@ -236,6 +235,9 @@ public class WelcomeViewPane extends BorderPane {
         button.setStyle("-fx-background-color: #333333; -fx-background-radius: 10px; -fx-text-fill: white;");
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
+        button.setWrapText(true);
+        Tooltip toolTip = new Tooltip("hello");
+        button.setTooltip(toolTip);
     }
 
     public void setInfoButtons(final Button button) {
