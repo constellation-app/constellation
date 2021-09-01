@@ -20,9 +20,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -287,8 +287,8 @@ public class TableServiceNGTest {
                                                              final TableViewState originalTableViewState,
                                                              final List<Tuple<String, Attribute>> expectedColumnAttributes) {
         return (InvocationOnMock mockInvocation) -> {
-            final TableViewUtilities.UpdateStatePlugin updateStatePlugin
-                    = (TableViewUtilities.UpdateStatePlugin) mockInvocation.getArgument(0);
+            final UpdateStatePlugin updateStatePlugin
+                    = (UpdateStatePlugin) mockInvocation.getArgument(0);
             
             // This table state should be a copy
             assertNotSame(originalTableViewState, updateStatePlugin.getTableViewState());

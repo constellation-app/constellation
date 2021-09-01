@@ -21,9 +21,8 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
-import au.gov.asd.tac.constellation.views.tableview2.components.PreferencesMenu;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
@@ -62,6 +61,9 @@ public class TableService {
     
     private TableViewPageFactory pageFactory;
     
+    /**
+     * 
+     */
     private SortedList<ObservableList<String>> sortedRowList;
     
     /**
@@ -78,7 +80,7 @@ public class TableService {
     /**
      * This flag is shared by listeners that respond to sort change events on
      * the table. This flag is to ensure that multiple pagination updates do not
-     * happen if multiple sort event occur in close succession.
+     * happen if multiple sort events occur in close succession.
      */    
     private volatile boolean sortingListenerActive = false;
     
@@ -185,7 +187,7 @@ public class TableService {
 
             newState.setColumnAttributes(newColumnAttributes);
             PluginExecution.withPlugin(
-                    new TableViewUtilities.UpdateStatePlugin(newState)
+                    new UpdateStatePlugin(newState)
             ).executeLater(graph);
         }
     }

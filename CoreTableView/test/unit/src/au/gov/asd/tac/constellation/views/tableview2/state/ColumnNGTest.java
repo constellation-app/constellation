@@ -15,10 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.state;
 
+import au.gov.asd.tac.constellation.graph.GraphAttribute;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import static org.testng.AssertJUnit.assertNull;
+import static org.testng.AssertJUnit.assertSame;
 import org.testng.annotations.Test;
 
 /**
@@ -26,6 +30,28 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ColumnNGTest {
+    
+    @Test
+    public void init() {
+        final Column column = new Column();
+        
+        assertNull(column.getAttributeNamePrefix());
+        assertNull(column.getAttribute());
+        assertNull(column.getTableColumn());
+        
+        final String prefix = "source.";
+        final GraphAttribute attribute = new GraphAttribute(GraphElementType.VERTEX, "string",
+                "COLUMN_A", "Describes all things A's");
+        final TableColumn tableColumn = new TableColumn<>("source.COLUMN_A");
+        
+        column.setAttributeNamePrefix(prefix);
+        column.setAttribute(attribute);
+        column.setTableColumn(tableColumn);
+        
+        assertSame(prefix, column.getAttributeNamePrefix());
+        assertSame(attribute, column.getAttribute());
+        assertSame(tableColumn, column.getTableColumn());
+    }
     
     @Test
     public void equality() {

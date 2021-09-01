@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
@@ -364,15 +365,15 @@ public class TableToolbarNGTest {
 
             when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
 
-            final ArgumentCaptor<TableViewUtilities.UpdateStatePlugin> captor
-                    = ArgumentCaptor.forClass(TableViewUtilities.UpdateStatePlugin.class);
+            final ArgumentCaptor<UpdateStatePlugin> captor
+                    = ArgumentCaptor.forClass(UpdateStatePlugin.class);
             
             pluginExecutionMockedStatic.when(() -> PluginExecution
                     .withPlugin(captor.capture())).thenReturn(pluginExecution);
             
             tableToolbar.getSelectedOnlyButton().getOnAction().handle(actionEvent);
             
-            final TableViewUtilities.UpdateStatePlugin updatePlugin = captor.getValue();
+            final UpdateStatePlugin updatePlugin = captor.getValue();
             
             final ImageView buttonIcon = (ImageView) tableToolbar.getSelectedOnlyButton().getGraphic();
             assertTrue(isImageEqual(expectedNewIcon, buttonIcon.getImage()));
@@ -407,15 +408,15 @@ public class TableToolbarNGTest {
 
             when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
 
-            final ArgumentCaptor<TableViewUtilities.UpdateStatePlugin> captor
-                    = ArgumentCaptor.forClass(TableViewUtilities.UpdateStatePlugin.class);
+            final ArgumentCaptor<UpdateStatePlugin> captor
+                    = ArgumentCaptor.forClass(UpdateStatePlugin.class);
             
             pluginExecutionMockedStatic.when(() -> PluginExecution
                     .withPlugin(captor.capture())).thenReturn(pluginExecution);
             
             tableToolbar.getElementTypeButton().getOnAction().handle(actionEvent);
             
-            final TableViewUtilities.UpdateStatePlugin updatePlugin = captor.getValue();
+            final UpdateStatePlugin updatePlugin = captor.getValue();
             
             final ImageView buttonIcon = (ImageView) tableToolbar.getElementTypeButton().getGraphic();
             assertTrue(isImageEqual(expectedNewIcon, buttonIcon.getImage()));

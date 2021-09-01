@@ -27,11 +27,8 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -49,6 +46,7 @@ import javafx.scene.layout.BorderPane;
  * @author antares
  */
 public final class TableViewPane extends BorderPane {
+    private final TableViewTopComponent tableTopComponent;
     private final Table table;
     private final TableToolbar tableToolbar;
     private final ProgressBar progressBar;
@@ -61,8 +59,7 @@ public final class TableViewPane extends BorderPane {
     private final ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
     private final ChangeListener<? super TableColumn.SortType> tableSortTypeListener;
 
-    private final ScheduledExecutorService scheduledExecutorService;
-    private ScheduledFuture<?> scheduledFuture;
+    private Future<?> future;
 
     /**
      * Creates a new pane with a Constellation Table initialized within it.
@@ -70,7 +67,7 @@ public final class TableViewPane extends BorderPane {
      * @param tableTopComponent the top component for the table plugin
      */
     public TableViewPane(final TableViewTopComponent tableTopComponent) {
-        this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        this.tableTopComponent = tableTopComponent;
         
         final SortedList<ObservableList<String>> sortedRowList
                 = new SortedList<>(FXCollections.observableArrayList());
@@ -136,11 +133,11 @@ public final class TableViewPane extends BorderPane {
      * @param state the current table view state
      */
     public void updateTable(final Graph graph, final TableViewState state) {
-        if (scheduledFuture != null) {
-            scheduledFuture.cancel(true);
+        if (future != null) {
+            future.cancel(true);
         }
 
-        scheduledFuture = scheduledExecutorService.schedule(() -> {
+        future = getTableTopComponent().getExecutorService().submit(() -> {
             getTableToolbar().updateToolbar(state);
             if (graph != null) {
                 getTable().updateColumns(graph, state, getTableSelectionListener(), getSelectedOnlySelectionListener());
@@ -150,7 +147,7 @@ public final class TableViewPane extends BorderPane {
             } else {
                 Platform.runLater(() -> getTable().getTableView().getColumns().clear());
             }
-        }, 0, TimeUnit.MILLISECONDS);
+        });
     }
 
     /**
@@ -226,14 +223,14 @@ public final class TableViewPane extends BorderPane {
     }
 
     /**
-     * A scheduled future representing the future status of the table based on the
+     * A future representing the future status of the table based on the
      * latest call to {@link #updateTable(Graph, TableViewState)}. If the table has
      * not yet been updated, then it will return null.
      *
      * @return the current future or null if the table has not been updated
      */
-    public ScheduledFuture<?> getScheduledFuture() {
-        return scheduledFuture;
+    public Future<?> getFuture() {
+        return future;
     }
 
     /**
@@ -243,5 +240,9 @@ public final class TableViewPane extends BorderPane {
      */
     public TableToolbar getTableToolbar() {
         return tableToolbar;
+    }
+
+    public TableViewTopComponent getTableTopComponent() {
+        return tableTopComponent;
     }
 }

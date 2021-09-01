@@ -26,14 +26,21 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.UpdateStatePlugin;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.SelectionToGraphPlugin;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewConcept;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateTableDataTask;
+import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateTableSelectionTask;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -74,6 +81,8 @@ import org.openide.windows.TopComponent;
 })
 public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPane> {
 
+    private final ExecutorService executorService = Executors.newScheduledThreadPool(1);
+    
     private TableViewState currentState;
     private final TableViewPane pane;
     private final Set<AttributeValueMonitor> columnAttributeMonitors;
@@ -95,14 +104,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             if (!needsUpdate()) {
                 return;
             }
-            final Thread thread = new Thread(UPDATE_DATA) {
-                @Override
-                public void run() {
-                    pane.getTable().updateData(graph, currentState, pane.getProgressBar(),
-                            pane.getTableSelectionListener(), pane.getSelectedOnlySelectionListener());
-                }
-            };
-            thread.start();
+            executorService.submit(new UpdateTableDataTask(pane, graph, getCurrentState()));
         });
 
         addAttributeCountChangeHandler(graph -> {
@@ -115,24 +117,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             if (needsUpdate() && currentState != null
                     && currentState.getElementType() == GraphElementType.VERTEX) {
                 if (currentState.isSelectedOnly()) {
-                    final Thread thread = new Thread(UPDATE_DATA) {
-                        @Override
-                        public void run() {
-                            pane.getTable().updateData(graph, currentState,
-                                    pane.getProgressBar(), pane.getTableSelectionListener(),
-                                    pane.getSelectedOnlySelectionListener());
-                        }
-                    };
-                    thread.start();
+                    executorService.submit(new UpdateTableDataTask(pane, graph, getCurrentState()));
                 } else {
-                    final Thread thread = new Thread(UPDATE_SELECTION) {
-                        @Override
-                        public void run() {
-                            pane.getTable().updateSelection(graph, currentState,
-                                    pane.getTableSelectionListener(), pane.getSelectedOnlySelectionListener());
-                        }
-                    };
-                    thread.start();
+                    executorService.submit(new UpdateTableSelectionTask(pane, graph, getCurrentState()));
                 }
             }
         });
@@ -140,89 +127,38 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
             if (needsUpdate() && currentState != null 
                     && currentState.getElementType() == GraphElementType.TRANSACTION) {
-                final Thread thread;
                 if (currentState.isSelectedOnly()) {
-                    thread = new Thread(UPDATE_DATA) {
-                        @Override
-                        public void run() {
-                            pane.getTable().updateData(graph, currentState,
-                                    pane.getProgressBar(), pane.getTableSelectionListener(),
-                                    pane.getSelectedOnlySelectionListener());
-                        }
-                    };
-                    thread.start();
+                    executorService.submit(new UpdateTableDataTask(pane, graph, getCurrentState()));
                 } else {
-                    thread = new Thread(UPDATE_SELECTION) {
-                        @Override
-                        public void run() {
-                            pane.getTable().updateSelection(graph, currentState,
-                                    pane.getTableSelectionListener(), pane.getSelectedOnlySelectionListener());
-                        }
-                    };
-                    thread.start();
+                    executorService.submit(new UpdateTableSelectionTask(pane, graph, getCurrentState()));
                 }
             }
         });
 
         addAttributeValueChangeHandler(TableViewConcept.MetaAttribute.TABLE_VIEW_STATE, graph -> {
-            if (!needsUpdate()) {
-                return;
-            }
-            final TableViewState previousState = currentState;
-            updateState(graph);
-            final Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> columnAttributeChanges
-                    = getColumnAttributeChanges(previousState, currentState);
-
-            if (columnAttributeMonitors != null && !columnAttributeChanges.getFirst().isEmpty()) {
-                final Set<AttributeValueMonitor> removeMonitors = columnAttributeMonitors.stream()
-                        .filter(monitor -> columnAttributeChanges.getFirst().stream()
-                        .anyMatch(columnAttributeTuple
-                                -> columnAttributeTuple.getSecond().getElementType() == monitor.getElementType()
-                        && columnAttributeTuple.getSecond().getName().equals(monitor.getName()))
-                        ).collect(Collectors.toSet());
-
-                removeMonitors.forEach(monitor -> {
-                    removeAttributeValueChangeHandler(monitor);
-                    columnAttributeMonitors.remove(monitor);
-                });
-            }
-
-            pane.updateTable(graph, currentState);
-
-            if (currentState != null && currentState.getColumnAttributes() != null 
-                    && !columnAttributeChanges.getSecond().isEmpty()) {
-                columnAttributeChanges.getSecond().forEach(attributeTuple -> {
-                    columnAttributeMonitors.add(addAttributeValueChangeHandler(
-                            attributeTuple.getSecond().getElementType(),
-                            attributeTuple.getSecond().getName(),
-                            g -> {
-                                final Thread dataUpdateThread = new Thread(UPDATE_DATA) {
-                                @Override
-                                public void run() {
-                                    pane.getTable().updateData(g, currentState,
-                                            pane.getProgressBar(), pane.getTableSelectionListener(),
-                                            pane.getSelectedOnlySelectionListener());
-                                }
-                            };
-                                dataUpdateThread.start();
-                            }));
-                });
-            }
+            handleNewGraph(graph);
         });
 
-        addIgnoredEvent(TableViewUtilities.SELECT_ON_GRAPH_PLUGIN);
+        addIgnoredEvent(SelectionToGraphPlugin.SELECT_ON_GRAPH_PLUGIN);
     }
 
-    public void showSelected(final GraphElementType elementType, final int elementId) {
-        final TableViewState stateSnapshot = currentState;
+    /**
+     * 
+     * @param elementType
+     * @param elementId 
+     */
+    public Future<?> showSelected(final GraphElementType elementType, final int elementId) {
+        final TableViewState stateSnapshot = getCurrentState();
         final Future<?> stateLock;
-        if (currentState != null && currentState.getElementType() != elementType) {
-            final TableViewState newState = new TableViewState(currentState);
+        
+        if (getCurrentState() != null && getCurrentState().getElementType() != elementType) {
+            final TableViewState newState = new TableViewState(getCurrentState());
             newState.setElementType(elementType);
             newState.setSelectedOnly(true);
+            
             stateLock = PluginExecution.withPlugin(
-                    new TableViewUtilities.UpdateStatePlugin(newState)
-            ).executeLater(currentGraph);
+                    new UpdateStatePlugin(newState)
+            ).executeLater(getCurrentGraph());
         } else {
             stateLock = null;
         }
@@ -237,10 +173,8 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             }
         }
 
-        final Thread thread = new Thread(UPDATE_SELECTION) {
-            @Override
-            public void run() {
-                while (stateLock != null && currentState == stateSnapshot) {
+        return getExecutorService().submit(() -> {
+                while (stateLock != null && getCurrentState() == stateSnapshot) {
                     try {
                         // TODO: remove sleep
                         // ...but there is an async issue which needs to be
@@ -260,65 +194,85 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                         Thread.currentThread().interrupt();
                     }
                 }
-                pane.getTable().updateSelection(currentGraph, currentState,
-                        pane.getTableSelectionListener(), pane.getSelectedOnlySelectionListener());
-            }
-        };
-        thread.start();
+                getTablePane().getTable().updateSelection(getCurrentGraph(), getCurrentState(),
+                        getTablePane().getTableSelectionListener(), getTablePane().getSelectedOnlySelectionListener());
+        });
     }
 
     /**
      * Get the current table view state.
+     * 
+     * @return the current table state
      */
     public TableViewState getCurrentState() {
         return currentState;
     }
-
+    
     /**
-     * Calculates the intersection of the column attributes for old and new
-     * {@link TableViewState} objects, and returns a {@link Tuple} of the column
-     * attributes only present in the old state (that is, those removed in the
-     * transition to the new state) and the attributes only present in the new
-     * state (that is, those added in the transition to the new state).
+     * Gets the table pane.
      *
-     * @param oldState a {@link TableViewState} representing the old state
-     * @param newState a {@link TableViewState} representing the new state
-     * @return a {@link Tuple} containing the column attributes which have been
-     * removed and the column attributes which have been added in the transition
-     * from the old state to the new state
+     * @return the table pane
      */
-    private Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> getColumnAttributeChanges(final TableViewState oldState, final TableViewState newState) {
-        final Set<Tuple<String, Attribute>> removedColumnAttributes;
-        if (oldState != null && oldState.getColumnAttributes() != null) {
-            removedColumnAttributes = new HashSet<>(oldState.getColumnAttributes());
-        } else {
-            removedColumnAttributes = new HashSet<>();
-        }
-
-        final Set<Tuple<String, Attribute>> addedColumnAttributes;
-        if (newState != null && newState.getColumnAttributes() != null) {
-            addedColumnAttributes = new HashSet<>(newState.getColumnAttributes());
-        } else {
-            addedColumnAttributes = new HashSet<>();
-        }
-
-        final Set<Tuple<String, Attribute>> intersection = new HashSet<>(removedColumnAttributes);
-        intersection.retainAll(addedColumnAttributes);
-        removedColumnAttributes.removeAll(intersection);
-        addedColumnAttributes.removeAll(intersection);
-
-        return Tuple.create(removedColumnAttributes, addedColumnAttributes);
+    public TableViewPane getTablePane() {
+        return pane;
+    }
+    
+    /**
+     * Gets the tables executor service for running various update tasks.
+     *
+     * @return the tables executor service
+     */
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+    
+    /**
+     * Get column attributes that were present in the old state but not in the
+     * new one.
+     *
+     * @param oldState the old table state
+     * @param newState the new table state
+     * @return a set of column attributes that are present in the old state but
+     *     not the new one
+     */
+    protected Set<Tuple<String, Attribute>> getRemovedAttributes(final TableViewState oldState,
+                                                                 final TableViewState newState) {
+        return new HashSet<>(
+                CollectionUtils.subtract(
+                        oldState.getColumnAttributes(),
+                        newState.getColumnAttributes()
+                )
+        );
+    }
+    
+    /**
+     * Get column attributes that were not present in the old state but are present
+     * in the new state.
+     *
+     * @param oldState the old table state
+     * @param newState the new table state
+     * @return a set of column attributes that were not present in the old state
+     *     but are present in the new state
+     */
+    protected Set<Tuple<String, Attribute>> getAddedAttributes(final TableViewState oldState,
+                                                               final TableViewState newState) {
+        return new HashSet<>(
+                CollectionUtils.subtract(
+                        newState.getColumnAttributes(),
+                        oldState.getColumnAttributes()
+                )
+        );
     }
 
     /**
-     * Update the current TableViewState for the given graph, including creating
-     * one if none exists.
-     *
-     * @param graph the state will be read from the graph using this read lock.
-     * @return the current TableViewState of the given graph.
-     * @throws InterruptedException if the operation is interrupted or canceled.
+     * Update the current table state with the table state stored in the passed
+     * graph attributes. If a table state does not exist in the graph attribute
+     * then it will crate and new state and set it to the current state in
+     * the table.
+     * 
+     * @param graph the graph that the new state will be extracted from
      */
-    private void updateState(final Graph graph) {
+    protected void updateState(final Graph graph) {
         TableViewState state = null;
         boolean newState = false;
 
@@ -340,7 +294,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 }
 
                 if (newState) {
-                    PluginExecution.withPlugin(new UpdateStatePlugin(state)).executeLater(currentGraph);
+                    PluginExecution.withPlugin(
+                            new UpdateStatePlugin(state)
+                    ).executeLater(getCurrentGraph());
                 }
             } finally {
                 readableGraph.release();
@@ -371,18 +327,25 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         if (!needsUpdate()) {
             return;
         }
+        
         final TableViewState previousState = currentState;
+        
         updateState(graph);
-        final Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> columnAttributeChanges 
-                = getColumnAttributeChanges(previousState, currentState);
+        
+        final Set<Tuple<String, Attribute>> removedColumnAttributes
+                = getRemovedAttributes(previousState, currentState);
+        final Set<Tuple<String, Attribute>> addedColumnAttributes
+                = getAddedAttributes(previousState, currentState);
 
-        if (columnAttributeMonitors != null && !columnAttributeChanges.getFirst().isEmpty()) {
+        if (columnAttributeMonitors != null && !removedColumnAttributes.isEmpty()) {
             final Set<AttributeValueMonitor> removeMonitors = columnAttributeMonitors.stream()
-                    .filter(monitor -> columnAttributeChanges.getFirst().stream()
-                    .anyMatch(columnAttributeTuple
-                            -> columnAttributeTuple.getSecond().getElementType() == monitor.getElementType()
-                    && columnAttributeTuple.getSecond().getName().equals(monitor.getName()))
-                    ).collect(Collectors.toSet());
+                    .filter(monitor -> removedColumnAttributes.stream()
+                            .anyMatch(columnAttributeTuple -> 
+                                    columnAttributeTuple.getSecond().getElementType() == monitor.getElementType()
+                                            && columnAttributeTuple.getSecond().getName().equals(monitor.getName())
+                            )
+                    )
+                    .collect(Collectors.toSet());
 
             removeMonitors.forEach(monitor -> {
                 removeAttributeValueChangeHandler(monitor);
@@ -393,30 +356,26 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         pane.updateTable(graph, currentState);
 
         if (currentState != null && currentState.getColumnAttributes() != null 
-                && !columnAttributeChanges.getSecond().isEmpty()) {
-            columnAttributeChanges.getSecond().forEach(attributeTuple -> {
-                columnAttributeMonitors.add(addAttributeValueChangeHandler(
-                        attributeTuple.getSecond().getElementType(),
-                        attributeTuple.getSecond().getName(),
-                        g -> {
-                            final Thread dataUpdateThread = new Thread(UPDATE_DATA) {
-                        @Override
-                        public void run() {
-                            pane.getTable().updateData(g, currentState,
-                                    pane.getProgressBar(), pane.getTableSelectionListener(),
-                                    pane.getSelectedOnlySelectionListener());
-                        }
-                    };
-                            dataUpdateThread.start();
-                        }));
-            });
+                && !addedColumnAttributes.isEmpty()) {
+            addedColumnAttributes.forEach(attributeTuple ->
+                columnAttributeMonitors.add(
+                        addAttributeValueChangeHandler(
+                                attributeTuple.getSecond().getElementType(),
+                                attributeTuple.getSecond().getName(),
+                                g -> executorService.submit(new UpdateTableDataTask(pane, g, getCurrentState()))
+                        )
+                )
+            );
         }
     }
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
-        pane.getTableService().updatePagination(
-                pane.getTableService().getTablePreferences().getMaxRowsPerPage(), null);
+        getTablePane().getTableService().updatePagination(
+                getTablePane().getTableService().getTablePreferences().getMaxRowsPerPage(), null);
+        Platform.runLater(() -> {
+            getTablePane().setCenter(getTablePane().getTableService().getPagination());
+        });
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

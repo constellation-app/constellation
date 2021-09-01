@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import javafx.application.Platform;
@@ -122,7 +122,7 @@ public class TableToolbar {
                 );
                 
                 PluginExecution.withPlugin(
-                        new TableViewUtilities.UpdateStatePlugin(newState)
+                        new UpdateStatePlugin(newState)
                 ).executeLater(tableTopComponent.getCurrentGraph());
             }
             
@@ -143,7 +143,7 @@ public class TableToolbar {
                 );
                 
                 PluginExecution.withPlugin(
-                        new TableViewUtilities.UpdateStatePlugin(newState)
+                        new UpdateStatePlugin(newState)
                 ).executeLater(tableTopComponent.getCurrentGraph());
             }
             
