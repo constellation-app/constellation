@@ -15,10 +15,20 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToCsvFilePlugin;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToExcelFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import java.io.File;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
@@ -33,10 +43,20 @@ import javafx.scene.image.ImageView;
  * @author formalhaunt
  */
 public class ExportMenu {
+    private static final Logger LOGGER = Logger.getLogger(ExportMenu.class.getName());
+    
     private static final String EXPORT_CSV = "Export to CSV";
     private static final String EXPORT_CSV_SELECTION = "Export to CSV (Selection)";
     private static final String EXPORT_XLSX = "Export to Excel";
     private static final String EXPORT_XLSX_SELECTION = "Export to Excel (Selection)";
+    
+    private static final String EXPORT_CSV_FILE_CHOOSER_TITLE = "Export To CSV";
+    private static final String EXPORT_XLSX_FILE_CHOOSER_TITLE = "Export To XLSX";
+    private static final String CSV_EXT = ".csv";
+    private static final String XLSX_EXT = ".xlsx";
+    
+    private static final String EXPORT_CSV_FILE_CHOOSER_DESCRIPTION = "CSV files (*" + CSV_EXT + ")";
+    private static final String EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION = "Excel files (*" + XLSX_EXT + ")";
     
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
     
@@ -73,18 +93,53 @@ public class ExportMenu {
      */
     public void init() {
         exportButton = createMenuButton(EXPORT_ICON);
-        exportCsvMenu = createExportMenu(EXPORT_CSV, ()
-                -> TableViewUtilities.exportToCsv(table.getTableView(), tableService.getPagination(), false));
-        exportCsvSelectionMenu = createExportMenu(EXPORT_CSV_SELECTION, ()
-                -> TableViewUtilities.exportToCsv(table.getTableView(), tableService.getPagination(), true));
-        exportExcelMenu = createExportMenu(EXPORT_XLSX, ()
-                -> TableViewUtilities.exportToExcel(table.getTableView(), tableService.getPagination(),
-                        tableService.getTablePreferences().getMaxRowsPerPage(), false,
-                        tableTopComponent.getCurrentGraph().getId()));
-        exportExcelSelectionMenu = createExportMenu(EXPORT_XLSX_SELECTION, ()
-                -> TableViewUtilities.exportToExcel(table.getTableView(), tableService.getPagination(),
-                        tableService.getTablePreferences().getMaxRowsPerPage(), true,
-                        tableTopComponent.getCurrentGraph().getId()));
+        
+        exportCsvMenu = createExportMenu(
+                EXPORT_CSV,
+                EXPORT_CSV_FILE_CHOOSER_TITLE,
+                CSV_EXT,
+                EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
+                (file) -> new ExportToCsvFilePlugin(file, table.getTableView(), tableService.getPagination(), false)
+        );
+        
+        exportCsvSelectionMenu = createExportMenu(
+                EXPORT_CSV_SELECTION,
+                EXPORT_CSV_FILE_CHOOSER_TITLE,
+                CSV_EXT,
+                EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
+                (file) -> new ExportToCsvFilePlugin(file, table.getTableView(), tableService.getPagination(), true)
+        );
+        
+        exportExcelMenu = createExportMenu(
+                EXPORT_XLSX,
+                EXPORT_XLSX_FILE_CHOOSER_TITLE,
+                XLSX_EXT,
+                EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
+                (file) -> new ExportToExcelFilePlugin(
+                        file,
+                        table.getTableView(),
+                        tableService.getPagination(),
+                        tableService.getTablePreferences().getMaxRowsPerPage(),
+                        false,
+                        tableTopComponent.getCurrentGraph().getId()
+                )
+        );
+        
+        exportExcelSelectionMenu = createExportMenu(
+                EXPORT_XLSX_SELECTION,
+                EXPORT_XLSX_FILE_CHOOSER_TITLE,
+                XLSX_EXT,
+                EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
+                (file) -> new ExportToExcelFilePlugin(
+                        file, 
+                        table.getTableView(), 
+                        tableService.getPagination(),
+                        tableService.getTablePreferences().getMaxRowsPerPage(),
+                        true,
+                        tableTopComponent.getCurrentGraph().getId()
+                )
+        );
+        
         exportButton.getItems().addAll(exportCsvMenu, exportCsvSelectionMenu,
                 exportExcelMenu, exportExcelSelectionMenu);
     }
@@ -156,15 +211,23 @@ public class ExportMenu {
      * handler to a new {@link ExportMenuItemActionHandler}.
      *
      * @param menuTitle the title to put on the menu item
-     * @param runnable the {@link Runnable} that will be executed when the menu
-     *     item is selected. This will contain code to perform the export.
+     * @param fileChooserTitle the title that will be on the export file chooser dialog
+     * @param expectedFileExtension the file extension the file chooser will save
+     * @param fileChooserDescription the description that will be on the
+     *     export file chooser dialog
+     * @param exportPluginCreator a function that creates an export plugin
+     *     that will write to the passed file
      * @return the created menu item 
      */
     private MenuItem createExportMenu(final String menuTitle,
-                                      final Runnable runnable) {
+                                      final String fileChooserTitle,
+                                      final String expectedFileExtension,
+                                      final String fileChooserDescription,
+                                      final Function<File, Plugin> exportPluginCreator) {
         final MenuItem menuItem = new MenuItem(menuTitle);
         
-        menuItem.setOnAction(new ExportMenuItemActionHandler(runnable));
+        menuItem.setOnAction(new ExportMenuItemActionHandler(
+                fileChooserTitle, expectedFileExtension, fileChooserDescription, exportPluginCreator));
         
         return menuItem;
     }
@@ -173,20 +236,36 @@ public class ExportMenu {
      * Action handler for menu items that will export table rows to either CSV or Excel.
      */
     class ExportMenuItemActionHandler implements EventHandler<ActionEvent> {
-        private final Runnable runnable;
+        private final String fileChooserTitle;
+        private final String expectedFileExtension;
+        private final String fileChooserDescription;
+        private final Function<File, Plugin> exportPluginCreator;
         
         /**
          * Creates a new export menu item action handler.
          *
-         * @param runnable the runnable to execute when this handler is activated
+         * @param fileChooserTitle the title that will be on the export file chooser dialog
+         * @param expectedFileExtension the file extension the file chooser will save
+         * @param fileChooserDescription the description that will be on the
+         *     export file chooser dialog
+         * @param exportPluginCreator a function that creates an export plugin
+         *     that will write to the passed file
          */
-        public ExportMenuItemActionHandler(final Runnable runnable) {
-            this.runnable = runnable;
+        public ExportMenuItemActionHandler(final String fileChooserTitle,
+                                           final String expectedFileExtension,
+                                           final String fileChooserDescription,
+                                           final Function<File, Plugin> exportPluginCreator) {
+            this.fileChooserTitle = fileChooserTitle;
+            this.expectedFileExtension = expectedFileExtension;
+            this.fileChooserDescription = fileChooserDescription;
+            this.exportPluginCreator = exportPluginCreator;
         }
         
         /**
-         * Executes the {@link Runnable} passed in during construction. The runnable
-         * will only be executed if the current graph is not null.
+         * Opens a save dialog and requests user input for where the export
+         * should be saved. With the selected file a new plugin is instantiated
+         * which will perform the actual export. The export will only be executed
+         * if the current graph is not null.
          * 
          * @param event the event that triggered this action
          * @see EventHandler#handle(javafx.event.Event)
@@ -194,9 +273,36 @@ public class ExportMenu {
         @Override
         public void handle(ActionEvent event) {
             if (tableTopComponent.getCurrentGraph() != null) {
-                runnable.run();
+                final ExportFileChooser exportFileChooser = getExportFileChooser();
+                
+                final File file = exportFileChooser.openExportFileChooser();
+                
+                try {
+                    PluginExecution.withPlugin(
+                            exportPluginCreator.apply(file)
+                    ).executeNow((Graph) null);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                    Thread.currentThread().interrupt();
+                } catch (final PluginException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                }
             }
             event.consume();
+        }
+        
+        /**
+         * Creates a new file chooser.
+         *
+         * @return the created file chooser
+         */
+        public ExportFileChooser getExportFileChooser() {
+            System.out.println("INSIDE GET EXPORT FILE CHOOSER");
+            return new ExportFileChooser(
+                    fileChooserTitle,
+                    expectedFileExtension,
+                    fileChooserDescription
+            );
         }
     }
 

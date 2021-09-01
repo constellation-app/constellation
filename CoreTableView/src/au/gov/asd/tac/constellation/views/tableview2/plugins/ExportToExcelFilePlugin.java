@@ -40,6 +40,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 /**
+ * Plugin that exports the provided table's rows as an Excel spreadsheet.
  *
  * @author formalhaunt
  */
@@ -56,8 +57,22 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
     private final boolean selectedOnly;
     private final String sheetName;
 
-    public ExportToExcelFilePlugin(final File file, final TableView<ObservableList<String>> table, final Pagination pagination,
-            final int rowsPerPage, final boolean selectedOnly, final String sheetName) {
+    /**
+     * Creates a new export table rows to Excel plugin.
+     *
+     * @param file the file to save the spreadsheet
+     * @param table the table to extract the rows from
+     * @param pagination the current table pagination
+     * @param rowsPerPage the number of rows per page in the table (the pagination)
+     * @param selectedOnly true if only selected rows are to be exported, false otherwise
+     * @param sheetName the name of the sheet in the Excel spreadsheet
+     */
+    public ExportToExcelFilePlugin(final File file,
+                                   final TableView<ObservableList<String>> table,
+                                   final Pagination pagination,
+                                   final int rowsPerPage,
+                                   final boolean selectedOnly,
+                                   final String sheetName) {
         this.file = file;
         this.table = table;
         this.pagination = pagination;
@@ -94,7 +109,7 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
                         @Override
                         public void run() {
                             // get a copy of the table data so that users can continue working
-                            final List<ObservableList<String>> data = table.getSelectionModel()
+                            final List<ObservableList<String>> data = getTable().getSelectionModel()
                                     .getSelectedItems();
                             writeRecords(sheet, visibleIndices, data, startIndex);
                         }
@@ -110,7 +125,7 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
                         @Override
                         public void run() {
                             // get a copy of the table data so that users can continue working
-                            final List<ObservableList<String>> data = table.getItems();
+                            final List<ObservableList<String>> data = getTable().getItems();
                             writeRecords(sheet, visibleIndices, data, startIndex);
                         }
                     };
@@ -124,7 +139,7 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
             final Thread outputThread = new Thread("Export to Excel File: Writing File") {
                 @Override
                 public void run() {
-                    try (final FileOutputStream fileStream = new FileOutputStream(file)) {
+                    try (final FileOutputStream fileStream = new FileOutputStream(getFile())) {
                         workbook.write(fileStream);
                         LOGGER.log(Level.INFO, "Table View data written to Excel file");
                     } catch (final IOException ex) {
@@ -143,6 +158,30 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
     @Override
     public String getName() {
         return EXPORT_TO_EXCEL_FILE_PLUGIN;
+    }
+    
+    public File getFile() {
+        return file;
+    }
+
+    public TableView<ObservableList<String>> getTable() {
+        return table;
+    }
+
+    public Pagination getPagination() {
+        return pagination;
+    }
+
+    public int getRowsPerPage() {
+        return rowsPerPage;
+    }
+
+    public boolean isSelectedOnly() {
+        return selectedOnly;
+    }
+
+    public String getSheetName() {
+        return sheetName;
     }
     
     /**

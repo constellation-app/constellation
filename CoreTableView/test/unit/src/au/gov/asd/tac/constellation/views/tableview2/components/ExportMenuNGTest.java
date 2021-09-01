@@ -16,11 +16,18 @@
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.components.ExportMenu.ExportMenuItemActionHandler;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToCsvFilePlugin;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToExcelFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
+import java.io.File;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,10 +38,13 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
@@ -98,7 +108,7 @@ public class ExportMenuNGTest {
     }
     
     @Test
-    public void createExportButtons() {
+    public void createExportButtons() throws InterruptedException, PluginException {
         exportMenu.init();
         
         assertNotNull(exportMenu.getExportButton());
@@ -129,9 +139,13 @@ public class ExportMenuNGTest {
         assertEquals(120.0d, exportMenu.getExportButton().getMaxWidth());
         assertEquals(Side.RIGHT, exportMenu.getExportButton().getPopupSide());
         
+        System.out.println("POINT 1");
+        
         // Export Whole Table as CSV Menu Item
         assertEquals("Export to CSV", exportMenu.getExportCsvMenu().getText());
         verifyExportCSVAction(exportMenu.getExportCsvMenu().getOnAction(), false);
+        
+        System.out.println("POINT 2");
         
         reset(tableService, table);
         
@@ -177,10 +191,20 @@ public class ExportMenuNGTest {
      *     to be exported, false otherwise
      */
     private void verifyExportCSVAction(final EventHandler<ActionEvent> eventHandler,
-                                       final boolean expectedExportOnlySelectedRows) {
+                                       final boolean expectedExportOnlySelectedRows) throws InterruptedException, PluginException {
         
-        try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic
-                = Mockito.mockStatic(TableViewUtilities.class)) {
+        final ExportMenuItemActionHandler exportActionHandler = (ExportMenuItemActionHandler) eventHandler;
+        
+        final ExportMenuItemActionHandler spiedExportActionHandler = spy(exportActionHandler);
+        
+        final ExportFileChooser exportFileChooser = mock(ExportFileChooser.class);
+        final File exportFile = new File("test.csv");
+        
+        doReturn(exportFileChooser).when(spiedExportActionHandler).getExportFileChooser();
+        doReturn(exportFile).when(exportFileChooser).openExportFileChooser();
+        
+        try (MockedStatic<PluginExecution> pluginExecutionMockedStatic
+                = Mockito.mockStatic(PluginExecution.class)) {
 
             final ActionEvent actionEvent = mock(ActionEvent.class);
             
@@ -190,10 +214,27 @@ public class ExportMenuNGTest {
             when(tableService.getPagination()).thenReturn(pagination);
             when(table.getTableView()).thenReturn(tableView);
             
-            eventHandler.handle(actionEvent);
+            final PluginExecution pluginExecution = mock(PluginExecution.class);
+            pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(Plugin.class)))
+                    .thenAnswer(mockitoInvocation -> {
+                        final ExportToCsvFilePlugin plugin
+                                = (ExportToCsvFilePlugin) mockitoInvocation.getArgument(0);
+                        
+                        assertEquals(exportFile, plugin.getFile());
+                        assertEquals(pagination, plugin.getPagination());
+                        assertEquals(tableView, plugin.getTable());
+                        assertEquals(expectedExportOnlySelectedRows, plugin.isSelectedOnly());
+                        
+                        return pluginExecution;
+                    });
             
-            tableViewUtilsMockedStatic.verify(() -> TableViewUtilities
-                    .exportToCsv(tableView, pagination, expectedExportOnlySelectedRows));
+            
+            
+            spiedExportActionHandler.handle(actionEvent);
+            
+            verify(exportFileChooser).openExportFileChooser();
+            verify(pluginExecution).executeNow((Graph) null);
+            
             verify(actionEvent).consume();
         }
     }
@@ -207,10 +248,20 @@ public class ExportMenuNGTest {
      *     to be exported, false otherwise
      */
     private void verifyExportExcelAction(final EventHandler<ActionEvent> eventHandler,
-                                         final boolean expectedExportOnlySelectedRows) {
+                                         final boolean expectedExportOnlySelectedRows) throws InterruptedException, PluginException {
         
-        try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic
-                = Mockito.mockStatic(TableViewUtilities.class)) {
+        final ExportMenuItemActionHandler exportActionHandler = (ExportMenuItemActionHandler) eventHandler;
+        
+        final ExportMenuItemActionHandler spiedExportActionHandler = spy(exportActionHandler);
+        
+        final ExportFileChooser exportFileChooser = mock(ExportFileChooser.class);
+        final File exportFile = new File("test.xlsx");
+        
+        doReturn(exportFileChooser).when(spiedExportActionHandler).getExportFileChooser();
+        doReturn(exportFile).when(exportFileChooser).openExportFileChooser();
+        
+        try (MockedStatic<PluginExecution> pluginExecutionMockedStatic
+                = Mockito.mockStatic(PluginExecution.class)) {
 
             final ActionEvent actionEvent = mock(ActionEvent.class);
             
@@ -226,11 +277,27 @@ public class ExportMenuNGTest {
             when(table.getTableView()).thenReturn(tableView);
             when(tableService.getTablePreferences()).thenReturn(tablePreferences);
             
-            eventHandler.handle(actionEvent);
+            final PluginExecution pluginExecution = mock(PluginExecution.class);
+            pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(Plugin.class)))
+                    .thenAnswer(mockitoInvocation -> {
+                        final ExportToExcelFilePlugin plugin
+                                = (ExportToExcelFilePlugin) mockitoInvocation.getArgument(0);
+                        
+                        assertEquals(exportFile, plugin.getFile());
+                        assertEquals(pagination, plugin.getPagination());
+                        assertEquals(tableView, plugin.getTable());
+                        assertEquals(42, plugin.getRowsPerPage());
+                        assertEquals(GRAPH_ID, plugin.getSheetName());
+                        assertEquals(expectedExportOnlySelectedRows, plugin.isSelectedOnly());
+                        
+                        return pluginExecution;
+                    });
             
-            tableViewUtilsMockedStatic.verify(() -> TableViewUtilities
-                    .exportToExcel(tableView, pagination, maxRowsPerPage, expectedExportOnlySelectedRows,
-                            GRAPH_ID));
+            spiedExportActionHandler.handle(actionEvent);
+            
+            verify(exportFileChooser).openExportFileChooser();
+            verify(pluginExecution).executeNow((Graph) null);
+            
             verify(actionEvent).consume();
         }
     }

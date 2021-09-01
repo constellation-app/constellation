@@ -83,13 +83,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
 
     private final ExecutorService executorService = Executors.newScheduledThreadPool(1);
     
-    private TableViewState currentState;
     private final TableViewPane pane;
     private final Set<AttributeValueMonitor> columnAttributeMonitors;
 
-    private static final String UPDATE_DATA = "Table View: Update Data";
-    private static final String UPDATE_SELECTION = "Table View: Update Selection";
-
+    private TableViewState currentState;
+    
     public TableViewTopComponent() {
         setName(Bundle.CTL_TableView2TopComponent());
         setToolTipText(Bundle.HINT_TableView2TopComponent());
@@ -174,28 +172,32 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         }
 
         return getExecutorService().submit(() -> {
-                while (stateLock != null && getCurrentState() == stateSnapshot) {
-                    try {
-                        // TODO: remove sleep
-                        // ...but there is an async issue which needs to be
-                        // resolved first. When showSelected() is called, the
-                        // order of operations is to update the Table View
-                        // state (if required) and then to select the rows in
-                        // the table based on the current graph selection. The
-                        // issue is that the state is updated by writing a
-                        // TableViewState object to the graph and letting a
-                        // Table View listener respond to that. Unfortunately,
-                        // there is no obvious way for this operation to know
-                        // when the Table View listener has finished responding,
-                        // so for now we just wait until the currentState object
-                        // matches the state object we updated it to.
-                        Thread.sleep(10);
-                    } catch (final InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    }
+            while (stateLock != null && getCurrentState() == stateSnapshot) {
+                try {
+                    // TODO: remove sleep
+                    // ...but there is an async issue which needs to be
+                    // resolved first. When showSelected() is called, the
+                    // order of operations is to update the Table View
+                    // state (if required) and then to select the rows in
+                    // the table based on the current graph selection. The
+                    // issue is that the state is updated by writing a
+                    // TableViewState object to the graph and letting a
+                    // Table View listener respond to that. Unfortunately,
+                    // there is no obvious way for this operation to know
+                    // when the Table View listener has finished responding,
+                    // so for now we just wait until the currentState object
+                    // matches the state object we updated it to.
+                    Thread.sleep(10);
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                 }
-                getTablePane().getTable().updateSelection(getCurrentGraph(), getCurrentState(),
-                        getTablePane().getTableSelectionListener(), getTablePane().getSelectedOnlySelectionListener());
+            }
+            getTablePane().getTable().updateSelection(
+                    getCurrentGraph(),
+                    getCurrentState(),
+                    getTablePane().getTableSelectionListener(),
+                    getTablePane().getSelectedOnlySelectionListener()
+            );
         });
     }
 

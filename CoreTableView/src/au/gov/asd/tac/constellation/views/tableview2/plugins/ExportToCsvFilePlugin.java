@@ -46,7 +46,7 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
     private final boolean selectedOnly;
 
     /**
-     * Creates a new export to CSV plugin.
+     * Creates a new export table rows to CSV plugin.
      *
      * @param file the file to write the CSV to
      * @param table the table to create the CSV from
@@ -71,7 +71,7 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
         final Thread outputThread = new Thread("Export to CSV File: Writing File") {
             @Override
             public void run() {
-                try (final FileWriter fileWriter = new FileWriter(file)) {
+                try (final FileWriter fileWriter = new FileWriter(getFile())) {
                     fileWriter.write(csvData);
                 } catch (final IOException ex) {
                     interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
@@ -85,5 +85,21 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
     @Override
     public String getName() {
         return EXPORT_TO_DELIMITED_FILE_PLUGIN;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public TableView<ObservableList<String>> getTable() {
+        return table;
+    }
+
+    public Pagination getPagination() {
+        return pagination;
+    }
+
+    public boolean isSelectedOnly() {
+        return selectedOnly;
     }
 }
