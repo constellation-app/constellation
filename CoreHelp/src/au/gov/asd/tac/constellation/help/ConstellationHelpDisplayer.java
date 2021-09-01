@@ -15,31 +15,25 @@
  */
 package au.gov.asd.tac.constellation.help;
 
+import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
 import com.github.rjeschke.txtmark.Processor;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystemNotFoundException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -107,7 +101,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      *
      * @throws IOException
      */
-    private static void copyFromZipResource(final String filepath, final OutputStream out) throws IOException {
+    /*  private static void copyFromZipResource(final String filepath, final OutputStream out) throws IOException {
         final InputStream in = ConstellationHelpDisplayer.class.getResourceAsStream(HELP_ZIP);
         if (in != null) {
             final ZipInputStream zin = new ZipInputStream(in);
@@ -129,7 +123,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         } else {
             throw new IOException(String.format("Help resource %s not found " + filepath, HELP_ZIP));
         }
-    }
+    } */
 
     /**
      * Read an entry from a zip file.
@@ -141,7 +135,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      * @param out
      * @throws IOException
      */
-    private static void copyFromZipFile(final String zipFile, final String filepath, final OutputStream out) throws IOException {
+    /*  private static void copyFromZipFile(final String zipFile, final String filepath, final OutputStream out) throws IOException {
         // TODO: need to rework this so that the local version includes a custom header and footer
         if (filepath.endsWith(".md")) {
             try ( ZipFile zip = new ZipFile(zipFile)) {
@@ -168,7 +162,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 throw new IOException(String.format("Help resource %s not found " + filepath + zipFile, HELP_ZIP));
             }
         }
-    }
+    } */
 
     /**
      * Read a file from a web server.
@@ -204,7 +198,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         }
     } */
 
-    private static List<String> getZipFile(final String zipFile, final String filepath) throws IOException {
+ /*   private static List<String> getZipFile(final String zipFile, final String filepath) throws IOException {
         final ByteArrayOutputStream buf = new ByteArrayOutputStream();
         copyFromZipFile(zipFile, filepath, buf);
         final BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf.toByteArray()), StandardCharsets.UTF_8));
@@ -216,13 +210,13 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         copyFromZipResource(zipResource, buf);
         final BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf.toByteArray()), StandardCharsets.UTF_8));
         return reader.lines().collect(Collectors.toList());
-    }
+    } */
 
     /**
      *
      * @return @throws IOException
      */
-    private static List<String> initHelp() throws IOException {
+    /*  private static List<String> initHelp() throws IOException {
         helpSource = System.getProperty(CONSTELLATION_HELP);
         LOGGER.log(Level.INFO, "Help source: {0}", HELP_ZIP);
 
@@ -237,7 +231,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             LOGGER.log(Level.INFO, "help_map file at zip {0}, {1}", new Object[]{helpSource, HELP_MAP});
             return getZipFile(helpSource, HELP_MAP);
         }
-    }
+    } */
 
     /**
      * Return the help map mapping helpIds to documentation page paths.
@@ -251,7 +245,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      *
      * @return The helpId to documentation path mapping.
      */
-    private static synchronized Map<String, String> getHelpMap() {
+    /* private static synchronized Map<String, String> getHelpMap() {
         if (helpMap == null) {
             try {
                 final List<String> lines = initHelp();
@@ -275,86 +269,87 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         }
 
         return helpMap;
-    }
+    } */
 
     public static void copy(final String filepath, final OutputStream out) throws IOException {
-        final String p = filepath.startsWith("/") ? filepath.substring(1) : filepath;
-        if (helpSource == null) {
-            copyFromZipResource(p, out);
-        } else {
-            copyFromZipFile(helpSource, p, out);
-        }
+        final Path path = Paths.get(filepath.substring(3));
+        final InputStream input = new FileInputStream(path.toString());
+        final String html = Processor.process(input);
+        out.write(html.getBytes());
     }
 
     @Override
     public boolean display(final HelpCtx helpCtx) {
-         /* final String helpId = helpCtx.getHelpID();
+        final String helpId = helpCtx.getHelpID();
         LOGGER.log(Level.INFO, "display {0} from {1}", new Object[]{helpId, helpSource});
-
-        FileStructureBuilder file = new FileStructureBuilder();
-        file.run();
 
         // Given the helpId, get the corresponding help page path.
         // If it doesn't exist (maybe because someone forgot to put the helpId
         // in their .rst file), go to the root page.
         //
-        List<String> helpPages = getHelpPages();
-        //  final Map<String, String> helpMapCopy = getHelpMap();
-        if (!helpPages.isEmpty()) {
-            final int index = helpPages.indexOf(helpId);
-            final String part = helpPages.contains(helpId) ? helpPages.get(index) : "analytic-view.md";
+        final String helpLink = HelpMapper.getHelpAddress(helpId);
+        if (!helpLink.isEmpty()) {
+            try {
+                // Send the user's browser to the correct page, depending on the help source.
+                //
+                String url;
+                final File file = new File(helpLink);
+                final URL fileUrl = file.toURI().toURL();
+                final int port = HelpWebServer.start();
+                url = String.format("http://localhost:%d/%s", port, fileUrl);
 
-            // Send the user's browser to the correct page, depending on the help source.
-            //
-            String url;
-            if (helpSource == null || !helpSource.startsWith("http")) {
+                /* if (helpSource == null || !helpSource.startsWith("http")) {
                 // The help source is an internal zipped resource or an actual zip file,
                 // therefore we need to invoke the internal web server's help servlet,
                 // so insert /help into the path. The servlet will call copy() to get
                 // the file from the resource/file.
                 //
-                final int port = WebServer.start();
-                url = String.format("http://localhost:8000/help/html/%s", part);
-            } else if (helpSource.startsWith(OFFICIAL_GITHUB_REPOSITORY)) {
+                
+                } */ /* else if (helpSource.startsWith(OFFICIAL_GITHUB_REPOSITORY)) {
                 // If the helpSource points to github contellation-app/constellation then
                 // we are going to use read the docs to serve the help pages
-                url = String.format(READ_THE_DOCS, part);
-            } else {
+                // url = String.format(READ_THE_DOCS, part);
+                } else {
                 // The help source is an external web server, so we just
                 // assemble the URL and disavow all knowledge.
                 //
-                url = String.format("%s/html/%s", helpSource, part);
-            }
+                // url = String.format("%s/html/%s", helpSource, part);
+                } */
 
-            LOGGER.log(Level.INFO, "help url {0}", url);
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                // Run in a different thread, not the JavaFX thread
-                new Thread(() -> {
-                    Thread.currentThread().setName("Browse Help");
-                    try {
-                        Desktop.getDesktop().browse(new URI(url));
-                    } catch (URISyntaxException | IOException ex) {
-                        LOGGER.log(Level.SEVERE, "Tried to browse a url.", ex);
-                        final String msg = "Unable to browse to that location.";
-                        NotificationDisplayer.getDefault().notify("Help displayer",
-                                UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.RED.getJavaColor()),
-                                msg,
-                                null
-                        );
-                    }
-                }).start();
+                LOGGER.log(Level.INFO, "help url {0}", url);
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                    // Run in a different thread, not the JavaFX thread
+                    new Thread(() -> {
+                        Thread.currentThread().setName("Browse Help");
+                        try {
+                            Desktop.getDesktop().browse(new URI(url));
+                        } catch (URISyntaxException | IOException ex) {
+                            LOGGER.log(Level.SEVERE, "Tried to browse a url.", ex);
+                            final String msg = "Unable to browse to that location.";
+                            /* NotificationDisplayer.getDefault().notify("Help displayer",
+                            UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.RED.getJavaColor()),
+                            msg,
+                            null
+                            ); */
+                        }
+                    }).start();
 
-                return true;
+                    return true;
+                }
+            } catch (MalformedURLException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
             }
         } else {
             final String msg = "Help not available; see logs for the reason.";
-            NotificationDisplayer.getDefault().notify("Help displayer",
+            /* NotificationDisplayer.getDefault().notify("Help displayer",
                     UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.RED.getJavaColor()),
                     msg,
                     null
-            );
+            ); */
         }
-*/
+
         return false;
     }
 

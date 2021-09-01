@@ -73,7 +73,10 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        map.put("au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-view.md");
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        map.put("au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane", userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analytic-view.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-best-connects-network.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.HasClosestRelationshipQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-has-closest-relationship.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.MostCentralQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-most-central.md");

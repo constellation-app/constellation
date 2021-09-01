@@ -302,6 +302,37 @@
                 <package>com.sun.xml.txw2</package>
                 <package>com.sun.xml.txw2.annotation</package>
                 <package>com.sun.xml.txw2.output</package>
+                <package>com.vladsch.flexmark.ast</package>
+                <package>com.vladsch.flexmark.ast.util</package>
+                <package>com.vladsch.flexmark.ext.tables</package>
+                <package>com.vladsch.flexmark.ext.tables.internal</package>
+                <package>com.vladsch.flexmark.formatter</package>
+                <package>com.vladsch.flexmark.formatter.internal</package>
+                <package>com.vladsch.flexmark.html</package>
+                <package>com.vladsch.flexmark.html.renderer</package>
+                <package>com.vladsch.flexmark.parser</package>
+                <package>com.vladsch.flexmark.parser.block</package>
+                <package>com.vladsch.flexmark.parser.core</package>
+                <package>com.vladsch.flexmark.parser.core.delimiter</package>
+                <package>com.vladsch.flexmark.parser.delimiter</package>
+                <package>com.vladsch.flexmark.parser.internal</package>
+                <package>com.vladsch.flexmark.util.ast</package>
+                <package>com.vladsch.flexmark.util.builder</package>
+                <package>com.vladsch.flexmark.util.collection</package>
+                <package>com.vladsch.flexmark.util.collection.iteration</package>
+                <package>com.vladsch.flexmark.util.data</package>
+                <package>com.vladsch.flexmark.util.dependency</package>
+                <package>com.vladsch.flexmark.util.format</package>
+                <package>com.vladsch.flexmark.util.format.options</package>
+                <package>com.vladsch.flexmark.util.html</package>
+                <package>com.vladsch.flexmark.util.html.ui</package>
+                <package>com.vladsch.flexmark.util.misc</package>
+                <package>com.vladsch.flexmark.util.options</package>
+                <package>com.vladsch.flexmark.util.sequence</package>
+                <package>com.vladsch.flexmark.util.sequence.builder</package>
+                <package>com.vladsch.flexmark.util.sequence.builder.tree</package>
+                <package>com.vladsch.flexmark.util.sequence.mappers</package>
+                <package>com.vladsch.flexmark.util.visitor</package>
                 <package>com.xhaus.modjy</package>
                 <package>com.zaxxer.sparsebits</package>
                 <package>com.zebraimaging</package>
@@ -2226,6 +2257,7 @@
                 <package>org.hsqldb.types</package>
                 <package>org.hsqldb.util</package>
                 <package>org.huldra.math</package>
+                <package>org.intellij.lang.annotations</package>
                 <package>org.jaitools</package>
                 <package>org.jaitools.imageutils</package>
                 <package>org.jaitools.imageutils.iterator</package>
@@ -2297,6 +2329,7 @@
                 <package>org.jdom2.xpath</package>
                 <package>org.jdom2.xpath.jaxen</package>
                 <package>org.jdom2.xpath.util</package>
+                <package>org.jetbrains.annotations</package>
                 <package>org.json</package>
                 <package>org.json.simple</package>
                 <package>org.json.simple.parser</package>
@@ -3066,6 +3099,10 @@
                 <binary-origin>release/modules/ext/SparseBitSet-1.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/annotations-15.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/annotations-15.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/assertj-core-3.20.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/assertj-core-3.20.1.jar</binary-origin>
             </class-path-extension>
@@ -3320,6 +3357,62 @@
             <class-path-extension>
                 <runtime-relative-path>ext/filters-2.0.235.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/filters-2.0.235.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-ext-tables-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-ext-tables-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-ast-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-ast-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-builder-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-builder-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-collection-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-collection-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-data-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-data-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-dependency-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-dependency-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-format-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-format-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-html-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-html-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-misc-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-misc-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-options-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-options-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-sequence-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-sequence-0.62.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flexmark-util-visitor-0.62.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-util-visitor-0.62.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/fontbox-2.0.22.jar</runtime-relative-path>

@@ -13,7 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.help.webserver.api;
+package au.gov.asd.tac.constellation.help;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A servlet that serves help files.
@@ -23,12 +34,12 @@ package au.gov.asd.tac.constellation.help.webserver.api;
  *
  * @author algol
  */
-/*@ServiceProvider(service = ConstellationHttpServlet.class)
+@ServiceProvider(service = HttpServlet.class)
 @WebServlet(
         name = "HelpServer",
         description = "HTML help server",
-        urlPatterns = {"/help/*"})
-public class HelpServlet extends ConstellationHttpServlet {
+        urlPatterns = {"/"})
+public class HelpServlet extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(HelpServlet.class.getName());
 
@@ -45,7 +56,7 @@ public class HelpServlet extends ConstellationHttpServlet {
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
-        final String requestPath = request.getPathInfo();
+        final String requestPath = request.getRequestURI();
         LOGGER.log(Level.INFO, "GET {0}", requestPath);
 
         final int extIx = requestPath.lastIndexOf('.');
@@ -54,9 +65,9 @@ public class HelpServlet extends ConstellationHttpServlet {
         response.setContentType(mimeType);
 
         try {
-            ConstellationHelpDisplayer.copy(requestPath, response.getOutputStream());
+            ConstellationHelpDisplayer.copy(requestPath.substring(6), response.getOutputStream());
         } catch (final IOException ex) {
             throw new ServletException(ex);
         }
     }
-}*/
+}
