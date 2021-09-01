@@ -139,13 +139,9 @@ public class ExportMenuNGTest {
         assertEquals(120.0d, exportMenu.getExportButton().getMaxWidth());
         assertEquals(Side.RIGHT, exportMenu.getExportButton().getPopupSide());
         
-        System.out.println("POINT 1");
-        
         // Export Whole Table as CSV Menu Item
         assertEquals("Export to CSV", exportMenu.getExportCsvMenu().getText());
         verifyExportCSVAction(exportMenu.getExportCsvMenu().getOnAction(), false);
-        
-        System.out.println("POINT 2");
         
         reset(tableService, table);
         

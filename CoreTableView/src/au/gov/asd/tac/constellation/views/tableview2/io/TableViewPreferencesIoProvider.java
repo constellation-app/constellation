@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -38,42 +37,39 @@ import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
 
 /**
- * Save and Load TableView preferences.
+ * Save and Load table preferences.
  *
  * @author formalhaut69
  * @author serpens24
  */
-public class TableViewPreferencesIOUtilities {
-    private static final Logger LOGGER = Logger.getLogger(TableViewPreferencesIOUtilities.class.getName());
+public class TableViewPreferencesIoProvider {
+    private static final Logger LOGGER = Logger.getLogger(TableViewPreferencesIoProvider.class.getName());
     
     private static final String TABLE_VIEW_PREF_DIR = "TableViewPreferences";
+    
     private static final String VERTEX_FILE_PREFIX = "vertex-";
     private static final String TRANSACTION_FILE_PREFIX = "transaction-";
 
-    /**
-     * Private constructor to hide implicit public one.
-     */
-    private TableViewPreferencesIOUtilities() {
-        throw new IllegalStateException("Invalid call to private default constructor");
+    private TableViewPreferencesIoProvider() {
     }
 
     /**
-     * Save details of the currently displayed tables displayed columns and
-     * their order as well as details of any sorting being performed on it. The
-     * user will be prompted for a name to save the configuration file as which
-     * will be appended to a tag indicating the type of content being displayed
-     * in the table.
+     * Saves details of the table's current preferences. Persists the preferences
+     * as JSON to the local disk.
      *
-     * @param tableType Indication of whether the table is displaying in vertex
-     * of transaction mode.
-     * @param table the tables content.
+     * @param tableElementType the current table setting specifying which element
+     *     type to display
+     * @param table the current table
+     * @param pageSize the current table page size
      */
-    public static void savePreferences(final GraphElementType tableType, final TableView<ObservableList<String>> table,
-            final int pageSize) {
+    public static void savePreferences(final GraphElementType tableElementType,
+                                       final TableView<ObservableList<String>> table,
+                                       final int pageSize) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File prefDir = new File(userDir, TABLE_VIEW_PREF_DIR);
-        final String filePrefix = tableType == GraphElementType.VERTEX ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
+        final String filePrefix = tableElementType == GraphElementType.VERTEX
+                ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
 
         // Ensure preferences directory exists.
         if (!prefDir.exists()) {
@@ -112,19 +108,17 @@ public class TableViewPreferencesIOUtilities {
     }
 
     /**
-     * Load in the preferences from the JSON file and re-order the table
+     * Load in the preferences from the JSON file into the
+     * {@link TablePreferences} POJO.
      *
-     * @param tableType Indication of whether the table is displaying in vertex
-     * of transaction mode.
-     * @param defaultPageSize The page size to load in if the preference being
-     * loaded in doesn't have one.
+     * @param tableElementType the current table setting specifying which element
+     *     type to display
      *
-     * @return A Tuple containing: ordered list of table columns (1) and second
-     * Tuple (2) containing details of sort column (1) and sort order (2).
+     * @return a populated {@link TablePreferences} from the local file
      */
-    public static TablePreferences getPreferences(final GraphElementType tableType,
-            final int defaultPageSize) {
-        final String filePrefix = (tableType == GraphElementType.VERTEX ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX);
+    public static TablePreferences getPreferences(final GraphElementType tableElementType) {
+        final String filePrefix = tableElementType == GraphElementType.VERTEX
+                ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
         
         try {
             final JsonNode root = JsonIO.loadJsonPreferences(TABLE_VIEW_PREF_DIR, filePrefix);
@@ -136,10 +130,6 @@ public class TableViewPreferencesIOUtilities {
                 final ObjectMapper mapper = new ObjectMapper();
                 tablePreferences = mapper
                         .treeToValue(((ArrayNode) root).get(0), TablePreferences.class);
-            }
-            
-            if (tablePreferences.getMaxRowsPerPage() == null) {
-                tablePreferences.setMaxRowsPerPage(defaultPageSize);
             }
             
             return tablePreferences;

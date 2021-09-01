@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
-import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
@@ -183,8 +183,8 @@ public class PreferenceMenuNGTest {
     @Test
     public void loadPreferencesCurrentStateNull() {
         try (
-                final MockedStatic<TableViewPreferencesIOUtilities> tablePrefIOUtilsMockedStatic
-                        = Mockito.mockStatic(TableViewPreferencesIOUtilities.class);
+                final MockedStatic<TableViewPreferencesIoProvider> tablePrefIOUtilsMockedStatic
+                        = Mockito.mockStatic(TableViewPreferencesIoProvider.class);
             ) {
             preferencesMenu.loadPreferences();
 
@@ -195,8 +195,8 @@ public class PreferenceMenuNGTest {
     @Test
     public void loadPreferencesColumnOrderIsEmpty() {
         try (
-                final MockedStatic<TableViewPreferencesIOUtilities> tablePrefIOUtilsMockedStatic
-                        = Mockito.mockStatic(TableViewPreferencesIOUtilities.class);
+                final MockedStatic<TableViewPreferencesIoProvider> tablePrefIOUtilsMockedStatic
+                        = Mockito.mockStatic(TableViewPreferencesIoProvider.class);
             ) {
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setElementType(GraphElementType.VERTEX);
@@ -211,8 +211,8 @@ public class PreferenceMenuNGTest {
             final TablePreferences loadedTablePreferences = new TablePreferences();
             loadedTablePreferences.setColumnOrder(Collections.emptyList());
             
-            tablePrefIOUtilsMockedStatic.when(() -> TableViewPreferencesIOUtilities
-                    .getPreferences(GraphElementType.VERTEX, 42)).thenReturn(loadedTablePreferences);
+            tablePrefIOUtilsMockedStatic.when(() -> TableViewPreferencesIoProvider
+                    .getPreferences(GraphElementType.VERTEX)).thenReturn(loadedTablePreferences);
             
             preferencesMenu.loadPreferences();
 
@@ -225,8 +225,8 @@ public class PreferenceMenuNGTest {
     @Test
     public void loadPreferences() {
         try (
-                final MockedStatic<TableViewPreferencesIOUtilities> tablePrefIOUtilsMockedStatic
-                        = Mockito.mockStatic(TableViewPreferencesIOUtilities.class);
+                final MockedStatic<TableViewPreferencesIoProvider> tablePrefIOUtilsMockedStatic
+                        = Mockito.mockStatic(TableViewPreferencesIoProvider.class);
             ) {
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setElementType(GraphElementType.VERTEX);
@@ -295,8 +295,8 @@ public class PreferenceMenuNGTest {
                     FXCollections.observableList(List.of(pageSizeOption1, pageSizeOption2)));
             
             // Return the loaded preferences when the load call is made
-            tablePrefIOUtilsMockedStatic.when(() -> TableViewPreferencesIOUtilities
-                    .getPreferences(GraphElementType.VERTEX, 42)).thenReturn(loadedTablePreferences);
+            tablePrefIOUtilsMockedStatic.when(() -> TableViewPreferencesIoProvider
+                    .getPreferences(GraphElementType.VERTEX)).thenReturn(loadedTablePreferences);
             
             // Start the test
             preferencesMenu.loadPreferences();
@@ -384,7 +384,7 @@ public class PreferenceMenuNGTest {
     
     /**
      * Verifies that when the save preferences button is pressed then it will call out to
-     * {@link TableViewPreferencesIOUtilities#savePreferences(GraphElementType, TableView, int)}.
+     * {@link TableViewPreferencesIoProvider#savePreferences(GraphElementType, TableView, int)}.
      * If certain values are not set, then it will not save the preferences and just
      * return.
      * <p/>
@@ -396,7 +396,7 @@ public class PreferenceMenuNGTest {
      *     return an empty list, false otherwise
      * @param isActivGraphNull true if when {@link GraphManager#getActiveGraph()} is called it should 
      *     return null, false otherwise
-     * @param expectSavePrefsCalled true if it is expected that {@link TableViewPreferencesIOUtilities#savePreferences(GraphElementType, TableView, int)}
+     * @param expectSavePrefsCalled true if it is expected that {@link TableViewPreferencesIoProvider#savePreferences(GraphElementType, TableView, int)}
      *     should have been called, false otherwise
      */
     private void verifySavePreferencesAction(final MenuItem savePreferencesMenu,
@@ -404,8 +404,8 @@ public class PreferenceMenuNGTest {
                                              final boolean isActivGraphNull,
                                              final boolean expectSavePrefsCalled) {
         try (
-                final MockedStatic<TableViewPreferencesIOUtilities> tablePrefsIOUtilsMockedStatic
-                        = Mockito.mockStatic(TableViewPreferencesIOUtilities.class);
+                final MockedStatic<TableViewPreferencesIoProvider> tablePrefsIOUtilsMockedStatic
+                        = Mockito.mockStatic(TableViewPreferencesIoProvider.class);
                 final MockedStatic<GraphManager> graphManagerMockedStatic
                         = Mockito.mockStatic(GraphManager.class);
                 ) {
@@ -444,7 +444,7 @@ public class PreferenceMenuNGTest {
             savePreferencesMenu.getOnAction().handle(actionEvent);
             
             if (expectSavePrefsCalled) {
-                tablePrefsIOUtilsMockedStatic.verify(() -> TableViewPreferencesIOUtilities
+                tablePrefsIOUtilsMockedStatic.verify(() -> TableViewPreferencesIoProvider
                     .savePreferences(GraphElementType.VERTEX, tableView, 42));
             } else {
                 tablePrefsIOUtilsMockedStatic.verifyNoInteractions();

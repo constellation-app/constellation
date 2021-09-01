@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.TABLE_LOCK;
-import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.state.Column;
@@ -61,8 +61,6 @@ public class PreferencesMenu {
     private static final String PAGE_SIZE_PREFERENCES = "Set Page Size";
     
     private static final ImageView SETTINGS_ICON = new ImageView(UserInterfaceIconProvider.SETTINGS.buildImage(16));
-    
-    private static final Integer DEFAULT_MAX_ROWS_PER_PAGE = 500;
     
     private static final int WIDTH = 120;
     
@@ -108,7 +106,7 @@ public class PreferencesMenu {
         savePreferencesMenu = createPreferencesMenu(SAVE_PREFERENCES, e -> {
             if ((!table.getTableView().getColumns().isEmpty()) 
                     && (GraphManager.getDefault().getActiveGraph() != null)) {
-                TableViewPreferencesIOUtilities.savePreferences(
+                TableViewPreferencesIoProvider.savePreferences(
                         tableTopComponent.getCurrentState().getElementType(), table.getTableView(),
                         tableService.getTablePreferences().getMaxRowsPerPage()
                 );
@@ -215,7 +213,7 @@ public class PreferencesMenu {
                                     Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
                                 }
                             });
-                            if (pageSize == DEFAULT_MAX_ROWS_PER_PAGE) {
+                            if (pageSize == TablePreferences.DEFAULT_MAX_ROWS_PER_PAGE) {
                                 pageSizeOption.setSelected(true); // initially set the default as selected
                             }
                             return pageSizeOption;
@@ -278,11 +276,8 @@ public class PreferencesMenu {
 
                 // Load the local table preferences JSON file
                 final TablePreferences tablePrefs
-                        = TableViewPreferencesIOUtilities.getPreferences(
-                                tableTopComponent.getCurrentState().getElementType(),
-                                tableService.getTablePreferences().getMaxRowsPerPage() != null
-                                        ? tableService.getTablePreferences().getMaxRowsPerPage()
-                                        : DEFAULT_MAX_ROWS_PER_PAGE);
+                        = TableViewPreferencesIoProvider.getPreferences(
+                                tableTopComponent.getCurrentState().getElementType());
 
                 // If no columns were found then the user abandoned the load as saves
                 // cannot occur with 0 columns

@@ -32,9 +32,10 @@ import org.apache.commons.lang3.tuple.Pair;
  * @author formalhaunt
  */
 public final class TablePreferences {
+    public static final Integer DEFAULT_MAX_ROWS_PER_PAGE = 500;
     
     @JsonProperty(value = "PageSize")
-    private Integer maxRowsPerPage = null;
+    private Integer maxRowsPerPage = DEFAULT_MAX_ROWS_PER_PAGE;
     
     @JsonProperty("ColumnOrder")
     private List<String> columnOrder = new ArrayList<>();

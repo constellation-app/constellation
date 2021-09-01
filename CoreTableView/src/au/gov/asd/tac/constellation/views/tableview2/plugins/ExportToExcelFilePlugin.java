@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -195,12 +196,9 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
                                      final List<Integer> visibleIndices,
                                      final List<ObservableList<String>> data,
                                      final int startIndex) {
-        final int[] rowIndex = new int[1];
-        rowIndex[0] = startIndex;
+        final AtomicInteger rowIndex = new AtomicInteger(startIndex);
         data.forEach(item -> {
-            rowIndex[0]++;
-            
-            final Row itemRow = sheet.createRow(rowIndex[0]);
+            final Row itemRow = sheet.createRow(rowIndex.getAndIncrement());
             
             visibleIndices.forEach(index -> {
                 final Cell itemCell = itemRow.createCell(visibleIndices.indexOf(index));

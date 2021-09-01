@@ -26,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -100,12 +99,12 @@ public class TableViewPreferencesIOUtilitiesNGTest {
                 .thenReturn(jsonNode);
 
         final TablePreferences tablePreferences
-                = TableViewPreferencesIOUtilities.getPreferences(GraphElementType.VERTEX, 2);
+                = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
 
         final TablePreferences expected = new TablePreferences();
         expected.setColumnOrder(List.of("ABC", "DEF"));
         expected.setSortByColumn(ImmutablePair.of("DEF", TableColumn.SortType.DESCENDING));
-        expected.setMaxRowsPerPage(2);
+        expected.setMaxRowsPerPage(500);
 
         assertEquals(expected, tablePreferences);
     }
@@ -122,7 +121,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
 
         
         final TablePreferences tablepreferences
-                = TableViewPreferencesIOUtilities.getPreferences(GraphElementType.TRANSACTION, 2);
+                = TableViewPreferencesIoProvider.getPreferences(GraphElementType.TRANSACTION);
 
         final TablePreferences expected = new TablePreferences();
         expected.setColumnOrder(List.of("ABC", "DEF", "JKL"));
@@ -138,12 +137,12 @@ public class TableViewPreferencesIOUtilitiesNGTest {
                 .thenReturn(null);
 
         final TablePreferences tablepreferences
-                = TableViewPreferencesIOUtilities.getPreferences(GraphElementType.VERTEX, 2);
+                = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
 
         final TablePreferences expected = new TablePreferences();
         expected.setColumnOrder(Collections.emptyList());
         expected.setSortByColumn(ImmutablePair.of("", TableColumn.SortType.ASCENDING));
-        expected.setMaxRowsPerPage(2);
+        expected.setMaxRowsPerPage(500);
 
         assertEquals(expected, tablepreferences);
     }
@@ -177,7 +176,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
         when(tableView.getColumns()).thenReturn(FXCollections.observableList(List.of(column1, column2, column3, column4)));
         when(tableView.getSortOrder()).thenReturn(FXCollections.observableList(List.of(column2)));
 
-        TableViewPreferencesIOUtilities.savePreferences(GraphElementType.TRANSACTION, tableView, 5);
+        TableViewPreferencesIoProvider.savePreferences(GraphElementType.TRANSACTION, tableView, 5);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         final ArrayNode expectedJsonTree = (ArrayNode) objectMapper.readTree(
