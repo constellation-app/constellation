@@ -39,9 +39,16 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
         // Get the current directory and make the file within the module.
         final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final String analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
-
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String analyticViewPath;
+        if ("constellation".equals(substr)) {
+            analyticViewPath = userDir + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
+        } else {
+            analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
+        }
         final File dir = new File(analyticViewPath);
         final String[] extensions = new String[]{"md"};
         final List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
@@ -57,9 +64,16 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
         // Get the current directory and make the file within the module.
         final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final String analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
-
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String analyticViewPath;
+        if ("constellation".equals(substr)) {
+            analyticViewPath = userDir + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
+        } else {
+            analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
+        }
         final File dir = new File(analyticViewPath);
         final String[] extensions = new String[]{"png"};
         final List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
@@ -75,8 +89,17 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
         final Map<String, String> map = new HashMap<>();
         final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        map.put("au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane", userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analytic-view.md");
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String analyticViewPath;
+        if ("constellation".equals(substr)) {
+            analyticViewPath = userDir + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analytic-view.md";
+        } else {
+            analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analytic-view.md";
+        }
+        map.put("au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane", analyticViewPath);
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-best-connects-network.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.HasClosestRelationshipQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-has-closest-relationship.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.MostCentralQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-most-central.md");

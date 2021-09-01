@@ -36,8 +36,16 @@ public class LayersViewHelpProvider extends HelpPageProvider {
     public List<String> getHelpPages() {
         final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final String layersViewPath = userDir + sep + ".." + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers";
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String layersViewPath;
+        if ("constellation".equals(substr)) {
+            layersViewPath = userDir + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers";
+        } else {
+            layersViewPath = userDir + sep + ".." + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers";
+        }
 
         final File dir = new File(layersViewPath);
         final String[] extensions = new String[]{"md"};
@@ -53,8 +61,16 @@ public class LayersViewHelpProvider extends HelpPageProvider {
     public List<String> getHelpResources() {
         final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final String layersViewPath = userDir + sep + ".." + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers";
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String layersViewPath;
+        if ("constellation".equals(substr)) {
+            layersViewPath = userDir + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers";
+        } else {
+            layersViewPath = userDir + sep + ".." + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers";
+        }
 
         final File dir = new File(layersViewPath);
         final String[] extensions = new String[]{"png"};
@@ -68,8 +84,21 @@ public class LayersViewHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String layersViewPath;
+        if ("constellation".equals(substr)) {
+            layersViewPath = userDir + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-view.md";
+
+        } else {
+            layersViewPath = userDir + sep + ".." + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-view.md";
+        }
         final Map<String, String> map = new HashMap<>();
-        map.put("au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent", "au.gov.asd.tac.constellation.views.layers.docs.layers-view.md");
+        map.put("au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent", layersViewPath);
         return map;
     }
 
