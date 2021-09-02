@@ -46,9 +46,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.CheckComboBox;
-import org.netbeans.api.javahelp.Help;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
 /**
@@ -125,13 +123,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         Button helpButton = new Button("", helpImage);
         helpButton.setOnAction((ActionEvent event) -> {
-            final Help help = Lookup.getDefault().lookup(Help.class);
-            if (help != null) {
-                final String helpId = this.getClass().getPackage().getName();
-                if (help.isValidID(helpId, true)) {
-                    new HelpCtx(helpId).display();
-                }
-            }
+            new HelpCtx(getClass().getPackage().getName()).display();
         });
 
         controlToolbar.getItems().addAll(

@@ -26,7 +26,6 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
-import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.UserCancelException;
 import org.openide.util.lookup.ServiceProvider;
@@ -83,22 +82,22 @@ public class OpenFilePlugin extends SimpleEditPlugin {
     protected JFileChooser prepareFileChooser() {
         final JFileChooser chooser = new FileChooser();
         chooser.setCurrentDirectory(getCurrentDirectory());
-        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
+        //HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
 
         return chooser;
     }
 
-    @Override
-    public HelpCtx getHelpCtx() {
-        return new HelpCtx(this.getClass().getName());
-    }
-
+//    @Override
+//    public HelpCtx getHelpCtx() {
+//        return new HelpCtx(this.getClass().getName());
+//    }
     /**
      * Displays the specified file chooser and returns a list of selected files.
      *
      * @param chooser file chooser to display
      * @return array of selected files,
-     * @exception org.openide.util.UserCancelException if the user cancelled the operation
+     * @exception org.openide.util.UserCancelException if the user cancelled the
+     * operation
      */
     public static File[] chooseFilesToOpen(final JFileChooser chooser)
             throws UserCancelException {

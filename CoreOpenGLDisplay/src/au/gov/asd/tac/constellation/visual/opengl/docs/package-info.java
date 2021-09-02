@@ -13,7 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@HelpSetRegistration(helpSet = "opengl-hs.xml", position = 0)
 package au.gov.asd.tac.constellation.visual.opengl.docs;
-
-import org.netbeans.api.javahelp.HelpSetRegistration;

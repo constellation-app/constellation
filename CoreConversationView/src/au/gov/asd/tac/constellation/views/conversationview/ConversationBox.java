@@ -66,9 +66,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.controlsfx.control.CheckComboBox;
-import org.netbeans.api.javahelp.Help;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 
 /**
  * The ConversationBox represents the entire GUI for the conversation view.
@@ -156,13 +154,7 @@ public final class ConversationBox extends StackPane {
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         final Button helpButton = new Button("", helpImage);
         helpButton.setOnAction((ActionEvent event) -> {
-            final Help help = Lookup.getDefault().lookup(Help.class);
-            if (help != null) {
-                final String helpId = this.getClass().getPackage().getName();
-                if (help.isValidID(helpId, true)) {
-                    new HelpCtx(helpId).display();
-                }
-            }
+            new HelpCtx(this.getClass().getPackage().getName()).display();
         });
 
         final Button addAttributesButton = new Button("Add Content Attributes");

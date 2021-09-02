@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -78,8 +79,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     //
     private static final int BUFSIZ = 10 * 1024 * 1024;
 
-    private static String helpSource;
-
     // The mapping of helpIds to page paths.
     //
     private static Map<String, String> helpMap;
@@ -124,7 +123,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             throw new IOException(String.format("Help resource %s not found " + filepath, HELP_ZIP));
         }
     } */
-
     /**
      * Read an entry from a zip file.
      * <p>
@@ -163,7 +161,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             }
         }
     } */
-
     /**
      * Read a file from a web server.
      * <p>
@@ -211,7 +208,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf.toByteArray()), StandardCharsets.UTF_8));
         return reader.lines().collect(Collectors.toList());
     } */
-
     /**
      *
      * @return @throws IOException
@@ -232,7 +228,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             return getZipFile(helpSource, HELP_MAP);
         }
     } */
-
     /**
      * Return the help map mapping helpIds to documentation page paths.
      * <p>
@@ -270,7 +265,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
         return helpMap;
     } */
-
     public static void copy(final String filepath, final OutputStream out) throws IOException {
         final Path path = Paths.get(filepath.substring(3));
         final InputStream input = new FileInputStream(path.toString());
@@ -281,13 +275,30 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     @Override
     public boolean display(final HelpCtx helpCtx) {
         final String helpId = helpCtx.getHelpID();
-        LOGGER.log(Level.INFO, "display {0} from {1}", new Object[]{helpId, helpSource});
+        LOGGER.log(Level.INFO, "display help for: {0}}", helpId);
 
         // Given the helpId, get the corresponding help page path.
         // If it doesn't exist (maybe because someone forgot to put the helpId
         // in their .rst file), go to the root page.
         //
-        final String helpLink = HelpMapper.getHelpAddress(helpId);
+        // TODO: this needs to be cleaned up with a better solution.
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String helpTOCPath;
+        if ("constellation".equals(substr)) {
+            helpTOCPath = userDir + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "toc.md";
+
+        } else {
+            helpTOCPath = userDir + sep + ".." + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "toc.md";
+        }
+
+        // use the requested help file, or the table of contents if it doesnt exist
+        final String helpLink = StringUtils.isNotEmpty(HelpMapper.getHelpAddress(helpId)) ? HelpMapper.getHelpAddress(helpId) : helpTOCPath;
+
         if (!helpLink.isEmpty()) {
             try {
                 // Send the user's browser to the correct page, depending on the help source.
@@ -304,7 +315,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 // so insert /help into the path. The servlet will call copy() to get
                 // the file from the resource/file.
                 //
-                
+
                 } */ /* else if (helpSource.startsWith(OFFICIAL_GITHUB_REPOSITORY)) {
                 // If the helpSource points to github contellation-app/constellation then
                 // we are going to use read the docs to serve the help pages

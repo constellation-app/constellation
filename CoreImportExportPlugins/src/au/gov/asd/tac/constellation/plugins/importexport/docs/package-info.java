@@ -13,7 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@HelpSetRegistration(helpSet = "importexport-hs.xml", position = 0)
 package au.gov.asd.tac.constellation.plugins.importexport.docs;
-
-import org.netbeans.api.javahelp.HelpSetRegistration;

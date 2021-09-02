@@ -13,7 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@HelpSetRegistration(helpSet = "graphutilities-hs.xml", position = 0)
 package au.gov.asd.tac.constellation.graph.utilities.docs;
-
-import org.netbeans.api.javahelp.HelpSetRegistration;
