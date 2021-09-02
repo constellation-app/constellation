@@ -16,12 +16,10 @@
 package au.gov.asd.tac.constellation.graph.file.open;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.NbPreferences;
 
 /**
@@ -70,9 +68,8 @@ public class RecentFilesWelcomePage {
         if (index != -1) {
             final String path = files.get(index).getPath();
 
-            final File f = new File(path);
-            final File nf = FileUtil.normalizeFile(f);
-            OpenFile.open(FileUtil.toFileObject(nf), -1);
+            final FileObject fo = RecentFiles.convertPath2File(path);
+            OpenFile.open(fo, -1);
             saveCurrentDirectory(path);
         }
     }

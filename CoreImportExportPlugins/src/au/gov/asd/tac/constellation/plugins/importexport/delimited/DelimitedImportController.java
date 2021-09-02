@@ -101,8 +101,8 @@ public class DelimitedImportController extends ImportController {
     }
 
     @Override
-    public List<File> processImport() throws PluginException {
-        final List<ImportDefinition> definitions = configurationPane.createDefinitions();
+    public void processImport() throws PluginException {
+        final List<ImportDefinition> definitions = configurationPane.createDefinitions(isFilesIncludeHeadersEnabled());
         final Graph importGraph = currentDestination.getGraph();
         final boolean schema = schemaInitialised;
         final List<File> importFiles = new ArrayList<>(files);
@@ -134,6 +134,7 @@ public class DelimitedImportController extends ImportController {
                                 .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
                                 .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
                                 .set(ImportDelimitedPlugin.PARSER_PARAMETER_IDS_PARAMETER_ID, currentParameters)
+                                .set(ImportDelimitedPlugin.FILES_INCLUDE_HEADERS_PARAMETER_ID, filesIncludeHeaders)
                                 .executeWriteLater(importGraph);
                     }
                 }
@@ -147,9 +148,9 @@ public class DelimitedImportController extends ImportController {
                     .set(ImportDelimitedPlugin.PARSER_PARAMETER_ID, parser)
                     .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
                     .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
+                    .set(ImportDelimitedPlugin.FILES_INCLUDE_HEADERS_PARAMETER_ID, filesIncludeHeaders)
                     .executeWriteLater(importGraph);
         }
-        return files;
     }
 
     @Override

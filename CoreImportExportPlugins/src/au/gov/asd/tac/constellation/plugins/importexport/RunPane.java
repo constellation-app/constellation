@@ -484,7 +484,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public ImportDefinition createDefinition() {
+    public ImportDefinition createDefinition(final int firstRow) {
 
         RowFilter rf = rowFilter;
         if (StringUtils.isBlank(filter)) {
@@ -493,7 +493,7 @@ public final class RunPane extends BorderPane implements KeyListener {
             rf.setColumns(currentColumnLabels);
         }
 
-        final ImportDefinition definition = new ImportDefinition(1, rf);
+        final ImportDefinition definition = new ImportDefinition(firstRow, rf);
 
         for (final TableColumn<TableRow, ?> column : sampleDataView.getColumns()) {
             final ImportTableColumn importTableColumn = (ImportTableColumn) column;

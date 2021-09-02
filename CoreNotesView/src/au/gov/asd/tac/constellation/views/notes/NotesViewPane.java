@@ -111,7 +111,7 @@ public class NotesViewPane extends BorderPane {
     private final String PROMPT_COLOUR = "#909090";
     private final String USER_COLOUR = "#942483";
     private final String AUTO_COLOUR = "#1c5aa6";
-    private final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead
+    private final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
     private static final String USER_NOTES_FILTER = "User Notes";
@@ -147,7 +147,7 @@ public class NotesViewPane extends BorderPane {
 
         availableFilters = FXCollections.observableArrayList(USER_NOTES_FILTER, AUTO_NOTES_FILTER, SELECTED_FILTER);
         selectedFilters = new ArrayList<>();
-        selectedFilters.add(USER_NOTES_FILTER); // Only user notes are selected by default
+        selectedFilters.add(USER_NOTES_FILTER); // Only user notes are selected by default.
 
         // CheckComboBox to select and deselect various filters for note rendering.
         filterCheckComboBox = new CheckComboBox(availableFilters);
@@ -183,7 +183,7 @@ public class NotesViewPane extends BorderPane {
 
         tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
 
-        // CheckComboBox for the Auto Note filters
+        // CheckComboBox for the Auto Note filters.
         autoFilterCheckComboBox = new CheckComboBox(tagsFiltersList);
         autoFilterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
@@ -219,7 +219,7 @@ public class NotesViewPane extends BorderPane {
         titleField.setPromptText("Type a title...");
         titleField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOUR + ";");
 
-        // Checkbox to apply note to selection
+        // Checkbox to apply note to selection.
         final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
         applyToSelection.setSelected(true);
         applySelected = true;
@@ -261,14 +261,14 @@ public class NotesViewPane extends BorderPane {
                                 !applySelected
                         ));
                         if (applySelected) {
-                            // Get selected nodes from the graph
+                            // Get selected nodes from the graph.
                             final List<Integer> selectedNodes = new ArrayList<>();
-                            // Get selected transactions from the graph
+                            // Get selected transactions from the graph.
                             final List<Integer> selectedTransactions = new ArrayList<>();
 
                             final ReadableGraph rg = activeGraph.getReadableGraph();
                             try {
-                                // Add selected nodes
+                                // Add selected nodes.
                                 final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
                                 if (vxSelectedAttr != Graph.NOT_FOUND) {
                                     final int vxCount = rg.getVertexCount();
@@ -280,7 +280,7 @@ public class NotesViewPane extends BorderPane {
                                     }
                                 }
 
-                                // Add selected transactions
+                                // Add selected transactions.
                                 final int txSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
                                 if (txSelectedAttr != Graph.NOT_FOUND) {
                                     final int txCount = rg.getTransactionCount();
@@ -292,13 +292,13 @@ public class NotesViewPane extends BorderPane {
                                     }
                                 }
 
-                                // If there are no selected nodes or transactions on the graph, set the graph attribute to true
+                                // If there are no selected nodes or transactions on the graph, set the graph attribute to true.
                                 if (selectedNodes.isEmpty() && selectedTransactions.isEmpty()) {
                                     notesViewEntries.get(notesViewEntries.size() - 1).setGraphAttribute(true);
                                 } else {
-                                    // Add selected nodes to the note entry
+                                    // Add selected nodes to the note entry.
                                     notesViewEntries.get(notesViewEntries.size() - 1).setNodesSelected(selectedNodes);
-                                    // Add selected transactions to the node entry
+                                    // Add selected transactions to the node entry.
                                     notesViewEntries.get(notesViewEntries.size() - 1).setTransactionsSelected(selectedTransactions);
                                 }
 
@@ -315,7 +315,7 @@ public class NotesViewPane extends BorderPane {
                 }
             }
         });
-        // HBox to store the control items at the bottom of the view
+        // HBox to store the control items at the bottom of the view.
         final HBox noteHBox = new HBox(OPTIONS_SPACING, applyToSelection, addNoteButton);
 
         // VBox to store control items used to add new note.
@@ -349,7 +349,7 @@ public class NotesViewPane extends BorderPane {
         if (currentGraphReport != null) {
             // Iterates the list of currently executed plugins.
             currentGraphReport.getPluginReports().forEach(pluginReport -> {
-                // omit low level plugins which are not useful as notes
+                // Omit low level plugins which are not useful as notes.
                 if (!pluginReport.hasLowLevelTag()) {
                     addPluginReport(pluginReport);
                 }
@@ -480,7 +480,6 @@ public class NotesViewPane extends BorderPane {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
             final List<NotesViewEntry> notesToRender = new ArrayList<>();
-
             updateSelectedElements();
 
             synchronized (LOCK) {
@@ -495,17 +494,17 @@ public class NotesViewPane extends BorderPane {
                         }
 
                     } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated()) {
-                        // if no nodes or transactions are selected, show notes applied to the whole graph
+                        // If no nodes or transactions are selected, show notes applied to the whole graph.
                         if (entry.isGraphAttribute()) {
                             notesToRender.add(entry);
                         }
-                        // Show notes related to the selected nodes
+                        // Show notes related to the selected nodes.
                         for (final int node : nodesSelected) {
                             if (entry.getNodesSelected() != null && entry.getNodesSelected().contains(node) && !notesToRender.contains(entry)) {
                                 notesToRender.add(entry);
                             }
                         }
-                        // Shows notes related to the selected transactions
+                        // Shows notes related to the selected transactions.
                         for (final int transaction : transactionsSelected) {
                             if (entry.getTransactionsSelected() != null && entry.getTransactionsSelected().contains(transaction)
                                     && !notesToRender.contains(entry)) {
@@ -547,11 +546,11 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Check if the PluginReport was already added
+     * Check if the PluginReport was already added.
      *
-     * @param pluginReport The PluginReport to add
+     * @param pluginReport The PluginReport to add.
      *
-     * @return True if plugin report was already added, False otherwise
+     * @return True if plugin report was already added, False otherwise.
      */
     private boolean isExistingNote(final PluginReport pluginReport) {
         final String startTime = Long.toString(pluginReport.getStartTime());
@@ -562,7 +561,7 @@ public class NotesViewPane extends BorderPane {
      * A convenient method to add a note to the various lists that are used to
      * track them.
      *
-     * @param note A new NoteViewEntry to be added
+     * @param note A new NoteViewEntry to be added.
      */
     private void addNote(final NotesViewEntry note) {
         notesViewEntries.add(note);
@@ -570,14 +569,12 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Clears UI elements in the Notes View and clears the list of NoteEntry
-     * objects.
+     * Clears UI elements in the Notes View.
      */
-    protected void clearAllNotes() {
+    protected void clearNotes() {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
         });
-
         synchronized (LOCK) {
             notesViewEntries.clear();
             notesDateTimeCache.clear();
@@ -615,7 +612,7 @@ public class NotesViewPane extends BorderPane {
 
         final VBox noteInformation;
 
-        // If the note is user created add the selection details
+        // If the note is user created add the selection details.
         if (newNote.isUserCreated()) {
             String selectionLabelText;
             if (newNote.isGraphAttribute()) {
@@ -657,14 +654,14 @@ public class NotesViewPane extends BorderPane {
         notesListVBox.getChildren().add(noteBody);
 
         if (newNote.isUserCreated()) {
-            // Add a right click context menu to user notes
+            // Add a right click context menu to user notes.
             final MenuItem selectOnGraphMenuItem = new MenuItem("Select on Graph");
             selectOnGraphMenuItem.setOnAction(event -> {
                 final BitSet elementIdsTx = new BitSet();
                 final BitSet elementIdsVx = new BitSet();
 
                 if (newNote.isGraphAttribute()) {
-                    // Select all elements with right click menu if the user note is applied to the whole graph
+                    // Select all elements with right click menu if the user note is applied to the whole graph.
                     final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                     final ReadableGraph rg = activeGraph.getReadableGraph();
                     try {
@@ -682,15 +679,15 @@ public class NotesViewPane extends BorderPane {
                         rg.release();
                     }
                 } else {
-                    // Select the specific nodes and/or transactions applied to the note
-                    // Add nodes that are selected to the note
+                    // Select the specific nodes and/or transactions applied to the note.
+                    // Add nodes that are selected to the note.
                     final int nodesLength = newNote.getNodesSelected().size();
                     final List<Integer> nodesSelected = newNote.getNodesSelected();
                     for (int i = 0; i < nodesLength; i++) {
                         elementIdsVx.set(nodesSelected.get(i));
                     }
 
-                    // Add transactions that are selected to the note
+                    // Add transactions that are selected to the note.
                     final int transactionsLength = newNote.getTransactionsSelected().size();
                     final List<Integer> transactionsSelected = newNote.getTransactionsSelected();
                     for (int i = 0; i < transactionsLength; i++) {
@@ -711,7 +708,7 @@ public class NotesViewPane extends BorderPane {
                         .executeLater(GraphManager.getDefault().getActiveGraph());
             });
 
-            // Context menu is only added to user created notes
+            // Context menu is only added to user created notes.
             final ContextMenu contextMenu = new ContextMenu();
             contextMenu.getItems().add(selectOnGraphMenuItem);
 
@@ -770,9 +767,9 @@ public class NotesViewPane extends BorderPane {
                 }
             });
 
-            // Add selection radio buttons
+            // Add selection radio buttons.
             // Allows for the user to choose whether they would like to keep the original selection of graph elements for the note,
-            // add what is currently selected on the graph to the selection or remove what is currently selected on the graph from the selection
+            // add what is currently selected on the graph to the selection or remove what is currently selected on the graph from the selection.
             final ToggleGroup group = new ToggleGroup();
             final RadioButton keepSelection = new RadioButton("Keep original selection   ");
             keepSelection.setUserData("Keep");
@@ -803,8 +800,8 @@ public class NotesViewPane extends BorderPane {
                     noteToEdit.setNoteTitle(newTitle.getText());
                     noteToEdit.setNoteContent(newContent.getText());
 
-                    // Update the note's selected nodes and transactions
-                    // If selection is to keep the original selection nothing happens
+                    // Update the note's selected nodes and transactions.
+                    // If selection is to keep the original selection nothing happens.
                     if (editSelection.equals("Add")) {
                         addToSelectedElements(noteToEdit);
                     } else if (editSelection.equals("Remove")) {
@@ -844,7 +841,7 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Updates the arrays of what nodes and transactions are currently selected
+     * Updates the arrays of what nodes and transactions are currently selected.
      */
     public void updateSelectedElements() {
         nodesSelected.clear();
@@ -853,7 +850,7 @@ public class NotesViewPane extends BorderPane {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         final ReadableGraph rg = activeGraph.getReadableGraph();
 
-        // Get all currently selected nodes
+        // Get all currently selected nodes.
         final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
         if (vxSelectedAttr != Graph.NOT_FOUND) {
             final int vxCount = rg.getVertexCount();
@@ -865,7 +862,7 @@ public class NotesViewPane extends BorderPane {
             }
         }
 
-        // Get all currently selected transactions
+        // Get all currently selected transactions.
         final int txSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
         if (txSelectedAttr != Graph.NOT_FOUND) {
             final int txCount = rg.getTransactionCount();
@@ -881,7 +878,7 @@ public class NotesViewPane extends BorderPane {
 
     /**
      * Add what is currently selected on the graph to the note's selected
-     * elements
+     * elements.
      */
     public void addToSelectedElements(final NotesViewEntry noteToEdit) {
         updateSelectedElements();
@@ -915,7 +912,7 @@ public class NotesViewPane extends BorderPane {
 
     /**
      * Remove what is currently selected on the graph from the note's selected
-     * elements
+     * elements.
      */
     public void removeFromSelectedElements(final NotesViewEntry noteToEdit) {
         updateSelectedElements();
@@ -948,7 +945,7 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Updates the tags filters array with what tags are currently available
+     * Updates the tags filters array with what tags are currently available.
      */
     public void updateTagsFiltersAvailable() {
 
@@ -969,7 +966,7 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Updates what tags filters are currently selected
+     * Updates what tags filters are currently selected.
      *
      * @param selectedTagsFilters
      */
@@ -987,7 +984,7 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Updates UI with what tags filters are selected
+     * Updates UI with what tags filters are selected.
      */
     public void updateTagFilters() {
         Platform.runLater(() -> {
@@ -1004,7 +1001,7 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Decides what Auto Notes are shown depending on what filters are selected
+     * Decides what Auto Notes are shown depending on what filters are selected.
      *
      * @param entry
      * @return boolean
