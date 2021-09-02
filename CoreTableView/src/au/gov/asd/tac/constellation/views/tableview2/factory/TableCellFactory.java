@@ -78,6 +78,9 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
             this.getStyleClass().remove(ELEMENT_SOURCE_CLASS);
             this.getStyleClass().remove(ELEMENT_TRANSACTION_CLASS);
             this.getStyleClass().remove(ELEMENT_DESTINATION_CLASS);
+            
+            // based on the column name prefixes ".source", ".destination" and
+            // ".transaction" set the appropriate style class
             final String columnPrefix = table.getColumnIndex().stream()
                     .filter(column -> column.getTableColumn().equals(cellColumn))
                     .map(column -> column.getAttributeNamePrefix())
@@ -102,6 +105,7 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
                 if (me.getButton() == MouseButton.SECONDARY) {
                     final RightClickContextMenu rightClickContextMenu = getRightClickContextMenu();
                     
+                    // open the context menu at the mouses current location
                     rightClickContextMenu.getContextMenu()
                             .show(table.getTableView(), me.getScreenX(), me.getScreenY());
                 }

@@ -89,11 +89,13 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
         try (final SXSSFWorkbook workbook = new SXSSFWorkbook(SXSSFWorkbook.DEFAULT_WINDOW_SIZE)) {
             final Sheet sheet = workbook.createSheet(sheetName);
 
+            // get the indexes of all visible columns
             final List<Integer> visibleIndices = table.getColumns().stream()
                     .filter(column -> column.isVisible())
                     .map(column -> table.getColumns().indexOf(column))
                     .collect(Collectors.toList());
 
+            // iterate through the visible columns and print each ones name to the sheet
             final Row headerRow = sheet.createRow(0);
             visibleIndices.forEach(index -> {
                 final TableColumn<ObservableList<String>, ?> column = table.getColumns().get(index);
@@ -101,17 +103,26 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
                 headerCell.setCellValue(column.getText());
             });
 
+            // store the current page so we can reset it after the export
             final int currentPage = pagination.getCurrentPageIndex();
+            
             if (selectedOnly) {
+                // iterate through all the pages in the table and write the selected rows to the sheet
                 for (int i = 0; i < pagination.getPageCount(); i++) {
                     pagination.getPageFactory().call(i);
+                    
+                    // Calculates the start index in the sheet based on the current table page
+                    // Because only selected rows are included this could leave a gap in the sheet
+                    // + 1 to skip the header
                     final int startIndex = rowsPerPage * i + 1; // + 1 to skip the header
+                    
                     final Thread writeSheetThread = new Thread("Export to Excel File: Writing Sheet") {
                         @Override
                         public void run() {
                             // get a copy of the table data so that users can continue working
                             final List<ObservableList<String>> data = getTable().getSelectionModel()
                                     .getSelectedItems();
+                            
                             writeRecords(sheet, visibleIndices, data, startIndex);
                         }
                     };
@@ -119,14 +130,20 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
                     writeSheetThread.join();
                 }
             } else {
+                // iterate through all the pages in the table and write their rows to the sheet
                 for (int i = 0; i < pagination.getPageCount(); i++) {
                     pagination.getPageFactory().call(i);
-                    final int startIndex = rowsPerPage * i + 1; // + 1 to skip the header
+                    
+                    // Calculates the start index in the sheet based on the current table page
+                    // + 1 to skip the header
+                    final int startIndex = rowsPerPage * i + 1; 
+                    
                     final Thread writeSheetThread = new Thread("Export to Excel File: Writing Sheet") {
                         @Override
                         public void run() {
                             // get a copy of the table data so that users can continue working
                             final List<ObservableList<String>> data = getTable().getItems();
+                            
                             writeRecords(sheet, visibleIndices, data, startIndex);
                         }
                     };
@@ -134,9 +151,11 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
                     writeSheetThread.join();
                 }
             }
-            // Call the page factory function once more to go back to the original page index
+            
+            // call the page factory function once more to go back to the original page index
             pagination.getPageFactory().call(currentPage);
 
+            // The sheet has now been created. Time to write it to the file
             final Thread outputThread = new Thread("Export to Excel File: Writing File") {
                 @Override
                 public void run() {
@@ -161,26 +180,56 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
         return EXPORT_TO_EXCEL_FILE_PLUGIN;
     }
     
+    /**
+     * Gets the file that the exported Excel spreadsheet will be written to.
+     *
+     * @return the export file
+     */
     public File getFile() {
         return file;
     }
 
+    /**
+     * Gets the table being exported.
+     *
+     * @return the table
+     */
     public TableView<ObservableList<String>> getTable() {
         return table;
     }
 
+    /**
+     * Gets the current pagination associated with the table being exported.
+     *
+     * @return the current pagination
+     */
     public Pagination getPagination() {
         return pagination;
     }
 
+    /**
+     * Gets the number of rows per page in the table.
+     *
+     * @return the number of rows per page in the table
+     */
     public int getRowsPerPage() {
         return rowsPerPage;
     }
 
+    /**
+     * Gets the flag that determines if only selected rows are exported.
+     *
+     * @return true if only selected rows should be exported, false otherwise
+     */
     public boolean isSelectedOnly() {
         return selectedOnly;
     }
 
+    /**
+     * Gets the name of the sheet in the exported excel file.
+     *
+     * @return the sheet name
+     */
     public String getSheetName() {
         return sheetName;
     }
@@ -191,6 +240,7 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
      * @param sheet the Excel sheet to write to
      * @param visibleIndices the visible columns
      * @param data the table rows to write
+     * @param startIndex the current index in the sheet that can be written to
      */
     private static void writeRecords(final Sheet sheet,
                                      final List<Integer> visibleIndices,

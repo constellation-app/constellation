@@ -96,8 +96,7 @@ public class TableToolbar {
             e.consume();
         });
         
-        // TODO Initial icon here should be based on state if it exists??
-        selectedOnlyButton = createToggleButton(ALL_VISIBLE_ICON, SELECTED_ONLY, e -> {
+        selectedOnlyButton = createToggleButton(getSelectedOnlyInitialIcon(), SELECTED_ONLY, e -> {
             if (getTableTopComponent().getCurrentState() != null) {
                 getTableService().getSelectedOnlySelectedRows().clear();
                 
@@ -116,8 +115,7 @@ public class TableToolbar {
             e.consume();
         });
         
-        // TODO Initial icon here should be based on state if it exists??
-        elementTypeButton = createButton(TRANSACTION_ICON, ELEMENT_TYPE, e -> {
+        elementTypeButton = createButton(getElementTypeInitialIcon(), ELEMENT_TYPE, e -> {
             if (getTableTopComponent().getCurrentState() != null) {
                 final TableViewState newState = new TableViewState(getTableTopComponent().getCurrentState());
                 
@@ -308,6 +306,34 @@ public class TableToolbar {
      */
     protected HelpCtx getHelpContext() {
         return new HelpCtx(TABLE_TOP_COMPONENT_CLASS_NAME);
+    }
+    
+    /**
+     * Gets the initial icon for the element type button. If the current state
+     * is null or has the element type set to {@link GraphElementType#VERTEX}
+     * then the {@link #VERTEX_ICON} will be returned, other wise the
+     * {@link #TRANSACTION_ICON} will be returned.
+     *
+     * @return the initial icon to place on the element type button
+     */
+    protected ImageView getElementTypeInitialIcon() {
+        return getTableTopComponent().getCurrentState() != null
+                && getTableTopComponent().getCurrentState().getElementType() == GraphElementType.VERTEX
+                ? VERTEX_ICON : TRANSACTION_ICON;
+    }
+
+    /**
+     * Gets the initial icon for the selected only button. If the current state
+     * is null or has the selected only flag set to true then the
+     * {@link #SELECTED_VISIBLE_ICON} will be returned, otherwise the
+     * {@link #ALL_VISIBLE_ICON} will be returned.
+     * 
+     * @return the initial icon to place on the selected only button
+     */
+    protected ImageView getSelectedOnlyInitialIcon() {
+        return getTableTopComponent().getCurrentState() != null
+                && getTableTopComponent().getCurrentState().isSelectedOnly()
+                ? SELECTED_VISIBLE_ICON : ALL_VISIBLE_ICON;
     }
     
     /**

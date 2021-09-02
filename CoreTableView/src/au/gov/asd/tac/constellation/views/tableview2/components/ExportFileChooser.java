@@ -49,10 +49,9 @@ public class ExportFileChooser {
                     @Override
                     public boolean accept(final File file) {
                         final String name = file.getName();
-                        if (file.isFile() && name.toLowerCase().endsWith(expectedFileExtension)) {
-                            return true;
-                        }
-                        return name.endsWith(expectedFileExtension);
+                        // if it is an actual file and it ends with the expected extension
+                        return file.isFile() && name.toLowerCase()
+                                .endsWith(expectedFileExtension.toLowerCase());
                     }
 
                     @Override
@@ -64,7 +63,7 @@ public class ExportFileChooser {
     
     /**
      * Opens the export file chooser and returns the selected file. Attempts to
-     * correct and simple mistakes in the selected file like missing extensions.
+     * correct any simple mistakes in the selected file like missing extensions.
      *
      * @return the selected file
      */
@@ -72,6 +71,8 @@ public class ExportFileChooser {
         File selectedFile = getFileChooser().showSaveDialog();
         
         if (selectedFile != null && selectedFile.getAbsolutePath() != null) {
+            // If somehow a file was selected that does not end in the required
+            // extension, add it
             final String cleanedFilePath = selectedFile.getAbsolutePath().toLowerCase()
                     .endsWith(expectedFileExtension)
                     ? selectedFile.getAbsolutePath()

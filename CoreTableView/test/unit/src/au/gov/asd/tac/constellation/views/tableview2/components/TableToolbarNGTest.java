@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
@@ -248,6 +247,50 @@ public class TableToolbarNGTest {
                 UserInterfaceIconProvider.VISIBLE.buildImage(16),
                 UserInterfaceIconProvider.NODES.buildImage(16)
         );
+    }
+    
+    @Test
+    public void getElementTypeInitialIcon() {
+        final TableViewState state = new TableViewState();
+        
+        when(tableTopComponent.getCurrentState()).thenReturn(state);
+        
+        state.setElementType(GraphElementType.META);
+        assertTrue(isImageEqual(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16),
+                tableToolbar.getElementTypeInitialIcon().getImage()));
+        
+        state.setElementType(GraphElementType.TRANSACTION);
+        assertTrue(isImageEqual(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16),
+                tableToolbar.getElementTypeInitialIcon().getImage()));
+        
+        state.setElementType(GraphElementType.VERTEX);
+        assertTrue(isImageEqual(UserInterfaceIconProvider.NODES.buildImage(16),
+                tableToolbar.getElementTypeInitialIcon().getImage()));
+        
+        when(tableTopComponent.getCurrentState()).thenReturn(null);
+        
+        assertTrue(isImageEqual(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16),
+                tableToolbar.getElementTypeInitialIcon().getImage()));
+    }
+    
+    @Test
+    public void getSelectedOnlyInitialIcon() {
+        final TableViewState state = new TableViewState();
+        
+        when(tableTopComponent.getCurrentState()).thenReturn(state);
+        
+        state.setSelectedOnly(true);
+        assertTrue(isImageEqual(UserInterfaceIconProvider.VISIBLE.buildImage(16, ConstellationColor.CHERRY.getJavaColor()),
+                tableToolbar.getSelectedOnlyInitialIcon().getImage()));
+        
+        state.setSelectedOnly(false);
+        assertTrue(isImageEqual(UserInterfaceIconProvider.VISIBLE.buildImage(16),
+                tableToolbar.getSelectedOnlyInitialIcon().getImage()));
+        
+        when(tableTopComponent.getCurrentState()).thenReturn(null);
+        
+        assertTrue(isImageEqual(UserInterfaceIconProvider.VISIBLE.buildImage(16),
+                tableToolbar.getSelectedOnlyInitialIcon().getImage()));
     }
     
     /**

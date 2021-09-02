@@ -97,6 +97,7 @@ public class RightClickContextMenu {
             e.consume();
         });
 
+        // Add the created menus to the context menu
         contextMenu.getItems().addAll(copyCell, copyRow, copyColumn, copyColumnUnique);
     }
 

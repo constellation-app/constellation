@@ -33,9 +33,10 @@ import javafx.scene.control.TableView;
 /**
  * Copy the table selection to the graph.
  * <p/>
- * We use an instance of this plugin to modify the graph. When we get a
- * graph change event, we can check to see if it was this plugin that did
- * the changes. If it was, we don't have to change the table.
+ * When the table gets a graph change event, a check is made to see if it was
+ * this plugin that did the changes. If it was, then the table does not need
+ * to perform an update. This is how a endless event loop is prevented from
+ * being created.
  * 
  * @author formalhaunt
  */
@@ -44,14 +45,21 @@ public class SelectionToGraphPlugin extends SimpleEditPlugin {
     public static final String SELECT_ON_GRAPH_PLUGIN = "Table View: Select on Graph";
     
     private final TableView<ObservableList<String>> table;
-    private final Map<ObservableList<String>, Integer> index;
+    private final Map<ObservableList<String>, Integer> rowToElementIdIndex;
     private final GraphElementType elementType;
 
+    /**
+     * Creates a new table selection to graph plugin.
+     *
+     * @param table the table to get the selection from
+     * @param rowToElementIdIndex a map of the table rows to the graph element IDs
+     * @param elementType the type of graph element that the table is currently displaying
+     */
     public SelectionToGraphPlugin(final TableView<ObservableList<String>> table,
-                                  final Map<ObservableList<String>, Integer> index,
+                                  final Map<ObservableList<String>, Integer> rowToElementIdIndex,
                                   final GraphElementType elementType) {
         this.table = table;
-        this.index = index;
+        this.rowToElementIdIndex = rowToElementIdIndex;
         this.elementType = elementType;
     }
 
@@ -59,18 +67,25 @@ public class SelectionToGraphPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods graph,
                      final PluginInteraction interaction,
                      final PluginParameters parameters) throws InterruptedException, PluginException {
+        // Convert all the rows in the table to graph element IDs
         final Set<Integer> elements = table.getItems().stream()
-                .map(item -> index.get(item))
+                .map(item -> rowToElementIdIndex.get(item))
                 .collect(Collectors.toSet());
         
+        // Convert only the selected rows in the table to graph element IDs
         final Set<Integer> selectedElements = table.getSelectionModel().getSelectedItems().stream()
-                .map(selectedItem -> index.get(selectedItem))
+                .map(selectedItem -> rowToElementIdIndex.get(selectedItem))
                 .collect(Collectors.toSet());
         
         final boolean isVertex = elementType == GraphElementType.VERTEX;
         
-        final int selectedAttributeId = isVertex ? VisualConcept.VertexAttribute.SELECTED.ensure(graph) : VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+        // get the correct attribute ID based on the type of elements the table
+        // is currently displaying
+        final int selectedAttributeId = isVertex ? VisualConcept.VertexAttribute.SELECTED.ensure(graph)
+                : VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
         
+        // iterates over the graph elements and sets its selected attribute to true
+        // if the element also exists in the selectedElements set
         elements.forEach(element ->
             graph.setBooleanValue(selectedAttributeId, element, selectedElements.contains(element))
         );

@@ -33,7 +33,8 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
 
 /**
- * Plugin that exports the contents of the table as a CSV.
+ * Plugin that exports the contents of the table as a CSV. It is possible to
+ * select with only selected rows are exported or the whole table.
  *
  * @author formalhaunt
  */
@@ -68,7 +69,11 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
     public void execute(final PluginGraphs graphs,
                         final PluginInteraction interaction,
                         final PluginParameters parameters) throws InterruptedException, PluginException {
+        
+        // Extract all the rows from the table as CSV
         final String csvData = getTableData(table, pagination, true, selectedOnly);
+        
+        // Write the CSV data to file
         final Thread outputThread = new Thread("Export to CSV File: Writing File") {
             @Override
             public void run() {
@@ -88,18 +93,38 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
         return EXPORT_TO_DELIMITED_FILE_PLUGIN;
     }
 
+    /**
+     * Get the file that the CSV data will be written to.
+     *
+     * @return the CSV export file
+     */
     public File getFile() {
         return file;
     }
 
+    /**
+     * Get the table that the CSV will be generated from.
+     *
+     * @return the table
+     */
     public TableView<ObservableList<String>> getTable() {
         return table;
     }
 
+    /**
+     * Get the current pagination of the table being exported.
+     *
+     * @return the table pagination
+     */
     public Pagination getPagination() {
         return pagination;
     }
 
+    /**
+     * Get the flag indicating if only selected rows will be included in the export.
+     *
+     * @return true if only selected rows will be included, false otherwise
+     */
     public boolean isSelectedOnly() {
         return selectedOnly;
     }

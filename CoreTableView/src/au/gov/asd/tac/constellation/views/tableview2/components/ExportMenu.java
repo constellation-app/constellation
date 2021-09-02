@@ -274,8 +274,11 @@ public class ExportMenu {
             if (tablePane.getParentComponent().getCurrentGraph() != null) {
                 final ExportFileChooser exportFileChooser = getExportFileChooser();
                 
+                // Open the file chooser and get the user to select a file
                 final File file = exportFileChooser.openExportFileChooser();
                 
+                // Use the function to create the required export plugin and
+                // then execute it
                 try {
                     PluginExecution.withPlugin(
                             exportPluginCreator.apply(file)

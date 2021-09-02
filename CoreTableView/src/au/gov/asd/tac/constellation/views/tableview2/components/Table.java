@@ -96,7 +96,7 @@ public class Table {
         this.tableView.itemsProperty().addListener((v, o, n) -> tableView.refresh());
         this.tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.tableView.setPadding(new Insets(5));
-        this.tableView.setCache(false); // TODO: experiment with caching
+        this.tableView.setCache(false);
         
         this.columnIndex = new CopyOnWriteArrayList<>();
         

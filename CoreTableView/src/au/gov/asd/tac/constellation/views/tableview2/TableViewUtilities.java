@@ -47,6 +47,7 @@ public class TableViewUtilities {
      * Retrieve data from the given table as comma-separated values.
      *
      * @param table the table to retrieve data from.
+     * @param pagination the current pagination of the table
      * @param includeHeader if true, the table headers will be included in the
      * output.
      * @param selectedOnly if true, only the data from selected rows in the

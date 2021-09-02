@@ -68,8 +68,6 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      */
     private List<ObservableList<String>> lastAllTableRows;
     
-    private Map<Integer, ObservableList<String>> elementIdToRowIndex;
-    
     private int maxRowsPerPage;
     
     /**
@@ -101,14 +99,11 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      * </ul>
      *
      * @param allTableRows all the rows that the table can currently display
-     * @param elementIdToRowIndex a map of graph element IDs to table rows
      * @param maxRowsPerPage the maximum number of rows per page in the table
      */
     public void update(final List<ObservableList<String>> allTableRows,
-                       final Map<Integer, ObservableList<String>> elementIdToRowIndex,
                        final int maxRowsPerPage) {
         this.allTableRows = allTableRows;
-        this.elementIdToRowIndex = elementIdToRowIndex;
         this.maxRowsPerPage = maxRowsPerPage;
     }
     
@@ -186,7 +181,8 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                     // is based on the selection in the graph.
                     restoreSelectionFromGraph(
                             tablePane.getParentComponent().getCurrentGraph(),
-                            tablePane.getParentComponent().getCurrentState()
+                            tablePane.getParentComponent().getCurrentState(),
+                            tablePane.getTableService().getElementIdToRowIndex()
                     );
                 }
             }
@@ -291,7 +287,8 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      * @param state the current table view state
      */
     protected void restoreSelectionFromGraph(final Graph graph,
-                                             final TableViewState state) {
+                                             final TableViewState state,
+                                             final Map<Integer, ObservableList<String>> elementIdToRowIndex) {
         // Double check that the table is not in selected only mode
         if (graph != null && state != null && !state.isSelectedOnly()) {
             
@@ -299,15 +296,14 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                 throw new IllegalStateException("Not processing on the JavaFX Application Thread");
             }
             
-            final CompletableFuture<int[]> future = CompletableFuture.supplyAsync(() -> {
-                // Gets the selected element IDs from the graph, maps them to table
-                // rows and then maps the rows to the row index
-                return getSelectedIds(graph, state).stream()
+            final CompletableFuture<int[]> future = CompletableFuture.supplyAsync(() ->
+                    // Gets the selected element IDs from the graph, maps them to table
+                    // rows and then maps the rows to the row index
+                    getSelectedIds(graph, state).stream()
                         .map(id -> elementIdToRowIndex.get(id))
                         .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
                         .mapToInt(i -> i)
-                        .toArray();
-            }, tablePane.getParentComponent().getExecutorService());
+                        .toArray(), tablePane.getParentComponent().getExecutorService());
             
             
             try {

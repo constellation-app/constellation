@@ -44,6 +44,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.bouncycastle.jcajce.provider.asymmetric.ElGamal;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -255,7 +256,7 @@ public class TableViewPageFactoryNGTest {
     @Test
     public void callEnsureExternalCallsMade() {
         doNothing().when(tableViewPageFactory)
-                .restoreSelectionFromGraph(any(Graph.class), any(TableViewState.class));
+                .restoreSelectionFromGraph(any(Graph.class), any(TableViewState.class), any(Map.class));
         
         final ObservableList<String> row1 = FXCollections.observableArrayList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableArrayList(List.of("row2Column1", "row2Column2"));
@@ -278,13 +279,15 @@ public class TableViewPageFactoryNGTest {
         
         when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
         
+        when(tableService.getElementIdToRowIndex()).thenReturn(elementIdToRowIndex);
+        
         selectedOnlySelectedRows.add(row1);
         selectedOnlySelectedRows.add(row2);
         
         // This is called after the page set up so just mocking it so that it is realistic
         when(tableView.getItems()).thenReturn(FXCollections.observableList(List.of(row1, row2)));
         
-        tableViewPageFactory.update(newRowList, elementIdToRowIndex, maxRowsPerPage);
+        tableViewPageFactory.update(newRowList, maxRowsPerPage);
         
         assertEquals(tableView, tableViewPageFactory.call(pageIndex));
         
@@ -300,7 +303,7 @@ public class TableViewPageFactoryNGTest {
         
         verify(tableViewPageFactory).restoreSort(currentSort);
         
-        verify(tableViewPageFactory).restoreSelectionFromGraph(graph, tableViewState);
+        verify(tableViewPageFactory).restoreSelectionFromGraph(graph, tableViewState, elementIdToRowIndex);
         
         // This is the first call so selectedOnlySelectedRows will be cleared
         // and the selection is not updated
@@ -312,7 +315,7 @@ public class TableViewPageFactoryNGTest {
     @Test
     public void callSelectedOnlyModeMultipleCalls() {
         doNothing().when(tableViewPageFactory)
-                .restoreSelectionFromGraph(any(Graph.class), any(TableViewState.class));
+                .restoreSelectionFromGraph(any(Graph.class), any(TableViewState.class), any(Map.class));
         
         final ObservableList<String> row1 = FXCollections.observableArrayList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableArrayList(List.of("row2Column1", "row2Column2"));
@@ -335,7 +338,7 @@ public class TableViewPageFactoryNGTest {
         
         // =============RUN ONE=================
         
-        tableViewPageFactory.update(List.of(row1, row2, row3), null, maxRowsPerPage);
+        tableViewPageFactory.update(List.of(row1, row2, row3), maxRowsPerPage);
 
         // Set the selected only mode selection to rows 1 and 2
         selectedOnlySelectedRows.add(row1);
@@ -360,7 +363,7 @@ public class TableViewPageFactoryNGTest {
         // =============RUN THREE=================
         
         // Change the new row list
-        tableViewPageFactory.update(List.of(row1, row2), null, maxRowsPerPage);
+        tableViewPageFactory.update(List.of(row1, row2), maxRowsPerPage);
         
         assertEquals(tableView, tableViewPageFactory.call(pageIndex));
         
@@ -381,7 +384,7 @@ public class TableViewPageFactoryNGTest {
     @Test
     public void updateSelectionGraphNull() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-            tableViewPageFactory.restoreSelectionFromGraph(null, new TableViewState());
+            tableViewPageFactory.restoreSelectionFromGraph(null, new TableViewState(), null);
             
             platformMockedStatic.verifyNoInteractions();
         }
@@ -390,7 +393,7 @@ public class TableViewPageFactoryNGTest {
     @Test
     public void updateSelectionStateNull() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-            tableViewPageFactory.restoreSelectionFromGraph(graph, null);
+            tableViewPageFactory.restoreSelectionFromGraph(graph, null, null);
             
             platformMockedStatic.verifyNoInteractions();
         }
@@ -401,7 +404,7 @@ public class TableViewPageFactoryNGTest {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(false);
             
-            tableViewPageFactory.restoreSelectionFromGraph(graph, new TableViewState());
+            tableViewPageFactory.restoreSelectionFromGraph(graph, new TableViewState(), null);
         }
     }
     
@@ -413,7 +416,7 @@ public class TableViewPageFactoryNGTest {
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setSelectedOnly(true);
             
-            tableViewPageFactory.restoreSelectionFromGraph(graph, tableViewState);
+            tableViewPageFactory.restoreSelectionFromGraph(graph, tableViewState, null);
             
             verifyNoInteractions(table);
         }
@@ -441,8 +444,6 @@ public class TableViewPageFactoryNGTest {
                 103, vertex3
         );
         
-        tableViewPageFactory.update(null, elementIdToRowIndex, -1);
-        
         // Order is important here. Should match on vertex 1 and 2, so indicies 0 and 2.
         when(tableView.getItems()).thenReturn(
                 FXCollections.observableList(List.of(vertex1, vertex3, vertex2))
@@ -452,7 +453,7 @@ public class TableViewPageFactoryNGTest {
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(true);
             
             tableViewPageFactory
-                    .restoreSelectionFromGraph(graph, tableViewState);
+                    .restoreSelectionFromGraph(graph, tableViewState, elementIdToRowIndex);
         }
         
         verify(tableViewPageFactory).getSelectedIds(graph, tableViewState);

@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -264,7 +263,7 @@ public class TableServiceNGTest {
         
         assertEquals(3, pagination.getPageCount());
         assertSame(pageFactory, pagination.getPageFactory());
-        verify(pageFactory).update(same(newRowList), same(elementIdToRowIndex), eq(22));
+        verify(pageFactory).update(same(newRowList), eq(22));
     }
     
     @Test
@@ -275,7 +274,7 @@ public class TableServiceNGTest {
         
         assertEquals(1, pagination.getPageCount());
         assertSame(pageFactory, pagination.getPageFactory());
-        verify(pageFactory).update(same(newRowList), same(elementIdToRowIndex), eq(22));
+        verify(pageFactory).update(same(newRowList), eq(22));
     }
     
     @Test
@@ -286,7 +285,7 @@ public class TableServiceNGTest {
         
         assertEquals(1, pagination.getPageCount());
         assertSame(pageFactory, pagination.getPageFactory());
-        verify(pageFactory).update(same(newRowList), same(elementIdToRowIndex), eq(22));
+        verify(pageFactory).update(same(newRowList), eq(22));
     }
     
     private Answer<PluginExecution> executeUpdateStatePlugin(final PluginExecution pluginExecution,
