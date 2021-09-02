@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.tableview2.service;
 
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
-import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -55,14 +54,16 @@ public class TableService {
     /**
      * Holds a set of rows from the table that are currently selected. This set
      * is only populated though when the "Selected Only" mode is active on the
-     * table.
+     * table. This will be a sub-set of {@link #sortedRowList}.
      */
     private final Set<ObservableList<String>> selectedOnlySelectedRows;
     
     /**
-     * 
+     * A page factory that is used to determine what rows from the table data
+     * will be currently displayed in the table or in other words what rows
+     * constitute the current page.
      */
-    private TableViewPageFactory pageFactory;
+    private final TableViewPageFactory pageFactory;
     
     /**
      * A sorted list of all the rows in the table.
@@ -90,17 +91,23 @@ public class TableService {
     /**
      * Create a new table service.
      *
-     * @param sortedRowList
+     * @param sortedRowList the list that holds the current rows that make up
+     *     all pages in the table
      * @param elementIdToRowIndex a map of graph IDs to table rows
      * @param rowToElementIdIndex a map of table rows to graph IDs
+     * @param pageFactory the table page factory that determines which rows will
+     *     be displayed on the current page
      */
     public TableService(final SortedList<ObservableList<String>> sortedRowList,
                         final Map<Integer, ObservableList<String>> elementIdToRowIndex,
-                        final Map<ObservableList<String>, Integer> rowToElementIdIndex) {
+                        final Map<ObservableList<String>, Integer> rowToElementIdIndex,
+                        final TableViewPageFactory pageFactory) {
         this.sortedRowList = sortedRowList;
         
         this.elementIdToRowIndex = elementIdToRowIndex;
         this.rowToElementIdIndex = rowToElementIdIndex;
+        
+        this.pageFactory = pageFactory;
         
         this.selectedOnlySelectedRows = new HashSet<>();
         
@@ -243,10 +250,6 @@ public class TableService {
 
     public TableViewPageFactory getPageFactory() {
         return pageFactory;
-    }
-
-    public void setPageFactory(TableViewPageFactory pageFactory) {
-        this.pageFactory = pageFactory;
     }
 
     public Set<ObservableList<String>> getSelectedOnlySelectedRows() {

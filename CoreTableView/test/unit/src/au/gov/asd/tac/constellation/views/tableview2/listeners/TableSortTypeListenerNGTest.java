@@ -69,7 +69,7 @@ public class TableSortTypeListenerNGTest {
     public void setUpMethod() throws Exception {
         tablePane = mock(TableViewPane.class);
         tableService = spy(new TableService(new SortedList<>(FXCollections.observableArrayList()),
-                new HashMap<>(), new HashMap<>()));
+                new HashMap<>(), new HashMap<>(), null));
         
         tableSortTypeListener = new TableSortTypeListener(tablePane, tableService);
     }

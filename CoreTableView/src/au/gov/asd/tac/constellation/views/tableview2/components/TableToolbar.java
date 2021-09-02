@@ -233,8 +233,12 @@ public class TableToolbar {
      * Gets the "Selected Only Mode" toggle button on the tool bar.
      * <p/>
      * When "Selected Only Mode" is <b>ON</b>, selection in the table does not effect
-     * selection in the graph and vice versa. When "Selected Only Mode" is <b>OFF</b>
-     * then selection in the table effects selection in the graph and vice versa.
+     * selection in the graph and vice versa. This is because the contents of the
+     * table is only what is selected in the graph and of the active table element type.
+     * <p/>
+     * When "Selected Only Mode" is <b>OFF</b> then selection in the table effects
+     * selection in the graph and vice versa because the contents of the table is
+     * all elements of the active table element type in the graph.
      *
      * @return the "Selected Only Mode" toggle button
      */

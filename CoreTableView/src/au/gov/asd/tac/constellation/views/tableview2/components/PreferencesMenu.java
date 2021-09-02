@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.service.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import java.util.ArrayList;

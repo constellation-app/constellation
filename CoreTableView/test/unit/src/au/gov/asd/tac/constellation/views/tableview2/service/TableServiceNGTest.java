@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
@@ -66,6 +65,7 @@ public class TableServiceNGTest {
     private SortedList<ObservableList<String>> sortedRowList;
     private Map<Integer, ObservableList<String>> elementIdToRowIndex;
     private Map<ObservableList<String>, Integer> rowToElementIdIndex;
+    private TableViewPageFactory pageFactory;
     
     private TableService tableService;
     
@@ -89,7 +89,9 @@ public class TableServiceNGTest {
         rowToElementIdIndex = new HashMap<>();
         elementIdToRowIndex = new HashMap<>();
         
-        tableService = new TableService(sortedRowList, elementIdToRowIndex, rowToElementIdIndex);
+        pageFactory = mock(TableViewPageFactory.class);
+        
+        tableService = new TableService(sortedRowList, elementIdToRowIndex, rowToElementIdIndex, pageFactory);
     }
 
     @AfterMethod
@@ -236,7 +238,9 @@ public class TableServiceNGTest {
     
     @Test(expectedExceptions = NullPointerException.class)
     public void updatePaginationPageFactoryNotSet() {
-        tableService.updatePagination(22, sortedRowList);
+        final TableService localTableService = new TableService(sortedRowList,
+                elementIdToRowIndex, rowToElementIdIndex, null);
+        localTableService.updatePagination(22, sortedRowList);
     }
     
     @Test
@@ -244,9 +248,6 @@ public class TableServiceNGTest {
         final List<ObservableList<String>> newRowList = IntStream.range(0, 45)
                                 .mapToObj(i -> FXCollections.observableList(List.of(Integer.toString(i))))
                                 .collect(Collectors.toList());
-        
-        final TableViewPageFactory pageFactory = mock(TableViewPageFactory.class);
-        tableService.setPageFactory(pageFactory);
         
         final Pagination pagination = tableService.updatePagination(22, newRowList);
         
@@ -259,9 +260,6 @@ public class TableServiceNGTest {
     public void updatePaginationNewRowListNull() {
         final List<ObservableList<String>> newRowList = null;
         
-        final TableViewPageFactory pageFactory = mock(TableViewPageFactory.class);
-        tableService.setPageFactory(pageFactory);
-        
         final Pagination pagination = tableService.updatePagination(22, newRowList);
         
         assertEquals(1, pagination.getPageCount());
@@ -272,9 +270,6 @@ public class TableServiceNGTest {
     @Test
     public void updatePaginationNewRowListEmpty() {
         final List<ObservableList<String>> newRowList = new ArrayList<>();
-        
-        final TableViewPageFactory pageFactory = mock(TableViewPageFactory.class);
-        tableService.setPageFactory(pageFactory);
         
         final Pagination pagination = tableService.updatePagination(22, newRowList);
         

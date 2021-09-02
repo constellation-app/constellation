@@ -19,194 +19,276 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import au.gov.asd.tac.constellation.views.tableview2.components.Table;
+import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
+ * Factory that updates the table with its new items after a pagination change.
+ * It calculates from overall list of rows, which ones should be displayed. It
+ * also ensures that sort and selection are maintained between page changes.
  *
  * @author formalhaunt
  */
 public class TableViewPageFactory implements Callback<Integer, Node> {
     private static final Logger LOGGER = Logger.getLogger(TableViewPageFactory.class.getName());
     
-    private final TableViewTopComponent tableTopComponent;
+    private final TableViewPane tablePane;
     
-    private final Table table;
+    private List<ObservableList<String>> allTableRows;
     
-    private final SortedList<ObservableList<String>> sortedRowList;
-    
-    private final Set<ObservableList<String>> selectedOnlySelectedRows;
-    
-    private ChangeListener<ObservableList<String>> tableSelectionListener;
-    private ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
-    private ChangeListener<? super TableColumn.SortType> tableSortTypeListener;
-    
-    private ListChangeListener selectedOnlySelectionListener;
-    
-    private List<ObservableList<String>> newRowList;
-    private List<ObservableList<String>> lastRowList;
+    /**
+     * The previous list of rows that were used when calculating the new page
+     * of data to display in the table. This is to track when graph selection
+     * changes if the table is in selected only mode.
+     * <p/>
+     * If the graph is in selected only mode the full list of table rows is all
+     * the nodes selected in the graph. So as that graph selection changes, so
+     * does the list of table rows.
+     */
+    private List<ObservableList<String>> lastAllTableRows;
     
     private Map<Integer, ObservableList<String>> elementIdToRowIndex;
     
     private int maxRowsPerPage;
     
-    public TableViewPageFactory(final SortedList<ObservableList<String>> sortedRowList,
-                                final Set<ObservableList<String>> selectedOnlySelectedRows,
-                                final TableViewTopComponent tableTopComponent,
-                                final Table table) {
-        this.sortedRowList = sortedRowList;
-        this.selectedOnlySelectedRows = selectedOnlySelectedRows;
-        this.tableTopComponent = tableTopComponent;
-        this.table = table;
+    /**
+     * Creates a new table page factory.
+     *
+     * @param tablePane the pane that the table has been added to
+     */
+    public TableViewPageFactory(final TableViewPane tablePane) {
+        this.tablePane = tablePane;
     }
     
-    public void update(final List<ObservableList<String>> newRowList,
+    /**
+     * Updates the factory with new data that is transient and changes between
+     * pagination updates. Because this factory is stateful the same instance
+     * is used between pagination updates and this method <b>MUST</b> be called
+     * if any of these values have changed.
+     * <p/>
+     * <ul>
+     * <li>
+     * The full list of rows that the table is displaying. For example, changes
+     * to the graph, selection, etc.
+     * </li>
+     * <li>
+     * Changes to the page size through the preference selection
+     * </li>
+     * </ul>
+     *
+     * @param allTableRows all the rows that the table can currently display
+     * @param elementIdToRowIndex a map of graph element IDs to table rows
+     * @param maxRowsPerPage the maximum number of rows per page in the table
+     */
+    public void update(final List<ObservableList<String>> allTableRows,
                        final Map<Integer, ObservableList<String>> elementIdToRowIndex,
                        final int maxRowsPerPage) {
-        this.newRowList = newRowList;
+        this.allTableRows = allTableRows;
         this.elementIdToRowIndex = elementIdToRowIndex;
         this.maxRowsPerPage = maxRowsPerPage;
     }
     
     /**
-     * 
-     * @param pageIndex
-     * @return 
+     * Updates the table's data with the required subset of rows based on the
+     * calculated page. The row subset is determined based on the passed page
+     * index and the current max rows per page preference.
+     * <p/>
+     * The table will reset selection, sorting, etc. and trigger change events
+     * when the data is updated with the new page of rows. In order to maintain
+     * the tables state, all listers are removed, sort and selection backed up,
+     * so that after the row update they can be restored.
+     *
+     * @param pageIndex the row index that the new table data should start from
+     * @return the updated table
      */
     @Override
     public Node call(Integer pageIndex) {
-        if (newRowList != null) {
-            // if the list of rows making up pages changes, we need to clear the list of selected rows
-            if (lastRowList == null || lastRowList != newRowList) {
-                selectedOnlySelectedRows.clear();
-                lastRowList = newRowList;
+        if (allTableRows != null) {
+            
+            // This action only effects selected only mode variables but runs no 
+            // matter if the table is in selected only mode or not.
+            // The reasoning is that in selected only mode, if the row list changes
+            // then that means the selection on the graph has changed. In this case
+            // the expected behaviour is to clear the current table selection.
+            if (lastAllTableRows == null || lastAllTableRows != allTableRows) {
+                tablePane.getTableService().getSelectedOnlySelectedRows().clear();
+                lastAllTableRows = allTableRows;
             }
 
+            // Remove listeners so they are not triggered whilst the page is updated
+            removeListeners();
+
+            // Backup the current sort settings so that they can be restored after the page update
+            final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> sortBackup
+                    = getCurrentSort();
+
+            // Unbind the sorted row list comparator property
+            tablePane.getTableService().getSortedRowList().comparatorProperty().unbind();
+
+            // Calculate the rows that will be displayed in the table given the
+            // passed index and max rows per page
             final int fromIndex = pageIndex * maxRowsPerPage;
-            final int toIndex = Math.min(fromIndex + maxRowsPerPage, newRowList.size());
+            final int toIndex = Math.min(fromIndex + maxRowsPerPage, allTableRows.size());
+            
+            // Set the new page
+            tablePane.getTable().getTableView().setItems(
+                    FXCollections.observableArrayList(allTableRows.subList(fromIndex, toIndex))
+            );
 
-            table.getSelectedProperty().removeListener(tableSelectionListener);
-            table.getTableView().getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
-            sortedRowList.comparatorProperty().removeListener(tableComparatorListener);
+            // Restore the sort details
+            restoreSort(sortBackup);
 
-            //get the previous sort details so that we don't lose it upon switching pages
-            TableColumn<ObservableList<String>, ?> sortCol = null;
-            TableColumn.SortType sortType = null;
-            if (!table.getTableView().getSortOrder().isEmpty()) {
-                sortCol = table.getTableView().getSortOrder().get(0);
-                sortType = sortCol.getSortType();
-                sortCol.sortTypeProperty().removeListener(tableSortTypeListener);
-            }
+            // Re-bind the sorted row list comparator property
+            tablePane.getTableService().getSortedRowList().comparatorProperty()
+                    .bind(tablePane.getTable().getTableView().comparatorProperty());
+            
+            // Restore the selection
+            if (tablePane.getTableTopComponent().getCurrentState() != null) {
+                if (tablePane.getTableTopComponent().getCurrentState().isSelectedOnly()) {
+                    // The table IS IN selected only mode which means that the row selection
+                    // is not based on what is selected in the graph but what rows are in
+                    // the list electedOnlySelectedRows. Restore the selection from that list.
+                    if (!tablePane.getTableService().getSelectedOnlySelectedRows().isEmpty()) {
+                        final int[] selectedIndices = tablePane.getTableService().getSelectedOnlySelectedRows().stream()
+                            .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
+                            .mapToInt(i -> i)
+                            .toArray();
 
-            sortedRowList.comparatorProperty().unbind();
-
-            table.getTableView().setItems(FXCollections.observableArrayList(newRowList.subList(fromIndex, toIndex)));
-
-            //restore the sort details
-            if (sortCol != null) {
-                table.getTableView().getSortOrder().add(sortCol);
-                sortCol.setSortType(sortType);
-                sortCol.sortTypeProperty().addListener(tableSortTypeListener);
-            }
-
-            sortedRowList.comparatorProperty().bind(table.getTableView().comparatorProperty());
-            updateSelectionFromFXThread(tableTopComponent.getCurrentGraph(), tableTopComponent.getCurrentState());
-            if (tableTopComponent.getCurrentState() != null 
-                    && tableTopComponent.getCurrentState().isSelectedOnly()) {
-                final int[] selectedIndices = selectedOnlySelectedRows.stream()
-                        .map(row -> table.getTableView().getItems().indexOf(row))
-                        .mapToInt(i -> i)
-                        .toArray();
-                if (!selectedOnlySelectedRows.isEmpty()) {
-                    table.getTableView().getSelectionModel()
-                            .selectIndices(selectedIndices[0], selectedIndices);
+                        tablePane.getTable().getTableView().getSelectionModel()
+                                .selectIndices(selectedIndices[0], selectedIndices);
+                    }
+                } else {
+                    // The table IS NOT in selected only mode which means the row selection
+                    // is based on the selection in the graph.
+                    restoreSelectionFromGraph(
+                            tablePane.getTableTopComponent().getCurrentGraph(),
+                            tablePane.getTableTopComponent().getCurrentState()
+                    );
                 }
             }
 
-            sortedRowList.comparatorProperty().addListener(tableComparatorListener);
-            table.getTableView().getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
-            table.getSelectedProperty().addListener(tableSelectionListener);
+            // Restore the listeners
+            restoreListeners();
         }
 
-        return table.getTableView();
-    }
-    
-    public void setTableSelectionListener(ChangeListener<ObservableList<String>> tableSelectionListener) {
-        this.tableSelectionListener = tableSelectionListener;
-    }
-
-    public void setTableComparatorListener(ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener) {
-        this.tableComparatorListener = tableComparatorListener;
-    }
-
-    public void setTableSortTypeListener(ChangeListener<? super TableColumn.SortType> tableSortTypeListener) {
-        this.tableSortTypeListener = tableSortTypeListener;
-    }
-
-    public void setSelectedOnlySelectionListener(ListChangeListener selectedOnlySelectionListener) {
-        this.selectedOnlySelectionListener = selectedOnlySelectionListener;
+        return tablePane.getTable().getTableView();
     }
     
     /**
-     * A version of the updateSelection(Graph, TableViewState) function which is
-     * to be run on the JavaFX Application Thread
+     * Get the current sort that is set on the table. If no sort is set, then
+     * both left and right parts of the pair will be null.
+     * <p/>
+     * Also removes the table sort listener from the sort column if sort is active.
+     *
+     * @return a pair with the left being the column that sort is set on, and the
+     *     left being the direction
+     */
+    protected Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> getCurrentSort() {
+        TableColumn<ObservableList<String>, ?> sortCol = null;
+        TableColumn.SortType sortType = null;
+        
+        if (!tablePane.getTable().getTableView().getSortOrder().isEmpty()) {
+            sortCol = tablePane.getTable().getTableView().getSortOrder().get(0);
+            sortType = sortCol.getSortType();
+            sortCol.sortTypeProperty().removeListener(tablePane.getTableSortTypeListener());
+        }
+        
+        return ImmutablePair.of(sortCol, sortType);
+    }
+    
+    /**
+     * Restores the sort on the table to the passed sort settings. If the sort
+     * column (left) is null then no sort is restored.
+     * <p/>
+     * Restores the table sort listener to the sort column if sorting is present.
+     *
+     * @param sortBackup the sort back up to restore in the table
+     */
+    protected void restoreSort(final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> sortBackup) {
+        if (sortBackup.getLeft() != null) {
+            tablePane.getTable().getTableView().getSortOrder().add(sortBackup.getLeft());
+            sortBackup.getLeft().setSortType(sortBackup.getRight());
+            sortBackup.getLeft().sortTypeProperty().addListener(tablePane.getTableSortTypeListener());
+        }
+    }
+    
+    /**
+     * Restore listeners after the table items have been updated so that future
+     * events are responded to appropriately.
+     */
+    protected void restoreListeners() {
+        tablePane.getTable().getTableView().getSelectionModel().getSelectedItems()
+                .addListener(tablePane.getSelectedOnlySelectionListener());
+        tablePane.getTable().getSelectedProperty().addListener(tablePane.getTableSelectionListener());
+        tablePane.getTableService().getSortedRowList().comparatorProperty()
+                .addListener(tablePane.getTableComparatorListener());
+    }
+    
+    /**
+     * Remove listeners on the table so that item changes due to pagination updates
+     * do not trigger random actions.
+     */
+    protected void removeListeners() {
+        tablePane.getTable().getTableView().getSelectionModel().getSelectedItems()
+                .removeListener(tablePane.getSelectedOnlySelectionListener());
+        tablePane.getTable().getSelectedProperty().removeListener(tablePane.getTableSelectionListener());
+        tablePane.getTableService().getSortedRowList()
+                .comparatorProperty().removeListener(tablePane.getTableComparatorListener());
+    }
+    
+    /**
+     * Restores the table selection from the current element selection in the graph.
+     * <p/>
+     * It is expected that this method will be called on the FX Application thread.
      *
      * @param graph the graph to read selection from
      * @param state the current table view state
      */
-    protected void updateSelectionFromFXThread(final Graph graph, final TableViewState state) {
-        if (graph != null && state != null) {
-
+    protected void restoreSelectionFromGraph(final Graph graph,
+                                             final TableViewState state) {
+        // Double check that the table is not in selected only mode
+        if (graph != null && state != null && !state.isSelectedOnly()) {
+            
             if (!Platform.isFxApplicationThread()) {
                 throw new IllegalStateException("Not processing on the JavaFX Application Thread");
             }
-
-            // get graph selection
-            if (!state.isSelectedOnly()) {
-                final List<Integer> selectedIds = new ArrayList<>();
-                final int[][] selectedIndices = new int[1][1];
-                final Thread selectedIdsThread = new Thread("Update Selection from FX Thread: Get Selected Ids") {
-                    @Override
-                    public void run() {
-                        selectedIds.addAll(getSelectedIds(graph, state));
-
-                        // update table selection
-                        selectedIndices[0] = selectedIds.stream()
-                                .map(id -> elementIdToRowIndex.get(id))
-                                .map(row -> table.getTableView().getItems().indexOf(row))
-                                .mapToInt(i -> i)
-                                .toArray();
-                    }
-                };
-                selectedIdsThread.start();
-                try {
-                    selectedIdsThread.join();
-                } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table selection");
-                    Thread.currentThread().interrupt();
+            
+            final CompletableFuture<int[]> future = CompletableFuture.supplyAsync(() -> {
+                // Gets the selected element IDs from the graph, maps them to table
+                // rows and then maps the rows to the row index
+                return getSelectedIds(graph, state).stream()
+                        .map(id -> elementIdToRowIndex.get(id))
+                        .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
+                        .mapToInt(i -> i)
+                        .toArray();
+            }, tablePane.getTableTopComponent().getExecutorService());
+            
+            
+            try {
+                final int[] selectedIndices = future.get();
+                
+                tablePane.getTable().getTableView().getSelectionModel().clearSelection();
+                if (selectedIndices.length != 0) {
+                    tablePane.getTable().getTableView().getSelectionModel()
+                            .selectIndices(selectedIndices[0], selectedIndices);
                 }
-
-                table.getTableView().getSelectionModel().clearSelection();
-                if (!selectedIds.isEmpty()) {
-                    table.getTableView().getSelectionModel().selectIndices(selectedIndices[0][0], selectedIndices[0]);
-                }
+            } catch (InterruptedException | ExecutionException ex) {
+                LOGGER.warning("InterruptedException encountered while updating table selection");
+                Thread.currentThread().interrupt();
             }
         }
     }

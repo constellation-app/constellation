@@ -107,7 +107,7 @@ public class UpdateDataTaskNGTest {
         
         when(existingRowList.comparatorProperty()).thenReturn(existingRowComparatorProperty);
         
-        tableService = spy(new TableService(existingRowList, null, null));
+        tableService = spy(new TableService(existingRowList, null, null, null));
         
         pagination = mock(Pagination.class);
         

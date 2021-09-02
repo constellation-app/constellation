@@ -89,16 +89,16 @@ public class UpdateDataTask implements Runnable {
         // add table data to table
         tableService.setSortedRowList(new SortedList<>(FXCollections.observableArrayList(rows)));
 
-        //need to set the table items to the whole list here so that the filter
-        //picks up the full list of options to filter before we paginate
+        // need to set the table items to the whole list here so that the filter
+        // picks up the full list of options to filter before we paginate
         table.getTableView().setItems(FXCollections.observableArrayList(tableService.getSortedRowList()));
 
         // add user defined filter to the table
         final TableFilter<ObservableList<String>> filter
                 = TableFilter.forTableView(table.getTableView()).lazy(true).apply();
-        filter.setSearchStrategy((t, u) -> {
+        filter.setSearchStrategy((filterTerm, cellText) -> {
             try {
-                return u.toLowerCase().startsWith(t.toLowerCase());
+                return cellText.toLowerCase().startsWith(filterTerm.toLowerCase());
             } catch (final Exception ex) {
                 return false;
             }

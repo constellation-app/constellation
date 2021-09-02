@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.service.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import java.util.ArrayList;
 import java.util.Collections;

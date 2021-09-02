@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.tableview2;
+package au.gov.asd.tac.constellation.views.tableview2.service;
 
 /**
  * TODO This is used in the table service column visibility method.

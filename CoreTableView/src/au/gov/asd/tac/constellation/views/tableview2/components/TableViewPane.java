@@ -28,7 +28,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledFuture;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -79,7 +78,8 @@ public final class TableViewPane extends BorderPane {
         tableService = new TableService(
                 sortedRowList,
                 elementIdToRowIndex,
-                rowToElementIdIndex);
+                rowToElementIdIndex,
+                new TableViewPageFactory(this));
         
         progressBar = new ProgressBar();
         
@@ -101,20 +101,6 @@ public final class TableViewPane extends BorderPane {
         table.getTableView().getSelectionModel().getSelectedItems()
                 .addListener(selectedOnlySelectionListener);
 
-        // Set up the page factory used by the pagination
-        final TableViewPageFactory pageFactory = new TableViewPageFactory(
-                tableService.getSortedRowList(),
-                tableService.getSelectedOnlySelectedRows(),
-                tableTopComponent,
-                table);
-        
-        pageFactory.setTableSelectionListener(tableSelectionListener);
-        pageFactory.setTableComparatorListener(tableComparatorListener);
-        pageFactory.setTableSortTypeListener(tableSortTypeListener);
-        pageFactory.setSelectedOnlySelectionListener(selectedOnlySelectionListener);
-        
-        tableService.setPageFactory(pageFactory);
-        
         // Setup the UI components
         this.tableToolbar = new TableToolbar(tableTopComponent, this, table, tableService);
         this.tableToolbar.init();

@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
-import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.service.UpdateMethod;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;

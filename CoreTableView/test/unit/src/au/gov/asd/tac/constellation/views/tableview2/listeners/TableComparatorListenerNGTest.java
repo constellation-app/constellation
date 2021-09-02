@@ -69,7 +69,7 @@ public class TableComparatorListenerNGTest {
     public void setUpMethod() throws Exception {
         tablePane = mock(TableViewPane.class);
         tableService = spy(new TableService(new SortedList<>(FXCollections.observableArrayList()),
-                new HashMap<>(), new HashMap<>()));
+                new HashMap<>(), new HashMap<>(), null));
         
         tableComparatorListener = new TableComparatorListener(tablePane, tableService);
     }
