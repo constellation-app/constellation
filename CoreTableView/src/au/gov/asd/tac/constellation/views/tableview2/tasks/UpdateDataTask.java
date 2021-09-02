@@ -16,10 +16,9 @@
 package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -100,14 +99,12 @@ public class UpdateDataTask implements Runnable {
                     FXCollections.observableArrayList(filteredRowList)));
             
             getTableService().updatePagination(getTableService().getTablePreferences().getMaxRowsPerPage(),
-                    getTableService().getSortedRowList());
-            Platform.runLater(() -> table.getParentComponent().setCenter(getTableService().getPagination()));
+                    getTableService().getSortedRowList(), table.getParentComponent());
         });
         
         // trigger a pagination update so the table only shows the current page
         getTableService().updatePagination(getTableService().getTablePreferences().getMaxRowsPerPage(),
-                getTableService().getSortedRowList());
-        Platform.runLater(() -> table.getParentComponent().setCenter(getTableService().getPagination()));
+                getTableService().getSortedRowList(), table.getParentComponent());
         
         updateDataLatch.countDown();
 
@@ -142,7 +139,7 @@ public class UpdateDataTask implements Runnable {
      * 
      * @return the table service
      */
-    private TableService getTableService() {
-        return table.getParentComponent().getTableService();
+    private ActiveTableReference getTableService() {
+        return table.getParentComponent().getActiveTableReference();
     }
 }

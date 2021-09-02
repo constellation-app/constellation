@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,8 +49,8 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class CopyMenuNGTest {
-    private TableViewPane tablePane;
-    private TableService tableService;
+    private TablePane tablePane;
+    private ActiveTableReference tableService;
     private Table table;
     private Pagination pagination;
     
@@ -72,13 +72,13 @@ public class CopyMenuNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tablePane = mock(TableViewPane.class);
-        tableService = mock(TableService.class);
+        tablePane = mock(TablePane.class);
+        tableService = mock(ActiveTableReference.class);
         table = mock(Table.class);
         pagination = mock(Pagination.class);
         
         when(tablePane.getTable()).thenReturn(table);
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         when(tableService.getPagination()).thenReturn(pagination);
         
         copyMenu = new CopyMenu(tablePane);

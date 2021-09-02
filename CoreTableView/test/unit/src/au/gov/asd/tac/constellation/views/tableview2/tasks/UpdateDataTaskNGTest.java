@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -61,10 +61,10 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class UpdateDataTaskNGTest {
-    private TableViewPane tablePane;
+    private TablePane tablePane;
     private Table table;
     private TableView<ObservableList<String>> tableView;
-    private TableService tableService;
+    private ActiveTableReference tableService;
     
     private ChangeListener<ObservableList<String>> tableSelectionListener;
     private ListChangeListener selectedOnlySelectionListener;
@@ -95,7 +95,7 @@ public class UpdateDataTaskNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tablePane = mock(TableViewPane.class);
+        tablePane = mock(TablePane.class);
         table = mock(Table.class);
         tableView = mock(TableView.class);
         
@@ -105,12 +105,12 @@ public class UpdateDataTaskNGTest {
         
         when(existingRowList.comparatorProperty()).thenReturn(existingRowComparatorProperty);
         
-        tableService = spy(new TableService(null));
+        tableService = spy(new ActiveTableReference(null));
         tableService.setSortedRowList(existingRowList);
         
         pagination = mock(Pagination.class);
         
-        doReturn(pagination).when(tableService).updatePagination(anyInt(), any(List.class));
+        doReturn(pagination).when(tableService).updatePagination(anyInt(), any(List.class), any(TablePane.class));
         doReturn(pagination).when(tableService).getPagination();
         
         tableSelectionListener = mock(ChangeListener.class);
@@ -131,7 +131,7 @@ public class UpdateDataTaskNGTest {
         when(table.getSelectedOnlySelectionListener()).thenReturn(selectedOnlySelectionListener);
         when(table.getParentComponent()).thenReturn(tablePane);
         
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         
         when(tableView.getSelectionModel()).thenReturn(selectionModel);
         
@@ -192,8 +192,7 @@ public class UpdateDataTaskNGTest {
         assertFalse(filterStrategyCaptor.getValue().test("DEF", "abcdefg"));
         
         // Verify the table is updated with changes and listeners re-applied
-        verify(tableService).updatePagination(42, newRowList);
-        verify(tablePane).setCenter(pagination);
+        verify(tableService).updatePagination(42, newRowList, tablePane);
         
         verify(selectedItemProperty).addListener(tableSelectionListener);
         verify(selectedItems).addListener(selectedOnlySelectionListener);
@@ -232,8 +231,6 @@ public class UpdateDataTaskNGTest {
                             new FilteredList<>(FXCollections.observableArrayList(rows),
                                     predicate)
                     )
-        ));
-        
-        verify(tablePane).setCenter(pagination);
+        ), tablePane);
     }
 }

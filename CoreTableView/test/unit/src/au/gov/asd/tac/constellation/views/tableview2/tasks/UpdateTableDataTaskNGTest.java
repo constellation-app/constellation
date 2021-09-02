@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.tableview2.tasks;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.tableview2.components.ProgressBar;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
@@ -63,7 +63,7 @@ public class UpdateTableDataTaskNGTest {
     
     @Test
     public void updateDataTask() {
-        final TableViewPane tablePane = mock(TableViewPane.class);
+        final TablePane tablePane = mock(TablePane.class);
         final Graph graph = mock(Graph.class);
         final TableViewState tableViewState = new TableViewState();
         

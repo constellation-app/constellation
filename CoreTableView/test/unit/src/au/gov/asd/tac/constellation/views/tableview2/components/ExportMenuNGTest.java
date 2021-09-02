@@ -21,12 +21,12 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.components.ExportMenu.ExportMenuItemActionHandler;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToCsvFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToExcelFilePlugin;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
 import java.io.File;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -66,9 +66,9 @@ public class ExportMenuNGTest {
     private static final String GRAPH_ID = "graphId";
     
     private TableViewTopComponent tableTopComponent;
-    private TableViewPane tablePane;
+    private TablePane tablePane;
     private Table table;
-    private TableService tableService;
+    private ActiveTableReference tableService;
     
     private ExportMenu exportMenu;
     
@@ -89,13 +89,13 @@ public class ExportMenuNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
-        tablePane = mock(TableViewPane.class);
+        tablePane = mock(TablePane.class);
         table = mock(Table.class);
-        tableService = mock(TableService.class);
+        tableService = mock(ActiveTableReference.class);
         
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         
         exportMenu = new ExportMenu(tablePane);
     }

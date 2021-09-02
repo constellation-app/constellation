@@ -22,9 +22,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.service.UpdateMethod;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.state.Column;
+import au.gov.asd.tac.constellation.views.tableview2.api.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,9 +68,9 @@ import org.testng.annotations.Test;
  */
 public class ColumnVisibilityContextMenuNGTest {
     private TableViewTopComponent tableTopComponent;
-    private TableViewPane tablePane;
+    private TablePane tablePane;
     private Table table;
-    private TableService tableService;
+    private ActiveTableReference tableService;
     private Graph graph;
     private ReadableGraph readableGraph;
     private TableViewState tableViewState;
@@ -112,9 +112,9 @@ public class ColumnVisibilityContextMenuNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
-        tablePane = mock(TableViewPane.class);
+        tablePane = mock(TablePane.class);
         table = mock(Table.class);
-        tableService = mock(TableService.class);
+        tableService = mock(ActiveTableReference.class);
         graph = mock(Graph.class);
         readableGraph = mock(ReadableGraph.class);
         
@@ -172,7 +172,7 @@ public class ColumnVisibilityContextMenuNGTest {
         when(table.getColumnIndex()).thenReturn(columnIndex);
         when(table.getParentComponent()).thenReturn(tablePane);
         
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
         
         when(tableTopComponent.getCurrentGraph()).thenReturn(graph);

@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.tableview2.service;
+package au.gov.asd.tac.constellation.views.tableview2.api;
 
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.UpdateMethod;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
@@ -27,8 +30,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -62,15 +67,15 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableServiceNGTest {
+public class ActiveTableReferenceNGTest {
     private SortedList<ObservableList<String>> sortedRowList;
     private Map<Integer, ObservableList<String>> elementIdToRowIndex;
     private Map<ObservableList<String>, Integer> rowToElementIdIndex;
     private TableViewPageFactory pageFactory;
     
-    private TableService tableService;
+    private ActiveTableReference tableService;
     
-    public TableServiceNGTest() {
+    public ActiveTableReferenceNGTest() {
     }
 
     @BeforeClass
@@ -92,7 +97,7 @@ public class TableServiceNGTest {
         
         pageFactory = mock(TableViewPageFactory.class);
         
-        tableService = spy(new TableService(pageFactory));
+        tableService = spy(new ActiveTableReference(pageFactory));
         
         doReturn(sortedRowList).when(tableService).getSortedRowList();
         doReturn(rowToElementIdIndex).when(tableService).getRowToElementIdIndex();
@@ -240,52 +245,83 @@ public class TableServiceNGTest {
     @Test
     public void updatePaginationNoNewRowList() {
         final Pagination pagination = mock(Pagination.class);
+        final TablePane tablePane = mock(TablePane.class);
         
         doReturn(pagination).when(tableService)
-                .updatePagination(eq(22), same(sortedRowList));
+                .updatePagination(eq(22), same(sortedRowList), same(tablePane));
         
-        assertSame(pagination, tableService.updatePagination(22));
+        assertSame(pagination, tableService.updatePagination(22, tablePane));
     }
     
     @Test(expectedExceptions = NullPointerException.class)
     public void updatePaginationPageFactoryNotSet() {
-        final TableService localTableService = new TableService(null);
-        localTableService.updatePagination(22, sortedRowList);
+        final ActiveTableReference localTableService = new ActiveTableReference(null);
+        localTableService.updatePagination(22, sortedRowList, mock(TablePane.class));
     }
     
     @Test
-    public void updatePagination() {
+    public void updatePagination() throws InterruptedException {
         final List<ObservableList<String>> newRowList = IntStream.range(0, 45)
                                 .mapToObj(i -> FXCollections.observableList(List.of(Integer.toString(i))))
                                 .collect(Collectors.toList());
+        final TablePane tablePane = mock(TablePane.class);
         
-        final Pagination pagination = tableService.updatePagination(22, newRowList);
+        final Pagination pagination = tableService.updatePagination(22, newRowList, tablePane);
         
         assertEquals(3, pagination.getPageCount());
         assertSame(pageFactory, pagination.getPageFactory());
         verify(pageFactory).update(same(newRowList), eq(22));
+        
+        // This verification is dependent on code completing in the UI thread so
+        // the following ensures that the verification does not occur until
+        // the required code is run.
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> latch.countDown());
+        latch.await();
+        
+        verify(tablePane).setCenter(same(pagination));
     }
     
     @Test
-    public void updatePaginationNewRowListNull() {
+    public void updatePaginationNewRowListNull() throws InterruptedException {
         final List<ObservableList<String>> newRowList = null;
+        final TablePane tablePane = mock(TablePane.class);
         
-        final Pagination pagination = tableService.updatePagination(22, newRowList);
+        final Pagination pagination = tableService.updatePagination(22, newRowList, tablePane);
         
         assertEquals(1, pagination.getPageCount());
         assertSame(pageFactory, pagination.getPageFactory());
         verify(pageFactory).update(same(newRowList), eq(22));
+        
+        // This verification is dependent on code completing in the UI thread so
+        // the following ensures that the verification does not occur until
+        // the required code is run.
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> latch.countDown());
+        latch.await();
+        
+        verify(tablePane).setCenter(same(pagination));
     }
     
     @Test
-    public void updatePaginationNewRowListEmpty() {
+    public void updatePaginationNewRowListEmpty() throws InterruptedException {
         final List<ObservableList<String>> newRowList = new ArrayList<>();
+        final TablePane tablePane = mock(TablePane.class);
         
-        final Pagination pagination = tableService.updatePagination(22, newRowList);
+        final Pagination pagination = tableService.updatePagination(22, newRowList, tablePane);
         
         assertEquals(1, pagination.getPageCount());
         assertSame(pageFactory, pagination.getPageFactory());
         verify(pageFactory).update(same(newRowList), eq(22));
+        
+        // This verification is dependent on code completing in the UI thread so
+        // the following ensures that the verification does not occur until
+        // the required code is run.
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> latch.countDown());
+        latch.await();
+        
+        verify(tablePane).setCenter(same(pagination));
     }
     
     private Answer<PluginExecution> executeUpdateStatePlugin(final PluginExecution pluginExecution,

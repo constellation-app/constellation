@@ -20,12 +20,12 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.TABLE_LOCK;
+import static au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIoProvider;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.service.UpdateMethod;
-import au.gov.asd.tac.constellation.views.tableview2.state.Column;
-import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.api.Column;
+import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -66,7 +66,7 @@ public class PreferencesMenu {
     
     private final ToggleGroup pageSizeToggle = new ToggleGroup();
     
-    private final TableViewPane tablePane;
+    private final TablePane tablePane;
     
     private MenuButton preferencesButton;
     private MenuItem savePreferencesMenu;
@@ -78,7 +78,7 @@ public class PreferencesMenu {
      *
      * @param tablePane
      */
-    public PreferencesMenu(final TableViewPane tablePane) {
+    public PreferencesMenu(final TablePane tablePane) {
         this.tablePane = tablePane;
     }
     
@@ -118,10 +118,10 @@ public class PreferencesMenu {
                             + "thread work to complete.");
                 }
                 
-                tablePane.getTableService().updatePagination(
-                        tablePane.getTableService().getTablePreferences().getMaxRowsPerPage()
+                tablePane.getActiveTableReference().updatePagination(
+                        tablePane.getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+                        tablePane
                 );
-                Platform.runLater(() -> tablePane.setCenter(tablePane.getTableService().getPagination()));
             }
             e.consume();
         });
@@ -184,8 +184,8 @@ public class PreferencesMenu {
      * 
      * @return the table service
      */
-    private TableService getTableService() {
-        return tablePane.getTableService();
+    private ActiveTableReference getTableService() {
+        return tablePane.getActiveTableReference();
     }
     
     /**
@@ -227,9 +227,9 @@ public class PreferencesMenu {
                                 if (getTableService().getTablePreferences().getMaxRowsPerPage() != pageSize) {
                                     getTableService().getTablePreferences().setMaxRowsPerPage(pageSize);
                                     getTableService().updatePagination(
-                                            getTableService().getTablePreferences().getMaxRowsPerPage()
+                                            getTableService().getTablePreferences().getMaxRowsPerPage(),
+                                            tablePane
                                     );
-                                    Platform.runLater(() -> tablePane.setCenter(getTableService().getPagination()));
                                 }
                             });
                             if (pageSize == TablePreferences.DEFAULT_MAX_ROWS_PER_PAGE) {

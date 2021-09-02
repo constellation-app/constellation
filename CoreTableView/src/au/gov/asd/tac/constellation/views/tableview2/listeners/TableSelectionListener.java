@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import javafx.beans.value.ChangeListener;
@@ -65,7 +65,7 @@ public class TableSelectionListener implements ChangeListener<ObservableList<Str
                 && !getTableTopComponent().getCurrentState().isSelectedOnly()) {
             TableViewUtilities.copySelectionToGraph(
                     table.getTableView(),
-                    table.getParentComponent().getTableService().getRowToElementIdIndex(),
+                    table.getParentComponent().getActiveTableReference().getRowToElementIdIndex(),
                     getTableTopComponent().getCurrentState().getElementType(),
                     getTableTopComponent().getCurrentGraph()
             );

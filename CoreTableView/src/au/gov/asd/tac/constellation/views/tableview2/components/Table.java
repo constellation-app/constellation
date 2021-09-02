@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
+import au.gov.asd.tac.constellation.views.tableview2.utils.ColumnIndexSort;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -23,12 +24,12 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttribut
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
-import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.TABLE_LOCK;
+import static au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableCellFactory;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.SelectedOnlySelectionListener;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSelectionListener;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.state.Column;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.Column;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateColumnsTask;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateDataTask;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
@@ -68,7 +69,7 @@ public class Table {
     private static final String ATTEMPT_PROCESS_JAVAFX = "Attempting to process on the JavaFX Application Thread";
     private static final String ATTEMPT_PROCESS_EDT = "Attempting to process on the EDT";
 
-    private final TableViewPane tablePane;
+    private final TablePane tablePane;
     private final TableView<ObservableList<String>> tableView;
     
     private final CopyOnWriteArrayList<Column> columnIndex;
@@ -89,7 +90,7 @@ public class Table {
      *
      * @param tablePane the pane that contains this table
      */
-    public Table(final TableViewPane tablePane) {
+    public Table(final TablePane tablePane) {
         this.tablePane = tablePane;
         
         this.tableView = new TableView<>();
@@ -424,7 +425,7 @@ public class Table {
 
     /**
      * Gets a listener that listens for table selections and updates
-     * the {@link TableService#selectedOnlySelectedRows} list with the current
+     * the {@link ActiveTableReference#selectedOnlySelectedRows} list with the current
      * selection. This listener only does this if the "Selected Only Mode" <b>IS</>
      * active.
      *
@@ -452,7 +453,7 @@ public class Table {
      *
      * @return the parent component
      */
-    public TableViewPane getParentComponent() {
+    public TablePane getParentComponent() {
         return tablePane;
     }
     
@@ -461,8 +462,8 @@ public class Table {
      *
      * @return the table service
      */
-    public TableService getTableService() {
-        return getParentComponent().getTableService();
+    public ActiveTableReference getTableService() {
+        return getParentComponent().getActiveTableReference();
     }
     
     /**
@@ -538,8 +539,8 @@ public class Table {
      * the value entered will be sourced from the source and destination vertices
      * respectively.
      * <p/>
-     * During this the {@link TableService#elementIdToRowIndex} and
-     * {@link TableService#rowToElementIdIndex} maps are populated.
+     * During this the {@link ActiveTableReference#elementIdToRowIndex} and
+     * {@link ActiveTableReference#rowToElementIdIndex} maps are populated.
      *
      * @param readableGraph the graph to build the row from
      * @param transactionId the ID of the transaction in the graph to build the row from

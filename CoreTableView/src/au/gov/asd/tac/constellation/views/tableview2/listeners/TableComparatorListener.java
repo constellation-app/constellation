@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import java.util.Comparator;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -30,20 +30,20 @@ import javafx.collections.ObservableList;
  */
 public class TableComparatorListener implements ChangeListener<Comparator<? super ObservableList<String>>> {
     
-    private final TableViewPane tablePane;
+    private final TablePane tablePane;
     
     /**
      * Creates a new table comparator listener.
      *
      * @param tablePane the pane containing the table view
      */
-    public TableComparatorListener(final TableViewPane tablePane) {
+    public TableComparatorListener(final TablePane tablePane) {
         this.tablePane = tablePane;
     }
     
     /**
      * Updates the table pagination based on the new sort order. Uses the flag
-     * {@link TableService#sortingListenerActive} in order to prevent more than
+     * {@link ActiveTableReference#sortingListenerActive} in order to prevent more than
      * one pagination update from happening at any one time due to a multiple
      * sort changes.
      * 
@@ -57,15 +57,14 @@ public class TableComparatorListener implements ChangeListener<Comparator<? supe
     public void changed(final ObservableValue<? extends Comparator<? super ObservableList<String>>> observable,
                         final Comparator<? super ObservableList<String>> oldValue,
                         final Comparator<? super ObservableList<String>> newValue) {
-        if (!tablePane.getTableService().isSortingListenerActive()) {
-            tablePane.getTableService().setSortingListenerActive(true);
-            tablePane.getTableService().updatePagination(
-                    tablePane.getTableService().getTablePreferences().getMaxRowsPerPage()
+        if (!tablePane.getActiveTableReference().isSortingListenerActive()) {
+            tablePane.getActiveTableReference().setSortingListenerActive(true);
+            tablePane.getActiveTableReference().updatePagination(
+                    tablePane.getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+                    tablePane
             );
             
-            Platform.runLater(() -> tablePane.setCenter(tablePane.getTableService().getPagination()));
-            
-            tablePane.getTableService().setSortingListenerActive(false);
+            tablePane.getActiveTableReference().setSortingListenerActive(false);
         }
     }
     

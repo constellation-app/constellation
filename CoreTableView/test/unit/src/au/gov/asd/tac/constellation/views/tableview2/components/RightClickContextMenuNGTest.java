@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValueBase;

@@ -22,11 +22,11 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.service.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.api.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIoProvider;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.state.Column;
-import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.Column;
+import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.Collections;
 import java.util.List;
@@ -81,9 +81,9 @@ import org.testng.annotations.Test;
  */
 public class PreferenceMenuNGTest {
     private TableViewTopComponent tableTopComponent;
-    private TableViewPane tablePane;
+    private TablePane tablePane;
     private Table table;
-    private TableService tableService;
+    private ActiveTableReference tableService;
     
     private PreferencesMenu preferencesMenu;
     
@@ -104,13 +104,13 @@ public class PreferenceMenuNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
-        tablePane = mock(TableViewPane.class);
+        tablePane = mock(TablePane.class);
         table = mock(Table.class);
-        tableService = mock(TableService.class);
+        tableService = mock(ActiveTableReference.class);
         
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         
         preferencesMenu = spy(new PreferencesMenu(tablePane));
     }
@@ -378,9 +378,8 @@ public class PreferenceMenuNGTest {
                 Platform.runLater(() -> latch.countDown());
                 latch.await();
 
-                verify(tableService).updatePagination(42);
+                verify(tableService).updatePagination(42, tablePane);
                 verify(preferencesMenu).loadPreferences();
-                verify(tablePane).setCenter(pagination);
             }
             verify(actionEvent).consume();
         }
@@ -517,8 +516,7 @@ public class PreferenceMenuNGTest {
         // The action was called twice but the update should only happen once as
         // it was the same page size. No change for the second action
         assertEquals(pageSize, tablePreferences.getMaxRowsPerPage());
-        verify(tableService).updatePagination(pageSize);
-        verify(tablePane).setCenter(pagination);
+        verify(tableService).updatePagination(pageSize, tablePane);
     }
     
     /**

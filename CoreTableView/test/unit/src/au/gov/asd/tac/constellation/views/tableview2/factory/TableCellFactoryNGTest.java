@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.tableview2.factory;
 
 import au.gov.asd.tac.constellation.views.tableview2.components.RightClickContextMenu;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.state.Column;
+import au.gov.asd.tac.constellation.views.tableview2.api.Column;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javafx.collections.FXCollections;

@@ -59,7 +59,7 @@ public class ExportMenu {
     
     private static final int WIDTH = 120;
     
-    private final TableViewPane tablePane;
+    private final TablePane tablePane;
     
     private MenuButton exportButton;
     private MenuItem exportCsvMenu;
@@ -72,7 +72,7 @@ public class ExportMenu {
      *
      * @param tablePane
      */
-    public ExportMenu(final TableViewPane tablePane) {
+    public ExportMenu(final TablePane tablePane) {
         this.tablePane = tablePane;
     }
     
@@ -91,7 +91,7 @@ public class ExportMenu {
                 file -> new ExportToCsvFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
-                        tablePane.getTableService().getPagination(),
+                        tablePane.getActiveTableReference().getPagination(),
                         false
                 )
         );
@@ -104,7 +104,7 @@ public class ExportMenu {
                 file -> new ExportToCsvFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
-                        tablePane.getTableService().getPagination(),
+                        tablePane.getActiveTableReference().getPagination(),
                         true
                 )
         );
@@ -117,8 +117,8 @@ public class ExportMenu {
                 file -> new ExportToExcelFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
-                        tablePane.getTableService().getPagination(),
-                        tablePane.getTableService().getTablePreferences().getMaxRowsPerPage(),
+                        tablePane.getActiveTableReference().getPagination(),
+                        tablePane.getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
                         false,
                         tablePane.getParentComponent().getCurrentGraph().getId()
                 )
@@ -132,8 +132,8 @@ public class ExportMenu {
                 file -> new ExportToExcelFilePlugin(
                         file, 
                         tablePane.getTable().getTableView(),
-                        tablePane.getTableService().getPagination(),
-                        tablePane.getTableService().getTablePreferences().getMaxRowsPerPage(),
+                        tablePane.getActiveTableReference().getPagination(),
+                        tablePane.getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
                         true,
                         tablePane.getParentComponent().getCurrentGraph().getId()
                 )

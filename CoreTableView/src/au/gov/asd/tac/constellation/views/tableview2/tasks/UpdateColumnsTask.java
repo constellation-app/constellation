@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
-import au.gov.asd.tac.constellation.views.tableview2.service.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.api.UpdateMethod;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
 import java.util.Map;
@@ -170,7 +170,7 @@ public class UpdateColumnsTask implements Runnable {
      * will persist sort preferences in cases where an update causes them to be dropped
      * from the UI.
      * 
-     * @see TableService#saveSortDetails(java.lang.String, javafx.scene.control.TableColumn.SortType)
+     * @see ActiveTableReference#saveSortDetails(java.lang.String, javafx.scene.control.TableColumn.SortType)
      */
     protected void saveSortDetails() {
         if (table.getTableView().getSortOrder() != null && table.getTableView().getSortOrder().size() > 0) {
@@ -188,8 +188,8 @@ public class UpdateColumnsTask implements Runnable {
      * 
      * @return the table service
      */
-    private TableService getTableService() {
-        return table.getParentComponent().getTableService();
+    private ActiveTableReference getTableService() {
+        return table.getParentComponent().getActiveTableReference();
     }
     
     /**

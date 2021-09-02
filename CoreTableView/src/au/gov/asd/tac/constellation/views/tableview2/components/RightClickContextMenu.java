@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ContextMenu;

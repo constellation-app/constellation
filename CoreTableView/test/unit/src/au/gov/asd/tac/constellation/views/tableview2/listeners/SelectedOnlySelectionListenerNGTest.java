@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.HashSet;
 import java.util.List;
@@ -46,10 +46,10 @@ public class SelectedOnlySelectionListenerNGTest {
     private SelectedOnlySelectionListener selectedOnlySelectionListener;
     
     private TableViewTopComponent tableTopComponent;
-    private TableViewPane tablePane;
+    private TablePane tablePane;
     private Table table;
     private TableView<ObservableList<String>> tableView;
-    private TableService tableService;
+    private ActiveTableReference tableService;
     private Set<ObservableList<String>> selectedOnlySelectedRows;
     
     public SelectedOnlySelectionListenerNGTest() {
@@ -69,10 +69,10 @@ public class SelectedOnlySelectionListenerNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
-        tablePane = mock(TableViewPane.class);
+        tablePane = mock(TablePane.class);
         table = mock(Table.class);
         tableView = mock(TableView.class);
-        tableService = mock(TableService.class);
+        tableService = mock(ActiveTableReference.class);
         
         selectedOnlySelectedRows = new HashSet<>();
         
@@ -80,7 +80,7 @@ public class SelectedOnlySelectionListenerNGTest {
         when(table.getTableView()).thenReturn(tableView);
         
         when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         
         when(tableService.getSelectedOnlySelectedRows()).thenReturn(selectedOnlySelectedRows);
         

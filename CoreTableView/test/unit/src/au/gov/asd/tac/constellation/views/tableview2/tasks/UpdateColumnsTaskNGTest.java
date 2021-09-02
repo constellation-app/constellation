@@ -20,10 +20,10 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
-import au.gov.asd.tac.constellation.views.tableview2.service.UpdateMethod;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.state.Column;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
+import au.gov.asd.tac.constellation.views.tableview2.api.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,9 +64,9 @@ import org.testng.annotations.Test;
 public class UpdateColumnsTaskNGTest {
     private TableViewTopComponent tableTopComponent;
     private TableView<ObservableList<String>> tableView;
-    private TableViewPane tablePane;
+    private TablePane tablePane;
     private Table table;
-    private TableService tableService;
+    private ActiveTableReference tableService;
     
     private ChangeListener<ObservableList<String>> tableSelectionListener;
     private ListChangeListener selectedOnlySelectionListener;
@@ -113,9 +113,9 @@ public class UpdateColumnsTaskNGTest {
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
         tableView = mock(TableView.class);
-        tablePane = mock(TableViewPane.class);
+        tablePane = mock(TablePane.class);
         table = mock(Table.class);
-        tableService = mock(TableService.class);
+        tableService = mock(ActiveTableReference.class);
         selectionModel = mock(TableViewSelectionModel.class);
         selectedItemProperty = mock(ReadOnlyObjectProperty.class);
         selectedItems = mock(ObservableList.class);
@@ -152,7 +152,7 @@ public class UpdateColumnsTaskNGTest {
         when(tableTopComponent.getTablePane()).thenReturn(tablePane);
         
         when(tablePane.getTable()).thenReturn(table);
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
         
         when(table.getTableView()).thenReturn(tableView);

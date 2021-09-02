@@ -23,10 +23,10 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
 import java.util.Set;
@@ -38,9 +38,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Pagination;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -187,7 +184,7 @@ public class TableViewTopComponentNGTest {
         expectedNewState.setElementType(GraphElementType.META);
         expectedNewState.setSelectedOnly(true);
         
-        final TableViewPane tablePane = mock(TableViewPane.class);
+        final TablePane tablePane = mock(TablePane.class);
         
         final Table table = mock(Table.class);
         
@@ -260,15 +257,15 @@ public class TableViewTopComponentNGTest {
     @Test
     public void handleGraphClosed() throws InterruptedException {
         final TableViewTopComponent tableTopComponent = mock(TableViewTopComponent.class);
-        final TableViewPane tablePane = mock(TableViewPane.class);
-        final TableService tableService = mock(TableService.class);
+        final TablePane tablePane = mock(TablePane.class);
+        final ActiveTableReference tableService = mock(ActiveTableReference.class);
         final Pagination pagination = mock(Pagination.class);
         
         final TablePreferences tablePreferences = new TablePreferences();
         tablePreferences.setMaxRowsPerPage(42);
         
         when(tableTopComponent.getTablePane()).thenReturn(tablePane);
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         when(tableService.getTablePreferences()).thenReturn(tablePreferences);
         when(tableService.getPagination()).thenReturn(pagination);
         
@@ -276,12 +273,7 @@ public class TableViewTopComponentNGTest {
         
         tableTopComponent.handleGraphClosed(mock(Graph.class));
         
-        final CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(() -> latch.countDown());
-        latch.await();
-        
-        verify(tableService).updatePagination(42, null);
-        verify(tablePane).setCenter(pagination);
+        verify(tableService).updatePagination(42, null, tablePane);
     }
     
     @Test

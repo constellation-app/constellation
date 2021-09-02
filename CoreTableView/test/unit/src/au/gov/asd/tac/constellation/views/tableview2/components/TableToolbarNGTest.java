@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
 import java.util.Optional;
@@ -67,9 +67,9 @@ import org.testng.annotations.Test;
  */
 public class TableToolbarNGTest {
     private TableViewTopComponent tableTopComponent;
-    private TableViewPane tablePane;
+    private TablePane tablePane;
     private Table table;
-    private TableService tableService;
+    private ActiveTableReference tableService;
     private Graph graph;
     
     private CopyMenu copyMenu;
@@ -101,9 +101,9 @@ public class TableToolbarNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
-        tablePane = mock(TableViewPane.class);
+        tablePane = mock(TablePane.class);
         table = mock(Table.class);
-        tableService = mock(TableService.class);
+        tableService = mock(ActiveTableReference.class);
         graph = mock(Graph.class);
         
         copyMenu = mock(CopyMenu.class);
@@ -125,7 +125,7 @@ public class TableToolbarNGTest {
         
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         
         when(copyMenu.getCopyButton()).thenReturn(copyMenuButton);
         when(exportMenu.getExportButton()).thenReturn(exportMenuButton);

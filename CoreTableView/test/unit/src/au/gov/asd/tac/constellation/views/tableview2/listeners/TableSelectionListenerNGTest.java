@@ -18,10 +18,10 @@ package au.gov.asd.tac.constellation.views.tableview2.listeners;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,10 +48,10 @@ public class TableSelectionListenerNGTest {
     private TableSelectionListener tableSelectionListener;
     
     private TableViewTopComponent tableTopComponent;
-    private TableViewPane tablePane;
+    private TablePane tablePane;
     private Table table;
     private TableView<ObservableList<String>> tableView;
-    private TableService tableService;
+    private ActiveTableReference tableService;
     private Map<ObservableList<String>, Integer> rowToElementIdIndex;
     
     public TableSelectionListenerNGTest() {
@@ -71,10 +71,10 @@ public class TableSelectionListenerNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
-        tablePane = mock(TableViewPane.class);
+        tablePane = mock(TablePane.class);
         table = mock(Table.class);
         tableView = mock(TableView.class);
-        tableService = mock(TableService.class);
+        tableService = mock(ActiveTableReference.class);
         
         rowToElementIdIndex = new HashMap<>();
         
@@ -82,7 +82,7 @@ public class TableSelectionListenerNGTest {
         when(table.getTableView()).thenReturn(tableView);
         
         when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         
         when(tableService.getRowToElementIdIndex()).thenReturn(rowToElementIdIndex);
         

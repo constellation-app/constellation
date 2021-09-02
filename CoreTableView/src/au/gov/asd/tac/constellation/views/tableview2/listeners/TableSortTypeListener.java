@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,20 +29,20 @@ import javafx.scene.control.TableColumn;
  */
 public class TableSortTypeListener implements ChangeListener<TableColumn.SortType> {
 
-    private final TableViewPane tablePane;
+    private final TablePane tablePane;
     
     /**
      * Creates a new table sort type listener.
      *
      * @param tablePane the pane containing the table view
      */
-    public TableSortTypeListener(final TableViewPane tablePane) {
+    public TableSortTypeListener(final TablePane tablePane) {
         this.tablePane = tablePane;
     }
     
     /**
      * Updates the table pagination based on the new sort order. Uses the flag
-     * {@link TableService#sortingListenerActive} in order to prevent more than
+     * {@link ActiveTableReference#sortingListenerActive} in order to prevent more than
      * one pagination update from happening at any one time due to a multiple
      * sort changes.
      *
@@ -56,15 +56,14 @@ public class TableSortTypeListener implements ChangeListener<TableColumn.SortTyp
     public void changed(final ObservableValue<? extends TableColumn.SortType> observable,
                         final TableColumn.SortType oldValue,
                         final TableColumn.SortType newValue) {
-        if (!tablePane.getTableService().isSortingListenerActive()) {
-            tablePane.getTableService().setSortingListenerActive(true);
-            tablePane.getTableService().updatePagination(
-                    tablePane.getTableService().getTablePreferences().getMaxRowsPerPage()
+        if (!tablePane.getActiveTableReference().isSortingListenerActive()) {
+            tablePane.getActiveTableReference().setSortingListenerActive(true);
+            tablePane.getActiveTableReference().updatePagination(
+                    tablePane.getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+                    tablePane
             );
             
-            Platform.runLater(() -> tablePane.setCenter(tablePane.getTableService().getPagination()));
-            
-            tablePane.getTableService().setSortingListenerActive(false);
+            tablePane.getActiveTableReference().setSortingListenerActive(false);
         }
     }
     

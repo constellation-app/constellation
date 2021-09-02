@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
@@ -38,7 +38,7 @@ public class CopyMenu {
     
     private static final int WIDTH = 120;
     
-    private final TableViewPane tablePane;
+    private final TablePane tablePane;
     
     private MenuButton copyButton;
     private MenuItem copyTableMenu;
@@ -49,7 +49,7 @@ public class CopyMenu {
      *
      * @param tablePane 
      */
-    public CopyMenu(final TableViewPane tablePane) {
+    public CopyMenu(final TablePane tablePane) {
         this.tablePane = tablePane;
     }
 
@@ -154,7 +154,7 @@ public class CopyMenu {
         @Override
         public void handle(ActionEvent event) {
             final String data = TableViewUtilities.getTableData(tablePane.getTable().getTableView(),
-                    tablePane.getTableService().getPagination(), false, selected);
+                    tablePane.getActiveTableReference().getPagination(), false, selected);
             TableViewUtilities.copyToClipboard(data);
             event.consume();
         }

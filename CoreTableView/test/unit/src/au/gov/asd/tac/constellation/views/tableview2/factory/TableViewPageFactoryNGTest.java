@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -74,8 +74,8 @@ public class TableViewPageFactoryNGTest {
     private TableViewTopComponent tableTopComponent;
     private TableView<ObservableList<String>> tableView;
     private Table table;
-    private TableViewPane tablePane;
-    private TableService tableService;
+    private TablePane tablePane;
+    private ActiveTableReference tableService;
     
     private TableViewSelectionModel selectionModel;
     private ObservableList<String> selectedItems;
@@ -115,8 +115,8 @@ public class TableViewPageFactoryNGTest {
         tableTopComponent = mock(TableViewTopComponent.class);
         tableView = mock(TableView.class);
         table = mock(Table.class);
-        tablePane = mock(TableViewPane.class);
-        tableService = mock(TableService.class);
+        tablePane = mock(TablePane.class);
+        tableService = mock(ActiveTableReference.class);
         
         selectionModel = mock(TableViewSelectionModel.class);
         selectedItems = mock(ObservableList.class);
@@ -142,7 +142,7 @@ public class TableViewPageFactoryNGTest {
         
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         
         when(tableService.getSelectedOnlySelectedRows()).thenReturn(selectedOnlySelectedRows);
         when(tableService.getSortedRowList()).thenReturn(sortedRowList);

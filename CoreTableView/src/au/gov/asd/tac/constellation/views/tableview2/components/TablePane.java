@@ -18,9 +18,8 @@ package au.gov.asd.tac.constellation.views.tableview2.components;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import javafx.application.Platform;
 import javafx.scene.layout.BorderPane;
@@ -32,14 +31,14 @@ import javafx.scene.layout.BorderPane;
  * @author cygnus_x-1
  * @author antares
  */
-public final class TableViewPane extends BorderPane {
+public final class TablePane extends BorderPane {
     private final TableViewTopComponent parentComponent;
     
     private final Table table;
     private final TableToolbar tableToolbar;
     private final ProgressBar progressBar;
 
-    private final TableService tableService;
+    private final ActiveTableReference activeTableReference;
 
     private Future<?> future;
 
@@ -48,7 +47,7 @@ public final class TableViewPane extends BorderPane {
      *
      * @param tableTopComponent the top component for the table plugin
      */
-    public TableViewPane(final TableViewTopComponent parentComponent) {
+    public TablePane(final TableViewTopComponent parentComponent) {
         this.parentComponent = parentComponent;
         
         // Because the page factory doesn't start getting used until this
@@ -57,14 +56,14 @@ public final class TableViewPane extends BorderPane {
         // will not happen until update paginate is called which happens
         // at the end of this constructor.
         // #dodgycode
-        tableService = new TableService(new TableViewPageFactory(this));
+        activeTableReference = new ActiveTableReference(new TableViewPageFactory(this));
         
         progressBar = new ProgressBar();
         
         // Create table UI component
         table = new Table(this);
         
-        tableService.getSortedRowList().comparatorProperty()
+        activeTableReference.getSortedRowList().comparatorProperty()
                 .bind(table.getTableView().comparatorProperty());
         
         // Setup the UI components
@@ -74,8 +73,7 @@ public final class TableViewPane extends BorderPane {
         setLeft(tableToolbar.getToolbar());
         
         // Initiate table update and initialisation
-        tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
-        Platform.runLater(() -> setCenter(tableService.getPagination()));
+        activeTableReference.updatePagination(activeTableReference.getTablePreferences().getMaxRowsPerPage(), this);
     }
 
     /**
@@ -112,19 +110,23 @@ public final class TableViewPane extends BorderPane {
     }
 
     /**
-     * 
-     * @return 
+     * Gets a {@link BorderPane} that represents a progress bar that is activated
+     * during long running updates like table row refreshes.
+     *
+     * @return the table progress bar
      */
     public ProgressBar getProgressBar() {
         return progressBar;
     }
 
     /**
-     * 
-     * @return 
+     * Gets the table reference for this instance. The table reference provides
+     * access to the current pagination, table preferences, current table rows etc.
+     *
+     * @return the current table reference
      */
-    public TableService getTableService() {
-        return tableService;
+    public ActiveTableReference getActiveTableReference() {
+        return activeTableReference;
     }
 
     /**
@@ -147,6 +149,11 @@ public final class TableViewPane extends BorderPane {
         return tableToolbar;
     }
 
+    /**
+     * Get the top component for the table.
+     *
+     * @return the table top component
+     */
     public TableViewTopComponent getParentComponent() {
         return parentComponent;
     }

@@ -24,9 +24,9 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttribut
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.state.Column;
-import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.Column;
+import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateDataTask;
 import java.util.HashMap;
@@ -79,8 +79,8 @@ import org.testng.annotations.Test;
  */
 public class TableNGTest {
     private TableViewTopComponent tableTopComponent;
-    private TableViewPane tablePane;
-    private TableService tableService;
+    private TablePane tablePane;
+    private ActiveTableReference tableService;
     private Graph graph;
     
     private Table table;
@@ -102,12 +102,12 @@ public class TableNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
-        tablePane = mock(TableViewPane.class);
-        tableService = mock(TableService.class);
+        tablePane = mock(TablePane.class);
+        tableService = mock(ActiveTableReference.class);
         graph = mock(Graph.class);
         
         when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         
         table = spy(new Table(tablePane));
     }

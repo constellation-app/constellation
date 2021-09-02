@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
-import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.getTableData;
+import static au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities.getTableData;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

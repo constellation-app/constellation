@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableComparatorListener;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSortTypeListener;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class TableViewPageFactory implements Callback<Integer, Node> {
     private static final Logger LOGGER = Logger.getLogger(TableViewPageFactory.class.getName());
     
-    private final TableViewPane tablePane;
+    private final TablePane tablePane;
     
     private final ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
     private final ChangeListener<? super TableColumn.SortType> tableSortTypeListener;
@@ -75,7 +75,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      *
      * @param tablePane the pane that the table has been added to
      */
-    public TableViewPageFactory(final TableViewPane tablePane) {
+    public TableViewPageFactory(final TablePane tablePane) {
         this.tablePane = tablePane;
         
         this.tableComparatorListener = new TableComparatorListener(tablePane);
@@ -130,7 +130,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
             // then that means the selection on the graph has changed. In this case
             // the expected behaviour is to clear the current table selection.
             if (lastAllTableRows == null || lastAllTableRows != allTableRows) {
-                tablePane.getTableService().getSelectedOnlySelectedRows().clear();
+                tablePane.getActiveTableReference().getSelectedOnlySelectedRows().clear();
                 lastAllTableRows = allTableRows;
             }
 
@@ -142,7 +142,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                     = getCurrentSort();
 
             // Unbind the sorted row list comparator property
-            tablePane.getTableService().getSortedRowList().comparatorProperty().unbind();
+            tablePane.getActiveTableReference().getSortedRowList().comparatorProperty().unbind();
 
             // Calculate the rows that will be displayed in the table given the
             // passed index and max rows per page
@@ -158,7 +158,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
             restoreSort(sortBackup);
 
             // Re-bind the sorted row list comparator property
-            tablePane.getTableService().getSortedRowList().comparatorProperty()
+            tablePane.getActiveTableReference().getSortedRowList().comparatorProperty()
                     .bind(tablePane.getTable().getTableView().comparatorProperty());
             
             // Restore the selection
@@ -167,8 +167,8 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                     // The table IS IN selected only mode which means that the row selection
                     // is not based on what is selected in the graph but what rows are in
                     // the list electedOnlySelectedRows. Restore the selection from that list.
-                    if (!tablePane.getTableService().getSelectedOnlySelectedRows().isEmpty()) {
-                        final int[] selectedIndices = tablePane.getTableService().getSelectedOnlySelectedRows().stream()
+                    if (!tablePane.getActiveTableReference().getSelectedOnlySelectedRows().isEmpty()) {
+                        final int[] selectedIndices = tablePane.getActiveTableReference().getSelectedOnlySelectedRows().stream()
                             .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
                             .mapToInt(i -> i)
                             .toArray();
@@ -182,7 +182,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                     restoreSelectionFromGraph(
                             tablePane.getParentComponent().getCurrentGraph(),
                             tablePane.getParentComponent().getCurrentState(),
-                            tablePane.getTableService().getElementIdToRowIndex()
+                            tablePane.getActiveTableReference().getElementIdToRowIndex()
                     );
                 }
             }
@@ -262,7 +262,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
         tablePane.getTable().getTableView().getSelectionModel().getSelectedItems()
                 .addListener(tablePane.getTable().getSelectedOnlySelectionListener());
         tablePane.getTable().getSelectedProperty().addListener(tablePane.getTable().getTableSelectionListener());
-        tablePane.getTableService().getSortedRowList().comparatorProperty()
+        tablePane.getActiveTableReference().getSortedRowList().comparatorProperty()
                 .addListener(getTableComparatorListener());
     }
     
@@ -274,7 +274,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
         tablePane.getTable().getTableView().getSelectionModel().getSelectedItems()
                 .removeListener(tablePane.getTable().getSelectedOnlySelectionListener());
         tablePane.getTable().getSelectedProperty().removeListener(tablePane.getTable().getTableSelectionListener());
-        tablePane.getTableService().getSortedRowList()
+        tablePane.getActiveTableReference().getSortedRowList()
                 .comparatorProperty().removeListener(getTableComparatorListener());
     }
     

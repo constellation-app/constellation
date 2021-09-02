@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.tableview2.tasks;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.tableview2.components.ProgressBar;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 
 /**
@@ -31,7 +31,7 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
  * @see Table#updateData(Graph, TableViewState, ProgressBar) 
  */
 public class TriggerDataUpdateTask implements Runnable {
-    private final TableViewPane tablePane;
+    private final TablePane tablePane;
     private final Graph graph;
     private final TableViewState tableViewState;
     
@@ -42,7 +42,7 @@ public class TriggerDataUpdateTask implements Runnable {
      * @param graph the current graph
      * @param tableViewState the current table state
      */
-    public TriggerDataUpdateTask(final TableViewPane tablePane,
+    public TriggerDataUpdateTask(final TablePane tablePane,
                                  final Graph graph,
                                  final TableViewState tableViewState) {
         this.tablePane = tablePane;

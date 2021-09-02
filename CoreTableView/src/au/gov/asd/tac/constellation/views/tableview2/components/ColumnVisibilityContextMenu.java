@@ -24,9 +24,9 @@ import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.service.UpdateMethod;
-import au.gov.asd.tac.constellation.views.tableview2.state.Column;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview2.api.Column;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -370,8 +370,8 @@ public class ColumnVisibilityContextMenu {
      * 
      * @return the table service
      */
-    private TableService getTableService() {
-        return table.getParentComponent().getTableService();
+    private ActiveTableReference getTableService() {
+        return table.getParentComponent().getActiveTableReference();
     }
     
     /**

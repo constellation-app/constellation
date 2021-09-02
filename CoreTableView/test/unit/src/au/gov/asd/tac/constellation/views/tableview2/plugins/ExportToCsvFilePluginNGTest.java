@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.tableview2.plugins;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

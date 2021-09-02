@@ -15,15 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
-import java.util.HashMap;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.transformation.SortedList;
 import javafx.scene.control.Pagination;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.same;
 import org.mockito.Mockito;
@@ -48,8 +46,8 @@ import org.testng.annotations.Test;
 public class TableSortTypeListenerNGTest {
     private TableSortTypeListener tableSortTypeListener;
     
-    private TableViewPane tablePane;
-    private TableService tableService;
+    private TablePane tablePane;
+    private ActiveTableReference tableService;
     
     public TableSortTypeListenerNGTest() {
     }
@@ -67,9 +65,9 @@ public class TableSortTypeListenerNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tablePane = mock(TableViewPane.class);
-        tableService = spy(new TableService(null));
-        when(tablePane.getTableService()).thenReturn(tableService);
+        tablePane = mock(TablePane.class);
+        tableService = spy(new ActiveTableReference(null));
+        when(tablePane.getActiveTableReference()).thenReturn(tableService);
         
         tableSortTypeListener = new TableSortTypeListener(tablePane);
     }
@@ -84,7 +82,7 @@ public class TableSortTypeListenerNGTest {
         
         tableSortTypeListener.changed(null, null, null);
         
-        verify(tableService, times(0)).updatePagination(anyInt());
+        verify(tableService, times(0)).updatePagination(anyInt(), any(TablePane.class));
     }
     
     @Test
@@ -106,22 +104,13 @@ public class TableSortTypeListenerNGTest {
             assertTrue(tableService.isSortingListenerActive());
             
             return pagination;
-        }).when(tableService).updatePagination(maxRowsPerPage);
+        }).when(tableService).updatePagination(maxRowsPerPage, tablePane);
         
         tableSortTypeListener.changed(null, null, null);
 
         // Once the listener is complete the flag should be returned to false.
         assertFalse(tableService.isSortingListenerActive());
         
-        verify(tableService).updatePagination(maxRowsPerPage);
-        
-        // This verification is dependent on code completing in the UI thread so
-        // the following ensures that the verification does not occur until
-        // the required code is run.
-        final CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(() -> latch.countDown());
-        latch.await();
-        
-        verify(tablePane).setCenter(same(pagination));
+        verify(tableService).updatePagination(maxRowsPerPage, tablePane);
     }
 }

@@ -17,12 +17,12 @@ package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 /**
- * Listens for table selection events and updates the {@link TableService#selectedOnlySelectedRows}
+ * Listens for table selection events and updates the {@link ActiveTableReference#selectedOnlySelectedRows}
  * set with the new selections. These events are only handled though if the table
  * <b>IS</b> in "Selected Only" mode.
  *
@@ -42,7 +42,7 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
     }
     
     /**
-     * Updates the {@link TableService#selectedOnlySelectedRows} set with the currently
+     * Updates the {@link ActiveTableReference#selectedOnlySelectedRows} set with the currently
      * selected rows in the table. This listener does not affect the selection in the
      * graph.
      * <p/>
@@ -86,8 +86,8 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
      *
      * @return the table service
      */
-    private TableService getTableService() {
-        return table.getParentComponent().getTableService();
+    private ActiveTableReference getTableService() {
+        return table.getParentComponent().getActiveTableReference();
     }
     
 }

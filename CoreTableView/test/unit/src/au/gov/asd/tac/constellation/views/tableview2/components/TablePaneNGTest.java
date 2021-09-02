@@ -53,12 +53,12 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableViewPaneNGTest {
+public class TablePaneNGTest {
     private TableViewTopComponent tableTopComponent;
     
-    private TableViewPane tablePane;
+    private TablePane tablePane;
     
-    public TableViewPaneNGTest() {
+    public TablePaneNGTest() {
     }
 
     @BeforeClass
@@ -78,16 +78,16 @@ public class TableViewPaneNGTest {
         when(tableTopComponent.getExecutorService())
                 .thenReturn(Executors.newSingleThreadExecutor());
 
-        tablePane = spy(new TableViewPane(tableTopComponent));
+        tablePane = spy(new TablePane(tableTopComponent));
     }
     
     @Test
     public void init() throws InterruptedException {
         assertNotNull(tablePane.getTable());
         
-        assertNotNull(tablePane.getTableService());
-        assertNotNull(tablePane.getTableService().getPageFactory());
-        assertNotNull(tablePane.getTableService().getPagination());
+        assertNotNull(tablePane.getActiveTableReference());
+        assertNotNull(tablePane.getActiveTableReference().getPageFactory());
+        assertNotNull(tablePane.getActiveTableReference().getPagination());
         
         assertNotNull(tablePane.getLeft());
         assertTrue(tablePane.getLeft() instanceof ToolBar);
@@ -99,7 +99,7 @@ public class TableViewPaneNGTest {
 //        Platform.runLater(() -> latch.countDown());
 //        latch.await();
 //        
-//        final Pagination pagination = tablePane.getTableService().getPagination();
+//        final Pagination pagination = tablePane.getActiveTableReference().getPagination();
 //
 //        assertEquals(pagination, tablePane.centerProperty().get());
     }

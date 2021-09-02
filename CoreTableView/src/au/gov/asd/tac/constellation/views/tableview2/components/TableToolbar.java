@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
+import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -71,14 +71,14 @@ public class TableToolbar {
     private CopyMenu copyMenu;
     private PreferencesMenu preferencesMenu;
     
-    private final TableViewPane tablePane;
+    private final TablePane tablePane;
     
     /**
      * Creates a new table tool bar.
      *
      * @param tablePane
      */
-    public TableToolbar(final TableViewPane tablePane) {
+    public TableToolbar(final TablePane tablePane) {
         this.tablePane = tablePane;
     }
     
@@ -354,8 +354,8 @@ public class TableToolbar {
      * 
      * @return the table service
      */
-    private TableService getTableService() {
-        return tablePane.getTableService();
+    private ActiveTableReference getTableService() {
+        return tablePane.getActiveTableReference();
     }
     
     /**

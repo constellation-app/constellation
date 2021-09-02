@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.tableview2.service;
+package au.gov.asd.tac.constellation.views.tableview2.api;
 
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
 import au.gov.asd.tac.constellation.graph.Attribute;
@@ -21,8 +21,8 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
-import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -39,10 +40,12 @@ import javafx.scene.control.TableColumn;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
+ * Contains the references to the tables current state and how it relates to
+ * the graph.
  *
  * @author formalhaunt
  */
-public class TableService {
+public class ActiveTableReference {
     /**
      * Holds a map of graph element IDs to table rows.
      */
@@ -91,12 +94,12 @@ public class TableService {
     private volatile boolean sortingListenerActive = false;
     
     /**
-     * Create a new table service.
+     * Create a new table reference.
      *
      * @param pageFactory the table page factory that determines which rows will
      *     be displayed on the current page
      */
-    public TableService(final TableViewPageFactory pageFactory) {
+    public ActiveTableReference(final TableViewPageFactory pageFactory) {
         this.sortedRowList = new SortedList<>(FXCollections.observableArrayList());
         
         this.elementIdToRowIndex = new HashMap<>();
@@ -118,11 +121,13 @@ public class TableService {
      *
      * @param maxRowsPerPage the maximum number of rows per page that can be displayed
      *     in the table
+     * @param tablePane the pane that the table is rendered on
      * @return the newly created {@link Pagination}
      * @see #updatePagination(int, java.util.List)
      */
-    public Pagination updatePagination(final int maxRowsPerPage) {
-        return updatePagination(maxRowsPerPage, getSortedRowList());
+    public Pagination updatePagination(final int maxRowsPerPage,
+                                       final TablePane tablePane) {
+        return updatePagination(maxRowsPerPage, getSortedRowList(), tablePane);
     }
     
     /**
@@ -140,10 +145,12 @@ public class TableService {
      * @param maxRowsPerPage the maximum number of rows per page that can be displayed
      *     in the table
      * @param newRowList the rows to be displayed in the table
+     * @param tablePane the pane that the table is rendered on
      * @return the newly created {@link Pagination}
      */
     public Pagination updatePagination(final int maxRowsPerPage,
-                                       final List<ObservableList<String>> newRowList) {
+                                       final List<ObservableList<String>> newRowList,
+                                       final TablePane tablePane) {
         Objects.requireNonNull(getPageFactory(), "The page factory must be set before "
                 + "the pagination can be updated");
         
@@ -153,6 +160,8 @@ public class TableService {
         // TODO Should this create a copy of page factory first then update?
         getPageFactory().update(newRowList, maxRowsPerPage);
         pagination.setPageFactory(getPageFactory());
+        
+        Platform.runLater(() -> tablePane.setCenter(getPagination()));
         
         return pagination;
     }
