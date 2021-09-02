@@ -44,7 +44,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.bouncycastle.jcajce.provider.asymmetric.ElGamal;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -71,11 +70,11 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableViewPageFactoryNGTest {
-    private TableViewTopComponent tableTopComponent;
+    private TableViewTopComponent tableViewTopComponent;
     private TableView<ObservableList<String>> tableView;
     private Table table;
     private TablePane tablePane;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     
     private TableViewSelectionModel selectionModel;
     private ObservableList<String> selectedItems;
@@ -112,11 +111,11 @@ public class TableViewPageFactoryNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tableTopComponent = mock(TableViewTopComponent.class);
+        tableViewTopComponent = mock(TableViewTopComponent.class);
         tableView = mock(TableView.class);
         table = mock(Table.class);
         tablePane = mock(TablePane.class);
-        tableService = mock(ActiveTableReference.class);
+        activeTableReference = mock(ActiveTableReference.class);
         
         selectionModel = mock(TableViewSelectionModel.class);
         selectedItems = mock(ObservableList.class);
@@ -141,11 +140,11 @@ public class TableViewPageFactoryNGTest {
         doReturn(tableSortTypeListener).when(tableViewPageFactory).getTableSortTypeListener();
         
         when(tablePane.getTable()).thenReturn(table);
-        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
+        when(tablePane.getParentComponent()).thenReturn(tableViewTopComponent);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
         
-        when(tableService.getSelectedOnlySelectedRows()).thenReturn(selectedOnlySelectedRows);
-        when(tableService.getSortedRowList()).thenReturn(sortedRowList);
+        when(activeTableReference.getSelectedOnlySelectedRows()).thenReturn(selectedOnlySelectedRows);
+        when(activeTableReference.getSortedRowList()).thenReturn(sortedRowList);
         
         when(sortedRowList.comparatorProperty()).thenReturn(sortedRowListComparator);
         
@@ -159,8 +158,8 @@ public class TableViewPageFactoryNGTest {
         when(tableView.comparatorProperty()).thenReturn(tableViewComparator);
         when(tableView.getSelectionModel()).thenReturn(selectionModel);
         
-        when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
-        when(tableTopComponent.getExecutorService()).thenReturn(Executors.newSingleThreadExecutor());
+        when(tableViewTopComponent.getCurrentGraph()).thenReturn(graph);
+        when(tableViewTopComponent.getExecutorService()).thenReturn(Executors.newSingleThreadExecutor());
     }
 
     @AfterMethod
@@ -277,9 +276,9 @@ public class TableViewPageFactoryNGTest {
         final TableViewState tableViewState = new TableViewState();
         tableViewState.setSelectedOnly(false);
         
-        when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
+        when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
         
-        when(tableService.getElementIdToRowIndex()).thenReturn(elementIdToRowIndex);
+        when(activeTableReference.getElementIdToRowIndex()).thenReturn(elementIdToRowIndex);
         
         selectedOnlySelectedRows.add(row1);
         selectedOnlySelectedRows.add(row2);
@@ -331,7 +330,7 @@ public class TableViewPageFactoryNGTest {
         final TableViewState tableViewState = new TableViewState();
         tableViewState.setSelectedOnly(true);
         
-        when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
+        when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
         
         // This is called after the page set up so just mocking it so that it is realistic
         when(tableView.getItems()).thenReturn(FXCollections.observableList(List.of(row1, row2)));

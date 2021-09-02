@@ -47,11 +47,11 @@ import org.testng.annotations.Test;
 public class TableSelectionListenerNGTest {
     private TableSelectionListener tableSelectionListener;
     
-    private TableViewTopComponent tableTopComponent;
+    private TableViewTopComponent tableViewTopComponent;
     private TablePane tablePane;
     private Table table;
     private TableView<ObservableList<String>> tableView;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     private Map<ObservableList<String>, Integer> rowToElementIdIndex;
     
     public TableSelectionListenerNGTest() {
@@ -70,21 +70,21 @@ public class TableSelectionListenerNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tableTopComponent = mock(TableViewTopComponent.class);
+        tableViewTopComponent = mock(TableViewTopComponent.class);
         tablePane = mock(TablePane.class);
         table = mock(Table.class);
         tableView = mock(TableView.class);
-        tableService = mock(ActiveTableReference.class);
+        activeTableReference = mock(ActiveTableReference.class);
         
         rowToElementIdIndex = new HashMap<>();
         
         when(table.getParentComponent()).thenReturn(tablePane);
         when(table.getTableView()).thenReturn(tableView);
         
-        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
+        when(tablePane.getParentComponent()).thenReturn(tableViewTopComponent);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
         
-        when(tableService.getRowToElementIdIndex()).thenReturn(rowToElementIdIndex);
+        when(activeTableReference.getRowToElementIdIndex()).thenReturn(rowToElementIdIndex);
         
         tableSelectionListener = new TableSelectionListener(table);
     }
@@ -96,7 +96,7 @@ public class TableSelectionListenerNGTest {
     @Test
     public void changedCurrentStateNull() {
         try (MockedStatic<TableViewUtilities> tableViewUtilitiesMockedStatic = Mockito.mockStatic(TableViewUtilities.class)) {
-            when(tableTopComponent.getCurrentState()).thenReturn(null);
+            when(tableViewTopComponent.getCurrentState()).thenReturn(null);
 
             tableSelectionListener.changed(null, null, null);
 
@@ -111,7 +111,7 @@ public class TableSelectionListenerNGTest {
             final TableViewState currentState = new TableViewState();
             currentState.setSelectedOnly(true);
 
-            when(tableTopComponent.getCurrentState()).thenReturn(currentState);
+            when(tableViewTopComponent.getCurrentState()).thenReturn(currentState);
 
             tableSelectionListener.changed(null, null, null);
 
@@ -129,8 +129,8 @@ public class TableSelectionListenerNGTest {
 
             final Graph graph = mock(Graph.class);
             
-            when(tableTopComponent.getCurrentState()).thenReturn(currentState);
-            when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
+            when(tableViewTopComponent.getCurrentState()).thenReturn(currentState);
+            when(tableViewTopComponent.getCurrentGraph()).thenReturn(graph);
 
             tableSelectionListener.changed(null, null, null);
 

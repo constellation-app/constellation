@@ -18,12 +18,9 @@ package au.gov.asd.tac.constellation.views.tableview2.listeners;
 import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
-import java.util.concurrent.CountDownLatch;
-import javafx.application.Platform;
 import javafx.scene.control.Pagination;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.same;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -47,7 +44,7 @@ public class TableSortTypeListenerNGTest {
     private TableSortTypeListener tableSortTypeListener;
     
     private TablePane tablePane;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     
     public TableSortTypeListenerNGTest() {
     }
@@ -66,8 +63,8 @@ public class TableSortTypeListenerNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tablePane = mock(TablePane.class);
-        tableService = spy(new ActiveTableReference(null));
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
+        activeTableReference = spy(new ActiveTableReference(null));
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
         
         tableSortTypeListener = new TableSortTypeListener(tablePane);
     }
@@ -78,39 +75,39 @@ public class TableSortTypeListenerNGTest {
     
     @Test
     public void changedSortingListenerActive() {
-        tableService.setSortingListenerActive(true);
+        activeTableReference.setSortingListenerActive(true);
         
         tableSortTypeListener.changed(null, null, null);
         
-        verify(tableService, times(0)).updatePagination(anyInt(), any(TablePane.class));
+        verify(activeTableReference, times(0)).updatePagination(anyInt(), any(TablePane.class));
     }
     
     @Test
     public void changedListenerInActive() throws InterruptedException {
         final int maxRowsPerPage = 5;
         
-        tableService.setSortingListenerActive(false);
+        activeTableReference.setSortingListenerActive(false);
         
         final TablePreferences tablePreferences = new TablePreferences();
         tablePreferences.setMaxRowsPerPage(maxRowsPerPage);
-        tableService.setTablePreferences(tablePreferences);
+        activeTableReference.setTablePreferences(tablePreferences);
         
         final Pagination pagination = mock(Pagination.class);
-        when(tableService.getPagination()).thenReturn(pagination);
+        when(activeTableReference.getPagination()).thenReturn(pagination);
         
         Mockito.doAnswer(mockInvocation -> {
             // This verifies then when update pagination is called, the
             // sortingListenerActive flag is true
-            assertTrue(tableService.isSortingListenerActive());
+            assertTrue(activeTableReference.isSortingListenerActive());
             
             return pagination;
-        }).when(tableService).updatePagination(maxRowsPerPage, tablePane);
+        }).when(activeTableReference).updatePagination(maxRowsPerPage, tablePane);
         
         tableSortTypeListener.changed(null, null, null);
 
         // Once the listener is complete the flag should be returned to false.
-        assertFalse(tableService.isSortingListenerActive());
+        assertFalse(activeTableReference.isSortingListenerActive());
         
-        verify(tableService).updatePagination(maxRowsPerPage, tablePane);
+        verify(activeTableReference).updatePagination(maxRowsPerPage, tablePane);
     }
 }

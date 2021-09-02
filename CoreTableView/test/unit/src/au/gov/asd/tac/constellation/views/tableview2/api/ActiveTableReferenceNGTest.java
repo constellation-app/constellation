@@ -73,7 +73,7 @@ public class ActiveTableReferenceNGTest {
     private Map<ObservableList<String>, Integer> rowToElementIdIndex;
     private TableViewPageFactory pageFactory;
     
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     
     public ActiveTableReferenceNGTest() {
     }
@@ -97,11 +97,11 @@ public class ActiveTableReferenceNGTest {
         
         pageFactory = mock(TableViewPageFactory.class);
         
-        tableService = spy(new ActiveTableReference(pageFactory));
+        activeTableReference = spy(new ActiveTableReference(pageFactory));
         
-        doReturn(sortedRowList).when(tableService).getSortedRowList();
-        doReturn(rowToElementIdIndex).when(tableService).getRowToElementIdIndex();
-        doReturn(elementIdToRowIndex).when(tableService).getElementIdToRowIndex();
+        doReturn(sortedRowList).when(activeTableReference).getSortedRowList();
+        doReturn(rowToElementIdIndex).when(activeTableReference).getRowToElementIdIndex();
+        doReturn(elementIdToRowIndex).when(activeTableReference).getElementIdToRowIndex();
     }
 
     @AfterMethod
@@ -110,32 +110,30 @@ public class ActiveTableReferenceNGTest {
     
     @Test
     public void init() {
-        doCallRealMethod().when(tableService).getSortedRowList();
-        doCallRealMethod().when(tableService).getRowToElementIdIndex();
-        doCallRealMethod().when(tableService).getElementIdToRowIndex();
+        doCallRealMethod().when(activeTableReference).getSortedRowList();
+        doCallRealMethod().when(activeTableReference).getRowToElementIdIndex();
+        doCallRealMethod().when(activeTableReference).getElementIdToRowIndex();
         
-        assertEquals(new SortedList<>(FXCollections.observableArrayList()), tableService.getSortedRowList());
-        assertEquals(new HashMap<>(), tableService.getRowToElementIdIndex());
-        assertEquals(new HashMap<>(), tableService.getElementIdToRowIndex());
+        assertEquals(new SortedList<>(FXCollections.observableArrayList()), activeTableReference.getSortedRowList());
+        assertEquals(new HashMap<>(), activeTableReference.getRowToElementIdIndex());
+        assertEquals(new HashMap<>(), activeTableReference.getElementIdToRowIndex());
         
-        assertNotNull(tableService.getPagination());
-        assertNotNull(tableService.getSelectedOnlySelectedRows());
+        assertNotNull(activeTableReference.getPagination());
+        assertNotNull(activeTableReference.getSelectedOnlySelectedRows());
         
-        assertEquals(Integer.valueOf(500), tableService.getTablePreferences().getMaxRowsPerPage());
+        assertEquals(Integer.valueOf(500), activeTableReference.getTablePreferences().getMaxRowsPerPage());
     }
     
     @Test
     public void saveSortDetails() {
-        assertEquals(
-                ImmutablePair.of("", TableColumn.SortType.ASCENDING), 
-                tableService.getTablePreferences().getSortByColumn()
+        assertEquals(ImmutablePair.of("", TableColumn.SortType.ASCENDING), 
+                activeTableReference.getTablePreferences().getSortByColumn()
         );
         
-        tableService.saveSortDetails("ABC", TableColumn.SortType.DESCENDING);
+        activeTableReference.saveSortDetails("ABC", TableColumn.SortType.DESCENDING);
      
-        assertEquals(
-                ImmutablePair.of("ABC", TableColumn.SortType.DESCENDING), 
-                tableService.getTablePreferences().getSortByColumn()
+        assertEquals(ImmutablePair.of("ABC", TableColumn.SortType.DESCENDING), 
+                activeTableReference.getTablePreferences().getSortByColumn()
         );
     }
     
@@ -169,7 +167,7 @@ public class ActiveTableReferenceNGTest {
                             )
                     ));
             
-            tableService.updateVisibleColumns(graph, tableViewState, paramColumnAttributes,
+            activeTableReference.updateVisibleColumns(graph, tableViewState, paramColumnAttributes,
                     UpdateMethod.ADD);
             
             verify(pluginExecution).executeLater(graph);
@@ -202,7 +200,7 @@ public class ActiveTableReferenceNGTest {
                             List.of(Tuple.create("stateAttr", attribute))
                     ));
             
-            tableService.updateVisibleColumns(graph, tableViewState, paramColumnAttributes,
+            activeTableReference.updateVisibleColumns(graph, tableViewState, paramColumnAttributes,
                     UpdateMethod.REMOVE);
             
             verify(pluginExecution).executeLater(graph);
@@ -235,7 +233,7 @@ public class ActiveTableReferenceNGTest {
                             List.of(Tuple.create("paramAttr", attribute))
                     ));
             
-            tableService.updateVisibleColumns(graph, tableViewState, paramColumnAttributes,
+            activeTableReference.updateVisibleColumns(graph, tableViewState, paramColumnAttributes,
                     UpdateMethod.REPLACE);
             
             verify(pluginExecution).executeLater(graph);
@@ -247,10 +245,10 @@ public class ActiveTableReferenceNGTest {
         final Pagination pagination = mock(Pagination.class);
         final TablePane tablePane = mock(TablePane.class);
         
-        doReturn(pagination).when(tableService)
+        doReturn(pagination).when(activeTableReference)
                 .updatePagination(eq(22), same(sortedRowList), same(tablePane));
         
-        assertSame(pagination, tableService.updatePagination(22, tablePane));
+        assertSame(pagination, activeTableReference.updatePagination(22, tablePane));
     }
     
     @Test(expectedExceptions = NullPointerException.class)
@@ -266,7 +264,7 @@ public class ActiveTableReferenceNGTest {
                                 .collect(Collectors.toList());
         final TablePane tablePane = mock(TablePane.class);
         
-        final Pagination pagination = tableService.updatePagination(22, newRowList, tablePane);
+        final Pagination pagination = activeTableReference.updatePagination(22, newRowList, tablePane);
         
         assertEquals(3, pagination.getPageCount());
         assertSame(pageFactory, pagination.getPageFactory());
@@ -287,7 +285,7 @@ public class ActiveTableReferenceNGTest {
         final List<ObservableList<String>> newRowList = null;
         final TablePane tablePane = mock(TablePane.class);
         
-        final Pagination pagination = tableService.updatePagination(22, newRowList, tablePane);
+        final Pagination pagination = activeTableReference.updatePagination(22, newRowList, tablePane);
         
         assertEquals(1, pagination.getPageCount());
         assertSame(pageFactory, pagination.getPageFactory());
@@ -308,7 +306,7 @@ public class ActiveTableReferenceNGTest {
         final List<ObservableList<String>> newRowList = new ArrayList<>();
         final TablePane tablePane = mock(TablePane.class);
         
-        final Pagination pagination = tableService.updatePagination(22, newRowList, tablePane);
+        final Pagination pagination = activeTableReference.updatePagination(22, newRowList, tablePane);
         
         assertEquals(1, pagination.getPageCount());
         assertSame(pageFactory, pagination.getPageFactory());

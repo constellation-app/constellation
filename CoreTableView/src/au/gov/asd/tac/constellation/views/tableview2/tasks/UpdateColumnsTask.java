@@ -140,14 +140,14 @@ public class UpdateColumnsTask implements Runnable {
                                                 column.getAttribute()
                                         ))
                                         .filter(columnAttr -> 
-                                                getTableTopComponent().getCurrentState().getColumnAttributes()
+                                                getTableViewTopComponent().getCurrentState().getColumnAttributes()
                                                         .contains(columnAttr)
                                         )
                                         .collect(Collectors.toList());
                         
-                        getTableService().updateVisibleColumns(
-                                getTableTopComponent().getCurrentGraph(),
-                                getTableTopComponent().getCurrentState(),
+                        getActiveTableReference().updateVisibleColumns(
+                                getTableViewTopComponent().getCurrentGraph(),
+                                getTableViewTopComponent().getCurrentState(),
                                 orderedColumns,
                                 UpdateMethod.REPLACE
                         );
@@ -175,29 +175,29 @@ public class UpdateColumnsTask implements Runnable {
     protected void saveSortDetails() {
         if (table.getTableView().getSortOrder() != null && table.getTableView().getSortOrder().size() > 0) {
             // A column was selected to sort by, save its name and direction
-            getTableService().saveSortDetails(table.getTableView().getSortOrder().get(0).getText(),
+            getActiveTableReference().saveSortDetails(table.getTableView().getSortOrder().get(0).getText(),
                     table.getTableView().getSortOrder().get(0).getSortType());
         } else {
             // no column is selected, clear any previously stored information.
-            getTableService().saveSortDetails("", TableColumn.SortType.ASCENDING);
+            getActiveTableReference().saveSortDetails("", TableColumn.SortType.ASCENDING);
         }
     }
     
     /**
-     * Convenience method for accessing the table service.
+     * Convenience method for accessing the active table reference.
      * 
-     * @return the table service
+     * @return the active table reference
      */
-    private ActiveTableReference getTableService() {
+    private ActiveTableReference getActiveTableReference() {
         return table.getParentComponent().getActiveTableReference();
     }
     
     /**
-     * Convenience method for accessing the table top component.
+     * Convenience method for accessing the table view top component.
      *
-     * @return the table top component
+     * @return the table view top component
      */
-    private TableViewTopComponent getTableTopComponent() {
+    private TableViewTopComponent getTableViewTopComponent() {
         return table.getParentComponent().getParentComponent();
     }
 }

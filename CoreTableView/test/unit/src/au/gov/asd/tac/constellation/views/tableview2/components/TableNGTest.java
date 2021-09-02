@@ -78,9 +78,9 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableNGTest {
-    private TableViewTopComponent tableTopComponent;
+    private TableViewTopComponent tableViewTopComponent;
     private TablePane tablePane;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     private Graph graph;
     
     private Table table;
@@ -101,13 +101,13 @@ public class TableNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tableTopComponent = mock(TableViewTopComponent.class);
+        tableViewTopComponent = mock(TableViewTopComponent.class);
         tablePane = mock(TablePane.class);
-        tableService = mock(ActiveTableReference.class);
+        activeTableReference = mock(ActiveTableReference.class);
         graph = mock(Graph.class);
         
-        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
+        when(tablePane.getParentComponent()).thenReturn(tableViewTopComponent);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
         
         table = spy(new Table(tablePane));
     }
@@ -200,7 +200,7 @@ public class TableNGTest {
         final ObservableList<String> vertex3 = FXCollections.observableList(List.of("Vertex3Attr1", "Vertex3Attr2"));
 
         
-        when(tableService.getElementIdToRowIndex()).thenReturn(Map.of(
+        when(activeTableReference.getElementIdToRowIndex()).thenReturn(Map.of(
                 100, vertex1,
                 102, vertex2,
                 103, vertex3
@@ -335,7 +335,7 @@ public class TableNGTest {
         final TablePreferences tablePreferences = new TablePreferences();
         tablePreferences.setSortByColumn(null);
         
-        when(tableService.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
         
         final TableView<ObservableList<String>> tableView = mock(TableView.class);
         when(table.getTableView()).thenReturn(tableView);
@@ -350,7 +350,7 @@ public class TableNGTest {
         final TablePreferences tablePreferences = new TablePreferences();
         tablePreferences.setSortByColumn(ImmutablePair.of("", TableColumn.SortType.DESCENDING));
         
-        when(tableService.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
         
         final TableView<ObservableList<String>> tableView = mock(TableView.class);
         when(table.getTableView()).thenReturn(tableView);
@@ -365,7 +365,7 @@ public class TableNGTest {
         final TablePreferences tablePreferences = new TablePreferences();
         tablePreferences.setSortByColumn(ImmutablePair.of("COLUMN_B", TableColumn.SortType.DESCENDING));
         
-        when(tableService.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
         
         final TableView<ObservableList<String>> tableView = mock(TableView.class);
         when(table.getTableView()).thenReturn(tableView);
@@ -735,8 +735,8 @@ public class TableNGTest {
         final Map<Integer, ObservableList<String>> elementIdToRowIndex = new HashMap<>();
         final Map<ObservableList<String>, Integer> rowToElementIdIndex = new HashMap<>();
         
-        doReturn(elementIdToRowIndex).when(tableService).getElementIdToRowIndex();
-        doReturn(rowToElementIdIndex).when(tableService).getRowToElementIdIndex();
+        doReturn(elementIdToRowIndex).when(activeTableReference).getElementIdToRowIndex();
+        doReturn(rowToElementIdIndex).when(activeTableReference).getRowToElementIdIndex();
         
         final int vertexId = 42;
         
@@ -778,8 +778,8 @@ public class TableNGTest {
         final Map<Integer, ObservableList<String>> elementIdToRowIndex = new HashMap<>();
         final Map<ObservableList<String>, Integer> rowToElementIdIndex = new HashMap<>();
         
-        doReturn(elementIdToRowIndex).when(tableService).getElementIdToRowIndex();
-        doReturn(rowToElementIdIndex).when(tableService).getRowToElementIdIndex();
+        doReturn(elementIdToRowIndex).when(activeTableReference).getElementIdToRowIndex();
+        doReturn(rowToElementIdIndex).when(activeTableReference).getRowToElementIdIndex();
         
         final int transactionId = 42;
         
@@ -923,8 +923,8 @@ public class TableNGTest {
         final Map<ObservableList<String>, Integer> rowToElementIdIndex = new HashMap<>();
         rowToElementIdIndex.put(FXCollections.observableArrayList(), 42);
         
-        doReturn(elementIdToRowIndex).when(tableService).getElementIdToRowIndex();
-        doReturn(rowToElementIdIndex).when(tableService).getRowToElementIdIndex();
+        doReturn(elementIdToRowIndex).when(activeTableReference).getElementIdToRowIndex();
+        doReturn(rowToElementIdIndex).when(activeTableReference).getRowToElementIdIndex();
         
         // Mock graph to extract transaction element IDs
         when(readableGraph.getAttribute(stateElementType, "selected")).thenReturn(22);

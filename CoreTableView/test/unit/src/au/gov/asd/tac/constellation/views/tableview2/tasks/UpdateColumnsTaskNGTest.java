@@ -62,11 +62,11 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class UpdateColumnsTaskNGTest {
-    private TableViewTopComponent tableTopComponent;
+    private TableViewTopComponent tableViewTopComponent;
     private TableView<ObservableList<String>> tableView;
     private TablePane tablePane;
     private Table table;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     
     private ChangeListener<ObservableList<String>> tableSelectionListener;
     private ListChangeListener selectedOnlySelectionListener;
@@ -111,11 +111,11 @@ public class UpdateColumnsTaskNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tableTopComponent = mock(TableViewTopComponent.class);
+        tableViewTopComponent = mock(TableViewTopComponent.class);
         tableView = mock(TableView.class);
         tablePane = mock(TablePane.class);
         table = mock(Table.class);
-        tableService = mock(ActiveTableReference.class);
+        activeTableReference = mock(ActiveTableReference.class);
         selectionModel = mock(TableViewSelectionModel.class);
         selectedItemProperty = mock(ReadOnlyObjectProperty.class);
         selectedItems = mock(ObservableList.class);
@@ -149,11 +149,11 @@ public class UpdateColumnsTaskNGTest {
         columnIndex.add(new Column(columnType4, attribute4, column4));
         columnIndex.add(new Column(columnType5, attribute5, column5));
 
-        when(tableTopComponent.getTablePane()).thenReturn(tablePane);
+        when(tableViewTopComponent.getTablePane()).thenReturn(tablePane);
         
         when(tablePane.getTable()).thenReturn(table);
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
-        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
+        when(tablePane.getParentComponent()).thenReturn(tableViewTopComponent);
         
         when(table.getTableView()).thenReturn(tableView);
         when(table.getSelectedOnlySelectionListener()).thenReturn(selectedOnlySelectionListener);
@@ -248,9 +248,9 @@ public class UpdateColumnsTaskNGTest {
         
         updateColumnsTask.saveSortDetails();
         
-        verify(tableService).saveSortDetails("", TableColumn.SortType.ASCENDING);
+        verify(activeTableReference).saveSortDetails("", TableColumn.SortType.ASCENDING);
         
-        reset(tableService);
+        reset(activeTableReference);
         
         // Empty sort order
         
@@ -258,9 +258,9 @@ public class UpdateColumnsTaskNGTest {
         
         updateColumnsTask.saveSortDetails();
         
-        verify(tableService).saveSortDetails("", TableColumn.SortType.ASCENDING);
+        verify(activeTableReference).saveSortDetails("", TableColumn.SortType.ASCENDING);
         
-        reset(tableService);
+        reset(activeTableReference);
         
         // Valid sort order
         
@@ -271,7 +271,7 @@ public class UpdateColumnsTaskNGTest {
         
         updateColumnsTask.saveSortDetails();
         
-        verify(tableService).saveSortDetails("COLUMN_NAME", TableColumn.SortType.DESCENDING);
+        verify(activeTableReference).saveSortDetails("COLUMN_NAME", TableColumn.SortType.DESCENDING);
     }
     
     /**
@@ -332,7 +332,7 @@ public class UpdateColumnsTaskNGTest {
         when(change.getAddedSubList()).thenReturn(List.of(column2, column3, column5));
         
         final Graph graph = mock(Graph.class);
-        when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
+        when(tableViewTopComponent.getCurrentGraph()).thenReturn(graph);
         
         final TableViewState tableViewState = new TableViewState();
         tableViewState.setColumnAttributes(List.of(
@@ -340,13 +340,13 @@ public class UpdateColumnsTaskNGTest {
                 Tuple.create(columnType4, attribute4),
                 Tuple.create(columnType5, attribute5)
         ));
-        when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
+        when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
         
         listener.onChanged(change);
         
         // This should only be called ONCE due to the conditionals on the other
         // two loops
-        verify(tableService).updateVisibleColumns(
+        verify(activeTableReference).updateVisibleColumns(
                 graph,
                 tableViewState,
                 List.of(

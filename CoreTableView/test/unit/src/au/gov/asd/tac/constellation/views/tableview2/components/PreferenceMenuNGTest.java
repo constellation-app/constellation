@@ -80,10 +80,10 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class PreferenceMenuNGTest {
-    private TableViewTopComponent tableTopComponent;
+    private TableViewTopComponent tableViewTopComponent;
     private TablePane tablePane;
     private Table table;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     
     private PreferencesMenu preferencesMenu;
     
@@ -103,14 +103,14 @@ public class PreferenceMenuNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tableTopComponent = mock(TableViewTopComponent.class);
+        tableViewTopComponent = mock(TableViewTopComponent.class);
         tablePane = mock(TablePane.class);
         table = mock(Table.class);
-        tableService = mock(ActiveTableReference.class);
+        activeTableReference = mock(ActiveTableReference.class);
         
         when(tablePane.getTable()).thenReturn(table);
-        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
+        when(tablePane.getParentComponent()).thenReturn(tableViewTopComponent);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
         
         preferencesMenu = spy(new PreferencesMenu(tablePane));
     }
@@ -205,12 +205,12 @@ public class PreferenceMenuNGTest {
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setElementType(GraphElementType.VERTEX);
             
-            when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
+            when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
             
             final TablePreferences currentTablePreferences = new TablePreferences();
             currentTablePreferences.setMaxRowsPerPage(42);
             
-            when(tableService.getTablePreferences()).thenReturn(currentTablePreferences);
+            when(activeTableReference.getTablePreferences()).thenReturn(currentTablePreferences);
             
             final TablePreferences loadedTablePreferences = new TablePreferences();
             loadedTablePreferences.setColumnOrder(Collections.emptyList());
@@ -220,8 +220,8 @@ public class PreferenceMenuNGTest {
             
             preferencesMenu.loadPreferences();
 
-            verify(tableService, times(0)).saveSortDetails(anyString(), any(TableColumn.SortType.class));
-            verify(tableService, times(0)).updateVisibleColumns(any(Graph.class), any(TableViewState.class),
+            verify(activeTableReference, times(0)).saveSortDetails(anyString(), any(TableColumn.SortType.class));
+            verify(activeTableReference, times(0)).updateVisibleColumns(any(Graph.class), any(TableViewState.class),
                     any(List.class), any(UpdateMethod.class));
         }
     }
@@ -237,8 +237,8 @@ public class PreferenceMenuNGTest {
             
             final Graph graph = mock(Graph.class);
             
-            when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
-            when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
+            when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
+            when(tableViewTopComponent.getCurrentGraph()).thenReturn(graph);
             
             // These are the existing table preferences
             final TablePreferences currentTablePreferences = new TablePreferences();
@@ -246,7 +246,7 @@ public class PreferenceMenuNGTest {
             
             // There are 4 columns in the table. Set them up and all required variables
             // that describe them
-            when(tableService.getTablePreferences()).thenReturn(currentTablePreferences);
+            when(activeTableReference.getTablePreferences()).thenReturn(currentTablePreferences);
             
             final TableView<ObservableList<String>> tableView = mock(TableView.class);
             
@@ -310,8 +310,8 @@ public class PreferenceMenuNGTest {
             verify(column3, times(0)).setVisible(anyBoolean());
             verify(column4).setVisible(true);
             
-            verify(tableService).saveSortDetails("Column2", TableColumn.SortType.DESCENDING);
-            verify(tableService).updateVisibleColumns(
+            verify(activeTableReference).saveSortDetails("Column2", TableColumn.SortType.DESCENDING);
+            verify(activeTableReference).updateVisibleColumns(
                     same(graph),
                     same(tableViewState),
                     eq(List.of(
@@ -340,7 +340,7 @@ public class PreferenceMenuNGTest {
      */
     private void verifyLoadPreferencesAction(final MenuItem loadPreferencesMenu,
                                              final boolean isActiveGraphNull) throws InterruptedException {
-        clearInvocations(preferencesMenu, tableService, tablePane);
+        clearInvocations(preferencesMenu, activeTableReference, tablePane);
         
         try (
                 final MockedStatic<GraphManager> graphManagerMockedStatic
@@ -367,8 +367,8 @@ public class PreferenceMenuNGTest {
 
                 when(graphManager.getActiveGraph()).thenReturn(graph);
 
-                when(tableService.getTablePreferences()).thenReturn(tablePreferences);
-                when(tableService.getPagination()).thenReturn(pagination);
+                when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+                when(activeTableReference.getPagination()).thenReturn(pagination);
 
                 doNothing().when(preferencesMenu).loadPreferences();
 
@@ -378,7 +378,7 @@ public class PreferenceMenuNGTest {
                 Platform.runLater(() -> latch.countDown());
                 latch.await();
 
-                verify(tableService).updatePagination(42, tablePane);
+                verify(activeTableReference).updatePagination(42, tablePane);
                 verify(preferencesMenu).loadPreferences();
             }
             verify(actionEvent).consume();
@@ -418,11 +418,11 @@ public class PreferenceMenuNGTest {
             
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setElementType(GraphElementType.VERTEX);
-            when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
+            when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
             
             final TablePreferences preferences = new TablePreferences();
             preferences.setMaxRowsPerPage(42);
-            when(tableService.getTablePreferences()).thenReturn(preferences);
+            when(activeTableReference.getTablePreferences()).thenReturn(preferences);
             
             final GraphManager graphManager = mock(GraphManager.class);
             graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
@@ -495,7 +495,7 @@ public class PreferenceMenuNGTest {
      */
     private void verifyPageSizeAction(final MenuItem pageSizeMenuItem,
                                       final Integer pageSize) throws InterruptedException {
-        clearInvocations(tableService, tablePane);
+        clearInvocations(activeTableReference, tablePane);
         
         final ActionEvent actionEvent = mock(ActionEvent.class);
         final Pagination pagination = mock(Pagination.class);
@@ -503,8 +503,8 @@ public class PreferenceMenuNGTest {
         final TablePreferences tablePreferences = new TablePreferences();
         tablePreferences.setMaxRowsPerPage(42);
         
-        when(tableService.getTablePreferences()).thenReturn(tablePreferences);
-        when(tableService.getPagination()).thenReturn(pagination);
+        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getPagination()).thenReturn(pagination);
         
         pageSizeMenuItem.getOnAction().handle(actionEvent);
         pageSizeMenuItem.getOnAction().handle(actionEvent);
@@ -516,7 +516,7 @@ public class PreferenceMenuNGTest {
         // The action was called twice but the update should only happen once as
         // it was the same page size. No change for the second action
         assertEquals(pageSize, tablePreferences.getMaxRowsPerPage());
-        verify(tableService).updatePagination(pageSize, tablePane);
+        verify(activeTableReference).updatePagination(pageSize, tablePane);
     }
     
     /**

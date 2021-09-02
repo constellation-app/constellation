@@ -56,15 +56,15 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
      */
     @Override
     public void onChanged(final Change change) {
-        if (getTableTopComponent().getCurrentState() != null
-                && getTableTopComponent().getCurrentState().isSelectedOnly()) {
+        if (getTableViewTopComponent().getCurrentState() != null
+                && getTableViewTopComponent().getCurrentState().isSelectedOnly()) {
             final ObservableList<ObservableList<String>> rows = table.getTableView().getItems();
             rows.forEach(row -> {
                 if (table.getTableView().getSelectionModel().getSelectedItems().contains(row)) {
-                    getTableService().getSelectedOnlySelectedRows().add(row);
-                } else if (getTableService().getSelectedOnlySelectedRows().contains(row)) {
+                    getActiveTableReference().getSelectedOnlySelectedRows().add(row);
+                } else if (getActiveTableReference().getSelectedOnlySelectedRows().contains(row)) {
                     // remove the row from selected items as it's no longer selected in the table
-                    getTableService().getSelectedOnlySelectedRows().remove(row);
+                    getActiveTableReference().getSelectedOnlySelectedRows().remove(row);
                 } else {
                     // Do nothing
                 }
@@ -73,20 +73,20 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
     }
     
     /**
-     * Convenience method for accessing the table top component.
+     * Convenience method for accessing the table view top component.
      *
-     * @return the table top component
+     * @return the table view top component
      */
-    private TableViewTopComponent getTableTopComponent() {
+    private TableViewTopComponent getTableViewTopComponent() {
         return table.getParentComponent().getParentComponent();
     }
     
     /**
-     * Convenience method for accessing the table service.
+     * Convenience method for accessing the active table reference.
      *
-     * @return the table service
+     * @return the active table reference
      */
-    private ActiveTableReference getTableService() {
+    private ActiveTableReference getActiveTableReference() {
         return table.getParentComponent().getActiveTableReference();
     }
     

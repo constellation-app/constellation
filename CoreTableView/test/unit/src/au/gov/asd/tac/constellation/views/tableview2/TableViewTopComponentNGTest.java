@@ -88,20 +88,20 @@ public class TableViewTopComponentNGTest {
     
     @Test
     public void createStyle() {
-        final TableViewTopComponent tableTopComponent = mock(TableViewTopComponent.class);
+        final TableViewTopComponent tableViewTopComponent = mock(TableViewTopComponent.class);
         
-        doCallRealMethod().when(tableTopComponent).createStyle();
+        doCallRealMethod().when(tableViewTopComponent).createStyle();
         
-        assertEquals("resources/table-view.css", tableTopComponent.createStyle());
+        assertEquals("resources/table-view.css", tableViewTopComponent.createStyle());
     }
     
     @Test
     public void updateStatePresentInGraphAttributes() {
-        final TableViewTopComponent tableTopComponent = mock(TableViewTopComponent.class);
+        final TableViewTopComponent tableViewTopComponent = mock(TableViewTopComponent.class);
         
-        doCallRealMethod().when(tableTopComponent).updateState(any(Graph.class));
-        doCallRealMethod().when(tableTopComponent).updateState(isNull());
-        doCallRealMethod().when(tableTopComponent).getCurrentState();
+        doCallRealMethod().when(tableViewTopComponent).updateState(any(Graph.class));
+        doCallRealMethod().when(tableViewTopComponent).updateState(isNull());
+        doCallRealMethod().when(tableViewTopComponent).getCurrentState();
         
         final Graph graph = mock(Graph.class);
         final ReadableGraph readableGraph = mock(ReadableGraph.class);
@@ -116,15 +116,15 @@ public class TableViewTopComponentNGTest {
         try(final MockedStatic<PluginExecution> pluginExecutionMockedStatic
                 = Mockito.mockStatic(PluginExecution.class)) {
             
-            tableTopComponent.updateState(graph);
+            tableViewTopComponent.updateState(graph);
             
             pluginExecutionMockedStatic.verifyNoInteractions();
         }
-        assertEquals(state, tableTopComponent.getCurrentState());
+        assertEquals(state, tableViewTopComponent.getCurrentState());
         
-        tableTopComponent.updateState(null);
+        tableViewTopComponent.updateState(null);
         
-        assertEquals(null, tableTopComponent.getCurrentState());
+        assertEquals(null, tableViewTopComponent.getCurrentState());
         
         // Should only be called once. Second call has null graph
         verify(graph).getReadableGraph();
@@ -133,11 +133,11 @@ public class TableViewTopComponentNGTest {
     
     @Test
     public void updateStateNotPresentInGraphAttributes() {
-        final TableViewTopComponent tableTopComponent = mock(TableViewTopComponent.class);
+        final TableViewTopComponent tableViewTopComponent = mock(TableViewTopComponent.class);
         
-        doCallRealMethod().when(tableTopComponent).updateState(any(Graph.class));
-        doCallRealMethod().when(tableTopComponent).updateState(isNull());
-        doCallRealMethod().when(tableTopComponent).getCurrentState();
+        doCallRealMethod().when(tableViewTopComponent).updateState(any(Graph.class));
+        doCallRealMethod().when(tableViewTopComponent).updateState(isNull());
+        doCallRealMethod().when(tableViewTopComponent).getCurrentState();
         
         final Graph graph = mock(Graph.class);
         final Graph currentGraph = mock(Graph.class);
@@ -146,7 +146,7 @@ public class TableViewTopComponentNGTest {
         when(graph.getReadableGraph()).thenReturn(readableGraph);
         when(readableGraph.getAttribute(GraphElementType.META, "table_view_state")).thenReturn(42);
         when(readableGraph.getObjectValue(42, 0)).thenReturn(null);
-        when(tableTopComponent.getCurrentGraph()).thenReturn(currentGraph);
+        when(tableViewTopComponent.getCurrentGraph()).thenReturn(currentGraph);
         
         try(final MockedStatic<PluginExecution> pluginExecutionMockedStatic
                 = Mockito.mockStatic(PluginExecution.class)) {
@@ -162,12 +162,12 @@ public class TableViewTopComponentNGTest {
                         return pluginExecution;
                     });
             
-            tableTopComponent.updateState(graph);
+            tableViewTopComponent.updateState(graph);
             
             verify(pluginExecution).executeLater(currentGraph);
         }
         
-        assertEquals(new TableViewState(), tableTopComponent.getCurrentState());
+        assertEquals(new TableViewState(), tableViewTopComponent.getCurrentState());
         
         verify(graph).getReadableGraph();
         verify(readableGraph).release();
@@ -175,7 +175,7 @@ public class TableViewTopComponentNGTest {
     
     @Test
     public void showSelected() {
-        final TableViewTopComponent tableTopComponent = mock(TableViewTopComponent.class);
+        final TableViewTopComponent tableViewTopComponent = mock(TableViewTopComponent.class);
         
         final TableViewState currentState = new TableViewState();
         final Graph currentGraph = mock(Graph.class);
@@ -188,11 +188,11 @@ public class TableViewTopComponentNGTest {
         
         final Table table = mock(Table.class);
         
-        doCallRealMethod().when(tableTopComponent).showSelected(any(GraphElementType.class), anyInt());
-        when(tableTopComponent.getCurrentState()).thenReturn(currentState);
-        when(tableTopComponent.getCurrentGraph()).thenReturn(currentGraph);
-        when(tableTopComponent.getTablePane()).thenReturn(tablePane);
-        when(tableTopComponent.getExecutorService()).thenReturn(Executors.newSingleThreadExecutor());
+        doCallRealMethod().when(tableViewTopComponent).showSelected(any(GraphElementType.class), anyInt());
+        when(tableViewTopComponent.getCurrentState()).thenReturn(currentState);
+        when(tableViewTopComponent.getCurrentGraph()).thenReturn(currentGraph);
+        when(tableViewTopComponent.getTablePane()).thenReturn(tablePane);
+        when(tableViewTopComponent.getExecutorService()).thenReturn(Executors.newSingleThreadExecutor());
         
         when(tablePane.getTable()).thenReturn(table);
         
@@ -210,12 +210,12 @@ public class TableViewTopComponentNGTest {
                         assertEquals(expectedNewState, plugin.getTableViewState());
                         
                         // Change the mock now that the "Update Plugin" has run
-                        when(tableTopComponent.getCurrentState()).thenReturn(expectedNewState);
+                        when(tableViewTopComponent.getCurrentState()).thenReturn(expectedNewState);
                         
                         return pluginExecution;
                     });
             
-            final Future<?> updateTask = tableTopComponent.showSelected(GraphElementType.META, 42);
+            final Future<?> updateTask = tableViewTopComponent.showSelected(GraphElementType.META, 42);
             
             // Ensure that the update selection task is completed
             try {
@@ -235,10 +235,10 @@ public class TableViewTopComponentNGTest {
     
     @Test
     public void componentShowing() throws InterruptedException {
-        final TableViewTopComponent tableTopComponent = mock(TableViewTopComponent.class);
+        final TableViewTopComponent tableViewTopComponent = mock(TableViewTopComponent.class);
         
-        doCallRealMethod().when(tableTopComponent).componentShowing();
-        doNothing().when(tableTopComponent).handleNewGraph(any(Graph.class));
+        doCallRealMethod().when(tableViewTopComponent).componentShowing();
+        doNothing().when(tableViewTopComponent).handleNewGraph(any(Graph.class));
         
         try (final MockedStatic<GraphManager> graphManagerMockedStatic
                 = Mockito.mockStatic(GraphManager.class)) {
@@ -248,41 +248,41 @@ public class TableViewTopComponentNGTest {
             graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
             when(graphManager.getActiveGraph()).thenReturn(activeGraph);
             
-            tableTopComponent.componentShowing();
+            tableViewTopComponent.componentShowing();
             
-            verify(tableTopComponent).handleNewGraph(activeGraph);
+            verify(tableViewTopComponent).handleNewGraph(activeGraph);
         }
     }
     
     @Test
     public void handleGraphClosed() throws InterruptedException {
-        final TableViewTopComponent tableTopComponent = mock(TableViewTopComponent.class);
+        final TableViewTopComponent tableViewTopComponent = mock(TableViewTopComponent.class);
         final TablePane tablePane = mock(TablePane.class);
-        final ActiveTableReference tableService = mock(ActiveTableReference.class);
+        final ActiveTableReference activeTableReference = mock(ActiveTableReference.class);
         final Pagination pagination = mock(Pagination.class);
         
         final TablePreferences tablePreferences = new TablePreferences();
         tablePreferences.setMaxRowsPerPage(42);
         
-        when(tableTopComponent.getTablePane()).thenReturn(tablePane);
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
-        when(tableService.getTablePreferences()).thenReturn(tablePreferences);
-        when(tableService.getPagination()).thenReturn(pagination);
+        when(tableViewTopComponent.getTablePane()).thenReturn(tablePane);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
+        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getPagination()).thenReturn(pagination);
         
-        doCallRealMethod().when(tableTopComponent).handleGraphClosed(any(Graph.class));
+        doCallRealMethod().when(tableViewTopComponent).handleGraphClosed(any(Graph.class));
         
-        tableTopComponent.handleGraphClosed(mock(Graph.class));
+        tableViewTopComponent.handleGraphClosed(mock(Graph.class));
         
-        verify(tableService).updatePagination(42, null, tablePane);
+        verify(activeTableReference).updatePagination(42, null, tablePane);
     }
     
     @Test
     public void getColumnAttributeChanges() {
-        final TableViewTopComponent tableTopComponent = mock(TableViewTopComponent.class);
+        final TableViewTopComponent tableViewTopComponent = mock(TableViewTopComponent.class);
         
-        when(tableTopComponent.getRemovedAttributes(any(TableViewState.class), any(TableViewState.class)))
+        when(tableViewTopComponent.getRemovedAttributes(any(TableViewState.class), any(TableViewState.class)))
                 .thenCallRealMethod();
-        when(tableTopComponent.getAddedAttributes(any(TableViewState.class), any(TableViewState.class)))
+        when(tableViewTopComponent.getAddedAttributes(any(TableViewState.class), any(TableViewState.class)))
                 .thenCallRealMethod();
         
         final Attribute attribute1 = mock(Attribute.class);
@@ -302,19 +302,17 @@ public class TableViewTopComponentNGTest {
         ));
         
         // Removed column attributes
-        assertEquals(
-                Set.of(
+        assertEquals(Set.of(
                         Tuple.create(".source", attribute1)
                 ),
-                tableTopComponent.getRemovedAttributes(oldState, newState)
+                tableViewTopComponent.getRemovedAttributes(oldState, newState)
         );
         
         // Added column attributes
-        assertEquals(
-                Set.of(
+        assertEquals(Set.of(
                         Tuple.create(".transaction", attribute3)
                 ),
-                tableTopComponent.getAddedAttributes(oldState, newState)
+                tableViewTopComponent.getAddedAttributes(oldState, newState)
         );
         
     }

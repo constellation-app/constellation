@@ -97,11 +97,11 @@ public class TableToolbar {
         });
         
         selectedOnlyButton = createToggleButton(getSelectedOnlyInitialIcon(), SELECTED_ONLY, e -> {
-            if (getTableTopComponent().getCurrentState() != null) {
-                getTableService().getSelectedOnlySelectedRows().clear();
+            if (getTableViewTopComponent().getCurrentState() != null) {
+                getActiveTableReference().getSelectedOnlySelectedRows().clear();
                 
-                final TableViewState newState = new TableViewState(getTableTopComponent().getCurrentState());
-                newState.setSelectedOnly(!getTableTopComponent().getCurrentState().isSelectedOnly());
+                final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
+                newState.setSelectedOnly(!getTableViewTopComponent().getCurrentState().isSelectedOnly());
                 
                 selectedOnlyButton.setGraphic(
                         newState.isSelectedOnly() ? SELECTED_VISIBLE_ICON : ALL_VISIBLE_ICON 
@@ -109,17 +109,17 @@ public class TableToolbar {
                 
                 PluginExecution.withPlugin(
                         new UpdateStatePlugin(newState)
-                ).executeLater(getTableTopComponent().getCurrentGraph());
+                ).executeLater(getTableViewTopComponent().getCurrentGraph());
             }
             
             e.consume();
         });
         
         elementTypeButton = createButton(getElementTypeInitialIcon(), ELEMENT_TYPE, e -> {
-            if (getTableTopComponent().getCurrentState() != null) {
-                final TableViewState newState = new TableViewState(getTableTopComponent().getCurrentState());
+            if (getTableViewTopComponent().getCurrentState() != null) {
+                final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
                 
-                newState.setElementType(getTableTopComponent().getCurrentState().getElementType() == GraphElementType.TRANSACTION
+                newState.setElementType(getTableViewTopComponent().getCurrentState().getElementType() == GraphElementType.TRANSACTION
                         ? GraphElementType.VERTEX : GraphElementType.TRANSACTION);
                 
                 elementTypeButton.setGraphic(
@@ -129,7 +129,7 @@ public class TableToolbar {
                 
                 PluginExecution.withPlugin(
                         new UpdateStatePlugin(newState)
-                ).executeLater(getTableTopComponent().getCurrentGraph());
+                ).executeLater(getTableViewTopComponent().getCurrentGraph());
             }
             
             e.consume();
@@ -317,8 +317,8 @@ public class TableToolbar {
      * @return the initial icon to place on the element type button
      */
     protected ImageView getElementTypeInitialIcon() {
-        return getTableTopComponent().getCurrentState() != null
-                && getTableTopComponent().getCurrentState().getElementType() == GraphElementType.VERTEX
+        return getTableViewTopComponent().getCurrentState() != null
+                && getTableViewTopComponent().getCurrentState().getElementType() == GraphElementType.VERTEX
                 ? VERTEX_ICON : TRANSACTION_ICON;
     }
 
@@ -331,8 +331,8 @@ public class TableToolbar {
      * @return the initial icon to place on the selected only button
      */
     protected ImageView getSelectedOnlyInitialIcon() {
-        return getTableTopComponent().getCurrentState() != null
-                && getTableTopComponent().getCurrentState().isSelectedOnly()
+        return getTableViewTopComponent().getCurrentState() != null
+                && getTableViewTopComponent().getCurrentState().isSelectedOnly()
                 ? SELECTED_VISIBLE_ICON : ALL_VISIBLE_ICON;
     }
     
@@ -350,20 +350,20 @@ public class TableToolbar {
     }
     
     /**
-     * Convenience method for accessing the table service.
+     * Convenience method for accessing the active table reference.
      * 
-     * @return the table service
+     * @return the active table reference
      */
-    private ActiveTableReference getTableService() {
+    private ActiveTableReference getActiveTableReference() {
         return tablePane.getActiveTableReference();
     }
     
     /**
-     * Convenience method for accessing the table top component.
+     * Convenience method for accessing the table view top component.
      *
-     * @return the table top component
+     * @return the table view top component
      */
-    private TableViewTopComponent getTableTopComponent() {
+    private TableViewTopComponent getTableViewTopComponent() {
         return tablePane.getParentComponent();
     }
     

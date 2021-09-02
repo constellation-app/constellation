@@ -47,7 +47,7 @@ public class TableComparatorListenerNGTest {
     private TableComparatorListener tableComparatorListener;
     
     private TablePane tablePane;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     
     public TableComparatorListenerNGTest() {
     }
@@ -66,8 +66,8 @@ public class TableComparatorListenerNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tablePane = mock(TablePane.class);
-        tableService = spy(new ActiveTableReference(null));
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
+        activeTableReference = spy(new ActiveTableReference(null));
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
         
         tableComparatorListener = new TableComparatorListener(tablePane);
     }
@@ -78,40 +78,40 @@ public class TableComparatorListenerNGTest {
     
     @Test
     public void changedSortingListenerActive() {
-        tableService.setSortingListenerActive(true);
+        activeTableReference.setSortingListenerActive(true);
         
         tableComparatorListener.changed(null, null, null);
         
-        verify(tableService, times(0)).updatePagination(anyInt(), any(TablePane.class));
+        verify(activeTableReference, times(0)).updatePagination(anyInt(), any(TablePane.class));
     }
     
     @Test
     public void changedListenerInActive() throws InterruptedException {
         final int maxRowsPerPage = 5;
         
-        tableService.setSortingListenerActive(false);
+        activeTableReference.setSortingListenerActive(false);
         
         final TablePreferences tablePreferences = new TablePreferences();
         tablePreferences.setMaxRowsPerPage(maxRowsPerPage);
-        tableService.setTablePreferences(tablePreferences);
+        activeTableReference.setTablePreferences(tablePreferences);
         
         final Pagination pagination = mock(Pagination.class);
-        when(tableService.getPagination()).thenReturn(pagination);
+        when(activeTableReference.getPagination()).thenReturn(pagination);
         
         Mockito.doAnswer(mockInvocation -> {
             // This verifies then when update pagination is called, the
             // sortingListenerActive flag is true
-            assertTrue(tableService.isSortingListenerActive());
+            assertTrue(activeTableReference.isSortingListenerActive());
             
             return pagination;
-        }).when(tableService).updatePagination(maxRowsPerPage, tablePane);
+        }).when(activeTableReference).updatePagination(maxRowsPerPage, tablePane);
         
         tableComparatorListener.changed(null, null, null);
 
         // Once the listener is complete the flag should be returned to false.
-        assertFalse(tableService.isSortingListenerActive());
+        assertFalse(activeTableReference.isSortingListenerActive());
         
-        verify(tableService).updatePagination(maxRowsPerPage, tablePane);
+        verify(activeTableReference).updatePagination(maxRowsPerPage, tablePane);
     }
     
 }

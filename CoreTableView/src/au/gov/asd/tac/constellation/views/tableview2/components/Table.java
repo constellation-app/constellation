@@ -269,8 +269,8 @@ public class Table {
                 Platform.runLater(() -> getParentComponent().setCenter(progressBar.getProgressPane()));
 
                 // Clear the current row and element mappings
-                getTableService().getElementIdToRowIndex().clear();
-                getTableService().getRowToElementIdIndex().clear();
+                getActiveTableReference().getElementIdToRowIndex().clear();
+                getActiveTableReference().getRowToElementIdIndex().clear();
 
                 // Build table data based on attribute values on the graph
                 final List<ObservableList<String>> rows = new ArrayList<>();
@@ -366,7 +366,7 @@ public class Table {
 
                     // update table selection
                     final int[] selectedIndices = selectedIds.stream()
-                            .map(id-> getTableService().getElementIdToRowIndex().get(id))
+                            .map(id-> getActiveTableReference().getElementIdToRowIndex().get(id))
                             .map(row -> getTableView().getItems().indexOf(row))
                             .mapToInt(i -> i)
                             .toArray();
@@ -397,7 +397,7 @@ public class Table {
      */
     public void updateSortOrder() {
         final Pair<String, TableColumn.SortType> sortPreference
-                = getTableService().getTablePreferences().getSort();
+                = getActiveTableReference().getTablePreferences().getSort();
         
         if (sortPreference != null && !sortPreference.getLeft().isBlank()) {
             // Iterate through the table columns and find the one with a matching column name
@@ -458,11 +458,11 @@ public class Table {
     }
     
     /**
-     * Get the table service associated with this table.
+     * Get the active table reference associated with this table.
      *
      * @return the table service
      */
-    public ActiveTableReference getTableService() {
+    public ActiveTableReference getActiveTableReference() {
         return getParentComponent().getActiveTableReference();
     }
     
@@ -527,8 +527,8 @@ public class Table {
             rowData.add(displayableValue);
         });
 
-        getTableService().getElementIdToRowIndex().put(vertexId, rowData);
-        getTableService().getRowToElementIdIndex().put(rowData, vertexId);
+        getActiveTableReference().getElementIdToRowIndex().put(vertexId, rowData);
+        getActiveTableReference().getRowToElementIdIndex().put(rowData, vertexId);
 
         return rowData;
     }
@@ -579,8 +579,8 @@ public class Table {
             rowData.add(displayableValue);
         });
         
-        getTableService().getElementIdToRowIndex().put(transactionId, rowData);
-        getTableService().getRowToElementIdIndex().put(rowData, transactionId);
+        getActiveTableReference().getElementIdToRowIndex().put(transactionId, rowData);
+        getActiveTableReference().getRowToElementIdIndex().put(rowData, transactionId);
         
         return rowData;
     }

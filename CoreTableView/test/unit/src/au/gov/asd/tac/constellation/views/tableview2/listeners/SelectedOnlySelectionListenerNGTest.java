@@ -45,11 +45,11 @@ import org.testng.annotations.Test;
 public class SelectedOnlySelectionListenerNGTest {
     private SelectedOnlySelectionListener selectedOnlySelectionListener;
     
-    private TableViewTopComponent tableTopComponent;
+    private TableViewTopComponent tableViewTopComponent;
     private TablePane tablePane;
     private Table table;
     private TableView<ObservableList<String>> tableView;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     private Set<ObservableList<String>> selectedOnlySelectedRows;
     
     public SelectedOnlySelectionListenerNGTest() {
@@ -68,21 +68,21 @@ public class SelectedOnlySelectionListenerNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tableTopComponent = mock(TableViewTopComponent.class);
+        tableViewTopComponent = mock(TableViewTopComponent.class);
         tablePane = mock(TablePane.class);
         table = mock(Table.class);
         tableView = mock(TableView.class);
-        tableService = mock(ActiveTableReference.class);
+        activeTableReference = mock(ActiveTableReference.class);
         
         selectedOnlySelectedRows = new HashSet<>();
         
         when(table.getParentComponent()).thenReturn(tablePane);
         when(table.getTableView()).thenReturn(tableView);
         
-        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
+        when(tablePane.getParentComponent()).thenReturn(tableViewTopComponent);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
         
-        when(tableService.getSelectedOnlySelectedRows()).thenReturn(selectedOnlySelectedRows);
+        when(activeTableReference.getSelectedOnlySelectedRows()).thenReturn(selectedOnlySelectedRows);
         
         selectedOnlySelectionListener = new SelectedOnlySelectionListener(table);
     }
@@ -93,7 +93,7 @@ public class SelectedOnlySelectionListenerNGTest {
     
     @Test
     public void onChangedCurrentStateNull() {
-        when(tableTopComponent.getCurrentState()).thenReturn(null);
+        when(tableViewTopComponent.getCurrentState()).thenReturn(null);
         
         selectedOnlySelectionListener.onChanged(null);
         
@@ -105,7 +105,7 @@ public class SelectedOnlySelectionListenerNGTest {
         final TableViewState currentState = new TableViewState();
         currentState.setSelectedOnly(false);
         
-        when(tableTopComponent.getCurrentState()).thenReturn(currentState);
+        when(tableViewTopComponent.getCurrentState()).thenReturn(currentState);
         
         selectedOnlySelectionListener.onChanged(null);
         
@@ -119,7 +119,7 @@ public class SelectedOnlySelectionListenerNGTest {
         
         final TableViewSelectionModel<ObservableList<String>> selectionModel = mock(TableViewSelectionModel.class);
         
-        when(tableTopComponent.getCurrentState()).thenReturn(currentState);
+        when(tableViewTopComponent.getCurrentState()).thenReturn(currentState);
         
         // 4 rows. Rows 1 and 3 are currently selected. Row 2 was previously selected. Row 4 is not
         // selected and never was.

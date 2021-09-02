@@ -65,10 +65,10 @@ import org.testng.annotations.Test;
 public class ExportMenuNGTest {
     private static final String GRAPH_ID = "graphId";
     
-    private TableViewTopComponent tableTopComponent;
+    private TableViewTopComponent tableViewTopComponent;
     private TablePane tablePane;
     private Table table;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     
     private ExportMenu exportMenu;
     
@@ -88,14 +88,14 @@ public class ExportMenuNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tableTopComponent = mock(TableViewTopComponent.class);
+        tableViewTopComponent = mock(TableViewTopComponent.class);
         tablePane = mock(TablePane.class);
         table = mock(Table.class);
-        tableService = mock(ActiveTableReference.class);
+        activeTableReference = mock(ActiveTableReference.class);
         
         when(tablePane.getTable()).thenReturn(table);
-        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
+        when(tablePane.getParentComponent()).thenReturn(tableViewTopComponent);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
         
         exportMenu = new ExportMenu(tablePane);
     }
@@ -136,7 +136,7 @@ public class ExportMenuNGTest {
         );
         
         final Graph graph = mock(Graph.class);
-        when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
+        when(tableViewTopComponent.getCurrentGraph()).thenReturn(graph);
         when(graph.getId()).thenReturn(GRAPH_ID);
         
         // Export Button
@@ -149,29 +149,29 @@ public class ExportMenuNGTest {
         assertEquals("Export to CSV", exportMenu.getExportCsvMenu().getText());
         verifyExportCSVAction(exportMenu.getExportCsvMenu().getOnAction(), false);
         
-        reset(tableService, table);
+        reset(activeTableReference, table);
         
         // Export Selected Rows as CSV Menu Item
         assertEquals("Export to CSV (Selection)", exportMenu.getExportCsvSelectionMenu().getText());
         verifyExportCSVAction(exportMenu.getExportCsvSelectionMenu().getOnAction(), true);
         
-        reset(tableService, table);
+        reset(activeTableReference, table);
         
         // Export Whole Table as Excel Menu Item
         assertEquals("Export to Excel", exportMenu.getExportExcelMenu().getText());
         verifyExportExcelAction(exportMenu.getExportExcelMenu().getOnAction(), false);
         
-        reset(tableService, table);
+        reset(activeTableReference, table);
         
         // Export Selected Rows as Excel Menu Item
         assertEquals("Export to Excel (Selection)", exportMenu.getExportExcelSelectionMenu().getText());
         verifyExportExcelAction(exportMenu.getExportExcelSelectionMenu().getOnAction(), true);
         
-        reset(tableService, table);
+        reset(activeTableReference, table);
         
         // The following verifies that the ExportMenuItemActionHandler wont run if
         // the current graph is null
-        when(tableTopComponent.getCurrentGraph()).thenReturn(null);
+        when(tableViewTopComponent.getCurrentGraph()).thenReturn(null);
         
         try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic
                 = Mockito.mockStatic(TableViewUtilities.class)) {
@@ -213,7 +213,7 @@ public class ExportMenuNGTest {
             final Pagination pagination = mock(Pagination.class);
             final TableView<ObservableList<String>> tableView = mock(TableView.class);
             
-            when(tableService.getPagination()).thenReturn(pagination);
+            when(activeTableReference.getPagination()).thenReturn(pagination);
             when(table.getTableView()).thenReturn(tableView);
             
             final PluginExecution pluginExecution = mock(PluginExecution.class);
@@ -275,9 +275,9 @@ public class ExportMenuNGTest {
             final TablePreferences tablePreferences = new TablePreferences();
             tablePreferences.setMaxRowsPerPage(maxRowsPerPage);
             
-            when(tableService.getPagination()).thenReturn(pagination);
+            when(activeTableReference.getPagination()).thenReturn(pagination);
             when(table.getTableView()).thenReturn(tableView);
-            when(tableService.getTablePreferences()).thenReturn(tablePreferences);
+            when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
             
             final PluginExecution pluginExecution = mock(PluginExecution.class);
             pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(Plugin.class)))

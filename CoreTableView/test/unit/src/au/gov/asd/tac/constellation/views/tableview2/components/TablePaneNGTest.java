@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -27,7 +26,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -54,7 +52,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TablePaneNGTest {
-    private TableViewTopComponent tableTopComponent;
+    private TableViewTopComponent tableViewTopComponent;
     
     private TablePane tablePane;
     
@@ -74,11 +72,11 @@ public class TablePaneNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tableTopComponent = mock(TableViewTopComponent.class);
-        when(tableTopComponent.getExecutorService())
+        tableViewTopComponent = mock(TableViewTopComponent.class);
+        when(tableViewTopComponent.getExecutorService())
                 .thenReturn(Executors.newSingleThreadExecutor());
 
-        tablePane = spy(new TablePane(tableTopComponent));
+        tablePane = spy(new TablePane(tableViewTopComponent));
     }
     
     @Test

@@ -103,9 +103,9 @@ public class ColumnVisibilityContextMenu {
         contextMenu = new ContextMenu();
         
         showAllColumnsMenu = createCustomMenu(ALL_COLUMNS, e -> {
-            getTableService().updateVisibleColumns(
-                    getTableTopComponent().getCurrentGraph(),
-                    getTableTopComponent().getCurrentState(),
+            getActiveTableReference().updateVisibleColumns(
+                    getTableViewTopComponent().getCurrentGraph(),
+                    getTableViewTopComponent().getCurrentState(),
                     extractColumnAttributes(table.getColumnIndex()),
                     UpdateMethod.REPLACE
             );
@@ -113,9 +113,9 @@ public class ColumnVisibilityContextMenu {
         });
         
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
-            getTableService().updateVisibleColumns(
-                    getTableTopComponent().getCurrentGraph(),
-                    getTableTopComponent().getCurrentState(),
+            getActiveTableReference().updateVisibleColumns(
+                    getTableViewTopComponent().getCurrentGraph(),
+                    getTableViewTopComponent().getCurrentState(),
                     extractColumnAttributes(table.getColumnIndex().stream()
                             .filter(column -> Character.isUpperCase(
                                     column.getAttribute().getName().charAt(0))
@@ -127,9 +127,9 @@ public class ColumnVisibilityContextMenu {
         });
         
         showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
-            if (getTableTopComponent().getCurrentGraph() != null) {
+            if (getTableViewTopComponent().getCurrentGraph() != null) {
                 final Set<GraphAttribute> keyAttributes = new HashSet<>();
-                final ReadableGraph readableGraph = getTableTopComponent().getCurrentGraph().getReadableGraph();
+                final ReadableGraph readableGraph = getTableViewTopComponent().getCurrentGraph().getReadableGraph();
                 try {
                     final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
                     for (final int vertexKey : vertexKeys) {
@@ -142,9 +142,9 @@ public class ColumnVisibilityContextMenu {
                 } finally {
                     readableGraph.release();
                 }
-                getTableService().updateVisibleColumns(
-                        getTableTopComponent().getCurrentGraph(),
-                        getTableTopComponent().getCurrentState(),
+                getActiveTableReference().updateVisibleColumns(
+                        getTableViewTopComponent().getCurrentGraph(),
+                        getTableViewTopComponent().getCurrentState(),
                         extractColumnAttributes(
                                 table.getColumnIndex().stream()
                                         .filter(column ->  keyAttributes.stream()
@@ -160,9 +160,9 @@ public class ColumnVisibilityContextMenu {
         
         hideAllColumnsMenu = createCustomMenu(NO_COLUMNS, e -> {
             table.getColumnIndex().forEach(column -> column.getTableColumn().setVisible(false));
-            getTableService().updateVisibleColumns(
-                    getTableTopComponent().getCurrentGraph(),
-                    getTableTopComponent().getCurrentState(),
+            getActiveTableReference().updateVisibleColumns(
+                    getTableViewTopComponent().getCurrentGraph(),
+                    getTableViewTopComponent().getCurrentState(),
                     Collections.emptyList(),
                     UpdateMethod.REPLACE
             );
@@ -319,9 +319,9 @@ public class ColumnVisibilityContextMenu {
         columnCheckbox.selectedProperty().bindBidirectional(column.getTableColumn().visibleProperty());
         
         columnCheckbox.setOnAction(e -> {
-            getTableService().updateVisibleColumns(
-                    getTableTopComponent().getCurrentGraph(),
-                    getTableTopComponent().getCurrentState(),
+            getActiveTableReference().updateVisibleColumns(
+                    getTableViewTopComponent().getCurrentGraph(),
+                    getTableViewTopComponent().getCurrentState(),
                     extractColumnAttributes(column),
                     ((CheckBox) e.getSource()).isSelected() ? UpdateMethod.ADD : UpdateMethod.REMOVE
             );
@@ -366,20 +366,20 @@ public class ColumnVisibilityContextMenu {
     }
     
     /**
-     * Convenience method for accessing the table service.
+     * Convenience method for accessing the active table reference.
      * 
-     * @return the table service
+     * @return the active table reference
      */
-    private ActiveTableReference getTableService() {
+    private ActiveTableReference getActiveTableReference() {
         return table.getParentComponent().getActiveTableReference();
     }
     
     /**
-     * Convenience method for accessing the table top component.
+     * Convenience method for accessing the table view top component.
      *
-     * @return the table top component
+     * @return the table view top component
      */
-    private TableViewTopComponent getTableTopComponent() {
+    private TableViewTopComponent getTableViewTopComponent() {
         return table.getParentComponent().getParentComponent();
     }
     

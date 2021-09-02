@@ -61,23 +61,23 @@ public class TableSelectionListener implements ChangeListener<ObservableList<Str
     public void changed(final ObservableValue<? extends ObservableList<String>> observable,
                         final ObservableList<String> oldValue,
                         final ObservableList<String> newValue) {
-        if (getTableTopComponent().getCurrentState() != null
-                && !getTableTopComponent().getCurrentState().isSelectedOnly()) {
+        if (getTableViewTopComponent().getCurrentState() != null
+                && !getTableViewTopComponent().getCurrentState().isSelectedOnly()) {
             TableViewUtilities.copySelectionToGraph(
                     table.getTableView(),
                     table.getParentComponent().getActiveTableReference().getRowToElementIdIndex(),
-                    getTableTopComponent().getCurrentState().getElementType(),
-                    getTableTopComponent().getCurrentGraph()
+                    getTableViewTopComponent().getCurrentState().getElementType(),
+                    getTableViewTopComponent().getCurrentGraph()
             );
         }
     }
     
     /**
-     * Convenience method for accessing the table top component.
+     * Convenience method for accessing the table view top component.
      *
-     * @return the table top component
+     * @return the table view top component
      */
-    private TableViewTopComponent getTableTopComponent() {
+    private TableViewTopComponent getTableViewTopComponent() {
         return table.getParentComponent().getParentComponent();
     }
 }

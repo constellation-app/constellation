@@ -28,6 +28,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
+ * POJO representing the table user preferences that can be persisted to disk
+ * as a JSON file.
  *
  * @author formalhaunt
  */

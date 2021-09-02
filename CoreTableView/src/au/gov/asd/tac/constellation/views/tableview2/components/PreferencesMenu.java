@@ -94,9 +94,9 @@ public class PreferencesMenu {
             if ((!getTable().getTableView().getColumns().isEmpty()) 
                     && (GraphManager.getDefault().getActiveGraph() != null)) {
                 TableViewPreferencesIoProvider.savePreferences(
-                        getTableTopComponent().getCurrentState().getElementType(),
+                        getTableViewTopComponent().getCurrentState().getElementType(),
                         getTable().getTableView(),
-                        getTableService().getTablePreferences().getMaxRowsPerPage()
+                        getActiveTableReference().getTablePreferences().getMaxRowsPerPage()
                 );
             }
             e.consume();
@@ -180,20 +180,20 @@ public class PreferencesMenu {
     }
     
     /**
-     * Convenience method for accessing the table service.
+     * Convenience method for accessing the active table reference.
      * 
-     * @return the table service
+     * @return the active table reference
      */
-    private ActiveTableReference getTableService() {
+    private ActiveTableReference getActiveTableReference() {
         return tablePane.getActiveTableReference();
     }
     
     /**
-     * Convenience method for accessing the table top component.
+     * Convenience method for accessing the table view top component.
      *
-     * @return the table top component
+     * @return the table view top component
      */
-    private TableViewTopComponent getTableTopComponent() {
+    private TableViewTopComponent getTableViewTopComponent() {
         return tablePane.getParentComponent();
     }
     
@@ -216,18 +216,16 @@ public class PreferencesMenu {
      */
     private Menu createPageSizeMenu() {
         final Menu menu = new Menu(PAGE_SIZE_PREFERENCES);
-        menu.getItems().addAll(
-                IntStream.of(100, 250, 500, 1000)
+        menu.getItems().addAll(IntStream.of(100, 250, 500, 1000)
                         .mapToObj(pageSize -> {
                             final RadioMenuItem pageSizeOption
                                     = new RadioMenuItem(Integer.toString(pageSize));
                             pageSizeOption.setToggleGroup(pageSizeToggle);
                             pageSizeOption.setOnAction(e -> {
                                 // TODO potential race condition with the setting of the preferences???
-                                if (getTableService().getTablePreferences().getMaxRowsPerPage() != pageSize) {
-                                    getTableService().getTablePreferences().setMaxRowsPerPage(pageSize);
-                                    getTableService().updatePagination(
-                                            getTableService().getTablePreferences().getMaxRowsPerPage(),
+                                if (getActiveTableReference().getTablePreferences().getMaxRowsPerPage() != pageSize) {
+                                    getActiveTableReference().getTablePreferences().setMaxRowsPerPage(pageSize);
+                                    getActiveTableReference().updatePagination(getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
                                             tablePane
                                     );
                                 }
@@ -291,12 +289,11 @@ public class PreferencesMenu {
      */
     protected void loadPreferences() {
         synchronized (TABLE_LOCK) {
-            if (getTableTopComponent().getCurrentState() != null) {
+            if (getTableViewTopComponent().getCurrentState() != null) {
 
                 // Load the local table preferences JSON file
                 final TablePreferences tablePrefs
-                        = TableViewPreferencesIoProvider.getPreferences(
-                                getTableTopComponent().getCurrentState().getElementType());
+                        = TableViewPreferencesIoProvider.getPreferences(getTableViewTopComponent().getCurrentState().getElementType());
 
                 // If no columns were found then the user abandoned the load as saves
                 // cannot occur with 0 columns
@@ -341,15 +338,14 @@ public class PreferencesMenu {
                                 .collect(Collectors.toList());
                 
                 // Update the sort preferences
-                getTableService().saveSortDetails(
+                getActiveTableReference().saveSortDetails(
                         tablePrefs.getSortColumn(),
                         tablePrefs.getSortDirection()
                 );
                 
                 // Update the visibile columns
-                getTableService().updateVisibleColumns(
-                        getTableTopComponent().getCurrentGraph(),
-                        getTableTopComponent().getCurrentState(),
+                getActiveTableReference().updateVisibleColumns(getTableViewTopComponent().getCurrentGraph(),
+                        getTableViewTopComponent().getCurrentState(),
                         orderedColumns,
                         UpdateMethod.REPLACE
                 );
@@ -359,7 +355,7 @@ public class PreferencesMenu {
                     final RadioMenuItem pageSizeOption = (RadioMenuItem) t;
                     if (Integer.parseInt(pageSizeOption.getText()) == tablePrefs.getMaxRowsPerPage()) {
                         pageSizeOption.setSelected(true);
-                        getTableService().getTablePreferences()
+                        getActiveTableReference().getTablePreferences()
                                 .setMaxRowsPerPage(tablePrefs.getMaxRowsPerPage());
                         break;
                     }

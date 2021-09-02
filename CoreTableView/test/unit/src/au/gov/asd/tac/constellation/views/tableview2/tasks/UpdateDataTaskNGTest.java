@@ -64,7 +64,7 @@ public class UpdateDataTaskNGTest {
     private TablePane tablePane;
     private Table table;
     private TableView<ObservableList<String>> tableView;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     
     private ChangeListener<ObservableList<String>> tableSelectionListener;
     private ListChangeListener selectedOnlySelectionListener;
@@ -105,13 +105,13 @@ public class UpdateDataTaskNGTest {
         
         when(existingRowList.comparatorProperty()).thenReturn(existingRowComparatorProperty);
         
-        tableService = spy(new ActiveTableReference(null));
-        tableService.setSortedRowList(existingRowList);
+        activeTableReference = spy(new ActiveTableReference(null));
+        activeTableReference.setSortedRowList(existingRowList);
         
         pagination = mock(Pagination.class);
         
-        doReturn(pagination).when(tableService).updatePagination(anyInt(), any(List.class), any(TablePane.class));
-        doReturn(pagination).when(tableService).getPagination();
+        doReturn(pagination).when(activeTableReference).updatePagination(anyInt(), any(List.class), any(TablePane.class));
+        doReturn(pagination).when(activeTableReference).getPagination();
         
         tableSelectionListener = mock(ChangeListener.class);
         selectedOnlySelectionListener = mock(ListChangeListener.class);
@@ -131,7 +131,7 @@ public class UpdateDataTaskNGTest {
         when(table.getSelectedOnlySelectionListener()).thenReturn(selectedOnlySelectionListener);
         when(table.getParentComponent()).thenReturn(tablePane);
         
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
         
         when(tableView.getSelectionModel()).thenReturn(selectionModel);
         
@@ -145,7 +145,7 @@ public class UpdateDataTaskNGTest {
         final TablePreferences tablePreferences = new TablePreferences();
         tablePreferences.setMaxRowsPerPage(42);
         
-        when(tableService.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
         
         final TableFilter.Builder filterBuilder = mock(TableFilter.Builder.class);
         final TableFilter<ObservableList<String>> filter = mock(TableFilter.class);
@@ -180,7 +180,7 @@ public class UpdateDataTaskNGTest {
         final SortedList<ObservableList<String>> newRowList
                 = new SortedList<>(FXCollections.observableList(rows));
                 
-        assertEquals(newRowList, tableService.getSortedRowList());
+        assertEquals(newRowList, activeTableReference.getSortedRowList());
         
         verify(tableView).setItems(newRowList);
         
@@ -192,7 +192,7 @@ public class UpdateDataTaskNGTest {
         assertFalse(filterStrategyCaptor.getValue().test("DEF", "abcdefg"));
         
         // Verify the table is updated with changes and listeners re-applied
-        verify(tableService).updatePagination(42, newRowList, tablePane);
+        verify(activeTableReference).updatePagination(42, newRowList, tablePane);
         
         verify(selectedItemProperty).addListener(tableSelectionListener);
         verify(selectedItems).addListener(selectedOnlySelectionListener);
@@ -206,7 +206,7 @@ public class UpdateDataTaskNGTest {
         verify(filterPredicateProperty).addListener(filterListenerCaptor.capture());
         
         // Clear the mock invocation counts for clarity and simplicity
-        clearInvocations(tableService, tablePane);
+        clearInvocations(activeTableReference, tablePane);
         
         final Predicate predicate = mock(Predicate.class);
         when(filteredList.getPredicate()).thenReturn(predicate);
@@ -219,14 +219,14 @@ public class UpdateDataTaskNGTest {
         Platform.runLater(() -> listenerCountDownLatch.countDown());
         listenerCountDownLatch.await();
         
-        verify(tableService).setSortedRowList(new SortedList<>(
+        verify(activeTableReference).setSortedRowList(new SortedList<>(
                     FXCollections.observableArrayList(
                             new FilteredList<>(FXCollections.observableArrayList(rows),
                                     predicate)
                     )
         ));
         
-        verify(tableService).updatePagination(42, new SortedList<>(
+        verify(activeTableReference).updatePagination(42, new SortedList<>(
                     FXCollections.observableArrayList(
                             new FilteredList<>(FXCollections.observableArrayList(rows),
                                     predicate)

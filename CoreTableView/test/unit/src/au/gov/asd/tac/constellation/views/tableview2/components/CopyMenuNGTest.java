@@ -50,7 +50,7 @@ import org.testng.annotations.Test;
  */
 public class CopyMenuNGTest {
     private TablePane tablePane;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     private Table table;
     private Pagination pagination;
     
@@ -73,13 +73,13 @@ public class CopyMenuNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tablePane = mock(TablePane.class);
-        tableService = mock(ActiveTableReference.class);
+        activeTableReference = mock(ActiveTableReference.class);
         table = mock(Table.class);
         pagination = mock(Pagination.class);
         
         when(tablePane.getTable()).thenReturn(table);
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
-        when(tableService.getPagination()).thenReturn(pagination);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
+        when(activeTableReference.getPagination()).thenReturn(pagination);
         
         copyMenu = new CopyMenu(tablePane);
     }

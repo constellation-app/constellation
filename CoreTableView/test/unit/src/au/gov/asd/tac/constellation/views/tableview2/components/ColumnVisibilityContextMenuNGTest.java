@@ -67,10 +67,10 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ColumnVisibilityContextMenuNGTest {
-    private TableViewTopComponent tableTopComponent;
+    private TableViewTopComponent tableViewTopComponent;
     private TablePane tablePane;
     private Table table;
-    private ActiveTableReference tableService;
+    private ActiveTableReference activeTableReference;
     private Graph graph;
     private ReadableGraph readableGraph;
     private TableViewState tableViewState;
@@ -111,10 +111,10 @@ public class ColumnVisibilityContextMenuNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        tableTopComponent = mock(TableViewTopComponent.class);
+        tableViewTopComponent = mock(TableViewTopComponent.class);
         tablePane = mock(TablePane.class);
         table = mock(Table.class);
-        tableService = mock(ActiveTableReference.class);
+        activeTableReference = mock(ActiveTableReference.class);
         graph = mock(Graph.class);
         readableGraph = mock(ReadableGraph.class);
         
@@ -172,11 +172,11 @@ public class ColumnVisibilityContextMenuNGTest {
         when(table.getColumnIndex()).thenReturn(columnIndex);
         when(table.getParentComponent()).thenReturn(tablePane);
         
-        when(tablePane.getActiveTableReference()).thenReturn(tableService);
-        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
+        when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
+        when(tablePane.getParentComponent()).thenReturn(tableViewTopComponent);
         
-        when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
-        when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
+        when(tableViewTopComponent.getCurrentGraph()).thenReturn(graph);
+        when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
         
         columnVisibilityContextMenu = spy(new ColumnVisibilityContextMenu(table));
     }
@@ -435,7 +435,7 @@ public class ColumnVisibilityContextMenuNGTest {
                 
         columnCheckBox.getOnAction().handle(actionEvent);
         
-        verify(tableService).updateVisibleColumns(
+        verify(activeTableReference).updateVisibleColumns(
                 graph,
                 tableViewState,
                 expectedColumnAttributes,
@@ -469,7 +469,7 @@ public class ColumnVisibilityContextMenuNGTest {
         
         customMenuItem.getOnAction().handle(actionEvent);
         
-        verify(tableService).updateVisibleColumns(
+        verify(activeTableReference).updateVisibleColumns(
                 graph,
                 tableViewState,
                 expectedColumnAttributes,

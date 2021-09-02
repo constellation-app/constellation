@@ -72,14 +72,14 @@ public class UpdateDataTask implements Runnable {
         table.getSelectedProperty().removeListener(table.getTableSelectionListener());
         table.getTableView().getSelectionModel().getSelectedItems()
                 .removeListener(table.getSelectedOnlySelectionListener());
-        getTableService().getSortedRowList().comparatorProperty().unbind();
+        getActiveTableReference().getSortedRowList().comparatorProperty().unbind();
 
         // set the new rows to the backing list
-        getTableService().setSortedRowList(new SortedList<>(FXCollections.observableArrayList(rows)));
+        getActiveTableReference().setSortedRowList(new SortedList<>(FXCollections.observableArrayList(rows)));
 
         // need to set the table items to the whole list here so that the filter
         // picks up the full list of options to filter before we paginate
-        table.getTableView().setItems(FXCollections.observableArrayList(getTableService().getSortedRowList()));
+        table.getTableView().setItems(FXCollections.observableArrayList(getActiveTableReference().getSortedRowList()));
 
         // add user defined filter to the table
         final TableFilter<ObservableList<String>> filter
@@ -92,19 +92,19 @@ public class UpdateDataTask implements Runnable {
             }
         });
         filter.getFilteredList().predicateProperty().addListener((v, o, n) -> {
-            getTableService().getSortedRowList().comparatorProperty().unbind();
+            getActiveTableReference().getSortedRowList().comparatorProperty().unbind();
             filteredRowList = new FilteredList<>(FXCollections.observableArrayList(rows),
                     filter.getFilteredList().getPredicate());
-            getTableService().setSortedRowList(new SortedList<>(
+            getActiveTableReference().setSortedRowList(new SortedList<>(
                     FXCollections.observableArrayList(filteredRowList)));
             
-            getTableService().updatePagination(getTableService().getTablePreferences().getMaxRowsPerPage(),
-                    getTableService().getSortedRowList(), table.getParentComponent());
+            getActiveTableReference().updatePagination(getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+                    getActiveTableReference().getSortedRowList(), table.getParentComponent());
         });
         
         // trigger a pagination update so the table only shows the current page
-        getTableService().updatePagination(getTableService().getTablePreferences().getMaxRowsPerPage(),
-                getTableService().getSortedRowList(), table.getParentComponent());
+        getActiveTableReference().updatePagination(getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+                getActiveTableReference().getSortedRowList(), table.getParentComponent());
         
         updateDataLatch.countDown();
 
@@ -135,11 +135,11 @@ public class UpdateDataTask implements Runnable {
     }
     
     /**
-     * Convenience method for accessing the table service.
+     * Convenience method for accessing the active table reference.
      * 
-     * @return the table service
+     * @return the active table reference
      */
-    private ActiveTableReference getTableService() {
+    private ActiveTableReference getActiveTableReference() {
         return table.getParentComponent().getActiveTableReference();
     }
 }

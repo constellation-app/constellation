@@ -46,6 +46,9 @@ public final class Column {
     private Attribute attribute;
     private TableColumn<ObservableList<String>, String> tableColumn;
 
+    /**
+     * Creates a new column.
+     */
     public Column() {
         
     }
