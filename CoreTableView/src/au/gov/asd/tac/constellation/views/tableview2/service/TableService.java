@@ -122,7 +122,7 @@ public class TableService {
      * @see #updatePagination(int, java.util.List)
      */
     public Pagination updatePagination(final int maxRowsPerPage) {
-        return updatePagination(maxRowsPerPage, sortedRowList);
+        return updatePagination(maxRowsPerPage, getSortedRowList());
     }
     
     /**
@@ -151,8 +151,8 @@ public class TableService {
                 ? 1 : (int) Math.ceil(newRowList.size() / (double) maxRowsPerPage);
         pagination = new Pagination(numberOfPages);
         // TODO Should this create a copy of page factory first then update?
-        pageFactory.update(newRowList, elementIdToRowIndex, maxRowsPerPage);
-        pagination.setPageFactory(pageFactory);
+        getPageFactory().update(newRowList, getElementIdToRowIndex(), maxRowsPerPage);
+        pagination.setPageFactory(getPageFactory());
         
         return pagination;
     }

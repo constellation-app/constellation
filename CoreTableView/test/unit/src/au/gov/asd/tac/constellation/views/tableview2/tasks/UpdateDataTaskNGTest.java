@@ -39,6 +39,7 @@ import org.controlsfx.control.table.TableFilter;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.clearInvocations;
@@ -107,7 +108,8 @@ public class UpdateDataTaskNGTest {
         
         when(existingRowList.comparatorProperty()).thenReturn(existingRowComparatorProperty);
         
-        tableService = spy(new TableService(existingRowList, null, null, null));
+        tableService = spy(new TableService(null));
+        tableService.setSortedRowList(existingRowList);
         
         pagination = mock(Pagination.class);
         
@@ -179,7 +181,8 @@ public class UpdateDataTaskNGTest {
         final SortedList<ObservableList<String>> newRowList
                 = new SortedList<>(FXCollections.observableList(rows));
                 
-        verify(tableService).setSortedRowList(newRowList);
+        assertEquals(newRowList, tableService.getSortedRowList());
+        
         verify(tableView).setItems(newRowList);
         
         // Verify a new filter is created for the table

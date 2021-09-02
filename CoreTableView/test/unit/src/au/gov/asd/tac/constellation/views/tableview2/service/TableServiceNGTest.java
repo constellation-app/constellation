@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -91,7 +93,11 @@ public class TableServiceNGTest {
         
         pageFactory = mock(TableViewPageFactory.class);
         
-        tableService = new TableService(sortedRowList, elementIdToRowIndex, rowToElementIdIndex, pageFactory);
+        tableService = spy(new TableService(pageFactory));
+        
+        doReturn(sortedRowList).when(tableService).getSortedRowList();
+        doReturn(rowToElementIdIndex).when(tableService).getRowToElementIdIndex();
+        doReturn(elementIdToRowIndex).when(tableService).getElementIdToRowIndex();
     }
 
     @AfterMethod
@@ -100,6 +106,14 @@ public class TableServiceNGTest {
     
     @Test
     public void init() {
+        doCallRealMethod().when(tableService).getSortedRowList();
+        doCallRealMethod().when(tableService).getRowToElementIdIndex();
+        doCallRealMethod().when(tableService).getElementIdToRowIndex();
+        
+        assertEquals(new SortedList<>(FXCollections.observableArrayList()), tableService.getSortedRowList());
+        assertEquals(new HashMap<>(), tableService.getRowToElementIdIndex());
+        assertEquals(new HashMap<>(), tableService.getElementIdToRowIndex());
+        
         assertNotNull(tableService.getPagination());
         assertNotNull(tableService.getSelectedOnlySelectedRows());
         
@@ -226,20 +240,17 @@ public class TableServiceNGTest {
     
     @Test
     public void updatePaginationNoNewRowList() {
-        final TableService spiedTableService = spy(tableService);
-        
         final Pagination pagination = mock(Pagination.class);
         
-        doReturn(pagination).when(spiedTableService)
+        doReturn(pagination).when(tableService)
                 .updatePagination(eq(22), same(sortedRowList));
         
-        assertSame(pagination, spiedTableService.updatePagination(22));
+        assertSame(pagination, tableService.updatePagination(22));
     }
     
     @Test(expectedExceptions = NullPointerException.class)
     public void updatePaginationPageFactoryNotSet() {
-        final TableService localTableService = new TableService(sortedRowList,
-                elementIdToRowIndex, rowToElementIdIndex, null);
+        final TableService localTableService = new TableService(null);
         localTableService.updatePagination(22, sortedRowList);
     }
     
