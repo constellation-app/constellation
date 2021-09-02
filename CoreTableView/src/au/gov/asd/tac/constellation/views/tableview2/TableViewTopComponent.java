@@ -194,9 +194,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             }
             getTablePane().getTable().updateSelection(
                     getCurrentGraph(),
-                    getCurrentState(),
-                    getTablePane().getTableSelectionListener(),
-                    getTablePane().getSelectedOnlySelectionListener()
+                    getCurrentState()
             );
         });
     }

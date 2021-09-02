@@ -21,13 +21,17 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
+import au.gov.asd.tac.constellation.views.tableview2.listeners.TableComparatorListener;
+import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSortTypeListener;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -47,6 +51,9 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
     private static final Logger LOGGER = Logger.getLogger(TableViewPageFactory.class.getName());
     
     private final TableViewPane tablePane;
+    
+    private final ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
+    private final ChangeListener<? super TableColumn.SortType> tableSortTypeListener;
     
     private List<ObservableList<String>> allTableRows;
     
@@ -72,6 +79,9 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      */
     public TableViewPageFactory(final TableViewPane tablePane) {
         this.tablePane = tablePane;
+        
+        this.tableComparatorListener = new TableComparatorListener(tablePane);
+        this.tableSortTypeListener = new TableSortTypeListener(tablePane);
     }
     
     /**
@@ -189,6 +199,28 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
     }
     
     /**
+     * Gets a listener that deals with sort order and sort column changes. The listener
+     * will update the table and cause it to refresh.
+     *
+     * @return the sort change listener
+     * @see TableComparatorListener
+     */
+    public ChangeListener<? super Comparator<? super ObservableList<String>>> getTableComparatorListener() {
+        return tableComparatorListener;
+    }
+
+    /**
+     * Gets a listener that deals with sort order and sort column changes. The listener
+     * will update the table and cause it to refresh.
+     *
+     * @return the sort change listener
+     * @see TableSortTypeListener
+     */
+    public ChangeListener<? super TableColumn.SortType> getTableSortTypeListener() {
+        return tableSortTypeListener;
+    }
+    
+    /**
      * Get the current sort that is set on the table. If no sort is set, then
      * both left and right parts of the pair will be null.
      * <p/>
@@ -204,7 +236,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
         if (!tablePane.getTable().getTableView().getSortOrder().isEmpty()) {
             sortCol = tablePane.getTable().getTableView().getSortOrder().get(0);
             sortType = sortCol.getSortType();
-            sortCol.sortTypeProperty().removeListener(tablePane.getTableSortTypeListener());
+            sortCol.sortTypeProperty().removeListener(getTableSortTypeListener());
         }
         
         return ImmutablePair.of(sortCol, sortType);
@@ -222,7 +254,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
         if (sortBackup.getLeft() != null) {
             tablePane.getTable().getTableView().getSortOrder().add(sortBackup.getLeft());
             sortBackup.getLeft().setSortType(sortBackup.getRight());
-            sortBackup.getLeft().sortTypeProperty().addListener(tablePane.getTableSortTypeListener());
+            sortBackup.getLeft().sortTypeProperty().addListener(getTableSortTypeListener());
         }
     }
     
@@ -232,10 +264,10 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      */
     protected void restoreListeners() {
         tablePane.getTable().getTableView().getSelectionModel().getSelectedItems()
-                .addListener(tablePane.getSelectedOnlySelectionListener());
-        tablePane.getTable().getSelectedProperty().addListener(tablePane.getTableSelectionListener());
+                .addListener(tablePane.getTable().getSelectedOnlySelectionListener());
+        tablePane.getTable().getSelectedProperty().addListener(tablePane.getTable().getTableSelectionListener());
         tablePane.getTableService().getSortedRowList().comparatorProperty()
-                .addListener(tablePane.getTableComparatorListener());
+                .addListener(getTableComparatorListener());
     }
     
     /**
@@ -244,10 +276,10 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      */
     protected void removeListeners() {
         tablePane.getTable().getTableView().getSelectionModel().getSelectedItems()
-                .removeListener(tablePane.getSelectedOnlySelectionListener());
-        tablePane.getTable().getSelectedProperty().removeListener(tablePane.getTableSelectionListener());
+                .removeListener(tablePane.getTable().getSelectedOnlySelectionListener());
+        tablePane.getTable().getSelectedProperty().removeListener(tablePane.getTable().getTableSelectionListener());
         tablePane.getTableService().getSortedRowList()
-                .comparatorProperty().removeListener(tablePane.getTableComparatorListener());
+                .comparatorProperty().removeListener(getTableComparatorListener());
     }
     
     /**

@@ -38,8 +38,7 @@ public class UpdateTableDataTask implements Runnable {
     
     @Override
     public void run() {
-        tablePane.getTable().updateData(graph, tableViewState, tablePane.getProgressBar(),
-                            tablePane.getTableSelectionListener(), tablePane.getSelectedOnlySelectionListener());
+        tablePane.getTable().updateData(graph, tableViewState, tablePane.getProgressBar());
     }
     
 }

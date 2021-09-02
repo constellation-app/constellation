@@ -70,8 +70,9 @@ public class TableComparatorListenerNGTest {
         tablePane = mock(TableViewPane.class);
         tableService = spy(new TableService(new SortedList<>(FXCollections.observableArrayList()),
                 new HashMap<>(), new HashMap<>(), null));
+        when(tablePane.getTableService()).thenReturn(tableService);
         
-        tableComparatorListener = new TableComparatorListener(tablePane, tableService);
+        tableComparatorListener = new TableComparatorListener(tablePane);
     }
 
     @AfterMethod

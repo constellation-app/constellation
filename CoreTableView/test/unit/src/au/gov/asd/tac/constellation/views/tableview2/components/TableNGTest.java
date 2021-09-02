@@ -126,12 +126,15 @@ public class TableNGTest {
         
         assertNotNull(table.getSelectedProperty());
         assertSame(table.getTableView().getSelectionModel().selectedItemProperty(), table.getSelectedProperty());
+        
+        assertNotNull(table.getTableSelectionListener());
+        assertNotNull(table.getSelectedOnlySelectionListener());
     }
     
     @Test
     public void updateSelectionGraphNull() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-            table.updateSelection(null, new TableViewState(), null, null);
+            table.updateSelection(null, new TableViewState());
             
             platformMockedStatic.verifyNoInteractions();
         }
@@ -140,7 +143,7 @@ public class TableNGTest {
     @Test
     public void updateSelectionStateNull() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-            table.updateSelection(graph, null, null, null);
+            table.updateSelection(graph, null);
             
             platformMockedStatic.verifyNoInteractions();
         }
@@ -151,7 +154,7 @@ public class TableNGTest {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(true);
             
-            table.updateSelection(graph, new TableViewState(), null, null);
+            table.updateSelection(graph, new TableViewState());
         }
     }
     
@@ -160,7 +163,7 @@ public class TableNGTest {
         try (final MockedStatic<SwingUtilities> swingUtilsMockedStatic = Mockito.mockStatic(SwingUtilities.class)) {
             swingUtilsMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
             
-            table.updateSelection(graph, new TableViewState(), null, null);
+            table.updateSelection(graph, new TableViewState());
         }
     }
     
@@ -170,7 +173,7 @@ public class TableNGTest {
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setSelectedOnly(true);
             
-            table.updateSelection(graph, tableViewState, null, null);
+            table.updateSelection(graph, tableViewState);
             
             platformMockedStatic.verify(() -> Platform.runLater(any(Runnable.class)), times(0));
         }
@@ -186,6 +189,8 @@ public class TableNGTest {
         final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
         
         doReturn(List.of(100, 102)).when(table).getSelectedIds(any(Graph.class), any(TableViewState.class));
+        doReturn(tableSelectionListener).when(table).getTableSelectionListener();
+        doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
         
         final ObservableList<String> vertex1 = FXCollections.observableList(List.of("Vertex1Attr1", "Vertex1Attr2"));
         final ObservableList<String> vertex2 = FXCollections.observableList(List.of("Vertex2Attr1", "Vertex2Attr2"));
@@ -213,7 +218,7 @@ public class TableNGTest {
         final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty = mock(ReadOnlyObjectProperty.class);
         when(table.getSelectedProperty()).thenReturn(selectedProperty);
         
-        table.updateSelection(graph, tableViewState, tableSelectionListener, selectedOnlySelectionListener);
+        table.updateSelection(graph, tableViewState);
         
         verify(table).getSelectedIds(graph, tableViewState);
         
@@ -241,6 +246,8 @@ public class TableNGTest {
         final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
         
         doReturn(List.of()).when(table).getSelectedIds(any(Graph.class), any(TableViewState.class));
+        doReturn(tableSelectionListener).when(table).getTableSelectionListener();
+        doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
         
         final TableView<ObservableList<String>> tableView = mock(TableView.class);
         when(table.getTableView()).thenReturn(tableView);
@@ -254,7 +261,7 @@ public class TableNGTest {
         final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty = mock(ReadOnlyObjectProperty.class);
         when(table.getSelectedProperty()).thenReturn(selectedProperty);
         
-        table.updateSelection(graph, tableViewState, tableSelectionListener, selectedOnlySelectionListener);
+        table.updateSelection(graph, tableViewState);
         
         verify(table).getSelectedIds(graph, tableViewState);
         
@@ -380,7 +387,7 @@ public class TableNGTest {
     @Test
     public void updateColumnsGraphNull() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-            table.updateColumns(null, new TableViewState(), null, null);
+            table.updateColumns(null, new TableViewState());
             
             platformMockedStatic.verifyNoInteractions();
         }
@@ -389,7 +396,7 @@ public class TableNGTest {
     @Test
     public void updateColumnsStateNull() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-            table.updateColumns(graph, null, null, null);
+            table.updateColumns(graph, null);
             
             platformMockedStatic.verifyNoInteractions();
         }
@@ -400,7 +407,7 @@ public class TableNGTest {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(true);
             
-            table.updateColumns(graph, new TableViewState(), null, null);
+            table.updateColumns(graph, new TableViewState());
         }
     }
     
@@ -409,7 +416,7 @@ public class TableNGTest {
         try (final MockedStatic<SwingUtilities> swingUtilsMockedStatic = Mockito.mockStatic(SwingUtilities.class)) {
             swingUtilsMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
             
-            table.updateColumns(graph, new TableViewState(), null, null);
+            table.updateColumns(graph, new TableViewState());
         }
     }
     
@@ -417,6 +424,9 @@ public class TableNGTest {
     public void updateColumns() {
         final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
         final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
+        
+        doReturn(tableSelectionListener).when(table).getTableSelectionListener();
+        doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
         
         final ReadableGraph readableGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(readableGraph);
@@ -493,7 +503,7 @@ public class TableNGTest {
                 Tuple.create("destination.", attribute2)
         ));
         
-        table.updateColumns(graph, tableViewState, tableSelectionListener, selectedOnlySelectionListener);
+        table.updateColumns(graph, tableViewState);
         
         // Verify the new column index
         final CopyOnWriteArrayList<Column> expectedColumnIndex
@@ -517,6 +527,9 @@ public class TableNGTest {
     public void updateColumnsStateColumnsNotSet() {
         final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
         final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
+        
+        doReturn(tableSelectionListener).when(table).getTableSelectionListener();
+        doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
         
         final ReadableGraph readableGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(readableGraph);
@@ -558,7 +571,7 @@ public class TableNGTest {
         // Don't want it trying to open the menu to select which columns to show
         doNothing().when(table).openColumnVisibilityMenu();
         
-        table.updateColumns(graph, tableViewState, tableSelectionListener, selectedOnlySelectionListener);
+        table.updateColumns(graph, tableViewState);
         
         // Verify the new column index
         final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> expectedColumnIndex
@@ -647,7 +660,7 @@ public class TableNGTest {
     @Test
     public void updateDataGraphNull() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-            table.updateData(null, new TableViewState(), null, null, null);
+            table.updateData(null, new TableViewState(), null);
             
             platformMockedStatic.verifyNoInteractions();
         }
@@ -656,7 +669,7 @@ public class TableNGTest {
     @Test
     public void updateDataStateNull() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-            table.updateData(graph, null, null, null, null);
+            table.updateData(graph, null, null);
             
             platformMockedStatic.verifyNoInteractions();
         }
@@ -667,7 +680,7 @@ public class TableNGTest {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(true);
             
-            table.updateData(graph, new TableViewState(), null, null, null);
+            table.updateData(graph, new TableViewState(), null);
         }
     }
     
@@ -676,7 +689,7 @@ public class TableNGTest {
         try (final MockedStatic<SwingUtilities> swingUtilsMockedStatic = Mockito.mockStatic(SwingUtilities.class)) {
             swingUtilsMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
             
-            table.updateData(graph, new TableViewState(), null, null, null);
+            table.updateData(graph, new TableViewState(), null);
         }
     }
     
@@ -893,6 +906,9 @@ public class TableNGTest {
         final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
         final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
         
+        doReturn(tableSelectionListener).when(table).getTableSelectionListener();
+        doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
+        
         final ReadableGraph readableGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(readableGraph);
         
@@ -952,7 +968,7 @@ public class TableNGTest {
                         return null;
                     });
             
-            table.updateData(graph, tableViewState, progressBar, tableSelectionListener, selectedOnlySelectionListener);
+            table.updateData(graph, tableViewState, progressBar);
         }
         
         assertTrue(elementIdToRowIndex.isEmpty());

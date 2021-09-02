@@ -38,8 +38,7 @@ public class UpdateTableSelectionTask implements Runnable {
     
     @Override
     public void run() {
-        tablePane.getTable().updateSelection(graph, tableViewState,
-                tablePane.getTableSelectionListener(), tablePane.getSelectedOnlySelectionListener());
+        tablePane.getTable().updateSelection(graph, tableViewState);
     }
     
 }

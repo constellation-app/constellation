@@ -29,7 +29,6 @@ import java.util.concurrent.TimeoutException;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -86,11 +85,6 @@ public class TableViewPaneNGTest {
     public void init() throws InterruptedException {
         assertNotNull(tablePane.getTable());
         
-        assertNotNull(tablePane.getTableSelectionListener());
-        assertNotNull(tablePane.getSelectedOnlySelectionListener());
-        assertNotNull(tablePane.getTableComparatorListener());
-        assertNotNull(tablePane.getTableSortTypeListener());
-        
         assertNotNull(tablePane.getTableService());
         assertNotNull(tablePane.getTableService().getPageFactory());
         assertNotNull(tablePane.getTableService().getPagination());
@@ -117,18 +111,10 @@ public class TableViewPaneNGTest {
         
         final Table table = mock(Table.class);
         
-        final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
-        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
-        final ChangeListener<Comparator<ObservableList<String>>> tableComparatorListener = mock(ChangeListener.class);
-        final ChangeListener<TableColumn.SortType> tableSortTypeListener = mock(ChangeListener.class);
         final ProgressBar progressBar = mock(ProgressBar.class);
         final TableToolbar tableToolbar = mock(TableToolbar.class);
         
         when(tablePane.getTable()).thenReturn(table);
-        when(tablePane.getTableSelectionListener()).thenReturn(tableSelectionListener);
-        when(tablePane.getSelectedOnlySelectionListener()).thenReturn(selectedOnlySelectionListener);
-        doReturn(tableComparatorListener).when(tablePane).getTableComparatorListener();
-        doReturn(tableSortTypeListener).when(tablePane).getTableSortTypeListener();
         when(tablePane.getProgressBar()).thenReturn(progressBar);
         when(tablePane.getTableToolbar()).thenReturn(tableToolbar);
         
@@ -143,9 +129,9 @@ public class TableViewPaneNGTest {
         
         verify(tableToolbar).updateToolbar(tableViewState);
         
-        verify(table).updateColumns(graph, tableViewState, tableSelectionListener, selectedOnlySelectionListener);
-        verify(table).updateData(graph, tableViewState, progressBar, tableSelectionListener, selectedOnlySelectionListener);
-        verify(table).updateSelection(graph, tableViewState, tableSelectionListener, selectedOnlySelectionListener);
+        verify(table).updateColumns(graph, tableViewState);
+        verify(table).updateData(graph, tableViewState, progressBar);
+        verify(table).updateSelection(graph, tableViewState);
         
         // The future finished but maybe not the JavaFX thread
         final CountDownLatch latch = new CountDownLatch(1);
@@ -187,9 +173,9 @@ public class TableViewPaneNGTest {
         
         verify(tableToolbar).updateToolbar(tableViewState);
         
-        verify(table, times(0)).updateColumns(any(Graph.class), any(TableViewState.class), any(ChangeListener.class), any(ListChangeListener.class));
-        verify(table, times(0)).updateData(any(Graph.class), any(TableViewState.class), any(ProgressBar.class), any(ChangeListener.class), any(ListChangeListener.class));
-        verify(table, times(0)).updateSelection(any(Graph.class), any(TableViewState.class), any(ChangeListener.class), any(ListChangeListener.class));
+        verify(table, times(0)).updateColumns(any(Graph.class), any(TableViewState.class));
+        verify(table, times(0)).updateData(any(Graph.class), any(TableViewState.class), any(ProgressBar.class));
+        verify(table, times(0)).updateSelection(any(Graph.class), any(TableViewState.class));
         
         // The future finished but maybe not the JavaFX thread
         final CountDownLatch latch = new CountDownLatch(1);

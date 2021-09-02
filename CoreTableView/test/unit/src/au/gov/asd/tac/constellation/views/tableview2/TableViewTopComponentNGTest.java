@@ -190,8 +190,6 @@ public class TableViewTopComponentNGTest {
         final TableViewPane tablePane = mock(TableViewPane.class);
         
         final Table table = mock(Table.class);
-        final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
-        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
         
         doCallRealMethod().when(tableTopComponent).showSelected(any(GraphElementType.class), anyInt());
         when(tableTopComponent.getCurrentState()).thenReturn(currentState);
@@ -200,8 +198,6 @@ public class TableViewTopComponentNGTest {
         when(tableTopComponent.getExecutorService()).thenReturn(Executors.newSingleThreadExecutor());
         
         when(tablePane.getTable()).thenReturn(table);
-        when(tablePane.getTableSelectionListener()).thenReturn(tableSelectionListener);
-        when(tablePane.getSelectedOnlySelectionListener()).thenReturn(selectedOnlySelectionListener);
         
         try(final MockedStatic<PluginExecution> pluginExecutionMockedStatic
                 = Mockito.mockStatic(PluginExecution.class)) {
@@ -235,9 +231,7 @@ public class TableViewTopComponentNGTest {
             verify(pluginExecution).executeLater(currentGraph);
             verify(table).updateSelection(
                     currentGraph, 
-                    expectedNewState, 
-                    tableSelectionListener, 
-                    selectedOnlySelectionListener
+                    expectedNewState
             );
         }
     }

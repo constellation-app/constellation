@@ -28,8 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import javafx.application.Platform;
@@ -59,6 +57,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -137,32 +136,40 @@ public class TableViewPageFactoryNGTest {
         
         tableViewPageFactory = spy(new TableViewPageFactory(tablePane));
         
+        doReturn(tableComparatorListener).when(tableViewPageFactory).getTableComparatorListener();
+        doReturn(tableSortTypeListener).when(tableViewPageFactory).getTableSortTypeListener();
+        
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getTableTopComponent()).thenReturn(tableTopComponent);
-        when(tablePane.getTableSelectionListener()).thenReturn(tableSelectionListener);
-        when(tablePane.getSelectedOnlySelectionListener()).thenReturn(selectedOnlySelectionListener);
-        doReturn(tableComparatorListener).when(tablePane).getTableComparatorListener();
-        doReturn(tableSortTypeListener).when(tablePane).getTableSortTypeListener();
         when(tablePane.getTableService()).thenReturn(tableService);
         
         when(tableService.getSelectedOnlySelectedRows()).thenReturn(selectedOnlySelectedRows);
         when(tableService.getSortedRowList()).thenReturn(sortedRowList);
         
-        when(table.getTableView()).thenReturn(tableView);
-        when(tableView.getSelectionModel()).thenReturn(selectionModel);
-        when(selectionModel.getSelectedItems()).thenReturn(selectedItems);
-        when(table.getSelectedProperty()).thenReturn(selectedProperty);
-        
         when(sortedRowList.comparatorProperty()).thenReturn(sortedRowListComparator);
+        
+        when(table.getTableView()).thenReturn(tableView);
+        when(table.getSelectedProperty()).thenReturn(selectedProperty);
+        when(table.getTableSelectionListener()).thenReturn(tableSelectionListener);
+        when(table.getSelectedOnlySelectionListener()).thenReturn(selectedOnlySelectionListener);
+        
+        when(selectionModel.getSelectedItems()).thenReturn(selectedItems);
+        
         when(tableView.comparatorProperty()).thenReturn(tableViewComparator);
+        when(tableView.getSelectionModel()).thenReturn(selectionModel);
         
         when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
-        
         when(tableTopComponent.getExecutorService()).thenReturn(Executors.newSingleThreadExecutor());
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+    }
+    
+    @Test
+    public void init() {
+        assertNotNull(tableViewPageFactory.getTableComparatorListener());
+        assertNotNull(tableViewPageFactory.getTableSortTypeListener());
     }
     
     @Test

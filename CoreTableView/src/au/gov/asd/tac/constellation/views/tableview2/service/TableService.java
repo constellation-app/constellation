@@ -25,11 +25,13 @@ import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.Pagination;
@@ -91,21 +93,14 @@ public class TableService {
     /**
      * Create a new table service.
      *
-     * @param sortedRowList the list that holds the current rows that make up
-     *     all pages in the table
-     * @param elementIdToRowIndex a map of graph IDs to table rows
-     * @param rowToElementIdIndex a map of table rows to graph IDs
      * @param pageFactory the table page factory that determines which rows will
      *     be displayed on the current page
      */
-    public TableService(final SortedList<ObservableList<String>> sortedRowList,
-                        final Map<Integer, ObservableList<String>> elementIdToRowIndex,
-                        final Map<ObservableList<String>, Integer> rowToElementIdIndex,
-                        final TableViewPageFactory pageFactory) {
-        this.sortedRowList = sortedRowList;
+    public TableService(final TableViewPageFactory pageFactory) {
+        this.sortedRowList = new SortedList<>(FXCollections.observableArrayList());
         
-        this.elementIdToRowIndex = elementIdToRowIndex;
-        this.rowToElementIdIndex = rowToElementIdIndex;
+        this.elementIdToRowIndex = new HashMap<>();
+        this.rowToElementIdIndex  = new HashMap<>();
         
         this.pageFactory = pageFactory;
         

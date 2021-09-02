@@ -31,18 +31,14 @@ import javafx.collections.ObservableList;
 public class TableComparatorListener implements ChangeListener<Comparator<? super ObservableList<String>>> {
     
     private final TableViewPane tablePane;
-    private final TableService tableService;
     
     /**
      * Creates a new table comparator listener.
      *
      * @param tablePane the pane containing the table view
-     * @param tableService the table service for this table
      */
-    public TableComparatorListener(final TableViewPane tablePane,
-                                   final TableService tableService) {
+    public TableComparatorListener(final TableViewPane tablePane) {
         this.tablePane = tablePane;
-        this.tableService = tableService;
     }
     
     /**
@@ -61,13 +57,15 @@ public class TableComparatorListener implements ChangeListener<Comparator<? supe
     public void changed(final ObservableValue<? extends Comparator<? super ObservableList<String>>> observable,
                         final Comparator<? super ObservableList<String>> oldValue,
                         final Comparator<? super ObservableList<String>> newValue) {
-        if (!tableService.isSortingListenerActive()) {
-            tableService.setSortingListenerActive(true);
-            tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
+        if (!tablePane.getTableService().isSortingListenerActive()) {
+            tablePane.getTableService().setSortingListenerActive(true);
+            tablePane.getTableService().updatePagination(
+                    tablePane.getTableService().getTablePreferences().getMaxRowsPerPage()
+            );
             
-            Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
+            Platform.runLater(() -> tablePane.setCenter(tablePane.getTableService().getPagination()));
             
-            tableService.setSortingListenerActive(false);
+            tablePane.getTableService().setSortingListenerActive(false);
         }
     }
     

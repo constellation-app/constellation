@@ -26,6 +26,8 @@ import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableCellFactory;
+import au.gov.asd.tac.constellation.views.tableview2.listeners.SelectedOnlySelectionListener;
+import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSelectionListener;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateColumnsTask;
@@ -76,6 +78,9 @@ public class Table {
     
     private final CopyOnWriteArrayList<Column> columnIndex;
     
+    private final ChangeListener<ObservableList<String>> tableSelectionListener;
+    private final ListChangeListener selectedOnlySelectionListener;
+    
     /**
      * Cache strings used in table cells to significantly reduce memory used by
      * the same string repeated in columns and rows.
@@ -109,6 +114,16 @@ public class Table {
         
         this.updateColumnsTask = new UpdateColumnsTask(tableTopComponent, tableView, columnIndex,
                 tableService);
+        
+        this.tableSelectionListener = new TableSelectionListener(tableTopComponent, tableView,
+                tableService.getRowToElementIdIndex());
+        this.selectedOnlySelectionListener = new SelectedOnlySelectionListener(tableTopComponent,
+                tableView, tableService.getSelectedOnlySelectedRows());
+        
+        this.tableView.getSelectionModel().selectedItemProperty()
+                .addListener(tableSelectionListener);
+        this.tableView.getSelectionModel().getSelectedItems()
+                .addListener(selectedOnlySelectionListener);
     }
     
     /**
@@ -142,9 +157,7 @@ public class Table {
      * @param state the current table view state.
      */
     public void updateColumns(final Graph graph,
-                              final TableViewState state,
-                              final ChangeListener<ObservableList<String>> tableSelectionListener,
-                              final ListChangeListener selectedOnlySelectionListener) {
+                              final TableViewState state) {
         synchronized (TABLE_LOCK) {
             if (graph != null && state != null) {
 
@@ -217,8 +230,8 @@ public class Table {
 
                 // The update columns task holds state between executions. So we need to
                 // reset some fields each time before it is run.
-                updateColumnsTask.reset(columnReferenceMap, state, tableSelectionListener,
-                        selectedOnlySelectionListener);
+                updateColumnsTask.reset(columnReferenceMap, state, getTableSelectionListener(),
+                        getSelectedOnlySelectionListener());
                 Platform.runLater(updateColumnsTask);
             }
         }
@@ -235,9 +248,7 @@ public class Table {
      */
     public void updateData(final Graph graph,
                            final TableViewState state,
-                           final ProgressBar progressBar,
-                           final ChangeListener<ObservableList<String>> tableSelectionListener,
-                           final ListChangeListener selectedOnlySelectionListener) {
+                           final ProgressBar progressBar) {
         synchronized (TABLE_LOCK) {
             if (graph != null && state != null) {
 
@@ -299,8 +310,8 @@ public class Table {
 
                 final CountDownLatch updateDataLatch = new CountDownLatch(1);
 
-                Platform.runLater(new UpdateDataTask(tablePane, this, rows, tableSelectionListener,
-                        selectedOnlySelectionListener, updateDataLatch, tableService));
+                Platform.runLater(new UpdateDataTask(tablePane, this, rows, getTableSelectionListener(),
+                        getSelectedOnlySelectionListener(), updateDataLatch, tableService));
 
                 // Wait for the update data task to complete.
                 try {
@@ -328,9 +339,7 @@ public class Table {
      * @param state the current table view state.
      */
     public void updateSelection(final Graph graph,
-                                final TableViewState state,
-                                final ChangeListener<ObservableList<String>> tableSelectionListener,
-                                final ListChangeListener selectedOnlySelectionListener) {
+                                final TableViewState state) {
         synchronized (TABLE_LOCK) {
             if (graph != null && state != null) {
 
@@ -354,14 +363,14 @@ public class Table {
                             .toArray();
 
                     Platform.runLater(() -> {
-                        getSelectedProperty().removeListener(tableSelectionListener);
-                        getTableView().getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
+                        getSelectedProperty().removeListener(getTableSelectionListener());
+                        getTableView().getSelectionModel().getSelectedItems().removeListener(getSelectedOnlySelectionListener());
                         getTableView().getSelectionModel().clearSelection();
                         if (!selectedIds.isEmpty()) {
                             getTableView().getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
                         }
-                        getTableView().getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
-                        getSelectedProperty().addListener(tableSelectionListener);
+                        getTableView().getSelectionModel().getSelectedItems().addListener(getSelectedOnlySelectionListener());
+                        getSelectedProperty().addListener(getTableSelectionListener());
                     });
                 }
             }
@@ -387,6 +396,31 @@ public class Table {
                 }
             }
         }
+    }
+    
+    /**
+     * Gets a listener that listens for table selections and updates the selection
+     * in the graph if "Selected Only Mode" <b>IS NOT</b> active. Otherwise this listener
+     * does nothing.
+     *
+     * @return the table selection listener
+     * @see TableSelectionListener
+     */
+    public ChangeListener<ObservableList<String>> getTableSelectionListener() {
+        return tableSelectionListener;
+    }
+
+    /**
+     * Gets a listener that listens for table selections and updates
+     * the {@link TableService#selectedOnlySelectedRows} list with the current
+     * selection. This listener only does this if the "Selected Only Mode" <b>IS</>
+     * active.
+     *
+     * @return the "Selected Only Mode" selection listener
+     * @see SelectedOnlySelectionListener
+     */
+    public ListChangeListener getSelectedOnlySelectionListener() {
+        return selectedOnlySelectionListener;
     }
     
     /**

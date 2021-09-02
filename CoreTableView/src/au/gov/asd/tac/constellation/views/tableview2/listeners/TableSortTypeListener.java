@@ -30,18 +30,14 @@ import javafx.scene.control.TableColumn;
 public class TableSortTypeListener implements ChangeListener<TableColumn.SortType> {
 
     private final TableViewPane tablePane;
-    private final TableService tableService;
     
     /**
      * Creates a new table sort type listener.
      *
      * @param tablePane the pane containing the table view
-     * @param tableService the table service for this table
      */
-    public TableSortTypeListener(final TableViewPane tablePane,
-                                 final TableService tableService) {
+    public TableSortTypeListener(final TableViewPane tablePane) {
         this.tablePane = tablePane;
-        this.tableService = tableService;
     }
     
     /**
@@ -60,13 +56,15 @@ public class TableSortTypeListener implements ChangeListener<TableColumn.SortTyp
     public void changed(final ObservableValue<? extends TableColumn.SortType> observable,
                         final TableColumn.SortType oldValue,
                         final TableColumn.SortType newValue) {
-        if (!tableService.isSortingListenerActive()) {
-            tableService.setSortingListenerActive(true);
-            tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
+        if (!tablePane.getTableService().isSortingListenerActive()) {
+            tablePane.getTableService().setSortingListenerActive(true);
+            tablePane.getTableService().updatePagination(
+                    tablePane.getTableService().getTablePreferences().getMaxRowsPerPage()
+            );
             
-            Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
+            Platform.runLater(() -> tablePane.setCenter(tablePane.getTableService().getPagination()));
             
-            tableService.setSortingListenerActive(false);
+            tablePane.getTableService().setSortingListenerActive(false);
         }
     }
     

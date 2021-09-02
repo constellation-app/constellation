@@ -19,22 +19,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.listeners.SelectedOnlySelectionListener;
-import au.gov.asd.tac.constellation.views.tableview2.listeners.TableComparatorListener;
-import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSelectionListener;
-import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSortTypeListener;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Future;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
-import javafx.scene.control.TableColumn;
 import javafx.scene.layout.BorderPane;
 
 /**
@@ -51,12 +38,6 @@ public final class TableViewPane extends BorderPane {
     private final ProgressBar progressBar;
 
     private final TableService tableService;
-    
-    private final ChangeListener<ObservableList<String>> tableSelectionListener;
-    private final ListChangeListener selectedOnlySelectionListener;
-
-    private final ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
-    private final ChangeListener<? super TableColumn.SortType> tableSortTypeListener;
 
     private Future<?> future;
 
@@ -68,18 +49,13 @@ public final class TableViewPane extends BorderPane {
     public TableViewPane(final TableViewTopComponent tableTopComponent) {
         this.tableTopComponent = tableTopComponent;
         
-        final SortedList<ObservableList<String>> sortedRowList
-                = new SortedList<>(FXCollections.observableArrayList());
-        
-        // Maps holding mappings graph IDs to table rows and vice versa
-        final Map<ObservableList<String>, Integer> rowToElementIdIndex = new HashMap<>();
-        final Map<Integer, ObservableList<String>> elementIdToRowIndex = new HashMap<>();
-        
-        tableService = new TableService(
-                sortedRowList,
-                elementIdToRowIndex,
-                rowToElementIdIndex,
-                new TableViewPageFactory(this));
+        // Because the page factory doesn't start getting used until this
+        // constructor is complete, it gets passed a reference to 'this' with
+        // the assumption everything will be intiailized once its called which
+        // will not happen until update paginate is called which happens
+        // at the end of this constructor.
+        // #dodgycode
+        tableService = new TableService(new TableViewPageFactory(this));
         
         progressBar = new ProgressBar();
         
@@ -89,18 +65,6 @@ public final class TableViewPane extends BorderPane {
         tableService.getSortedRowList().comparatorProperty()
                 .bind(table.getTableView().comparatorProperty());
         
-        // Setup the table level listeners
-        this.tableSelectionListener = new TableSelectionListener(tableTopComponent, table.getTableView(),
-                rowToElementIdIndex);
-        this.selectedOnlySelectionListener = new SelectedOnlySelectionListener(tableTopComponent,
-                table.getTableView(), tableService.getSelectedOnlySelectedRows());
-        this.tableComparatorListener = new TableComparatorListener(this, tableService);
-        this.tableSortTypeListener = new TableSortTypeListener(this, tableService);
-        
-        table.getSelectedProperty().addListener(tableSelectionListener);
-        table.getTableView().getSelectionModel().getSelectedItems()
-                .addListener(selectedOnlySelectionListener);
-
         // Setup the UI components
         this.tableToolbar = new TableToolbar(tableTopComponent, this, table, tableService);
         this.tableToolbar.init();
@@ -126,61 +90,14 @@ public final class TableViewPane extends BorderPane {
         future = getTableTopComponent().getExecutorService().submit(() -> {
             getTableToolbar().updateToolbar(state);
             if (graph != null) {
-                getTable().updateColumns(graph, state, getTableSelectionListener(), getSelectedOnlySelectionListener());
-                getTable().updateData(graph, state, getProgressBar(), getTableSelectionListener(), getSelectedOnlySelectionListener());
-                getTable().updateSelection(graph, state, getTableSelectionListener(), getSelectedOnlySelectionListener());
+                getTable().updateColumns(graph, state);
+                getTable().updateData(graph, state, getProgressBar());
+                getTable().updateSelection(graph, state);
                 Platform.runLater(() -> getTable().updateSortOrder());
             } else {
                 Platform.runLater(() -> getTable().getTableView().getColumns().clear());
             }
         });
-    }
-
-    /**
-     * Gets a listener that listens for table selections and updates the selection
-     * in the graph if "Selected Only Mode" <b>IS NOT</b> active. Otherwise this listener
-     * does nothing.
-     *
-     * @return the table selection listener
-     * @see TableSelectionListener
-     */
-    public ChangeListener<ObservableList<String>> getTableSelectionListener() {
-        return tableSelectionListener;
-    }
-
-    /**
-     * Gets a listener that listens for table selections and updates
-     * the {@link TableService#selectedOnlySelectedRows} list with the current
-     * selection. This listener only does this if the "Selected Only Mode" <b>IS</>
-     * active.
-     *
-     * @return the "Selected Only Mode" selection listener
-     * @see SelectedOnlySelectionListener
-     */
-    public ListChangeListener getSelectedOnlySelectionListener() {
-        return selectedOnlySelectionListener;
-    }
-
-    /**
-     * Gets a listener that deals with sort order and sort column changes. The listener
-     * will update the table and cause it to refresh.
-     *
-     * @return the sort change listener
-     * @see TableComparatorListener
-     */
-    public ChangeListener<? super Comparator<? super ObservableList<String>>> getTableComparatorListener() {
-        return tableComparatorListener;
-    }
-
-    /**
-     * Gets a listener that deals with sort order and sort column changes. The listener
-     * will update the table and cause it to refresh.
-     *
-     * @return the sort change listener
-     * @see TableSortTypeListener
-     */
-    public ChangeListener<? super TableColumn.SortType> getTableSortTypeListener() {
-        return tableSortTypeListener;
     }
 
     /**

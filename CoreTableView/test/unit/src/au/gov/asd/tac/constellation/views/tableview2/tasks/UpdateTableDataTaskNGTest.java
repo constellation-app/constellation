@@ -70,20 +70,15 @@ public class UpdateTableDataTaskNGTest {
         final Table table = mock(Table.class);
         
         final ProgressBar progressBar = mock(ProgressBar.class);
-        final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
-        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
         
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getProgressBar()).thenReturn(progressBar);
-        when(tablePane.getTableSelectionListener()).thenReturn(tableSelectionListener);
-        when(tablePane.getSelectedOnlySelectionListener()).thenReturn(selectedOnlySelectionListener);
         
         final UpdateTableDataTask updateTableDataTask
                 = new UpdateTableDataTask(tablePane, graph, tableViewState);
         
         updateTableDataTask.run();
         
-        verify(table).updateData(graph, tableViewState, progressBar,
-                tableSelectionListener, selectedOnlySelectionListener);
+        verify(table).updateData(graph, tableViewState, progressBar);
     }
 }
