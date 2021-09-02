@@ -117,12 +117,16 @@ public class TableToolbarNGTest {
         preferencesMenuButton = mock(MenuButton.class);
         contextMenu = mock(ContextMenu.class);
         
-        tableToolbar = spy(new TableToolbar(tableTopComponent, tablePane, table, tableService));
+        tableToolbar = spy(new TableToolbar(tablePane));
         
         doReturn(copyMenu).when(tableToolbar).createCopyMenu();
         doReturn(exportMenu).when(tableToolbar).createExportMenu();
         doReturn(preferencesMenu).when(tableToolbar).createPreferencesMenu();
         doReturn(columnVisibilityContextMenu).when(tableToolbar).createColumnVisibilityContextMenu();
+        
+        when(tablePane.getTable()).thenReturn(table);
+        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
+        when(tablePane.getTableService()).thenReturn(tableService);
         
         when(copyMenu.getCopyButton()).thenReturn(copyMenuButton);
         when(exportMenu.getExportButton()).thenReturn(exportMenuButton);

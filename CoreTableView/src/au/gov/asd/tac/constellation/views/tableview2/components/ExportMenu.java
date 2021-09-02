@@ -20,11 +20,8 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToCsvFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToExcelFilePlugin;
-import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import java.io.File;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -62,9 +59,7 @@ public class ExportMenu {
     
     private static final int WIDTH = 120;
     
-    private final TableViewTopComponent tableTopComponent;
-    private final Table table;
-    private final TableService tableService;
+    private final TableViewPane tablePane;
     
     private MenuButton exportButton;
     private MenuItem exportCsvMenu;
@@ -75,16 +70,10 @@ public class ExportMenu {
     /**
      * Creates a new export menu.
      *
-     * @param tableTopComponent the top component that the table is embedded into
-     * @param table the table that the export menu will be attached to
-     * @param tableService the table service associated to the table
+     * @param tablePane
      */
-    public ExportMenu(final TableViewTopComponent tableTopComponent,
-                      final Table table,
-                      final TableService tableService) {
-        this.tableTopComponent = tableTopComponent;
-        this.table = table;
-        this.tableService = tableService;
+    public ExportMenu(final TableViewPane tablePane) {
+        this.tablePane = tablePane;
     }
     
     /**
@@ -101,8 +90,8 @@ public class ExportMenu {
                 EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToCsvFilePlugin(
                         file,
-                        table.getTableView(),
-                        tableService.getPagination(),
+                        tablePane.getTable().getTableView(),
+                        tablePane.getTableService().getPagination(),
                         false
                 )
         );
@@ -114,8 +103,8 @@ public class ExportMenu {
                 EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToCsvFilePlugin(
                         file,
-                        table.getTableView(),
-                        tableService.getPagination(),
+                        tablePane.getTable().getTableView(),
+                        tablePane.getTableService().getPagination(),
                         true
                 )
         );
@@ -127,11 +116,11 @@ public class ExportMenu {
                 EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToExcelFilePlugin(
                         file,
-                        table.getTableView(),
-                        tableService.getPagination(),
-                        tableService.getTablePreferences().getMaxRowsPerPage(),
+                        tablePane.getTable().getTableView(),
+                        tablePane.getTableService().getPagination(),
+                        tablePane.getTableService().getTablePreferences().getMaxRowsPerPage(),
                         false,
-                        tableTopComponent.getCurrentGraph().getId()
+                        tablePane.getParentComponent().getCurrentGraph().getId()
                 )
         );
         
@@ -142,11 +131,11 @@ public class ExportMenu {
                 EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToExcelFilePlugin(
                         file, 
-                        table.getTableView(), 
-                        tableService.getPagination(),
-                        tableService.getTablePreferences().getMaxRowsPerPage(),
+                        tablePane.getTable().getTableView(),
+                        tablePane.getTableService().getPagination(),
+                        tablePane.getTableService().getTablePreferences().getMaxRowsPerPage(),
                         true,
-                        tableTopComponent.getCurrentGraph().getId()
+                        tablePane.getParentComponent().getCurrentGraph().getId()
                 )
         );
         
@@ -282,7 +271,7 @@ public class ExportMenu {
          */
         @Override
         public void handle(ActionEvent event) {
-            if (tableTopComponent.getCurrentGraph() != null) {
+            if (tablePane.getParentComponent().getCurrentGraph() != null) {
                 final ExportFileChooser exportFileChooser = getExportFileChooser();
                 
                 final File file = exportFileChooser.openExportFileChooser();

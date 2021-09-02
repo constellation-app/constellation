@@ -16,6 +16,9 @@
 package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
+import au.gov.asd.tac.constellation.views.tableview2.components.Table;
+import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
+import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.HashSet;
 import java.util.List;
@@ -43,7 +46,10 @@ public class SelectedOnlySelectionListenerNGTest {
     private SelectedOnlySelectionListener selectedOnlySelectionListener;
     
     private TableViewTopComponent tableTopComponent;
+    private TableViewPane tablePane;
+    private Table table;
     private TableView<ObservableList<String>> tableView;
+    private TableService tableService;
     private Set<ObservableList<String>> selectedOnlySelectedRows;
     
     public SelectedOnlySelectionListenerNGTest() {
@@ -63,12 +69,22 @@ public class SelectedOnlySelectionListenerNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
+        tablePane = mock(TableViewPane.class);
+        table = mock(Table.class);
         tableView = mock(TableView.class);
+        tableService = mock(TableService.class);
         
         selectedOnlySelectedRows = new HashSet<>();
         
-        selectedOnlySelectionListener = new SelectedOnlySelectionListener(tableTopComponent,
-                tableView, selectedOnlySelectedRows);
+        when(table.getParentComponent()).thenReturn(tablePane);
+        when(table.getTableView()).thenReturn(tableView);
+        
+        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
+        when(tablePane.getTableService()).thenReturn(tableService);
+        
+        when(tableService.getSelectedOnlySelectedRows()).thenReturn(selectedOnlySelectedRows);
+        
+        selectedOnlySelectionListener = new SelectedOnlySelectionListener(table);
     }
 
     @AfterMethod

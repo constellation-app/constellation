@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttribut
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableCellFactory;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.SelectedOnlySelectionListener;
@@ -37,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -70,11 +68,8 @@ public class Table {
     private static final String ATTEMPT_PROCESS_JAVAFX = "Attempting to process on the JavaFX Application Thread";
     private static final String ATTEMPT_PROCESS_EDT = "Attempting to process on the EDT";
 
-    private final TableViewTopComponent tableTopComponent;
     private final TableViewPane tablePane;
     private final TableView<ObservableList<String>> tableView;
-    
-    private final TableService tableService;
     
     private final CopyOnWriteArrayList<Column> columnIndex;
     
@@ -90,17 +85,12 @@ public class Table {
     private final UpdateColumnsTask updateColumnsTask;
     
     /**
-     * 
-     * @param tableTopComponent
-     * @param tablePane
-     * @param tableService 
+     * Creates a new table.
+     *
+     * @param tablePane the pane that contains this table
      */
-    public Table(final TableViewTopComponent tableTopComponent,
-                 final TableViewPane tablePane,
-                 final TableService tableService) {
-        this.tableTopComponent = tableTopComponent;
+    public Table(final TableViewPane tablePane) {
         this.tablePane = tablePane;
-        this.tableService = tableService;
         
         this.tableView = new TableView<>();
         this.tableView.itemsProperty().addListener((v, o, n) -> tableView.refresh());
@@ -112,13 +102,10 @@ public class Table {
         
         this.displayTextCache = new ImmutableObjectCache();
         
-        this.updateColumnsTask = new UpdateColumnsTask(tableTopComponent, tableView, columnIndex,
-                tableService);
+        this.updateColumnsTask = new UpdateColumnsTask(this);
         
-        this.tableSelectionListener = new TableSelectionListener(tableTopComponent, tableView,
-                tableService.getRowToElementIdIndex());
-        this.selectedOnlySelectionListener = new SelectedOnlySelectionListener(tableTopComponent,
-                tableView, tableService.getSelectedOnlySelectedRows());
+        this.tableSelectionListener = new TableSelectionListener(this);
+        this.selectedOnlySelectionListener = new SelectedOnlySelectionListener(this);
         
         this.tableView.getSelectionModel().selectedItemProperty()
                 .addListener(tableSelectionListener);
@@ -145,11 +132,23 @@ public class Table {
     }
     
     /**
-     * Update the columns in the table using the graph and state.
-     * <p>
+     * Update the columns in the table using the graph and state. This will clear
+     * and refresh the column index and then trigger a refresh of the table view,
+     * populating from the new column index.
+     * <p/>
+     * If the table's state has an element type of VERTEX then all the columns
+     * will be prefixed with ".source".
+     * <p/>
+     * If the element type is TRANSACTION then the attributes belonging to 
+     * transactions will be prefixed with ".transaction". The vertex attributes 
+     * will also be added as columns in this case. When the state's element type
+     * is TRANSACTION the vertex attributes will be prefixed with
+     * both ".source" and ".destination" so that it is distinguishable on which end of
+     * the transaction those values are present.
+     * <p/>
      * Note that column references are reused where possible to ensure certain
      * toolbar/menu operations to work correctly.
-     * <p>
+     * <p/>
      * The entire method is synchronized so it should be thread safe and keeps
      * the locking logic simpler. Maybe this method could be broken out further.
      *
@@ -230,8 +229,7 @@ public class Table {
 
                 // The update columns task holds state between executions. So we need to
                 // reset some fields each time before it is run.
-                updateColumnsTask.reset(columnReferenceMap, state, getTableSelectionListener(),
-                        getSelectedOnlySelectionListener());
+                updateColumnsTask.reset(columnReferenceMap, state);
                 Platform.runLater(updateColumnsTask);
             }
         }
@@ -239,7 +237,13 @@ public class Table {
     
     /**
      * Update the data in the table using the graph and state.
-     * <p>
+     * <p/>
+     * If the table is in "Selection Only" mode then only the elements on the graph
+     * that are selected will be loaded into the table, otherwise they all will.
+     * <p/>
+     * Which elements are loaded also depends on which element type the table state
+     * is currently set to, vertex or transaction.
+     * <p/>
      * The entire method is synchronized so it should be thread safe and keeps
      * the locking logic simpler. Maybe this method could be broken out further.
      *
@@ -261,11 +265,11 @@ public class Table {
                 }
 
                 // Set progress indicator
-                Platform.runLater(() -> tablePane.setCenter(progressBar.getProgressPane()));
+                Platform.runLater(() -> getParentComponent().setCenter(progressBar.getProgressPane()));
 
                 // Clear the current row and element mappings
-                tableService.getElementIdToRowIndex().clear();
-                tableService.getRowToElementIdIndex().clear();
+                getTableService().getElementIdToRowIndex().clear();
+                getTableService().getRowToElementIdIndex().clear();
 
                 // Build table data based on attribute values on the graph
                 final List<ObservableList<String>> rows = new ArrayList<>();
@@ -283,6 +287,8 @@ public class Table {
                                 isSelected = readableGraph.getBooleanValue(selectedAttributeId, transactionId);
                             }
                             
+                            // If it is not in selected only mode then just add every row but if it is
+                            // in selected only mode, only add the ones that are selected in the graph
                             if (!state.isSelectedOnly() || isSelected) {
                                 rows.add(getRowDataForTransaction(readableGraph, transactionId));
                             }
@@ -291,7 +297,7 @@ public class Table {
                         final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
                         final int vertexCount = readableGraph.getVertexCount();
                         
-                        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                        IntStream.range(0, vertexCount).forEach(vertexPosition -> {
                             final int vertexId = readableGraph.getVertex(vertexPosition);
                             boolean isSelected = false;
                             
@@ -299,23 +305,24 @@ public class Table {
                                 isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
                             }
                             
+                            // If it is not in selected only mode then just add every row but if it is
+                            // in selected only mode, only add the ones that are selected in the graph
                             if (!state.isSelectedOnly() || isSelected) {
                                 rows.add(getRowDataForVertex(readableGraph, vertexId));
                             }
-                        }
+                        });
                     }
                 } finally {
                     readableGraph.release();
                 }
 
-                final CountDownLatch updateDataLatch = new CountDownLatch(1);
+                final UpdateDataTask updateDataTask = new UpdateDataTask(this, rows);
 
-                Platform.runLater(new UpdateDataTask(tablePane, this, rows, getTableSelectionListener(),
-                        getSelectedOnlySelectionListener(), updateDataLatch, tableService));
+                Platform.runLater(updateDataTask);
 
                 // Wait for the update data task to complete.
                 try {
-                    updateDataLatch.await();
+                    updateDataTask.getUpdateDataLatch().await();
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data");
                     Thread.currentThread().interrupt();
@@ -328,15 +335,16 @@ public class Table {
      * Update the table selection using the graph and state. The selection will
      * only be updated if the graph and state are not null.
      * <p/>
-     * The table selection will only be updated if it <b>IS NOT</b> in "Selected Only Mode".
+     * The table selection will only be updated if it <b>IS NOT</b> in "Selected Only Mode"
+     * because the selection is extracted from the graph.
      * <p/>
      * An illegal state will be created if this method is called by either the JavaFX
      * or Swing Event threads.
      * <p/>
      * The entire method is synchronized to ensure thread safety.
      *
-     * @param graph the graph to read selection from.
-     * @param state the current table view state.
+     * @param graph the graph to read the element/row selection from
+     * @param state the current table state
      */
     public void updateSelection(final Graph graph,
                                 final TableViewState state) {
@@ -357,19 +365,23 @@ public class Table {
 
                     // update table selection
                     final int[] selectedIndices = selectedIds.stream()
-                            .map(id-> tableService.getElementIdToRowIndex().get(id))
+                            .map(id-> getTableService().getElementIdToRowIndex().get(id))
                             .map(row -> getTableView().getItems().indexOf(row))
                             .mapToInt(i -> i)
                             .toArray();
 
                     Platform.runLater(() -> {
                         getSelectedProperty().removeListener(getTableSelectionListener());
-                        getTableView().getSelectionModel().getSelectedItems().removeListener(getSelectedOnlySelectionListener());
+                        getTableView().getSelectionModel().getSelectedItems()
+                                .removeListener(getSelectedOnlySelectionListener());
+                        
                         getTableView().getSelectionModel().clearSelection();
                         if (!selectedIds.isEmpty()) {
                             getTableView().getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
                         }
-                        getTableView().getSelectionModel().getSelectedItems().addListener(getSelectedOnlySelectionListener());
+                        
+                        getTableView().getSelectionModel().getSelectedItems()
+                                .addListener(getSelectedOnlySelectionListener());
                         getSelectedProperty().addListener(getTableSelectionListener());
                     });
                 }
@@ -384,7 +396,7 @@ public class Table {
      */
     public void updateSortOrder() {
         final Pair<String, TableColumn.SortType> sortPreference
-                = tableService.getTablePreferences().getSort();
+                = getTableService().getTablePreferences().getSort();
         
         if (sortPreference != null && !sortPreference.getLeft().isBlank()) {
             // Iterate through the table columns and find the one with a matching column name
@@ -421,6 +433,36 @@ public class Table {
      */
     public ListChangeListener getSelectedOnlySelectionListener() {
         return selectedOnlySelectionListener;
+    }
+    
+    /**
+     * Gets a list representing the current column setup of the table and how it relates
+     * to the graph. The list describes how each column relates to either a source vertex,
+     * destination vertex or transaction.
+     * 
+     * @return the table column representation
+     * @see Column
+     */
+    public final List<Column> getColumnIndex() {
+        return columnIndex;
+    }
+    
+    /**
+     * Get the parent component for the table.
+     *
+     * @return the parent component
+     */
+    public TableViewPane getParentComponent() {
+        return tablePane;
+    }
+    
+    /**
+     * Get the table service associated with this table.
+     *
+     * @return the table service
+     */
+    public TableService getTableService() {
+        return getParentComponent().getTableService();
     }
     
     /**
@@ -484,8 +526,8 @@ public class Table {
             rowData.add(displayableValue);
         });
 
-        tableService.getElementIdToRowIndex().put(vertexId, rowData);
-        tableService.getRowToElementIdIndex().put(rowData, vertexId);
+        getTableService().getElementIdToRowIndex().put(vertexId, rowData);
+        getTableService().getRowToElementIdIndex().put(rowData, vertexId);
 
         return rowData;
     }
@@ -536,8 +578,8 @@ public class Table {
             rowData.add(displayableValue);
         });
         
-        tableService.getElementIdToRowIndex().put(transactionId, rowData);
-        tableService.getRowToElementIdIndex().put(rowData, transactionId);
+        getTableService().getElementIdToRowIndex().put(transactionId, rowData);
+        getTableService().getRowToElementIdIndex().put(rowData, transactionId);
         
         return rowData;
     }
@@ -599,18 +641,6 @@ public class Table {
     }
 
     /**
-     * Gets a list representing the current column setup of the table and how it relates
-     * to the graph. The list describes how each column relates to either a source vertex,
-     * destination vertex or transaction.
-     * 
-     * @return the table column representation
-     * @see Column
-     */
-    public final List<Column> getColumnIndex() {
-        return columnIndex;
-    }
-    
-    /**
      * Gets the context menu describing the columns that make a vertex or transaction
      * unique. In other words the primary columns. Then manually triggers a click
      * event causing those columns to be made visible.
@@ -619,7 +649,7 @@ public class Table {
      */
     protected void openColumnVisibilityMenu() {
         final ColumnVisibilityContextMenu columnVisibilityContextMenu
-                = new ColumnVisibilityContextMenu(tableTopComponent, this, tableService);
+                = new ColumnVisibilityContextMenu(this);
         columnVisibilityContextMenu.init();
                     
         final MenuItem keyColumns = columnVisibilityContextMenu.getShowPrimaryColumnsMenu();

@@ -106,7 +106,10 @@ public class TableNGTest {
         tableService = mock(TableService.class);
         graph = mock(Graph.class);
         
-        table = spy(new Table(tableTopComponent, tablePane, tableService));
+        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
+        when(tablePane.getTableService()).thenReturn(tableService);
+        
+        table = spy(new Table(tablePane));
     }
 
     @AfterMethod

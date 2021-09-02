@@ -158,11 +158,29 @@ public class TableService {
     }
     
     /**
+     * Updates the visible columns in the table's state. Once the new state is
+     * determined the it is updated in the graph.
+     * <p/>
+     * The following are the different ways in which the visible columns can be updated
+     * <ul>
+     * <li>
+     * <b>ADD:</b> the passed columns are added on top of existing visible columns
+     * in the current state.
+     * </li>
+     * <li>
+     * <b>REMOVE:</b> the passed columns are removed from the visible columns in
+     * the current state.
+     * </li>
+     * <li>
+     * <b>REPLACE:</b> the passed columns become the new visible columns
+     * </li>
+     * </ul>
      * 
-     * @param graph
-     * @param state
-     * @param columnAttributes
-     * @param updateState 
+     * @param graph the graph to update with the new state
+     * @param state the current table state
+     * @param columnAttributes the column attributes to update the state with
+     * @param updateState the manner in which the state will be updated with
+     *     the column attributes
      */
     public void updateVisibleColumns(final Graph graph,
                                      final TableViewState state,

@@ -68,6 +68,7 @@ import org.testng.annotations.Test;
  */
 public class ColumnVisibilityContextMenuNGTest {
     private TableViewTopComponent tableTopComponent;
+    private TableViewPane tablePane;
     private Table table;
     private TableService tableService;
     private Graph graph;
@@ -111,6 +112,7 @@ public class ColumnVisibilityContextMenuNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
+        tablePane = mock(TableViewPane.class);
         table = mock(Table.class);
         tableService = mock(TableService.class);
         graph = mock(Graph.class);
@@ -168,11 +170,15 @@ public class ColumnVisibilityContextMenuNGTest {
         columnIndex.add(new Column(columnType5, attribute5, column5));
         
         when(table.getColumnIndex()).thenReturn(columnIndex);
+        when(table.getParentComponent()).thenReturn(tablePane);
+        
+        when(tablePane.getTableService()).thenReturn(tableService);
+        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
         
         when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
         when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
         
-        columnVisibilityContextMenu = spy(new ColumnVisibilityContextMenu(tableTopComponent, table, tableService));
+        columnVisibilityContextMenu = spy(new ColumnVisibilityContextMenu(table));
     }
 
     @AfterMethod

@@ -22,7 +22,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Pagination;
 import javafx.scene.image.ImageView;
 
 /**
@@ -39,8 +38,7 @@ public class CopyMenu {
     
     private static final int WIDTH = 120;
     
-    private final Table table;
-    private final Pagination pagination;
+    private final TableViewPane tablePane;
     
     private MenuButton copyButton;
     private MenuItem copyTableMenu;
@@ -49,13 +47,10 @@ public class CopyMenu {
     /**
      * Creates a new copy menu.
      *
-     * @param table the table that the copy menu will be attached to
-     * @param pagination the current pagination associated with the table
+     * @param tablePane 
      */
-    public CopyMenu(final Table table,
-                    final Pagination pagination) {
-        this.table = table;
-        this.pagination = pagination;
+    public CopyMenu(final TableViewPane tablePane) {
+        this.tablePane = tablePane;
     }
 
     /**
@@ -158,8 +153,8 @@ public class CopyMenu {
          */
         @Override
         public void handle(ActionEvent event) {
-            final String data = TableViewUtilities.getTableData(table.getTableView(),
-                    pagination, false, selected);
+            final String data = TableViewUtilities.getTableData(tablePane.getTable().getTableView(),
+                    tablePane.getTableService().getPagination(), false, selected);
             TableViewUtilities.copyToClipboard(data);
             event.consume();
         }

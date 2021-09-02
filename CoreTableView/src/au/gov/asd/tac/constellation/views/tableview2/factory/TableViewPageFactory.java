@@ -167,8 +167,8 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                     .bind(tablePane.getTable().getTableView().comparatorProperty());
             
             // Restore the selection
-            if (tablePane.getTableTopComponent().getCurrentState() != null) {
-                if (tablePane.getTableTopComponent().getCurrentState().isSelectedOnly()) {
+            if (tablePane.getParentComponent().getCurrentState() != null) {
+                if (tablePane.getParentComponent().getCurrentState().isSelectedOnly()) {
                     // The table IS IN selected only mode which means that the row selection
                     // is not based on what is selected in the graph but what rows are in
                     // the list electedOnlySelectedRows. Restore the selection from that list.
@@ -185,8 +185,8 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                     // The table IS NOT in selected only mode which means the row selection
                     // is based on the selection in the graph.
                     restoreSelectionFromGraph(
-                            tablePane.getTableTopComponent().getCurrentGraph(),
-                            tablePane.getTableTopComponent().getCurrentState()
+                            tablePane.getParentComponent().getCurrentGraph(),
+                            tablePane.getParentComponent().getCurrentState()
                     );
                 }
             }
@@ -307,7 +307,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                         .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
                         .mapToInt(i -> i)
                         .toArray();
-            }, tablePane.getTableTopComponent().getExecutorService());
+            }, tablePane.getParentComponent().getExecutorService());
             
             
             try {

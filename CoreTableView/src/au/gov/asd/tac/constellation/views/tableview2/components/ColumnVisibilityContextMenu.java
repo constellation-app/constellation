@@ -73,10 +73,7 @@ public class ColumnVisibilityContextMenu {
     
     private static final int WIDTH = 120;
     
-    private final TableViewTopComponent parent;
     private final Table table;
-    
-    private final TableService tableService;
     
     private ContextMenu contextMenu;
     
@@ -92,16 +89,10 @@ public class ColumnVisibilityContextMenu {
     /**
      * Creates a new column visibility context menu.
      *
-     * @param parent
      * @param table
-     * @param tableService 
      */
-    public ColumnVisibilityContextMenu(final TableViewTopComponent parent,
-                                       final Table table,
-                                       final TableService tableService) {
-        this.parent = parent;
+    public ColumnVisibilityContextMenu(final Table table) {
         this.table = table;
-        this.tableService = tableService;
     }
     
     /**
@@ -112,23 +103,33 @@ public class ColumnVisibilityContextMenu {
         contextMenu = new ContextMenu();
         
         showAllColumnsMenu = createCustomMenu(ALL_COLUMNS, e -> {
-            tableService.updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
-                    extractColumnAttributes(table.getColumnIndex()), UpdateMethod.REPLACE);
+            getTableService().updateVisibleColumns(
+                    getTableTopComponent().getCurrentGraph(),
+                    getTableTopComponent().getCurrentState(),
+                    extractColumnAttributes(table.getColumnIndex()),
+                    UpdateMethod.REPLACE
+            );
             e.consume();
         });
         
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
-            tableService.updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
+            getTableService().updateVisibleColumns(
+                    getTableTopComponent().getCurrentGraph(),
+                    getTableTopComponent().getCurrentState(),
                     extractColumnAttributes(table.getColumnIndex().stream()
-                            .filter(column -> Character.isUpperCase(column.getAttribute().getName().charAt(0)))
-                            .collect(Collectors.toList())), UpdateMethod.REPLACE);
+                            .filter(column -> Character.isUpperCase(
+                                    column.getAttribute().getName().charAt(0))
+                            )
+                            .collect(Collectors.toList())),
+                    UpdateMethod.REPLACE
+            );
             e.consume();
         });
         
         showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
-            if (parent.getCurrentGraph() != null) {
+            if (getTableTopComponent().getCurrentGraph() != null) {
                 final Set<GraphAttribute> keyAttributes = new HashSet<>();
-                final ReadableGraph readableGraph = parent.getCurrentGraph().getReadableGraph();
+                final ReadableGraph readableGraph = getTableTopComponent().getCurrentGraph().getReadableGraph();
                 try {
                     final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
                     for (final int vertexKey : vertexKeys) {
@@ -141,9 +142,9 @@ public class ColumnVisibilityContextMenu {
                 } finally {
                     readableGraph.release();
                 }
-                tableService.updateVisibleColumns(
-                        parent.getCurrentGraph(),
-                        parent.getCurrentState(),
+                getTableService().updateVisibleColumns(
+                        getTableTopComponent().getCurrentGraph(),
+                        getTableTopComponent().getCurrentState(),
                         extractColumnAttributes(
                                 table.getColumnIndex().stream()
                                         .filter(column ->  keyAttributes.stream()
@@ -159,8 +160,12 @@ public class ColumnVisibilityContextMenu {
         
         hideAllColumnsMenu = createCustomMenu(NO_COLUMNS, e -> {
             table.getColumnIndex().forEach(column -> column.getTableColumn().setVisible(false));
-            tableService.updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
-                    Collections.emptyList(), UpdateMethod.REPLACE);
+            getTableService().updateVisibleColumns(
+                    getTableTopComponent().getCurrentGraph(),
+                    getTableTopComponent().getCurrentState(),
+                    Collections.emptyList(),
+                    UpdateMethod.REPLACE
+            );
             e.consume();
         });
         
@@ -314,9 +319,9 @@ public class ColumnVisibilityContextMenu {
         columnCheckbox.selectedProperty().bindBidirectional(column.getTableColumn().visibleProperty());
         
         columnCheckbox.setOnAction(e -> {
-            tableService.updateVisibleColumns(
-                    parent.getCurrentGraph(),
-                    parent.getCurrentState(),
+            getTableService().updateVisibleColumns(
+                    getTableTopComponent().getCurrentGraph(),
+                    getTableTopComponent().getCurrentState(),
                     extractColumnAttributes(column),
                     ((CheckBox) e.getSource()).isSelected() ? UpdateMethod.ADD : UpdateMethod.REMOVE
             );
@@ -358,6 +363,24 @@ public class ColumnVisibilityContextMenu {
                 new ColumnFilterKeyReleasedEventHandler(columnCheckboxes));
         
         return menuItem;
+    }
+    
+    /**
+     * Convenience method for accessing the table service.
+     * 
+     * @return the table service
+     */
+    private TableService getTableService() {
+        return table.getParentComponent().getTableService();
+    }
+    
+    /**
+     * Convenience method for accessing the table top component.
+     *
+     * @return the table top component
+     */
+    private TableViewTopComponent getTableTopComponent() {
+        return table.getParentComponent().getParentComponent();
     }
     
     /**

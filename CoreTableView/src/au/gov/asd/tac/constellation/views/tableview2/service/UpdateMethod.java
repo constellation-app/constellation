@@ -15,13 +15,32 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.service;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import java.util.List;
+
 /**
- * TODO This is used in the table service column visibility method.
+ * Update methods specifying how the table state's list of visible columns will
+ * be updated given a new list of columns.
  * 
  * @author formalhaunt
+ * @see TableService#updateVisibleColumns(Graph, TableViewState, List, UpdateMethod) 
  */
 public enum UpdateMethod {
+    /**
+     * The new columns are added on top of the existing visible columns
+     * in the current state.
+     */
     ADD,
+    
+    /**
+     * The passed columns are removed from the existing visible columns in
+     * the current state.
+     */
     REMOVE,
+    
+    /**
+     * The passed columns become the new visible columns.
+     */
     REPLACE;
 }

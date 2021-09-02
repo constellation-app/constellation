@@ -15,83 +15,72 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
-import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import org.controlsfx.control.table.TableFilter;
 
 /**
- * A {@link Runnable} that updates the table with the new rows and triggers an update.
+ * A {@link Runnable} that updates the table with the new rows, triggers a
+ * pagination update and displays the resulting new page.
  *
  * @author formalhaunt
  */
 public class UpdateDataTask implements Runnable {
 
-    private final TableViewPane tablePane;
     private final Table table;
     
     private final List<ObservableList<String>> rows;
     
     private final CountDownLatch updateDataLatch;
     
-    private final TableService tableService;
-    
-    private final ChangeListener<ObservableList<String>> tableSelectionListener;
-    private final ListChangeListener selectedOnlySelectionListener;
-    
     private List<ObservableList<String>> filteredRowList;
     
     /**
-     * 
-     * @param tablePane
-     * @param table
+     * Creates a new update data task.
+     *
+     * @param table the table being updated
      * @param rows the new rows to update the table with
-     * @param tableSelectionListener
-     * @param selectedOnlySelectionListener
-     * @param updateDataLatch latch with a count of one that will track the status of the job
-     * @param tableService 
      */
-    public UpdateDataTask(final TableViewPane tablePane,
-                          final Table table,
-                          final List<ObservableList<String>> rows,
-                          final ChangeListener<ObservableList<String>> tableSelectionListener,
-                          final ListChangeListener selectedOnlySelectionListener,
-                          final CountDownLatch updateDataLatch,
-                          final TableService tableService) {
-        this.tablePane = tablePane;
+    public UpdateDataTask(final Table table,
+                          final List<ObservableList<String>> rows) {
         this.table = table;
         this.rows = rows;
-        this.tableSelectionListener = tableSelectionListener;
-        this.selectedOnlySelectionListener = selectedOnlySelectionListener;
-        this.updateDataLatch = updateDataLatch;
-        this.tableService = tableService;
+        
+        this.updateDataLatch = new CountDownLatch(1);
     }
     
     /**
-     * 
+     * Updates the backing row list with the new list of rows and then sets them
+     * to the table. Adds the filter and then triggers a pagination update that
+     * will cause the new rows to be displayed.
+     * <p/>
+     * Whilst the update is happening the table listeners are removed and then
+     * once the update is complete, they are re-added.
+     * <p/>
+     * Once complete the update latch will be decremented indicating the data
+     * update has completed.
      */
     @Override
     public void run() {
-        table.getSelectedProperty().removeListener(tableSelectionListener);
+        // remove listeners so they are not triggered during the update
+        table.getSelectedProperty().removeListener(table.getTableSelectionListener());
         table.getTableView().getSelectionModel().getSelectedItems()
-                .removeListener(selectedOnlySelectionListener);
-        tableService.getSortedRowList().comparatorProperty().unbind();
+                .removeListener(table.getSelectedOnlySelectionListener());
+        getTableService().getSortedRowList().comparatorProperty().unbind();
 
-        // add table data to table
-        tableService.setSortedRowList(new SortedList<>(FXCollections.observableArrayList(rows)));
+        // set the new rows to the backing list
+        getTableService().setSortedRowList(new SortedList<>(FXCollections.observableArrayList(rows)));
 
         // need to set the table items to the whole list here so that the filter
         // picks up the full list of options to filter before we paginate
-        table.getTableView().setItems(FXCollections.observableArrayList(tableService.getSortedRowList()));
+        table.getTableView().setItems(FXCollections.observableArrayList(getTableService().getSortedRowList()));
 
         // add user defined filter to the table
         final TableFilter<ObservableList<String>> filter
@@ -104,33 +93,56 @@ public class UpdateDataTask implements Runnable {
             }
         });
         filter.getFilteredList().predicateProperty().addListener((v, o, n) -> {
-            tableService.getSortedRowList().comparatorProperty().unbind();
+            getTableService().getSortedRowList().comparatorProperty().unbind();
             filteredRowList = new FilteredList<>(FXCollections.observableArrayList(rows),
                     filter.getFilteredList().getPredicate());
-            tableService.setSortedRowList(new SortedList<>(
+            getTableService().setSortedRowList(new SortedList<>(
                     FXCollections.observableArrayList(filteredRowList)));
             
-            tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage(),
-                    tableService.getSortedRowList());
-            Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
+            getTableService().updatePagination(getTableService().getTablePreferences().getMaxRowsPerPage(),
+                    getTableService().getSortedRowList());
+            Platform.runLater(() -> table.getParentComponent().setCenter(getTableService().getPagination()));
         });
         
-        tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage(),
-                tableService.getSortedRowList());
-        Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
+        // trigger a pagination update so the table only shows the current page
+        getTableService().updatePagination(getTableService().getTablePreferences().getMaxRowsPerPage(),
+                getTableService().getSortedRowList());
+        Platform.runLater(() -> table.getParentComponent().setCenter(getTableService().getPagination()));
         
         updateDataLatch.countDown();
 
+        // restore listeners now the update is complete
         table.getTableView().getSelectionModel().getSelectedItems()
-                .addListener(selectedOnlySelectionListener);
-        table.getSelectedProperty().addListener(tableSelectionListener);
+                .addListener(table.getSelectedOnlySelectionListener());
+        table.getSelectedProperty().addListener(table.getTableSelectionListener());
     }
 
+    /**
+     * Gets the tasks update latch. When this latch reaches zero it means that
+     * the data update is complete.
+     *
+     * @return the tasks update latch
+     */
     public CountDownLatch getUpdateDataLatch() {
         return updateDataLatch;
     }
 
+    /**
+     * Gets the new rows that will be added to the table. These are ALL the rows
+     * not just the ones that will be displayed on the current page.
+     *
+     * @return all the rows in the table
+     */
     public List<ObservableList<String>> getRows() {
         return rows;
+    }
+    
+    /**
+     * Convenience method for accessing the table service.
+     * 
+     * @return the table service
+     */
+    private TableService getTableService() {
+        return table.getParentComponent().getTableService();
     }
 }

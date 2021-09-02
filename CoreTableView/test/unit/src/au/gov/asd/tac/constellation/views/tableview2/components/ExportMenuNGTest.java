@@ -66,6 +66,7 @@ public class ExportMenuNGTest {
     private static final String GRAPH_ID = "graphId";
     
     private TableViewTopComponent tableTopComponent;
+    private TableViewPane tablePane;
     private Table table;
     private TableService tableService;
     
@@ -88,10 +89,15 @@ public class ExportMenuNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
+        tablePane = mock(TableViewPane.class);
         table = mock(Table.class);
         tableService = mock(TableService.class);
         
-        exportMenu = new ExportMenu(tableTopComponent, table, tableService);
+        when(tablePane.getTable()).thenReturn(table);
+        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
+        when(tablePane.getTableService()).thenReturn(tableService);
+        
+        exportMenu = new ExportMenu(tablePane);
     }
 
     @AfterMethod

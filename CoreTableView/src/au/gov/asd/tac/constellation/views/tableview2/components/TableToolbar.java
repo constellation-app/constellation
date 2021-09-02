@@ -71,28 +71,15 @@ public class TableToolbar {
     private CopyMenu copyMenu;
     private PreferencesMenu preferencesMenu;
     
-    private final TableViewTopComponent tableTopComponent;
     private final TableViewPane tablePane;
-    private final Table table;
-    
-    private final TableService tableService;
     
     /**
      * Creates a new table tool bar.
      *
-     * @param tableTopComponent the top component that the table is embedded into
      * @param tablePane
-     * @param table the table that the tool bar will be attached to
-     * @param tableService the table service associated to the table
      */
-    public TableToolbar(final TableViewTopComponent tableTopComponent,
-                        final TableViewPane tablePane,
-                        final Table table,
-                        final TableService tableService) {
-        this.tableTopComponent = tableTopComponent;
+    public TableToolbar(final TableViewPane tablePane) {
         this.tablePane = tablePane;
-        this.table = table;
-        this.tableService = tableService;
     }
     
     /**
@@ -111,11 +98,11 @@ public class TableToolbar {
         
         // TODO Initial icon here should be based on state if it exists??
         selectedOnlyButton = createToggleButton(ALL_VISIBLE_ICON, SELECTED_ONLY, e -> {
-            if (tableTopComponent.getCurrentState() != null) {
-                tableService.getSelectedOnlySelectedRows().clear();
+            if (getTableTopComponent().getCurrentState() != null) {
+                getTableService().getSelectedOnlySelectedRows().clear();
                 
-                final TableViewState newState = new TableViewState(tableTopComponent.getCurrentState());
-                newState.setSelectedOnly(!tableTopComponent.getCurrentState().isSelectedOnly());
+                final TableViewState newState = new TableViewState(getTableTopComponent().getCurrentState());
+                newState.setSelectedOnly(!getTableTopComponent().getCurrentState().isSelectedOnly());
                 
                 selectedOnlyButton.setGraphic(
                         newState.isSelectedOnly() ? SELECTED_VISIBLE_ICON : ALL_VISIBLE_ICON 
@@ -123,7 +110,7 @@ public class TableToolbar {
                 
                 PluginExecution.withPlugin(
                         new UpdateStatePlugin(newState)
-                ).executeLater(tableTopComponent.getCurrentGraph());
+                ).executeLater(getTableTopComponent().getCurrentGraph());
             }
             
             e.consume();
@@ -131,10 +118,10 @@ public class TableToolbar {
         
         // TODO Initial icon here should be based on state if it exists??
         elementTypeButton = createButton(TRANSACTION_ICON, ELEMENT_TYPE, e -> {
-            if (tableTopComponent.getCurrentState() != null) {
-                final TableViewState newState = new TableViewState(tableTopComponent.getCurrentState());
+            if (getTableTopComponent().getCurrentState() != null) {
+                final TableViewState newState = new TableViewState(getTableTopComponent().getCurrentState());
                 
-                newState.setElementType(tableTopComponent.getCurrentState().getElementType() == GraphElementType.TRANSACTION
+                newState.setElementType(getTableTopComponent().getCurrentState().getElementType() == GraphElementType.TRANSACTION
                         ? GraphElementType.VERTEX : GraphElementType.TRANSACTION);
                 
                 elementTypeButton.setGraphic(
@@ -144,7 +131,7 @@ public class TableToolbar {
                 
                 PluginExecution.withPlugin(
                         new UpdateStatePlugin(newState)
-                ).executeLater(tableTopComponent.getCurrentGraph());
+                ).executeLater(getTableTopComponent().getCurrentGraph());
             }
             
             e.consume();
@@ -284,7 +271,7 @@ public class TableToolbar {
      * @return the new copy menu
      */
     protected CopyMenu createCopyMenu() {
-        final CopyMenu newCopyMenu = new CopyMenu(table, tableService.getPagination());
+        final CopyMenu newCopyMenu = new CopyMenu(tablePane);
         newCopyMenu.init();
         
         return newCopyMenu;
@@ -296,7 +283,7 @@ public class TableToolbar {
      * @return the new export menu
      */
     protected ExportMenu createExportMenu() {
-        final ExportMenu newExportMenu = new ExportMenu(tableTopComponent, table, tableService);
+        final ExportMenu newExportMenu = new ExportMenu(tablePane);
         newExportMenu.init();
         
         return newExportMenu;
@@ -308,8 +295,7 @@ public class TableToolbar {
      * @return the new preferences menu
      */
     protected PreferencesMenu createPreferencesMenu() {
-        final PreferencesMenu newPreferencesMenu = new PreferencesMenu(tableTopComponent,
-                tablePane, table, tableService);
+        final PreferencesMenu newPreferencesMenu = new PreferencesMenu(tablePane);
         newPreferencesMenu.init();
         
         return newPreferencesMenu;
@@ -331,10 +317,37 @@ public class TableToolbar {
      */
     protected ColumnVisibilityContextMenu createColumnVisibilityContextMenu() {
         final ColumnVisibilityContextMenu newColumnVisibilityMenu
-                    = new ColumnVisibilityContextMenu(tableTopComponent, table, tableService);
+                    = new ColumnVisibilityContextMenu(getTable());
         newColumnVisibilityMenu.init();
         
         return newColumnVisibilityMenu;
+    }
+    
+    /**
+     * Convenience method for accessing the table service.
+     * 
+     * @return the table service
+     */
+    private TableService getTableService() {
+        return tablePane.getTableService();
+    }
+    
+    /**
+     * Convenience method for accessing the table top component.
+     *
+     * @return the table top component
+     */
+    private TableViewTopComponent getTableTopComponent() {
+        return tablePane.getParentComponent();
+    }
+    
+    /**
+     * Convenience method for accessing the table.
+     *
+     * @return the table
+     */
+    private Table getTable() {
+        return tablePane.getTable();
     }
     
     /**

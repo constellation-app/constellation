@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import java.util.Map;
+import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -31,9 +31,7 @@ import javafx.scene.control.TableView;
  */
 public class TableSelectionListener implements ChangeListener<ObservableList<String>> {
 
-    private final TableViewTopComponent tableTopComponent;
-    private final TableView<ObservableList<String>> tableView;
-    private final Map<ObservableList<String>, Integer> rowToElementIdIndex;
+    private final Table table;
     
     /**
      * Creates a new table selection listener.
@@ -42,12 +40,8 @@ public class TableSelectionListener implements ChangeListener<ObservableList<Str
      * @param tableView the {@link TableView} that the listener is linked to
      * @param rowToElementIdIndex maps the table row to the graph element ID
      */
-    public TableSelectionListener(final TableViewTopComponent tableTopComponent,
-                                  final TableView<ObservableList<String>> tableView,
-                                  final Map<ObservableList<String>, Integer> rowToElementIdIndex) {
-        this.tableTopComponent = tableTopComponent;
-        this.tableView = tableView;
-        this.rowToElementIdIndex = rowToElementIdIndex;
+    public TableSelectionListener(final Table table) {
+        this.table = table;
     }
     
     /**
@@ -67,11 +61,23 @@ public class TableSelectionListener implements ChangeListener<ObservableList<Str
     public void changed(final ObservableValue<? extends ObservableList<String>> observable,
                         final ObservableList<String> oldValue,
                         final ObservableList<String> newValue) {
-        if (tableTopComponent.getCurrentState() != null
-                && !tableTopComponent.getCurrentState().isSelectedOnly()) {
-            TableViewUtilities.copySelectionToGraph(tableView, rowToElementIdIndex,
-                    tableTopComponent.getCurrentState().getElementType(), tableTopComponent.getCurrentGraph());
+        if (getTableTopComponent().getCurrentState() != null
+                && !getTableTopComponent().getCurrentState().isSelectedOnly()) {
+            TableViewUtilities.copySelectionToGraph(
+                    table.getTableView(),
+                    table.getParentComponent().getTableService().getRowToElementIdIndex(),
+                    getTableTopComponent().getCurrentState().getElementType(),
+                    getTableTopComponent().getCurrentGraph()
+            );
         }
     }
     
+    /**
+     * Convenience method for accessing the table top component.
+     *
+     * @return the table top component
+     */
+    private TableViewTopComponent getTableTopComponent() {
+        return table.getParentComponent().getParentComponent();
+    }
 }

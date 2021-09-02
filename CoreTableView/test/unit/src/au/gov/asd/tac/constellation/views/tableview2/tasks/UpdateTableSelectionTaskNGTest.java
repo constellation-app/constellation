@@ -74,8 +74,8 @@ public class UpdateTableSelectionTaskNGTest {
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getProgressBar()).thenReturn(progressBar);
         
-        final UpdateTableSelectionTask updateTableSelectionTask
-                = new UpdateTableSelectionTask(tablePane, graph, tableViewState);
+        final TriggerSelectionUpdateTask updateTableSelectionTask
+                = new TriggerSelectionUpdateTask(tablePane, graph, tableViewState);
         
         updateTableSelectionTask.run();
         

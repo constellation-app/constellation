@@ -108,7 +108,11 @@ public class PreferenceMenuNGTest {
         table = mock(Table.class);
         tableService = mock(TableService.class);
         
-        preferencesMenu = spy(new PreferencesMenu(tableTopComponent, tablePane, table, tableService));
+        when(tablePane.getTable()).thenReturn(table);
+        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
+        when(tablePane.getTableService()).thenReturn(tableService);
+        
+        preferencesMenu = spy(new PreferencesMenu(tablePane));
     }
 
     @AfterMethod

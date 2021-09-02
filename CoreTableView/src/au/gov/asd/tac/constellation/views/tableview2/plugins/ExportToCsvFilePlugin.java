@@ -31,7 +31,6 @@ import java.nio.charset.StandardCharsets;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Plugin that exports the contents of the table as a CSV.

@@ -39,7 +39,6 @@ import org.controlsfx.control.table.TableFilter;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.clearInvocations;
@@ -77,8 +76,6 @@ public class UpdateDataTaskNGTest {
     private ObservableList<ObservableList<String>> selectedItems;
     
     private Pagination pagination;
-    
-    private CountDownLatch updateDataLatch;
     
     private UpdateDataTask updateDataTask;
     
@@ -128,17 +125,19 @@ public class UpdateDataTaskNGTest {
         selectedItemProperty = mock(ReadOnlyObjectProperty.class);
         selectedItems = mock(ObservableList.class);
         
-        updateDataLatch = new CountDownLatch(1);
-        
         when(table.getSelectedProperty()).thenReturn(selectedItemProperty);
-        
         when(table.getTableView()).thenReturn(tableView);
+        when(table.getTableSelectionListener()).thenReturn(tableSelectionListener);
+        when(table.getSelectedOnlySelectionListener()).thenReturn(selectedOnlySelectionListener);
+        when(table.getParentComponent()).thenReturn(tablePane);
+        
+        when(tablePane.getTableService()).thenReturn(tableService);
+        
         when(tableView.getSelectionModel()).thenReturn(selectionModel);
         
         when(selectionModel.getSelectedItems()).thenReturn(selectedItems);
         
-        updateDataTask = spy(new UpdateDataTask(tablePane, table, rows, tableSelectionListener,
-                selectedOnlySelectionListener, updateDataLatch, tableService));
+        updateDataTask = spy(new UpdateDataTask(table, rows));
     }
     
     @Test
@@ -200,7 +199,7 @@ public class UpdateDataTaskNGTest {
         verify(selectedItems).addListener(selectedOnlySelectionListener);
         
         // Verify the count down latch passed into the constructor has counted down
-        assertEquals(0, updateDataLatch.getCount());
+        assertEquals(0, updateDataTask.getUpdateDataLatch().getCount());
         
         // Extract the filter listener and verify its behaviour
         final ArgumentCaptor<ChangeListener<? super Predicate<? super ObservableList<String>>>> filterListenerCaptor

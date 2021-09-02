@@ -30,8 +30,8 @@ import au.gov.asd.tac.constellation.views.tableview2.plugins.SelectionToGraphPlu
 import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewConcept;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateTableDataTask;
-import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateTableSelectionTask;
+import au.gov.asd.tac.constellation.views.tableview2.tasks.TriggerDataUpdateTask;
+import au.gov.asd.tac.constellation.views.tableview2.tasks.TriggerSelectionUpdateTask;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -94,7 +94,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         initComponents();
 
         this.currentState = null;
-        this.pane = new TableViewPane(TableViewTopComponent.this);
+        this.pane = new TableViewPane(this);
         this.columnAttributeMonitors = new HashSet<>();
         initContent();
 
@@ -102,7 +102,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             if (!needsUpdate()) {
                 return;
             }
-            executorService.submit(new UpdateTableDataTask(pane, graph, getCurrentState()));
+            executorService.submit(new TriggerDataUpdateTask(pane, graph, getCurrentState()));
         });
 
         addAttributeCountChangeHandler(graph -> {
@@ -115,9 +115,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             if (needsUpdate() && currentState != null
                     && currentState.getElementType() == GraphElementType.VERTEX) {
                 if (currentState.isSelectedOnly()) {
-                    executorService.submit(new UpdateTableDataTask(pane, graph, getCurrentState()));
+                    executorService.submit(new TriggerDataUpdateTask(pane, graph, getCurrentState()));
                 } else {
-                    executorService.submit(new UpdateTableSelectionTask(pane, graph, getCurrentState()));
+                    executorService.submit(new TriggerSelectionUpdateTask(pane, graph, getCurrentState()));
                 }
             }
         });
@@ -126,9 +126,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             if (needsUpdate() && currentState != null 
                     && currentState.getElementType() == GraphElementType.TRANSACTION) {
                 if (currentState.isSelectedOnly()) {
-                    executorService.submit(new UpdateTableDataTask(pane, graph, getCurrentState()));
+                    executorService.submit(new TriggerDataUpdateTask(pane, graph, getCurrentState()));
                 } else {
-                    executorService.submit(new UpdateTableSelectionTask(pane, graph, getCurrentState()));
+                    executorService.submit(new TriggerSelectionUpdateTask(pane, graph, getCurrentState()));
                 }
             }
         });
@@ -358,11 +358,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         if (currentState != null && currentState.getColumnAttributes() != null 
                 && !addedColumnAttributes.isEmpty()) {
             addedColumnAttributes.forEach(attributeTuple ->
-                columnAttributeMonitors.add(
-                        addAttributeValueChangeHandler(
-                                attributeTuple.getSecond().getElementType(),
+                columnAttributeMonitors.add(addAttributeValueChangeHandler(attributeTuple.getSecond().getElementType(),
                                 attributeTuple.getSecond().getName(),
-                                g -> executorService.submit(new UpdateTableDataTask(pane, g, getCurrentState()))
+                                g -> executorService.submit(new TriggerDataUpdateTask(pane, g, getCurrentState()))
                         )
                 )
             );

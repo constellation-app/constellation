@@ -16,11 +16,10 @@
 package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
+import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import java.util.Set;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableView;
 
 /**
  * Listens for table selection events and updates the {@link TableService#selectedOnlySelectedRows}
@@ -31,23 +30,15 @@ import javafx.scene.control.TableView;
  */
 public class SelectedOnlySelectionListener implements ListChangeListener {
 
-    private final TableViewTopComponent tableTopComponent;
-    private final TableView<ObservableList<String>> tableView;
-    private final Set<ObservableList<String>> selectedOnlySelectedRows;
+    private final Table table;
     
     /**
      * Creates a new selected only selection lister.
      *
-     * @param tableTopComponent
-     * @param tableView
-     * @param selectedOnlySelectedRows 
+     * @param table the table the listener will be attached to
      */
-    public SelectedOnlySelectionListener(final TableViewTopComponent tableTopComponent,
-                                         final TableView<ObservableList<String>> tableView,
-                                         final Set<ObservableList<String>> selectedOnlySelectedRows) {
-        this.tableTopComponent = tableTopComponent;
-        this.tableView = tableView;
-        this.selectedOnlySelectedRows = selectedOnlySelectedRows;
+    public SelectedOnlySelectionListener(final Table table) {
+        this.table = table;
     }
     
     /**
@@ -65,20 +56,38 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
      */
     @Override
     public void onChanged(final Change change) {
-        if (tableTopComponent.getCurrentState() != null
-                && tableTopComponent.getCurrentState().isSelectedOnly()) {
-            final ObservableList<ObservableList<String>> rows = tableView.getItems();
+        if (getTableTopComponent().getCurrentState() != null
+                && getTableTopComponent().getCurrentState().isSelectedOnly()) {
+            final ObservableList<ObservableList<String>> rows = table.getTableView().getItems();
             rows.forEach(row -> {
-                if (tableView.getSelectionModel().getSelectedItems().contains(row)) {
-                    selectedOnlySelectedRows.add(row);
-                } else if (selectedOnlySelectedRows.contains(row)) {
+                if (table.getTableView().getSelectionModel().getSelectedItems().contains(row)) {
+                    getTableService().getSelectedOnlySelectedRows().add(row);
+                } else if (getTableService().getSelectedOnlySelectedRows().contains(row)) {
                     // remove the row from selected items as it's no longer selected in the table
-                    selectedOnlySelectedRows.remove(row);
+                    getTableService().getSelectedOnlySelectedRows().remove(row);
                 } else {
                     // Do nothing
                 }
             });
         }
+    }
+    
+    /**
+     * Convenience method for accessing the table top component.
+     *
+     * @return the table top component
+     */
+    private TableViewTopComponent getTableTopComponent() {
+        return table.getParentComponent().getParentComponent();
+    }
+    
+    /**
+     * Convenience method for accessing the table service.
+     *
+     * @return the table service
+     */
+    private TableService getTableService() {
+        return table.getParentComponent().getTableService();
     }
     
 }

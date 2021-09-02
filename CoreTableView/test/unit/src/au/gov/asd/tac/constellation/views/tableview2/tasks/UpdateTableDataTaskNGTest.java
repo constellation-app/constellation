@@ -74,8 +74,8 @@ public class UpdateTableDataTaskNGTest {
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getProgressBar()).thenReturn(progressBar);
         
-        final UpdateTableDataTask updateTableDataTask
-                = new UpdateTableDataTask(tablePane, graph, tableViewState);
+        final TriggerDataUpdateTask updateTableDataTask
+                = new TriggerDataUpdateTask(tablePane, graph, tableViewState);
         
         updateTableDataTask.run();
         

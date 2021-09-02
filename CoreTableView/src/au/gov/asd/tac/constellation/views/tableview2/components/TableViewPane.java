@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import javafx.application.Platform;
 import javafx.scene.layout.BorderPane;
@@ -32,7 +33,8 @@ import javafx.scene.layout.BorderPane;
  * @author antares
  */
 public final class TableViewPane extends BorderPane {
-    private final TableViewTopComponent tableTopComponent;
+    private final TableViewTopComponent parentComponent;
+    
     private final Table table;
     private final TableToolbar tableToolbar;
     private final ProgressBar progressBar;
@@ -46,8 +48,8 @@ public final class TableViewPane extends BorderPane {
      *
      * @param tableTopComponent the top component for the table plugin
      */
-    public TableViewPane(final TableViewTopComponent tableTopComponent) {
-        this.tableTopComponent = tableTopComponent;
+    public TableViewPane(final TableViewTopComponent parentComponent) {
+        this.parentComponent = parentComponent;
         
         // Because the page factory doesn't start getting used until this
         // constructor is complete, it gets passed a reference to 'this' with
@@ -60,13 +62,13 @@ public final class TableViewPane extends BorderPane {
         progressBar = new ProgressBar();
         
         // Create table UI component
-        table = new Table(tableTopComponent, this, tableService);
+        table = new Table(this);
         
         tableService.getSortedRowList().comparatorProperty()
                 .bind(table.getTableView().comparatorProperty());
         
         // Setup the UI components
-        this.tableToolbar = new TableToolbar(tableTopComponent, this, table, tableService);
+        this.tableToolbar = new TableToolbar(this);
         this.tableToolbar.init();
         
         setLeft(tableToolbar.getToolbar());
@@ -87,7 +89,7 @@ public final class TableViewPane extends BorderPane {
             future.cancel(true);
         }
 
-        future = getTableTopComponent().getExecutorService().submit(() -> {
+        future = getParentComponent().getExecutorService().submit(() -> {
             getTableToolbar().updateToolbar(state);
             if (graph != null) {
                 getTable().updateColumns(graph, state);
@@ -145,7 +147,7 @@ public final class TableViewPane extends BorderPane {
         return tableToolbar;
     }
 
-    public TableViewTopComponent getTableTopComponent() {
-        return tableTopComponent;
+    public TableViewTopComponent getParentComponent() {
+        return parentComponent;
     }
 }

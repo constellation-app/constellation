@@ -19,93 +19,89 @@ import au.gov.asd.tac.constellation.views.tableview2.service.UpdateMethod;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
+import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.state.Column;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 
 /**
- * TODO Make this description better
- * 
- * A runnable that will update the table with the current column settings in
- * the backing object structure.
+ * Updates the visible columns on the table based on the current state. It also
+ * adds the listener that is called when columns are updated or removed.
  *
  * @author formalhaunt
  */
 public class UpdateColumnsTask implements Runnable {
-    private final TableViewTopComponent parent;
-    private final TableView<ObservableList<String>> tableView;
-    
-    private final List<Column> columnIndex;
-
-    private final TableService tableService;
+    private final Table table;
     
     private Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap;
     
-    private ChangeListener<ObservableList<String>> tableSelectionListener;
-    private ListChangeListener selectedOnlySelectionListener;
-    
     private TableViewState state;
     
+    /**
+     * Used to track what table column changes are being done. Ensures that
+     * two changes in a row that are the same are not handled twice.
+     */
     private ListChangeListener.Change<? extends TableColumn<ObservableList<String>, ?>> lastChange;
     
     /**
-     * 
-     * @param parent
-     * @param tableView
-     * @param columnIndex
-     * @param tableService 
+     * Creates a new update table columns task.
+     *
+     * @param table the table that will be updated
      */
-    public UpdateColumnsTask(final TableViewTopComponent parent,
-                             final TableView<ObservableList<String>> tableView,
-                             final List<Column> columnIndex,
-                             final TableService tableService) {
-        this.parent = parent;
-        this.tableView = tableView;
-        this.columnIndex = columnIndex;
-        this.tableService = tableService;
+    public UpdateColumnsTask(final Table table) {
+        this.table = table;
     }
     
     /**
-     * TODO Figure out a good description
+     * Because this task maintains state the same one is used repeatedly and so
+     * this is used to update the state and column reference map with the current
+     * values before the task is run again.
+     * <p/>
+     * The column reference map contains all columns that are currently in the
+     * table view but they may not all be in the column index as that may have
+     * been refreshed.
      * 
-     * @param columnReferenceMap TODO what is this??
+     * @param columnReferenceMap map of column name/text to column where some
+     *     or all of the columns may no longer be in the column index
      * @param state the state that will be used to update the table columns
-     * @param tableSelectionListener
-     * @param selectedOnlySelectionListener 
      */
     public void reset(final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap,
-                      final TableViewState state,
-                      final ChangeListener<ObservableList<String>> tableSelectionListener,
-                      final ListChangeListener selectedOnlySelectionListener) {
+                      final TableViewState state) {
         this.columnReferenceMap = columnReferenceMap;
         this.state = state;
-        this.tableSelectionListener = tableSelectionListener;
-        this.selectedOnlySelectionListener = selectedOnlySelectionListener;
     }
     
+    /**
+     * Gets all the available columns and updates the visibility based on the
+     * current table state. Clears and re-adds the columns with the updated
+     * visibility setting to the actual table view and adds the column sort
+     * listener.
+     */
     @Override
     public void run() {
         Objects.requireNonNull(columnReferenceMap, "Update columns was started "
                 + "before reset was called.");
         
-        tableView.getSelectionModel().selectedItemProperty()
-                .removeListener(tableSelectionListener);
-        tableView.getSelectionModel().getSelectedItems()
-                .removeListener(selectedOnlySelectionListener);
+        table.getTableView().getSelectionModel().selectedItemProperty().removeListener(
+                table.getTableSelectionListener()
+        );
+        table.getTableView().getSelectionModel().getSelectedItems().removeListener(
+                table.getSelectedOnlySelectionListener()
+        );
 
+        // clear all the existing columns in the table view so that they can be
+        // redrawn when the column index is re-applied below
         columnReferenceMap.forEach((columnName, column) -> column.setGraphic(null));
 
-        // set column visibility in columnIndex based on the state
-        columnIndex.forEach(column ->
+        // set column visibility true in columnIndex if the column is in the
+        // current table state for visible columns
+        table.getColumnIndex().forEach(column ->
             column.getTableColumn().setVisible(state.getColumnAttributes().stream()
                     .anyMatch(columnAttr -> 
                             columnAttr.getFirst().equals(column.getAttributeNamePrefix())
@@ -114,42 +110,44 @@ public class UpdateColumnsTask implements Runnable {
             )
         );
 
-        // add columns to table
-        tableView.getColumns().clear();
-        tableView.getColumns().addAll(
-                columnIndex.stream()
+        // clear all columns from the table view and re-add them from the
+        // authoritive column index source that has just had its visibilities
+        // updated from the table state
+        table.getTableView().getColumns().clear();
+        table.getTableView().getColumns().addAll(
+                table.getColumnIndex().stream()
                         .map(column -> column.getTableColumn())
                         .collect(Collectors.toList())
         );
 
-        // sort data if the column ordering changes
-        tableView.getColumns().addListener((final ListChangeListener.Change<? extends TableColumn<ObservableList<String>, ?>> change) -> {
+        // add a listener that responds to column additions and removals
+        table.getTableView().getColumns().addListener((final ListChangeListener.Change<? extends TableColumn<ObservableList<String>, ?>> change) -> {
             if (lastChange == null || !lastChange.equals(change)) {
                 while (change.next()) {
                     if (change.wasReplaced() && change.getRemovedSize() == change.getAddedSize()) {
                         saveSortDetails();
                         
                         final List<TableColumn<ObservableList<String>, String>> columnIndexColumns
-                                = columnIndex.stream()
+                                = table.getColumnIndex().stream()
                                         .map(column -> column.getTableColumn())
                                         .collect(Collectors.toList());
                         
                         final List<Tuple<String, Attribute>> orderedColumns
                                 = change.getAddedSubList().stream()
-                                        .map(c -> columnIndex.get(columnIndexColumns.indexOf(c)))
+                                        .map(c -> table.getColumnIndex().get(columnIndexColumns.indexOf(c)))
                                         .map(column -> Tuple.create(
                                                 column.getAttributeNamePrefix(), 
                                                 column.getAttribute()
                                         ))
                                         .filter(columnAttr -> 
-                                                parent.getCurrentState().getColumnAttributes()
+                                                getTableTopComponent().getCurrentState().getColumnAttributes()
                                                         .contains(columnAttr)
                                         )
                                         .collect(Collectors.toList());
                         
-                        tableService.updateVisibleColumns(
-                                parent.getCurrentGraph(),
-                                parent.getCurrentState(),
+                        getTableService().updateVisibleColumns(
+                                getTableTopComponent().getCurrentGraph(),
+                                getTableTopComponent().getCurrentState(),
                                 orderedColumns,
                                 UpdateMethod.REPLACE
                         );
@@ -159,10 +157,12 @@ public class UpdateColumnsTask implements Runnable {
             }
         });
 
-        tableView.getSelectionModel().getSelectedItems()
-                .addListener(selectedOnlySelectionListener);
-        tableView.getSelectionModel().selectedItemProperty()
-                .addListener(tableSelectionListener);
+        table.getTableView().getSelectionModel().getSelectedItems().addListener(
+                table.getSelectedOnlySelectionListener()
+        );
+        table.getTableView().getSelectionModel().selectedItemProperty().addListener(
+                table.getTableSelectionListener()
+        );
     }
     
     /**
@@ -173,13 +173,31 @@ public class UpdateColumnsTask implements Runnable {
      * @see TableService#saveSortDetails(java.lang.String, javafx.scene.control.TableColumn.SortType)
      */
     protected void saveSortDetails() {
-        if (tableView.getSortOrder() != null && tableView.getSortOrder().size() > 0) {
+        if (table.getTableView().getSortOrder() != null && table.getTableView().getSortOrder().size() > 0) {
             // A column was selected to sort by, save its name and direction
-            tableService.saveSortDetails(tableView.getSortOrder().get(0).getText(),
-                    tableView.getSortOrder().get(0).getSortType());
+            getTableService().saveSortDetails(table.getTableView().getSortOrder().get(0).getText(),
+                    table.getTableView().getSortOrder().get(0).getSortType());
         } else {
             // no column is selected, clear any previously stored information.
-            tableService.saveSortDetails("", TableColumn.SortType.ASCENDING);
+            getTableService().saveSortDetails("", TableColumn.SortType.ASCENDING);
         }
+    }
+    
+    /**
+     * Convenience method for accessing the table service.
+     * 
+     * @return the table service
+     */
+    private TableService getTableService() {
+        return table.getParentComponent().getTableService();
+    }
+    
+    /**
+     * Convenience method for accessing the table top component.
+     *
+     * @return the table top component
+     */
+    private TableViewTopComponent getTableTopComponent() {
+        return table.getParentComponent().getParentComponent();
     }
 }

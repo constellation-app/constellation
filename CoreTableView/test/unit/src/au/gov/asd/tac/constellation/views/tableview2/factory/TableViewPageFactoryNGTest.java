@@ -140,7 +140,7 @@ public class TableViewPageFactoryNGTest {
         doReturn(tableSortTypeListener).when(tableViewPageFactory).getTableSortTypeListener();
         
         when(tablePane.getTable()).thenReturn(table);
-        when(tablePane.getTableTopComponent()).thenReturn(tableTopComponent);
+        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
         when(tablePane.getTableService()).thenReturn(tableService);
         
         when(tableService.getSelectedOnlySelectedRows()).thenReturn(selectedOnlySelectedRows);

@@ -66,10 +66,7 @@ public class PreferencesMenu {
     
     private final ToggleGroup pageSizeToggle = new ToggleGroup();
     
-    private final TableViewTopComponent tableTopComponent;
     private final TableViewPane tablePane;
-    private final Table table;
-    private final TableService tableService;
     
     private MenuButton preferencesButton;
     private MenuItem savePreferencesMenu;
@@ -79,20 +76,10 @@ public class PreferencesMenu {
     /**
      * Creates a new preferences menu.
      *
-     * @param tableTopComponent
      * @param tablePane
-     * @param table
-     * @param tableService 
      */
-    public PreferencesMenu(final TableViewTopComponent tableTopComponent,
-                           final TableViewPane tablePane,
-                           final Table table,
-                           final TableService tableService) {
-        this.tableTopComponent = tableTopComponent;
+    public PreferencesMenu(final TableViewPane tablePane) {
         this.tablePane = tablePane;
-        this.table = table;
-        this.tableService = tableService;
-        
     }
     
     /**
@@ -104,11 +91,12 @@ public class PreferencesMenu {
         pageSizeMenu = createPageSizeMenu();
         
         savePreferencesMenu = createPreferencesMenu(SAVE_PREFERENCES, e -> {
-            if ((!table.getTableView().getColumns().isEmpty()) 
+            if ((!getTable().getTableView().getColumns().isEmpty()) 
                     && (GraphManager.getDefault().getActiveGraph() != null)) {
                 TableViewPreferencesIoProvider.savePreferences(
-                        tableTopComponent.getCurrentState().getElementType(), table.getTableView(),
-                        tableService.getTablePreferences().getMaxRowsPerPage()
+                        getTableTopComponent().getCurrentState().getElementType(),
+                        getTable().getTableView(),
+                        getTableService().getTablePreferences().getMaxRowsPerPage()
                 );
             }
             e.consume();
@@ -130,8 +118,10 @@ public class PreferencesMenu {
                             + "thread work to complete.");
                 }
                 
-                tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
-                Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
+                tablePane.getTableService().updatePagination(
+                        tablePane.getTableService().getTablePreferences().getMaxRowsPerPage()
+                );
+                Platform.runLater(() -> tablePane.setCenter(tablePane.getTableService().getPagination()));
             }
             e.consume();
         });
@@ -190,6 +180,33 @@ public class PreferencesMenu {
     }
     
     /**
+     * Convenience method for accessing the table service.
+     * 
+     * @return the table service
+     */
+    private TableService getTableService() {
+        return tablePane.getTableService();
+    }
+    
+    /**
+     * Convenience method for accessing the table top component.
+     *
+     * @return the table top component
+     */
+    private TableViewTopComponent getTableTopComponent() {
+        return tablePane.getParentComponent();
+    }
+    
+    /**
+     * Convenience method for accessing the table.
+     *
+     * @return the table
+     */
+    private Table getTable() {
+        return tablePane.getTable();
+    }
+    
+    /**
      * Creates the page size menu that will be added to the preferences menu. This
      * menu provides 4 options for page sizes. When one of the page size menu items
      * is clicked, the table is refreshed and displays the date with the new pagination
@@ -207,10 +224,12 @@ public class PreferencesMenu {
                             pageSizeOption.setToggleGroup(pageSizeToggle);
                             pageSizeOption.setOnAction(e -> {
                                 // TODO potential race condition with the setting of the preferences???
-                                if (tableService.getTablePreferences().getMaxRowsPerPage() != pageSize) {
-                                    tableService.getTablePreferences().setMaxRowsPerPage(pageSize);
-                                    tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
-                                    Platform.runLater(() -> tablePane.setCenter(tableService.getPagination()));
+                                if (getTableService().getTablePreferences().getMaxRowsPerPage() != pageSize) {
+                                    getTableService().getTablePreferences().setMaxRowsPerPage(pageSize);
+                                    getTableService().updatePagination(
+                                            getTableService().getTablePreferences().getMaxRowsPerPage()
+                                    );
+                                    Platform.runLater(() -> tablePane.setCenter(getTableService().getPagination()));
                                 }
                             });
                             if (pageSize == TablePreferences.DEFAULT_MAX_ROWS_PER_PAGE) {
@@ -272,12 +291,12 @@ public class PreferencesMenu {
      */
     protected void loadPreferences() {
         synchronized (TABLE_LOCK) {
-            if (tableTopComponent.getCurrentState() != null) {
+            if (getTableTopComponent().getCurrentState() != null) {
 
                 // Load the local table preferences JSON file
                 final TablePreferences tablePrefs
                         = TableViewPreferencesIoProvider.getPreferences(
-                                tableTopComponent.getCurrentState().getElementType());
+                                getTableTopComponent().getCurrentState().getElementType());
 
                 // If no columns were found then the user abandoned the load as saves
                 // cannot occur with 0 columns
@@ -291,7 +310,7 @@ public class PreferencesMenu {
                 // associated columns to newColumnOrder (if found). Also set the
                 // found columns to visible.
                 tablePrefs.getColumnOrder().forEach(columnName ->
-                    table.getTableView().getColumns().stream()
+                    getTable().getTableView().getColumns().stream()
                             .filter(column -> column.getText().equals(columnName))
                             .forEachOrdered(column -> {
                                 column.setVisible(true);
@@ -304,7 +323,7 @@ public class PreferencesMenu {
                 final List<Tuple<String, Attribute>> orderedColumns
                         = newColumnOrder.stream()
                                 .map(tableColumn -> {
-                                    for (final Column column : table.getColumnIndex()) {
+                                    for (final Column column : getTable().getColumnIndex()) {
                                         if (tableColumn.getText().equals(column.getTableColumn().getText())) {
                                             return column;
                                         }
@@ -312,7 +331,9 @@ public class PreferencesMenu {
                                     
                                     // TODO This seems like a bad fallback. I think returning null
                                     //      and adding a filter for nonNull objects would be better
-                                    return table.getColumnIndex().get(newColumnOrder.indexOf(tableColumn));
+                                    return getTable().getColumnIndex().get(
+                                            newColumnOrder.indexOf(tableColumn)
+                                    );
                                 }).map(column -> Tuple.create(
                                         column.getAttributeNamePrefix(),
                                         column.getAttribute()
@@ -320,15 +341,15 @@ public class PreferencesMenu {
                                 .collect(Collectors.toList());
                 
                 // Update the sort preferences
-                tableService.saveSortDetails(
+                getTableService().saveSortDetails(
                         tablePrefs.getSortColumn(),
                         tablePrefs.getSortDirection()
                 );
                 
                 // Update the visibile columns
-                tableService.updateVisibleColumns(
-                        tableTopComponent.getCurrentGraph(),
-                        tableTopComponent.getCurrentState(),
+                getTableService().updateVisibleColumns(
+                        getTableTopComponent().getCurrentGraph(),
+                        getTableTopComponent().getCurrentState(),
                         orderedColumns,
                         UpdateMethod.REPLACE
                 );
@@ -338,7 +359,8 @@ public class PreferencesMenu {
                     final RadioMenuItem pageSizeOption = (RadioMenuItem) t;
                     if (Integer.parseInt(pageSizeOption.getText()) == tablePrefs.getMaxRowsPerPage()) {
                         pageSizeOption.setSelected(true);
-                        tableService.getTablePreferences().setMaxRowsPerPage(tablePrefs.getMaxRowsPerPage());
+                        getTableService().getTablePreferences()
+                                .setMaxRowsPerPage(tablePrefs.getMaxRowsPerPage());
                         break;
                     }
                 }

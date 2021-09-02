@@ -16,21 +16,35 @@
 package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.views.tableview2.components.ProgressBar;
+import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 
 /**
+ * Triggers an update of the rows that the table is currently displaying using
+ * the elements in the graph as the source of truth. Depending on the selected only
+ * mode status and element type settings different groups of elements will be
+ * added to the table.
  *
  * @author formalhaunt
+ * @see Table#updateData(Graph, TableViewState, ProgressBar) 
  */
-public class UpdateTableSelectionTask implements Runnable {
+public class TriggerDataUpdateTask implements Runnable {
     private final TableViewPane tablePane;
     private final Graph graph;
     private final TableViewState tableViewState;
-
-    public UpdateTableSelectionTask(final TableViewPane tablePane,
-                                    final Graph graph,
-                                    final TableViewState tableViewState) {
+    
+    /**
+     * Creates a new trigger data update task.
+     *
+     * @param tablePane the pane that holds the table
+     * @param graph the current graph
+     * @param tableViewState the current table state
+     */
+    public TriggerDataUpdateTask(final TableViewPane tablePane,
+                                 final Graph graph,
+                                 final TableViewState tableViewState) {
         this.tablePane = tablePane;
         this.graph = graph;
         this.tableViewState = tableViewState;
@@ -38,7 +52,7 @@ public class UpdateTableSelectionTask implements Runnable {
     
     @Override
     public void run() {
-        tablePane.getTable().updateSelection(graph, tableViewState);
+        tablePane.getTable().updateData(graph, tableViewState, tablePane.getProgressBar());
     }
     
 }

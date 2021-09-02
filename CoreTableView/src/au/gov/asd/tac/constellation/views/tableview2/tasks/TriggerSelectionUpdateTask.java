@@ -16,21 +16,33 @@
 package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 
 /**
+ * Triggers an update of the selected rows in the table using the current selection
+ * in the graph as the source of truth. If the table is in "Selected Only" mode
+ * this will do nothing.
  *
  * @author formalhaunt
+ * @see Table#updateSelection(Graph, TableViewState)
  */
-public class UpdateTableDataTask implements Runnable {
+public class TriggerSelectionUpdateTask implements Runnable {
     private final TableViewPane tablePane;
     private final Graph graph;
     private final TableViewState tableViewState;
-    
-    public UpdateTableDataTask(final TableViewPane tablePane,
-                               final Graph graph,
-                               final TableViewState tableViewState) {
+
+    /**
+     * Creates a new trigger selection update task.
+     * 
+     * @param tablePane the pane that holds the table
+     * @param graph the current graph
+     * @param tableViewState the current table state
+     */
+    public TriggerSelectionUpdateTask(final TableViewPane tablePane,
+                                      final Graph graph,
+                                      final TableViewState tableViewState) {
         this.tablePane = tablePane;
         this.graph = graph;
         this.tableViewState = tableViewState;
@@ -38,7 +50,7 @@ public class UpdateTableDataTask implements Runnable {
     
     @Override
     public void run() {
-        tablePane.getTable().updateData(graph, tableViewState, tablePane.getProgressBar());
+        tablePane.getTable().updateSelection(graph, tableViewState);
     }
     
 }

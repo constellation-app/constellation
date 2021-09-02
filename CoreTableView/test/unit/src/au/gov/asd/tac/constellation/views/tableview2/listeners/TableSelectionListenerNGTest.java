@@ -19,6 +19,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.components.Table;
+import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
+import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +48,10 @@ public class TableSelectionListenerNGTest {
     private TableSelectionListener tableSelectionListener;
     
     private TableViewTopComponent tableTopComponent;
+    private TableViewPane tablePane;
+    private Table table;
     private TableView<ObservableList<String>> tableView;
+    private TableService tableService;
     private Map<ObservableList<String>, Integer> rowToElementIdIndex;
     
     public TableSelectionListenerNGTest() {
@@ -65,12 +71,22 @@ public class TableSelectionListenerNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
+        tablePane = mock(TableViewPane.class);
+        table = mock(Table.class);
         tableView = mock(TableView.class);
+        tableService = mock(TableService.class);
         
         rowToElementIdIndex = new HashMap<>();
         
-        tableSelectionListener = new TableSelectionListener(tableTopComponent,
-                tableView, rowToElementIdIndex);
+        when(table.getParentComponent()).thenReturn(tablePane);
+        when(table.getTableView()).thenReturn(tableView);
+        
+        when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
+        when(tablePane.getTableService()).thenReturn(tableService);
+        
+        when(tableService.getRowToElementIdIndex()).thenReturn(rowToElementIdIndex);
+        
+        tableSelectionListener = new TableSelectionListener(table);
     }
 
     @AfterMethod
