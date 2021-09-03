@@ -16,15 +16,11 @@
 package au.gov.asd.tac.constellation.views.tableview2.factory;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableComparatorListener;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSortTypeListener;
 import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;

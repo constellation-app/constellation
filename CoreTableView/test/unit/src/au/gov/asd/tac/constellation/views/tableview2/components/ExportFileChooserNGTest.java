@@ -92,6 +92,13 @@ public class ExportFileChooserNGTest {
         verifyFileSelectionChecks(null, null);
     }
     
+    /**
+     * Verifies the expected corrections (if any) to the provided file path.
+     *
+     * @param selectedAbsolutePath the original file path that is checked
+     * @param expectedAbsolutePath the expected file path with corrections, or the
+     *     same as the original if no corrections are expected
+     */
     private void verifyFileSelectionChecks(final String selectedAbsolutePath,
                                            final String expectedAbsolutePath) {
         final FileChooserBuilder fileChooser = mock(FileChooserBuilder.class);

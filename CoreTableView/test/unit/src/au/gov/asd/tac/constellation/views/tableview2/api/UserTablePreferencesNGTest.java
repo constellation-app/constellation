@@ -52,7 +52,10 @@ public class UserTablePreferencesNGTest {
     
     @Test
     public void deserialization() throws IOException {
-        final UserTablePreferences deserialization = OBJECT_MAPPER.readValue(new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()), UserTablePreferences.class);
+        final UserTablePreferences deserialization = OBJECT_MAPPER.readValue(
+                new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()),
+                UserTablePreferences.class
+        );
 
         assertEquals(fixture(), deserialization);
     }
@@ -126,6 +129,11 @@ public class UserTablePreferencesNGTest {
         assertEquals(Integer.valueOf(150), userTablePreferences.getMaxRowsPerPage());
     }
     
+    /**
+     * Get the user table preferences object that matches what is in the resource JSON file.
+     *
+     * @return the user table preference fixture
+     */
     private UserTablePreferences fixture() {
         final UserTablePreferences userTablePreferences = new UserTablePreferences();
         

@@ -221,11 +221,5 @@
             </test-dependencies>
             <public-packages/>
         </data>
-        <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
-            <word>distinguisable</word>
-            <word>embeded</word>
-            <word>everytime</word>
-            <word>spearate</word>
-        </spellchecker-wordlist>
     </configuration>
 </project>

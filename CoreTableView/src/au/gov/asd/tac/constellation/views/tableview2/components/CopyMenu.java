@@ -47,7 +47,7 @@ public class CopyMenu {
     /**
      * Creates a new copy menu.
      *
-     * @param tablePane 
+     * @param tablePane the pane that contains the table
      */
     public CopyMenu(final TablePane tablePane) {
         this.tablePane = tablePane;

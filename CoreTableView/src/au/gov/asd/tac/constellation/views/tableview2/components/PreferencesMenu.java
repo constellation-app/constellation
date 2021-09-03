@@ -77,7 +77,7 @@ public class PreferencesMenu {
     /**
      * Creates a new preferences menu.
      *
-     * @param tablePane
+     * @param tablePane the pane that contains the table
      */
     public PreferencesMenu(final TablePane tablePane) {
         this.tablePane = tablePane;

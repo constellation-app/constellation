@@ -76,7 +76,7 @@ public class TableToolbar {
     /**
      * Creates a new table tool bar.
      *
-     * @param tablePane
+     * @param tablePane the pane that contains the table
      */
     public TableToolbar(final TablePane tablePane) {
         this.tablePane = tablePane;

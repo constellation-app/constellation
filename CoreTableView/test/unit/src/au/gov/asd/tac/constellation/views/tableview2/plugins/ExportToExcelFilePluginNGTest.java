@@ -212,7 +212,15 @@ public class ExportToExcelFilePluginNGTest {
         }
     }
 
-    private String generateCsvFromExcelFile(File file, final String sheetName) throws IOException {
+    /**
+     * Open the given Excel file and read it, generating a CSV from its contents.
+     *
+     * @param file the Excel file to read
+     * @param sheetName the sheet name in the Excel file to read
+     * @return the contents of the Excel file in CSV format
+     * @throws IOException if there is a problem opening the Excel file
+     */
+    private String generateCsvFromExcelFile(final File file, final String sheetName) throws IOException {
         final Workbook wb = WorkbookFactory.create(new FileInputStream(file));
         final Sheet sheet = wb.getSheet(sheetName);
 

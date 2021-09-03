@@ -106,6 +106,9 @@ public class ActiveTableReferenceNGTest {
     public void tearDownMethod() throws Exception {
     }
     
+    /**
+     * Verify the initial state of all accessible properties.
+     */
     @Test
     public void init() {
         doCallRealMethod().when(activeTableReference).getSortedRowList();
@@ -122,6 +125,9 @@ public class ActiveTableReferenceNGTest {
         assertEquals(Integer.valueOf(500), activeTableReference.getUserTablePreferences().getMaxRowsPerPage());
     }
     
+    /**
+     * Verifies save sort detail updates the user table preferences correctly.
+     */
     @Test
     public void saveSortDetails() {
         assertEquals(ImmutablePair.of("", TableColumn.SortType.ASCENDING), 
@@ -320,6 +326,16 @@ public class ActiveTableReferenceNGTest {
         verify(tablePane).setCenter(same(pagination));
     }
     
+    /**
+     * Verifies the correct column attributes are updated when
+     * {@link ActiveTableReference#updateVisibleColumns(Graph, TableViewState, List, UpdateMethod)
+     * is called.
+     * 
+     * @param pluginExecution the plugin execution that will execut the update state plugin
+     * @param originalTableViewState the old table state that is current before the update plugin runs
+     * @param expectedColumnAttributes the expected column attributes that will be in the new state
+     * @return a mockito answer that can be executed when the plugin is passed to the plugin executor
+     */
     private Answer<PluginExecution> executeUpdateStatePlugin(final PluginExecution pluginExecution,
                                                              final TableViewState originalTableViewState,
                                                              final List<Tuple<String, Attribute>> expectedColumnAttributes) {

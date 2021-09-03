@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.utils;
 
-import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;

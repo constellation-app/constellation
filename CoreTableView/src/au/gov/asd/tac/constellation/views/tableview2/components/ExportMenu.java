@@ -70,7 +70,7 @@ public class ExportMenu {
     /**
      * Creates a new export menu.
      *
-     * @param tablePane
+     * @param tablePane the pane that contains the table
      */
     public ExportMenu(final TablePane tablePane) {
         this.tablePane = tablePane;

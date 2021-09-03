@@ -89,7 +89,7 @@ public class ColumnVisibilityContextMenu {
     /**
      * Creates a new column visibility context menu.
      *
-     * @param table
+     * @param table the table that this menu was will be associated to
      */
     public ColumnVisibilityContextMenu(final Table table) {
         this.table = table;
