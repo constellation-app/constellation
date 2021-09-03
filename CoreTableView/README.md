@@ -3,15 +3,18 @@
 The table view component provides a table that is linked to the currently active graph
 allowing the user to view the graph data in tabular form.
 
+The following is an outline of key concepts, functionality and code that will assist in understanding
+how this module works.
+
 ## Table State
 
 This is the table state that is embeded in the graph attributes as "table_view_state".
 
 It holds the currently active state of the table. That includes
 
-* ** Selected Only Mode Active: ** This is a flag specifying if the table is currently in "Selected Only" mode.
-* ** Element Type: ** This is the graph element type that the table is currently displaying, VERTEX or TRANSACTION.
-* ** Visible Columns: ** This is the columns/graph attributes that are currently visible in the table
+* **Selected Only Mode Active:** This is a flag specifying if the table is currently in "Selected Only" mode.
+* **Element Type:** This is the graph element type that the table is currently displaying, VERTEX or TRANSACTION.
+* **Visible Columns:** This is the columns/graph attributes that are currently visible in the table
 
 The below sections provide more information on these properties.
 
@@ -19,11 +22,11 @@ The below sections provide more information on these properties.
 
 Selected only mode is a toggle button on the table. It controls the interaction between the graph and the table.
 
-When the table ** IS IN ** selected only mode the contents of the table is ** ONLY ** the elements selected on the graph. This means
+When the table **IS IN** selected only mode the contents of the table is **ONLY** the elements selected on the graph. This means
 that when you click on rows in the table it will have no effect on the selection in the graph but if you select
 elements in the graph, that will effect the data displayed in the table.
 
-When the table ** IS NOT IN ** selected only mode the contents of the table is ** ALL ** the elements in the graph regardless of
+When the table **IS NOT IN** selected only mode the contents of the table is **ALL** the elements in the graph regardless of
 their selection status. When selecting rows in the table that will trigger the selection of the corresponding element
 in the graph and vice versa.
 
@@ -67,6 +70,33 @@ This represents reference data for the current table. This data is used to maint
 settings between table updates and refreshes. These updates can happen for things like
 page changes, graph modifications, table preference changes, etc.
 
+### Selected Only Selected Rows
+
+When in selected only mode the tables selection is independent of the selection in the graph. As a means
+of tracking what rows are currently selected in the graph the reference maintains a list of selected
+rows. When the table is NOT in selected only mode this list is empty and irrelevant.
+
+The reason that this is maintained is due to pagination. The table view will only contain a record
+of selected rows for that page. Not all selected rows across multiple pages.
+
+### Column Index
+
+This is the current list of columns displayed in the table. It is a list of `Column`
+objects. Using the properties of the `Column` object you can go from a table column to
+a graph element and vice versa. The `Column` object has the following properties.
+
+* `attributeNamePrefix`: This is the prefix added to the column name. It will be one of 
+   ".source", ".destination", ".transaction". See the [Element Type Button](#element-type)
+   section for more information.
+* `attribute`: This is the graph element attribute. It links the column back to the source in the graph.
+* `tableColumn`: This is the actual JavaFX column that is being displayed in the table.
+
+### Pagination
+
+The `Pagination` object is part of JavaFX and is attached to the table. The table uses it, to determine
+what to display when the user triggers a new page load. The `Pagination` object has a page factory
+(`TableViewPageFactory`) that generates the new rows each time the user changes pages.
+
 ### User Table Preferences
 
 The table preferences are stored in a JSON file spearate to the graph star file. They can
@@ -99,33 +129,6 @@ page of the table.
 
 It is sorted based on the current sort settings. There is a comparator in the utilities package that
 details the sort logic.
-
-### Selected Only Selected Rows
-
-When in selected only mode the tables selection is independent of the selection in the graph. As a means
-of tracking what rows are currently selected in the graph the reference maintains a list of selected
-rows. When the table is NOT in selected only mode this list is empty and irrelevant.
-
-The reason that this is maintained is due to pagination. The table view will only contain a record
-of selected rows for that page. Not all selected rows across multiple pages.
-
-### Column Index
-
-This is the current list of columns displayed in the table. It is a list of `Column`
-objects. Using the properties of the `Column` object you can go from a table column to
-a graph element and vice versa. The `Column` object has the following properties.
-
-* `attributeNamePrefix`: This is the prefix added to the column name. It will be one of 
-   ".source", ".destination", ".transaction". See the [Element Type Button](#element-type)
-   section for more information.
-* `attribute`: This is the graph element attribute. It links the column back to the source in the graph.
-* `tableColumn`: This is the actual JavaFX column that is being displayed in the table.
-
-### Pagination
-
-The `Pagination` object is part of JavaFX and is attached to the table. The table uses it, to determine
-what to display when the user triggers a new page load. The `Pagination` object has a page factory
-(`TableViewPageFactory`) that generates the new rows each time the user changes pages.
 
 ## Table View
 
