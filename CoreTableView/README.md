@@ -74,6 +74,33 @@ This represents reference data for the current table. This data is used to maint
 settings between table updates and refreshes. These updates can happen for things like
 page changes, graph modifications, table preference changes, etc.
 
+### Selected Only Selected Rows
+
+When in selected only mode the tables selection is independent of the selection in the graph. As a means
+of tracking what rows are currently selected in the graph the reference maintains a list of selected
+rows. When the table is NOT in selected only mode this list is empty and irrelevant.
+
+The reason that this is maintained is due to pagination. The table view will only contain a record
+of selected rows for that page. Not all selected rows across multiple pages.
+
+### Column Index
+
+This is the current list of columns displayed in the table. It is a list of `Column`
+objects. Using the properties of the `Column` object you can go from a table column to
+a graph element and vice versa. The `Column` object has the following properties.
+
+* `attributeNamePrefix`: This is the prefix added to the column name. It will be one of 
+   ".source", ".destination", ".transaction". See the [Element Type Button](#element-type)
+   section for more information.
+* `attribute`: This is the graph element attribute. It links the column back to the source in the graph.
+* `tableColumn`: This is the actual JavaFX column that is being displayed in the table.
+
+### Pagination
+
+The `Pagination` object is part of JavaFX and is attached to the table. The table uses it, to determine
+what to display when the user triggers a new page load. The `Pagination` object has a page factory
+(`TableViewPageFactory`) that generates the new rows each time the user changes pages.
+
 ### User Table Preferences
 
 The table preferences are stored in a JSON file spearate to the graph star file. They can
@@ -106,33 +133,6 @@ page of the table.
 
 It is sorted based on the current sort settings. There is a comparator in the utilities package that
 details the sort logic.
-
-### Selected Only Selected Rows
-
-When in selected only mode the tables selection is independent of the selection in the graph. As a means
-of tracking what rows are currently selected in the graph the reference maintains a list of selected
-rows. When the table is NOT in selected only mode this list is empty and irrelevant.
-
-The reason that this is maintained is due to pagination. The table view will only contain a record
-of selected rows for that page. Not all selected rows across multiple pages.
-
-### Column Index
-
-This is the current list of columns displayed in the table. It is a list of `Column`
-objects. Using the properties of the `Column` object you can go from a table column to
-a graph element and vice versa. The `Column` object has the following properties.
-
-* `attributeNamePrefix`: This is the prefix added to the column name. It will be one of 
-   ".source", ".destination", ".transaction". See the [Element Type Button](#element-type)
-   section for more information.
-* `attribute`: This is the graph element attribute. It links the column back to the source in the graph.
-* `tableColumn`: This is the actual JavaFX column that is being displayed in the table.
-
-### Pagination
-
-The `Pagination` object is part of JavaFX and is attached to the table. The table uses it, to determine
-what to display when the user triggers a new page load. The `Pagination` object has a page factory
-(`TableViewPageFactory`) that generates the new rows each time the user changes pages.
 
 ---
 
