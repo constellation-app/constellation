@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewConcept;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewState;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -88,7 +89,7 @@ public class NotesViewController {
     /**
      * Read the current state from the graph.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"EXPERIMENTAL", "LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
     public static final class NotesViewStateReader extends SimpleReadPlugin {
 
         private final NotesViewPane pane;
@@ -114,7 +115,13 @@ public class NotesViewController {
                 return;
             }
 
-            pane.setNotes(currentState.getNotes());
+            // TODO: A copy of the list is being passed here instead because
+            // the Notes View is reading and writing state all the time.
+            // Review why the notes view needs to be read and written to so
+            // often. If this can be reduced significantly then the chance of
+            // reading and writing happening at the same time is reduced and we
+            // can simply pass by reference again
+            pane.setNotes(new ArrayList<>(currentState.getNotes()));
             pane.setFilters(currentState.getFilters());
         }
 
@@ -127,7 +134,7 @@ public class NotesViewController {
     /**
      * Write the current state to the graph.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"EXPERIMENTAL", "LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
     private static final class NotesViewStateWriter extends SimpleEditPlugin {
 
         private final List<NotesViewEntry> notes;
