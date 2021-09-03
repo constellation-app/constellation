@@ -45,6 +45,7 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.ToggleDrawDir
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.ToggleSelectionModeAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.CloseAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
@@ -1227,12 +1228,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         @Override
         protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            File file = new File(freshGdo.getPrimaryFile().getPath());
             ConstellationLoggerHelper.exportPropertyBuilder(
                     this,
                     GraphRecordStoreUtilities.getVertices(copy, false, false, false).getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                    new File(freshGdo.getPrimaryFile().getPath()),
+                    file,
                     ConstellationLoggerHelper.SUCCESS
             );
+            RecentGraphScreenshotUtilities.takeScreenshot(file.getName());
         }
     }
 }
