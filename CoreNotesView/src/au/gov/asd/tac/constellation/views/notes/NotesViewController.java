@@ -115,6 +115,12 @@ public class NotesViewController {
                 return;
             }
 
+            // TODO: A copy of the list is being passed here instead because
+            // the Notes View is reading and writing state all the time.
+            // Review why the notes view needs to be read and written to so
+            // often. If this can be reduced significantly then the chance of
+            // reading and writing happening at the same time is reduced and we
+            // can simply pass by reference again
             pane.setNotes(new ArrayList<>(currentState.getNotes()));
             pane.setFilters(currentState.getFilters());
         }

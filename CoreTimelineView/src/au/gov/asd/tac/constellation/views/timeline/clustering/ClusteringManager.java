@@ -402,7 +402,13 @@ public class ClusteringManager {
         }
     }
 
-    @PluginInfo(tags = {"LOW LEVEL"})
+    // TODO: Adding "LOW LEVEL" to omit this plugin flooding the Notes View with
+    // this call every time a selection is made and the timeline view is open.
+    // Review why this plugin is called so oftern and see if there is a need for
+    // this to even be a plugin if there is no direct user interaction required
+    // manually or programatically. If not then perhaps this should not be a
+    // plugin but rather a function call.
+    @PluginInfo(tags = {"LOW LEVEL", "MODIFY"})
     public final class UpdateDimOrHidePlugin extends SimplePlugin {
 
         final long lowerTimeExtent;
