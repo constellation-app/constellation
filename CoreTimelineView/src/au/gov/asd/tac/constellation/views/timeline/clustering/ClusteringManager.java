@@ -402,7 +402,7 @@ public class ClusteringManager {
         }
     }
 
-    @PluginInfo(tags = {"MODIFY"})
+    @PluginInfo(tags = {"LOW LEVEL"})
     public final class UpdateDimOrHidePlugin extends SimplePlugin {
 
         final long lowerTimeExtent;
