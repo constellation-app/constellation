@@ -205,8 +205,7 @@ public class WelcomeViewPane extends BorderPane {
                     recentGraphButtons[i].setGraphic(imageView);
                 } else {
                     if (i < fileNames.size()) {
-                        final String DEFAULT_IMAGE = "resources/Constellation_Application_Icon_Small.png";
-                        final ImageView defaultImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(DEFAULT_IMAGE)));
+                        final ImageView defaultImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream("resources/Constellation_Application_Icon_Small.png")));
                         final Rectangle2D valueDefault = new Rectangle2D(0, 0, 145, 145);
                         defaultImage.setViewport(valueDefault);
                         defaultImage.setFitHeight(145);
