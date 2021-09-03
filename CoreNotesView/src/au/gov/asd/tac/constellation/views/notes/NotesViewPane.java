@@ -960,9 +960,11 @@ public class NotesViewPane extends BorderPane {
             }
         });
 
-        tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
-        autoFilterCheckComboBox.getItems().clear();
-        autoFilterCheckComboBox.getItems().addAll(tagsFiltersList);
+        Platform.runLater(() -> {
+            tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
+            autoFilterCheckComboBox.getItems().clear();
+            autoFilterCheckComboBox.getItems().addAll(tagsFiltersList);
+        });
     }
 
     /**
