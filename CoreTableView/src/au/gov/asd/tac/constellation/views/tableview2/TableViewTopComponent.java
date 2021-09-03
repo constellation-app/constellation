@@ -80,6 +80,8 @@ import org.openide.windows.TopComponent;
 })
 public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
+    public static final Object TABLE_LOCK = new Object();
+    
     private final ExecutorService executorService = Executors.newScheduledThreadPool(1);
     
     private final TablePane pane;
@@ -418,7 +420,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     @Override
     protected void handleGraphClosed(final Graph graph) {
         getTablePane().getActiveTableReference().updatePagination(
-                getTablePane().getActiveTableReference().getTablePreferences().getMaxRowsPerPage(), null, getTablePane());
+                getTablePane().getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(), null, getTablePane());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

@@ -33,7 +33,7 @@ import org.apache.commons.lang3.tuple.Pair;
  *
  * @author formalhaunt
  */
-public final class TablePreferences {
+public final class UserTablePreferences {
     public static final Integer DEFAULT_MAX_ROWS_PER_PAGE = 500;
     
     @JsonProperty(value = "PageSize")
@@ -70,6 +70,11 @@ public final class TablePreferences {
         this.sortByColumn = sortByColumn;
     }
     
+    /**
+     * Gets just the sort column in a thread safe way, or null if no sort is set.
+     *
+     * @return the sort column or null if no sort is set
+     */
     @JsonIgnore
     public synchronized String getSortColumn() {
         if (getSortByColumn() != null) {
@@ -78,6 +83,11 @@ public final class TablePreferences {
         return null;
     }
     
+    /**
+     * Gets just the sort direction in a thread safe way, or null if no sort is set.
+     *
+     * @return the sort direction or null if no sort is set
+     */
     @JsonIgnore
     public synchronized TableColumn.SortType getSortDirection() {
         if (getSortByColumn() != null) {
@@ -86,6 +96,12 @@ public final class TablePreferences {
         return null;
     }
     
+    /**
+     * Thread safe conversion of the sort column details into a more easily
+     * read and handled immutable {@link Pair}.
+     *
+     * @return the created {@link Pair} or null if the actual sort column property is null
+     */
     @JsonIgnore
     public synchronized Pair<String, TableColumn.SortType> getSort() {
         if (getSortByColumn() != null) {
@@ -93,6 +109,23 @@ public final class TablePreferences {
                     getSortByColumn().getValue());
         }
         return null;
+    }
+    
+    /**
+     * Thread safe update of the max rows per page. Performs a check to see if
+     * the new value is different to the current one and if it is performs the
+     * update.
+     *
+     * @param pageSize the new page size to set
+     * @return true if the page size was changed, false otherwise
+     */
+    @JsonIgnore
+    public synchronized boolean updateMaxRowsPerPage(final Integer pageSize) {
+        if (!getMaxRowsPerPage().equals(pageSize)) {
+            setMaxRowsPerPage(pageSize);
+            return true;
+        }
+        return false;
     }
     
     @Override
@@ -105,7 +138,7 @@ public final class TablePreferences {
             return false;
         }
 
-        final TablePreferences rhs = (TablePreferences) o;
+        final UserTablePreferences rhs = (UserTablePreferences) o;
 
         return new EqualsBuilder()
                 .append(getMaxRowsPerPage(), rhs.getMaxRowsPerPage())

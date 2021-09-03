@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.views.tableview2.api.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.api.Column;
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.Collections;
 import java.util.List;
@@ -207,12 +207,12 @@ public class PreferenceMenuNGTest {
             
             when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
             
-            final TablePreferences currentTablePreferences = new TablePreferences();
+            final UserTablePreferences currentTablePreferences = new UserTablePreferences();
             currentTablePreferences.setMaxRowsPerPage(42);
             
-            when(activeTableReference.getTablePreferences()).thenReturn(currentTablePreferences);
+            when(activeTableReference.getUserTablePreferences()).thenReturn(currentTablePreferences);
             
-            final TablePreferences loadedTablePreferences = new TablePreferences();
+            final UserTablePreferences loadedTablePreferences = new UserTablePreferences();
             loadedTablePreferences.setColumnOrder(Collections.emptyList());
             
             tablePrefIOUtilsMockedStatic.when(() -> TableViewPreferencesIoProvider
@@ -240,13 +240,13 @@ public class PreferenceMenuNGTest {
             when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
             when(tableViewTopComponent.getCurrentGraph()).thenReturn(graph);
             
-            // These are the existing table preferences
-            final TablePreferences currentTablePreferences = new TablePreferences();
+            // These are the existing table userTablePreferences
+            final UserTablePreferences currentTablePreferences = new UserTablePreferences();
             currentTablePreferences.setMaxRowsPerPage(42);
             
             // There are 4 columns in the table. Set them up and all required variables
             // that describe them
-            when(activeTableReference.getTablePreferences()).thenReturn(currentTablePreferences);
+            when(activeTableReference.getUserTablePreferences()).thenReturn(currentTablePreferences);
             
             final TableView<ObservableList<String>> tableView = mock(TableView.class);
             
@@ -278,8 +278,8 @@ public class PreferenceMenuNGTest {
             
             when(table.getColumnIndex()).thenReturn(columnIndex);
             
-            // The loaded preferences specifies 3 of the 4 columns in the table
-            final TablePreferences loadedTablePreferences = new TablePreferences();
+            // The loaded userTablePreferences specifies 3 of the 4 columns in the table
+            final UserTablePreferences loadedTablePreferences = new UserTablePreferences();
             loadedTablePreferences.setColumnOrder(List.of("Column1", "Column2", "Column4"));
             loadedTablePreferences.setSortByColumn(ImmutablePair.of("Column2", TableColumn.SortType.DESCENDING));
             loadedTablePreferences.setMaxRowsPerPage(150);
@@ -298,7 +298,7 @@ public class PreferenceMenuNGTest {
             when(toggleGroup.getToggles()).thenReturn(
                     FXCollections.observableList(List.of(pageSizeOption1, pageSizeOption2)));
             
-            // Return the loaded preferences when the load call is made
+            // Return the loaded userTablePreferences when the load call is made
             tablePrefIOUtilsMockedStatic.when(() -> TableViewPreferencesIoProvider
                     .getPreferences(GraphElementType.VERTEX)).thenReturn(loadedTablePreferences);
             
@@ -333,7 +333,7 @@ public class PreferenceMenuNGTest {
      * changes. If the current active graph is null, then no preferences will be
      * loaded.
      *
-     * @param loadPreferencesMenu the load preferences menu
+     * @param loadPreferencesMenu the load userTablePreferences menu
      * @param isActiveGraphNull true if the active graph is null, false otherwise
      * @throws InterruptedException if there is a an issue waiting for the JavaFX thread
      *     work to complete
@@ -359,15 +359,15 @@ public class PreferenceMenuNGTest {
                 
                 verify(preferencesMenu, times(0)).loadPreferences();
             } else {
-                final TablePreferences tablePreferences = new TablePreferences();
-                tablePreferences.setMaxRowsPerPage(42);
+                final UserTablePreferences userTablePreferences = new UserTablePreferences();
+                userTablePreferences.setMaxRowsPerPage(42);
 
                 final Graph graph = mock(Graph.class);
                 final Pagination pagination = mock(Pagination.class);
 
                 when(graphManager.getActiveGraph()).thenReturn(graph);
 
-                when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+                when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
                 when(activeTableReference.getPagination()).thenReturn(pagination);
 
                 doNothing().when(preferencesMenu).loadPreferences();
@@ -386,15 +386,15 @@ public class PreferenceMenuNGTest {
     }
     
     /**
-     * Verifies that when the save preferences button is pressed then it will call out to
-     * {@link TableViewPreferencesIoProvider#savePreferences(GraphElementType, TableView, int)}.
+     * Verifies that when the save userTablePreferences button is pressed then it will call out to
+ {@link TableViewPreferencesIoProvider#savePreferences(GraphElementType, TableView, int)}.
      * If certain values are not set, then it will not save the preferences and just
      * return.
      * <p/>
      * There is a lot of mock setup for this so the code tries to re-use as much of that
      * as possible which is why its a little weird.
      * 
-     * @param savePreferencesMenu the save preferences menu
+     * @param savePreferencesMenu the save userTablePreferences menu
      * @param isTableViewColumnsEmpty true if when {@link TableView#getColumns()} is called it should 
      *     return an empty list, false otherwise
      * @param isActivGraphNull true if when {@link GraphManager#getActiveGraph()} is called it should 
@@ -420,9 +420,9 @@ public class PreferenceMenuNGTest {
             tableViewState.setElementType(GraphElementType.VERTEX);
             when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
             
-            final TablePreferences preferences = new TablePreferences();
-            preferences.setMaxRowsPerPage(42);
-            when(activeTableReference.getTablePreferences()).thenReturn(preferences);
+            final UserTablePreferences userTablePreferences = new UserTablePreferences();
+            userTablePreferences.setMaxRowsPerPage(42);
+            when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
             
             final GraphManager graphManager = mock(GraphManager.class);
             graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
@@ -500,10 +500,10 @@ public class PreferenceMenuNGTest {
         final ActionEvent actionEvent = mock(ActionEvent.class);
         final Pagination pagination = mock(Pagination.class);
         
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setMaxRowsPerPage(42);
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setMaxRowsPerPage(42);
         
-        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
         when(activeTableReference.getPagination()).thenReturn(pagination);
         
         pageSizeMenuItem.getOnAction().handle(actionEvent);
@@ -515,7 +515,7 @@ public class PreferenceMenuNGTest {
         
         // The action was called twice but the update should only happen once as
         // it was the same page size. No change for the second action
-        assertEquals(pageSize, tablePreferences.getMaxRowsPerPage());
+        assertEquals(pageSize, userTablePreferences.getMaxRowsPerPage());
         verify(activeTableReference).updatePagination(pageSize, tablePane);
     }
     

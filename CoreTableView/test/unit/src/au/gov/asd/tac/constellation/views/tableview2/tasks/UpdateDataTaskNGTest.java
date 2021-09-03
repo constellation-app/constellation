@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.tableview2.tasks;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -142,10 +142,10 @@ public class UpdateDataTaskNGTest {
     
     @Test
     public void runTableUpdated() throws InterruptedException {
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setMaxRowsPerPage(42);
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setMaxRowsPerPage(42);
         
-        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
         
         final TableFilter.Builder filterBuilder = mock(TableFilter.Builder.class);
         final TableFilter<ObservableList<String>> filter = mock(TableFilter.class);

@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttribut
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
-import static au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities.TABLE_LOCK;
+import static au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableCellFactory;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.SelectedOnlySelectionListener;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSelectionListener;
@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.views.tableview2.api.Column;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateColumnsTask;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateDataTask;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -362,7 +363,7 @@ public class Table {
 
                 // get graph selection
                 if (!state.isSelectedOnly()) {
-                    final List<Integer> selectedIds = getSelectedIds(graph, state);
+                    final List<Integer> selectedIds = TableViewUtilities.getSelectedIds(graph, state);
 
                     // update table selection
                     final int[] selectedIndices = selectedIds.stream()
@@ -397,7 +398,7 @@ public class Table {
      */
     public void updateSortOrder() {
         final Pair<String, TableColumn.SortType> sortPreference
-                = getActiveTableReference().getTablePreferences().getSort();
+                = getActiveTableReference().getUserTablePreferences().getSort();
         
         if (sortPreference != null && !sortPreference.getLeft().isBlank()) {
             // Iterate through the table columns and find the one with a matching column name
@@ -464,41 +465,6 @@ public class Table {
      */
     public ActiveTableReference getActiveTableReference() {
         return getParentComponent().getActiveTableReference();
-    }
-    
-    /**
-     * Based on the tables current element type (vertex or transaction) get all
-     * selected elements of that type in the graph and return their element IDs.
-     *
-     * @param graph the graph to read from
-     * @param state the current table state
-     * @return the IDs of the selected elements
-     */
-    protected List<Integer> getSelectedIds(final Graph graph,
-                                           final TableViewState state) {
-        final List<Integer> selectedIds = new ArrayList<>();
-        final ReadableGraph readableGraph = graph.getReadableGraph();
-        try {
-            final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
-            final int selectedAttributeId = isVertex
-                    ? VisualConcept.VertexAttribute.SELECTED.get(readableGraph)
-                    : VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-            final int elementCount = isVertex
-                    ? readableGraph.getVertexCount()
-                    : readableGraph.getTransactionCount();
-            for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
-                final int elementId = isVertex
-                        ? readableGraph.getVertex(elementPosition)
-                        : readableGraph.getTransaction(elementPosition);
-                if (selectedAttributeId != Graph.NOT_FOUND
-                        && readableGraph.getBooleanValue(selectedAttributeId, elementId)) {
-                    selectedIds.add(elementId);
-                }
-            }
-            return selectedIds;
-        } finally {
-            readableGraph.release();
-        }
     }
     
     /**

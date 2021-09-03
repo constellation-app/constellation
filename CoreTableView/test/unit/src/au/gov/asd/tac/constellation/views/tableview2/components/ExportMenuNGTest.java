@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.views.tableview2.components.ExportMenu.Expor
 import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToCsvFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToExcelFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import java.io.File;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -272,12 +272,12 @@ public class ExportMenuNGTest {
             
             final int maxRowsPerPage = 42;
             
-            final TablePreferences tablePreferences = new TablePreferences();
-            tablePreferences.setMaxRowsPerPage(maxRowsPerPage);
+            final UserTablePreferences userTablePreferences = new UserTablePreferences();
+            userTablePreferences.setMaxRowsPerPage(maxRowsPerPage);
             
             when(activeTableReference.getPagination()).thenReturn(pagination);
             when(table.getTableView()).thenReturn(tableView);
-            when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+            when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
             
             final PluginExecution pluginExecution = mock(PluginExecution.class);
             pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(Plugin.class)))

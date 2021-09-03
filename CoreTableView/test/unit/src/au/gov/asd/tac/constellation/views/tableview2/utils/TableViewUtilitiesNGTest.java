@@ -18,8 +18,10 @@ package au.gov.asd.tac.constellation.views.tableview2.utils;
 import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.SelectionToGraphPlugin;
+import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
 import java.util.Map;
 import javafx.collections.FXCollections;
@@ -191,5 +193,55 @@ public class TableViewUtilitiesNGTest {
 
         // Verifies that it resets to the current page
         verify(callback).call(42);
+    }
+    
+    @Test
+    public void getSelectedIdsForVertecies() {
+        final Graph graph = mock(Graph.class);
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+        
+        when(readableGraph.getAttribute(GraphElementType.VERTEX, "selected")).thenReturn(5);
+        when(readableGraph.getVertexCount()).thenReturn(3);
+        
+        when(readableGraph.getVertex(0)).thenReturn(100);
+        when(readableGraph.getVertex(1)).thenReturn(101);
+        when(readableGraph.getVertex(2)).thenReturn(102);
+
+        when(readableGraph.getBooleanValue(5, 100)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 101)).thenReturn(false);
+        when(readableGraph.getBooleanValue(5, 102)).thenReturn(true);
+        
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.VERTEX);
+        
+        assertEquals(List.of(100, 102), TableViewUtilities.getSelectedIds(graph, tableViewState));
+        
+        verify(readableGraph).release();
+    }
+    
+    @Test
+    public void getSelectedIdsForTransactions() {
+        final Graph graph = mock(Graph.class);
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+        
+        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "selected")).thenReturn(5);
+        when(readableGraph.getTransactionCount()).thenReturn(3);
+        
+        when(readableGraph.getTransaction(0)).thenReturn(100);
+        when(readableGraph.getTransaction(1)).thenReturn(101);
+        when(readableGraph.getTransaction(2)).thenReturn(102);
+
+        when(readableGraph.getBooleanValue(5, 100)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 101)).thenReturn(false);
+        when(readableGraph.getBooleanValue(5, 102)).thenReturn(true);
+        
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.TRANSACTION);
+        
+        assertEquals(List.of(100, 102), TableViewUtilities.getSelectedIds(graph, tableViewState));
+        
+        verify(readableGraph).release();
     }
 }

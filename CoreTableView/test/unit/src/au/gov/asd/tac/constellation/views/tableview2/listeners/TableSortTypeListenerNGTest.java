@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import javafx.scene.control.Pagination;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -88,9 +88,9 @@ public class TableSortTypeListenerNGTest {
         
         activeTableReference.setSortingListenerActive(false);
         
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setMaxRowsPerPage(maxRowsPerPage);
-        activeTableReference.setTablePreferences(tablePreferences);
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setMaxRowsPerPage(maxRowsPerPage);
+        activeTableReference.setUserTablePreferences(userTablePreferences);
         
         final Pagination pagination = mock(Pagination.class);
         when(activeTableReference.getPagination()).thenReturn(pagination);

@@ -98,12 +98,12 @@ public class UpdateDataTask implements Runnable {
             getActiveTableReference().setSortedRowList(new SortedList<>(
                     FXCollections.observableArrayList(filteredRowList)));
             
-            getActiveTableReference().updatePagination(getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+            getActiveTableReference().updatePagination(getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
                     getActiveTableReference().getSortedRowList(), table.getParentComponent());
         });
         
         // trigger a pagination update so the table only shows the current page
-        getActiveTableReference().updatePagination(getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+        getActiveTableReference().updatePagination(getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
                 getActiveTableReference().getSortedRowList(), table.getParentComponent());
         
         updateDataLatch.countDown();

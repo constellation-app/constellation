@@ -26,9 +26,10 @@ import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.api.Column;
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateDataTask;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,7 +192,6 @@ public class TableNGTest {
         final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
         final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
         
-        doReturn(List.of(100, 102)).when(table).getSelectedIds(any(Graph.class), any(TableViewState.class));
         doReturn(tableSelectionListener).when(table).getTableSelectionListener();
         doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
         
@@ -221,9 +221,11 @@ public class TableNGTest {
         final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty = mock(ReadOnlyObjectProperty.class);
         when(table.getSelectedProperty()).thenReturn(selectedProperty);
         
-        table.updateSelection(graph, tableViewState);
-        
-        verify(table).getSelectedIds(graph, tableViewState);
+        try (MockedStatic<TableViewUtilities> tableUtilsMockedStatic = Mockito.mockStatic(TableViewUtilities.class)) {
+            tableUtilsMockedStatic.when(() -> TableViewUtilities.getSelectedIds(graph, tableViewState)).thenReturn(List.of(100, 102));
+            
+            table.updateSelection(graph, tableViewState);
+        }
         
         final CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> latch.countDown());
@@ -248,7 +250,6 @@ public class TableNGTest {
         final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
         final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
         
-        doReturn(List.of()).when(table).getSelectedIds(any(Graph.class), any(TableViewState.class));
         doReturn(tableSelectionListener).when(table).getTableSelectionListener();
         doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
         
@@ -264,9 +265,11 @@ public class TableNGTest {
         final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty = mock(ReadOnlyObjectProperty.class);
         when(table.getSelectedProperty()).thenReturn(selectedProperty);
         
-        table.updateSelection(graph, tableViewState);
+        try (MockedStatic<TableViewUtilities> tableUtilsMockedStatic = Mockito.mockStatic(TableViewUtilities.class)) {
+            tableUtilsMockedStatic.when(() -> TableViewUtilities.getSelectedIds(graph, tableViewState)).thenReturn(List.of());
         
-        verify(table).getSelectedIds(graph, tableViewState);
+            table.updateSelection(graph, tableViewState);
+        }
         
         final CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> latch.countDown());
@@ -283,59 +286,11 @@ public class TableNGTest {
     }
     
     @Test
-    public void getSelectedIdsForVertecies() {
-        final ReadableGraph readableGraph = mock(ReadableGraph.class);
-        when(graph.getReadableGraph()).thenReturn(readableGraph);
-        
-        when(readableGraph.getAttribute(GraphElementType.VERTEX, "selected")).thenReturn(5);
-        when(readableGraph.getVertexCount()).thenReturn(3);
-        
-        when(readableGraph.getVertex(0)).thenReturn(100);
-        when(readableGraph.getVertex(1)).thenReturn(101);
-        when(readableGraph.getVertex(2)).thenReturn(102);
-
-        when(readableGraph.getBooleanValue(5, 100)).thenReturn(true);
-        when(readableGraph.getBooleanValue(5, 101)).thenReturn(false);
-        when(readableGraph.getBooleanValue(5, 102)).thenReturn(true);
-        
-        final TableViewState tableViewState = new TableViewState();
-        tableViewState.setElementType(GraphElementType.VERTEX);
-        
-        assertEquals(List.of(100, 102), table.getSelectedIds(graph, tableViewState));
-        
-        verify(readableGraph).release();
-    }
-    
-    @Test
-    public void getSelectedIdsForTransactions() {
-        final ReadableGraph readableGraph = mock(ReadableGraph.class);
-        when(graph.getReadableGraph()).thenReturn(readableGraph);
-        
-        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "selected")).thenReturn(5);
-        when(readableGraph.getTransactionCount()).thenReturn(3);
-        
-        when(readableGraph.getTransaction(0)).thenReturn(100);
-        when(readableGraph.getTransaction(1)).thenReturn(101);
-        when(readableGraph.getTransaction(2)).thenReturn(102);
-
-        when(readableGraph.getBooleanValue(5, 100)).thenReturn(true);
-        when(readableGraph.getBooleanValue(5, 101)).thenReturn(false);
-        when(readableGraph.getBooleanValue(5, 102)).thenReturn(true);
-        
-        final TableViewState tableViewState = new TableViewState();
-        tableViewState.setElementType(GraphElementType.TRANSACTION);
-        
-        assertEquals(List.of(100, 102), table.getSelectedIds(graph, tableViewState));
-        
-        verify(readableGraph).release();
-    }
-    
-    @Test
     public void updateSortOrderPrefSortNull() {
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setSortByColumn(null);
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setSortByColumn(null);
         
-        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
         
         final TableView<ObservableList<String>> tableView = mock(TableView.class);
         when(table.getTableView()).thenReturn(tableView);
@@ -347,10 +302,10 @@ public class TableNGTest {
     
     @Test
     public void updateSortOrderPrefSortEmpty() {
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setSortByColumn(ImmutablePair.of("", TableColumn.SortType.DESCENDING));
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setSortByColumn(ImmutablePair.of("", TableColumn.SortType.DESCENDING));
         
-        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
         
         final TableView<ObservableList<String>> tableView = mock(TableView.class);
         when(table.getTableView()).thenReturn(tableView);
@@ -362,10 +317,10 @@ public class TableNGTest {
     
     @Test
     public void updateSortOrder() {
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setSortByColumn(ImmutablePair.of("COLUMN_B", TableColumn.SortType.DESCENDING));
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setSortByColumn(ImmutablePair.of("COLUMN_B", TableColumn.SortType.DESCENDING));
         
-        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
         
         final TableView<ObservableList<String>> tableView = mock(TableView.class);
         when(table.getTableView()).thenReturn(tableView);
@@ -875,20 +830,17 @@ public class TableNGTest {
         assertEquals("COLUMN_A", column.getText());
     }
     
-    @Test
-    public void openColumnVisibilityMenu() {
-        // TODO refactor so its not created every time and is testable
-    }
-    
     /**
+     * Tests the update data method. If the initial state's element type is vertex,
+     * then the parameters transaction row 1 and 2 can be null. And vice versa.
      * 
-     * @param stateElementType
-     * @param isSelectedOnlyMode
-     * @param transactionRow1
-     * @param transactionRow2
-     * @param vertexRow1
-     * @param vertexRow2
-     * @param expectedRows 
+     * @param stateElementType the initial element type in the table state
+     * @param isSelectedOnlyMode true if the table's initial state is in selected only mode, false otherwise
+     * @param transactionRow1 row 1 that represents a transaction element in the graph
+     * @param transactionRow2 row 2 that represents a transaction element in the graph
+     * @param vertexRow1 row 1 that represents a vertex element in the graph
+     * @param vertexRow2 row 2 that represents a vertex element in the graph
+     * @param expectedRows the expected rows that will be added to the table
      */
     private void testUpdateData(final GraphElementType stateElementType,
                                 final boolean isSelectedOnlyMode,

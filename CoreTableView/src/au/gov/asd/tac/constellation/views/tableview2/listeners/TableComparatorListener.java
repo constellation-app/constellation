@@ -60,7 +60,7 @@ public class TableComparatorListener implements ChangeListener<Comparator<? supe
         if (!tablePane.getActiveTableReference().isSortingListenerActive()) {
             tablePane.getActiveTableReference().setSortingListenerActive(true);
             tablePane.getActiveTableReference().updatePagination(
-                    tablePane.getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+                    tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
                     tablePane
             );
             

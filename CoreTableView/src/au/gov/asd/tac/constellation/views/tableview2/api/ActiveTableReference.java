@@ -84,7 +84,7 @@ public class ActiveTableReference {
     /**
      * Holds the current user preferences set for the table.
      */
-    private TablePreferences tablePreferences;
+    private UserTablePreferences userTablePreferences;
     
     /**
      * This flag is shared by listeners that respond to sort change events on
@@ -111,8 +111,8 @@ public class ActiveTableReference {
         
         this.pagination = new Pagination();
         
-        this.tablePreferences = new TablePreferences();
-        this.tablePreferences.setMaxRowsPerPage(500);
+        this.userTablePreferences = new UserTablePreferences();
+        this.userTablePreferences.setMaxRowsPerPage(500);
     }
     
     /**
@@ -157,7 +157,7 @@ public class ActiveTableReference {
         final int numberOfPages = newRowList == null || newRowList.isEmpty()
                 ? 1 : (int) Math.ceil(newRowList.size() / (double) maxRowsPerPage);
         pagination = new Pagination(numberOfPages);
-        // TODO Should this create a copy of page factory first then update?
+        
         getPageFactory().update(newRowList, maxRowsPerPage);
         pagination.setPageFactory(getPageFactory());
         
@@ -239,7 +239,7 @@ public class ActiveTableReference {
      */
     public void saveSortDetails(final String columnName,
                                 final TableColumn.SortType sortType) {
-        getTablePreferences().setSortByColumn(ImmutablePair.of(columnName, sortType));
+        getUserTablePreferences().setSortByColumn(ImmutablePair.of(columnName, sortType));
     }
     
     public Pagination getPagination() {
@@ -278,11 +278,11 @@ public class ActiveTableReference {
         return selectedOnlySelectedRows;
     }
 
-    public TablePreferences getTablePreferences() {
-        return tablePreferences;
+    public UserTablePreferences getUserTablePreferences() {
+        return userTablePreferences;
     }
 
-    public void setTablePreferences(TablePreferences tablePreferences) {
-        this.tablePreferences = tablePreferences;
+    public void setUserTablePreferences(UserTablePreferences userTablePreferences) {
+        this.userTablePreferences = userTablePreferences;
     }
 }

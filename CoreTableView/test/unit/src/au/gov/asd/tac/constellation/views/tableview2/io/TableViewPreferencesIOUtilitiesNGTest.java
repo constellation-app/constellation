@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.tableview2.io;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -98,10 +98,10 @@ public class TableViewPreferencesIOUtilitiesNGTest {
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "vertex-"))
                 .thenReturn(jsonNode);
 
-        final TablePreferences tablePreferences
+        final UserTablePreferences tablePreferences
                 = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
 
-        final TablePreferences expected = new TablePreferences();
+        final UserTablePreferences expected = new UserTablePreferences();
         expected.setColumnOrder(List.of("ABC", "DEF"));
         expected.setSortByColumn(ImmutablePair.of("DEF", TableColumn.SortType.DESCENDING));
         expected.setMaxRowsPerPage(500);
@@ -120,10 +120,10 @@ public class TableViewPreferencesIOUtilitiesNGTest {
                 .thenReturn(jsonNode);
 
         
-        final TablePreferences tablepreferences
+        final UserTablePreferences tablepreferences
                 = TableViewPreferencesIoProvider.getPreferences(GraphElementType.TRANSACTION);
 
-        final TablePreferences expected = new TablePreferences();
+        final UserTablePreferences expected = new UserTablePreferences();
         expected.setColumnOrder(List.of("ABC", "DEF", "JKL"));
         expected.setSortByColumn(ImmutablePair.of("DEF", TableColumn.SortType.ASCENDING));
         expected.setMaxRowsPerPage(5);
@@ -136,10 +136,10 @@ public class TableViewPreferencesIOUtilitiesNGTest {
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "vertex-"))
                 .thenReturn(null);
 
-        final TablePreferences tablepreferences
+        final UserTablePreferences tablepreferences
                 = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
 
-        final TablePreferences expected = new TablePreferences();
+        final UserTablePreferences expected = new UserTablePreferences();
         expected.setColumnOrder(Collections.emptyList());
         expected.setSortByColumn(ImmutablePair.of("", TableColumn.SortType.ASCENDING));
         expected.setMaxRowsPerPage(500);

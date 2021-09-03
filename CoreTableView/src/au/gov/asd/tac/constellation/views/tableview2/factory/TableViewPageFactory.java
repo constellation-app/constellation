@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableComparatorListener;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSortTypeListener;
+import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -324,6 +325,9 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
     /**
      * Based on the tables current element type (vertex or transaction) get all
      * selected elements of that type in the graph and return their element IDs.
+     * <p/>
+     * This simply wraps a call to {@link TableViewUtilities#getSelectedIds(Graph, TableViewState)}
+     * and used primarily for testing purposes.
      *
      * @param graph the graph to read from
      * @param state the current table state
@@ -331,28 +335,6 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      */
     protected List<Integer> getSelectedIds(final Graph graph,
                                            final TableViewState state) {
-        final List<Integer> selectedIds = new ArrayList<>();
-        final ReadableGraph readableGraph = graph.getReadableGraph();
-        try {
-            final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
-            final int selectedAttributeId = isVertex
-                    ? VisualConcept.VertexAttribute.SELECTED.get(readableGraph)
-                    : VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-            final int elementCount = isVertex
-                    ? readableGraph.getVertexCount()
-                    : readableGraph.getTransactionCount();
-            for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
-                final int elementId = isVertex
-                        ? readableGraph.getVertex(elementPosition)
-                        : readableGraph.getTransaction(elementPosition);
-                if (selectedAttributeId != Graph.NOT_FOUND
-                        && readableGraph.getBooleanValue(selectedAttributeId, elementId)) {
-                    selectedIds.add(elementId);
-                }
-            }
-            return selectedIds;
-        } finally {
-            readableGraph.release();
-        }
+        return TableViewUtilities.getSelectedIds(graph, state);
     }
 }

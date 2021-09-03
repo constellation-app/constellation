@@ -118,7 +118,7 @@ public class ExportMenu {
                         file,
                         tablePane.getTable().getTableView(),
                         tablePane.getActiveTableReference().getPagination(),
-                        tablePane.getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+                        tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
                         false,
                         tablePane.getParentComponent().getCurrentGraph().getId()
                 )
@@ -133,7 +133,7 @@ public class ExportMenu {
                         file, 
                         tablePane.getTable().getTableView(),
                         tablePane.getActiveTableReference().getPagination(),
-                        tablePane.getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+                        tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
                         true,
                         tablePane.getParentComponent().getCurrentGraph().getId()
                 )

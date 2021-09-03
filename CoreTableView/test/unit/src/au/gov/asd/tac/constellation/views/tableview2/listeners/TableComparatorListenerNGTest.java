@@ -17,13 +17,10 @@ package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
-import java.util.concurrent.CountDownLatch;
-import javafx.application.Platform;
+import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import javafx.scene.control.Pagination;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.same;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -91,9 +88,9 @@ public class TableComparatorListenerNGTest {
         
         activeTableReference.setSortingListenerActive(false);
         
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setMaxRowsPerPage(maxRowsPerPage);
-        activeTableReference.setTablePreferences(tablePreferences);
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setMaxRowsPerPage(maxRowsPerPage);
+        activeTableReference.setUserTablePreferences(userTablePreferences);
         
         final Pagination pagination = mock(Pagination.class);
         when(activeTableReference.getPagination()).thenReturn(pagination);

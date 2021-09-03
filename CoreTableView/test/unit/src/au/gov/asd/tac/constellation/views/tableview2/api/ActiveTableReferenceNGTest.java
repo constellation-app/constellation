@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.api;
 
-import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
-import au.gov.asd.tac.constellation.views.tableview2.api.UpdateMethod;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -121,19 +119,19 @@ public class ActiveTableReferenceNGTest {
         assertNotNull(activeTableReference.getPagination());
         assertNotNull(activeTableReference.getSelectedOnlySelectedRows());
         
-        assertEquals(Integer.valueOf(500), activeTableReference.getTablePreferences().getMaxRowsPerPage());
+        assertEquals(Integer.valueOf(500), activeTableReference.getUserTablePreferences().getMaxRowsPerPage());
     }
     
     @Test
     public void saveSortDetails() {
         assertEquals(ImmutablePair.of("", TableColumn.SortType.ASCENDING), 
-                activeTableReference.getTablePreferences().getSortByColumn()
+                activeTableReference.getUserTablePreferences().getSortByColumn()
         );
         
         activeTableReference.saveSortDetails("ABC", TableColumn.SortType.DESCENDING);
      
         assertEquals(ImmutablePair.of("ABC", TableColumn.SortType.DESCENDING), 
-                activeTableReference.getTablePreferences().getSortByColumn()
+                activeTableReference.getUserTablePreferences().getSortByColumn()
         );
     }
     

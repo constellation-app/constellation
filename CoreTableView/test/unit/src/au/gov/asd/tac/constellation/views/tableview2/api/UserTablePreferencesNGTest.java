@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.api;
 
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.FileInputStream;
@@ -27,14 +26,16 @@ import nl.jqno.equalsverifier.Warning;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNull;
+import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.Test;
 
 /**
  *
  * @author formalhaunt
  */
-public class TablePreferencesNGTest {
+public class UserTablePreferencesNGTest {
     private static final String JSON_RESOURCE = "resources/table-preferences.json";
     
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -51,8 +52,7 @@ public class TablePreferencesNGTest {
     
     @Test
     public void deserialization() throws IOException {
-        final TablePreferences deserialization = OBJECT_MAPPER.readValue(
-                new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()), TablePreferences.class);
+        final UserTablePreferences deserialization = OBJECT_MAPPER.readValue(new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()), UserTablePreferences.class);
 
         assertEquals(fixture(), deserialization);
     }
@@ -64,7 +64,7 @@ public class TablePreferencesNGTest {
         final Pair<String, TableColumn.SortType> red
                 = ImmutablePair.of("RED", TableColumn.SortType.ASCENDING);
         
-        EqualsVerifier.forClass(TablePreferences.class)
+        EqualsVerifier.forClass(UserTablePreferences.class)
                 .suppress(Warning.NONFINAL_FIELDS)
                 .withPrefabValues(Pair.class, red, black)
                 .verify();
@@ -72,53 +72,67 @@ public class TablePreferencesNGTest {
     
     @Test
     public void getSortColumn() {
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setSortByColumn(ImmutablePair.of(
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setSortByColumn(ImmutablePair.of(
                 "DEF", TableColumn.SortType.DESCENDING
         ));
         
-        assertEquals("DEF", tablePreferences.getSortColumn());
+        assertEquals("DEF", userTablePreferences.getSortColumn());
         
-        tablePreferences.setSortByColumn(null);
+        userTablePreferences.setSortByColumn(null);
         
-        assertNull(tablePreferences.getSortColumn());
+        assertNull(userTablePreferences.getSortColumn());
     }
     
     @Test
     public void getSortDirection() {
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setSortByColumn(ImmutablePair.of(
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setSortByColumn(ImmutablePair.of(
                 "DEF", TableColumn.SortType.DESCENDING
         ));
         
-        assertEquals(TableColumn.SortType.DESCENDING, tablePreferences.getSortDirection());
+        assertEquals(TableColumn.SortType.DESCENDING, userTablePreferences.getSortDirection());
         
-        tablePreferences.setSortByColumn(null);
+        userTablePreferences.setSortByColumn(null);
         
-        assertNull(tablePreferences.getSortDirection());
+        assertNull(userTablePreferences.getSortDirection());
     }
     
     @Test
     public void getSort() {
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setSortByColumn(ImmutablePair.of(
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setSortByColumn(ImmutablePair.of(
                 "DEF", TableColumn.SortType.DESCENDING
         ));
         
-        assertEquals(ImmutablePair.of("DEF", TableColumn.SortType.DESCENDING), tablePreferences.getSort());
+        assertEquals(ImmutablePair.of("DEF", TableColumn.SortType.DESCENDING), userTablePreferences.getSort());
         
-        tablePreferences.setSortByColumn(null);
+        userTablePreferences.setSortByColumn(null);
         
-        assertNull(tablePreferences.getSort());
+        assertNull(userTablePreferences.getSort());
     }
     
-    private TablePreferences fixture() {
-        final TablePreferences tablePreferences = new TablePreferences();
+    @Test
+    public void updateMaxRowsPerPage() {
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setMaxRowsPerPage(42);
         
-        tablePreferences.setColumnOrder(List.of("ABC", "DEF"));
-        tablePreferences.setMaxRowsPerPage(42);
-        tablePreferences.setSortByColumn(ImmutablePair.of("GHI", TableColumn.SortType.ASCENDING));
+        assertFalse(userTablePreferences.updateMaxRowsPerPage(42));
         
-        return tablePreferences;
+        assertEquals(Integer.valueOf(42), userTablePreferences.getMaxRowsPerPage());
+        
+        assertTrue(userTablePreferences.updateMaxRowsPerPage(150));
+        
+        assertEquals(Integer.valueOf(150), userTablePreferences.getMaxRowsPerPage());
+    }
+    
+    private UserTablePreferences fixture() {
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        
+        userTablePreferences.setColumnOrder(List.of("ABC", "DEF"));
+        userTablePreferences.setMaxRowsPerPage(42);
+        userTablePreferences.setSortByColumn(ImmutablePair.of("GHI", TableColumn.SortType.ASCENDING));
+        
+        return userTablePreferences;
     }
 }

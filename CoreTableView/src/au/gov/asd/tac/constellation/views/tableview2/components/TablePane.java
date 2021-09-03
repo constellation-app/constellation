@@ -73,7 +73,7 @@ public final class TablePane extends BorderPane {
         setLeft(tableToolbar.getToolbar());
         
         // Initiate table update and initialisation
-        activeTableReference.updatePagination(activeTableReference.getTablePreferences().getMaxRowsPerPage(), this);
+        activeTableReference.updatePagination(activeTableReference.getUserTablePreferences().getMaxRowsPerPage(), this);
     }
 
     /**

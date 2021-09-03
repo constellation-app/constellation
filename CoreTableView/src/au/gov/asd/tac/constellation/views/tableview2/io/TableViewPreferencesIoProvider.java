@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -81,7 +81,7 @@ public class TableViewPreferencesIoProvider {
             return;
         }
         
-        final TablePreferences tablePreferences = new TablePreferences();
+        final UserTablePreferences tablePreferences = new UserTablePreferences();
         
         tablePreferences.setColumnOrder(
                 table.getColumns().stream()
@@ -109,27 +109,27 @@ public class TableViewPreferencesIoProvider {
 
     /**
      * Load in the preferences from the JSON file into the
-     * {@link TablePreferences} POJO.
+     * {@link UserTablePreferences} POJO.
      *
      * @param tableElementType the current table setting specifying which element
      *     type to display
      *
-     * @return a populated {@link TablePreferences} from the local file
+     * @return a populated {@link UserTablePreferences} from the local file
      */
-    public static TablePreferences getPreferences(final GraphElementType tableElementType) {
+    public static UserTablePreferences getPreferences(final GraphElementType tableElementType) {
         final String filePrefix = tableElementType == GraphElementType.VERTEX
                 ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
         
         try {
             final JsonNode root = JsonIO.loadJsonPreferences(TABLE_VIEW_PREF_DIR, filePrefix);
 
-            final TablePreferences tablePreferences;
+            final UserTablePreferences tablePreferences;
             if (root == null) {
-                tablePreferences = new TablePreferences();
+                tablePreferences = new UserTablePreferences();
             } else {
                 final ObjectMapper mapper = new ObjectMapper();
                 tablePreferences = mapper
-                        .treeToValue(((ArrayNode) root).get(0), TablePreferences.class);
+                        .treeToValue(((ArrayNode) root).get(0), UserTablePreferences.class);
             }
             
             return tablePreferences;

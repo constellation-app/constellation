@@ -26,18 +26,16 @@ import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javafx.application.Platform;
 import javafx.scene.control.Pagination;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -261,12 +259,12 @@ public class TableViewTopComponentNGTest {
         final ActiveTableReference activeTableReference = mock(ActiveTableReference.class);
         final Pagination pagination = mock(Pagination.class);
         
-        final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setMaxRowsPerPage(42);
+        final UserTablePreferences userTablePreferences = new UserTablePreferences();
+        userTablePreferences.setMaxRowsPerPage(42);
         
         when(tableViewTopComponent.getTablePane()).thenReturn(tablePane);
         when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
-        when(activeTableReference.getTablePreferences()).thenReturn(tablePreferences);
+        when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
         when(activeTableReference.getPagination()).thenReturn(pagination);
         
         doCallRealMethod().when(tableViewTopComponent).handleGraphClosed(any(Graph.class));

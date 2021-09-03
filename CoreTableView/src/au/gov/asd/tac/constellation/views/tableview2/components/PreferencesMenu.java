@@ -20,14 +20,15 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import static au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities.TABLE_LOCK;
+import static au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.api.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.api.Column;
-import au.gov.asd.tac.constellation.views.tableview2.api.TablePreferences;
+import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -96,7 +97,7 @@ public class PreferencesMenu {
                 TableViewPreferencesIoProvider.savePreferences(
                         getTableViewTopComponent().getCurrentState().getElementType(),
                         getTable().getTableView(),
-                        getActiveTableReference().getTablePreferences().getMaxRowsPerPage()
+                        getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage()
                 );
             }
             e.consume();
@@ -119,7 +120,7 @@ public class PreferencesMenu {
                 }
                 
                 tablePane.getActiveTableReference().updatePagination(
-                        tablePane.getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+                        tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
                         tablePane
                 );
             }
@@ -222,15 +223,15 @@ public class PreferencesMenu {
                                     = new RadioMenuItem(Integer.toString(pageSize));
                             pageSizeOption.setToggleGroup(pageSizeToggle);
                             pageSizeOption.setOnAction(e -> {
-                                // TODO potential race condition with the setting of the preferences???
-                                if (getActiveTableReference().getTablePreferences().getMaxRowsPerPage() != pageSize) {
-                                    getActiveTableReference().getTablePreferences().setMaxRowsPerPage(pageSize);
-                                    getActiveTableReference().updatePagination(getActiveTableReference().getTablePreferences().getMaxRowsPerPage(),
+                                // Perform the page size update and if the update is a change, then reset the pagination
+                                if (getActiveTableReference().getUserTablePreferences().updateMaxRowsPerPage(pageSize)) {
+                                    getActiveTableReference().updatePagination(
+                                            getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
                                             tablePane
                                     );
                                 }
                             });
-                            if (pageSize == TablePreferences.DEFAULT_MAX_ROWS_PER_PAGE) {
+                            if (pageSize == UserTablePreferences.DEFAULT_MAX_ROWS_PER_PAGE) {
                                 pageSizeOption.setSelected(true); // initially set the default as selected
                             }
                             return pageSizeOption;
@@ -292,7 +293,7 @@ public class PreferencesMenu {
             if (getTableViewTopComponent().getCurrentState() != null) {
 
                 // Load the local table preferences JSON file
-                final TablePreferences tablePrefs
+                final UserTablePreferences tablePrefs
                         = TableViewPreferencesIoProvider.getPreferences(getTableViewTopComponent().getCurrentState().getElementType());
 
                 // If no columns were found then the user abandoned the load as saves
@@ -326,12 +327,12 @@ public class PreferencesMenu {
                                         }
                                     }
                                     
-                                    // TODO This seems like a bad fallback. I think returning null
-                                    //      and adding a filter for nonNull objects would be better
-                                    return getTable().getColumnIndex().get(
-                                            newColumnOrder.indexOf(tableColumn)
-                                    );
-                                }).map(column -> Tuple.create(
+                                    // No column in the column index matches the
+                                    // column specified in the preferences
+                                    return null;
+                                })
+                                .filter(Objects::nonNull)
+                                .map(column -> Tuple.create(
                                         column.getAttributeNamePrefix(),
                                         column.getAttribute()
                                 ))
@@ -355,7 +356,7 @@ public class PreferencesMenu {
                     final RadioMenuItem pageSizeOption = (RadioMenuItem) t;
                     if (Integer.parseInt(pageSizeOption.getText()) == tablePrefs.getMaxRowsPerPage()) {
                         pageSizeOption.setSelected(true);
-                        getActiveTableReference().getTablePreferences()
+                        getActiveTableReference().getUserTablePreferences()
                                 .setMaxRowsPerPage(tablePrefs.getMaxRowsPerPage());
                         break;
                     }
