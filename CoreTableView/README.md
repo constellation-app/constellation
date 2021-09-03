@@ -6,8 +6,6 @@ allowing the user to view the graph data in tabular form.
 The following is an outline of key concepts, functionality and code that will assist in understanding
 how this module works.
 
----
-
 ## Table State
 
 This is the table state that is embeded in the graph attributes as "table_view_state".
@@ -65,8 +63,6 @@ contains `Pair` objects which consist of two parts.
 
 As described above the same `attribute` could be in two pairs but each would have a different
 `attributeNamePrefix`.
-
----
 
 ## Active Table Reference
 
@@ -133,8 +129,6 @@ page of the table.
 
 It is sorted based on the current sort settings. There is a comparator in the utilities package that
 details the sort logic.
-
----
 
 ## Table View
 
