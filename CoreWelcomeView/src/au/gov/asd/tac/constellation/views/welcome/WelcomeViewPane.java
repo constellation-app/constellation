@@ -193,6 +193,8 @@ public class WelcomeViewPane extends BorderPane {
                 createRecentButtons(recentGraphButtons[i]);
                 if (i < fileNames.size()) {
                     recentGraphButtons[i].setText(fileNames.get(i));
+                    Tooltip toolTip = new Tooltip(recentGraphButtons[i].getText());
+                    recentGraphButtons[i].setTooltip(toolTip);
                 }
                 final String text = recentGraphButtons[i].getText();
 
@@ -235,9 +237,6 @@ public class WelcomeViewPane extends BorderPane {
         button.setStyle("-fx-background-color: #333333; -fx-background-radius: 10px; -fx-text-fill: white;");
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
-        button.setWrapText(true);
-        Tooltip toolTip = new Tooltip("hello");
-        button.setTooltip(toolTip);
     }
 
     public void setInfoButtons(final Button button) {
