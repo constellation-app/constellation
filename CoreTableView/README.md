@@ -3,15 +3,20 @@
 The table view component provides a table that is linked to the currently active graph
 allowing the user to view the graph data in tabular form.
 
+The following is an outline of key concepts, functionality and code that will assist in understanding
+how this module works.
+
+---
+
 ## Table State
 
 This is the table state that is embeded in the graph attributes as "table_view_state".
 
 It holds the currently active state of the table. That includes
 
-* ** Selected Only Mode Active: ** This is a flag specifying if the table is currently in "Selected Only" mode.
-* ** Element Type: ** This is the graph element type that the table is currently displaying, VERTEX or TRANSACTION.
-* ** Visible Columns: ** This is the columns/graph attributes that are currently visible in the table
+* **Selected Only Mode Active:** This is a flag specifying if the table is currently in "Selected Only" mode.
+* **Element Type:** This is the graph element type that the table is currently displaying, VERTEX or TRANSACTION.
+* **Visible Columns:** This is the columns/graph attributes that are currently visible in the table
 
 The below sections provide more information on these properties.
 
@@ -19,11 +24,11 @@ The below sections provide more information on these properties.
 
 Selected only mode is a toggle button on the table. It controls the interaction between the graph and the table.
 
-When the table ** IS IN ** selected only mode the contents of the table is ** ONLY ** the elements selected on the graph. This means
+When the table **IS IN** selected only mode the contents of the table is **ONLY** the elements selected on the graph. This means
 that when you click on rows in the table it will have no effect on the selection in the graph but if you select
 elements in the graph, that will effect the data displayed in the table.
 
-When the table ** IS NOT IN ** selected only mode the contents of the table is ** ALL ** the elements in the graph regardless of
+When the table **IS NOT IN** selected only mode the contents of the table is **ALL** the elements in the graph regardless of
 their selection status. When selecting rows in the table that will trigger the selection of the corresponding element
 in the graph and vice versa.
 
@@ -60,6 +65,8 @@ contains `Pair` objects which consist of two parts.
 
 As described above the same `attribute` could be in two pairs but each would have a different
 `attributeNamePrefix`.
+
+---
 
 ## Active Table Reference
 
@@ -126,6 +133,8 @@ a graph element and vice versa. The `Column` object has the following properties
 The `Pagination` object is part of JavaFX and is attached to the table. The table uses it, to determine
 what to display when the user triggers a new page load. The `Pagination` object has a page factory
 (`TableViewPageFactory`) that generates the new rows each time the user changes pages.
+
+---
 
 ## Table View
 
