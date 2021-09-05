@@ -268,6 +268,13 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     public static void copy(final String filepath, final OutputStream out) throws IOException {
         final Path path = Paths.get(filepath.substring(3));
         final InputStream input = new FileInputStream(path.toString());
+
+        // only add the html path when the file isnt a css file
+        if (filepath.contains(".css")) {
+            out.write(input.readAllBytes());
+            return;
+        }
+
         final String html = Processor.process(input);
         out.write(html.getBytes());
     }
@@ -282,19 +289,9 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         // in their .rst file), go to the root page.
         //
         // TODO: this needs to be cleaned up with a better solution.
-        final String userDir = System.getProperty("user.dir");
+        String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
-        final String helpTOCPath;
-        if ("constellation".equals(substr)) {
-            helpTOCPath = userDir + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "toc.md";
-
-        } else {
-            helpTOCPath = userDir + sep + ".." + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "toc.md";
-        }
+        String helpTOCPath = userDir + sep + ".." + sep + "toc.md";
 
         // use the requested help file, or the table of contents if it doesnt exist
         final String helpLink = StringUtils.isNotEmpty(HelpMapper.getHelpAddress(helpId)) ? HelpMapper.getHelpAddress(helpId) : helpTOCPath;

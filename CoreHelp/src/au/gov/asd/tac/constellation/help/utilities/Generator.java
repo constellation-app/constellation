@@ -38,18 +38,26 @@ public class Generator implements Runnable {
 
     @Override
     public void run() {
+
+        // DO NOT RUN IN EXECUTABLE, ONLY RUN IN IDE
+        // TODO: Double check if this is necessary and also foolproof for other module suites.
+        if (!"IDE(CORE)".equals(System.getProperty("constellation.environment"))) {
+            return;
+        }
+
         // Get the current directory and make the file within the help module.
         final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
         String tocPath;
         final int count = userDir.length() - 13;
         final String substr = userDir.substring(count);
+
         if ("constellation".equals(substr)) {
-            tocPath = userDir + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "toc.md";
+            // Built whole constellation last
+            tocPath = userDir + sep + "toc.md";
         } else {
-            tocPath = userDir + sep + ".." + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "toc.md";
+            // Built single module last
+            tocPath = userDir + sep + ".." + sep + "toc.md";
         }
 
         // Create TOCGenerator with the location of the resources file

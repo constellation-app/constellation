@@ -87,21 +87,13 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
-        final String analyticViewPath;
-        if ("constellation".equals(substr)) {
-            analyticViewPath = userDir + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analytic-view.md";
-        } else {
-            analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analytic-view.md";
-        }
-        map.put("au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane", analyticViewPath);
-        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-best-connects-network.md");
-        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.HasClosestRelationshipQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-has-closest-relationship.md");
+        final String analyticModulePath = "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane", analyticModulePath + "analytic-view.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion", analyticModulePath + "question-best-connects-network.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.HasClosestRelationshipQuestion", analyticModulePath + "question-has-closest-relationship.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.MostCentralQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-most-central.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.MostCommunicantsQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-most-communicants.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.MostEasilyReachedQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-most-easily-reached.md");
