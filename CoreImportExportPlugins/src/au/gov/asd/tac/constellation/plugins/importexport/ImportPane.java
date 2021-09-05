@@ -47,14 +47,14 @@ import org.openide.util.NbPreferences;
  * @author aldebaran30701
  */
 public class ImportPane extends BorderPane {
-    
+
     private final static Insets GRIDPANE_PADDING = new Insets(0, 0, 10, 0);
     private final static Insets ACTIONPANE_PADDING = new Insets(0, 0, 20, 0);
     private final static int GRIDPANE_CONSTRAINT = 200;
     private final static int ACTIONPANE_MIN_HEIGHT = 40;
     private final static Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16,
             ConstellationColor.BLUEBERRY.getJavaColor());
-    
+
     protected final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
     protected final Menu optionsMenu;
     protected final MenuItem loadMenuItem;
@@ -64,14 +64,14 @@ public class ImportPane extends BorderPane {
     protected final Button helpButton;
     protected final TitledPane titledConfigurationPane;
     protected final ActionPane actionPane;
-    
+
     protected ImportController importController;
     protected ImportTopComponent importTopComponent;
     protected ConfigurationPane configurationPane;
     protected SourcePane sourcePane;
     protected EasyGridPane gridPane;
     protected BorderPane root;
-    
+
     public ImportPane(final ImportTopComponent importTopComponent, final ImportController controller,
             final ConfigurationPane configurationPane, final SourcePane sourcePane) {
         this.importTopComponent = importTopComponent;
@@ -104,7 +104,7 @@ public class ImportPane extends BorderPane {
         importController.setShowAllSchemaAttributes(showSchemaDefault);
         importController.setClearManuallyAdded(false);
         importController.setDestination(sourcePane.getDestination());
-        
+
         showSchemaAttributesCheckBox.setOnAction(event -> {
             // the checkbox has its own listener
             final boolean newPreference = !importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
@@ -176,38 +176,38 @@ public class ImportPane extends BorderPane {
         actionPane.setMinSize(0, ACTIONPANE_MIN_HEIGHT);
         actionPane.prefWidthProperty().bind(this.widthProperty());
         actionPane.setPadding(ACTIONPANE_PADDING);
-        
+
         importController.setConfigurationPane(configurationPane);
-        
+
         root.setCenter(new VBox(menuToolbar, titledSourcePane, gridPane, actionPane));
         setCenter(root);
     }
-    
+
     public void update(final ImportController importController, final List<ImportDefinition> definitions) {
         sourcePane.update(importController);
         configurationPane.update(definitions);
     }
-    
+
     public void updateSourcePane() {
         sourcePane.update(importController);
     }
-    
+
     public void close() {
         importTopComponent.close();
     }
-    
+
     public SourcePane getSourcePane() {
         return sourcePane;
     }
-    
+
     public Window getParentWindow() {
         return this.getScene().getWindow();
     }
-    
+
     public void expandPane(boolean isExpanded) {
         titledConfigurationPane.setExpanded(isExpanded);
     }
-    
+
     public void enableButton(boolean isEnabled) {
         actionPane.enableButton(isEnabled);
     }

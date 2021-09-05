@@ -228,6 +228,7 @@ public class DelimitedImportController extends ImportController {
     void openConfigPane(boolean b) {
         importPane.expandPane(b);
     }
+
     // enables or disables the import button based on if there is a file present
     // within the imported files list
     void enableButton(boolean b) {
