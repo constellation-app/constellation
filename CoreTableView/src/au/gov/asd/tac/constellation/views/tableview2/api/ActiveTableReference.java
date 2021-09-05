@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -76,6 +77,12 @@ public class ActiveTableReference {
     private SortedList<ObservableList<String>> sortedRowList;
     
     /**
+     * A list representing the current column setup of the table and how it relates
+     * to the graph
+     */
+    private final CopyOnWriteArrayList<Column> columnIndex;
+    
+    /**
      * The current pagination for the table. This is used by the table to determine
      * which rows to display on each page.
      */
@@ -101,6 +108,8 @@ public class ActiveTableReference {
      */
     public ActiveTableReference(final TableViewPageFactory pageFactory) {
         this.sortedRowList = new SortedList<>(FXCollections.observableArrayList());
+        
+        this.columnIndex = new CopyOnWriteArrayList<>();
         
         this.elementIdToRowIndex = new HashMap<>();
         this.rowToElementIdIndex  = new HashMap<>();
@@ -242,46 +251,122 @@ public class ActiveTableReference {
         getUserTablePreferences().setSortByColumn(ImmutablePair.of(columnName, sortType));
     }
     
+    /**
+     * Gets a list representing the current column setup of the table and how it relates
+     * to the graph. The list describes how each column relates to either a source vertex,
+     * destination vertex or transaction.
+     * 
+     * @return the table column representation
+     * @see Column
+     */
+    public final List<Column> getColumnIndex() {
+        return columnIndex;
+    }
+    
+    /**
+     * Get the current pagination for the table. This is used by the table to determine
+     * which rows to display on each page.
+     *
+     * @return the table pagination
+     */
     public Pagination getPagination() {
         return pagination;
     }
 
+    /**
+     * Gets the flag indicating if a sort listener is currently responding to
+     * a sort event. The {@link #sortingListenerActive} field is {@code volatile}.
+     *
+     * @return true if a sort listener is currently active, false otherwise
+     */
     public boolean isSortingListenerActive() {
         return sortingListenerActive;
     }
 
+    /**
+     * Sets the flag indicating if a sort listener is currently responding to
+     * a sort event. The {@link #sortingListenerActive} field is {@code volatile}.
+     *
+     * @param sortingListenerActive true if a sort listener is currently active, false otherwise
+     */
     public void setSortingListenerActive(boolean sortingListenerActive) {
         this.sortingListenerActive = sortingListenerActive;
     }
 
+    /**
+     * Gets a map of graph element IDs to table rows.
+     *
+     * @return graph element to table row map
+     */
     public Map<Integer, ObservableList<String>> getElementIdToRowIndex() {
         return elementIdToRowIndex;
     }
 
+    /**
+     * Gets a map of table rows to graph element IDs.
+     *
+     * @return table row to graph element map
+     */
     public Map<ObservableList<String>, Integer> getRowToElementIdIndex() {
         return rowToElementIdIndex;
     }
 
+    /**
+     * Gets a list of all the rows in the table ignoring any pagination and
+     * sorted based on the current sort settings.
+     *
+     * @return all the table rows
+     */
     public SortedList<ObservableList<String>> getSortedRowList() {
         return sortedRowList;
     }
 
+    /**
+     * Sets the list of table rows that should be used when determining what
+     * the table displays.
+     *
+     * @param sortedRowList the new table rows
+     */
     public void setSortedRowList(SortedList<ObservableList<String>> sortedRowList) {
         this.sortedRowList = sortedRowList;
     }
 
+    /**
+     * Gets page factory that is used to determine what rows from the table data
+     * will be currently displayed in the table or in other words what rows
+     * constitute the current page.
+     *
+     * @return the table page factory
+     */
     public TableViewPageFactory getPageFactory() {
         return pageFactory;
     }
 
+    /**
+     * Gets a set of rows from the table that are currently selected. This set
+     * is only populated though when the "Selected Only" mode is active on the
+     * table.
+     *
+     * @return the currently selected table rows
+     */
     public Set<ObservableList<String>> getSelectedOnlySelectedRows() {
         return selectedOnlySelectedRows;
     }
 
+    /**
+     * Get the current user preferences set for the table.
+     *
+     * @return the current user table preferences
+     */
     public UserTablePreferences getUserTablePreferences() {
         return userTablePreferences;
     }
 
+    /**
+     * Sets the user preferences for the table.
+     *
+     * @param userTablePreferences the new user table preferences
+     */
     public void setUserTablePreferences(UserTablePreferences userTablePreferences) {
         this.userTablePreferences = userTablePreferences;
     }

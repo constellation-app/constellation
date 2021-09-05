@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.api.Column;
 import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateColumnsTask;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateDataTask;
 import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.HashMap;
@@ -417,7 +418,7 @@ public class TableNGTest {
         columnIndex.add(new Column(columnType3, attribute3, column3));
         columnIndex.add(new Column(columnType4, attribute4, column4));
         
-        when(table.getColumnIndex()).thenReturn(columnIndex);
+        when(activeTableReference.getColumnIndex()).thenReturn(columnIndex);
         
         // This is a reference of the old column index that will be used whilst the new
         // index is being created. Because that creation is mocked this is used only as a
@@ -461,7 +462,17 @@ public class TableNGTest {
                 Tuple.create("destination.", attribute2)
         ));
         
-        table.updateColumns(graph, tableViewState);
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(false);
+            
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
+                    .then(mockInvocation -> {
+                        assertTrue(mockInvocation.getArgument(0) instanceof UpdateColumnsTask);
+                        return null;
+                    });
+            
+            table.updateColumns(graph, tableViewState);
+        }
         
         // Verify the new column index
         final CopyOnWriteArrayList<Column> expectedColumnIndex
@@ -501,7 +512,7 @@ public class TableNGTest {
         final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
         columnIndex.add(new Column(columnType1, attribute1, column1));
         
-        when(table.getColumnIndex()).thenReturn(columnIndex);
+        when(activeTableReference.getColumnIndex()).thenReturn(columnIndex);
         
         // This is a reference of the old column index that will be used whilst the new
         // index is being created. Because that creation is mocked this is used only as a
@@ -529,7 +540,17 @@ public class TableNGTest {
         // Don't want it trying to open the menu to select which columns to show
         doNothing().when(table).openColumnVisibilityMenu();
         
-        table.updateColumns(graph, tableViewState);
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(false);
+            
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
+                    .then(mockInvocation -> {
+                        assertTrue(mockInvocation.getArgument(0) instanceof UpdateColumnsTask);
+                        return null;
+                    });
+            
+            table.updateColumns(graph, tableViewState);
+        }
         
         // Verify the new column index
         final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> expectedColumnIndex

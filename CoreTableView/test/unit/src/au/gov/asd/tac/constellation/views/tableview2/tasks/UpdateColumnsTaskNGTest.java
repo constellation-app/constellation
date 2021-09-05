@@ -155,10 +155,11 @@ public class UpdateColumnsTaskNGTest {
         when(tablePane.getActiveTableReference()).thenReturn(activeTableReference);
         when(tablePane.getParentComponent()).thenReturn(tableViewTopComponent);
         
+        when(activeTableReference.getColumnIndex()).thenReturn(columnIndex);
+        
         when(table.getTableView()).thenReturn(tableView);
         when(table.getSelectedOnlySelectionListener()).thenReturn(selectedOnlySelectionListener);
         when(table.getTableSelectionListener()).thenReturn(tableSelectionListener);
-        when(table.getColumnIndex()).thenReturn(columnIndex);
         when(table.getParentComponent()).thenReturn(tablePane);
         
         when(tableView.getSelectionModel()).thenReturn(selectionModel);

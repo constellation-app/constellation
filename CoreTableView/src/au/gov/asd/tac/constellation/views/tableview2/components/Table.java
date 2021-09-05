@@ -73,8 +73,6 @@ public class Table {
     private final TablePane tablePane;
     private final TableView<ObservableList<String>> tableView;
     
-    private final CopyOnWriteArrayList<Column> columnIndex;
-    
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
     private final ListChangeListener selectedOnlySelectionListener;
     
@@ -99,8 +97,6 @@ public class Table {
         this.tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.tableView.setPadding(new Insets(5));
         this.tableView.setCache(false);
-        
-        this.columnIndex = new CopyOnWriteArrayList<>();
         
         this.displayTextCache = new ImmutableObjectCache();
         
@@ -438,18 +434,6 @@ public class Table {
     }
     
     /**
-     * Gets a list representing the current column setup of the table and how it relates
-     * to the graph. The list describes how each column relates to either a source vertex,
-     * destination vertex or transaction.
-     * 
-     * @return the table column representation
-     * @see Column
-     */
-    public final List<Column> getColumnIndex() {
-        return columnIndex;
-    }
-    
-    /**
      * Get the parent component for the table.
      *
      * @return the parent component
@@ -461,10 +445,19 @@ public class Table {
     /**
      * Get the active table reference associated with this table.
      *
-     * @return the table service
+     * @return the active table reference
      */
     public ActiveTableReference getActiveTableReference() {
         return getParentComponent().getActiveTableReference();
+    }
+    
+    /**
+     * Get the column index associated with this table.
+     *
+     * @return the column index
+     */
+    public List<Column> getColumnIndex() {
+        return getParentComponent().getActiveTableReference().getColumnIndex();
     }
     
     /**

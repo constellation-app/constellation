@@ -101,7 +101,7 @@ public class UpdateColumnsTask implements Runnable {
 
         // set column visibility true in columnIndex if the column is in the
         // current table state for visible columns
-        table.getColumnIndex().forEach(column ->
+        getActiveTableReference().getColumnIndex().forEach(column ->
             column.getTableColumn().setVisible(state.getColumnAttributes().stream()
                     .anyMatch(columnAttr -> 
                             columnAttr.getFirst().equals(column.getAttributeNamePrefix())
@@ -115,7 +115,7 @@ public class UpdateColumnsTask implements Runnable {
         // updated from the table state
         table.getTableView().getColumns().clear();
         table.getTableView().getColumns().addAll(
-                table.getColumnIndex().stream()
+                getActiveTableReference().getColumnIndex().stream()
                         .map(column -> column.getTableColumn())
                         .collect(Collectors.toList())
         );
@@ -128,13 +128,13 @@ public class UpdateColumnsTask implements Runnable {
                         saveSortDetails();
                         
                         final List<TableColumn<ObservableList<String>, String>> columnIndexColumns
-                                = table.getColumnIndex().stream()
+                                = getActiveTableReference().getColumnIndex().stream()
                                         .map(column -> column.getTableColumn())
                                         .collect(Collectors.toList());
                         
                         final List<Tuple<String, Attribute>> orderedColumns
                                 = change.getAddedSubList().stream()
-                                        .map(c -> table.getColumnIndex().get(columnIndexColumns.indexOf(c)))
+                                        .map(c -> getActiveTableReference().getColumnIndex().get(columnIndexColumns.indexOf(c)))
                                         .map(column -> Tuple.create(
                                                 column.getAttributeNamePrefix(), 
                                                 column.getAttribute()
