@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
+import java.util.List;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,10 +52,15 @@ public class JsonIODialog {
      * from that list and delete them before selecting one for the closure
      * of the dialog.
      *
-     * @param names list of filenames to choose from
+     * @param names list of file names to choose from
+     * @param loadDir the relative directory path from the user home preference directory
+     *     that the file names are located
+     * @param filePrefix the prefix if any that was removed from the file names
      * @return the selected element text or null if nothing was selected
      */
-    public static String getSelection(final String[] names) {
+    public static Optional<String> getSelection(final List<String> names,
+                                                final Optional<String> loadDir,
+                                                final Optional<String> filePrefix) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
         
         final ObservableList<String> observableNamesList = FXCollections.observableArrayList(names);
@@ -86,7 +91,10 @@ public class JsonIODialog {
         // The remove button has been pressed, delete the selected file and
         // update the list by removing the selected file
         removeButton.addEventFilter(ActionEvent.ACTION, event -> {
-            JsonIO.deleteJsonPreference(nameList.getSelectionModel().getSelectedItem());
+            JsonIO.deleteJsonPreference(
+                    nameList.getSelectionModel().getSelectedItem(),
+                    loadDir,filePrefix
+            );
             
             observableNamesList.remove(nameList.getSelectionModel().getSelectedItem());
             nameList.setCellFactory(param -> new DraggableCell<>());
@@ -98,10 +106,10 @@ public class JsonIODialog {
         
         final Optional<ButtonType> option = dialog.showAndWait();
         if (option.isPresent() && option.get() == ButtonType.OK) {
-            return nameList.getSelectionModel().getSelectedItem();
+            return Optional.ofNullable(nameList.getSelectionModel().getSelectedItem());
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
