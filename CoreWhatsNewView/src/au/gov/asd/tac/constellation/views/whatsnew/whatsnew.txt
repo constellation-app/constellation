@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-06 Improved import view UI guidance of intended flow
+<p>In the import view, the configuration pane starts shrunk and the import button starts disabled. They will expand/be enabled respectively once a file is present the files list. The opposite will occur when the the list is empty.</p>
+
 == 2021-08-23 Moved Notes View to Views menu
 <p>The Notes View can now be found in the Views menu instead of in the Experimental > Views menu.</p>
 
