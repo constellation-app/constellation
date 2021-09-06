@@ -200,14 +200,14 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     }
 
     @Override
-    public VisualOperation setSelectionBoxModel(SelectionBoxModel model) {
+    public VisualOperation setSelectionBoxModel(final SelectionBoxModel model) {
         selectionBoxRenderable.queueModel(model);
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(selectionBoxUpdateId).build());
     }
 
     @Override
-    public VisualOperation setSelectionFreeformModel(SelectionFreeformModel model) {
+    public VisualOperation setSelectionFreeformModel(final SelectionFreeformModel model) {
         selectionFreeformRenderable.queueModel(model);
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(selectionFreeformUpdateId).build());

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
@@ -24,7 +23,6 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
-import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.Point;
@@ -43,6 +41,8 @@ import org.apache.commons.collections4.CollectionUtils;
  * @author CrucisGamma
  */
 public class SelectionFreeformRenderable implements GLRenderable {
+
+    private static final Logger LOGGER = Logger.getLogger(SelectionFreeformRenderable.class.getName());
 
     // How many vertices do we need to draw a freeform shape?
     // What color is the selection freeform shape?
@@ -84,8 +84,8 @@ public class SelectionFreeformRenderable implements GLRenderable {
             vs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
             gs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruTriangle.gs");
             fs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(SelectionFreeformRenderable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
         }
 
         shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru selection", vs, gs, fs,
@@ -143,7 +143,7 @@ public class SelectionFreeformRenderable implements GLRenderable {
             assert fbuf.limit() == NUMBER_OF_VERTICES * 3;
 
             // Find the location of the Freeform in projected coordinates and update the TRIANGLE_FAN coordinates in the vertex buffer.
-            float[] v = new float[150];
+            final float[] v = new float[150];
 
             for (int i = 0; i < 50; i++) {
                 v[i * 3] = ((float) selectionFreeformModel.getPoint(i).getX() / width) * 2 - 1f;
@@ -159,7 +159,7 @@ public class SelectionFreeformRenderable implements GLRenderable {
             gl.glDisable(GL3.GL_DEPTH_TEST);
             gl.glDepthMask(false);
 
-            Matrix44f mvpMatrix = new Matrix44f();
+            final Matrix44f mvpMatrix = new Matrix44f();
             mvpMatrix.makeIdentity();
 
             // Draw.

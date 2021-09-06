@@ -40,7 +40,7 @@ import org.openide.util.NbBundle.Messages;
  * @author CrucisGamma
  */
 @Messages("FreeformSelectionPlugin=Select in Freeform")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECTION"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
 public final class FreeformSelectionPlugin extends SimpleEditPlugin {
 
     private final boolean isAdd;
@@ -65,29 +65,22 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
         int i = -999;
         boolean locatedInPolygon = false;
 
-        float testX = xPoint;
-        float testY = yPoint;
-
         for (i = 0; i < numVertices; i++) {
-            if (i == (numVertices - 1)) {
-                j = 0;
-            } else {
-                j = i + 1;
-            }
+            j = (i == numVertices - 1) ? 0 : i + 1;
 
-            float vertY_i = (float) transformedVertices[i * 2 + 1];
-            float vertX_i = (float) transformedVertices[i * 2];
-            float vertY_j = (float) transformedVertices[j * 2 + 1];
-            float vertX_j = (float) transformedVertices[j * 2];
+            final float vertY_i = (float) transformedVertices[i * 2 + 1];
+            final float vertX_i = (float) transformedVertices[i * 2];
+            final float vertY_j = (float) transformedVertices[j * 2 + 1];
+            final float vertX_j = (float) transformedVertices[j * 2];
 
-            boolean belowLowY = vertY_i > testY;
-            boolean belowHighY = vertY_j > testY;
-            boolean withinYsEdges = belowLowY != belowHighY;
+            final boolean belowLowY = vertY_i > yPoint;
+            final boolean belowHighY = vertY_j > yPoint;
+            final boolean withinYsEdges = belowLowY != belowHighY;
 
             if (withinYsEdges) {
-                float slopeOfLine = (vertX_j - vertX_i) / (vertY_j - vertY_i);
-                float pointOnLine = (slopeOfLine * (testY - vertY_i)) + vertX_i;
-                boolean isLeftToLine = testX < pointOnLine;
+                final float slopeOfLine = (vertX_j - vertX_i) / (vertY_j - vertY_i);
+                final float pointOnLine = (slopeOfLine * (yPoint - vertY_i)) + vertX_i;
+                final boolean isLeftToLine = xPoint < pointOnLine;
 
                 if (isLeftToLine) {
                     locatedInPolygon = !locatedInPolygon;
@@ -144,8 +137,8 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
 
         // Do the vertex positions need mixing?
         boolean requiresMix = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
-        boolean requiresVertexVisibility = vxVisibilityAttr != Graph.NOT_FOUND;
-        boolean requiresTransactionVisibility = txVisibilityAttr != Graph.NOT_FOUND;
+        final boolean requiresVertexVisibility = vxVisibilityAttr != Graph.NOT_FOUND;
+        final boolean requiresTransactionVisibility = txVisibilityAttr != Graph.NOT_FOUND;
 
         // If the mix value is either 0 or 1 then no mixing is required
         if (requiresMix && mix == 0.0f) {
@@ -203,10 +196,8 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                 final boolean vertexBelowFreeform = topMostPoint < bottom;
                 final boolean vertexAboveFreeform = top < bottomMostPoint;
 
-                if (!vertexLeftOfFreeform && !vertexRightOfFreeform && !vertexBelowFreeform && !vertexAboveFreeform) {
-                    if (inFreeformPolygons(leftMostPoint, topMostPoint)) {
-                        vxIncluded.set(vxId);
-                    }
+                if (!vertexLeftOfFreeform && !vertexRightOfFreeform && !vertexBelowFreeform && !vertexAboveFreeform && inFreeformPolygons(leftMostPoint, topMostPoint)) {
+                    vxIncluded.set(vxId);
                 }
             }
         }
@@ -318,7 +309,7 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId)) && !graph.getBooleanValue(txSelectedAttr, txId)) {
                             if (requiresTransactionVisibility) {
-                                float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                                final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
                                 if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
@@ -327,7 +318,6 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                         }
                     }
                 }
-
             } else if (isToggle) {
 
                 if (vxSelectedAttr != Graph.NOT_FOUND) {
@@ -341,7 +331,7 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId))) {
                             if (requiresTransactionVisibility) {
-                                float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                                final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
                                 if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
@@ -368,7 +358,7 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         boolean included = vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId));
                         if (requiresTransactionVisibility) {
-                            float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                            final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
                             if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                 included = false;
                             }

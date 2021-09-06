@@ -67,7 +67,7 @@ public class SelectionFreeformModel {
      * @param nextPoint The next point the user wants to add to the start
      * corner).
      */
-    static private final int THRESHOLD = 8;
+    private static final int THRESHOLD = 8;
 
     public void addPoint(final Point nextPoint) {
         if (nextPoint == null) {
@@ -170,7 +170,7 @@ public class SelectionFreeformModel {
      * <code>null</code> if the model is clear (represents no selection
      * freeform).
      */
-    public Point getPoint(int i) {
+    public final Point getPoint(final int i) {
         if (i < 0 || i >= getNumPoints()) {
             return getStartPoint();
         }
@@ -215,16 +215,16 @@ public class SelectionFreeformModel {
     }
 
     public Float[] getTransformedVertices() {
-        int width = rightMost - leftMost;
-        int height = bottomMost - topMost;
-        float newWidth = rightBoxCameraCoordinates - leftBoxCameraCoordinates;
-        float newHeight = bottomBoxCameraCoordinates - topBoxCameraCoordinates;
+        final int width = rightMost - leftMost;
+        final int height = bottomMost - topMost;
+        final float newWidth = rightBoxCameraCoordinates - leftBoxCameraCoordinates;
+        final float newHeight = bottomBoxCameraCoordinates - topBoxCameraCoordinates;
 
-        ArrayList<Float> vertices = new ArrayList<>();
+        List<Float> vertices = new ArrayList<>();
 
         for (int i = 0; i < MAX_POINTS; i++) {
-            float x = (getPoint(i).x - leftMost) / ((float) width) * newWidth + leftBoxCameraCoordinates;
-            float y = (getPoint(i).y - topMost) / ((float) height) * newHeight + topBoxCameraCoordinates;
+            final float x = (getPoint(i).x - leftMost) / ((float) width) * newWidth + leftBoxCameraCoordinates;
+            final float y = (getPoint(i).y - topMost) / ((float) height) * newHeight + topBoxCameraCoordinates;
 
             vertices.add(x);
             vertices.add(y);
@@ -233,11 +233,10 @@ public class SelectionFreeformModel {
         return vertices.toArray(new Float[0]);
     }
 
-    public void setWindowBoxToCameraBox(float[] boxCameraCoordinates) {
+    public void setWindowBoxToCameraBox(final float[] boxCameraCoordinates) {
         leftBoxCameraCoordinates = boxCameraCoordinates[0];
         rightBoxCameraCoordinates = boxCameraCoordinates[1];
         topBoxCameraCoordinates = boxCameraCoordinates[2];
         bottomBoxCameraCoordinates = boxCameraCoordinates[3];
     }
 }
-

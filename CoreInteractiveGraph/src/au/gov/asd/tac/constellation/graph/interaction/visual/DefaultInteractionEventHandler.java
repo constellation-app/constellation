@@ -560,7 +560,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             break;
                         case FREEFORM_SELECTING:
                             if (eventState.isMouseDragged()) {
-                                performFreeformSelection(wg, point, eventState.getPoint(EventState.PRESSED_POINT), event.isShiftDown(), event.isControlDown());
+                                performFreeformSelection(wg, event.isShiftDown(), event.isControlDown());
                                 clearSelectionFreeformModel();
                             } else {
                                 // If the mouse has clicked on an element (and neither pan nor control are pressed),
@@ -1140,46 +1140,20 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * Performs a selection based on a given start and end point.
+     * Performs a selection based on a given polygon in the freeformModel.
      *
-     * If the start and end point are equal, a point selection is performed based on the hit tester.
-     *
-     * If the start and end point differ, a box selection is performed with the two points representing diagonally
-     * opposite corners of the box.
-     *
-     * In the latter case, the 2d box is actually converted to a 3d frustrum in order to make the correct selection on
-     * the 3 dimensional graph.
-     *
-     * @param selectTo the point where selection ends
-     * @param selectFrom the point where selection begins.
      * @param appendSelection whether or not the selection will be appended to the current selection
      * @param toggleSelection whether or not the selection will toggle the current selection. Note that if
      * appendSelection is true, this parameter has no effect.
      */
-    private void performFreeformSelection(final GraphReadMethods rg, final Point selectTo, final Point selectFrom, final boolean appendSelection, final boolean toggleSelection) {
-
-        // Sort the press/release coordinates to look like a drag from top-left to bottom-right: pressed<=released.
-        Point bottomRight = new Point();
-        if (selectTo.x < selectFrom.x) {
-            bottomRight.x = selectFrom.x;
-            selectFrom.x = selectTo.x;
-        } else {
-            bottomRight.x = selectTo.x;
-        }
-
-        if (selectTo.y < selectFrom.y) {
-            bottomRight.y = selectFrom.y;
-            selectFrom.y = selectTo.y;
-        } else {
-            bottomRight.y = selectTo.y;
-        }
+    private void performFreeformSelection(final GraphReadMethods rg, final boolean appendSelection, final boolean toggleSelection) {
 
         final float[] boxCameraCoordinates = visualInteraction.windowBoxToCameraBox(freeformModel.getLeftMost(), freeformModel.getRightMost(), freeformModel.getTopMost(), freeformModel.getBottomMost());
 
         freeformModel.setWindowBoxToCameraBox(boxCameraCoordinates);
-         Float [] transformedVertices = freeformModel.getTransformedVertices();
+        final Float[] transformedVertices = freeformModel.getTransformedVertices();
 
-        Plugin plugin = new FreeformSelectionPlugin(appendSelection, toggleSelection, VisualGraphUtilities.getCamera(rg), boxCameraCoordinates, transformedVertices, freeformModel.getNumPoints());
+        final Plugin plugin = new FreeformSelectionPlugin(appendSelection, toggleSelection, VisualGraphUtilities.getCamera(rg), boxCameraCoordinates, transformedVertices, freeformModel.getNumPoints());
         PluginExecution.withPlugin(plugin).executeLater(graph);
     }
 
