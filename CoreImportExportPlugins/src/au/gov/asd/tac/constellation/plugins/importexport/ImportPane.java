@@ -77,8 +77,8 @@ public class ImportPane extends BorderPane {
         final TitledPane titledSourcePane = new TitledPane("Source and Destination", sourcePane);
         titledSourcePane.setCollapsible(true);
 
-        loadButton = new Button("Load");
-        saveButton = new Button("Save");
+        loadButton = new Button("Load Template");
+        saveButton = new Button("Save Template");
 
         // the menu item gets called when the checkbox value changes so work around it by using a flag
         final boolean[] userClickedTheCheckboxFirst = new boolean[1];
