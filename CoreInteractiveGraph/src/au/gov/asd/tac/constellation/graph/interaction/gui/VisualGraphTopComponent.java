@@ -1228,7 +1228,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         @Override
         protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-            File file = new File(freshGdo.getPrimaryFile().getPath());
+            final File file = new File(freshGdo.getPrimaryFile().getPath());
             ConstellationLoggerHelper.exportPropertyBuilder(
                     this,
                     GraphRecordStoreUtilities.getVertices(copy, false, false, false).getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),

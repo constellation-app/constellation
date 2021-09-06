@@ -203,15 +203,13 @@ public class WelcomeViewPane extends BorderPane {
                     imageView.setFitHeight(145);
                     imageView.setFitWidth(145);
                     recentGraphButtons[i].setGraphic(imageView);
-                } else {
-                    if (i < fileNames.size()) {
-                        final ImageView defaultImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream("resources/Constellation_Application_Icon_Small.png")));
-                        final Rectangle2D valueDefault = new Rectangle2D(0, 0, 145, 145);
-                        defaultImage.setViewport(valueDefault);
-                        defaultImage.setFitHeight(145);
-                        defaultImage.setFitWidth(145);
-                        recentGraphButtons[i].setGraphic(defaultImage);
-                    }
+                } else if (i < fileNames.size()) {
+                    final ImageView defaultImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream("resources/Constellation_Application_Icon_Small.png")));
+                    final Rectangle2D valueDefault = new Rectangle2D(0, 0, 145, 145);
+                    defaultImage.setViewport(valueDefault);
+                    defaultImage.setFitHeight(145);
+                    defaultImage.setFitWidth(145);
+                    recentGraphButtons[i].setGraphic(defaultImage);
                 }
 
                 //Calls the method for the recent graphs to open
