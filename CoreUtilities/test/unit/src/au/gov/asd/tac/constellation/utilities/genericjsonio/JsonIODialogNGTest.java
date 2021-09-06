@@ -17,19 +17,11 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.testfx.api.FxRobot;
@@ -57,21 +49,20 @@ public class JsonIODialogNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        FxToolkit.registerPrimaryStage();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        FxToolkit.cleanupStages();
     }
     
     @Test

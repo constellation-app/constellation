@@ -54,21 +54,20 @@ public class JsonIONGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        FxToolkit.registerPrimaryStage();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        FxToolkit.cleanupStages();
     }
     
     @Test
