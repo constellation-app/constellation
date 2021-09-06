@@ -1,5 +1,3 @@
-<link href="../resources/mvp.css" rel="stylesheet"></link>
-
 # Analytic View
 
 <table data-border="1">

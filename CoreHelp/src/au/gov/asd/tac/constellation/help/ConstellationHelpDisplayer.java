@@ -89,182 +89,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     private static final String OFFICIAL_GITHUB_REPOSITORY = "https://github.com/constellation-app/constellation";
     private static final String READ_THE_DOCS = "https://constellation.readthedocs.io/en/latest/%s";
 
-    /**
-     * Read an entry from the zip file HELP_ZIP stored as an internal resource.
-     * <p>
-     * Because we only get access via getResourceAsStream(), we have to iterate
-     * through the entries to get the right one.
-     *
-     * @param filepath The zip entry to get.
-     * @param out The OutputStream to write the entry's contents to.
-     *
-     * @throws IOException
-     */
-    /*  private static void copyFromZipResource(final String filepath, final OutputStream out) throws IOException {
-        final InputStream in = ConstellationHelpDisplayer.class.getResourceAsStream(HELP_ZIP);
-        if (in != null) {
-            final ZipInputStream zin = new ZipInputStream(in);
-            ZipEntry entry;
-            while ((entry = zin.getNextEntry()) != null) {
-                final String name = entry.getName();
-                if (name.equals(filepath)) {
-                    final byte[] buf = zin.readNBytes(BUFSIZ);
-                    zin.closeEntry();
-                    zin.close();
-
-                    out.write(buf);
-
-                    return;
-                }
-            }
-
-            LOGGER.log(Level.WARNING, "Could not find entry {0} in resource {1}", new Object[]{HELP_MAP, HELP_ZIP});
-        } else {
-            throw new IOException(String.format("Help resource %s not found " + filepath, HELP_ZIP));
-        }
-    } */
-    /**
-     * Read an entry from a zip file.
-     * <p>
-     * The zip file is stored on the filesystem, so maybe this is faster than
-     * copyFromZipResource()?
-     *
-     * @param filepath
-     * @param out
-     * @throws IOException
-     */
-    /*  private static void copyFromZipFile(final String zipFile, final String filepath, final OutputStream out) throws IOException {
-        // TODO: need to rework this so that the local version includes a custom header and footer
-        if (filepath.endsWith(".md")) {
-            try ( ZipFile zip = new ZipFile(zipFile)) {
-                final Enumeration<? extends ZipEntry> entries = zip.entries();
-
-                while (entries.hasMoreElements()) {
-                    ZipEntry entry = entries.nextElement();
-                    if (filepath.equals(entry.getName())) {
-                        final InputStream input = zip.getInputStream(entry);
-                        final String html = Processor.process(input);
-                        out.write(html.getBytes());
-                    }
-                }
-            }
-        } else {
-            // TODO: perhaps move this to another method
-            final Path p = Paths.get(filepath);
-            try {
-                try (final FileSystem fs = FileSystems.newFileSystem(p, null)) {
-                    final Path path = fs.getPath(filepath);
-                    Files.copy(path, out);
-                }
-            } catch (final FileSystemNotFoundException ex) {
-                throw new IOException(String.format("Help resource %s not found " + filepath + zipFile, HELP_ZIP));
-            }
-        }
-    } */
-    /**
-     * Read a file from a web server.
-     * <p>
-     * We need this to get help_map.txt. All other files will be retrieved by
-     * the user's browser.
-     *
-     * @param url The URL of the file to get.
-     *
-     * @return The lines of the file as a List&lt;String&gt;.
-     *
-     * @throws IOException
-     */
-    /*   private static List<String> getHttpFile(final String url) throws IOException {
-        HttpURLConnection connection = null;
-        try {
-            connection = url.startsWith("https")
-                    ? HttpsConnection.withInsecureUrl(url).withReadTimeout(10 * 1000).get() // not checking for a user certiticate
-                    : HttpsConnection.withInsecureUrl(url).withReadTimeout(10 * 1000).insecureGet();
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                try (final BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(HttpsUtilities.getInputStream(connection), StandardCharsets.UTF_8)
-                )) {
-                    return reader.lines().collect(Collectors.toList());
-                }
-            } else {
-                throw new IOException(String.format("HTTP %s response code: %d", url, connection.getResponseCode()));
-            }
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-    } */
-
- /*   private static List<String> getZipFile(final String zipFile, final String filepath) throws IOException {
-        final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        copyFromZipFile(zipFile, filepath, buf);
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf.toByteArray()), StandardCharsets.UTF_8));
-        return reader.lines().collect(Collectors.toList());
-    }
-
-    private static List<String> getResourceZipFile(final String zipResource) throws IOException {
-        final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        copyFromZipResource(zipResource, buf);
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf.toByteArray()), StandardCharsets.UTF_8));
-        return reader.lines().collect(Collectors.toList());
-    } */
-    /**
-     *
-     * @return @throws IOException
-     */
-    /*  private static List<String> initHelp() throws IOException {
-        helpSource = System.getProperty(CONSTELLATION_HELP);
-        LOGGER.log(Level.INFO, "Help source: {0}", HELP_ZIP);
-
-        if (helpSource == null) {
-            LOGGER.log(Level.INFO, "help_map file at zip resource {0}, {1}", new Object[]{HELP_ZIP, HELP_MAP});
-            return getResourceZipFile(HELP_MAP);
-        } else if (helpSource.startsWith("http")) {
-            final String url = String.format("%s/%s", helpSource, HELP_MAP);
-            LOGGER.log(Level.INFO, "help_map file at {0}", url);
-            return null;
-        } else {
-            LOGGER.log(Level.INFO, "help_map file at zip {0}, {1}", new Object[]{helpSource, HELP_MAP});
-            return getZipFile(helpSource, HELP_MAP);
-        }
-    } */
-    /**
-     * Return the help map mapping helpIds to documentation page paths.
-     * <p>
-     * This can be in any one of three places:
-     * <ul>
-     * <li>in a zip file in modules/resources/ext</li>
-     * <li>in a named external zip file</li>
-     * <li>at a web location</li>
-     * </ul>
-     *
-     * @return The helpId to documentation path mapping.
-     */
-    /* private static synchronized Map<String, String> getHelpMap() {
-        if (helpMap == null) {
-            try {
-                final List<String> lines = initHelp();
-                helpMap = new HashMap<>();
-                lines.forEach(line -> {
-                    final int ix = line.indexOf(',');
-                    final String helpId = line.substring(0, ix).strip();
-                    if (!helpId.isEmpty() && !helpId.startsWith("#")) {
-                        final String helpPath = line.substring(ix + 1);
-                        helpMap.put(helpId, helpPath);
-                    }
-                });
-            } catch (final IOException ex) {
-                LOGGER.log(Level.INFO, "Fetching help map:", ex);
-
-                // If we couldn't read the file the first time,
-                // it won't magically work the next time, so stop trying.
-                //
-                helpMap = Map.of();
-            }
-        }
-
-        return helpMap;
-    } */
     public static void copy(final String filepath, final OutputStream out) throws IOException {
         final Path path = Paths.get(filepath.substring(3));
         final InputStream input = new FileInputStream(path.toString());
@@ -274,9 +98,26 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             out.write(input.readAllBytes());
             return;
         }
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final String startCol = "<div class='container'> <div class='row'> <div class='col-4'>";
+        final String endFirstCol = "</div> <div class='col-6'>";
+        final String endCol = "</div> </div> </div>";
 
-        final String html = Processor.process(input);
-        out.write(html.getBytes());
+        final String tocPath = userDir + sep + ".." + sep + "toc.md";
+        final Path tocFilePath = Paths.get(tocPath);
+
+        // If the filepath is the toc then don't append the toc again when outputted 
+        if (filepath.contains("toc.md")) {
+            final String css = "<link href='bootstrap/css/bootstrap.min.css' rel='stylesheet'></link> <div class='container'>";
+            final String html = css + Processor.process(input) + "</div>";
+            out.write(html.getBytes());
+        } else {
+            final String css = "<link href='../../../../../../../../../../bootstrap/css/bootstrap.min.css' rel='stylesheet'></link>";
+            final InputStream tocInput = new FileInputStream(tocFilePath.toFile());
+            final String html = css + startCol + Processor.process(tocInput) + endFirstCol + Processor.process(input) + endCol;
+            out.write(html.getBytes());
+        }
     }
 
     @Override
