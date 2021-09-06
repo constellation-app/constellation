@@ -270,7 +270,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final InputStream input = new FileInputStream(path.toString());
 
         // only add the html path when the file isnt a css file
-        if (filepath.contains(".css")) {
+        if (filepath.contains(".css") || filepath.contains(".png") || filepath.contains(".jpg")) {
             out.write(input.readAllBytes());
             return;
         }
