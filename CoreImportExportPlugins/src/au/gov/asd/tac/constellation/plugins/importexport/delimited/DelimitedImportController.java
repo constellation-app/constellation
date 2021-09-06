@@ -17,10 +17,12 @@ package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
@@ -135,6 +137,8 @@ public class DelimitedImportController extends ImportController {
                                 .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
                                 .set(ImportDelimitedPlugin.PARSER_PARAMETER_IDS_PARAMETER_ID, currentParameters)
                                 .set(ImportDelimitedPlugin.FILES_INCLUDE_HEADERS_PARAMETER_ID, filesIncludeHeaders)
+                                .followedBy(ArrangementPluginRegistry.GRID_COMPOSITE)
+                                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                                 .executeWriteLater(importGraph);
                     }
                 }
@@ -149,6 +153,8 @@ public class DelimitedImportController extends ImportController {
                     .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
                     .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
                     .set(ImportDelimitedPlugin.FILES_INCLUDE_HEADERS_PARAMETER_ID, filesIncludeHeaders)
+                    .followedBy(ArrangementPluginRegistry.GRID_COMPOSITE)
+                    .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .executeWriteLater(importGraph);
         }
     }

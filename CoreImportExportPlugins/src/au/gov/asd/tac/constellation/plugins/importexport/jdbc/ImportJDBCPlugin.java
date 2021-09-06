@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -168,6 +169,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                         .followedBy(ArrangementPluginRegistry.PENDANTS)
                         .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
+                        .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeNow(vlGraph.getInclusionGraph());
                 vlGraph.retrieveCoords();
             }
