@@ -653,7 +653,7 @@ public class MapViewTileRenderer extends PApplet {
         if (!locatedFile.isAbsolute()) {
             final String codeNameBase = "au.gov.asd.tac.constellation.views.mapview";
             final String relativePath = resourcePath + where;
-            locatedFile = ConstellationInstalledFileLocator.locate(relativePath, codeNameBase, false, MapViewTileRenderer.class.getProtectionDomain());
+            locatedFile = ConstellationInstalledFileLocator.locate(relativePath, codeNameBase, MapViewTileRenderer.class.getProtectionDomain());
             if (locatedFile == null) {
                 final URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
                 locatedFile = new File(url.toString());
