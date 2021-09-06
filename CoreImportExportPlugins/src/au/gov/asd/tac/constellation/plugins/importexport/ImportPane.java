@@ -204,11 +204,11 @@ public class ImportPane extends BorderPane {
         return this.getScene().getWindow();
     }
 
-    public void expandPane(boolean isExpanded) {
+    public void expandPane(final boolean isExpanded) {
         titledConfigurationPane.setExpanded(isExpanded);
     }
 
-    public void enableButton(boolean isEnabled) {
+    public void enableButton(final boolean isEnabled) {
         actionPane.enableButton(isEnabled);
     }
 }

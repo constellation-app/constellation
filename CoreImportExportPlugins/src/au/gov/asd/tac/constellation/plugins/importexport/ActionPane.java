@@ -81,7 +81,7 @@ public class ActionPane extends BorderPane {
     }
 
     // sets the enabled state of the import button
-    public void enableButton(boolean isEnabled) {
+    public void enableButton(final boolean isEnabled) {
         importButton.setDisable(isEnabled);
     }
 }
