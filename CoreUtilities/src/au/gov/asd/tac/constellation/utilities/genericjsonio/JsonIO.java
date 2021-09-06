@@ -117,12 +117,12 @@ public class JsonIO {
         // Obtain a filename from the user. If no filename is supplied, and the user didn't hit cancel, then
         // generate a filename for them based on username and timestamp. If cancel was hit, no more processing
         // is required.
-        Tuple<Boolean, String> preferenceNameDetails = JsonIODialog.getName();
-        if (!preferenceNameDetails.getFirst()) {
+        Optional<String> preferenceNameDetails = JsonIODialog.getPreferenceFileName();
+        if (preferenceNameDetails.isEmpty()) {
             // Cancel was pressed, lets exit straight away - nothing to do here
             return;
         }
-        String fileName = preferenceNameDetails.getSecond();
+        String fileName = preferenceNameDetails.get();
         if (fileName.isEmpty()) {
             // User didn't enter anyhting but hit OK ... this is a trigger to auto generate a filename
             fileName = String.format("%s at %s", System.getProperty("user.name"), TIMESTAMP_FORMAT.format(Instant.now()));
@@ -261,18 +261,17 @@ public class JsonIO {
     }
 
     /**
-     * Deletes the selected JSON file from disk, and hence from the selection
-     * dialog
+     * Deletes the selected JSON file from disk.
      *
-     * @param filenameToDelete name of file to delete
+     * @param filename name of file to delete
      */
-    public static void deleteJsonPreference(final String filenameToDelete) {
+    public static void deleteJsonPreference(final String filename) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File prefDir = new File(userDir, currentDir);
 
-        if (filenameToDelete != null) {
-            final String encodedFilename = FilenameEncoder.encode(currentPrefix.concat(filenameToDelete)) + FILE_EXT;
+        if (filename != null) {
+            final String encodedFilename = FilenameEncoder.encode(currentPrefix.concat(filename)) + FILE_EXT;
 
             // Loop through files in preference directory looking for one matching selected item
             // delete it when found
@@ -290,5 +289,12 @@ public class JsonIO {
                 }
             }
         }
+    }
+    
+    private static File getPrefereceFileDirectory(final String subDirectory) {
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
+        
+        return new File(userDir, subDirectory);
     }
 }
