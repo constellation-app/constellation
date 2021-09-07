@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -93,6 +94,36 @@ public class JsonIONGTest {
     }
     
     @Test
+    public void loadJsonPreferences_get_pojo_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
+        
+        try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+            jsonIoMockedStatic.when(() -> JsonIO
+                .loadJsonPreferences(any(Optional.class), any(Class.class)))
+                .thenCallRealMethod();
+            
+            JsonIO.loadJsonPreferences(SUB_DIRECTORY, MyPreferences.class);
+            
+            jsonIoMockedStatic.verify(() -> JsonIO
+                .loadJsonPreferences(SUB_DIRECTORY, Optional.empty(), MyPreferences.class));
+        }
+    }
+    
+    @Test
+    public void loadJsonPreferences_get_tree_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
+        
+        try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+            jsonIoMockedStatic.when(() -> JsonIO
+                .loadJsonPreferences(any(Optional.class)))
+                .thenCallRealMethod();
+            
+            JsonIO.loadJsonPreferences(SUB_DIRECTORY);
+            
+            jsonIoMockedStatic.verify(() -> JsonIO
+                .loadJsonPreferences(SUB_DIRECTORY, Optional.empty()));
+        }
+    }
+    
+    @Test
     public void loadJsonPreferences_get_pojo() throws URISyntaxException {
         
         try (
@@ -110,6 +141,29 @@ public class JsonIONGTest {
                     .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, MyPreferences.class);
             
             assertEquals(loadedPreferences, fixture());
+        }
+    }
+    
+    @Test
+    public void loadJsonPreferences_pref_dir_not_a_dir() throws URISyntaxException {
+        
+        try (
+                MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS);
+                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
+            ) {
+            
+            // The returned preference directory is not a directory so the UI is
+            // opened with an empty list and the user hits cancel.
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog.getSelection(Collections.emptyList(), SUB_DIRECTORY, FILE_PREFIX))
+                    .thenReturn(Optional.empty());
+            
+            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
+                    .thenReturn(new File(System.getProperty("java.io.tmpdir") + "/samplefile"));
+            
+            final MyPreferences loadedPreferences = JsonIO
+                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, MyPreferences.class);
+            
+            assertEquals(loadedPreferences, null);
         }
     }
     
