@@ -22,11 +22,8 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
-
 import au.gov.asd.tac.constellation.plugins.importexport.ActionPane;
-
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
