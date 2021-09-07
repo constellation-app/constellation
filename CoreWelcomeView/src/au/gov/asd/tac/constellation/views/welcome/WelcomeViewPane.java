@@ -193,7 +193,7 @@ public class WelcomeViewPane extends BorderPane {
                 createRecentButtons(recentGraphButtons[i]);
                 if (i < fileNames.size()) {
                     recentGraphButtons[i].setText(fileNames.get(i));
-                    Tooltip toolTip = new Tooltip(recentGraphButtons[i].getText());
+                    final Tooltip toolTip = new Tooltip(recentGraphButtons[i].getText());
                     recentGraphButtons[i].setTooltip(toolTip);
                 }
                 final String text = recentGraphButtons[i].getText();
