@@ -29,8 +29,6 @@ public class JDBCImportPane extends ImportPane {
             final JDBCSourcePane sourcePane) {
         super(jdbcImportTopComponent, importController, configurationPane, sourcePane);
 
-        optionsMenu.getItems().addAll(showSchemaAttributesItem);
-
         helpButton.setOnAction(event -> new HelpCtx(HELP_CTX).display());
         // Setting help keyevent to f1
         setOnKeyPressed(event -> {

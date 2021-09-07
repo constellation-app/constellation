@@ -4,6 +4,9 @@
 
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
+    
+-   Removed unused `localized` parameter from the signature of the `locate()`
+    method in `ConstellationInstalledFileLocator`.
 
 ## Changes in August 2021
 
