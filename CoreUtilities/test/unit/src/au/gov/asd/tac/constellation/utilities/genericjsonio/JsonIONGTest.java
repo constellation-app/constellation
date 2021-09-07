@@ -296,11 +296,9 @@ public class JsonIONGTest {
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
                 MockedStatic<DialogDisplayer> dialogDisplayerMockedStatic = Mockito.mockStatic(DialogDisplayer.class);
             ) {
-            
-            outputFile.delete();
-            
+            final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/samplefile");
             jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
-                    .thenReturn(new File(System.getProperty("java.io.tmpdir") + "/samplefile"));
+                    .thenReturn(preferenceDirectory);
             
             jsonIoMockedStatic.when(() -> JsonIO
                     .saveJsonPreferences(any(Optional.class), any(ObjectMapper.class), any(), any(Optional.class)))
@@ -320,7 +318,7 @@ public class JsonIONGTest {
             final ArgumentCaptor<NotifyDescriptor> captor = ArgumentCaptor.forClass(NotifyDescriptor.class);
             verify(dialogDisplayer).notify(captor.capture());
             assertEquals(captor.getValue().getMessage(), "Can't create preference directory '"
-                    + System.getProperty("java.io.tmpdir") + "samplefile'.");
+                    + preferenceDirectory + "'.");
             assertEquals(captor.getValue().getMessageType(), NotifyDescriptor.ERROR_MESSAGE);
         } finally {
             Files.deleteIfExists(outputFile.toPath());
@@ -336,9 +334,6 @@ public class JsonIONGTest {
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
             ) {
-            // Ensure there is not old test data lying around
-            outputFile.delete();
-            
             setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.empty());
             
             JsonIO.saveJsonPreferences(SUB_DIRECTORY, new ObjectMapper(), new Object(), FILE_PREFIX);
