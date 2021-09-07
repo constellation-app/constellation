@@ -19,11 +19,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import static org.testfx.util.NodeQueryUtils.hasText;
@@ -88,10 +92,95 @@ public class JsonIODialogNGTest {
         final Optional<String> result = WaitForAsyncUtils.waitFor(future);
         
         assertTrue(result.isPresent());
+        assertEquals(result.get(), "myPreferenceFile");
     }
     
     @Test
-    public void getPreferenceFileName_ok_pressed() throws InterruptedException {
+    public void getSelection_cancel_pressed() throws InterruptedException, ExecutionException {
+        final List<String> names = List.of("myPreferenceFile", "theirPreferenceFile");
+        
+        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(
+                () -> JsonIODialog.getSelection(names, Optional.of(""), Optional.of("")));
+        
+        final Stage dialog = getDialog(robot);
+        WaitForAsyncUtils.asyncFx(() -> dialog.requestFocus()).get();
+
+        robot.clickOn(robot.from(dialog.getScene().getRoot())
+                .lookup(".list-cell")
+                .lookup(hasText("myPreferenceFile"))
+                .queryAs(ListCell.class));
+
+        robot.clickOn(robot.from(dialog.getScene().getRoot())
+                .lookup(".button")
+                .lookup(hasText("Cancel"))
+                .queryAs(Button.class));
+        
+        final Optional<String> result = WaitForAsyncUtils.waitFor(future);
+        
+        assertFalse(result.isPresent());
+    }
+    
+    @Test
+    public void getSelection_remove_pressed() throws InterruptedException, ExecutionException {
+        final List<String> names = List.of("myPreferenceFile", "theirPreferenceFile");
+        
+        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> {
+        
+            // The JsonIO Mock happens here because the static mocking needs to be on
+            // the same thread as the execution
+            try (MockedStatic<JsonIO> jsonIOMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+                
+                final Optional<String> result = JsonIODialog.getSelection(
+                        names, Optional.of("loadDir"), Optional.of("filePrefix"));
+                
+                // Verify the call to delete
+                jsonIOMockedStatic.verify(() -> JsonIO
+                        .deleteJsonPreference("theirPreferenceFile", Optional.of("loadDir"),
+                                Optional.of("filePrefix")));
+                
+                return result;
+            }
+        });
+        
+        final Stage dialog = getDialog(robot);
+        
+        // IMPORTANT. Request focus. Until this is done the JavaFX scene in the
+        // dialog does not appear to initialize and the following robot lookup
+        // code will fail
+        WaitForAsyncUtils.asyncFx(() -> dialog.requestFocus()).get();
+
+        // Select a row and delete it
+        robot.clickOn(robot.from(dialog.getScene().getRoot())
+                .lookup(".list-cell")
+                .lookup(hasText("theirPreferenceFile"))
+                .queryAs(ListCell.class));
+
+        robot.clickOn(robot.from(dialog.getScene().getRoot())
+                .lookup(".button")
+                .lookup(hasText("Remove"))
+                .queryAs(Button.class));
+        
+        // Pull out the list view and verify its current list state. There should
+        // only be one item now.
+        final ListView listView = robot.from(dialog.getScene().getRoot())
+                .lookup(".list-view")
+                .queryAs(ListView.class);
+        
+        assertEquals(listView.getItems(), FXCollections.observableArrayList("myPreferenceFile"));
+        
+        // Cancel the dialog so it closes
+        robot.clickOn(robot.from(dialog.getScene().getRoot())
+                .lookup(".button")
+                .lookup(hasText("Cancel"))
+                .queryAs(Button.class));
+        
+        final Optional<String> result = WaitForAsyncUtils.waitFor(future);
+        
+        assertFalse(result.isPresent());
+    }
+    
+    @Test
+    public void getPreferenceFileName_ok_pressed() {
         final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(
                 () -> JsonIODialog.getPreferenceFileName());
         
@@ -118,7 +207,7 @@ public class JsonIODialogNGTest {
     }
     
     @Test
-    public void getPreferenceFileName_cancel_pressed() throws InterruptedException {
+    public void getPreferenceFileName_cancel_pressed() {
         final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(
                 () -> JsonIODialog.getPreferenceFileName());
         
@@ -142,7 +231,18 @@ public class JsonIODialogNGTest {
         assertFalse(result.isPresent());
     }
     
-    private Stage getDialog(final FxRobot robot) throws InterruptedException {
+    /**
+     * Get a dialog that has been displayed to the user. This will iterate through
+     * all open windows and identify one that is modal. The assumption is that there
+     * will only ever be one dialog open.
+     * <p/>
+     * If a dialog is not found then it will wait for the JavaFX thread queue to empty
+     * and try again.
+     *
+     * @param robot the FX robot for these tests
+     * @return the found dialog
+     */
+    private Stage getDialog(final FxRobot robot) {
         Stage dialog = null;
         while(dialog == null) {
             dialog = robot.robotContext().getWindowFinder().listWindows().stream()

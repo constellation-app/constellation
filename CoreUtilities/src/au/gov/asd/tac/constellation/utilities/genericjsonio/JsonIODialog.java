@@ -93,7 +93,8 @@ public class JsonIODialog {
         removeButton.addEventFilter(ActionEvent.ACTION, event -> {
             JsonIO.deleteJsonPreference(
                     nameList.getSelectionModel().getSelectedItem(),
-                    loadDir,filePrefix
+                    loadDir,
+                    filePrefix
             );
             
             observableNamesList.remove(nameList.getSelectionModel().getSelectedItem());
