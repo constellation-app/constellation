@@ -1,15 +1,8 @@
 # Analytic View
 
-<table data-border="1">
-<caption>Analytic View Actions</caption>
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-</colgroup>
+<table class="table table-striped">
 <thead>
-<tr class="header">
+<tr>
 <th scope="col">Constellation Action</th>
 <th scope="col">Keyboard Shortcut</th>
 <th scope="col">User Action</th>
@@ -17,7 +10,7 @@
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Open Analytic View</td>
 <td>Ctrl + Shift + Z</td>
 <td>Views -&gt; Analytic View</td>
