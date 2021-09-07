@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -53,12 +54,28 @@ public class HelpServlet extends HttpServlet {
             ".txt", "text/plain",
             ".md", "text/html" // this allows a markdown file be converted to html on the fly
     );
+    private static boolean wasRedirect = false;
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         final String requestPath = request.getRequestURI();
-        LOGGER.log(Level.INFO, "GET {0}", requestPath);
+        final String referer = request.getHeader("referer");
 
+        LOGGER.log(Level.INFO, "GET {0}", requestPath);
+        try {
+            if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css")) && !wasRedirect) {
+                final String frontHalf = referer.substring(referer.indexOf("constellation") + 13, referer.lastIndexOf("/"));
+                final String url = requestPath.replaceFirst(frontHalf, "");
+                response.sendRedirect(url);
+                wasRedirect = true;
+            } else if (wasRedirect) {
+                wasRedirect = false;
+            }
+
+        } catch (final IOException ex) {
+            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Redirect Failed!", ex);
+        }
         final int extIx = requestPath.lastIndexOf('.');
         final String ext = extIx > -1 ? requestPath.substring(extIx) : "";
         final String mimeType = MIME_TYPES.containsKey(ext) ? MIME_TYPES.get(ext) : "application/octet-stream";
