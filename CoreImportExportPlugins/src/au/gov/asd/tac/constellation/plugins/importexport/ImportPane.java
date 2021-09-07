@@ -19,15 +19,12 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -56,11 +53,9 @@ public class ImportPane extends BorderPane {
             ConstellationColor.BLUEBERRY.getJavaColor());
 
     protected final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
-    protected final Menu optionsMenu;
-    protected final MenuItem loadMenuItem;
-    protected final MenuItem saveMenuItem;
     protected final CheckBox showSchemaAttributesCheckBox;
-    protected final MenuItem showSchemaAttributesItem;
+    protected final Button loadButton;
+    protected final Button saveButton;
     protected final Button helpButton;
     protected final TitledPane titledConfigurationPane;
     protected final ActionPane actionPane;
@@ -84,12 +79,8 @@ public class ImportPane extends BorderPane {
         final TitledPane titledSourcePane = new TitledPane("Source and Destination", sourcePane);
         titledSourcePane.setCollapsible(true);
 
-        // Options menu
-        optionsMenu = new Menu("Options");
-        loadMenuItem = new MenuItem("Load...");
-
-        // save menu item
-        saveMenuItem = new MenuItem("Save...");
+        loadButton = new Button("Load Template");
+        saveButton = new Button("Save Template");
 
         // the menu item gets called when the checkbox value changes so work around it by using a flag
         final boolean[] userClickedTheCheckboxFirst = new boolean[1];
@@ -117,34 +108,16 @@ public class ImportPane extends BorderPane {
             showSchemaAttributesCheckBox.setSelected(newPreference);
         });
 
-        // show schema attributes menu item
-        showSchemaAttributesItem = new MenuItem("Show all schema attributes", showSchemaAttributesCheckBox);
-        showSchemaAttributesItem.setOnAction((ActionEvent event) -> {
-            // ignore if the checkbox was clicked
-            if (!userClickedTheCheckboxFirst[0]) {
-                final boolean newPreference = !importExportPrefs.getBoolean(
-                        ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
-                        ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
-                importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, newPreference);
-                importController.setShowAllSchemaAttributes(newPreference);
-                importController.setClearManuallyAdded(false);
-                importController.setDestination(sourcePane.getDestination());
-                final int saveResultsItemIndex = optionsMenu.getItems().indexOf(showSchemaAttributesItem);
-                ((CheckBox) optionsMenu.getItems().get(saveResultsItemIndex).getGraphic()).setSelected(newPreference);
-            }
-            userClickedTheCheckboxFirst[0] = false;
-        });
-
         // setting up menu bar
         final AnchorPane menuToolbar = new AnchorPane();
-        final MenuBar menuBar = new MenuBar();
-        AnchorPane.setTopAnchor(menuBar, 0.0);
-        AnchorPane.setLeftAnchor(menuBar, 0.0);
-        menuBar.getMenus().add(optionsMenu);
+        final GridPane menuGrid = new GridPane();
+        menuGrid.add(loadButton, 0, 0);
+        menuGrid.add(saveButton, 1, 0);
+        menuGrid.add(showSchemaAttributesCheckBox, 2, 0);
+        menuGrid.add(new Label("Show all schema attributes"), 3, 0);
+        menuGrid.setHgap(2);
 
-        // hide the menu bar background now that its anchored to the left
-        menuBar.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
-        menuToolbar.getChildren().add(menuBar);
+        menuToolbar.getChildren().add(menuGrid);
 
         // setting up help button
         helpButton = new Button("", new ImageView(HELP_IMAGE));
