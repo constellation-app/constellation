@@ -23,8 +23,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
@@ -138,7 +141,7 @@ public class JsonIO {
         if (userInput.isEmpty()) {
             return;
         }
-        
+
         // If the user hit ok but provided an empty string, then generate one
         final String fileName = StringUtils.isBlank(userInput.get()) 
                 ? String.format(
@@ -225,7 +228,7 @@ public class JsonIO {
      * @see #loadJsonPreferences(Optional, Optional, Function) 
      * @deprecated use {@link #loadJsonPreferences(Optional, Optional, Class)} instead
      */
-    @Deprecated
+    @Deprecated(since = "2.4")
     public static JsonNode loadJsonPreferences(final Optional<String> loadDir,
                                                final Optional<String> filePrefix) {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
@@ -256,7 +259,7 @@ public class JsonIO {
      * @see #loadJsonPreferences(Optional, Optional, Function) 
      * @deprecated use {@link #loadJsonPreferences(Optional, Class)} instead
      */
-    @Deprecated
+    @Deprecated(since = "2.4")
     public static JsonNode loadJsonPreferences(final Optional<String> loadDir) {
         return loadJsonPreferences(loadDir, Optional.empty());
     }
@@ -335,7 +338,9 @@ public class JsonIO {
             );
             
             // Attempt to delete
-            if (!fileToDelete.delete()) {
+            try {
+                Files.delete(fileToDelete.toPath());
+            } catch (SecurityException | IOException ex) {
                 final NotifyDescriptor nd = new NotifyDescriptor.Message(
                         String.format("Failed to delete file %s from disk", fileToDelete.getName()),
                         NotifyDescriptor.ERROR_MESSAGE
@@ -368,10 +373,10 @@ public class JsonIO {
         // and if filePrefix was supplied, start with the provided prefix.
         final String[] names;
         if (preferenceDirectory.isDirectory()) {
-            names = preferenceDirectory.list((File dir, String name) -> {
-                return name.toLowerCase().endsWith(FILE_EXT)
-                        && (filePrefix.isEmpty() || name.toLowerCase().startsWith(filePrefix.get()));
-            });
+            names = preferenceDirectory.list((File dir, String name) -> 
+                name.toLowerCase().endsWith(FILE_EXT)
+                        && (filePrefix.isEmpty() || name.toLowerCase().startsWith(filePrefix.get()))
+            );
         } else {
             // Nothing to select from - return an empty array
             names = new String[0];

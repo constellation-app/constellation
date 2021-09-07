@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
+import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
@@ -23,18 +24,36 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Function;
+import javafx.scene.control.Button;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
+import static org.testfx.util.NodeQueryUtils.hasText;
+import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -49,6 +68,9 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class JsonIONGTest {
+    private static final Optional<String> SUB_DIRECTORY = Optional.of("test");
+    private static final Optional<String> FILE_PREFIX = Optional.of("my-");
+    
     public JsonIONGTest() {
     }
 
@@ -74,35 +96,20 @@ public class JsonIONGTest {
     public void loadJsonPreferences_get_pojo() throws URISyntaxException {
         
         try (
-                MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
+                MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS);
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
             ) {
             
-            final Optional<String> subDirectory = Optional.of("test");
-            final Optional<String> filePrefix = Optional.of("my-");
-            
-            jsonIoDialogMockedStatic.when(() -> JsonIODialog.getSelection(List.of("preferences"), subDirectory, filePrefix))
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog.getSelection(List.of("preferences"), SUB_DIRECTORY, FILE_PREFIX))
                     .thenReturn(Optional.of("preferences"));
             
-            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(subDirectory))
+            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
                     .thenReturn(new File(JsonIONGTest.class.getResource("resources").toURI()));
             
-            jsonIoMockedStatic.when(() -> JsonIO
-                    .loadJsonPreferences(subDirectory, filePrefix, MyPreferences.class))
-                    .thenCallRealMethod();
-            
-            jsonIoMockedStatic.when(() -> JsonIO
-                    .loadJsonPreferences(eq(subDirectory), eq(filePrefix), any(Function.class)))
-                    .thenCallRealMethod();
-            
             final MyPreferences loadedPreferences = JsonIO
-                    .loadJsonPreferences(subDirectory, filePrefix, MyPreferences.class);
+                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, MyPreferences.class);
             
-            final MyPreferences expectedPreferences = new MyPreferences();
-            expectedPreferences.setName("Joe Bloggs");
-            expectedPreferences.setVolume(5);
-            
-            assertEquals(loadedPreferences, expectedPreferences);
+            assertEquals(loadedPreferences, fixture());
         }
     }
     
@@ -110,29 +117,20 @@ public class JsonIONGTest {
     public void loadJsonPreferences_get_tree() throws URISyntaxException {
         
         try (
-                MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
+                MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS);
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
             ) {
             
-            final Optional<String> subDirectory = Optional.of("test");
             final Optional<String> filePrefix = Optional.empty();
             
-            jsonIoDialogMockedStatic.when(() -> JsonIODialog.getSelection(List.of("my-preferences"), subDirectory, filePrefix))
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog.getSelection(List.of("my-preferences"), SUB_DIRECTORY, filePrefix))
                     .thenReturn(Optional.of("my-preferences"));
             
-            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(subDirectory))
+            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
                     .thenReturn(new File(JsonIONGTest.class.getResource("resources").toURI()));
             
-            jsonIoMockedStatic.when(() -> JsonIO
-                    .loadJsonPreferences(subDirectory, filePrefix))
-                    .thenCallRealMethod();
-            
-            jsonIoMockedStatic.when(() -> JsonIO
-                    .loadJsonPreferences(eq(subDirectory), eq(filePrefix), any(Function.class)))
-                    .thenCallRealMethod();
-            
             final JsonNode loadedPreferences = JsonIO
-                    .loadJsonPreferences(subDirectory, filePrefix);
+                    .loadJsonPreferences(SUB_DIRECTORY, filePrefix);
             
             final JsonNode expectedJsonNode = new ObjectMapper()
                     .createObjectNode()
@@ -140,147 +138,328 @@ public class JsonIONGTest {
                     .put("volume", 5);
             
             assertEquals(loadedPreferences, expectedJsonNode);
-            
         }
     }
     
     @Test
     public void saveJsonPreferences() throws URISyntaxException, FileNotFoundException, IOException {
         
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
             ) {
+            setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
             
-            final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-            
-            // Ensure there is not old test data lying around
-            outputFile.delete();
-            
-            final Optional<String> subDirectory = Optional.of("test");
-            final Optional<String> filePrefix = Optional.of("my-");
-            
-            jsonIoDialogMockedStatic.when(JsonIODialog::getPreferenceFileName).thenReturn(Optional.of("preferences"));
-            
-            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(subDirectory))
-                    .thenReturn(new File(System.getProperty("java.io.tmpdir")));
-            
-            jsonIoMockedStatic.when(() -> JsonIO
-                    .saveJsonPreferences(eq(subDirectory), any(ObjectMapper.class), any(Object.class), eq(filePrefix)))
-                    .thenCallRealMethod();
-            
-            final MyPreferences myPreferences = new MyPreferences();
-            myPreferences.setName("Joe Bloggs");
-            myPreferences.setVolume(5);
-            
-            JsonIO.saveJsonPreferences(subDirectory, new ObjectMapper(), myPreferences, filePrefix);
+            JsonIO.saveJsonPreferences(SUB_DIRECTORY, new ObjectMapper(), fixture(), FILE_PREFIX);
                        
+            verifyOutputFileMatchesFixture(outputFile);
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+    
+    @Test
+    public void saveJsonPreferences_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
+        
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        
+        try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+            jsonIoMockedStatic.when(() -> JsonIO
+                .saveJsonPreferences(any(Optional.class), any(ObjectMapper.class), any()))
+                .thenCallRealMethod();
+            
+            final ObjectMapper mapper = new ObjectMapper();
+            
+            JsonIO.saveJsonPreferences(SUB_DIRECTORY, mapper, fixture());
+                       
+            jsonIoMockedStatic.verify(() -> JsonIO
+                .saveJsonPreferences(SUB_DIRECTORY, mapper, fixture(), Optional.empty()));
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+    
+    @Test
+    public void saveJsonPreferences_file_exists_dont_write() throws URISyntaxException, FileNotFoundException, IOException, InterruptedException, ExecutionException {
+        final FxRobot robot = new FxRobot();
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        
+        try {
+            outputFile.createNewFile();
+            
+            final Future<Void> future = WaitForAsyncUtils.asyncFx(() -> {
+                try (
+                    final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
+                    final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
+                ) {
+                    setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
+
+                    JsonIO.saveJsonPreferences(SUB_DIRECTORY, new ObjectMapper(), fixture(), FILE_PREFIX);
+                }
+            });
+            
+            final Stage dialog = getDialog(robot);
+            
+            robot.clickOn(robot.from(dialog.getScene().getRoot())
+                .lookup(".button")
+                .lookup(hasText("Cancel"))
+                .queryAs(Button.class));
+            
+            WaitForAsyncUtils.waitFor(future);
+            
             final String output = IOUtils.toString(
-                    new FileInputStream(outputFile), StandardCharsets.UTF_8);
+                new FileInputStream(outputFile), StandardCharsets.UTF_8);
             
-            final String expectedOutput = IOUtils.toString(
-                    new FileInputStream(new File(JsonIONGTest.class.getResource("resources/my-preferences.json").toURI())), StandardCharsets.UTF_8);
+            assertTrue(output.isBlank());
             
-            // Clean up
-            outputFile.delete();
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+    
+    @Test
+    public void saveJsonPreferences_file_exists_overwrite() throws URISyntaxException, FileNotFoundException, IOException, InterruptedException, ExecutionException {
+        final FxRobot robot = new FxRobot();
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        
+        try {
+            outputFile.createNewFile();
             
-            assertEquals(output, expectedOutput);
+            final Future<Void> future = WaitForAsyncUtils.asyncFx(() -> {
+                try (
+                    final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
+                    final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
+                ) {
+                    setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
+
+                    JsonIO.saveJsonPreferences(SUB_DIRECTORY, new ObjectMapper(), fixture(), FILE_PREFIX);
+                }
+            });
+            
+            final Stage dialog = getDialog(robot);
+            
+            robot.clickOn(robot.from(dialog.getScene().getRoot())
+                .lookup(".button")
+                .lookup(hasText("OK"))
+                .queryAs(Button.class));
+            
+            WaitForAsyncUtils.waitFor(future);
+            
+            verifyOutputFileMatchesFixture(outputFile);
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+    
+    @Test
+    public void saveJsonPreferences_no_name_provided() throws URISyntaxException, FileNotFoundException, IOException {
+        
+        final Instant fakeNow = Instant.parse("2020-01-01T00:00:00.00Z");
+        final String expectedDateTimeString = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z")
+                .withZone(ZoneId.systemDefault()).format(fakeNow);
+        
+        // Because the user enters an empty string, the file name is a
+        // combination of the user name and current date time
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/" 
+                + FilenameEncoder.encode(
+                        "my-" + System.getProperty("user.name") + " at "
+                                + expectedDateTimeString + ".json"
+                )
+        );
+        
+        try (
+                MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
+                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
+                MockedStatic<Instant> instantMockedStatic = Mockito.mockStatic(Instant.class, Mockito.CALLS_REAL_METHODS);
+            ) {
+            instantMockedStatic.when(Instant::now).thenReturn(fakeNow);
+            
+            setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("   "));
+            
+            JsonIO.saveJsonPreferences(SUB_DIRECTORY, new ObjectMapper(), fixture(), FILE_PREFIX);
+
+            verifyOutputFileMatchesFixture(outputFile);
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
         }
     }
     
     @Test
     public void saveJsonPreferences_pref_dir_not_a_dir() throws URISyntaxException, FileNotFoundException, IOException {
         
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
+                MockedStatic<DialogDisplayer> dialogDisplayerMockedStatic = Mockito.mockStatic(DialogDisplayer.class);
             ) {
             
-            final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
             outputFile.delete();
             
-            final Optional<String> subDirectory = Optional.of("test");
-            final Optional<String> filePrefix = Optional.of("my-");
-            
-            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(subDirectory))
+            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
                     .thenReturn(new File(System.getProperty("java.io.tmpdir") + "/samplefile"));
             
             jsonIoMockedStatic.when(() -> JsonIO
-                    .saveJsonPreferences(eq(subDirectory), any(ObjectMapper.class), any(Object.class), eq(filePrefix)))
+                    .saveJsonPreferences(any(Optional.class), any(ObjectMapper.class), any(), any(Optional.class)))
                     .thenCallRealMethod();
             
-            JsonIO.saveJsonPreferences(subDirectory, null, null, filePrefix);
-                       
+            // Prevent the error dialog popping up
+            final DialogDisplayer dialogDisplayer = mock(DialogDisplayer.class);
+            dialogDisplayerMockedStatic.when(DialogDisplayer::getDefault).thenReturn(dialogDisplayer);
+            when(dialogDisplayer.notify(any(NotifyDescriptor.class))).thenReturn(null);
+            
+            JsonIO.saveJsonPreferences(SUB_DIRECTORY, new ObjectMapper(), new Object(), FILE_PREFIX);
+            
+            // Verify no JSON IO dialogs were opened
             jsonIoDialogMockedStatic.verifyNoInteractions();
+            
+            // Verify the correct error dialog was presented
+            final ArgumentCaptor<NotifyDescriptor> captor = ArgumentCaptor.forClass(NotifyDescriptor.class);
+            verify(dialogDisplayer).notify(captor.capture());
+            assertEquals(captor.getValue().getMessage(), "Can't create preference directory '"
+                    + System.getProperty("java.io.tmpdir") + "samplefile'.");
+            assertEquals(captor.getValue().getMessageType(), NotifyDescriptor.ERROR_MESSAGE);
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
         }
     }
     
     @Test
     public void saveJsonPreferences_user_cancels() throws URISyntaxException, FileNotFoundException, IOException {
         
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
             ) {
-            
-            final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-            
             // Ensure there is not old test data lying around
             outputFile.delete();
             
-            final Optional<String> subDirectory = Optional.of("test");
-            final Optional<String> filePrefix = Optional.of("my-");
+            setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.empty());
             
-            jsonIoDialogMockedStatic.when(JsonIODialog::getPreferenceFileName).thenReturn(Optional.empty());
-            
-            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(subDirectory))
-                    .thenReturn(new File(System.getProperty("java.io.tmpdir")));
-            
-            jsonIoMockedStatic.when(() -> JsonIO
-                    .saveJsonPreferences(eq(subDirectory), any(ObjectMapper.class), any(Object.class), eq(filePrefix)))
-                    .thenCallRealMethod();
-            
-            JsonIO.saveJsonPreferences(subDirectory, null, null, filePrefix);
+            JsonIO.saveJsonPreferences(SUB_DIRECTORY, new ObjectMapper(), new Object(), FILE_PREFIX);
             
             assertFalse(outputFile.exists());
-            
-            // Clean up
-            outputFile.delete();
-            
-            
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
         }
     }
     
     @Test
     public void deleteJsonPreferences() throws URISyntaxException, FileNotFoundException, IOException {
         
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
-            
-            final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-            
-            // Ensure there is not old test data lying around
-            outputFile.delete();
-            
             outputFile.createNewFile();
             
             assertTrue(outputFile.exists());
             
-            final Optional<String> subDirectory = Optional.of("test");
-            final Optional<String> filePrefix = Optional.of("my-");
-            
-            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(subDirectory))
+            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
                     .thenReturn(new File(System.getProperty("java.io.tmpdir")));
             
             jsonIoMockedStatic.when(() -> JsonIO
-                    .deleteJsonPreference(eq("preferences"), eq(subDirectory), eq(filePrefix)))
+                    .deleteJsonPreference(eq("preferences"), eq(SUB_DIRECTORY), eq(FILE_PREFIX)))
                     .thenCallRealMethod();
             
-            JsonIO.deleteJsonPreference("preferences", subDirectory, filePrefix);
+            JsonIO.deleteJsonPreference("preferences", SUB_DIRECTORY, FILE_PREFIX);
             
             assertFalse(outputFile.exists());
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
         }
     }
     
+    /**
+     * Sets up common mock requirements for the save preference tests.
+     *
+     * @param jsonIoMockedStatic static mock for JsonIO
+     * @param jsonIoDialogMockedStatic static mock for JsonIODialog
+     * @param userResponse the expected user input for file name selection
+     */
+    private void setupStaticMocksForSavePreference(final MockedStatic<JsonIO> jsonIoMockedStatic,
+                                                   final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic,
+                                                   final Optional<String> userResponse) {
+        jsonIoDialogMockedStatic.when(JsonIODialog::getPreferenceFileName)
+                .thenReturn(userResponse);
+            
+        jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
+                .thenReturn(new File(System.getProperty("java.io.tmpdir")));
+
+        jsonIoMockedStatic.when(() -> JsonIO
+                .saveJsonPreferences(any(Optional.class), any(ObjectMapper.class), any(), any(Optional.class)))
+                .thenCallRealMethod();
+    }
+    
+    /**
+     * Get a representation of the JSON file in the resources package.
+     *
+     * @return the {@link MyPreferences} that represents the JSON file
+     */
+    private MyPreferences fixture() {
+        final MyPreferences myPreferences = new MyPreferences();
+        myPreferences.setName("Joe Bloggs");
+        myPreferences.setVolume(5);
+        
+        return myPreferences;
+    }
+    
+    /**
+     * Verify that the passed output file has the same contents as the JSON file
+     * {@code resources/my-preferences.json}.
+     *
+     * @param outputFile the file to compare with the fixture
+     * @throws IOException if there is an issue reading the files
+     * @throws URISyntaxException if there is an issue locating the fixture file
+     */
+    private void verifyOutputFileMatchesFixture(final File outputFile) throws IOException, URISyntaxException {
+        final String output = IOUtils.toString(
+                new FileInputStream(outputFile), StandardCharsets.UTF_8);
+
+        final String expectedOutput = IOUtils.toString(
+                new FileInputStream(new File(
+                        JsonIONGTest.class.getResource("resources/my-preferences.json").toURI()
+                )), StandardCharsets.UTF_8
+        );
+
+        assertEquals(output, expectedOutput);
+    }
+    
+    /**
+     * Get a dialog that has been displayed to the user. This will iterate through
+     * all open windows and identify one that is modal. The assumption is that there
+     * will only ever be one dialog open.
+     * <p/>
+     * If a dialog is not found then it will wait for the JavaFX thread queue to empty
+     * and try again.
+     *
+     * @param robot the FX robot for these tests
+     * @return the found dialog
+     */
+    private Stage getDialog(final FxRobot robot) {
+        Stage dialog = null;
+        while(dialog == null) {
+            dialog = robot.robotContext().getWindowFinder().listWindows().stream()
+                        .filter(window -> window instanceof javafx.stage.Stage)
+                        .map(window -> (javafx.stage.Stage) window)
+                        .filter(stage -> stage.getModality() == Modality.APPLICATION_MODAL)
+                        .findFirst()
+                        .orElse(null);
+            
+            if (dialog == null) {
+                WaitForAsyncUtils.waitForFxEvents();
+            }
+        }
+        return dialog;
+    }
+    
+    /**
+     * Test POJO used for verifying the serialization and de-serialization components.
+     */
     static class MyPreferences {
         private String name;
         private int volume;
