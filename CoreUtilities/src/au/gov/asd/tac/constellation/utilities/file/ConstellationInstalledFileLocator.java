@@ -41,13 +41,11 @@ public class ConstellationInstalledFileLocator {
      * using {@code / } as a separator, regardless of platform)
      * @param codeNameBase name of the supplying module, e.g.
      * {@code org.netbeans.modules.foo}; may be {@code null} if unknown
-     * @param localized true to perform a localized and branded lookup (useful
-     * for documentation etc.)
      * @param protectedDomain the {@code ProtectionDomain} of the class used to
      * find the location of the JAR.
      * @return the requested {@code File}, if it can be found, else {@code null}
      */
-    public static File locate(String relativePath, String codeNameBase, boolean localized, ProtectionDomain protectedDomain) {
+    public static File locate(String relativePath, String codeNameBase, ProtectionDomain protectedDomain) {
         File locatedFile = InstalledFileLocator.getDefault().locate(relativePath, codeNameBase, false);
         if (locatedFile == null) {
             // InstalledFileLocator only works in the NetBeans environment.
