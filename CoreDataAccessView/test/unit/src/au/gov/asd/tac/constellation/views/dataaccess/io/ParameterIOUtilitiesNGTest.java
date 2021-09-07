@@ -19,9 +19,15 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessState;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.GlobalParametersPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,9 +36,14 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.openide.util.NbPreferences;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterMethod;
@@ -44,6 +55,10 @@ import org.testng.annotations.Test;
  * @author mimosa2
  */
 public class ParameterIOUtilitiesNGTest {
+
+    private static MockedStatic<JsonIO> jsonIOStaticMock;
+    private static MockedStatic<NbPreferences> nbPreferencesStaticMock;
+    private static MockedStatic<ApplicationPreferenceKeys> applicationPrefKeysStaticMock;
 
     public ParameterIOUtilitiesNGTest() {
     }
@@ -60,11 +75,17 @@ public class ParameterIOUtilitiesNGTest {
     public void setUpMethod() throws Exception {
         FxToolkit.registerPrimaryStage();
         FxToolkit.showStage();
+        jsonIOStaticMock = Mockito.mockStatic(JsonIO.class);
+        nbPreferencesStaticMock = Mockito.mockStatic(NbPreferences.class);
+        applicationPrefKeysStaticMock = Mockito.mockStatic(ApplicationPreferenceKeys.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
         FxToolkit.hideStage();
+        jsonIOStaticMock.close();
+        nbPreferencesStaticMock.close();
+        applicationPrefKeysStaticMock.close();
     }
 
     /**
@@ -100,10 +121,6 @@ public class ParameterIOUtilitiesNGTest {
         final Map<String, PluginParameter<?>> map = Map.of(someKey, pluginParameter);
         when(pluginParameters.getParameters()).thenReturn(map);
 
-        final DataAccessState expectedTab = new DataAccessState();
-        expectedTab.newTab();
-        expectedTab.add("someKey", "something");
-
         // mock graph
         final Graph graph = mock(Graph.class);
         final WritableGraph wGraph = mock(WritableGraph.class);
@@ -111,8 +128,73 @@ public class ParameterIOUtilitiesNGTest {
 
         ParameterIOUtilities.saveDataAccessState(tabPane, graph);
 
+        final DataAccessState expectedTab = new DataAccessState();
+        expectedTab.newTab();
+        expectedTab.add("someKey", "something");
+
         assertEquals(expectedTab.getState().size(), 1);
         verify(wGraph).setObjectValue(0, 0, expectedTab);
 
+    }
+
+    /**
+     * Test of saveParameters method, of class ParameterIOUtilities.
+     */
+    @Test
+    public void testsaveParameters() throws IOException {
+        System.out.println("testsaveParameters");
+
+        nbPreferencesStaticMock.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class))
+                .thenReturn(null);
+        applicationPrefKeysStaticMock.when(() -> ApplicationPreferenceKeys.getUserDir(null))
+                .thenReturn(System.getProperty("java.io.tmpdir"));
+
+        // mock Tab
+        final Tab tab = mock(Tab.class);
+
+        ObservableList<Tab> observableArrayList
+                = FXCollections.observableArrayList(tab);
+
+        // mock TabPane
+        final TabPane tabPane = mock(TabPane.class);
+        when(tabPane.getTabs()).thenReturn(observableArrayList);
+
+        final ScrollPane scrollPane = mock(ScrollPane.class);
+        final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
+        final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
+        final PluginParameters pluginParameters = mock(PluginParameters.class);
+        final PluginParameter pluginParameter = mock(PluginParameter.class);
+
+        // global parameters
+        final String someKey = "CoreGlobalParameters.query_name";
+        final String someValue = "query_value";
+
+        when(tab.getContent()).thenReturn(scrollPane);
+        when(scrollPane.getContent()).thenReturn(queryPhasePane);
+        when(queryPhasePane.getGlobalParametersPane()).thenReturn(globalParametersPane);
+        when(globalParametersPane.getParams()).thenReturn(pluginParameters);
+        when(pluginParameter.getStringValue()).thenReturn(someValue);
+
+        final Map<String, PluginParameter<?>> map = Map.of(someKey, pluginParameter);
+        when(pluginParameters.getParameters()).thenReturn(map);
+
+        //plugin parameters
+//        final DataSourceTitledPane pane = mock(DataSourceTitledPane.class);
+//        when(queryPhasePane.getDataAccessPanes()).thenReturn((List<DataSourceTitledPane>) pane);
+//        when(pane.getParameters()).thenReturn(pluginParameters);
+//
+//
+        ParameterIOUtilities.saveParameters(tabPane);
+//
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final ArrayNode expectedJsonTree = (ArrayNode) objectMapper.readTree(
+                new FileInputStream(getClass().getResource("resources/plugin-preferences.json").getPath())
+        );
+
+        jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
+                eq("DataAccessView"),
+                any(ObjectMapper.class),
+                eq(expectedJsonTree)
+        ));
     }
 }
