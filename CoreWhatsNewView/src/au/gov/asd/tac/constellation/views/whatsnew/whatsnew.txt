@@ -4,6 +4,9 @@
 == 2021-09-06 Improved import view UI guidance of intended flow
 <p>In the import view, the configuration pane starts shrunk and the import button starts disabled. They will expand/be enabled respectively once a file is present the files list. The opposite will occur when the the list is empty.</p>
 
+== 2021-09-06 Reset graph view after importing
+<p>When data is imported with the Import from File or the Import from Database, the graph view is now reset to the full view to display everything that has been imported.</p>
+
 == 2021-08-23 Moved Notes View to Views menu
 <p>The Notes View can now be found in the Views menu instead of in the Experimental > Views menu.</p>
 
@@ -29,7 +32,7 @@
 
 == 2021-07-26 Quality Control Category Changes
 <p>Quality Control category names and colours have been updated to match commonly seen category names and colours. The category names are now Minor, Medium, Major, Severe and Critical.</p>
-<p>A new category OK has been added for when a Quality Control rule has not been flagged.<p>
+<p>A new category OK has been added for when a Quality Control rule has not been flagged.</p>
 
 == 2021-07-21 Conversation View
 <p>The Conversation View now has a search bar where a letter or passage can be searched for within the currently visible conversation.</p>

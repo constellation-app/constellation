@@ -230,7 +230,7 @@ public final class RunPane extends BorderPane implements KeyListener {
                 USE_COMPUTED_SIZE, -1);
         attributePane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, ATTRIBUTEPANE_MIN_WIDTH,
                 USE_COMPUTED_SIZE, -1);
-        attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
+        attributePane.addRow(0, sourceVertexScrollPane, transactionScrollPane, destinationVertexScrollPane);
 
         // A scroll pane to hold the attribute boxes
         final ScrollPane attributeScrollPane = new ScrollPane();
