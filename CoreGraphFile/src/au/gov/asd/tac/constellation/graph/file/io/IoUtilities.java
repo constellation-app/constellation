@@ -27,27 +27,28 @@ public final class IoUtilities {
     }
     
     /**
-     * Convert a GraphElementType to a String in an implementation-independent
-     * way.
+     * Convert a {@link GraphElementType} to a {@link String} in an implementation
+     * independent way.
      *
-     * @param type The GraphElementType to convert.
-     *
-     * @return A String representation of the given GraphElementType.
+     * @param type the GraphElementType to convert
+     * @return a string representation of the given GraphElementType
      */
     public static String getGraphElementTypeString(final GraphElementType type) {
         if (null == type) {
             throw new IllegalArgumentException("Unwanted GraphElementType: " + type);
-        } else switch (type) {
-            case GRAPH:
-                return "graph";
-            case VERTEX:
-                return "vertex";
-            case TRANSACTION:
-                return "transaction";
-            case META:
-                return "meta";
-            default:
-                throw new IllegalArgumentException("Unwanted GraphElementType: " + type);
+        } else {
+            switch (type) {
+                case GRAPH:
+                    return "graph";
+                case VERTEX:
+                    return "vertex";
+                case TRANSACTION:
+                    return "transaction";
+                case META:
+                    return "meta";
+                default:
+                    throw new IllegalArgumentException("Unwanted GraphElementType: " + type);
+            }
         }
     }
 }
