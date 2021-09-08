@@ -114,9 +114,10 @@ public class PreferencesMenu {
                 
                 try {
                     latch.await();
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     LOGGER.warning("Thread interrupted whilst waiting for JavaFX "
                             + "thread work to complete.");
+                    Thread.currentThread().interrupt();
                 }
                 
                 tablePane.getActiveTableReference().updatePagination(

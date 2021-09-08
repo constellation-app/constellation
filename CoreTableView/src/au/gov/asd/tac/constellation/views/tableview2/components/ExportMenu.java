@@ -270,7 +270,7 @@ public class ExportMenu {
          * @see EventHandler#handle(javafx.event.Event)
          */
         @Override
-        public void handle(ActionEvent event) {
+        public void handle(final ActionEvent event) {
             if (tablePane.getParentComponent().getCurrentGraph() != null) {
                 final ExportFileChooser exportFileChooser = getExportFileChooser();
                 

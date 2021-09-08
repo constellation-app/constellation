@@ -323,7 +323,7 @@ public class PreferenceMenuNGTest {
             
             verify(pageSizeOption1, times(0)).setSelected(true);
             verify(pageSizeOption2, times(1)).setSelected(true);
-            assertEquals(Integer.valueOf(150), currentTablePreferences.getMaxRowsPerPage());
+            assertEquals(150, currentTablePreferences.getMaxRowsPerPage());
         }
     }
     
@@ -494,7 +494,7 @@ public class PreferenceMenuNGTest {
      *     work to complete
      */
     private void verifyPageSizeAction(final MenuItem pageSizeMenuItem,
-                                      final Integer pageSize) throws InterruptedException {
+                                      final int pageSize) throws InterruptedException {
         clearInvocations(activeTableReference, tablePane);
         
         final ActionEvent actionEvent = mock(ActionEvent.class);

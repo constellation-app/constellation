@@ -133,7 +133,7 @@ public class TableViewPreferencesIoProvider {
             }
             
             return tablePreferences;
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             final String errorMsg = "An error occured converting preference file contents into "
                     + "the expected object";
             LOGGER.log(Level.WARNING, errorMsg, ex);

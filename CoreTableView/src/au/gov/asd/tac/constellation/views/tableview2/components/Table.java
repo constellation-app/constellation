@@ -562,11 +562,11 @@ public class Table {
      * @param columnReferenceMap a map of existing columns that can be used instead of
      *     creating new ones if the column names match up
      */
-    protected CopyOnWriteArrayList<Column> createColumnIndexPart(final ReadableGraph readableGraph,
+    protected List<Column> createColumnIndexPart(final ReadableGraph readableGraph,
                                                                  final GraphElementType elementType,
                                                                  final String attributeNamePrefix,
                                                                  final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
-        final CopyOnWriteArrayList<Column> tmpColumnIndex = new CopyOnWriteArrayList<>();
+        final List<Column> tmpColumnIndex = new CopyOnWriteArrayList<>();
         
         final int attributeCount = readableGraph.getAttributeCount(elementType);
 

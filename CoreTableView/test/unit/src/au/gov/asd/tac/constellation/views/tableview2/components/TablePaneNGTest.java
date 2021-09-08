@@ -20,12 +20,10 @@ import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -39,6 +37,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
+import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.AssertJUnit.fail;
@@ -103,7 +102,7 @@ public class TablePaneNGTest {
     }
     
     @Test
-    public void updateTable() throws InterruptedException, ExecutionException, TimeoutException {
+    public void updateTable() {
         final Graph graph = mock(Graph.class);
         final TableViewState tableViewState = new TableViewState();
         
@@ -132,9 +131,7 @@ public class TablePaneNGTest {
         verify(table).updateSelection(graph, tableViewState);
         
         // The future finished but maybe not the JavaFX thread
-        final CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(() -> latch.countDown());
-        latch.await();
+        WaitForAsyncUtils.waitForFxEvents();
         
         verify(table).updateSortOrder();
     }
@@ -176,9 +173,7 @@ public class TablePaneNGTest {
         verify(table, times(0)).updateSelection(any(Graph.class), any(TableViewState.class));
         
         // The future finished but maybe not the JavaFX thread
-        final CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(() -> latch.countDown());
-        latch.await();
+        WaitForAsyncUtils.waitForFxEvents();
         
         verify(table, times(0)).updateSortOrder();
         assertTrue(columns.isEmpty());

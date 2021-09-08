@@ -68,7 +68,7 @@ public class ExportFileChooser {
      * @return the selected file
      */
     public File openExportFileChooser() {
-        File selectedFile = getFileChooser().showSaveDialog();
+        final File selectedFile = getFileChooser().showSaveDialog();
         
         if (selectedFile != null && selectedFile.getAbsolutePath() != null) {
             // If somehow a file was selected that does not end in the required

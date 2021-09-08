@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -311,9 +312,11 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                     tablePane.getTable().getTableView().getSelectionModel()
                             .selectIndices(selectedIndices[0], selectedIndices);
                 }
-            } catch (InterruptedException | ExecutionException ex) {
-                LOGGER.warning("InterruptedException encountered while updating table selection");
+            } catch (InterruptedException ex) {
+                LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table selection");
                 Thread.currentThread().interrupt();
+            } catch (ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, "Error encountered while updating table selection", ex);
             }
         }
     }

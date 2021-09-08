@@ -122,11 +122,11 @@ public class UserTablePreferencesNGTest {
         
         assertFalse(userTablePreferences.updateMaxRowsPerPage(42));
         
-        assertEquals(Integer.valueOf(42), userTablePreferences.getMaxRowsPerPage());
+        assertEquals(42, userTablePreferences.getMaxRowsPerPage());
         
         assertTrue(userTablePreferences.updateMaxRowsPerPage(150));
         
-        assertEquals(Integer.valueOf(150), userTablePreferences.getMaxRowsPerPage());
+        assertEquals(150, userTablePreferences.getMaxRowsPerPage());
     }
     
     /**

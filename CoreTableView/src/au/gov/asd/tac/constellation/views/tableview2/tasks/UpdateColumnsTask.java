@@ -173,7 +173,7 @@ public class UpdateColumnsTask implements Runnable {
      * @see ActiveTableReference#saveSortDetails(java.lang.String, javafx.scene.control.TableColumn.SortType)
      */
     protected void saveSortDetails() {
-        if (table.getTableView().getSortOrder() != null && table.getTableView().getSortOrder().size() > 0) {
+        if (table.getTableView().getSortOrder() != null && !table.getTableView().getSortOrder().isEmpty()) {
             // A column was selected to sort by, save its name and direction
             getActiveTableReference().saveSortDetails(table.getTableView().getSortOrder().get(0).getText(),
                     table.getTableView().getSortOrder().get(0).getSortType());

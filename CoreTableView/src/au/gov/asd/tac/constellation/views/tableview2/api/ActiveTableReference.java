@@ -80,7 +80,7 @@ public class ActiveTableReference {
      * A list representing the current column setup of the table and how it relates
      * to the graph
      */
-    private final CopyOnWriteArrayList<Column> columnIndex;
+    private final List<Column> columnIndex;
     
     /**
      * The current pagination for the table. This is used by the table to determine
@@ -289,7 +289,7 @@ public class ActiveTableReference {
      *
      * @param sortingListenerActive true if a sort listener is currently active, false otherwise
      */
-    public void setSortingListenerActive(boolean sortingListenerActive) {
+    public void setSortingListenerActive(final boolean sortingListenerActive) {
         this.sortingListenerActive = sortingListenerActive;
     }
 
@@ -327,7 +327,7 @@ public class ActiveTableReference {
      *
      * @param sortedRowList the new table rows
      */
-    public void setSortedRowList(SortedList<ObservableList<String>> sortedRowList) {
+    public void setSortedRowList(final SortedList<ObservableList<String>> sortedRowList) {
         this.sortedRowList = sortedRowList;
     }
 
@@ -367,7 +367,7 @@ public class ActiveTableReference {
      *
      * @param userTablePreferences the new user table preferences
      */
-    public void setUserTablePreferences(UserTablePreferences userTablePreferences) {
+    public void setUserTablePreferences(final UserTablePreferences userTablePreferences) {
         this.userTablePreferences = userTablePreferences;
     }
 }

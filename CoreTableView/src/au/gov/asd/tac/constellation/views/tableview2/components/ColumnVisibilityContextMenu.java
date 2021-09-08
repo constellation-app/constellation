@@ -199,7 +199,7 @@ public class ColumnVisibilityContextMenu {
         
         table.getColumnIndex().forEach(columnTuple -> {
             final String columnHeading = columnTuple.getAttributeNamePrefix();
-            if (null != columnHeading) {
+            if (columnHeading != null) {
                 switch (columnHeading) {
                     case GraphRecordStoreUtilities.SOURCE:
                         columnCheckboxesSource.add(createColumnVisibilityMenu(columnTuple));
@@ -500,7 +500,7 @@ public class ColumnVisibilityContextMenu {
          * @param event the key release event that triggered this handler
          */
         @Override
-        public void handle(KeyEvent event) {
+        public void handle(final KeyEvent event) {
             final String filterTerm = ((TextField) event.getSource()).getText().toLowerCase().trim();
             columnCheckboxes.forEach(item -> {
                 final String columnName = item.getId().toLowerCase();

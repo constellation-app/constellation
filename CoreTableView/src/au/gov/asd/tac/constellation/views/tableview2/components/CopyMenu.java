@@ -152,7 +152,7 @@ public class CopyMenu {
          * @see EventHandler#handle(javafx.event.Event) 
          */
         @Override
-        public void handle(ActionEvent event) {
+        public void handle(final ActionEvent event) {
             final String data = TableViewUtilities.getTableData(tablePane.getTable().getTableView(),
                     tablePane.getActiveTableReference().getPagination(), false, selected);
             TableViewUtilities.copyToClipboard(data);

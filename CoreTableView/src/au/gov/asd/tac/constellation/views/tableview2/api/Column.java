@@ -78,7 +78,7 @@ public final class Column {
         return attributeNamePrefix;
     }
 
-    public void setAttributeNamePrefix(String attributeNamePrefix) {
+    public void setAttributeNamePrefix(final String attributeNamePrefix) {
         this.attributeNamePrefix = attributeNamePrefix;
     }
 
@@ -91,7 +91,7 @@ public final class Column {
         return attribute;
     }
 
-    public void setAttribute(Attribute attribute) {
+    public void setAttribute(final Attribute attribute) {
         this.attribute = attribute;
     }
 
@@ -104,7 +104,7 @@ public final class Column {
         return tableColumn;
     }
 
-    public void setTableColumn(TableColumn<ObservableList<String>, String> tableColumn) {
+    public void setTableColumn(final TableColumn<ObservableList<String>, String> tableColumn) {
         this.tableColumn = tableColumn;
     }
     

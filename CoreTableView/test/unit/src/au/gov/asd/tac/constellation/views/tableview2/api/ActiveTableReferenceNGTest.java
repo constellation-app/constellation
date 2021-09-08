@@ -122,7 +122,7 @@ public class ActiveTableReferenceNGTest {
         assertNotNull(activeTableReference.getPagination());
         assertNotNull(activeTableReference.getSelectedOnlySelectedRows());
         
-        assertEquals(Integer.valueOf(500), activeTableReference.getUserTablePreferences().getMaxRowsPerPage());
+        assertEquals(500, activeTableReference.getUserTablePreferences().getMaxRowsPerPage());
     }
     
     /**

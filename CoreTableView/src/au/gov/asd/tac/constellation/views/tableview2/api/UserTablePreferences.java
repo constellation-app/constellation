@@ -34,10 +34,10 @@ import org.apache.commons.lang3.tuple.Pair;
  * @author formalhaunt
  */
 public final class UserTablePreferences {
-    public static final Integer DEFAULT_MAX_ROWS_PER_PAGE = 500;
+    public static final int DEFAULT_MAX_ROWS_PER_PAGE = 500;
     
     @JsonProperty(value = "PageSize")
-    private Integer maxRowsPerPage = DEFAULT_MAX_ROWS_PER_PAGE;
+    private int maxRowsPerPage = DEFAULT_MAX_ROWS_PER_PAGE;
     
     @JsonProperty("ColumnOrder")
     private List<String> columnOrder = new ArrayList<>();
@@ -46,11 +46,11 @@ public final class UserTablePreferences {
     private Map.Entry<String, TableColumn.SortType> sortByColumn
             = Pair.of("", TableColumn.SortType.ASCENDING);
     
-    public synchronized Integer getMaxRowsPerPage() {
+    public synchronized int getMaxRowsPerPage() {
         return maxRowsPerPage;
     }
 
-    public synchronized void setMaxRowsPerPage(Integer pageSize) {
+    public synchronized void setMaxRowsPerPage(final int pageSize) {
         this.maxRowsPerPage = pageSize;
     }
 
@@ -58,7 +58,7 @@ public final class UserTablePreferences {
         return columnOrder;
     }
 
-    public synchronized void setColumnOrder(List<String> columnOrder) {
+    public synchronized void setColumnOrder(final List<String> columnOrder) {
         this.columnOrder = columnOrder;
     }
 
@@ -66,7 +66,7 @@ public final class UserTablePreferences {
         return sortByColumn;
     }
 
-    public synchronized void setSortByColumn(Map.Entry<String, TableColumn.SortType> sortByColumn) {
+    public synchronized void setSortByColumn(final Map.Entry<String, TableColumn.SortType> sortByColumn) {
         this.sortByColumn = sortByColumn;
     }
     
@@ -120,8 +120,8 @@ public final class UserTablePreferences {
      * @return true if the page size was changed, false otherwise
      */
     @JsonIgnore
-    public synchronized boolean updateMaxRowsPerPage(final Integer pageSize) {
-        if (!getMaxRowsPerPage().equals(pageSize)) {
+    public synchronized boolean updateMaxRowsPerPage(final int pageSize) {
+        if (getMaxRowsPerPage() != pageSize) {
             setMaxRowsPerPage(pageSize);
             return true;
         }
