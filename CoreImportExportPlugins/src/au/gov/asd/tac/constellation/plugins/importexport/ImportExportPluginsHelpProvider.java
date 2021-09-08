@@ -63,7 +63,7 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
         final String sep = File.separator;
         final String importExportPath;
         importExportPath = "constellation" + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + "constellation" + sep + "plugins" + sep + "importexport" + sep + "docs" + sep + "importexpot-toc.xml";
+                + sep + "constellation" + sep + "plugins" + sep + "importexport" + sep + "docs" + sep + "importexport-toc.xml";
         return importExportPath;
     }
 }

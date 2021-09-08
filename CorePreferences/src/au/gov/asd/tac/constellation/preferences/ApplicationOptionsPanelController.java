@@ -61,7 +61,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setRestDirectory(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT));
         applicationOptionsPanel.setDownloadPythonClient(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
         applicationOptionsPanel.setRememberSaveLocation(prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT));
-        applicationOptionsPanel.setOnlineHelpOption(prefs.getBoolean(ApplicationPreferenceKeys.HELP_KEY, ApplicationPreferenceKeys.ONLINE_HELP));
         applicationOptionsPanel.setOnlineHelpOption(helpPrefs.getBoolean(ApplicationPreferenceKeys.HELP_KEY, ApplicationPreferenceKeys.ONLINE_HELP));
     }
 
@@ -87,7 +86,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 prefs.put(ApplicationPreferenceKeys.REST_DIR, applicationOptionsPanel.getRestDirectory());
                 prefs.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, applicationOptionsPanel.getDownloadPythonClient());
                 prefs.putBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, applicationOptionsPanel.getRememberSaveLocation());
-                prefs.putBoolean(ApplicationPreferenceKeys.HELP_KEY, applicationOptionsPanel.getOnlineHelpOption());
                 helpPrefs.putBoolean(ApplicationPreferenceKeys.HELP_KEY, applicationOptionsPanel.getOnlineHelpOption());
             }
         }
@@ -123,7 +121,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
                 && applicationOptionsPanel.getDownloadPythonClient() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
                 && applicationOptionsPanel.getRememberSaveLocation() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT))
-                && applicationOptionsPanel.getOnlineHelpOption() == prefs.getBoolean(ApplicationPreferenceKeys.HELP_KEY, ApplicationPreferenceKeys.ONLINE_HELP)
                 && applicationOptionsPanel.getOnlineHelpOption() == helpPrefs.getBoolean(ApplicationPreferenceKeys.HELP_KEY, ApplicationPreferenceKeys.ONLINE_HELP);
     }
 
