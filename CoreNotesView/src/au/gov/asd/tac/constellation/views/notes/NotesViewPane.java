@@ -621,7 +621,7 @@ public class NotesViewPane extends BorderPane {
         // Define content text area
         final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
         contentTextArea.setWrapText(true);
-
+        contentTextArea.positionCaret(contentTextArea.getText().length());
         final VBox noteInformation;
 
         // Define selection label
