@@ -328,11 +328,11 @@ public class PluginParameters implements PluginParameterListener {
     public final boolean hasParameter(final String id) {
         return uParameters.containsKey(id);
     }
-    
+
     /**
-     * 
+     *
      * Check if any of the parameters is a multi-line string parameter
-     * 
+     *
      * @return true if such a parameter exists, false otherwise
      */
     public boolean hasMultiLineStringParameter() {
@@ -340,7 +340,7 @@ public class PluginParameters implements PluginParameterListener {
             if (parameter.getParameterValue() instanceof StringParameterValue
                     && parameter.getProperty(StringParameterType.LINES) != null
                     && (int) parameter.getProperty(StringParameterType.LINES) > 1) {
-                return true;                 
+                return true;
             }
         }
         return false;

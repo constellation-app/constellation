@@ -49,7 +49,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1100),
+    @ActionReference(path = "Menu/Views", position = 1200),
     @ActionReference(path = "Shortcuts", name = "CS-O")
 })
 @TopComponent.OpenActionRegistration(
@@ -253,5 +253,4 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-
 }

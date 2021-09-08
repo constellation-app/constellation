@@ -44,7 +44,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Views", position = 500),
+    @ActionReference(path = "Menu/Views", position = 900),
     @ActionReference(path = "Shortcuts", name = "CS-A")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_NotesViewAction",
@@ -91,8 +91,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     protected void handleNewGraph(final Graph graph) {
         if (needsUpdate() && graph != null) {
-            notesViewPane.selectAllFilters();
-            notesViewPane.clearAllNotes();
+            notesViewPane.clearNotes();
             notesViewController.readState(graph);
         }
     }
@@ -101,13 +100,14 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     protected void handleGraphClosed(final Graph graph) {
         if (needsUpdate() && graph != null) {
             notesViewPane.closeEdit();
-            notesViewPane.clearAllNotes();
+            notesViewPane.clearNotes();
         }
     }
 
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
+        notesViewPane.closeEdit();
         /**
          * listener is not removed so that plugin reports created when the Notes
          * View is not open will render when it is opened later.
@@ -119,8 +119,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     protected void handleComponentClosed() {
         super.handleComponentClosed();
         notesViewPane.closeEdit();
-        notesViewPane.selectAllFilters();
-        notesViewPane.clearAllNotes();
     }
 
     @Override

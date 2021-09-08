@@ -230,7 +230,7 @@ public final class RunPane extends BorderPane implements KeyListener {
                 USE_COMPUTED_SIZE, -1);
         attributePane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, ATTRIBUTEPANE_MIN_WIDTH,
                 USE_COMPUTED_SIZE, -1);
-        attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
+        attributePane.addRow(0, sourceVertexScrollPane, transactionScrollPane, destinationVertexScrollPane);
 
         // A scroll pane to hold the attribute boxes
         final ScrollPane attributeScrollPane = new ScrollPane();
@@ -484,7 +484,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public ImportDefinition createDefinition() {
+    public ImportDefinition createDefinition(final int firstRow) {
 
         RowFilter rf = rowFilter;
         if (StringUtils.isBlank(filter)) {
@@ -493,7 +493,7 @@ public final class RunPane extends BorderPane implements KeyListener {
             rf.setColumns(currentColumnLabels);
         }
 
-        final ImportDefinition definition = new ImportDefinition(1, rf);
+        final ImportDefinition definition = new ImportDefinition(firstRow, rf);
 
         for (final TableColumn<TableRow, ?> column : sampleDataView.getColumns()) {
             final ImportTableColumn importTableColumn = (ImportTableColumn) column;

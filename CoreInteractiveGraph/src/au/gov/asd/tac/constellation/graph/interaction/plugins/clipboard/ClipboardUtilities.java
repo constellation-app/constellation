@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
@@ -38,11 +40,29 @@ public class ClipboardUtilities {
         content.putString(text);
         clipboard.setContent(content);
 
-        PluginExecution.withPlugin(new SimplePlugin("Copy To Clipboard") {
-            @Override
-            protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-                ConstellationLoggerHelper.copyPropertyBuilder(this, text.length(), ConstellationLoggerHelper.SUCCESS);
-            }
-        }).interactively(true).executeLater(null);
+        PluginExecution.withPlugin(new CopyToClipboard(text)).interactively(true).executeLater(null);
+    }
+
+    /**
+     * Plugin to copy to the clipboard.
+     */
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+    private static class CopyToClipboard extends SimplePlugin {
+
+        private final String text;
+
+        public CopyToClipboard(final String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String getName() {
+            return "Clipboard Utilities: Copy To Clipboard";
+        }
+
+        @Override
+        protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            ConstellationLoggerHelper.copyPropertyBuilder(this, text.length(), ConstellationLoggerHelper.SUCCESS);
+        }
     }
 }

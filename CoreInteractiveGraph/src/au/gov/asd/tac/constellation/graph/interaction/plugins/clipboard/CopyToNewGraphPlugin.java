@@ -29,7 +29,9 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -52,6 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("CopyToNewGraphPlugin=Copy To New Graph")
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
 public class CopyToNewGraphPlugin extends SimpleReadPlugin {
 
     public static final String COPY_ALL_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "copy_all");

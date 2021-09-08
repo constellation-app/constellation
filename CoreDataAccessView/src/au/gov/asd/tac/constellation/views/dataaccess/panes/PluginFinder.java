@@ -34,9 +34,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 /**
- * Present the user with a list of plugins and allow it to select one, then expand that plugin.
+ * Present the user with a list of plugins and allow it to select one, then
+ * expand that plugin.
  * <p>
- * This saves users from having to hunt through the various sections for a plugin when they don't know where it is.
+ * This saves users from having to hunt through the various sections for a
+ * plugin when they don't know where it is.
  *
  * @author algol
  */
@@ -47,8 +49,8 @@ public class PluginFinder {
     /**
      * Build a cooperative TextArea and ListView.
      * <p>
-     * The TextArea acts as a filter on the ListView. If there is only one item in the filtered list, it will be used
-     * when the user fires the OK action.
+     * The TextArea acts as a filter on the ListView. If there is only one item
+     * in the filtered list, it will be used when the user fires the OK action.
      *
      * @param dap
      * @param queryPhasePane
@@ -82,25 +84,26 @@ public class PluginFinder {
             queryPhasePane.expandPlugin(result);
         }
     }
-    
+
     protected Alert createAlertDialog() {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
         dialog.setTitle("Select a plugin");
         dialog.setHeaderText("Select a plugin");
         dialog.setResizable(true);
-        
+
         return dialog;
     }
-    
+
     class MouseEventHandler implements EventHandler<MouseEvent> {
+
         private final Alert dialog;
         private final ListView<String> listView;
-        
+
         public MouseEventHandler(final Alert dialog, final ListView listView) {
             this.dialog = dialog;
             this.listView = listView;
         }
-        
+
         @Override
         public void handle(final MouseEvent mouseEvent) {
             switch (mouseEvent.getClickCount()) {
@@ -120,18 +123,19 @@ public class PluginFinder {
                     break;
             }
         }
-        
+
     }
-    
+
     class KeyEventHandler implements EventHandler<KeyEvent> {
+
         private final Alert dialog;
         private final ListView<String> listView;
-        
+
         public KeyEventHandler(final Alert dialog, final ListView listView) {
             this.dialog = dialog;
             this.listView = listView;
         }
-        
+
         @Override
         public void handle(KeyEvent event) {
             final KeyCode c = event.getCode();
@@ -145,23 +149,24 @@ public class PluginFinder {
                 }
             }
         }
-        
+
     }
-    
+
     class TextFieldChangeListener implements ChangeListener<String> {
+
         private final ObservableList<String> texts;
         private final ListView listView;
-        
+
         public TextFieldChangeListener(final ObservableList<String> texts,
-                                       final ListView listView) {
+                final ListView listView) {
             this.texts = texts;
             this.listView = listView;
         }
 
         @Override
         public void changed(final ObservableValue<? extends String> observable,
-                            final String oldValue,
-                            final String newValue) {
+                final String oldValue,
+                final String newValue) {
             if (!newValue.isEmpty()) {
                 final String lower = newValue.toLowerCase();
                 final List<String> ls = texts.stream().filter(a -> a.toLowerCase().contains(lower)).collect(Collectors.toList());
@@ -180,6 +185,6 @@ public class PluginFinder {
             final ObservableList<String> items = listView.getItems();
             result = items.size() == 1 ? items.get(0) : null;
         }
-        
+
     }
 }

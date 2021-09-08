@@ -223,7 +223,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
      */
     private static void drawColoredLine(final PGraphics image, final float d, final float width, final int[] palette) {
         image.strokeWeight(width);
-        image.strokeCap(PGraphics.SQUARE);
+        image.strokeCap(PConstants.SQUARE);
         for (int i = 0; i < N_COLORS; i++) {
             final float x0 = i * d / N_COLORS;
             final float y0 = width / 2;

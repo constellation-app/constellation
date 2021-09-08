@@ -28,17 +28,17 @@ import org.testng.annotations.Test;
 
 /**
  * Test class for the Delete Selection Plugin
- * 
+ *
  * @author Delphinus8821
  */
 public class DeleteSelectionPluginNGTest {
-    
+
     private int attrX, attrY;
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7;
     private int txId1, txId2, txId3, txId4, txId5;
     private int vAttrId, tAttrId;
     private StoreGraph graph;
-    
+
     public DeleteSelectionPluginNGTest() {
     }
 
@@ -98,10 +98,10 @@ public class DeleteSelectionPluginNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     /**
      * Tests that nothing is deleted as nothing is selected
-     * 
+     *
      * @throws InterruptedException
      * @throws PluginException
      * @throws Exception
@@ -111,52 +111,54 @@ public class DeleteSelectionPluginNGTest {
         DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
         assertEquals(graph.getVertexCount(), 7);
-        assertEquals(graph.getTransactionCount(), 5);    
+        assertEquals(graph.getTransactionCount(), 5);
     }
-    
+
     /**
-     * Tests that some vertices and transactions are deleted when those vertices are selected
-     * 
+     * Tests that some vertices and transactions are deleted when those vertices
+     * are selected
+     *
      * @throws InterruptedException
      * @throws PluginException
      * @throws Exception
-     */ 
+     */
     @Test
     public void testSomeVxSelected() throws InterruptedException, PluginException, Exception {
         graph.setBooleanValue(vAttrId, vxId2, true);
-        graph.setBooleanValue(vAttrId, vxId4, true);  
+        graph.setBooleanValue(vAttrId, vxId4, true);
         graph.setBooleanValue(vAttrId, vxId6, true);
         graph.setBooleanValue(vAttrId, vxId7, true);
-        
+
         DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
-        
+
         assertEquals(graph.getVertexCount(), 3);
-        assertEquals(graph.getTransactionCount(), 1);   
+        assertEquals(graph.getTransactionCount(), 1);
     }
-    
+
     /**
-     * Tests that some transactions are deleted when they are selected 
-     * 
+     * Tests that some transactions are deleted when they are selected
+     *
      * @throws InterruptedException
      * @throws PluginException
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testSomeTxSelected() throws InterruptedException, PluginException, Exception {
         graph.setBooleanValue(tAttrId, txId1, true);
         graph.setBooleanValue(tAttrId, txId2, true);
-        
+
         DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
-        
+
         assertEquals(graph.getVertexCount(), 7);
-        assertEquals(graph.getTransactionCount(), 3);  
+        assertEquals(graph.getTransactionCount(), 3);
     }
-    
-    /** 
-     * Tests that everything is deleted when all vertices and transactions are selected 
-     * 
+
+    /**
+     * Tests that everything is deleted when all vertices and transactions are
+     * selected
+     *
      * @throws InterruptedException
      * @throws PluginException
      * @throws Exception
@@ -166,22 +168,22 @@ public class DeleteSelectionPluginNGTest {
         graph.setBooleanValue(vAttrId, vxId1, true);
         graph.setBooleanValue(vAttrId, vxId2, true);
         graph.setBooleanValue(vAttrId, vxId3, true);
-        graph.setBooleanValue(vAttrId, vxId4, true);  
+        graph.setBooleanValue(vAttrId, vxId4, true);
         graph.setBooleanValue(vAttrId, vxId5, true);
         graph.setBooleanValue(vAttrId, vxId6, true);
         graph.setBooleanValue(vAttrId, vxId7, true);
-        
+
         graph.setBooleanValue(tAttrId, txId1, true);
         graph.setBooleanValue(tAttrId, txId2, true);
         graph.setBooleanValue(tAttrId, txId3, true);
         graph.setBooleanValue(tAttrId, txId4, true);
         graph.setBooleanValue(tAttrId, txId5, true);
-        
+
         DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
-        
+
         assertEquals(graph.getVertexCount(), 0);
-        assertEquals(graph.getTransactionCount(), 0);  
+        assertEquals(graph.getTransactionCount(), 0);
     }
-    
+
 }

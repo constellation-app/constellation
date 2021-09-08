@@ -34,7 +34,7 @@ import org.openide.util.NbBundle;
  * @author twilight_sparkle
  */
 @NbBundle.Messages("DragElementsPlugin=Drag Graph Elements")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECTION"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
 public final class DragElementsPlugin extends SimpleEditPlugin {
 
     final IntArray vertexIds;

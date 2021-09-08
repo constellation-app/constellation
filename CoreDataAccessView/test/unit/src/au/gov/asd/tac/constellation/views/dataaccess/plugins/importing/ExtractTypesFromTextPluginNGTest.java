@@ -133,7 +133,8 @@ public class ExtractTypesFromTextPluginNGTest {
     }
 
     /**
-     * Test of query method in class ExtractTypesFromTextPlugin using a null string
+     * Test of query method in class ExtractTypesFromTextPlugin using a null
+     * string
      *
      * @throws Exception
      */
@@ -148,7 +149,8 @@ public class ExtractTypesFromTextPluginNGTest {
     }
 
     /**
-     * Test of query method in class ExtractTypesFromTextPlugin using a string where a detection regex is picked up
+     * Test of query method in class ExtractTypesFromTextPlugin using a string
+     * where a detection regex is picked up
      *
      * @throws Exception
      */

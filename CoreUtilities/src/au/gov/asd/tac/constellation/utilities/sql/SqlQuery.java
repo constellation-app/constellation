@@ -30,7 +30,8 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author twilight_sparkle A framework for SQL Queries used in data access plugins that connect to SQL databases.
+ * @author twilight_sparkle A framework for SQL Queries used in data access
+ * plugins that connect to SQL databases.
  */
 public class SqlQuery {
 

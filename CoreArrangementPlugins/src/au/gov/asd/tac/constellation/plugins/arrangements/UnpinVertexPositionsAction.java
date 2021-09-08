@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements;
 
-import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import java.awt.event.ActionEvent;
@@ -28,8 +27,8 @@ import org.openide.util.NbBundle;
 
 /**
  * Wrapper around UnpinVertexPositionsPlugin which is responsible for setting
- * selected vertexes PINNED attributes to false to ensure the vertexes
- * are moved when an arrangement plugin is run.
+ * selected vertexes PINNED attributes to false to ensure the vertexes are moved
+ * when an arrangement plugin is run.
  *
  * @author serpens24
  */
@@ -39,13 +38,11 @@ import org.openide.util.NbBundle;
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 9999),
-    @ActionReference(path = "Toolbars/Arrange", position = 9999),
-})
-
+    @ActionReference(path = "Toolbars/Arrange", position = 9999),})
 
 @NbBundle.Messages("CTL_UnpinVertexPositionsAction=Unpin Vertex Positions")
 public final class UnpinVertexPositionsAction extends AbstractAction {
-  
+
     private final GraphNode context;
 
     /**

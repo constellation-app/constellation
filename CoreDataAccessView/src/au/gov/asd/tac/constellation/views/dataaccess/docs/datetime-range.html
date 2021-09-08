@@ -17,32 +17,32 @@
         <div style="text-align: center">
             <img src="resources/DataAccessDatetimeRange.png" alt="Datetime Range Global Parameter">
         </div>
-        
+
         <h2>Relative Range</h2>
         <p>
-            A relative range indicates a period ending "now" and starting at the indicated time in the past. For example, if 2 days is 
-            selected, and a data access query is run at 2015-01-30&nbsp;09:30, the range used for the query will be 
-            2015-01-28&nbsp;09:30:00 to 2015-01-30&nbsp;09:30. If another query is run ten minutes later, the range will be 
+            A relative range indicates a period ending "now" and starting at the indicated time in the past. For example, if 2 days is
+            selected, and a data access query is run at 2015-01-30&nbsp;09:30, the range used for the query will be
+            2015-01-28&nbsp;09:30:00 to 2015-01-30&nbsp;09:30. If another query is run ten minutes later, the range will be
             2015-01-28&nbsp;09:40:00 to 2015-01-30&nbsp;09:40.
         </p>
         <p>
             This is also true if a relative range is saved and loaded at a later time: the datetime range will always end at "now".
         </p>
         <p>
-            NOTE: Selecting a relative period will update the absolute range fields. However, this is done as an indication of the 
-            period when it was selected. Since the relative period ends "now", and is therefore continually changing, the values 
+            NOTE: Selecting a relative period will update the absolute range fields. However, this is done as an indication of the
+            period when it was selected. Since the relative period ends "now", and is therefore continually changing, the values
             displayed in the absolute section are immediately obsolete.
         </p>
-        
+
         <h2>Absolute Range</h2>
         <p>
-            An absolute range allows you to specify the start and end of the range as fixed instances in time. e.g. if 
+            An absolute range allows you to specify the start and end of the range as fixed instances in time. e.g. if
             2015-01-23&nbsp;09:30 and 2015-01-30&nbsp;09:30 are used, the same range will be used whenever a query is run.
         </p>
         <p>
-            The absolute range also allows to you select a timezone to be used to display the absolute time range. A drop-down list 
-            contains all available timezones, with convenience buttons for UTC and local timezones. When the timezone changes, the 
-            time instant of each absolute datetime remains the same: only the timezone in which the datetimes are displayed is 
+            The absolute range also allows to you select a timezone to be used to display the absolute time range. A drop-down list
+            contains all available timezones, with convenience buttons for UTC and local timezones. When the timezone changes, the
+            time instant of each absolute datetime remains the same: only the timezone in which the datetimes are displayed is
             changed.
         </p>
         <p>

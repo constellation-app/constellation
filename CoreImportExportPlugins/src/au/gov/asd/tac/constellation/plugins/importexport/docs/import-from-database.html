@@ -20,7 +20,7 @@
                     Open Database Importer
                 </td>
                 <td>
-                    
+
                 </td>
                 <td>
                     File -&gt; Import -&gt; From Database...
@@ -30,26 +30,26 @@
                 </td>
             </tr>
         </table>
-        
+
         <h2>Introduction</h2>
         <p>
             The "Import from Database" window allows you to import data from a database using a JDBC Connection.
         </p>
-        
+
         <div style="text-align: center">
             <img src="resources/dragging_attributes_jdbc_import.png" alt="Database Importer">
         </div>
-        
+
         <h2>High Level Workflow Steps</h2>
         <p>
             The following is a high level workflow an analyst can follow (explained in detail later on):
         </p>
         <ol>
             <li>Add the relevant JDBC Driver via "Manage Connections" -&gt; "Drivers" tab.</li>
-            <li>Add the Connection details in "Manage Connections" -&gt; "Connections" tab. 
+            <li>Add the Connection details in "Manage Connections" -&gt; "Connections" tab.
                 If the username and password are not required, leave them blank.</li>
             <li>Select the connection from the "Connection" drop-down in the main Import window.</li>
-            <li>Enter the username and password if the connection requires them.</li>          
+            <li>Enter the username and password if the connection requires them.</li>
             <li>Enter the SQL Query and Click the "Query" button to retrieve data.</li>
             <li>Select your destination graph.</li>
             <li>Drag and drop attributes from the bottom pane onto your columns.</li>
@@ -65,7 +65,7 @@
             <li>Filter in the Configuration Pane by adding searches of the form &lt;column_name&gt; =="&lt;search text&gt;" E.g. first_name=="Nick".</li>
         </ul>
 
-        
+
         <h2>Add and Remove Connections to Import Queries From</h2>
         <p>
             Once you select a connection and submit a query, the "Configuration" section will display the first 100 rows as a preview.
@@ -73,7 +73,7 @@
 
         <h2>Select the Destination Graph</h2>
         <p>
-            Select the destination graph from the drop-down list. Once selected, the attributes in the configuration pane update 
+            Select the destination graph from the drop-down list. Once selected, the attributes in the configuration pane update
             depending on what attributes are supported by the schema of that graph.
         </p>
 
@@ -99,7 +99,7 @@
         <p>
             By default, transactions are created as directed. In the Transaction Attributes column there is a pseudo-attribute
             called "__directed__" (different from "directed") which can be used to create directed and undirected transactions
-            as required. The "__directed__" pseudo-attribute is a boolean that will cause a transaction to be directed when its 
+            as required. The "__directed__" pseudo-attribute is a boolean that will cause a transaction to be directed when its
             value is "true" (case insensitive), and undirected otherwise.
         </p>
 
@@ -108,7 +108,7 @@
             Once your configuration is finished, import the entire query by clicking on the Import button located at the bottom right hand corner.
         </p>
         <p>
-            NOTE: The import view does not disappear after clicking import. This is so that you don't have to re-configure from the beginning. Once 
+            NOTE: The import view does not disappear after clicking import. This is so that you don't have to re-configure from the beginning. Once
             you are satisfied with the configuration, you have the ability to save your settings explained in the next section.
         </p>
 
@@ -120,8 +120,8 @@
         <p>
             When a template is saved, the import definition name is used to name the saved query. If a query of that name
             has already been saved, you will be asked if you want to overwrite it. Templates are saved in the directory
-            "&lt;HOME_DIRECTORY&gt;/.CONSTELLATION/ImportJDBC". (The name of the file in which the template is saved is 
-            encoded so it doesn't clash with file system limitations.) Files in this directory can be deleted using your 
+            "&lt;HOME_DIRECTORY&gt;/.CONSTELLATION/ImportJDBC". (The name of the file in which the template is saved is
+            encoded so it doesn't clash with file system limitations.) Files in this directory can be deleted using your
             favourite file management utility.
         </p>
         <p>

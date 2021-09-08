@@ -21,7 +21,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The BooleanParameterType defines {@link PluginParameter} objects that hold boolean values.
+ * The BooleanParameterType defines {@link PluginParameter} objects that hold
+ * boolean values.
  *
  * @author sirius
  */
@@ -36,16 +37,19 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
     /**
      * Constructs a new instance of this type.
      * <p>
-     * Note: This constructor should not be called directly; it is public for the purposes of lookup (which may be
-     * removed for types in the future). To buildId parameters from the type, the static method {@link #build buildId()}
-     * should be used, or the singleton {@link #INSTANCE INSTANCE}.
+     * Note: This constructor should not be called directly; it is public for
+     * the purposes of lookup (which may be removed for types in the future). To
+     * buildId parameters from the type, the static method
+     * {@link #build buildId()} should be used, or the singleton
+     * {@link #INSTANCE INSTANCE}.
      */
     public BooleanParameterType() {
         super(ID);
     }
 
     /**
-     * The singleton instance of the type that should be used to construct all parameters that have this type.
+     * The singleton instance of the type that should be used to construct all
+     * parameters that have this type.
      */
     public static final BooleanParameterType INSTANCE = new BooleanParameterType();
 
@@ -60,11 +64,12 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
     }
 
     /**
-     * Construct a new {@link PluginParameter} of this type with initial value represented by the given
-     * {@link BooleanParameterValue}.
+     * Construct a new {@link PluginParameter} of this type with initial value
+     * represented by the given {@link BooleanParameterValue}.
      *
      * @param id The String id of the parameter to construct.
-     * @param pv A {@link BooleanParameterValue} describing the initial value of the parameter being constructed.
+     * @param pv A {@link BooleanParameterValue} describing the initial value of
+     * the parameter being constructed.
      * @return A {@link PluginParameter} of BooleanParameterType.
      */
     public static PluginParameter<BooleanParameterValue> build(String id, final BooleanParameterValue pv) {
@@ -72,7 +77,8 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
     }
 
     /**
-     * An implementation of {@link ParameterValue} corresponding to this type. It holds boolean values.
+     * An implementation of {@link ParameterValue} corresponding to this type.
+     * It holds boolean values.
      */
     public static class BooleanParameterValue extends ParameterValue {
 
@@ -107,7 +113,8 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
          * Set the current value
          *
          * @param newb The boolean for this parameter value to hold.
-         * @return True if the new value was different to the current value, false otherwise.
+         * @return True if the new value was different to the current value,
+         * false otherwise.
          */
         public boolean set(final boolean newb) {
             if (newb != b) {

@@ -143,13 +143,13 @@ public class SetGraphValues extends RestService {
             throw new RestServiceException(ex);
         }
     }
-    
+
     @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
     private static class SetGraphAttributesFromRestApiPlugin extends SimpleEditPlugin {
-        
+
         private final ArrayNode columns;
         private final ArrayNode row;
-        
+
         public SetGraphAttributesFromRestApiPlugin(final ArrayNode columns, final ArrayNode row) {
             this.columns = columns;
             this.row = row;
@@ -159,7 +159,7 @@ public class SetGraphValues extends RestService {
         public String getName() {
             return "Set graph attributes from REST API";
         }
-        
+
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             for (int i = 0; i < columns.size(); i++) {
@@ -171,6 +171,6 @@ public class SetGraphValues extends RestService {
                 final String attributeValue = row.get(i).asText();
                 graph.setStringValue(attributeId, 0, attributeValue);
             }
-        }       
+        }
     }
 }

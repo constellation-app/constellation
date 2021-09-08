@@ -36,8 +36,9 @@ import javafx.scene.layout.Priority;
 import static javafx.scene.layout.Region.USE_PREF_SIZE;
 
 /**
- * The SourcePane provides the UI necessary to allow the user to specify where the imported data should come from. This
- * is typically done by selecting a file.
+ * The SourcePane provides the UI necessary to allow the user to specify where
+ * the imported data should come from. This is typically done by selecting a
+ * file.
  *
  * @author sirius
  */
@@ -98,8 +99,8 @@ public abstract class SourcePane extends GridPane {
     }
 
     /**
-     * Helper method to update the destination graph combo box. Also used for value loading when this pane is being
-     * initialized.
+     * Helper method to update the destination graph combo box. Also used for
+     * value loading when this pane is being initialized.
      */
     public final void updateDestinationGraphCombo() {
         // previousDestinationObject is the previously selected item in the combobox

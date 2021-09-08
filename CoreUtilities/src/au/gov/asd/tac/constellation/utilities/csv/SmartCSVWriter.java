@@ -31,10 +31,11 @@ import java.util.regex.Pattern;
  * @author sirius
  */
 public class SmartCSVWriter implements AutoCloseable {
+
     private static final Pattern FIND_QUOTES = Pattern.compile("\"");
-    
+
     private static final String DOUBLE_QUOTES = "\"\"";
-    
+
     private final Writer out;
     private final char separator;
     private final boolean escapeAlways;

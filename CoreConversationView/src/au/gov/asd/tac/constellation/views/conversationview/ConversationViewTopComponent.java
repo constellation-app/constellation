@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import javafx.application.Platform;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -98,20 +97,6 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     @Override
     protected void componentDeactivated() {
         conversation.getGraphUpdateManager().setManaged(needsUpdate());
-    }
-
-    @Override
-    protected void handleGraphOpened(final Graph graph) {
-        if (needsUpdate() && graph != null) {
-            conversationBox.refreshCountUI(false);
-        }
-    }
-
-    @Override
-    protected void handleGraphClosed(final Graph graph) {
-        if (needsUpdate() && graph != null) {
-            conversationBox.refreshCountUI(true);
-        }
     }
 
     void writeProperties(java.util.Properties p) {

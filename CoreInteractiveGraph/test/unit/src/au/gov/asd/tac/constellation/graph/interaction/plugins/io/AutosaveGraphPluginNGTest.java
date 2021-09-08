@@ -41,17 +41,17 @@ import org.testng.annotations.Test;
 
 /**
  * Autosave Graph Plugin Test
- * 
+ *
  * @author Delphinus8821
  */
 public class AutosaveGraphPluginNGTest {
-    
+
     private int attrX, attrY, attrZ;
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7, vxId8;
     private int txId1, txId2, txId3, txId4, txId5;
     private int vAttrId, tAttrId;
     private Graph graph;
-    
+
     public AutosaveGraphPluginNGTest() {
     }
 
@@ -67,15 +67,15 @@ public class AutosaveGraphPluginNGTest {
     public void setUpMethod() throws Exception {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         graph = new DualGraph(schema);
-        
+
         WritableGraph wg = graph.getWritableGraph("Autosave", true);
-        try {     
+        try {
             attrX = VisualConcept.VertexAttribute.X.ensure(wg);
             attrY = VisualConcept.VertexAttribute.Y.ensure(wg);
             attrZ = VisualConcept.VertexAttribute.Z.ensure(wg);
             vAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
             tAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-   
+
             vxId1 = wg.addVertex();
             wg.setFloatValue(attrX, vxId1, 1.0f);
             wg.setFloatValue(attrY, vxId1, 1.0f);
@@ -119,30 +119,31 @@ public class AutosaveGraphPluginNGTest {
 
     /**
      * Test of execute method, of class AutosaveGraphPlugin.
+     *
      * @throws java.lang.Exception
      */
     @Test
     public void testExecute() throws Exception {
         final File saveDir = AutosaveUtilities.getAutosaveDir();
         final File saveFile = new File(saveDir, graph.getId() + GraphDataObject.FILE_EXTENSION);
-        
+
         // check the autosave file doesn't exist before running the plugin
         assertEquals(saveFile.exists(), false);
-        
+
         TopComponent tc = new TopComponent();
         tc.setName("TestName");
         final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
         final GraphNode graphNode = new GraphNode(graph, gdo, tc, null);
         AutosaveGraphPlugin instance = new AutosaveGraphPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
-        
+
         // check that the autosave file does now exist
-        assertEquals(saveFile.exists(), true);  
-             
+        assertEquals(saveFile.exists(), true);
+
         final Graph openSavedGraph = new GraphJsonReader().readGraphZip(saveFile, new TextIoProgress(false));
         final ReadableGraph rg = openSavedGraph.getReadableGraph();
         try {
-            // check that the graph from the autosave matches the original graph 
+            // check that the graph from the autosave matches the original graph
             assertEquals(rg.getVertexCount(), 7);
             assertEquals(rg.getStringValue(vAttrId, vxId1), "false");
             assertEquals(rg.getStringValue(vAttrId, vxId2), "true");
@@ -151,8 +152,8 @@ public class AutosaveGraphPluginNGTest {
             assertEquals(rg.getStringValue(vAttrId, vxId5), "true");
             assertEquals(rg.getTransactionCount(), 5);
         } finally {
-             rg.release();
+            rg.release();
         }
-        
-    } 
+
+    }
 }

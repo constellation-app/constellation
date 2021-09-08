@@ -45,8 +45,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 @Messages("ZoomToVerticesPlugin=Zoom to Vertices")
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {"VIEW"})
 public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
 
     public static final String VERTICES_PARAMETER_ID = PluginParameter.buildId(ZoomToVerticesPlugin.class, "vertices");

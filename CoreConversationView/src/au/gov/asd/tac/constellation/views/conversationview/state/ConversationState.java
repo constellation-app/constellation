@@ -26,8 +26,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * The ConversationState represents the controlled state of a conversation. It is stored on the graph and is therefore
- * saved when the graph is saved.
+ * The ConversationState represents the controlled state of a conversation. It
+ * is stored on the graph and is therefore saved when the graph is saved.
  *
  * @author sirius
  */
@@ -45,11 +45,13 @@ public class ConversationState {
     }
 
     /**
-     * Creates a new ConversationState with the given contribution provider and sender attributes
+     * Creates a new ConversationState with the given contribution provider and
+     * sender attributes
      *
-     * @param hiddenContributionProviders a list of contribution providers who's content will be displayed in the
-     * conversation.
-     * @param senderAttributes the attributes that will be displayed as the sender of the messages in this conversation.
+     * @param hiddenContributionProviders a list of contribution providers who's
+     * content will be displayed in the conversation.
+     * @param senderAttributes the attributes that will be displayed as the
+     * sender of the messages in this conversation.
      */
     public ConversationState(Set<String> hiddenContributionProviders, List<String> senderAttributes) {
         this.hiddenContributionProviders = new HashSet<>(hiddenContributionProviders);

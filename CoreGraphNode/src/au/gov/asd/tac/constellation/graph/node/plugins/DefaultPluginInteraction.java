@@ -59,11 +59,11 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         this.pluginManager = pluginManager;
         this.pluginReport = pluginReport;
     }
-    
+
     public PluginReport getPluginReport() {
         return pluginReport;
     }
-    
+
     public ProgressHandle getProgress() {
         return progress;
     }
@@ -71,7 +71,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public Timer getTimer() {
         return timer;
     }
-    
+
     @Override
     public boolean isInteractive() {
         return pluginManager.isInteractive();
@@ -275,7 +275,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         public String getTime() {
             return getTime(startTime, System.currentTimeMillis());
         }
-        
+
         protected String getTime(final long startTime, final long endTime) {
             // getTime(long, long) was added to allow unit testing to occur so in practice we would not expect this situation to occur
             // it should still be handled just in case though
@@ -283,7 +283,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             if (startTime < 0 || endTime < 0 || startTime > endTime) {
                 return "00:00:00";
             }
-            
+
             long interval = (endTime - startTime) / 1000;
 
             final long seconds = interval % 60;
@@ -314,9 +314,9 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     if (progress == null) {
                         return;
                     }
-                    
+
                     progress.progress(getTime() + " " + currentMessage);
-                    
+
                     if ("Finished".equalsIgnoreCase(currentMessage)) {
                         return;
                     }

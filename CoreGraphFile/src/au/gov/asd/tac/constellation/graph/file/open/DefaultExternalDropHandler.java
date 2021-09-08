@@ -195,7 +195,8 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
      * Opens the given file.
      *
      * @param file file to be opened
-     * @return {@code null} if the file was successfully opened; or a localized error message in case of failure
+     * @return {@code null} if the file was successfully opened; or a localized
+     * error message in case of failure
      */
     String openFile(final File file) {
         FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(file));

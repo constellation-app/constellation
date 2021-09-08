@@ -71,6 +71,7 @@ public class NotesViewEntry implements PluginReportListener {
     public void setGraphAttribute(final Boolean graphAttribute) {
         this.graphAttribute = graphAttribute;
     }
+
     public List<Integer> getNodesSelected() {
         return nodesSelected;
     }

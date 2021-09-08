@@ -41,6 +41,7 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.io.AutosaveGraphPl
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.CloseGraphPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveGraphPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.select.FreeformSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.PointSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.PreviousViewPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin;
@@ -72,6 +73,7 @@ public class InteractiveGraphPluginRegistry {
     public static final String DESTROY_ALL_COMPOSITES = DestroyAllCompositesPlugin.class.getName();
     public static final String DRAG_ELEMENTS = DragElementsPlugin.class.getName();
     public static final String EXPAND_ALL_COMPOSITES = ExpandAllCompositesPlugin.class.getName();
+    public static final String FREEFORM_SELECTION = FreeformSelectionPlugin.class.getName();
     public static final String PASTE = PasteFromClipboardPlugin.class.getName();
     public static final String PASTE_GRAPH = PasteGraphPlugin.class.getName();
     public static final String PASTE_TEXT = PasteTextPlugin.class.getName();

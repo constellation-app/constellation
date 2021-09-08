@@ -143,4 +143,8 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
         square.setFill(gradient);
         return square;
     }
+
+    protected FlowPane getBoxes() {
+        return boxes;
+    }
 }
