@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
@@ -33,7 +34,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.Function;
 import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -41,13 +41,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -348,7 +346,7 @@ public class JsonIONGTest {
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
-                MockedStatic<DialogDisplayer> dialogDisplayerMockedStatic = Mockito.mockStatic(DialogDisplayer.class);
+                MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic = Mockito.mockStatic(NotifyDisplayer.class);
             ) {
             final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/samplefile");
             jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
@@ -358,22 +356,14 @@ public class JsonIONGTest {
                     .saveJsonPreferences(any(Optional.class), any(ObjectMapper.class), any(), any(Optional.class)))
                     .thenCallRealMethod();
             
-            // Prevent the error dialog popping up
-            final DialogDisplayer dialogDisplayer = mock(DialogDisplayer.class);
-            dialogDisplayerMockedStatic.when(DialogDisplayer::getDefault).thenReturn(dialogDisplayer);
-            when(dialogDisplayer.notify(any(NotifyDescriptor.class))).thenReturn(null);
-            
             JsonIO.saveJsonPreferences(SUB_DIRECTORY, new ObjectMapper(), new Object(), FILE_PREFIX);
             
             // Verify no JSON IO dialogs were opened
             jsonIoDialogMockedStatic.verifyNoInteractions();
             
             // Verify the correct error dialog was presented
-            final ArgumentCaptor<NotifyDescriptor> captor = ArgumentCaptor.forClass(NotifyDescriptor.class);
-            verify(dialogDisplayer).notify(captor.capture());
-            assertEquals(captor.getValue().getMessage(), "Can't create preference directory '"
-                    + preferenceDirectory + "'.");
-            assertEquals(captor.getValue().getMessageType(), NotifyDescriptor.ERROR_MESSAGE);
+            notifyDisplayerMockedStatic.verify(() -> NotifyDisplayer.display("Can't create preference directory '"
+                    + preferenceDirectory + "'.", NotifyDescriptor.ERROR_MESSAGE));
         } finally {
             Files.deleteIfExists(outputFile.toPath());
         }
@@ -418,6 +408,34 @@ public class JsonIONGTest {
             JsonIO.deleteJsonPreference("preferences", SUB_DIRECTORY, FILE_PREFIX);
             
             assertFalse(outputFile.exists());
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+    
+    @Test
+    public void deleteJsonPreferences_fails() throws URISyntaxException, FileNotFoundException, IOException {
+        
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        
+        try (
+                MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
+                MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic = Mockito.mockStatic(NotifyDisplayer.class);
+                MockedStatic<Files> filesMockedStatic = Mockito.mockStatic(Files.class);
+            ) {
+            filesMockedStatic.when(() -> Files.deleteIfExists(outputFile.toPath())).thenThrow(new SecurityException("Some error"));
+            
+            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
+                    .thenReturn(new File(System.getProperty("java.io.tmpdir")));
+            
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .deleteJsonPreference(eq("preferences"), eq(SUB_DIRECTORY), eq(FILE_PREFIX)))
+                    .thenCallRealMethod();
+            
+            JsonIO.deleteJsonPreference("preferences", SUB_DIRECTORY, FILE_PREFIX);
+            
+            assertFalse(outputFile.exists());
+            notifyDisplayerMockedStatic.verify(() -> NotifyDisplayer.display("Failed to delete file my-preferences.json from disk", NotifyDescriptor.ERROR_MESSAGE));
         } finally {
             Files.deleteIfExists(outputFile.toPath());
         }

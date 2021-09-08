@@ -17,17 +17,16 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
@@ -125,11 +124,10 @@ public class JsonIO {
         
         // If the preference directory cannot be accessed then return
         if (!preferenceDirectory.isDirectory()) {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message(
+            NotifyDisplayer.display(
                     String.format("Can't create preference directory '%s'.", preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
-            DialogDisplayer.getDefault().notify(nd);
             
             return;
         }
@@ -188,12 +186,11 @@ public class JsonIO {
                                 preferenceFile.getPath()
                         )
                 );
-            } catch (IOException ex) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(
+            } catch (final IOException ex) {
+                NotifyDisplayer.display(
                         String.format("Can't save preference file: %s", ex.getMessage()),
                         NotifyDescriptor.ERROR_MESSAGE
                 );
-                DialogDisplayer.getDefault().notify(nd);
             }
         }
     }
@@ -234,7 +231,7 @@ public class JsonIO {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
             try {
                 return OBJECT_MAPPER.readTree(file);
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 LOGGER.log(
                         Level.WARNING,
                         String.format(
@@ -284,7 +281,7 @@ public class JsonIO {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
             try {
                 return OBJECT_MAPPER.readValue(file, expectedFormat);
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 LOGGER.log(
                         Level.WARNING,
                         String.format(
@@ -339,13 +336,12 @@ public class JsonIO {
             
             // Attempt to delete
             try {
-                Files.delete(fileToDelete.toPath());
-            } catch (SecurityException | IOException ex) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(
+                Files.deleteIfExists(fileToDelete.toPath());
+            } catch (final SecurityException | IOException ex) {
+                NotifyDisplayer.display(
                         String.format("Failed to delete file %s from disk", fileToDelete.getName()),
                         NotifyDescriptor.ERROR_MESSAGE
                 );
-                DialogDisplayer.getDefault().notify(nd);
             }
         }
     }
