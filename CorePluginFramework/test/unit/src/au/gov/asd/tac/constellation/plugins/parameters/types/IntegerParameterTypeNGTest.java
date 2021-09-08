@@ -20,7 +20,6 @@ import static au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParam
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import static au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.SHRINK_VAL;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -77,8 +76,8 @@ public class IntegerParameterTypeNGTest {
         System.out.println("build");
 
         IntegerParameterValue instance = new IntegerParameterValue(2);
-        Integer instanceValue = instance.get();
-        Integer expResult = 2;
+        int instanceValue = instance.get();
+        int expResult = 2;
         assertEquals(instanceValue, expResult);
 
         instance = new IntegerParameterValue(-5);
@@ -91,10 +90,6 @@ public class IntegerParameterTypeNGTest {
         expResult = 0;
         assertEquals(instanceValue, expResult);
 
-        instance = new IntegerParameterValue(-5);
-        instanceValue = instance.get();
-        expResult = 0;
-        assertNotEquals(instanceValue, expResult);
     }
 
     /**
@@ -109,7 +104,7 @@ public class IntegerParameterTypeNGTest {
 
         // Check setting shrink to false
         boolean expected = false;
-        IntegerParameterType.setShrinkInputWidth(parameter, expected);
+        IntegerParameterType.setShrinkInputWidth(parameter, false);
         assertEquals(parameter.getProperty(SHRINK_VAL), expected);
 
         // Check setting shrink to the same value that it already is

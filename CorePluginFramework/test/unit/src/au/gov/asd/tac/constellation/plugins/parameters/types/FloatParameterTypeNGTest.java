@@ -58,7 +58,7 @@ public class FloatParameterTypeNGTest {
     public void testBuild_String() {
         System.out.println("build");
 
-        String id = "integerParameter";
+        String id = "floatParameter";
         PluginParameter result = FloatParameterType.build(id);
         FloatParameterType.FloatParameterValue expResult = new FloatParameterType.FloatParameterValue();
 
