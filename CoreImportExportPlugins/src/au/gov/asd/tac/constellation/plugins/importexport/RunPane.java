@@ -74,7 +74,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final int SCROLLPANE_HEIGHT = 450;
     private static final int SCROLLPANE_VIEW_WIDTH = 400;
     private static final int SCROLLPANE_VIEW_HEIGHT = 900;
-    private static final int SAMPLEVIEW_HEIGHT = 450;
+    private static final int SAMPLEVIEW_HEIGHT = 250;
     private static final int SAMPLEVIEW_MIN_HEIGHT = 130;
     private static final int ATTRIBUTEPANE_PREF_WIDTH = 300;
     private static final int ATTRIBUTEPANE_MIN_WIDTH = 100;
@@ -121,7 +121,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         public AttributeBox(final String label, final AttributeList attributeList) {
             final BorderPane borderPane = new BorderPane();
             borderPane.setTop(attributeList);
-            
+
             setMaxHeight(USE_PREF_SIZE);
             setMaxWidth(Double.MAX_VALUE);
             setCenter(borderPane);
@@ -167,7 +167,6 @@ public final class RunPane extends BorderPane implements KeyListener {
         scrollPane.setContent(configBox);
         scrollPane.setFitToWidth(true);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        
         setCenter(scrollPane);
 
         filterField = new TextField();
