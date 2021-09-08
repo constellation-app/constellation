@@ -87,7 +87,7 @@ public class DelimitedSourcePane extends SourcePane {
         // the imported files list
         fileListView.itemsProperty().addListener((observable, oldValue, newValue) -> {
             importController.openConfigPane(!newValue.isEmpty());
-            importController.enableButton(newValue.isEmpty());
+            importController.disableButton(newValue.isEmpty());
         });
 
         final ScrollPane fileScrollPane = new ScrollPane();

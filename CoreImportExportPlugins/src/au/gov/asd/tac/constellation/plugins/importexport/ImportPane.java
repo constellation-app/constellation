@@ -181,7 +181,7 @@ public class ImportPane extends BorderPane {
         titledConfigurationPane.setExpanded(isExpanded);
     }
 
-    public void enableButton(final boolean isEnabled) {
-        actionPane.enableButton(isEnabled);
+    public void disableButton(final boolean isEnabled) {
+        actionPane.disableButton(isEnabled);
     }
 }
