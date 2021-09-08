@@ -49,7 +49,9 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -629,9 +631,9 @@ public class NotesViewPane extends BorderPane {
         // If the note is user created add the selection details.
         if (newNote.isUserCreated()) {
             if (newNote.isGraphAttribute()) {
-                selectionLabelText = "Note is linked to: the graph.";
+                selectionLabelText = "Note linked to: the graph.";
             } else {
-                selectionLabelText = "Note is linked to: ";
+                selectionLabelText = "Note linked to: ";
                 if (newNote.getNodesSelected().size() == 1) {
                     selectionLabelText += newNote.getNodesSelected().size() + " node, ";
                 } else {
@@ -664,15 +666,15 @@ public class NotesViewPane extends BorderPane {
 
         // Define buttons (edit, save, add, renove, delete)
         final Button editTextButton = new Button("Edit");
-        editTextButton.setMinWidth(80);
+        editTextButton.setMinWidth(92);
         editTextButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
         final Button saveTextButton = new Button("Save");
-        saveTextButton.setMinWidth(80);
+        saveTextButton.setMinWidth(92);
         saveTextButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
         final Button deleteButton = new Button("Delete Note");
-        deleteButton.setMinWidth(80);
+        deleteButton.setMinWidth(92);
         deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
         final VBox noteButtons;
@@ -784,18 +786,26 @@ public class NotesViewPane extends BorderPane {
         }
 
         deleteButton.setOnAction(event -> {
-            synchronized (LOCK) {
-                if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
-                    notesDateTimeCache.remove(newNote.getDateTime());
+            final Alert deleteAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            deleteAlert.setContentText("Are you sure you want to delete this note? : " + titleLabel.getText());
 
-                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-                    if (activeGraph != null) {
-                        updateNotesUI();
-                        notesViewController.writeState(activeGraph);
+            deleteAlert.showAndWait();
+            if (deleteAlert.getResult() == ButtonType.OK) {
+                synchronized (LOCK) {
+                    if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
+                        notesDateTimeCache.remove(newNote.getDateTime());
+
+                        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                        if (activeGraph != null) {
+                            updateNotesUI();
+                            notesViewController.writeState(activeGraph);
+                        }
                     }
                 }
+                event.consume();
             }
-            event.consume();
+            deleteAlert.close();
+
         });
 
         // Edit button activates editable text boxs for title and label
@@ -814,7 +824,6 @@ public class NotesViewPane extends BorderPane {
             if (StringUtils.isBlank(titleText.getText()) || StringUtils.isBlank(contentTextArea.getText())) {
                 JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
             } else {
-
                 titleLabel.setText(titleText.getText());
                 contentLabel.setText(contentTextArea.getText());
 
