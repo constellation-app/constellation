@@ -4,6 +4,9 @@
 == 2021-09-06 Import From File
 <p>Updated the UI to only enable and expand sections once a file is added</p>
 
+== 2021-09-06 Freeform Selection 
+<p>You can now draw a freeform selection shape by holding down Alt whilst selecting.</p>
+
 == 2021-09-06 Reset graph view after importing
 <p>When data is imported with the Import from File or the Import from Database, the graph view is now reset to the full view to display everything that has been imported.</p>
 
