@@ -2,11 +2,11 @@
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
 == 2021-09-08 Notes View UI Improvements
-<p>New features:
+<p>New features:</p>
 <ul>
-<li><p>Replaced edit pop up with direct note editable text fields</p></li>
-<li><p>Right click note to add and remove selected graph elements</p></li>
-<li><p>Delete note confirmation pop up</p></li>
+<li>Replaced edit pop up with direct note editable text fields</li>
+<li>Right click note to add and remove selected graph elements</li>
+<li>Delete note confirmation pop up</li>
 </ul>
 
 == 2021-09-06 Freeform Selection 

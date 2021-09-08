@@ -116,7 +116,7 @@ public class NotesViewPane extends BorderPane {
     private final Object LOCK = new Object();
 
     private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
-    private final String boldStyle = "-fx-font-weight: bold;";
+    private static final String boldStyle = "-fx-font-weight: bold;";
 
     private final List<Integer> nodesSelected = new ArrayList<>();
     private final List<Integer> transactionsSelected = new ArrayList<>();
