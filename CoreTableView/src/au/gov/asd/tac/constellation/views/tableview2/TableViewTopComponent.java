@@ -262,11 +262,13 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
      *     not the new one
      */
     protected Set<Tuple<String, Attribute>> getRemovedAttributes(final TableViewState oldState,
-                                                                 final TableViewState newState) {
+                                                                 final TableViewState newState) {      
         return new HashSet<>(
                 CollectionUtils.subtract(
-                        oldState.getColumnAttributes(),
-                        newState.getColumnAttributes()
+                        oldState != null && oldState.getColumnAttributes() != null
+                                ? oldState.getColumnAttributes() : new HashSet<>(),
+                        newState != null && newState.getColumnAttributes() != null
+                                ? newState.getColumnAttributes() : new HashSet<>()
                 )
         );
     }
@@ -284,8 +286,10 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
                                                                final TableViewState newState) {
         return new HashSet<>(
                 CollectionUtils.subtract(
-                        newState.getColumnAttributes(),
-                        oldState.getColumnAttributes()
+                        newState != null && newState.getColumnAttributes() != null
+                                ? newState.getColumnAttributes() : new HashSet<>(),
+                        oldState != null && oldState.getColumnAttributes() != null
+                                ? oldState.getColumnAttributes() : new HashSet<>()
                 )
         );
     }

@@ -37,6 +37,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.control.Pagination;
+import static org.mockito.AdditionalMatchers.or;
+import org.mockito.ArgumentMatchers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -278,9 +280,9 @@ public class TableViewTopComponentNGTest {
     public void getColumnAttributeChanges() {
         final TableViewTopComponent tableViewTopComponent = mock(TableViewTopComponent.class);
         
-        when(tableViewTopComponent.getRemovedAttributes(any(TableViewState.class), any(TableViewState.class)))
+        when(tableViewTopComponent.getRemovedAttributes(or(any(TableViewState.class), isNull()), or(any(TableViewState.class), isNull())))
                 .thenCallRealMethod();
-        when(tableViewTopComponent.getAddedAttributes(any(TableViewState.class), any(TableViewState.class)))
+        when(tableViewTopComponent.getAddedAttributes(or(any(TableViewState.class), isNull()), or(any(TableViewState.class), isNull())))
                 .thenCallRealMethod();
         
         final Attribute attribute1 = mock(Attribute.class);
@@ -306,11 +308,37 @@ public class TableViewTopComponentNGTest {
                 tableViewTopComponent.getRemovedAttributes(oldState, newState)
         );
         
+        assertEquals(
+                Set.of(),
+                tableViewTopComponent.getRemovedAttributes(null, newState)
+        );
+        
+        assertEquals(
+                Set.of(
+                        Tuple.create(".source", attribute1),
+                        Tuple.create(".destination", attribute2)
+                ),
+                tableViewTopComponent.getRemovedAttributes(oldState, null)
+        );
+        
         // Added column attributes
         assertEquals(Set.of(
                         Tuple.create(".transaction", attribute3)
                 ),
                 tableViewTopComponent.getAddedAttributes(oldState, newState)
+        );
+        
+        assertEquals(
+                Set.of(
+                        Tuple.create(".destination", attribute2),
+                        Tuple.create(".transaction", attribute3)
+                ),
+                tableViewTopComponent.getAddedAttributes(null, newState)
+        );
+        
+        assertEquals(
+                Set.of(),
+                tableViewTopComponent.getAddedAttributes(oldState, null)
         );
         
     }
