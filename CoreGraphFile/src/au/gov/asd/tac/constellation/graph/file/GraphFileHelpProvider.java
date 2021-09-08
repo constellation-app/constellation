@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.file;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,35 @@ public class GraphFileHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String graphFileModulePath = ".." + sep + "constellation" + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.graph.file.autosave", graphFileModulePath + "autosave.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.openGraph", graphFileModulePath + "openGraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.openRecentGraph", graphFileModulePath + "openRecentGraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.newGraph", graphFileModulePath + "newGraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.saveGraph", graphFileModulePath + "saveGraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.nebula", graphFileModulePath + "nebula.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String graphFilePath;
+        if ("constellation".equals(substr)) {
+            graphFilePath = userDir + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep + "file-toc.xml";
+
+        } else {
+            graphFilePath = userDir + sep + ".." + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep + "file-toc.xml";
+        }
+
+        return graphFilePath;
     }
 }

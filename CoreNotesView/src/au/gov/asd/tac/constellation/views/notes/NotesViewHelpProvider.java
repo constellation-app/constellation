@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,30 @@ public class NotesViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String notesModulePath = ".." + sep + "constellation" + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + "constellation" + sep + "views" + sep + "notes" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent", notesModulePath + "notes-view.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String notesViewPath;
+        if ("constellation".equals(substr)) {
+            notesViewPath = userDir + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "notes" + sep + "docs" + sep + "notes-toc.xml";
+
+        } else {
+            notesViewPath = userDir + sep + ".." + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "notes" + sep + "docs" + sep + "notes-toc.xml";
+        }
+
+        return notesViewPath;
     }
 }

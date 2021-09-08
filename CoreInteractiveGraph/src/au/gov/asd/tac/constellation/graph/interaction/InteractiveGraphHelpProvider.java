@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.conversationview;
+package au.gov.asd.tac.constellation.graph.interaction;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import java.io.File;
@@ -25,23 +25,23 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Provider to get help pages for the conversation view
+ * Provider to get help pages for the interactive graph module
  *
  * @author Delphinus8821
  */
 @ServiceProvider(service = HelpPageProvider.class)
-@NbBundle.Messages("ConversationViewHelpProvider=Conversation View Help Provider")
-public class ConversationViewHelpProvider extends HelpPageProvider {
+@NbBundle.Messages("InteractiveGraphHelpProvider=Interactive Graph Help Provider")
+public class InteractiveGraphHelpProvider extends HelpPageProvider {
 
     @Override
     public List<String> getHelpPages() {
-        List<String> filePaths = new ArrayList<>();
+        final List<String> filePaths = new ArrayList<>();
         return filePaths;
     }
 
     @Override
     public List<String> getHelpResources() {
-        List<String> filePaths = new ArrayList<>();
+        final List<String> filePaths = new ArrayList<>();
         return filePaths;
     }
 
@@ -49,10 +49,11 @@ public class ConversationViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String conversationModulePath = ".." + sep + "constellation" + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + "constellation" + sep + "views" + sep + "conversationview" + sep + "docs" + sep;
+        final String interactiveModulePath = ".." + sep + "constellation" + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "interaction" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.conversationview.ConversationBox", conversationModulePath + "conversation-view.md");
+        map.put("au.gov.asd.tac.constellation.graph.interaction.addselectmode", interactiveModulePath + "add-and-selection-modes.md");
+        map.put("au.gov.asd.tac.constellation.graph.interaction.cutcopypaste", interactiveModulePath + "cut-copy-paste.md");
         return map;
     }
 
@@ -62,16 +63,16 @@ public class ConversationViewHelpProvider extends HelpPageProvider {
         final String sep = File.separator;
         final int count = userDir.length() - 13;
         final String substr = userDir.substring(count);
-        final String conversationViewPath;
+        final String interactiveGraphPath;
         if ("constellation".equals(substr)) {
-            conversationViewPath = userDir + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "conversationview" + sep + "docs" + sep + "conversationview-toc.xml";
+            interactiveGraphPath = userDir + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "interaction" + sep + "docs" + sep + "interactivegraph-toc.xml";
 
         } else {
-            conversationViewPath = userDir + sep + ".." + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "conversationview" + sep + "docs" + sep + "conversationview-toc.xml";
+            interactiveGraphPath = userDir + sep + ".." + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "interaction" + sep + "docs" + sep + "interactivegraph-toc.xml";
         }
 
-        return conversationViewPath;
+        return interactiveGraphPath;
     }
 }

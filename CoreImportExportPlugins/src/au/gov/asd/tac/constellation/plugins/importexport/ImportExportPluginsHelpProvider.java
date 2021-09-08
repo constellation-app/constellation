@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,32 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String importExportModulePath = ".." + sep + "constellation" + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "importexport" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane", importExportModulePath + "import-from-delimited-file.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.export", importExportModulePath + "export-from-constellation.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane", importExportModulePath + "import-from-jdbc.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String importExportPath;
+        if ("constellation".equals(substr)) {
+            importExportPath = userDir + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "importexport" + sep + "docs" + sep + "importexpot-toc.xml";
+
+        } else {
+            importExportPath = userDir + sep + ".." + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "importexport" + sep + "docs" + sep + "importexport-toc.xml";
+        }
+
+        return importExportPath;
     }
 }

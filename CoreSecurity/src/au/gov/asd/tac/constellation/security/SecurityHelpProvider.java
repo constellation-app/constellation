@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.security;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,30 @@ public class SecurityHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String securityModulePath = ".." + sep + "constellation" + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + "constellation" + sep + "security" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.security.proxies", securityModulePath + "proxy-preferences.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String securityPath;
+        if ("constellation".equals(substr)) {
+            securityPath = userDir + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "security" + sep + "docs" + sep + "security-toc.xml";
+
+        } else {
+            securityPath = userDir + sep + ".." + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "security" + sep + "docs" + sep + "security-toc.xml";
+        }
+
+        return securityPath;
     }
 }

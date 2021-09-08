@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.visual;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,38 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String visualModulePath = ".." + sep + "constellation" + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "visual" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.graph.visual.inducedSubgraph", visualModulePath + "induced-subgraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.hopOutFull", visualModulePath + "hop-out-full.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.hopOutHalf", visualModulePath + "hop-out-half.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.hopOutOne", visualModulePath + "hop-out-one.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.mergeNodes", visualModulePath + "merge-nodes.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.selectBackbone", visualModulePath + "select-backbone.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.selectOneNeighbour", visualModulePath + "select-one-neighbour.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.selectSingleton", visualModulePath + "selec-singleton.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.selectBlazes", visualModulePath + "select-blazes.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final int count = userDir.length() - 13;
+        final String substr = userDir.substring(count);
+        final String visualPath;
+        if ("constellation".equals(substr)) {
+            visualPath = userDir + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "visual" + sep + "docs" + sep + "visualgraph-toc.xml";
+
+        } else {
+            visualPath = userDir + sep + ".." + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "visual" + sep + "docs" + sep + "visualgraph-toc.xml";
+        }
+
+        return visualPath;
     }
 }
