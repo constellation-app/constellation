@@ -193,7 +193,20 @@ public class JDBCImportController extends ImportController {
 
         if (configurationPane != null) {
             configurationPane.setSampleData(currentColumns, currentData);
+            openConfigPane(currentColumns[0].isBlank() ? false : true);
+            enableButton(currentColumns[0].isBlank() ? true : false);
         }
     }
 
+    // expands or shrinks the import pane based on if there is a file present
+    // within the imported files list
+    void openConfigPane(final boolean b) {
+        importPane.expandPane(b);
+    }
+
+    // enables or disables the import button based on if there is a file present
+    // within the imported files list
+    void enableButton(final boolean b) {
+        importPane.enableButton(b);
+    }
 }
