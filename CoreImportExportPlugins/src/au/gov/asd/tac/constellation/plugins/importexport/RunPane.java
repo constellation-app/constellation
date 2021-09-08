@@ -121,7 +121,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         public AttributeBox(final String label, final AttributeList attributeList) {
             final BorderPane borderPane = new BorderPane();
             borderPane.setTop(attributeList);
-
+            
             setMaxHeight(USE_PREF_SIZE);
             setMaxWidth(Double.MAX_VALUE);
             setCenter(borderPane);
@@ -163,12 +163,12 @@ public final class RunPane extends BorderPane implements KeyListener {
         final VBox configBox = new VBox();
         VBox.setVgrow(configBox, Priority.ALWAYS);
 
-        final ScrollPane configScroll = new ScrollPane();
-        configScroll.setMaxWidth(Double.MAX_VALUE);
-        configScroll.setPrefHeight(SCROLLPANE_HEIGHT);
-        configScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        configScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        setCenter(configBox);
+        final ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(configBox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        
+        setCenter(scrollPane);
 
         filterField = new TextField();
         filterField.setFocusTraversable(false);
@@ -235,7 +235,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         // A scroll pane to hold the attribute boxes
         final ScrollPane attributeScrollPane = new ScrollPane();
         attributeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         attributeScrollPane.setMaxWidth(Double.MAX_VALUE);
         attributeScrollPane.setContent(attributePane);
         attributeScrollPane.setPrefViewportWidth(SCROLLPANE_VIEW_WIDTH);
