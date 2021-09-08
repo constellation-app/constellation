@@ -15,12 +15,15 @@
  */
 package au.gov.asd.tac.constellation.help;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,9 +67,20 @@ public class HelpServlet extends HttpServlet {
         LOGGER.log(Level.INFO, "GET {0}", requestPath);
         try {
             if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css")) && !wasRedirect) {
-                final String frontHalf = referer.substring(referer.indexOf("constellation") + 13, referer.lastIndexOf("/"));
-                final String url = requestPath.replaceFirst(frontHalf, "");
-                response.sendRedirect(url);
+                final File file = new File(Generator.baseDirectory);
+                final URL fileUrl = file.toURI().toURL();
+                String requestfrontHalfRemoved = requestPath.replace(fileUrl.toString(), ""); // remove first bit
+                String refererfrontHalfRemoved = referer.replace(fileUrl.toString(), ""); // remove first bit
+                refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove filename.md
+                refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove up one level
+                refererfrontHalfRemoved = refererfrontHalfRemoved.replace("http://localhost:" + ConstellationHelpDisplayer.currentPort, "");
+
+                requestfrontHalfRemoved = requestfrontHalfRemoved.replaceFirst(refererfrontHalfRemoved, "");
+
+                String redirectURL = Generator.baseDirectory + requestfrontHalfRemoved;
+                final File file2 = new File(redirectURL);
+                final URL fileUrl2 = file2.toURI().toURL();
+                response.sendRedirect("/" + fileUrl2.toString());
                 wasRedirect = true;
             } else if (wasRedirect) {
                 wasRedirect = false;

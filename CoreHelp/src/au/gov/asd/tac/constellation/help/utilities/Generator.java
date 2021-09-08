@@ -21,8 +21,11 @@ import au.gov.asd.tac.constellation.help.utilities.toc.TOCItem;
 import au.gov.asd.tac.constellation.help.utilities.toc.TreeNode;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Lookup;
 import org.openide.windows.OnShowing;
 
@@ -35,6 +38,8 @@ import org.openide.windows.OnShowing;
 public class Generator implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
+    public static String baseDirectory = "";
+    public static String tocDirectory = "";
 
     @Override
     public void run() {
@@ -44,21 +49,20 @@ public class Generator implements Runnable {
         if (!"IDE(CORE)".equals(System.getProperty("constellation.environment"))) {
             return;
         }
-
-        // Get the current directory and make the file within the help module.
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        String tocPath;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
+        // Get the current directory and make the file within the help module.
+        String userDir = System.getProperty("user.dir");
+        String pattern = Pattern.quote(sep);
+        String[] splitUserDir = userDir.split(pattern);
+        while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
+            splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
 
-        if ("constellation".equals(substr)) {
-            // Built whole constellation last
-            tocPath = userDir + sep + "toc.md";
-        } else {
-            // Built single module last
-            tocPath = userDir + sep + ".." + sep + "toc.md";
         }
+        // split once more
+        splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
+        tocDirectory = "constellation" + sep + "toc.md";
+        String tocPath = String.join(sep, splitUserDir) + sep + tocDirectory;
+        baseDirectory = String.join(sep, splitUserDir) + sep;
 
         // Create TOCGenerator with the location of the resources file
         final TOCGenerator tocGenerator = new TOCGenerator(tocPath);
@@ -72,7 +76,9 @@ public class Generator implements Runnable {
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
-            tocXMLFiles.add(new File(provider.getHelpTOC()));
+            if (StringUtils.isNotEmpty(provider.getHelpTOC())) {
+                tocXMLFiles.add(new File(baseDirectory + provider.getHelpTOC()));
+            }
         });
 
         // Generate Application-wide TOC based on each modules TOC

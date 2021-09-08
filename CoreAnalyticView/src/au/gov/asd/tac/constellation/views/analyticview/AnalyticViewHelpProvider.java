@@ -36,26 +36,7 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
 
     @Override
     public List<String> getHelpPages() {
-        // Get the current directory and make the file within the module.
-        final String userDir = System.getProperty("user.dir");
-        final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
-        final String analyticViewPath;
-        if ("constellation".equals(substr)) {
-            analyticViewPath = userDir + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
-        } else {
-            analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
-        }
-        final File dir = new File(analyticViewPath);
-        final String[] extensions = new String[]{"md"};
-        final List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
         final List<String> filePaths = new ArrayList<>();
-        for (final File file : files) {
-            filePaths.add(file.getPath());
-        }
         return filePaths;
     }
 
@@ -91,7 +72,7 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
         final String sep = File.separator;
         final int count = userDir.length() - 13;
         final String substr = userDir.substring(count);
-        final String analyticModulePath = "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep;
+        final String analyticModulePath = ".." + sep + "constellation" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane", analyticModulePath + "analytic-view.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion", analyticModulePath + "question-best-connects-network.md");
@@ -134,19 +115,9 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
-        final String analyticViewPath;
-        if ("constellation".equals(substr)) {
-            analyticViewPath = userDir + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analyticview-toc.xml";
-
-        } else {
-            analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analyticview-toc.xml";
-        }
+        final String analyticViewPath = "constellation" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analyticview-toc.xml";
 
         return analyticViewPath;
     }

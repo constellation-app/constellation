@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
 import com.github.rjeschke.txtmark.Processor;
 import java.awt.Desktop;
@@ -89,6 +90,8 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     private static final String OFFICIAL_GITHUB_REPOSITORY = "https://github.com/constellation-app/constellation";
     private static final String READ_THE_DOCS = "https://constellation.readthedocs.io/en/latest/%s";
 
+    protected static int currentPort = 0;
+
     public static void copy(final String filepath, final OutputStream out) throws IOException {
         final Path path = Paths.get(filepath.substring(3));
         final InputStream input = new FileInputStream(path.toString());
@@ -98,28 +101,18 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             out.write(input.readAllBytes());
             return;
         }
-        final String userDir = System.getProperty("user.dir");
-        final String sep = File.separator;
         final String startCol = " <div class='row'> <div class='col-6 col-sm-4'>";
         final String endFirstCol = "</div> <div class='col-6 col-sm-8'>";
         final String endCol = "</div> </div> </div>";
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
-        String tocPath;
-        if ("constellation".equals(substr)) {
-            tocPath = userDir + sep + "toc.md";
-        } else {
-            tocPath = userDir + sep + ".." + sep + "toc.md";
-        }
-        final Path tocFilePath = Paths.get(tocPath);
+        final Path tocFilePath = Paths.get(Generator.baseDirectory + File.separator + Generator.tocDirectory);
 
-        // If the filepath is the toc then don't append the toc again when outputted 
+        // If the filepath is the toc then don't append the toc again when outputted
         if (filepath.contains("toc.md")) {
             final String css = "<link href='bootstrap/css/bootstrap.css' rel='stylesheet'></link>";
             final String html = css + Processor.process(input);
             out.write(html.getBytes());
         } else {
-            final String css = "<link href='../../../../../../../../../../bootstrap/css/bootstrap.css' rel='stylesheet'></link>";
+            final String css = "<link href='../../../../../../../../../../../constellation/bootstrap/css/bootstrap.css' rel='stylesheet'></link>";
             final InputStream tocInput = new FileInputStream(tocFilePath.toFile());
             final String html = css + startCol + Processor.process(tocInput) + endFirstCol + Processor.process(input) + endCol;
             out.write(html.getBytes());
@@ -138,27 +131,17 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         // TODO: this needs to be cleaned up with a better solution.
         String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        String helpTOCPath = "toc.md";
+        String helpTOCPath = "constellation" + sep + "toc.md";
 
         // use the requested help file, or the table of contents if it doesnt exist
         final String helpLink = StringUtils.isNotEmpty(HelpMapper.getHelpAddress(helpId)) ? HelpMapper.getHelpAddress(helpId) : helpTOCPath;
 
         if (!helpLink.isEmpty()) {
             try {
-                // Send the user's browser to the correct page, depending on the help source.
-                //
-                String url;
-                final int count = userDir.length() - 13;
-                final String substr = userDir.substring(count);
-                final File file;
-                if ("constellation".equals(substr)) {
-                    file = new File(userDir + helpLink);
-                } else {
-                    file = new File(userDir + "\\..\\" + helpLink);
-                }
+                final File file = new File(Generator.baseDirectory + sep + helpLink);
                 final URL fileUrl = file.toURI().toURL();
-                final int port = HelpWebServer.start();
-                url = String.format("http://localhost:%d/%s", port, fileUrl);
+                currentPort = HelpWebServer.start();
+                String url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
 
                 /* if (helpSource == null || !helpSource.startsWith("http")) {
                 // The help source is an internal zipped resource or an actual zip file,
