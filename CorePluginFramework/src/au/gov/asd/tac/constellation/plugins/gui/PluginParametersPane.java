@@ -499,7 +499,6 @@ public final class PluginParametersPane extends GridPane {
             final Pane lastPane = lastChild.getFormatter().getParamPane(lastChild);
             addElements(lastChild, lastLabel, lastPane);
             HBox.setHgrow(lastPane, shouldHGrow ? Priority.ALWAYS : Priority.NEVER);
-            paramGroupGridPane.setPrefWidth(0);
             return paramGroupGridPane;
         }
 

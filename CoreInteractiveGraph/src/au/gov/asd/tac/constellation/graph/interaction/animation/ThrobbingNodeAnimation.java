@@ -42,24 +42,35 @@ public class ThrobbingNodeAnimation extends Animation {
 
     @Override
     public void initialise(GraphWriteMethods wg) {
-        nodeRadiusAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
-        for (int pos = 0; pos < wg.getVertexCount(); pos++) {
-            final int vxId = wg.getVertex(pos);
-            originalNodeRadii.put(vxId, wg.getFloatValue(nodeRadiusAttribute, vxId));
+        // dont initialise if there is 0 nodes present
+        if (wg.getVertexCount() == 0) {
+            stopAnimation();
+        } else {
+            nodeRadiusAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
+            for (int pos = 0; pos < wg.getVertexCount(); pos++) {
+                final int vxId = wg.getVertex(pos);
+                originalNodeRadii.put(vxId, wg.getFloatValue(nodeRadiusAttribute, vxId));
+            }
         }
     }
 
     @Override
     public List<VisualChange> animate(GraphWriteMethods wg) {
-        if (currentRadius > upperLimit || currentRadius < lowerLimit) {
-            currentDirection = -currentDirection;
+        // if there is at least 1 node on the graph
+        if (wg.getVertexCount() > 0) {
+
+            if (currentRadius > upperLimit || currentRadius < lowerLimit) {
+                currentDirection = -currentDirection;
+            }
+            currentRadius += currentDirection;
+            for (int pos = 0; pos < wg.getVertexCount(); pos++) {
+                final int vxId = wg.getVertex(pos);
+                wg.setFloatValue(nodeRadiusAttribute, vxId, currentRadius);
+            }
+            return Arrays.asList(new VisualChangeBuilder(VisualProperty.VERTEX_RADIUS).forItems(wg.getVertexCount()).withId(throbbingNodeAnimationId).build());
         }
-        currentRadius += currentDirection;
-        for (int pos = 0; pos < wg.getVertexCount(); pos++) {
-            final int vxId = wg.getVertex(pos);
-            wg.setFloatValue(nodeRadiusAttribute, vxId, currentRadius);
-        }
-        return Arrays.asList(new VisualChangeBuilder(VisualProperty.VERTEX_RADIUS).forItems(wg.getVertexCount()).withId(throbbingNodeAnimationId).build());
+        // return an empty list if 0 nodes
+        return Arrays.asList();
     }
 
     @Override

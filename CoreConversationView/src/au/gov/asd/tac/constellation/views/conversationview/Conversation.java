@@ -199,7 +199,6 @@ public class Conversation {
 
         @Override
         protected boolean update(GraphReadMethods graph) {
-
             ConversationState newConversationState;
             if (graph != null) {
                 final int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
@@ -502,7 +501,6 @@ public class Conversation {
 
             return true;
         }
-
     };
 
     /**

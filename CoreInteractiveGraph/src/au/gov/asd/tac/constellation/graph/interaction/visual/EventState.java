@@ -49,6 +49,7 @@ final class EventState extends HitState {
         PANNING("Pan"),
         DRAG_NODES("Drag"),
         SELECTING("Selection"),
+        FREEFORM_SELECTING("Freeform Selection"),
         CREATING("Add Nodes"),
         NONE(""),;
 

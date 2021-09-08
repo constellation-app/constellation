@@ -1,39 +1,47 @@
 # Constellation Changes
 
+## Changes in September 2021
+
+-   Updated `processImport` in `ImportController` to a `void` method given the
+    return type `List<File>` previously defined was not being used.
+    
+-   Removed unused `localized` parameter from the signature of the `locate()`
+    method in `ConstellationInstalledFileLocator`.
+
 ## Changes in August 2021
 
--   Added 'updateTagsFiltersAvailable', 'updateSelectedTagsCombo', 
-    'updateTagsFilters', 'updateAutoNotesDisplayed' and 'getTagsFilters' to 
-    'NotesViewPane' to control the tags filters used in the check combo box 
+-   Added `updateTagsFiltersAvailable`, `updateSelectedTagsCombo`,
+    `updateTagsFilters`, `updateAutoNotesDisplayed` and `getTagsFilters` to
+    `NotesViewPane` to control the tags filters used in the check combo box
     to update the Auto Notes filters.
 
--   Removed `ArrangeByGroupPlugin`, `ArrangeByGroupAction`, 
-    `ArrangeByLayerPlugin`, and `ArrangeByLayerAction` as Arrange By 
+-   Removed `ArrangeByGroupPlugin`, `ArrangeByGroupAction`,
+    `ArrangeByLayerPlugin`, and `ArrangeByLayerAction` as Arrange By
     Group and Arrange by Layer are superseded by Arrange by Node Attribute.
 
--   Update 'setFilters' in 'NotesViewPane' to include the Auto Notes filters. 
+-   Update `setFilters` in `NotesViewPane` to include the Auto Notes filters.
 
--   Update to 'readObject' and 'writeObject' in 'NotesViewStateIoProvider'
-    to include Plugin Reporter tags in each Auto Note when they are written 
+-   Update to `readObject` and `writeObject` in `NotesViewStateIoProvider`
+    to include Plugin Reporter tags in each Auto Note when they are written
     to the graph file.
 
 ## Changes in July 2021
 
--   Update to Quality Control category names and colours in 
-    'QualityControlEvent' to be easier to understand. 
+-   Update to Quality Control category names and colours in
+    `QualityControlEvent` to be easier to understand.
 
--   Update to `openEdit`, `updateNotesUI`, `createNote` and the constructor in 
-    `NotesViewPane` to include variables to hold what graph elements are 
+-   Update to `openEdit`, `updateNotesUI`, `createNote` and the constructor in
+    `NotesViewPane` to include variables to hold what graph elements are
     selected and applied to the note. Also included a right click context menu
     option for user created notes.
 
--   Added `updateSelectedElements`, `addToSelectedElements` and 
+-   Added `updateSelectedElements`, `addToSelectedElements` and
     `removeFromSelectedElements to `NotesViewPane` to allow for modification of
-    the selected elements applied to user notes. 
+    the selected elements applied to user notes.
 
 ## Changes in June 2021
 
--   Changed `ImportTableColumn.validate` and `importexport/RunPane.validate` 
+-   Changed `ImportTableColumn.validate` and `importexport/RunPane.validate`
     functions return type from `void` to `boolean`.
 
 -   Removed `PreferenceUtilites.isGraphViewFrozen()` and related files
@@ -43,27 +51,27 @@
 
 ## Changes in May 2021
 
--   Update `ProjectUpdater` to sort jars in `project.xml` consistently 
+-   Update `ProjectUpdater` to sort jars in `project.xml` consistently
     between Windows and Linux.
 
--   Remove the file type being added to dependency jars as it counts 
+-   Remove the file type being added to dependency jars as it counts
     towards the limited class path length in Windows.
 
--   Added `displayAlert()` and `displayLargeAlert()` to NotifyDisplayer 
-    within `CoreUtilities`. They can be used to display alerts without 
+-   Added `displayAlert()` and `displayLargeAlert()` to NotifyDisplayer
+    within `CoreUtilities`. They can be used to display alerts without
     and with `TextArea` elements respectively.
 
--   Updated `CoreImportExportPlugins` more specifically `Delimited` and 
-    `JDBC` packages. Common code was put into a common class to remove 
-    duplication. Many classes now extend the parent class for concrete 
+-   Updated `CoreImportExportPlugins` more specifically `Delimited` and
+    `JDBC` packages. Common code was put into a common class to remove
+    duplication. Many classes now extend the parent class for concrete
     implementations.
 
 -   Removed `QualityControlViewPane.getLookup()` as it was not needed.
 
--   Removed the file type being added to dependency jars as it counts 
+-   Removed the file type being added to dependency jars as it counts
     towards the limited class path length in Windows.
 
--   Updated `ProjectUpdater` to sort jars in `project.xml` consistently 
+-   Updated `ProjectUpdater` to sort jars in `project.xml` consistently
     between Windows and Linux.
 
 ## Changes in April 2021
@@ -73,7 +81,7 @@
 ## Changes in March 2021
 
 -   Added `hasLowLevelTag()` to `PluginReport` classes to check whether
-    a plugin has a “LOW LEVEL” tag specified.
+    a plugin has a "LOW LEVEL" tag specified.
 
 -   Added Keyboard Shortcut to Scatter Plot View. Shortcut is
     Ctrl-Shift-O

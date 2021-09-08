@@ -572,7 +572,6 @@ public class NotesViewPane extends BorderPane {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
         });
-
         synchronized (LOCK) {
             notesViewEntries.clear();
             notesDateTimeCache.clear();
@@ -952,9 +951,11 @@ public class NotesViewPane extends BorderPane {
             }
         });
 
-        tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
-        autoFilterCheckComboBox.getItems().clear();
-        autoFilterCheckComboBox.getItems().addAll(tagsFiltersList);
+        Platform.runLater(() -> {
+            tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
+            autoFilterCheckComboBox.getItems().clear();
+            autoFilterCheckComboBox.getItems().addAll(tagsFiltersList);
+        });
     }
 
     /**
