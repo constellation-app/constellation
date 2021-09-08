@@ -35,6 +35,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -192,6 +193,8 @@ public class WelcomeViewPane extends BorderPane {
                 createRecentButtons(recentGraphButtons[i]);
                 if (i < fileNames.size()) {
                     recentGraphButtons[i].setText(fileNames.get(i));
+                    final Tooltip toolTip = new Tooltip(recentGraphButtons[i].getText());
+                    recentGraphButtons[i].setTooltip(toolTip);
                 }
                 final String text = recentGraphButtons[i].getText();
 
