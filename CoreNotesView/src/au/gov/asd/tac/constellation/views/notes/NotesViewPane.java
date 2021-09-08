@@ -116,7 +116,7 @@ public class NotesViewPane extends BorderPane {
     private final Object LOCK = new Object();
 
     private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
-    private static final String boldStyle = "-fx-font-weight: bold;";
+    private static final String BOLD_STYLE = "-fx-font-weight: bold;";
 
     private final List<Integer> nodesSelected = new ArrayList<>();
     private final List<Integer> transactionsSelected = new ArrayList<>();
@@ -595,16 +595,16 @@ public class NotesViewPane extends BorderPane {
         // Define dateTime label
         final Label dateTimeLabel = new Label((new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(newNote.getDateTime())))));
         dateTimeLabel.setWrapText(true);
-        dateTimeLabel.setStyle(boldStyle + fontStyle);
+        dateTimeLabel.setStyle(BOLD_STYLE + fontStyle);
 
         // Define title text box
         final TextField titleText = new TextField(newNote.getNoteTitle());
-        titleText.setStyle(boldStyle);
+        titleText.setStyle(BOLD_STYLE);
 
         // Define title label
         final Label titleLabel = new Label(newNote.getNoteTitle());
         titleLabel.setWrapText(true);
-        titleLabel.setStyle(boldStyle + fontStyle);
+        titleLabel.setStyle(BOLD_STYLE + fontStyle);
 
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());
