@@ -67,7 +67,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -102,11 +101,9 @@ public class NotesViewPane extends BorderPane {
     private final VBox addNoteVBox;
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
-    private Stage editStage;
 
     private final int DEFAULT_SPACING = 5;
     private final int OPTIONS_SPACING = 150;
-    private final int EDIT_MIN_WIDTH = 600;
     private final String PROMPT_COLOUR = "#909090";
     private final String USER_COLOUR = "#942483";
     private final String AUTO_COLOUR = "#1c5aa6";
@@ -116,11 +113,10 @@ public class NotesViewPane extends BorderPane {
     private static final String USER_NOTES_FILTER = "User Notes";
     private static final String SELECTED_FILTER = "Selected";
 
-    private static final String NOTES_VIEW_ICON = "resources/notes-view.png";
-
     private final Object LOCK = new Object();
 
     private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private final String boldStyle = String.format("-fx-font-weight: bold;");
 
     private final List<Integer> nodesSelected = new ArrayList<>();
     private final List<Integer> transactionsSelected = new ArrayList<>();
@@ -128,8 +124,6 @@ public class NotesViewPane extends BorderPane {
     private ObservableList<String> tagsFiltersList;
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
-
-    private String editSelection = "";
 
     public final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -601,16 +595,16 @@ public class NotesViewPane extends BorderPane {
         // Define dateTime label
         final Label dateTimeLabel = new Label((new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(newNote.getDateTime())))));
         dateTimeLabel.setWrapText(true);
-        dateTimeLabel.setStyle("-fx-font-weight: bold;" + fontStyle);
+        dateTimeLabel.setStyle(boldStyle + fontStyle);
 
         // Define title text box
         final TextField titleText = new TextField(newNote.getNoteTitle());
-        titleText.setStyle("-fx-font-weight: bold;"); // -fx-text-fill: black; -fx-background-color: white;");
+        titleText.setStyle(boldStyle);
 
         // Define title label
         final Label titleLabel = new Label(newNote.getNoteTitle());
         titleLabel.setWrapText(true);
-        titleLabel.setStyle("-fx-font-weight: bold;" + fontStyle);
+        titleLabel.setStyle(boldStyle + fontStyle);
 
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());
