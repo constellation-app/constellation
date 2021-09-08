@@ -58,20 +58,10 @@ public class SchemaViewHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String schemaViewPath;
-        if ("constellation".equals(substr)) {
-            schemaViewPath = userDir + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "schemaview" + sep + "docs" + sep + "schemaview-toc.xml";
-
-        } else {
-            schemaViewPath = userDir + sep + ".." + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "schemaview" + sep + "docs" + sep + "schemaview-toc.xml";
-        }
-
+        schemaViewPath = "constellation" + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "views" + sep + "schemaview" + sep + "docs" + sep + "schemaview-toc.xml";
         return schemaViewPath;
     }
 }

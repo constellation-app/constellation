@@ -58,20 +58,10 @@ public class NotesViewHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String notesViewPath;
-        if ("constellation".equals(substr)) {
-            notesViewPath = userDir + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "notes" + sep + "docs" + sep + "notes-toc.xml";
-
-        } else {
-            notesViewPath = userDir + sep + ".." + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "notes" + sep + "docs" + sep + "notes-toc.xml";
-        }
-
+        notesViewPath = "constellation" + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "views" + sep + "notes" + sep + "docs" + sep + "notes-toc.xml";
         return notesViewPath;
     }
 }

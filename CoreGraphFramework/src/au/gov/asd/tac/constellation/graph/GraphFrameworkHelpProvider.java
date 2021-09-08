@@ -49,8 +49,8 @@ public class GraphFrameworkHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String graphFrameworkModulePath = ".." + sep + "constellation" + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "docs" + sep;
+        final String graphFrameworkModulePath = ".." + sep + "constellation" + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.about", graphFrameworkModulePath + "graph-model.md");
         map.put("au.gov.asd.tac.constellation.graph.attributes", graphFrameworkModulePath + "attributes.md");
@@ -64,20 +64,10 @@ public class GraphFrameworkHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String graphFrameworkPath;
-        if ("constellation".equals(substr)) {
-            graphFrameworkPath = userDir + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "docs" + sep + "graph-toc.xml";
-
-        } else {
-            graphFrameworkPath = userDir + sep + ".." + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "docs" + sep + "graph-toc.xml";
-        }
-
+        graphFrameworkPath = "constellation" + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "docs" + sep + "graph-toc.xml";
         return graphFrameworkPath;
     }
 }

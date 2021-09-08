@@ -49,8 +49,8 @@ public class FunctionalityHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String functionalityModulePath = ".." + sep + "constellation" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "docs" + sep;
+        final String functionalityModulePath = ".." + sep + "constellation" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.functionality.about", functionalityModulePath + "about-constellation.md");
         map.put("au.gov.asd.tac.constellation.functionality.gettingstarted", functionalityModulePath + "getting-started.md");
@@ -61,20 +61,10 @@ public class FunctionalityHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String functionalityPath;
-        if ("constellation".equals(substr)) {
-            functionalityPath = userDir + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "docs" + sep + "core-toc.xml";
-
-        } else {
-            functionalityPath = userDir + sep + ".." + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "docs" + sep + "core-toc.xml";
-        }
-
+        functionalityPath = "constellation" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + "constellation" + sep + "functionality" + sep + "docs" + sep + "core-toc.xml";
         return functionalityPath;
     }
 }

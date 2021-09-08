@@ -65,20 +65,10 @@ public class MapViewHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String mapViewPath;
-        if ("constellation".equals(substr)) {
-            mapViewPath = userDir + sep + "CoreMapView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "mapview" + sep + "docs" + sep + "mapview-toc.xml";
-
-        } else {
-            mapViewPath = userDir + sep + ".." + sep + "CoreMapView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "mapview" + sep + "docs" + sep + "mapview-toc.xml";
-        }
-
+        mapViewPath = "constellation" + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "views" + sep + "mapview" + sep + "docs" + sep + "mapview-toc.xml";
         return mapViewPath;
     }
 }

@@ -49,8 +49,8 @@ public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String algorithmModulePath = ".." + sep + "constellation" + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep;
+        final String algorithmModulePath = ".." + sep + "constellation" + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispers", algorithmModulePath + "chinese-whispers.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss", algorithmModulePath + "k-truss.md");
@@ -60,19 +60,10 @@ public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String algorithmPath;
-        if ("constellation".equals(substr)) {
-            algorithmPath = userDir + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep + "algorithms-toc.xml";
-
-        } else {
-            algorithmPath = userDir + sep + ".." + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep + "algorithms-toc.xml";
-        }
+        algorithmPath = "constellation" + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep + "algorithms-toc.xml";
 
         return algorithmPath;
     }

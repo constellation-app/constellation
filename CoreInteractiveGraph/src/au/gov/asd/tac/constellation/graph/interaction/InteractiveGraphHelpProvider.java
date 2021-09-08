@@ -49,8 +49,8 @@ public class InteractiveGraphHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String interactiveModulePath = ".." + sep + "constellation" + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "interaction" + sep + "docs" + sep;
+        final String interactiveModulePath = ".." + sep + "constellation" + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "interaction" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.interaction.addselectmode", interactiveModulePath + "add-and-selection-modes.md");
         map.put("au.gov.asd.tac.constellation.graph.interaction.cutcopypaste", interactiveModulePath + "cut-copy-paste.md");
@@ -59,20 +59,10 @@ public class InteractiveGraphHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String interactiveGraphPath;
-        if ("constellation".equals(substr)) {
-            interactiveGraphPath = userDir + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "interaction" + sep + "docs" + sep + "interactivegraph-toc.xml";
-
-        } else {
-            interactiveGraphPath = userDir + sep + ".." + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "interaction" + sep + "docs" + sep + "interactivegraph-toc.xml";
-        }
-
+        interactiveGraphPath = "constellation" + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + "constellation" + sep + "graph" + sep + "interaction" + sep + "docs" + sep + "interactivegraph-toc.xml";
         return interactiveGraphPath;
     }
 }

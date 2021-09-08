@@ -61,20 +61,10 @@ public class UtilitiesHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String utilitiesPath;
-        if ("constellation".equals(substr)) {
-            utilitiesPath = userDir + sep + "CoreUtilities" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "utilities" + sep + "docs" + sep + "utilities-toc.xml";
-
-        } else {
-            utilitiesPath = userDir + sep + ".." + sep + "CoreUtilities" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "utilities" + sep + "docs" + sep + "utilities-toc.xml";
-        }
-
+        utilitiesPath = "constellation" + sep + "CoreUtilities" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "utilities" + sep + "docs" + sep + "utilities-toc.xml";
         return utilitiesPath;
     }
 }

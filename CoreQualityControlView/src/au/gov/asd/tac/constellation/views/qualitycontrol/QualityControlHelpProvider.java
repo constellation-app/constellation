@@ -49,8 +49,8 @@ public class QualityControlHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String qualityModulePath = ".." + sep + "constellation" + sep + "CoreQualityControlView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "views" + sep + "qualitycontrol" + sep + "docs" + sep;
+        final String qualityModulePath = ".." + sep + "constellation" + sep + "CoreQualityControlView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "qualitycontrol" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewTopComponent", qualityModulePath + "quality-control-view.md");
         return map;
@@ -58,20 +58,10 @@ public class QualityControlHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String qualityControlPath;
-        if ("constellation".equals(substr)) {
-            qualityControlPath = userDir + sep + "CoreQualityControlView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "qualitycontrol" + sep + "docs" + sep + "qualitycontrol-toc.xml";
-
-        } else {
-            qualityControlPath = userDir + sep + ".." + sep + "CoreQualityControlView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "qualitycontrol" + sep + "docs" + sep + "qualitycontrol-toc.xml";
-        }
-
+        qualityControlPath = "constellation" + sep + "CoreQualityControlView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + "constellation" + sep + "views" + sep + "qualitycontrol" + sep + "docs" + sep + "qualitycontrol-toc.xml";
         return qualityControlPath;
     }
 }

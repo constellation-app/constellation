@@ -49,8 +49,8 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String scriptingModulePath = ".." + sep + "constellation" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "views" + sep + "scripting" + sep + "docs" + sep;
+        final String scriptingModulePath = ".." + sep + "constellation" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "scripting" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.scripting", scriptingModulePath + "scripting-view.md");
         return map;
@@ -58,20 +58,10 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String scriptingViewPath;
-        if ("constellation".equals(substr)) {
-            scriptingViewPath = userDir + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "scripting" + sep + "docs" + sep + "scripting-toc.xml";
-
-        } else {
-            scriptingViewPath = userDir + sep + ".." + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "scripting" + sep + "docs" + sep + "scripting-toc.xml";
-        }
-
+        scriptingViewPath = "constellation" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "views" + sep + "scripting" + sep + "docs" + sep + "scripting-toc.xml";
         return scriptingViewPath;
     }
 }

@@ -63,20 +63,10 @@ public class GraphFileHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String graphFilePath;
-        if ("constellation".equals(substr)) {
-            graphFilePath = userDir + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep + "file-toc.xml";
-
-        } else {
-            graphFilePath = userDir + sep + ".." + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep + "file-toc.xml";
-        }
-
+        graphFilePath = "constellation" + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep + "file-toc.xml";
         return graphFilePath;
     }
 }

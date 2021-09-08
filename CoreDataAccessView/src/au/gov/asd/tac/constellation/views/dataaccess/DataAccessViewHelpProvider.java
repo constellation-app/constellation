@@ -70,20 +70,10 @@ public class DataAccessViewHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String dataViewPath;
-        if ("constellation".equals(substr)) {
-            dataViewPath = userDir + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "dataaccess" + sep + "docs" + sep + "dataaccess-toc.xml";
-
-        } else {
-            dataViewPath = userDir + sep + ".." + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "dataaccess" + sep + "docs" + sep + "dataaccess-toc.xml";
-        }
-
+        dataViewPath = "constellation" + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "views" + sep + "dataaccess" + sep + "docs" + sep + "dataaccess-toc.xml";
         return dataViewPath;
     }
 }

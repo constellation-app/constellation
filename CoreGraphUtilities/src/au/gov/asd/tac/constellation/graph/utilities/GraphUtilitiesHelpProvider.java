@@ -49,8 +49,8 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String graphUtilitiesModulePath = ".." + sep + "constellation" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "utilities" + sep + "docs" + sep;
+        final String graphUtilitiesModulePath = ".." + sep + "constellation" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "utilities" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives", graphUtilitiesModulePath + "perspective.md");
         return map;
@@ -58,20 +58,10 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String graphUtilitiesPath;
-        if ("constellation".equals(substr)) {
-            graphUtilitiesPath = userDir + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "utilities" + sep + "docs" + sep + "graphutilities-toc.xml";
-
-        } else {
-            graphUtilitiesPath = userDir + sep + ".." + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "utilities" + sep + "docs" + sep + "graphutilities-toc.xml";
-        }
-
+        graphUtilitiesPath = "constellation" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + "constellation" + sep + "graph" + sep + "utilities" + sep + "docs" + sep + "graphutilities-toc.xml";
         return graphUtilitiesPath;
     }
 }

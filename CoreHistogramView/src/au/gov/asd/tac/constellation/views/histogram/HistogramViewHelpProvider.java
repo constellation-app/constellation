@@ -49,8 +49,8 @@ public class HistogramViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String histogramModulePath = ".." + sep + "constellation" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "views" + sep + "histogram" + sep + "docs" + sep;
+        final String histogramModulePath = ".." + sep + "constellation" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "histogram" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.histogram", histogramModulePath + "histogram-view.md");
         return map;
@@ -58,20 +58,10 @@ public class HistogramViewHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String histogramViewPath;
-        if ("constellation".equals(substr)) {
-            histogramViewPath = userDir + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "histogram" + sep + "docs" + sep + "histogram-toc.xml";
-
-        } else {
-            histogramViewPath = userDir + sep + ".." + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "histogram" + sep + "docs" + sep + "histogram-toc.xml";
-        }
-
+        histogramViewPath = "constellation" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + "constellation" + sep + "views" + sep + "histogram" + sep + "docs" + sep + "histogram-toc.xml";
         return histogramViewPath;
     }
 }

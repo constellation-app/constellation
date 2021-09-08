@@ -49,8 +49,8 @@ public class AttributeEditorHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String attributeModulePath = ".." + sep + "constellation" + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep;
+        final String attributeModulePath = ".." + sep + "constellation" + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorPanel", attributeModulePath + "attribute-editor.md");
         return map;
@@ -58,19 +58,11 @@ public class AttributeEditorHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String attributeEditorViewPath;
-        if ("constellation".equals(substr)) {
-            attributeEditorViewPath = userDir + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep + "attributeeditor-toc.xml";
+        attributeEditorViewPath = "constellation" + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + "constellation" + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep + "attributeeditor-toc.xml";
 
-        } else {
-            attributeEditorViewPath = userDir + sep + ".." + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep + "attributeeditor-toc.xml";
-        }
 
         return attributeEditorViewPath;
     }

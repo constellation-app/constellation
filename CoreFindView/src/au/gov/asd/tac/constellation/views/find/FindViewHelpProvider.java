@@ -58,20 +58,10 @@ public class FindViewHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String findViewPath;
-        if ("constellation".equals(substr)) {
-            findViewPath = userDir + sep + "CoreFindView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "find" + sep + "docs" + sep + "find-toc.xml";
-
-        } else {
-            findViewPath = userDir + sep + ".." + sep + "CoreFindView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "find" + sep + "docs" + sep + "find-toc.xml";
-        }
-
+        findViewPath = "constellation" + sep + "CoreFindView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "views" + sep + "find" + sep + "docs" + sep + "find-toc.xml";
         return findViewPath;
     }
 }

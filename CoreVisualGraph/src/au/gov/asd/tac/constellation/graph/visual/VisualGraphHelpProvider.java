@@ -66,20 +66,10 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String visualPath;
-        if ("constellation".equals(substr)) {
-            visualPath = userDir + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "visual" + sep + "docs" + sep + "visualgraph-toc.xml";
-
-        } else {
-            visualPath = userDir + sep + ".." + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "visual" + sep + "docs" + sep + "visualgraph-toc.xml";
-        }
-
+        visualPath = "constellation" + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "graph" + sep + "visual" + sep + "docs" + sep + "visualgraph-toc.xml";
         return visualPath;
     }
 }

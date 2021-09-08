@@ -49,8 +49,8 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String arrangementModulePath = ".." + sep + "constellation" + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "arrangements" + sep + "docs" + sep;
+        final String arrangementModulePath = ".." + sep + "constellation" + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "arrangements" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridAction", arrangementModulePath + "grid.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridGeneralPlugin", arrangementModulePath + "grid-general.md");
@@ -70,19 +70,10 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        final String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
         final String arrangementsPath;
-        if ("constellation".equals(substr)) {
-            arrangementsPath = userDir + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "arrangements" + sep + "docs" + sep + "arrangements-toc.xml";
-
-        } else {
-            arrangementsPath = userDir + sep + ".." + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "arrangements" + sep + "docs" + sep + "arrangements-toc.xml";
-        }
+        arrangementsPath = "constellation" + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + "constellation" + sep + "plugins" + sep + "arrangements" + sep + "docs" + sep + "arrangements-toc.xml";
 
         return arrangementsPath;
     }
