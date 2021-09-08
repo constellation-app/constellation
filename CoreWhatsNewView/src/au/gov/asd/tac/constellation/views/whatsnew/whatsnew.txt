@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-06 Freeform Selection 
+<p>You can now draw a freeform selection shape by holding down Alt whilst selecting.</p>
+
 == 2021-09-06 Reset graph view after importing
 <p>When data is imported with the Import from File or the Import from Database, the graph view is now reset to the full view to display everything that has been imported.</p>
 
