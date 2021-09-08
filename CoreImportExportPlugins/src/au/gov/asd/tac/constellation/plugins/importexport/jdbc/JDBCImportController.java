@@ -193,8 +193,8 @@ public class JDBCImportController extends ImportController {
 
         if (configurationPane != null) {
             configurationPane.setSampleData(currentColumns, currentData);
-            openConfigPane(currentColumns[0].isBlank() ? false : true);
-            enableButton(currentColumns[0].isBlank() ? true : false);
+            openConfigPane(!currentColumns[0].isBlank());
+            enableButton(currentColumns[0].isBlank());
         }
     }
 
