@@ -49,19 +49,17 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -69,9 +67,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.CheckComboBox;
 import org.openide.util.HelpCtx;
 
@@ -103,11 +101,9 @@ public class NotesViewPane extends BorderPane {
     private final VBox addNoteVBox;
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
-    private Stage editStage;
 
     private final int DEFAULT_SPACING = 5;
     private final int OPTIONS_SPACING = 150;
-    private final int EDIT_MIN_WIDTH = 600;
     private final String PROMPT_COLOUR = "#909090";
     private final String USER_COLOUR = "#942483";
     private final String AUTO_COLOUR = "#1c5aa6";
@@ -117,11 +113,10 @@ public class NotesViewPane extends BorderPane {
     private static final String USER_NOTES_FILTER = "User Notes";
     private static final String SELECTED_FILTER = "Selected";
 
-    private static final String NOTES_VIEW_ICON = "resources/notes-view.png";
-
     private final Object LOCK = new Object();
 
     private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private static final String BOLD_STYLE = "-fx-font-weight: bold;";
 
     private final List<Integer> nodesSelected = new ArrayList<>();
     private final List<Integer> transactionsSelected = new ArrayList<>();
@@ -129,8 +124,6 @@ public class NotesViewPane extends BorderPane {
     private ObservableList<String> tagsFiltersList;
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
-
-    private String editSelection = "";
 
     public final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -599,53 +592,91 @@ public class NotesViewPane extends BorderPane {
 
         final String noteColour = newNote.isUserCreated() ? USER_COLOUR : AUTO_COLOUR;
 
+        // Define dateTime label
         final Label dateTimeLabel = new Label((new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(newNote.getDateTime())))));
         dateTimeLabel.setWrapText(true);
-        dateTimeLabel.setStyle("-fx-font-weight: bold; " + fontStyle);
+        dateTimeLabel.setStyle(BOLD_STYLE + fontStyle);
 
+        // Define title text box
+        final TextField titleText = new TextField(newNote.getNoteTitle());
+        titleText.setStyle(BOLD_STYLE);
+
+        // Define title label
         final Label titleLabel = new Label(newNote.getNoteTitle());
         titleLabel.setWrapText(true);
-        titleLabel.setStyle("-fx-font-weight: bold; " + fontStyle);
+        titleLabel.setStyle(BOLD_STYLE + fontStyle);
 
+        // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());
         contentLabel.setWrapText(true);
+        contentLabel.setMinWidth(50);
+        contentLabel.setAlignment(Pos.TOP_LEFT);
 
+        // Define content text area
+        final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
+        contentTextArea.setWrapText(true);
+        contentTextArea.positionCaret(contentTextArea.getText().length());
         final VBox noteInformation;
+
+        // Define selection label
+        String selectionLabelText = "";
+        final Label selectionLabel = new Label(selectionLabelText);
 
         // If the note is user created add the selection details.
         if (newNote.isUserCreated()) {
-            String selectionLabelText;
             if (newNote.isGraphAttribute()) {
-                selectionLabelText = "Note selection is linked to the graph.";
+                selectionLabelText = "Note linked to: the graph.";
             } else {
-                selectionLabelText = "Note selection is linked to " + newNote.getNodesSelected().size() + " nodes and "
-                        + newNote.getTransactionsSelected().size() + " transactions.";
+                selectionLabelText = "Note linked to: ";
+                if (newNote.getNodesSelected().size() == 1) {
+                    selectionLabelText += newNote.getNodesSelected().size() + " node, ";
+                } else {
+                    selectionLabelText += newNote.getNodesSelected().size() + " nodes, ";
+                }
+                if (newNote.getTransactionsSelected().size() == 1) {
+                    selectionLabelText += newNote.getTransactionsSelected().size() + " transaction. ";
+                } else {
+                    selectionLabelText += newNote.getTransactionsSelected().size() + " transactions. ";
+                }
             }
-            final Label selectionLabel = new Label(selectionLabelText);
+            selectionLabel.setText(selectionLabelText);
             selectionLabel.setWrapText(true);
             selectionLabel.setStyle("-fx-font-weight: bold; -fx-font-style: italic; " + fontStyle);
 
-            noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+            // If the note to be created is in edit mode, ensure it is created
+            // with the correct java fx elements
+            noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, newNote.getEditMode() ? titleText : titleLabel,
+                    newNote.getEditMode() ? contentTextArea : contentLabel, selectionLabel);
+
             HBox.setHgrow(noteInformation, Priority.ALWAYS);
 
         } else {
-            noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, titleLabel, contentLabel);
+            // If the note to be created is in edit mode, ensure it is created
+            // with the correct java fx elements
+            noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, newNote.getEditMode() ? titleText : titleLabel,
+                    newNote.getEditMode() ? contentTextArea : contentLabel, selectionLabel);
             HBox.setHgrow(noteInformation, Priority.ALWAYS);
         }
 
-        final Button editButton = new Button("Edit");
-        editButton.setMinWidth(55);
-        editButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        editButton.setOnAction(event -> {
-            openEdit(newNote.getNoteTitle(), newNote.getNoteContent(), newNote);
-            event.consume();
-        });
+        // Define buttons (edit, save, add, renove, delete)
+        final Button editTextButton = new Button("Edit");
+        editTextButton.setMinWidth(92);
+        editTextButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
-        final Button deleteButton = new Button("Delete");
-        deleteButton.setMinWidth(55);
+        final Button saveTextButton = new Button("Save");
+        saveTextButton.setMinWidth(92);
+        saveTextButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+
+        final Button deleteButton = new Button("Delete Note");
+        deleteButton.setMinWidth(92);
         deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
-        final VBox noteButtons = new VBox(DEFAULT_SPACING, editButton, deleteButton);
+        final VBox noteButtons;
+
+        // If the note to be created is in edit mode, ensure it is created with
+        // the correct java fx elements
+        noteButtons = new VBox(DEFAULT_SPACING, newNote.getEditMode() ? saveTextButton : editTextButton, deleteButton);
+
         noteButtons.setAlignment(Pos.CENTER);
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
@@ -707,10 +738,41 @@ public class NotesViewPane extends BorderPane {
                         .withParameter(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REPLACE)
                         .executeLater(GraphManager.getDefault().getActiveGraph());
             });
+            final MenuItem addOnGraphMenuItem = new MenuItem("Add Selected");
+            addOnGraphMenuItem.setOnAction(event -> {
+
+                // Save the current text in the text fields so they are not reset on
+                // updateNotesUI
+                newNote.setNoteTitle(titleText.getText());
+                newNote.setNoteContent(contentTextArea.getText());
+
+                addToSelectedElements(newNote);
+                final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                if (activeGraph != null) {
+                    updateNotesUI();
+                    notesViewController.writeState(activeGraph);
+                }
+            });
+
+            final MenuItem removeOnGraphMenuItem = new MenuItem("Remove Selected");
+            removeOnGraphMenuItem.setOnAction(event -> {
+
+                // Save the current text in the text fields so they are not reset on
+                // updateNotesUI
+                newNote.setNoteTitle(titleText.getText());
+                newNote.setNoteContent(contentTextArea.getText());
+
+                removeFromSelectedElements(newNote);
+                final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                if (activeGraph != null) {
+                    updateNotesUI();
+                    notesViewController.writeState(activeGraph);
+                }
+            });
 
             // Context menu is only added to user created notes.
             final ContextMenu contextMenu = new ContextMenu();
-            contextMenu.getItems().add(selectOnGraphMenuItem);
+            contextMenu.getItems().addAll(selectOnGraphMenuItem, addOnGraphMenuItem, removeOnGraphMenuItem);
 
             noteBody.setOnContextMenuRequested(event -> {
                 contextMenu.show(this, event.getScreenX(), event.getScreenY());
@@ -718,124 +780,56 @@ public class NotesViewPane extends BorderPane {
         }
 
         deleteButton.setOnAction(event -> {
-            synchronized (LOCK) {
-                if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
-                    notesDateTimeCache.remove(newNote.getDateTime());
+            final Alert deleteAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            deleteAlert.setContentText("Are you sure you want to delete this note? : " + titleLabel.getText());
 
-                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-                    if (activeGraph != null) {
-                        updateNotesUI();
-                        notesViewController.writeState(activeGraph);
+            deleteAlert.showAndWait();
+            if (deleteAlert.getResult() == ButtonType.OK) {
+                synchronized (LOCK) {
+                    if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
+                        notesDateTimeCache.remove(newNote.getDateTime());
+
+                        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                        if (activeGraph != null) {
+                            updateNotesUI();
+                            notesViewController.writeState(activeGraph);
+                        }
                     }
-                }
-            }
-            event.consume();
-        });
-    }
-
-    /**
-     * Pop-up window for editing user created notes.
-     *
-     * @param title
-     * @param content
-     * @param noteToEdit
-     */
-    private void openEdit(final String title, final String content, final NotesViewEntry noteToEdit) {
-        Platform.runLater(() -> {
-            editStage = new Stage();
-            editStage.setMinWidth(EDIT_MIN_WIDTH);
-            editStage.getIcons().add(new Image(NotesViewPane.class.getResourceAsStream(NOTES_VIEW_ICON)));
-            editStage.setTitle("Edit Note");
-
-            final TextField newTitle = new TextField(title);
-            newTitle.setPromptText("Edit title...");
-            newTitle.setStyle("-fx-prompt-text-fill: " + PROMPT_COLOUR + ";");
-            newTitle.setText(title);
-
-            final TextArea newContent = new TextArea(content);
-            newContent.setPromptText("Edit note...");
-            newContent.setStyle("-fx-prompt-text-fill: " + PROMPT_COLOUR + ";");
-            newContent.setText(content);
-            newContent.setWrapText(true);
-            newContent.setOnKeyPressed(key -> {
-                // If tab is typed and shift isn't being held dowm.
-                if (key.getCode() == KeyCode.TAB && !key.isShiftDown()) {
-                    // Backspace any tabs typed.
-                    newContent.fireEvent(new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.BACK_SPACE, false, false, false, false));
-                    // Move focus to the next UI element.
-                    newContent.getParent().getChildrenUnmodifiable().get(newContent.getParent().getChildrenUnmodifiable().indexOf(newContent) + 1).requestFocus();
-                }
-            });
-
-            // Add selection radio buttons.
-            // Allows for the user to choose whether they would like to keep the original selection of graph elements for the note,
-            // add what is currently selected on the graph to the selection or remove what is currently selected on the graph from the selection.
-            final ToggleGroup group = new ToggleGroup();
-            final RadioButton keepSelection = new RadioButton("Keep original selection   ");
-            keepSelection.setUserData("Keep");
-            final RadioButton addToSelection = new RadioButton("Add selected graph elements   ");
-            addToSelection.setUserData("Add");
-            final RadioButton removeFromSelection = new RadioButton("Remove selected graph elements");
-            removeFromSelection.setUserData("Remove");
-
-            keepSelection.setToggleGroup(group);
-            addToSelection.setToggleGroup(group);
-            removeFromSelection.setToggleGroup(group);
-            keepSelection.setSelected(true);
-
-            final HBox radioGroup = new HBox(keepSelection, addToSelection, removeFromSelection);
-
-            group.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
-                if (group.getSelectedToggle() != null) {
-                    editSelection = group.getSelectedToggle().getUserData().toString();
-                }
-            });
-
-            final Button saveButton = new Button("Save");
-            saveButton.setOnAction(event -> {
-                if ((newTitle.getText().isBlank() && newTitle.getText().isEmpty())
-                        || (newContent.getText().isBlank() && newContent.getText().isEmpty())) {
-                    JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    noteToEdit.setNoteTitle(newTitle.getText());
-                    noteToEdit.setNoteContent(newContent.getText());
-
-                    // Update the note's selected nodes and transactions.
-                    // If selection is to keep the original selection nothing happens.
-                    if (editSelection.equals("Add")) {
-                        addToSelectedElements(noteToEdit);
-                    } else if (editSelection.equals("Remove")) {
-                        removeFromSelectedElements(noteToEdit);
-                    }
-
-                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-                    if (activeGraph != null) {
-                        updateNotesUI();
-                        notesViewController.writeState(activeGraph);
-                    }
-                    closeEdit();
                 }
                 event.consume();
-            });
+            }
+            deleteAlert.close();
 
-            final VBox editNoteVBox = new VBox(DEFAULT_SPACING, newTitle, newContent, radioGroup, saveButton);
-            editNoteVBox.setAlignment(Pos.CENTER_RIGHT);
-            editNoteVBox.setStyle("-fx-padding: 5px;");
-
-            final Scene scene = new Scene(editNoteVBox, 250, 200);
-            editStage.setScene(scene);
-            editStage.show();
         });
-    }
 
-    /**
-     * Convenience method to close the pop-up window for editing user created
-     * notes.
-     */
-    protected void closeEdit() {
-        Platform.runLater(() -> {
-            if (editStage != null && editStage.isShowing()) {
-                editStage.close();
+        // Edit button activates editable text boxs for title and label
+        editTextButton.setOnAction(event -> {
+            noteButtons.getChildren().removeAll(editTextButton, deleteButton);
+            noteButtons.getChildren().addAll(saveTextButton, deleteButton);
+
+            noteInformation.getChildren().removeAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+            noteInformation.getChildren().addAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
+            newNote.setEditMode(true);
+        });
+
+        // Save button deactivates editable text boxs for title and label
+        saveTextButton.setOnAction(event -> {
+            // Check if either the title or content text boxs are empty
+            if (StringUtils.isBlank(titleText.getText()) || StringUtils.isBlank(contentTextArea.getText())) {
+                JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
+            } else {
+                titleLabel.setText(titleText.getText());
+                contentLabel.setText(contentTextArea.getText());
+
+                newNote.setNoteTitle(titleText.getText());
+                newNote.setNoteContent(contentTextArea.getText());
+
+                noteButtons.getChildren().removeAll(saveTextButton, deleteButton);
+                noteButtons.getChildren().addAll(editTextButton, deleteButton);
+
+                noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
+                noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+                newNote.setEditMode(false);
             }
         });
     }
