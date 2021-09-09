@@ -138,23 +138,30 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
      */
     private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
         Platform.runLater(() -> {
-            boolean success = true;
             final StringBuilder sbHeader = new StringBuilder();
             final StringBuilder sbMessage = new StringBuilder();
+
+            String fileFiles = (validFilenames.size() > 1) ? "files" : "file";
+            if (validFilenames.size() == 0) {
+                fileFiles = "files";
+            }
 
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
                 // issues for. If there were any files with issues use a warning dialog.
-                sbHeader.append(String.format("Imported %d rows of data from %d files", importedRows, validFilenames.size()));
-                sbMessage.append("The following file(s) contained data:");
+                sbHeader.append(String.format("Imported %d rows of data from %d " + fileFiles, importedRows, validFilenames.size()));
+                sbMessage.append("The following " + fileFiles + " contained data:");
                 validFilenames.forEach(filename -> {
                     sbMessage.append("\n  ");
                     sbMessage.append(filename);
                 });
+                String invalidFileFiles = (invalidFilenames.size() > 1) ? "files" : "file";
+                if (invalidFilenames.size() == 0) {
+                    invalidFileFiles = "files";
+                }
                 if (invalidFilenames.size() > 0) {
                     // some invalid files were found - warning condition.
-                    success = false;
-                    sbMessage.append("\n\nThe following file(s) could not be parsed. No data was extracted:");
+                    sbMessage.append("\n\nThe following " + invalidFileFiles + " could not be parsed. No data was extracted:");
                     invalidFilenames.forEach(filename -> {
                         sbMessage.append("\n  ");
                         sbMessage.append(filename);
@@ -162,9 +169,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 }
             } else {
                 // No rows were imported list all files that resulted in failures.
-                success = false;
                 sbHeader.append("No data found to import");
-                sbMessage.append("The following file(s) could not be parsed. no data was extracted:");
+                sbMessage.append("The following " + fileFiles + " could not be parsed. no data was extracted:");
                 invalidFilenames.forEach(filename -> {
                     sbMessage.append("\n  ");
                     sbMessage.append(filename);
