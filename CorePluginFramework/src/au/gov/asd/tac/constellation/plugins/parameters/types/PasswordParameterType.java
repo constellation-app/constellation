@@ -78,7 +78,7 @@ public class PasswordParameterType extends PluginParameterType<PasswordParameter
 
     @Override
     public String validateString(PluginParameter<PasswordParameterValue> param, String stringValue) {
-        if (StringUtils.isNotBlank(stringValue) && stringValue.trim().isEmpty()) {
+        if (StringUtils.isBlank(stringValue)) {
             return "Parameter is Empty!";
         }
         return null;
