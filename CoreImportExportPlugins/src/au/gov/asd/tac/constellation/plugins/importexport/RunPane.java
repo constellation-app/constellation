@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -61,6 +62,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 
 /**
  * A RunPane displays the UI necessary to allow the user to drag and drop
@@ -152,9 +154,17 @@ public final class RunPane extends BorderPane implements KeyListener {
         this.importController = importController;
 
         if (rowFilter == null) {
-            new Thread(() -> {
-                rowFilter = new RowFilter();
-            }, ROW_FILTER_INITIALISER).start();
+            try {
+            final CountDownLatch latch = new CountDownLatch(1);
+                new Thread(() -> {
+                    rowFilter = new RowFilter();
+                    latch.countDown();
+                }, ROW_FILTER_INITIALISER).start();
+                latch.await();
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+            }
         }
 
         setMaxHeight(Double.MAX_VALUE);

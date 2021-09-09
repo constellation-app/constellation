@@ -53,6 +53,7 @@ public class RowFilter {
 
     private String[] columns = new String[0];
     private String[] encodedColumns = new String[0];
+    private static final String columnHeaderPrefix = "uniqueColumnHeaderPrefix_";
 
     private static final Logger LOGGER = Logger.getLogger(RowFilter.class.getName());
 
@@ -82,7 +83,7 @@ public class RowFilter {
      */
     public boolean setScript(final String script) {
         try {
-            this.script = encodeScript(script);
+            this.script = encodeScript(modifyScript(script));
             compiledScript = ((Compilable) engine).compile(this.script);
 
             LOGGER.log(Level.INFO, "SCRIPT = {0}", this.script);
@@ -93,9 +94,25 @@ public class RowFilter {
             return false;
         }
     }
+    private String modifyScript(final String script) {
+        final int endOfHeader = script.indexOf("==");
+        String modifiedScript = script;
+        if (endOfHeader != -1) {
+            final String header = script.substring(0, endOfHeader);
+            if (header != null && !header.matches("^[a-zA-Z][a-zA-Z0-9_]*$")) {
+                //Append the script with the relevant ith column header containing columnHeaderPrefix
+                for (int i = 1; i < columns.length; i++) {
+                    if (columns[i].equals(header)) {
+                        modifiedScript = modifiedScript.replaceFirst(header, columnHeaderPrefix + i);
+                        break;
+                    }
+                }
+            }
+        }
+        return modifiedScript;
+    }
 
     private static String encodeScript(final String script) {
-
         final StringBuilder out = new StringBuilder();
         StringBuilder encodedPart = null;
 
@@ -136,7 +153,8 @@ public class RowFilter {
      * The names of the columns included in the filter.
      * <p>
      * Columns that match the pattern "^[a-zA-Z][a-zA-Z0-9_]*$" keep their
-     * names, otherwise the name of the ith column is value<i>i</i>.
+     * names, otherwise the name of the ith column with columnHeaderPrefix is
+     * value<i>i</i>.
      *
      * @param columns the columns included in the filter.
      */
@@ -144,7 +162,7 @@ public class RowFilter {
         this.columns = new String[columns.length];
         this.encodedColumns = new String[columns.length];
         for (int columnIndex = 0; columnIndex < columns.length; columnIndex++) {
-            if (columns[columnIndex] != null && columns[columnIndex].matches("^[a-zA-Z][a-zA-Z0-9_]*$")) {
+            if (columns[columnIndex] != null) {
                 this.columns[columnIndex] = columns[columnIndex];
             }
             this.encodedColumns[columnIndex] = encodeColumn(columns[columnIndex]);
@@ -195,7 +213,7 @@ public class RowFilter {
                     bindings.put(columns[i], values[i - 1]);
                 }
 
-                final String columnBinding = "$column" + i;
+                final String columnBinding = columnHeaderPrefix + i;
                 if (!bindings.containsKey(columnBinding)) {
                     bindings.put(columnBinding, values[i - 1]);
                 }
