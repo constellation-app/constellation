@@ -93,8 +93,8 @@ public class TOCGenerator {
      * Generate a table of contents from the XML mapping file
      */
     public static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode root) {
-        writeText(markdownOutput, "# Table of Contents");
-        writeText(markdownOutput, Platform.NEWLINE);
+        writeText(markdownOutput, "<div class=\"container\">");
+        writeText(markdownOutput, "<div class='row'> <div class=\"card-body btn btn-link sidebar-sticky accordion-item col-4 col-sm-4\" id=\"accordion\">");
         writeText(markdownOutput, Platform.NEWLINE);
 
         // Parse XML to tree structure
@@ -102,55 +102,9 @@ public class TOCGenerator {
 
         // Write tree structure to the output
         TreeNode.writeTree(root, markdownOutput, 0);
-    }
+        writeText(markdownOutput, Platform.NEWLINE);
+        writeText(markdownOutput, "</div>\n</div>\n</div>");
 
-    /**
-     * WARNING THIS IS HARDCODED TEST CODE FOR POC
-     *
-     * @param markdownWriter
-     */
-    public static void convertXMLMappingsHARDCODED(final File xmlFromFile, final FileWriter markdownWriter) {
-        writeText(markdownWriter, "# Table of Contents");
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Overview", 0);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, generateLink("About Constellation", ".\\CoreFunctionality\\src\\au\\gov\\asd\\tac\\constellation\\functionality\\docs\\about-constellation.md"), 1);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, generateLink("Getting Started", ".\\CoreFunctionality\\src\\au\\gov\\asd\\tac\\constellation\\functionality\\docs\\getting-started.md"), 1);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, generateLink("The Graph Window", ".\\CoreFunctionality\\src\\au\\gov\\asd\\tac\\constellation\\functionality\\docs\\the-graph-window.md"), 1);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Tools", 0);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Cluster", 1);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, generateLink("Chinese Whispers", ".\\CoreAlgorithmPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\algorithms\\docs\\chinese-whispers.md"), 2);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, generateLink("K-Truss", ".\\CoreAlgorithmPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\algorithms\\docs\\k-truss.md"), 2);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Compare Graph", 1);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Views", 0);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Analytic View", 1);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Analytics", 2);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Centrality", 3);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, generateLink("Betweenness Centrality", ".\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\docs\\analytic-betweenness-centrality.md"), 4);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Global", 3);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Questions", 2);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, generateLink("Connects the Network Best?", ".\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\docs\\question-best-connects-network.md"), 3);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, "Layers View", 1);
-        writeText(markdownWriter, Platform.NEWLINE);
-        writeItem(markdownWriter, generateLink("Layers View", ".\\CoreLayersView\\src\\au\\gov\\asd\\tac\\constellation\\views\\layers\\docs\\layers-view.md"), 2);
-        writeText(markdownWriter, Platform.NEWLINE);
     }
 
     /**
@@ -171,6 +125,22 @@ public class TOCGenerator {
     }
 
     /**
+     * Generate a HTML style link from a title and a url
+     *
+     * @param title the @String title to include as the links title
+     * @param url the url to link to
+     */
+    public static String generateHTMLLink(final String title, final String url) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("<a class=\"accordion-item link-primary nav flex-column\" aria-expanded=\"true\" href =\"");
+        sb.append(url);
+        sb.append("\">");
+        sb.append(title);
+        sb.append("</a>");
+        return sb.toString();
+    }
+
+    /**
      * Writes a String item using the given writer, at the given indentLevel. 0
      * indent will leave no blankspace. Format:
      * <indentLevel>* String item
@@ -180,14 +150,41 @@ public class TOCGenerator {
      * @param indentLevel the amount of indents to include
      */
     public static void writeItem(final FileWriter writer, final String item, final int indentLevel) {
-        final int spacesPerIndent = 4;
+        final int spacesPerIndent = 2;
         try {
             final String indent = StringUtils.repeat(BLANK_STRING, indentLevel * spacesPerIndent);
             final StringBuilder sb = new StringBuilder();
             sb.append(indent);
-            sb.append(ASTERISK);
-            sb.append(BLANK_STRING);
             sb.append(item);
+            writer.write(sb.toString());
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, "Failed to write to file", ex);
+        }
+    }
+
+    /**
+     * Writes a String item using the given writer for an accordion
+     *
+     * @param writer the FileWriter to use when writing
+     * @param item the String to write
+     * @param dataTarget the target to write on the item
+     */
+    public static void writeAccordionItem(final FileWriter writer, final String item, final String dataTarget) {
+        try {
+            //final String indent = StringUtils.repeat(BLANK_STRING, indentLevel * spacesPerIndent);
+            final StringBuilder sb = new StringBuilder();
+            sb.append("<h2 text-align=\"left\" class=\"mb-0 nav flex-column\">");
+            sb.append("<a href=\"#\" role=\"button\" class=\"link-secondary\" data-toggle=\"collapse\" data-target=\"#");//collapseOne\" aria-controls=\"collapseOne\">");
+            sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY));
+            sb.append("\" aria-controls=\"");
+            sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY));
+            sb.append("\">");
+            //sb.append("<a href=\"#\" data-toggle=\"collapse\" data-target=\"#");
+            //sb.append(checkedTarget);
+            //sb.append("\">");
+            sb.append(item);
+            sb.append("</a>");
+            sb.append("</h2>");
             writer.write(sb.toString());
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, "Failed to write to file", ex);
@@ -206,15 +203,6 @@ public class TOCGenerator {
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, "Failed to write to file", ex);
         }
-    }
-
-    /**
-     * Add default content pages here, this will be hard-coded for now.
-     *
-     * @param root the root toc element to add the items to.
-     */
-    public static void addDefaultContents(final TreeNode root) {
-        // TODO: This section can be used to add default contents not within providers.
     }
 
 }

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * TreeNode class which handles the storage of other nodes in a tree data
@@ -109,24 +109,39 @@ public class TreeNode<T> {
      */
     private static <T> void write(final TreeNode<T> node, final FileWriter writer, final int indent) {
         final TOCItem item = (TOCItem) (node.getData());
+        final TreeNode parentNode = node.getParent();
+        final TOCItem parent = parentNode == null ? null : (TOCItem) (node.getParent().getData());
 
         if ("".equals(item.getTarget()) || item.getTarget() == null) {
             // when no target, its a normal heading.
-            TOCGenerator.writeItem(writer, item.getText(), indent);
+            TOCGenerator.writeAccordionItem(writer, item.getText(), item.getText());
         } else {
             final String helpLink = cachedHelpMappings.get(item.getTarget());
             if ("".equals(helpLink) || helpLink == null) {
                 TOCGenerator.writeItem(writer, item.getText(), indent);
             } else {
-                TOCGenerator.writeItem(writer, TOCGenerator.generateLink(item.getText(), helpLink), indent);
+                TOCGenerator.writeItem(writer, TOCGenerator.generateHTMLLink(item.getText(), helpLink), indent);
             }
         }
 
         TOCGenerator.writeText(writer, Platform.NEWLINE);
         if (node.getChildren().isEmpty()) {
+            // Base level nodes with no children get written with no indent
             node.getChildren().forEach(each -> write(each, writer, indent));
         } else {
+            // Nodes with children get written with an extra level of indent
+            // Write start of div which will hold children of current TOC Item
+            final String dataParent = (parent == null ? "#accordion" : parent.getText().replace(StringUtils.SPACE, StringUtils.EMPTY));
+            final String id = item.getText().replace(StringUtils.SPACE, StringUtils.EMPTY);
+            final String div = "<div class=\"card-body btn btn-link accordion-item nav flex-column\" "
+                    + "aria-expanded=\"true\" data-parent=\"" + dataParent + "\" id=\"" + id + "\">";
+            TOCGenerator.writeText(writer, div);
+
+            // Recurse and call same method to write children
             node.getChildren().forEach(each -> write(each, writer, indent + 1));
+
+            // Close div which holds children of current TOC Item
+            TOCGenerator.writeText(writer, "</div>");
         }
     }
 

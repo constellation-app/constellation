@@ -97,24 +97,32 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final InputStream input = new FileInputStream(path.toString());
 
         // only add the html path when the file isnt a css file
-        if (filepath.contains(".css") || filepath.contains(".png") || filepath.contains(".jpg")) {
+        if (filepath.contains(".css") || filepath.contains(".js") || filepath.contains(".png") || filepath.contains(".jpg")) {
             out.write(input.readAllBytes());
             return;
         }
-        final String startCol = " <div class='row'> <div class='col-6 col-sm-4'>";
-        final String endFirstCol = "</div> <div class='col-6 col-sm-8'>";
+        final String startCol = " <div class='row'> <div class='col-4 col-sm-3'>";
+        final String endFirstCol = "</div> <div class='col-8 col-sm-9'>";
         final String endCol = "</div> </div> </div>";
         final Path tocFilePath = Paths.get(Generator.baseDirectory + File.separator + Generator.tocDirectory);
 
+        // TODO: Check for issues with the ../ relative paths in css
         // If the filepath is the toc then don't append the toc again when outputted
         if (filepath.contains("toc.md")) {
             final String css = "<link href='bootstrap/css/bootstrap.css' rel='stylesheet'></link>";
-            final String html = css + Processor.process(input);
+            final String jquery = "<script src=\"https://code.jquery.com/jquery-3.4.1.slim.min.js\" integrity=\"sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n\" crossorigin=\"anonymous\"></script>";
+            final String popper = "<script src=\"https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js\" integrity=\"sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo\" crossorigin=\"anonymous\"></script>";
+            final String boostrapjs = "<script type=\"text/javascript\" src=\"bootstrap/js/bootstrap.js\" ></script>";
+
+            final String html = css + "\n" + jquery + "\n" + popper + "\n" + boostrapjs + "\n" + Processor.process(input);
             out.write(html.getBytes());
         } else {
             final String css = "<link href='../../../../../../../../../../../constellation/bootstrap/css/bootstrap.css' rel='stylesheet'></link>";
+            final String jquery = "<script src=\"https://code.jquery.com/jquery-3.4.1.slim.min.js\" integrity=\"sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n\" crossorigin=\"anonymous\"></script>";
+            final String popper = "<script src=\"https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js\" integrity=\"sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo\" crossorigin=\"anonymous\"></script>";
+            final String boostrapjs = "<script type=\"text/javascript\" src=\"../../../../../../../../../../../constellation/bootstrap/js/bootstrap.js\" ></script>";
             final InputStream tocInput = new FileInputStream(tocFilePath.toFile());
-            final String html = css + startCol + Processor.process(tocInput) + endFirstCol + Processor.process(input) + endCol;
+            final String html = css + "\n" + jquery + "\n" + popper + "\n" + boostrapjs + "\n" + startCol + Processor.process(tocInput) + endFirstCol + Processor.process(input) + endCol;
             out.write(html.getBytes());
         }
     }
@@ -127,9 +135,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         // Given the helpId, get the corresponding help page path.
         // If it doesn't exist (maybe because someone forgot to put the helpId
         // in their .rst file), go to the root page.
-        //
-        // TODO: this needs to be cleaned up with a better solution.
-        String userDir = System.getProperty("user.dir");
         final String sep = File.separator;
         String helpTOCPath = "constellation" + sep + "toc.md";
 
