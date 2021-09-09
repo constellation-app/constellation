@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -95,7 +96,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
                 new FileInputStream(getClass().getResource("resources/vertex-preferences.json").getPath())
         );
 
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "vertex-"))
+        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(Optional.of("TableViewPreferences"), Optional.of("vertex-")))
                 .thenReturn(jsonNode);
 
         final UserTablePreferences tablePreferences
@@ -116,7 +117,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
                 new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())
         );
 
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "transaction-"))
+        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(Optional.of("TableViewPreferences"), Optional.of("transaction-")))
                 .thenReturn(jsonNode);
 
         
@@ -133,7 +134,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
 
     @Test
     public void getPreferencesNullPrefs() throws IOException {
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "vertex-"))
+        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(Optional.of("TableViewPreferences"), Optional.of("vertex-")))
                 .thenReturn(null);
 
         final UserTablePreferences tablepreferences
@@ -184,10 +185,10 @@ public class TableViewPreferencesIOUtilitiesNGTest {
         );
 
         jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
-                eq("TableViewPreferences"),
+                eq(Optional.of("TableViewPreferences")),
                 any(ObjectMapper.class),
                 eq(expectedJsonTree),
-                eq("transaction-")
+                eq(Optional.of("transaction-"))
         ));
     }
 }

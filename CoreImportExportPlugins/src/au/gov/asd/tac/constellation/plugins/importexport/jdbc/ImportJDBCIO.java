@@ -119,7 +119,7 @@ public final class ImportJDBCIO {
 
             // One ImportDefinition per tab.
             final ArrayNode definitionArray = rootNode.putArray(DEFINITIONS);
-            final List<ImportDefinition> definitions = importController.getDefinitions();
+            final List<ImportDefinition> definitions = importController.getDefinitions(false);
             final String[] columns = importController.getCurrentColumns();
             definitions.stream().forEach(impdef -> definitionCompute(definitionArray, columns, impdef));
 

@@ -72,7 +72,7 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
             final File templateImageFile = ConstellationInstalledFileLocator.locate(
                     "modules/ext/data/" + TEMPLATE_IMAGE_PATH,
                     "au.gov.asd.tac.constellation.views.mapview",
-                    false, ConstellationPointMarker.class.getProtectionDomain());
+                    ConstellationPointMarker.class.getProtectionDomain());
             final BufferedImage templateImage = ImageIO.read(templateImageFile);
             TEMPLATE_IMAGE = new PImage(templateImage.getWidth(), templateImage.getHeight(), PConstants.ARGB);
             TEMPLATE_IMAGE.loadPixels();

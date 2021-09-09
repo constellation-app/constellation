@@ -87,6 +87,7 @@ public class DelimitedSourcePane extends SourcePane {
         fileScrollPane.setMaxWidth(Double.MAX_VALUE);
         fileScrollPane.setPrefHeight(FILESCROLLPANE_PREF_HEIGHT);
         fileScrollPane.setFitToWidth(true);
+        fileScrollPane.setFitToHeight(true);
         fileScrollPane.setMinWidth(0);
         fileScrollPane.setContent(fileListView);
         fileScrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);

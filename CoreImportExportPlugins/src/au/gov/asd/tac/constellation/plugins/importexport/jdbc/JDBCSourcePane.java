@@ -163,6 +163,7 @@ public class JDBCSourcePane extends SourcePane {
                     connectionsTable.getItems().addAll(connectionManager.getConnections());
                     connections.clear();
                     connections.addAll(connectionManager.getConnections());
+                    dbConnectionComboBox.setItems(connections);
                 }
             });
             connectionsPane.add(removeBtn, 2, 1, 1, 1);
@@ -465,6 +466,7 @@ public class JDBCSourcePane extends SourcePane {
                 connectionsTable.getItems().addAll(connectionManager.getConnections());
                 connections.clear();
                 connections.addAll(connectionManager.getConnections());
+                dbConnectionComboBox.setItems(connections);
                 stage.close();
             }
         });

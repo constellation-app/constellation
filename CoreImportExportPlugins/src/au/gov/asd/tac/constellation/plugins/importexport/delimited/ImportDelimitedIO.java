@@ -68,6 +68,7 @@ public final class ImportDelimitedIO {
     private static final String PARSER = "parser";
     private static final String SCHEMA_INIT = "schema_init";
     private static final String SHOW_ALL_SCHEMA_ATTRIBUTES = "show_all_schema_attributes";
+    private static final String FILES_INCLUDE_HEADERS = "files_include_headers";
     private static final String DESTINATION = "destination";
     private static final String DEFINITIONS = "definitions";
     private static final String FILTER = "filter";
@@ -114,6 +115,7 @@ public final class ImportDelimitedIO {
             source.put(PARSER, importController.getImportFileParser().getLabel());
             source.put(SCHEMA_INIT, importController.isSchemaInitialised());
             source.put(SHOW_ALL_SCHEMA_ATTRIBUTES, importController.isShowAllSchemaAttributesEnabled());
+            source.put(FILES_INCLUDE_HEADERS, importController.isFilesIncludeHeadersEnabled());
 
             // We don't want to rely on a particular kind of graph being current when we load this definition.
             // Therefore, we only save a schema factory as the destination.
@@ -130,7 +132,7 @@ public final class ImportDelimitedIO {
 
             // One ImportDefinition per tab.
             final ArrayNode definitionArray = rootNode.putArray(DEFINITIONS);
-            final List<ImportDefinition> definitions = importController.getDefinitions();
+            final List<ImportDefinition> definitions = importController.getDefinitions(importController.isFilesIncludeHeadersEnabled());
             final String[] columns = importController.getCurrentColumns();
             final Consumer<ImportDefinition> definitionConsumer = (ImportDefinition impdef) -> {
                 final ObjectNode def = definitionArray.addObject();
@@ -233,6 +235,9 @@ public final class ImportDelimitedIO {
 
             final boolean schemaInit = source.get(SCHEMA_INIT).booleanValue();
             importController.setSchemaInitialised(schemaInit);
+
+            final boolean filesIncludeHeaders = source.get(FILES_INCLUDE_HEADERS).booleanValue();
+            importController.setfilesIncludeHeaders(filesIncludeHeaders);
 
             final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) != null
                     && source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();

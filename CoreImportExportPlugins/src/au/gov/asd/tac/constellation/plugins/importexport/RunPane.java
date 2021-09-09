@@ -74,7 +74,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final int SCROLLPANE_HEIGHT = 450;
     private static final int SCROLLPANE_VIEW_WIDTH = 400;
     private static final int SCROLLPANE_VIEW_HEIGHT = 900;
-    private static final int SAMPLEVIEW_HEIGHT = 450;
+    private static final int SAMPLEVIEW_HEIGHT = 250;
     private static final int SAMPLEVIEW_MIN_HEIGHT = 130;
     private static final int ATTRIBUTEPANE_PREF_WIDTH = 300;
     private static final int ATTRIBUTEPANE_MIN_WIDTH = 100;
@@ -163,12 +163,11 @@ public final class RunPane extends BorderPane implements KeyListener {
         final VBox configBox = new VBox();
         VBox.setVgrow(configBox, Priority.ALWAYS);
 
-        final ScrollPane configScroll = new ScrollPane();
-        configScroll.setMaxWidth(Double.MAX_VALUE);
-        configScroll.setPrefHeight(SCROLLPANE_HEIGHT);
-        configScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        configScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        setCenter(configBox);
+        final ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(configBox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        setCenter(scrollPane);
 
         filterField = new TextField();
         filterField.setFocusTraversable(false);
@@ -230,12 +229,12 @@ public final class RunPane extends BorderPane implements KeyListener {
                 USE_COMPUTED_SIZE, -1);
         attributePane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, ATTRIBUTEPANE_MIN_WIDTH,
                 USE_COMPUTED_SIZE, -1);
-        attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
+        attributePane.addRow(0, sourceVertexScrollPane, transactionScrollPane, destinationVertexScrollPane);
 
         // A scroll pane to hold the attribute boxes
         final ScrollPane attributeScrollPane = new ScrollPane();
         attributeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         attributeScrollPane.setMaxWidth(Double.MAX_VALUE);
         attributeScrollPane.setContent(attributePane);
         attributeScrollPane.setPrefViewportWidth(SCROLLPANE_VIEW_WIDTH);
@@ -484,7 +483,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public ImportDefinition createDefinition() {
+    public ImportDefinition createDefinition(final int firstRow) {
 
         RowFilter rf = rowFilter;
         if (StringUtils.isBlank(filter)) {
@@ -493,7 +492,7 @@ public final class RunPane extends BorderPane implements KeyListener {
             rf.setColumns(currentColumnLabels);
         }
 
-        final ImportDefinition definition = new ImportDefinition(1, rf);
+        final ImportDefinition definition = new ImportDefinition(firstRow, rf);
 
         for (final TableColumn<TableRow, ?> column : sampleDataView.getColumns()) {
             final ImportTableColumn importTableColumn = (ImportTableColumn) column;

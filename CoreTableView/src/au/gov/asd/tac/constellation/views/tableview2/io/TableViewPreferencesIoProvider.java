@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -103,8 +104,8 @@ public class TableViewPreferencesIoProvider {
         
         final ObjectMapper mapper = new ObjectMapper();
         
-        JsonIO.saveJsonPreferences(TABLE_VIEW_PREF_DIR, mapper,
-                mapper.valueToTree(List.of(tablePreferences)), filePrefix);
+        JsonIO.saveJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), mapper,
+                mapper.valueToTree(List.of(tablePreferences)), Optional.of(filePrefix));
     }
 
     /**
@@ -121,7 +122,7 @@ public class TableViewPreferencesIoProvider {
                 ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
         
         try {
-            final JsonNode root = JsonIO.loadJsonPreferences(TABLE_VIEW_PREF_DIR, filePrefix);
+            final JsonNode root = JsonIO.loadJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), Optional.of(filePrefix));
 
             final UserTablePreferences tablePreferences;
             if (root == null) {

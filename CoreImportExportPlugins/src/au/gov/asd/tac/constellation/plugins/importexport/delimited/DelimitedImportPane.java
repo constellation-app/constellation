@@ -38,7 +38,7 @@ public class DelimitedImportPane extends ImportPane {
             final DelimitedSourcePane sourcePane) {
         super(delimitedImportTopComponent, importController, configurationPane, sourcePane);
 
-        loadMenuItem.setOnAction(event -> {
+        loadButton.setOnAction(event -> {
             if (importController.hasFiles()) {
                 ImportDelimitedIO.loadParameters(this.getParentWindow(), importController);
             } else {
@@ -47,10 +47,9 @@ public class DelimitedImportPane extends ImportPane {
         });
 
         // save menu item
-        saveMenuItem.setOnAction(event -> {
+        saveButton.setOnAction(event -> {
             ImportDelimitedIO.saveParameters(this.getParentWindow(), importController);
         });
-        optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, showSchemaAttributesItem);
 
         helpButton.setOnAction(event -> {
             new HelpCtx(HELP_CTX).display();
