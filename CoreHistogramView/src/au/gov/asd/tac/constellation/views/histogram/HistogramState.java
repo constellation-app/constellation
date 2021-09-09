@@ -58,7 +58,7 @@ public class HistogramState {
         this.binSelectionMode = BinSelectionMode.FREE_SELECTION;
     }
 
-    public HistogramState(final Map<GraphElementType, GraphElementState> elementStateMap, final GraphElementType elementType, final AttributeType attributeType, final String attribute, final BinComparator binComparator, final BinFormatter binFormatter, final BinSelectionMode binSelectionMode, final ElementSet filter) {
+    public HistogramState(final Map<GraphElementType, GraphElementState> elementStateMap, final GraphElementType elementType, final BinComparator binComparator, final BinSelectionMode binSelectionMode) {
         this.elementStateMap = elementStateMap;
         this.elementType = elementType;
         this.attributeType = elementStateMap.get(elementType).getAttributeType();

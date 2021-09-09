@@ -416,7 +416,9 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                 throw new NullPointerException("Null element type");
             }
 
-            currentHistogramState.saveGraphElementState();
+            if (currentHistogramState != null) {
+                currentHistogramState.saveGraphElementState();
+            }
 
             // If the current state is null or the elementType selected is not the one already selected.
             if (currentHistogramState == null || elementType != currentHistogramState.getElementType()) {
