@@ -178,14 +178,8 @@ public class ParameterIOUtilitiesNGTest {
         final Map<String, PluginParameter<?>> map = Map.of(someKey, pluginParameter);
         when(pluginParameters.getParameters()).thenReturn(map);
 
-        //plugin parameters
-//        final DataSourceTitledPane pane = mock(DataSourceTitledPane.class);
-//        when(queryPhasePane.getDataAccessPanes()).thenReturn((List<DataSourceTitledPane>) pane);
-//        when(pane.getParameters()).thenReturn(pluginParameters);
-//
-//
         ParameterIOUtilities.saveParameters(tabPane);
-//
+
         final ObjectMapper objectMapper = new ObjectMapper();
         final ArrayNode expectedJsonTree = (ArrayNode) objectMapper.readTree(
                 new FileInputStream(getClass().getResource("resources/plugin-preferences.json").getPath())
