@@ -3,10 +3,11 @@
 <toc version="2.0">
     <tocitem text="Arrangements">
         <tocitem text="Grid" target="au.gov.asd.tac.constellation.plugins.arrangements.grid"/>
-        <tocitem text="Grid (General)" target="au.gov.asd.tac.constellation.plugins.arrangements.gridGeneral"/>
-        <tocitem text="Hierarchical" target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.HierarchicalAction"/>
-        <tocitem text="Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.tree"/>
+        <tocitem text="Line" target="au.gov.asd.tac.constellation.plugins.arrangements.line"/>
         <tocitem text="Circle" target="au.gov.asd.tac.constellation.plugins.arrangements.circle"/>
+        <tocitem text="Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.tree"/>
+        <tocitem text="Hierarchy" target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchy"/>
+        <tocitem text="Node Attribute" target="au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute"/>
         <tocitem text="Scatter 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.scatter3d"/>
         <tocitem text="Sphere" target="au.gov.asd.tac.constellation.plugins.arrangements.sphere"/>
         <tocitem text="Layer by Time" target="au.gov.asd.tac.constellation.plugins.arrangements.layerByTime"/>

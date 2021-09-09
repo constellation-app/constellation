@@ -2,10 +2,11 @@
 <!DOCTYPE index PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 2.0//EN" "http://java.sun.com/products/javahelp/index_2_0.dtd">
 <index version="2.0">
     <indexitem text="Grid" target="au.gov.asd.tac.constellation.plugins.arrangements.grid"/>
-    <indexitem text="Grid (General)" target="au.gov.asd.tac.constellation.plugins.arrangements.gridGeneral"/>
-    <indexitem text="Hierarchical" target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.HierarchicalAction"/>
-    <indexitem text="Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.tree"/>
+    <indexitem text="Line" target="au.gov.asd.tac.constellation.plugins.arrangements.line"/>
     <indexitem text="Circle" target="au.gov.asd.tac.constellation.plugins.arrangements.circle"/>
+    <indexitem text="Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.tree"/>
+    <indexitem text="Hierarchy" target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchy"/>
+    <indexitem text="Node Attribute" target="au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute"/>
     <indexitem text="Scatter 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.scatter3d"/>
     <indexitem text="Sphere" target="au.gov.asd.tac.constellation.plugins.arrangements.sphere"/>
     <indexitem text="Flatten Z Field" target="au.gov.asd.tac.constellation.plugins.arrangements.flattenZField"/>
