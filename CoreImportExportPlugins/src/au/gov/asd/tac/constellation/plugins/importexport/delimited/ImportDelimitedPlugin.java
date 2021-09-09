@@ -48,7 +48,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.F
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -57,7 +58,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -169,9 +170,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     sbMessage.append(filename);
                 });
             }
-            NotifyDisplayer.displayAlert("Delimited Importer", sbHeader.toString(), sbMessage.toString(),
-                    success ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
-
+            NotificationDisplayer.getDefault().notify(sbHeader.toString(), UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
         });
     }
 
