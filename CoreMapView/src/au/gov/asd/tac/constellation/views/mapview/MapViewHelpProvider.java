@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,27 @@ public class MapViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String mapModulePath = ".." + sep + "constellation" + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + "constellation" + sep + "views" + sep + "mapview" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.mapview.MapViewTopComponent", mapModulePath + "map-view.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.layers.DayNightLayer", mapModulePath + "mapview-layers-day-night.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.layers.AbstractHeatmapLayer", mapModulePath + "mapview-layers-heatmap.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.layers.AbstractPathsLayer", mapModulePath + "mapview-layers-path.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.layers.ThiessenPolygonsLayer", mapModulePath + "mapview-layers-thiessen-polygons.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.overlays.InfoOverlay", mapModulePath + "mapview-overlays-info.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.overlays.ToolsOverlay", mapModulePath + "mapview-overlays-tools.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.overlays.OverviewOverlay", mapModulePath + "mapview-overlays-overview.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String mapViewPath;
+        mapViewPath = "constellation" + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "views" + sep + "mapview" + sep + "docs" + sep + "mapview-toc.xml";
+        return mapViewPath;
     }
 }

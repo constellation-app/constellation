@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.scripting;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,20 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String scriptingModulePath = ".." + sep + "constellation" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "scripting" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.scripting", scriptingModulePath + "scripting-view.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String scriptingViewPath;
+        scriptingViewPath = "constellation" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "views" + sep + "scripting" + sep + "docs" + sep + "scripting-toc.xml";
+        return scriptingViewPath;
     }
 }

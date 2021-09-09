@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.timeline;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,20 @@ public class TimelineViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String timelineModulePath = ".." + sep + "constellation" + sep + "CoreTimelineView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "timeline" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.timeline.TimelineTopComponent", timelineModulePath + "timeline-view.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String timelineViewPath;
+        timelineViewPath = "constellation" + sep + "CoreTimelineView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + "constellation" + sep + "views" + sep + "timeline" + sep + "docs" + sep + "timeline-toc.xml";
+        return timelineViewPath;
     }
 }

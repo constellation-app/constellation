@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.utilities;
+package au.gov.asd.tac.constellation.graph.interaction;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import java.io.File;
@@ -25,43 +25,44 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Provider to get help pages for the graph utilities module
+ * Provider to get help pages for the interactive graph module
  *
  * @author Delphinus8821
  */
 @ServiceProvider(service = HelpPageProvider.class)
-@NbBundle.Messages("GraphUtilitiesHelpProvider=Graph Utilities Help Provider")
-public class GraphUtilitiesHelpProvider extends HelpPageProvider {
+@NbBundle.Messages("InteractiveGraphHelpProvider=Interactive Graph Help Provider")
+public class InteractiveGraphHelpProvider extends HelpPageProvider {
 
     @Override
     public List<String> getHelpPages() {
-        List<String> filePaths = new ArrayList<>();
+        final List<String> filePaths = new ArrayList<>();
         return filePaths;
     }
 
     @Override
     public List<String> getHelpResources() {
-        List<String> filePaths = new ArrayList<>();
+        final List<String> filePaths = new ArrayList<>();
         return filePaths;
     }
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String graphUtilitiesModulePath = ".." + sep + "constellation" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "utilities" + sep + "docs" + sep;
+        final String interactiveModulePath = ".." + sep + "constellation" + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "interaction" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives", graphUtilitiesModulePath + "perspective.md");
+        map.put("au.gov.asd.tac.constellation.graph.interaction.addselectmode", interactiveModulePath + "add-and-selection-modes.md");
+        map.put("au.gov.asd.tac.constellation.graph.interaction.cutcopypaste", interactiveModulePath + "cut-copy-paste.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        final String graphUtilitiesPath;
-        graphUtilitiesPath = "constellation" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + "constellation" + sep + "graph" + sep + "utilities" + sep + "docs" + sep + "graphutilities-toc.xml";
-        return graphUtilitiesPath;
+        final String interactiveGraphPath;
+        interactiveGraphPath = "constellation" + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + "constellation" + sep + "graph" + sep + "interaction" + sep + "docs" + sep + "interactivegraph-toc.xml";
+        return interactiveGraphPath;
     }
 }

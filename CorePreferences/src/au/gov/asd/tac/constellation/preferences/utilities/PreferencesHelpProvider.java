@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.preferences.utilities;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,23 @@ public class PreferencesHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String preferencesModulePath = ".." + sep + "constellation" + sep + "CorePreferences" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + "constellation" + sep + "preferences" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.preferences.application", preferencesModulePath + "application-preferences.md");
+        map.put("au.gov.asd.tac.constellation.preferences.applicationfont", preferencesModulePath + "application-font-preferences.md");
+        map.put("au.gov.asd.tac.constellation.preferences.developer", preferencesModulePath + "developer-prefernces.md");
+        map.put("au.gov.asd.tac.constellation.preferences.graph", preferencesModulePath + "graph-preferences.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String preferencesPath;
+        preferencesPath = "constellation" + sep + "CorePreferences" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "preferences" + sep + "docs" + sep + "preferences-toc.xml";
+        return preferencesPath;
     }
 }

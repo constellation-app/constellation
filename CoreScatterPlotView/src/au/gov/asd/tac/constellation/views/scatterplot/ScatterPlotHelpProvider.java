@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.scatterplot;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,20 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String scatterModulePath = ".." + sep + "constellation" + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "scatterplot" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.scatterplot", scatterModulePath + "scatter-plot-view.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String scatterPath;
+        scatterPath = "constellation" + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "views" + sep + "scatterplot" + sep + "docs" + sep + "scatterplot-toc.xml";
+        return scatterPath;
     }
 }

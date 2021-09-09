@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.pluginreporter;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,20 @@ public class PluginReporterHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String pluginModulePath = ".." + sep + "constellation" + sep + "CorePluginReporterView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "pluginreporter" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.pluginreporter.panes", pluginModulePath + "plugin-reporter-view.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String pluginReporterPath;
+        pluginReporterPath = "constellation" + sep + "CorePluginReporterView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + "constellation" + sep + "views" + sep + "pluginreporter" + sep + "docs" + sep + "pluginreporter-toc.xml";
+        return pluginReporterPath;
     }
 }

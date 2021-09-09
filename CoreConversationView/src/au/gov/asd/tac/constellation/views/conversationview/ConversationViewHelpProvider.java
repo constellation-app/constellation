@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,12 +47,21 @@ public class ConversationViewHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String conversationModulePath = ".." + sep + "constellation" + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "conversationview" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.conversationview.ConversationBox", conversationModulePath + "conversation-view.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String conversationViewPath;
+        conversationViewPath = "constellation" + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + "constellation" + sep + "views" + sep + "conversationview" + sep + "docs" + sep + "conversationview-toc.xml";
+        return conversationViewPath;
     }
 }

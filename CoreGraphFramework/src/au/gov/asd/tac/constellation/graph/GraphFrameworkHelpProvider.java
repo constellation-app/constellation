@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,26 @@ public class GraphFrameworkHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String graphFrameworkModulePath = ".." + sep + "constellation" + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.graph.about", graphFrameworkModulePath + "graph-model.md");
+        map.put("au.gov.asd.tac.constellation.graph.attributes", graphFrameworkModulePath + "attributes.md");
+        map.put("au.gov.asd.tac.constellation.graph.types", graphFrameworkModulePath + "types.md");
+        map.put("au.gov.asd.tac.constellation.graph.expressions", graphFrameworkModulePath + "expressions.md");
+        map.put("au.gov.asd.tac.constellation.graph.io.fileformat", graphFrameworkModulePath + "constellation-file-format.md");
+        map.put("au.gov.asd.tac.constellation.graph.io.pythonreader", graphFrameworkModulePath + "example-file-reader-python.md");
+        map.put("au.gov.asd.tac.constellation.graph.io.pythonwriter", graphFrameworkModulePath + "example-file-writer-python.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String graphFrameworkPath;
+        graphFrameworkPath = "constellation" + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "docs" + sep + "graph-toc.xml";
+        return graphFrameworkPath;
     }
 }

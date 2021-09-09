@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.namedselection;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,20 @@ public class NamedSelectionHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String namedModulePath = ".." + sep + "constellation" + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "namedselection" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.namedselection", namedModulePath + "named-selections-view.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String namedViewPath;
+        namedViewPath = "constellation" + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + "constellation" + sep + "views" + sep + "namedselection" + sep + "docs" + sep + "namedselection-toc.xml";
+        return namedViewPath;
     }
 }

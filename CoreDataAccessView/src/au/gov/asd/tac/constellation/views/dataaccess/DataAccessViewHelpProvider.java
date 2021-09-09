@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,32 @@ public class DataAccessViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String dataModulePath = ".." + sep + "constellation" + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + "constellation" + sep + "views" + sep + "dataaccess" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters", dataModulePath + "datetime-range.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIO", dataModulePath + "data-access-options.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewTopComponent", dataModulePath + "data-access-view.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.SplitNodesPlugin", dataModulePath + "split-nodes.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveUnusedAttributesPlugin", dataModulePath + "remove-unused-attribute.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin", dataModulePath + "extract-types-from-text.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin", dataModulePath + "extract-words-from-text.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin", dataModulePath + "merge-nodes.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionsPlugin", dataModulePath + "merge-transactions.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin", dataModulePath + "remove-nodes.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.experimental.TestParametersPlugin", dataModulePath + "test-parameters.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectAllPlugin", dataModulePath + "select-all.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopNPlugin", dataModulePath + "select-top-n.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String dataViewPath;
+        dataViewPath = "constellation" + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "views" + sep + "dataaccess" + sep + "docs" + sep + "dataaccess-toc.xml";
+        return dataViewPath;
     }
 }

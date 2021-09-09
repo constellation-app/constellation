@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.file;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,25 @@ public class GraphFileHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String graphFileModulePath = ".." + sep + "constellation" + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.graph.file.autosave", graphFileModulePath + "autosave.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.openGraph", graphFileModulePath + "openGraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.openRecentGraph", graphFileModulePath + "openRecentGraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.newGraph", graphFileModulePath + "newGraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.saveGraph", graphFileModulePath + "saveGraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.nebula", graphFileModulePath + "nebula.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String graphFilePath;
+        graphFilePath = "constellation" + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep + "file-toc.xml";
+        return graphFilePath;
     }
 }

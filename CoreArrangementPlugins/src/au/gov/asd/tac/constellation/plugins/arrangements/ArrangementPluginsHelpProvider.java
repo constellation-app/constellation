@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +48,33 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String arrangementModulePath = ".." + sep + "constellation" + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "arrangements" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridAction", arrangementModulePath + "grid.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridGeneralPlugin", arrangementModulePath + "grid-general.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.ArrangeInHierarchyAction", arrangementModulePath + "hierarchical.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.tree.ArrangeInTreesAction", arrangementModulePath + "tree.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.circle.ArrangeInCircleAction", arrangementModulePath + "circle.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.scatter.ArrangeInScatter3dAction", arrangementModulePath + "scatter3d.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.circle.ArrangeInSphereAction", arrangementModulePath + "sphere.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.utilities.FlattenZFieldAction", arrangementModulePath + "flatten-z-field.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.resize.ContractGraphAction", arrangementModulePath + "contract-graph.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.resize.ExpandGraphAction", arrangementModulePath + "expand-graph.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.time.LayerByTimeAction", arrangementModulePath + "layer-by-time.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.trees.BubbleTreeAction", arrangementModulePath + "bubble-tree.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.clustersOnHilbertCurve", arrangementModulePath + "hilbert.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String arrangementsPath;
+        arrangementsPath = "constellation" + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + "constellation" + sep + "plugins" + sep + "arrangements" + sep + "docs" + sep + "arrangements-toc.xml";
+
+        return arrangementsPath;
     }
 }
