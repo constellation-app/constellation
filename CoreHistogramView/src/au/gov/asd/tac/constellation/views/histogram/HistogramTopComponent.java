@@ -158,11 +158,11 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     }
 
     void writeProperties(java.util.Properties p) {
-        // Method required for @ConvertAsProperties, intentionally left blank
+        // Method required for @ConvertAsProperties, intentionally left blank.
     }
 
     void readProperties(java.util.Properties p) {
-        // Method required for @ConvertAsProperties, intentionally left blank
+        // Method required for @ConvertAsProperties, intentionally left blank.
     }
 
     @Override
@@ -244,7 +244,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                             currentHistogramState = new HistogramState();
                         }
 
-                        // Ensure that the HistogramState is compatible with the current graph
+                        // Ensure that the HistogramState is compatible with the current graph.
                         currentHistogramState.validate(rg);
 
                         if (currentHistogramState != oldHistogramState) {
@@ -337,13 +337,13 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         } else {
             currentHistogramState = graph.getObjectValue(histogramStateAttribute, 0);
 
-            // The histogram state attribute may have been created but not populated yet
+            // The histogram state attribute may have been created but not populated yet.
             if (currentHistogramState == null) {
                 currentHistogramState = new HistogramState();
             }
         }
 
-        // Ensure that the HistogramState is compatible with the current graph
+        // Ensure that the HistogramState is compatible with the current graph.
         currentHistogramState.validate(graph);
 
         AttributeType binType = currentHistogramState.getAttributeType();
@@ -379,7 +379,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                     } else if ("color".equals(binnedAttributeRecord.getAttributeType())) {
                         binIconMode = BinIconMode.COLOR;
                     } else {
-                        // Do nothing
+                        // Do nothing.
                     }
 
                     currentBinnedModificationCount = graph.getValueModificationCounter(binnedAttribute);
@@ -415,12 +415,14 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
             if (elementType == null) {
                 throw new NullPointerException("Null element type");
             }
+
+            currentHistogramState.saveGraphElementState();
+
+            // If the current state is null or the elementType selected is not the one already selected.
             if (currentHistogramState == null || elementType != currentHistogramState.getElementType()) {
                 HistogramState newHistogramState = new HistogramState(currentHistogramState);
                 newHistogramState.setElementType(elementType);
-                newHistogramState.setAttributeType(AttributeType.ATTRIBUTE);
-                newHistogramState.setAttribute("");
-                newHistogramState.setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
+                newHistogramState.setGraphElementState();
                 PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
             }
         }
@@ -553,12 +555,12 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
     @Override
     public void graphOpened(Graph graph) {
-        // Required for GraphManagerListener, intentionally left blank
+        // Required for GraphManagerListener, intentionally left blank.
     }
 
     @Override
     public void graphClosed(Graph graph) {
-        // Required for GraphManagerListener, intentionally left blank
+        // Required for GraphManagerListener, intentionally left blank.
     }
 
     /**
