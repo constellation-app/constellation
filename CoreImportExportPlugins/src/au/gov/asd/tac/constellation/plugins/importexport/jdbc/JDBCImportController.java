@@ -17,10 +17,12 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
@@ -119,6 +121,8 @@ public class JDBCImportController extends ImportController {
                                 .set(ImportJDBCPlugin.QUERY_PARAMETER_ID, query)
                                 .set(ImportJDBCPlugin.USERNAME_PARAMETER_ID, username)
                                 .set(ImportJDBCPlugin.PASSWORD_PARAMETER_ID, password)
+                                .followedBy(ArrangementPluginRegistry.GRID_COMPOSITE)
+                                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                                 .executeWriteLater(importGraph);
                     }
                 }
@@ -134,6 +138,8 @@ public class JDBCImportController extends ImportController {
                     .set(ImportJDBCPlugin.USERNAME_PARAMETER_ID, username)
                     .set(ImportJDBCPlugin.PASSWORD_PARAMETER_ID, password)
                     .set(ImportJDBCPlugin.SCHEMA_PARAMETER_ID, schema)
+                    .followedBy(ArrangementPluginRegistry.GRID_COMPOSITE)
+                    .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .executeWriteLater(importGraph);
         }
     }
