@@ -131,8 +131,8 @@ public class TreeNode<T> {
         } else {
             // Nodes with children get written with an extra level of indent
             // Write start of div which will hold children of current TOC Item
-            final String dataParent = (parent == null ? "#accordion" : parent.getText().replace(StringUtils.SPACE, StringUtils.EMPTY));
-            final String id = item.getText().replace(StringUtils.SPACE, StringUtils.EMPTY);
+            final String dataParent = (parent == null ? "#accordion" : parent.getText().replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
+            final String id = item.getText().replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", "");
             final String div = "<div class=\"card-body btn btn-link accordion-item nav flex-column\" "
                     + "aria-expanded=\"true\" data-parent=\"" + dataParent + "\" id=\"" + id + "\">";
             TOCGenerator.writeText(writer, div);

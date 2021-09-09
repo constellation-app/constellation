@@ -175,9 +175,9 @@ public class TOCGenerator {
             final StringBuilder sb = new StringBuilder();
             sb.append("<h2 text-align=\"left\" class=\"mb-0 nav flex-column\">");
             sb.append("<a href=\"#\" role=\"button\" class=\"link-secondary\" data-toggle=\"collapse\" data-target=\"#");//collapseOne\" aria-controls=\"collapseOne\">");
-            sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY));
+            sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
             sb.append("\" aria-controls=\"");
-            sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY));
+            sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
             sb.append("\">");
             //sb.append("<a href=\"#\" data-toggle=\"collapse\" data-target=\"#");
             //sb.append(checkedTarget);

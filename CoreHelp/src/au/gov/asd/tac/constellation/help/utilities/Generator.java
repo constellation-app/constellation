@@ -56,7 +56,6 @@ public class Generator implements Runnable {
         String[] splitUserDir = userDir.split(pattern);
         while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
             splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
-
         }
         // split once more
         splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);

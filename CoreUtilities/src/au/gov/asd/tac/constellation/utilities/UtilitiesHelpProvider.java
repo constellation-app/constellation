@@ -49,7 +49,7 @@ public class UtilitiesHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String utilitiesModulePath = ".." + sep + "constellation" + sep + "CoreUtilties" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+        final String utilitiesModulePath = ".." + sep + "constellation" + sep + "CoreUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
                 + sep + "tac" + sep + "constellation" + sep + "utilities" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.utilities.icons", utilitiesModulePath + "icons.md");
