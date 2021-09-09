@@ -194,15 +194,10 @@ public class JDBCImportController extends ImportController {
         if (configurationPane != null) {
             configurationPane.setSampleData(currentColumns, currentData);
 
-            // If the current columns lenght isn't 0, expand the config pane
-            // and enable the import button
-            if (!currentData.isEmpty()) {
-                openConfigPane(StringUtils.isNotBlank(currentData.get(0).toString()));
-                disableButton(StringUtils.isBlank(currentData.get(0).toString()));
-            } else {
-                openConfigPane(false);
-                disableButton(true);
-            }
+            // If currentData is not empty expand the config pane and enable the
+            // import button
+            openConfigPane(!currentData.isEmpty());
+            disableButton(currentData.isEmpty());
         }
     }
 
