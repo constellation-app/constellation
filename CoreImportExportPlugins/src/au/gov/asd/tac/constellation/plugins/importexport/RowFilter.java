@@ -88,7 +88,13 @@ public class RowFilter {
      */
     public boolean setScript(final String script) {
         try {
-            this.script = encodeScript(modifyScript(script));
+            this.script = script;
+            final String validHeader = validHeader();
+            if (StringUtils.isBlank(validHeader)) {
+                this.script = null;
+                return false;
+            }
+            this.script = encodeScript(modifyScript(validHeader));
             compiledScript = ((Compilable) engine).compile(this.script);
 
             LOGGER.log(Level.INFO, "SCRIPT = {0}", this.script);
@@ -99,19 +105,31 @@ public class RowFilter {
             return false;
         }
     }
-    private String modifyScript(final String script) {
+
+    private String validHeader() {
         final int endOfHeader = script.indexOf("==");
-        String modifiedScript = script;
         if (endOfHeader != -1) {
             final String header = script.substring(0, endOfHeader);
-            final Matcher matcher = VALID_HEADER_MATCHER.matcher(header);
-            if (header != null && !matcher.matches()) {
-                //Amend the script with the relevant ith column header containing columnHeaderPrefix
-                for (int i = 1; i < columns.length; i++) {
+            if (!StringUtils.isBlank(header)) {
+                for (int i = 0; i < columns.length - 1; i++) {
                     if (columns[i].equals(header)) {
-                        modifiedScript = StringUtils.replaceOnce(script, header, COLUMN_HEADER_PREFIX + i);
-                        break;
+                        return header;
                     }
+                }
+            }
+        }
+        return null;
+    }
+
+    private String modifyScript(final String validHeader) {
+        String modifiedScript = script;
+        final Matcher matcher = VALID_HEADER_MATCHER.matcher(validHeader);
+        if (!matcher.matches()) {
+            //Amend the script with the relevant ith column header containing columnHeaderPrefix
+            for (int i = 1; i < columns.length; i++) {
+                if (columns[i].equals(validHeader)) {
+                    modifiedScript = StringUtils.replaceOnce(script, validHeader, COLUMN_HEADER_PREFIX + i);
+                    break;
                 }
             }
         }
