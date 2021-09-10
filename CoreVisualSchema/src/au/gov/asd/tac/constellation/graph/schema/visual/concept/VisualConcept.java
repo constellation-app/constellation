@@ -94,7 +94,7 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT) / 100f)
                 .create()
                 .build();
-        public static final SchemaAttribute BOTTOM_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_labels_bottom")
+        public static final SchemaAttribute BOTTOM_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_bottom_labels_colours")
                 .setDescription("The labels beneath nodes")
                 .setDefaultValue(GraphLabels.NO_LABELS)
                 .create()
@@ -158,7 +158,7 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The name of the node attribute that will determine node colors")
                 .create()
                 .build();
-        public static final SchemaAttribute TOP_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_labels_top")
+        public static final SchemaAttribute TOP_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_top_labels_colours")
                 .setDescription("The labels above nodes")
                 .setDefaultValue(GraphLabels.NO_LABELS)
                 .create()
