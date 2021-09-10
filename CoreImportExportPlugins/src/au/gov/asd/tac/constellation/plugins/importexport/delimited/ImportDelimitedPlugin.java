@@ -141,10 +141,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             final StringBuilder sbHeader = new StringBuilder();
             final StringBuilder sbMessage = new StringBuilder();
 
-            String fileFiles = (validFilenames.size() > 1) ? "files" : "file";
-            if (validFilenames.size() == 0) {
-                fileFiles = "files";
-            }
+            final String fileFiles = (validFilenames.size() == 1) ? "file" : "files";
 
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
@@ -155,10 +152,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     sbMessage.append("\n  ");
                     sbMessage.append(filename);
                 });
-                String invalidFileFiles = (invalidFilenames.size() > 1) ? "files" : "file";
-                if (invalidFilenames.size() == 0) {
-                    invalidFileFiles = "files";
-                }
+                final String invalidFileFiles = (validFilenames.size() == 1) ? "file" : "files";
                 if (invalidFilenames.size() > 0) {
                     // some invalid files were found - warning condition.
                     sbMessage.append("\n\nThe following " + invalidFileFiles + " could not be parsed. No data was extracted:");
