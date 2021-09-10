@@ -153,7 +153,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         String helpTOCPath = "constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/docs/about-constellation.md";
 
         // use the requested help file, or the table of contents if it doesnt exist
-        final String helpLink = StringUtils.isNotEmpty(HelpMapper.getHelpAddress(helpId)) ? HelpMapper.getHelpAddress(helpId) : helpTOCPath;
+        final String helpLink = StringUtils.isNotEmpty(HelpMapper.getHelpAddress(helpId)) ? HelpMapper.getHelpAddress(helpId).substring(2) : helpTOCPath;
 
         if (!helpLink.isEmpty()) {
             try {
