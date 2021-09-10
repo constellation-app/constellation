@@ -66,7 +66,7 @@ public class HelpServlet extends HttpServlet {
 
         LOGGER.log(Level.INFO, "GET {0}", requestPath);
         try {
-            if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js")) && !wasRedirect) {
+            if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js") || requestPath.contains(".ico")) && !wasRedirect) {
                 final File file = new File(Generator.baseDirectory);
                 final URL fileUrl = file.toURI().toURL();
                 String requestfrontHalfRemoved = requestPath.replace(fileUrl.toString(), ""); // remove first bit

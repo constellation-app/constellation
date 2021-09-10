@@ -90,20 +90,15 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             return;
         }
 
+        // Generate html for output
         final String html = generateHTMLOutput(tocInput, input);
 
         out.write(html.getBytes());
     }
 
-    private static InputStream getInputStream(final String filePath) {
-        final Path path = Paths.get(filePath.substring(3));
-        try {
-            return new FileInputStream(path.toString());
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-            LOGGER.log(Level.WARNING, "Cannot find the file passed into input stream, The Help Contents may not be visible because of this.", ex);
-        }
-        return null;
+    private static InputStream getInputStream(final String filePath) throws FileNotFoundException {
+        final Path path = Paths.get(filePath);
+        return new FileInputStream(path.toString());
     }
 
     private static String generateHTMLOutput(final InputStream tocInput, final InputStream pageInput) throws MalformedURLException, IOException {
