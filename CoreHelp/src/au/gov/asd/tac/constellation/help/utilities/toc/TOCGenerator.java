@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help.utilities.toc;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import com.jogamp.common.os.Platform;
 import java.io.File;
 import java.io.FileWriter;
@@ -94,7 +95,7 @@ public class TOCGenerator {
      */
     public static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode root) {
         writeText(markdownOutput, "<div class=\"container\">");
-        writeText(markdownOutput, "<div class='row'> <div class=\"card-body btn btn-link sidebar-sticky accordion-item col-4 col-sm-4\" id=\"accordion\">");
+        writeText(markdownOutput, "<div id=\"accordion\">");
         writeText(markdownOutput, Platform.NEWLINE);
 
         // Parse XML to tree structure
@@ -132,11 +133,12 @@ public class TOCGenerator {
      */
     public static String generateHTMLLink(final String title, final String url) {
         final StringBuilder sb = new StringBuilder();
-        sb.append("<a class=\"accordion-item link-primary nav flex-column\" aria-expanded=\"true\" href =\"");
+        sb.append("<a href=\"");
         sb.append(url);
         sb.append("\">");
         sb.append(title);
         sb.append("</a>");
+        sb.append("<br/>");
         return sb.toString();
     }
 
@@ -171,20 +173,23 @@ public class TOCGenerator {
      */
     public static void writeAccordionItem(final FileWriter writer, final String item, final String dataTarget) {
         try {
-            //final String indent = StringUtils.repeat(BLANK_STRING, indentLevel * spacesPerIndent);
             final StringBuilder sb = new StringBuilder();
-            sb.append("<h2 text-align=\"left\" class=\"mb-0 nav flex-column\">");
-            sb.append("<a href=\"#\" role=\"button\" class=\"link-secondary\" data-toggle=\"collapse\" data-target=\"#");//collapseOne\" aria-controls=\"collapseOne\">");
-            sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
-            sb.append("\" aria-controls=\"");
-            sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
-            sb.append("\">");
-            //sb.append("<a href=\"#\" data-toggle=\"collapse\" data-target=\"#");
-            //sb.append(checkedTarget);
-            //sb.append("\">");
-            sb.append(item);
-            sb.append("</a>");
+            sb.append("<div class=\"card\">");
+            sb.append("<div class=\"card-header\">");
+            sb.append("<h2 class=\"mb-0\">");
+            if (item.equals(Generator.ROOTNODENAME)) {
+                sb.append(item);
+            } else {
+                sb.append("<button href=\"#\" role=\"button\" class=\"btn btn-link btn-block text-left collapsed\" data-toggle=\"collapse\" data-target=\"#");//collapseOne\" aria-controls=\"collapseOne\">");
+                sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
+                sb.append("\" aria-expanded=\"false\" aria-controls=\"");
+                sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
+                sb.append("\">");
+                sb.append(item);
+                sb.append("</button>");
+            }
             sb.append("</h2>");
+            sb.append("</div>");
             writer.write(sb.toString());
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, "Failed to write to file", ex);

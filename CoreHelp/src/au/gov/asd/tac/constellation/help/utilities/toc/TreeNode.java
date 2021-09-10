@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help.utilities.toc;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
 import com.jogamp.common.os.Platform;
 import java.io.FileWriter;
@@ -131,17 +132,21 @@ public class TreeNode<T> {
         } else {
             // Nodes with children get written with an extra level of indent
             // Write start of div which will hold children of current TOC Item
-            final String dataParent = (parent == null ? "#accordion" : parent.getText().replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
-            final String id = item.getText().replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", "");
-            final String div = "<div class=\"card-body btn btn-link accordion-item nav flex-column\" "
-                    + "aria-expanded=\"true\" data-parent=\"" + dataParent + "\" id=\"" + id + "\">";
-            TOCGenerator.writeText(writer, div);
+            if (!item.getText().equals(Generator.ROOTNODENAME)) {
+                final String id = item.getText().replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", "");
+                final String div = "<div id=\"" + id + "\" class=\"collapse\" aria-labelledby=\"" + id + "\" data-parent=\"#" + id + "\"> <div class=\"card-body\">";
+                TOCGenerator.writeText(writer, div);
 
-            // Recurse and call same method to write children
-            node.getChildren().forEach(each -> write(each, writer, indent + 1));
+                // Recurse and call same method to write children
+                node.getChildren().forEach(each -> write(each, writer, indent + 1));
 
-            // Close div which holds children of current TOC Item
-            TOCGenerator.writeText(writer, "</div>");
+                // Close div which holds children of current TOC Item
+                TOCGenerator.writeText(writer, "</a> </div> </div> </div>");
+            } else {
+                // Recurse and call same method to write children
+                node.getChildren().forEach(each -> write(each, writer, indent + 1));
+            }
+
         }
     }
 

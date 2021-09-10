@@ -40,9 +40,12 @@ public class Generator implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
     public static String baseDirectory = "";
     public static String tocDirectory = "";
+    public static final String ROOTNODENAME = "Constellation Documentation";
 
     @Override
     public void run() {
+        // Preferences prefs = NbPreferences.forModule(Generator.class);
+        // prefs.put("onlineHelp", "false");
 
         // DO NOT RUN IN EXECUTABLE, ONLY RUN IN IDE
         // TODO: Double check if this is necessary and also foolproof for other module suites.
@@ -67,7 +70,7 @@ public class Generator implements Runnable {
         final TOCGenerator tocGenerator = new TOCGenerator(tocPath);
 
         // Create the root node for application-wide table of contents
-        final TreeNode root = new TreeNode(new TOCItem("Help Pages", ""));
+        final TreeNode root = new TreeNode(new TOCItem(ROOTNODENAME, ""));
 
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
