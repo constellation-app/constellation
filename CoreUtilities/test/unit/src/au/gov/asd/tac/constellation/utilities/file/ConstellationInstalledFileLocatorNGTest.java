@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,27 +23,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
-import org.openide.modules.InstalledFileLocator;
-import org.testng.annotations.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.any;
+import org.openide.modules.InstalledFileLocator;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
+import org.testng.annotations.Test;
 
 /**
  * @author groombridge34a
  */
 public class ConstellationInstalledFileLocatorNGTest {
-    
+
     /**
-     * The file is returned if it is successfully located by 
+     * The file is returned if it is successfully located by
      * InstalledFileLocator.
-     * 
+     *
      * @throws IOException necessary to construct a temp File
      */
     @Test
@@ -54,23 +54,22 @@ public class ConstellationInstalledFileLocatorNGTest {
             locatorMockedStatic.when(() -> InstalledFileLocator.getDefault()).thenReturn(locator);
             final File tmp = File.createTempFile("tmp", ".tmp");
             when(locator.locate(anyString(), anyString(), anyBoolean())).thenReturn(tmp);
-            
-            assertSame(ConstellationInstalledFileLocator.locate("", "", false, null), tmp);
+
+            assertSame(ConstellationInstalledFileLocator.locate("", "", null), tmp);
         }
     }
-    
+
     /**
-     * If InstalledFileLocator can't find the file it can still be loaded by
-     * the hacky backup method.
-     * 
+     * If InstalledFileLocator can't find the file it can still be loaded by the
+     * hacky backup method.
+     *
      * @throws IOException if paths or the dummy URL can't be created
      */
     @Test
     public void testFileExists() throws IOException {
         try (
                 final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class);
-                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class);) 
-        {
+                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class);) {
             // mock the file locator to return null
             final InstalledFileLocator locator = mock(InstalledFileLocator.class);
             locatorMockedStatic.when(() -> InstalledFileLocator.getDefault()).thenReturn(locator);
@@ -88,23 +87,22 @@ public class ConstellationInstalledFileLocatorNGTest {
             final Path tmpFile = Files.createTempFile(dir2, "tmp", ".tmp");
             // mock paths to return the temp file
             pathsMockedStatic.when(() -> Paths.get(any())).thenReturn(tmpFile);
-            
-            assertEquals(ConstellationInstalledFileLocator.locate(relative, "", false, protectionDomain), dirRelative.toFile());
+
+            assertEquals(ConstellationInstalledFileLocator.locate(relative, "", protectionDomain), dirRelative.toFile());
         }
     }
-    
+
     /**
      * A file that cannot be located by InstalledFileLocator or the hacky backup
      * method causes a RuntimeException to be thrown.
-     * 
+     *
      * @throws IOException if a dummy URL can't be created
      */
-    @Test(expectedExceptions = { RuntimeException.class }, expectedExceptionsMessageRegExp = "Couldn't find file.*")
+    @Test(expectedExceptions = {RuntimeException.class}, expectedExceptionsMessageRegExp = "Couldn't find file.*")
     public void testFileNotExist() throws IOException {
         try (
                 final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class);
-                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class);) 
-        {
+                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class);) {
             // mock the file locator to return null
             final InstalledFileLocator locator = mock(InstalledFileLocator.class);
             locatorMockedStatic.when(() -> InstalledFileLocator.getDefault()).thenReturn(locator);
@@ -117,19 +115,19 @@ public class ConstellationInstalledFileLocatorNGTest {
             // mock paths to return a temp file
             final Path tmpFile = Files.createTempFile("tmp", ".tmp");
             pathsMockedStatic.when(() -> Paths.get(any())).thenReturn(tmpFile);
-            
-            ConstellationInstalledFileLocator.locate("dummy", "", false, protectionDomain);
+
+            ConstellationInstalledFileLocator.locate("dummy", "", protectionDomain);
         }
     }
-    
+
     /**
-     * A RuntimeException wrapping an URISyntaxException is thrown when the 
+     * A RuntimeException wrapping an URISyntaxException is thrown when the
      * location of the code source obtained from the ProtectionDomain parameter
      * is an invalid URI.
-     * 
+     *
      * @throws IOException necessary to construct a bogus URL
      */
-    @Test(expectedExceptions = { RuntimeException.class }, expectedExceptionsMessageRegExp = ".*URISyntaxException.*")
+    @Test(expectedExceptions = {RuntimeException.class}, expectedExceptionsMessageRegExp = ".*URISyntaxException.*")
     public void testIncorrectUri() throws IOException {
         try (final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class)) {
             // mock the file locator to return null
@@ -141,8 +139,8 @@ public class ConstellationInstalledFileLocatorNGTest {
             final CodeSource codeSource = mock(CodeSource.class);
             when(protectionDomain.getCodeSource()).thenReturn(codeSource);
             when(codeSource.getLocation()).thenReturn(new URL("http://dummy/a?b^c"));
-            
-            ConstellationInstalledFileLocator.locate("", "", false, protectionDomain);
+
+            ConstellationInstalledFileLocator.locate("", "", protectionDomain);
         }
     }
 }

@@ -1,6 +1,23 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-06 Import From File
+<p>Updated the UI to only enable and expand sections once a file is added</p>
+
+== 2021-09-08 Notes View UI Improvements
+<p>New features:</p>
+<ul>
+<li>Replaced edit pop up with direct note editable text fields</li>
+<li>Right click note to add and remove selected graph elements</li>
+<li>Delete note confirmation pop up</li>
+</ul>
+
+== 2021-09-06 Freeform Selection 
+<p>You can now draw a freeform selection shape by holding down Alt whilst selecting.</p>
+
+== 2021-09-06 Reset graph view after importing
+<p>When data is imported with the Import from File or the Import from Database, the graph view is now reset to the full view to display everything that has been imported.</p>
+
 == 2021-08-23 Moved Notes View to Views menu
 <p>The Notes View can now be found in the Views menu instead of in the Experimental > Views menu.</p>
 

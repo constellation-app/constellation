@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.Preferences;
 import javafx.scene.control.ScrollPane;
@@ -220,12 +221,12 @@ public class ParameterIOUtilities {
         }
 
         if (queryName != null) {
-            JsonIO.saveJsonPreferences(DATA_ACCESS_DIR, mapper, rootNode);
+            JsonIO.saveJsonPreferences(Optional.of(DATA_ACCESS_DIR), mapper, rootNode);
         }
     }
 
     public static void loadParameters(final DataAccessPane dap) {
-        final JsonNode root = JsonIO.loadJsonPreferences(DATA_ACCESS_DIR);
+        final JsonNode root = JsonIO.loadJsonPreferences(Optional.of(DATA_ACCESS_DIR));
         if ((root != null) && (root.isArray())) {
             // Remove all the existing tabs and start some new ones.
             dap.removeTabs();

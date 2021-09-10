@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -111,7 +112,7 @@ public class TableViewPreferencesIOUtilities {
             // the table isn't being sorted by any column so don't save anything
             colSortNode.put("", "");
         }
-        JsonIO.saveJsonPreferences(TABLE_VIEW_PREF_DIR, mapper, rootNode, filePrefix);
+        JsonIO.saveJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), mapper, rootNode, Optional.of(filePrefix));
     }
 
     /**
@@ -128,7 +129,7 @@ public class TableViewPreferencesIOUtilities {
     public static ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> getPreferences(final GraphElementType tableType,
             final int defaultPageSize) {
         final String filePrefix = (tableType == GraphElementType.VERTEX ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX);
-        final JsonNode root = JsonIO.loadJsonPreferences(TABLE_VIEW_PREF_DIR, filePrefix);
+        final JsonNode root = JsonIO.loadJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), Optional.of(filePrefix));
         final List<String> colOrder = new ArrayList<>();
         String sortColumn = "";
         TableColumn.SortType sortType = TableColumn.SortType.ASCENDING;

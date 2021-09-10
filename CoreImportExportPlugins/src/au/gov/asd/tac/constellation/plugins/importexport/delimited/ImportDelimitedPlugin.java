@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -47,7 +48,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.F
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -56,7 +58,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -136,23 +138,24 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
      */
     private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
         Platform.runLater(() -> {
-            boolean success = true;
             final StringBuilder sbHeader = new StringBuilder();
             final StringBuilder sbMessage = new StringBuilder();
+
+            final String fileFiles = (validFilenames.size() == 1) ? "file" : "files";
 
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
                 // issues for. If there were any files with issues use a warning dialog.
-                sbHeader.append(String.format("Imported %d rows of data from %d files", importedRows, validFilenames.size()));
-                sbMessage.append("The following file(s) contained data:");
+                sbHeader.append(String.format("Imported %d rows of data from %d " + fileFiles, importedRows, validFilenames.size()));
+                sbMessage.append("The following " + fileFiles + " contained data:");
                 validFilenames.forEach(filename -> {
                     sbMessage.append("\n  ");
                     sbMessage.append(filename);
                 });
+                final String invalidFileFiles = (validFilenames.size() == 1) ? "file" : "files";
                 if (invalidFilenames.size() > 0) {
                     // some invalid files were found - warning condition.
-                    success = false;
-                    sbMessage.append("\n\nThe following file(s) could not be parsed. No data was extracted:");
+                    sbMessage.append("\n\nThe following " + invalidFileFiles + " could not be parsed. No data was extracted:");
                     invalidFilenames.forEach(filename -> {
                         sbMessage.append("\n  ");
                         sbMessage.append(filename);
@@ -160,17 +163,14 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 }
             } else {
                 // No rows were imported list all files that resulted in failures.
-                success = false;
                 sbHeader.append("No data found to import");
-                sbMessage.append("The following file(s) could not be parsed. no data was extracted:");
+                sbMessage.append("The following " + fileFiles + " could not be parsed. no data was extracted:");
                 invalidFilenames.forEach(filename -> {
                     sbMessage.append("\n  ");
                     sbMessage.append(filename);
                 });
             }
-            NotifyDisplayer.displayAlert("Delimited Importer", sbHeader.toString(), sbMessage.toString(),
-                    success ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
-
+            NotificationDisplayer.getDefault().notify(sbHeader.toString(), UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
         });
     }
 
@@ -253,6 +253,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                     .followedBy(ArrangementPluginRegistry.PENDANTS)
                     .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
+                    .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .executeNow(vlGraph.getInclusionGraph());
             vlGraph.retrieveCoords();
         }
