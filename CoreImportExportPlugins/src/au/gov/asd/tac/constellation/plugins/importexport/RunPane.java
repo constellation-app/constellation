@@ -155,13 +155,13 @@ public final class RunPane extends BorderPane implements KeyListener {
 
         if (rowFilter == null) {
             try {
-            final CountDownLatch latch = new CountDownLatch(1);
+                final CountDownLatch latch = new CountDownLatch(1);
                 new Thread(() -> {
                     rowFilter = new RowFilter();
                     latch.countDown();
                 }, ROW_FILTER_INITIALISER).start();
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
                 Thread.currentThread().interrupt();
             }

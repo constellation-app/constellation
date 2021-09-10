@@ -20,6 +20,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -27,6 +29,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The definition of a row filter.
@@ -53,7 +56,9 @@ public class RowFilter {
 
     private String[] columns = new String[0];
     private String[] encodedColumns = new String[0];
-    private static final String columnHeaderPrefix = "uniqueColumnHeaderPrefix_";
+    private static final String COLUMN_HEADER_PREFIX = "uniqueColumnHeaderPrefix_";
+    private static final String VALID_HEADER_PATTERN = "^[a-zA-Z][a-zA-Z0-9_]*$";
+    private static final Pattern VALID_HEADER_MATCHER = Pattern.compile(VALID_HEADER_PATTERN);
 
     private static final Logger LOGGER = Logger.getLogger(RowFilter.class.getName());
 
@@ -99,11 +104,12 @@ public class RowFilter {
         String modifiedScript = script;
         if (endOfHeader != -1) {
             final String header = script.substring(0, endOfHeader);
-            if (header != null && !header.matches("^[a-zA-Z][a-zA-Z0-9_]*$")) {
-                //Append the script with the relevant ith column header containing columnHeaderPrefix
+            final Matcher matcher = VALID_HEADER_MATCHER.matcher(header);
+            if (header != null && !matcher.matches()) {
+                //Amend the script with the relevant ith column header containing columnHeaderPrefix
                 for (int i = 1; i < columns.length; i++) {
                     if (columns[i].equals(header)) {
-                        modifiedScript = modifiedScript.replaceFirst(header, columnHeaderPrefix + i);
+                        modifiedScript = StringUtils.replaceOnce(script, header, COLUMN_HEADER_PREFIX + i);
                         break;
                     }
                 }
@@ -213,7 +219,7 @@ public class RowFilter {
                     bindings.put(columns[i], values[i - 1]);
                 }
 
-                final String columnBinding = columnHeaderPrefix + i;
+                final String columnBinding = COLUMN_HEADER_PREFIX + i;
                 if (!bindings.containsKey(columnBinding)) {
                     bindings.put(columnBinding, values[i - 1]);
                 }
