@@ -57,6 +57,8 @@ public class ImportPane extends BorderPane {
     protected final Button loadButton;
     protected final Button saveButton;
     protected final Button helpButton;
+    protected final TitledPane titledConfigurationPane;
+    protected final ActionPane actionPane;
 
     protected ImportController importController;
     protected ImportTopComponent importTopComponent;
@@ -127,10 +129,11 @@ public class ImportPane extends BorderPane {
         menuToolbar.getChildren().add(helpButton);
 
         // titled configuration pane
-        final TitledPane titledConfigurationPane = new TitledPane("Configuration", configurationPane);
+        titledConfigurationPane = new TitledPane("Configuration", configurationPane);
         titledConfigurationPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         titledConfigurationPane.setMinSize(0, 0);
-        titledConfigurationPane.setCollapsible(false);
+        titledConfigurationPane.setCollapsible(true);
+        titledConfigurationPane.setExpanded(false);
 
         // gridpane for configuration pane
         gridPane = new EasyGridPane();
@@ -142,7 +145,7 @@ public class ImportPane extends BorderPane {
         gridPane.addRowConstraint(true, VPos.BOTTOM, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
 
         // actionpane for holding import and cancel buttons
-        final ActionPane actionPane = new ActionPane(importController);
+        actionPane = new ActionPane(importController);
         actionPane.setMinSize(0, ACTIONPANE_MIN_HEIGHT);
         actionPane.prefWidthProperty().bind(this.widthProperty());
         actionPane.setPadding(ACTIONPANE_PADDING);
@@ -172,5 +175,13 @@ public class ImportPane extends BorderPane {
 
     public Window getParentWindow() {
         return this.getScene().getWindow();
+    }
+
+    public void expandPane(final boolean isExpanded) {
+        titledConfigurationPane.setExpanded(isExpanded);
+    }
+
+    public void disableButton(final boolean isEnabled) {
+        actionPane.disableButton(isEnabled);
     }
 }

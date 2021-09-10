@@ -82,6 +82,14 @@ public class DelimitedSourcePane extends SourcePane {
         fileListView.setMaxWidth(Double.MAX_VALUE);
         fileListView.setMinWidth(0);
 
+        // listener calls the controller to trigger the open config page and the
+        // enable import button. this will be triggered when a file is in
+        // the imported files list
+        fileListView.itemsProperty().addListener((observable, oldValue, newValue) -> {
+            importController.openConfigPane(!newValue.isEmpty());
+            importController.disableButton(newValue.isEmpty());
+        });
+
         final ScrollPane fileScrollPane = new ScrollPane();
         fileScrollPane.setMaxHeight(FILESCROLLPANE_MAX_HEIGHT);
         fileScrollPane.setMaxWidth(Double.MAX_VALUE);
