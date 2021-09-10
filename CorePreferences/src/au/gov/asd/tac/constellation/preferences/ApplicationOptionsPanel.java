@@ -130,14 +130,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         this.rememberSaveLocationCheckBox.setSelected(rememberSaveLocation);
     }
 
-    public boolean getOnlineHelpOption() {
-        return onlineHelpCheckBox.isSelected();
-    }
-
-    public void setOnlineHelpOption(final boolean setOnlineHelp) {
-        this.onlineHelpCheckBox.setSelected(setOnlineHelp);
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -169,8 +161,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         downloadPythonClientCheckBox = new JCheckBox();
         saveLocationPanel = new JPanel();
         rememberSaveLocationCheckBox = new JCheckBox();
-        onlineHelpPanel = new JPanel();
-        onlineHelpCheckBox = new JCheckBox();
 
         Mnemonics.setLocalizedText(userDirectoryLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.userDirectoryLabel.text")); // NOI18N
 
@@ -207,7 +197,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(autosaveSpinner, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(autosaveLabel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(181, Short.MAX_VALUE))
+                .addContainerGap(173, Short.MAX_VALUE))
         );
         autosavePanelLayout.setVerticalGroup(autosavePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(autosavePanelLayout.createSequentialGroup()
@@ -235,7 +225,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(startupWhatsNewCheckbox)
                     .addComponent(startupWelcomeCheckbox))
-                .addContainerGap(388, Short.MAX_VALUE))
+                .addContainerGap(380, Short.MAX_VALUE))
         );
         startupPanelLayout.setVerticalGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(startupPanelLayout.createSequentialGroup()
@@ -275,7 +265,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                     .addGroup(webserverPanelLayout.createSequentialGroup()
                         .addComponent(webserverPortSpinner, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(restDirectoryText, GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE))
+                    .addComponent(restDirectoryText, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(restDirectoryButton)
                 .addGap(4, 4, 4))
@@ -323,7 +313,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                     .addGroup(notebookPanelLayout.createSequentialGroup()
                         .addComponent(notebookDirectoryLabel)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(notebookDirectoryText, GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                        .addComponent(notebookDirectoryText, GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(notebookDirectoryButton)))
                 .addContainerGap())
@@ -361,37 +351,12 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        onlineHelpPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.onlineHelpPanel.border.title"))); // NOI18N
-
-        Mnemonics.setLocalizedText(onlineHelpCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.onlineHelpCheckBox.text")); // NOI18N
-        onlineHelpCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                onlineHelpCheckBoxActionPerformed(evt);
-            }
-        });
-
-        GroupLayout onlineHelpPanelLayout = new GroupLayout(onlineHelpPanel);
-        onlineHelpPanel.setLayout(onlineHelpPanelLayout);
-        onlineHelpPanelLayout.setHorizontalGroup(onlineHelpPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(onlineHelpPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(onlineHelpCheckBox)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        onlineHelpPanelLayout.setVerticalGroup(onlineHelpPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(onlineHelpPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(onlineHelpCheckBox)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addComponent(onlineHelpPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(startupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(autosavePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -422,14 +387,11 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(notebookPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(saveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(onlineHelpPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N
         saveLocationPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.saveLocationPanel.AccessibleContext.accessibleName")); // NOI18N
-        onlineHelpPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.onlineHelpPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void userDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_userDirectoryButtonActionPerformed
@@ -478,10 +440,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_restDirectoryButtonActionPerformed
 
-    private void onlineHelpCheckBoxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_onlineHelpCheckBoxActionPerformed
-        onlineHelpCheckBox.setSelected(false);
-    }//GEN-LAST:event_onlineHelpCheckBoxActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JCheckBox autosaveCheckBox;
     private JLabel autosaveLabel;
@@ -492,8 +450,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JLabel notebookDirectoryLabel;
     private JTextField notebookDirectoryText;
     private JPanel notebookPanel;
-    private JCheckBox onlineHelpCheckBox;
-    private JPanel onlineHelpPanel;
     private JCheckBox rememberSaveLocationCheckBox;
     private JButton restDirectoryButton;
     private JLabel restDirectoryLabel;

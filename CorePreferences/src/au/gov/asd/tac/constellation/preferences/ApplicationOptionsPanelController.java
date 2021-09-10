@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
-import au.gov.asd.tac.constellation.help.utilities.Generator;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.prefs.Preferences;
@@ -48,7 +47,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
     @Override
     public void update() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final Preferences helpPrefs = NbPreferences.forModule(Generator.class);
         final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
 
         applicationOptionsPanel.setUserDirectory(ApplicationPreferenceKeys.getUserDir(prefs));
@@ -61,7 +59,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setRestDirectory(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT));
         applicationOptionsPanel.setDownloadPythonClient(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
         applicationOptionsPanel.setRememberSaveLocation(prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT));
-        applicationOptionsPanel.setOnlineHelpOption(helpPrefs.getBoolean(ApplicationPreferenceKeys.HELP_KEY, ApplicationPreferenceKeys.ONLINE_HELP));
     }
 
     @Override
@@ -73,7 +70,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
 
                 final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-                final Preferences helpPrefs = NbPreferences.forModule(Generator.class);
                 final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
 
                 prefs.put(ApplicationPreferenceKeys.USER_DIR, applicationOptionsPanel.getUserDirectory());
@@ -86,7 +82,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 prefs.put(ApplicationPreferenceKeys.REST_DIR, applicationOptionsPanel.getRestDirectory());
                 prefs.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, applicationOptionsPanel.getDownloadPythonClient());
                 prefs.putBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, applicationOptionsPanel.getRememberSaveLocation());
-                helpPrefs.putBoolean(ApplicationPreferenceKeys.HELP_KEY, applicationOptionsPanel.getOnlineHelpOption());
             }
         }
     }
@@ -109,7 +104,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
     @Override
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final Preferences helpPrefs = NbPreferences.forModule(Generator.class);
         final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
         return !(applicationOptionsPanel.getUserDirectory().equals(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT))
                 && applicationOptionsPanel.getAustosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
@@ -120,8 +114,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getNotebookDirectory().equals(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT))
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
                 && applicationOptionsPanel.getDownloadPythonClient() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
-                && applicationOptionsPanel.getRememberSaveLocation() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT)
-                && applicationOptionsPanel.getOnlineHelpOption() == helpPrefs.getBoolean(ApplicationPreferenceKeys.HELP_KEY, ApplicationPreferenceKeys.ONLINE_HELP));
+                && applicationOptionsPanel.getRememberSaveLocation() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT));
     }
 
     @Override

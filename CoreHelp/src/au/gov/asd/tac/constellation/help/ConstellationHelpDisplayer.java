@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help;
 
+import au.gov.asd.tac.constellation.help.preferences.HelpPreferenceKeys;
 import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
 import com.github.rjeschke.txtmark.Processor;
@@ -31,13 +32,14 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,10 +53,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     // This system property controls where the help is displayed from.
     //
-    // * If it is undefined, help is read from getResourceAsStream().
-    // * If it is defined as a (zip) file, help is read from that zip file.
-    // * If it is defined as a web URL, help is read from that URL.
-    //
     // Define it in this module's project.properties file or another
     // appropriate place as (for example):
     //
@@ -66,23 +64,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     //
     // run.args.extra="-J-Dconstellation.help=https://github.com/constellation-app/constellation/raw/master/docs"
     //
-    private static final String CONSTELLATION_HELP = "constellation.help";
-
-    // The help zip must contain a text file mapping helpIds to page paths.
-    //
-    private static final String HELP_MAP = "help_map.txt";
-
-    // The name of the internal help.zip resource.
-    //
-    private static final String HELP_ZIP = "help.zip";
-
-    // Maximum size of buffer for reading help files.
-    //
-    private static final int BUFSIZ = 10 * 1024 * 1024;
-
-    // The mapping of helpIds to page paths.
-    //
-    private static Map<String, String> helpMap;
 
     // A special case to use the readthedocs.io website if the HELP_MAP file is
     // in the official GitHub repository
@@ -128,9 +109,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String helpId = helpCtx.getHelpID();
         LOGGER.log(Level.INFO, "display help for: {0}}", helpId);
 
-        // Given the helpId, get the corresponding help page path.
-        // If it doesn't exist (maybe because someone forgot to put the helpId
-        // in their .rst file), go to the root page.
         final String sep = File.separator;
 
         // Switched base help page to About Constellation
@@ -142,10 +120,20 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
         if (!helpLink.isEmpty()) {
             try {
-                final File file = new File(Generator.baseDirectory + sep + helpLink);
-                final URL fileUrl = file.toURI().toURL();
-                currentPort = HelpWebServer.start();
-                String url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
+                final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
+                final String onlineOption = prefs.get(HelpPreferenceKeys.HELP_KEY, String.valueOf(HelpPreferenceKeys.ONLINE_HELP));
+
+                String url;
+                if (onlineOption.equals("false")) {
+                    final File file = new File(Generator.baseDirectory + sep + helpLink);
+                    final URL fileUrl = file.toURI().toURL();
+                    currentPort = HelpWebServer.start();
+                    url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
+                } else {
+
+                    url = "https://www.constellation-app.com/";
+
+                }
 
                 /* if (helpSource == null || !helpSource.startsWith("http")) {
                 // The help source is an internal zipped resource or an actual zip file,
@@ -186,8 +174,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                     return true;
                 }
             } catch (MalformedURLException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
         } else {
