@@ -177,7 +177,7 @@ public class TOCGenerator {
             sb.append("<div class=\"card\">");
             sb.append("<div class=\"card-header\">");
             sb.append("<h2 class=\"mb-0\">");
-            if (item.equals(Generator.ROOTNODENAME)) {
+            if (item.equals(Generator.ROOT_NODE_NAME)) {
                 sb.append(item);
             } else {
                 sb.append("<button href=\"#\" role=\"button\" class=\"btn btn-link btn-block text-left collapsed\" data-toggle=\"collapse\" data-target=\"#");//collapseOne\" aria-controls=\"collapseOne\">");

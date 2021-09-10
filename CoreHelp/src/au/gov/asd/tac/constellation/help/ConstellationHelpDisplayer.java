@@ -22,6 +22,7 @@ import com.github.rjeschke.txtmark.Processor;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -64,44 +65,99 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     //
     // run.args.extra="-J-Dconstellation.help=https://github.com/constellation-app/constellation/raw/master/docs"
     //
-
     // A special case to use the readthedocs.io website if the HELP_MAP file is
     // in the official GitHub repository
     //
     private static final String OFFICIAL_GITHUB_REPOSITORY = "https://github.com/constellation-app/constellation";
+    private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/";
     private static final String READ_THE_DOCS = "https://constellation.readthedocs.io/en/latest/%s";
 
     protected static int currentPort = 0;
 
-    public static void copy(final String filepath, final OutputStream out) throws IOException {
-        final Path path = Paths.get(filepath.substring(3));
-        final InputStream input = new FileInputStream(path.toString());
+    public static void copy(final String filePath, final OutputStream out) throws IOException {
+        final String sep = File.separator;
+        final InputStream input = getInputStream(filePath.substring(3));
+        final InputStream tocInput = getInputStream(Generator.baseDirectory + sep + Generator.tocDirectory);
 
-        // only add the html path when the file isnt a css file
-        if (filepath.contains(".css") || filepath.contains(".js") || filepath.contains(".png") || filepath.contains(".jpg")) {
+        if (input == null || tocInput == null) {
+            // files could not be found, don't progress.
+            return;
+        }
+
+        // avoid parsing utility files into html
+        if (filePath.contains(".css") || filePath.contains(".js") || filePath.contains(".png") || filePath.contains(".jpg")) {
             out.write(input.readAllBytes());
             return;
         }
-        final String startCol = " <div class='row'> <div class='col-4 col-sm-3'>";
-        final String endFirstCol = "</div> <div class='col-8 col-sm-9'>";
-        final String endCol = "</div> </div> </div>";
-        final String sep = File.separator;
-        final Path tocFilePath = Paths.get(Generator.baseDirectory + sep + Generator.tocDirectory);
 
-        // TODO: Check for issues with the ../ relative paths in css
-        // If the filepath is the toc then don't append the toc again when outputted
-        final File file = new File(Generator.baseDirectory + sep + "constellation/bootstrap/css/bootstrap.css");
-        final URL fileUrl = file.toURI().toURL();
-        final String css = "<link href=\"\\" + fileUrl.toString() + "\" rel='stylesheet'></link>";
-        final String jquery = "<script src=\"https://code.jquery.com/jquery-3.4.1.slim.min.js\" integrity=\"sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n\" crossorigin=\"anonymous\"></script>";
-        final String popper = "<script src=\"https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js\" integrity=\"sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo\" crossorigin=\"anonymous\"></script>";
+        final String html = generateHTMLOutput(tocInput, input);
 
-        final File jsFile = new File(Generator.baseDirectory + sep + "constellation/bootstrap/js/bootstrap.js");
-        final URL jsFileUrl = jsFile.toURI().toURL();
-        final String boostrapjs = "<script type=\"text/javascript\" src=\"\\" + jsFileUrl + "\" ></script>";
-        final InputStream tocInput = new FileInputStream(tocFilePath.toFile());
-        final String html = css + "\n" + jquery + "\n" + popper + "\n" + boostrapjs + "\n" + startCol + Processor.process(tocInput) + endFirstCol + Processor.process(input) + endCol;
         out.write(html.getBytes());
+    }
+
+    private static InputStream getInputStream(final String filePath) {
+        final Path path = Paths.get(filePath.substring(3));
+        try {
+            return new FileInputStream(path.toString());
+        } catch (FileNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.WARNING, "Cannot find the file passed into input stream, The Help Contents may not be visible because of this.", ex);
+        }
+        return null;
+    }
+
+    private static String generateHTMLOutput(final InputStream tocInput, final InputStream pageInput) throws MalformedURLException, IOException {
+        final StringBuilder html = new StringBuilder();
+
+        // HTML elements
+        final String startRowDiv = "<div class='row'>";
+        final String endDiv = "</div>";
+        final String startColDiv = "<div class='col-4 col-sm-3'>";
+        final String startInnerColDiv = "<div class='col-8 col-sm-9'>";
+
+        final String sep = File.separator;
+
+        final File bootstrapCSS = new File(Generator.baseDirectory + sep + "constellation/bootstrap/css/bootstrap.css");
+        final URL bootstrapCSSURL = bootstrapCSS.toURI().toURL();
+        final String css = String.format("<link href=\"\\%s\" rel='stylesheet'></link>", bootstrapCSSURL.toString());
+
+        final File bootstrapJS = new File(Generator.baseDirectory + sep + "constellation/bootstrap/js/bootstrap.js");
+        final URL bootstrapJSURL = bootstrapJS.toURI().toURL();
+        final String boostrapjs = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", bootstrapJSURL);
+
+        final String jquery = "<script src=\"https://code.jquery.com/jquery-3.4.1.slim.min.js\" integrity=\"sha384-J6qa4849blE"
+                + "2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n\" crossorigin=\"anonymous\"></script>";
+        final String popper = "<script src=\"https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js\" integrity=\"sha384"
+                + "-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo\" crossorigin=\"anonymous\"></script>";
+
+        // Add items to StringBuilder
+        html.append(css);
+        html.append("\n");
+        html.append(jquery);
+        html.append("\n");
+        html.append(popper);
+        html.append("\n");
+        html.append(boostrapjs);
+        html.append("\n");
+        html.append(startRowDiv);
+        html.append("\n");
+        html.append(startColDiv);
+        html.append("\n");
+        html.append(Processor.process(tocInput));
+        html.append("\n");
+        html.append(endDiv);
+        html.append("\n");
+        html.append(startInnerColDiv);
+        html.append("\n");
+        html.append(Processor.process(pageInput));
+        html.append("\n");
+        html.append(endDiv);
+        html.append("\n");
+        html.append(endDiv);
+        html.append("\n");
+        html.append(endDiv);
+
+        return html.toString();
     }
 
     @Override
@@ -121,18 +177,20 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         if (!helpLink.isEmpty()) {
             try {
                 final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
-                final String onlineOption = prefs.get(HelpPreferenceKeys.HELP_KEY, String.valueOf(HelpPreferenceKeys.ONLINE_HELP));
+                final boolean isOnline = prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP);
 
-                String url;
-                if (onlineOption.equals("false")) {
+                final String url;
+                if (isOnline) {
                     final File file = new File(Generator.baseDirectory + sep + helpLink);
                     final URL fileUrl = file.toURI().toURL();
                     currentPort = HelpWebServer.start();
                     url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
                 } else {
 
-                    url = "https://www.constellation-app.com/";
+                    url = OFFICIAL_CONSTELLATION_WEBSITE;
 
+                    // Uncomment below when pages are online
+                    // url = String.format("https://www.constellation-app.com/%1$s/%2$s/%3$s/%4$s/", "docs" ,"v2_4" ,"constellation", fileUrl);
                 }
 
                 /* if (helpSource == null || !helpSource.startsWith("http")) {

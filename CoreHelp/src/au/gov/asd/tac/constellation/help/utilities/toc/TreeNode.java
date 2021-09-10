@@ -132,7 +132,7 @@ public class TreeNode<T> {
         } else {
             // Nodes with children get written with an extra level of indent
             // Write start of div which will hold children of current TOC Item
-            if (!item.getText().equals(Generator.ROOTNODENAME)) {
+            if (!item.getText().equals(Generator.ROOT_NODE_NAME)) {
                 final String id = item.getText().replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", "");
                 final String div = "<div id=\"" + id + "\" class=\"collapse\" aria-labelledby=\"" + id + "\" data-parent=\"#" + id + "\"> <div class=\"card-body\">";
                 TOCGenerator.writeText(writer, div);

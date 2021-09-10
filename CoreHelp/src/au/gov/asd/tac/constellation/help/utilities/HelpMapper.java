@@ -69,7 +69,7 @@ public class HelpMapper {
 
     /**
      * Gets the cached map of help mappings. Will refresh mappings if the cache
-     * is empty.
+     * is empty. Uses lazy instantiation for mappings.
      *
      * @return a Map with key String classname, value String filepath
      */

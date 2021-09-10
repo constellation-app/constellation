@@ -40,37 +40,36 @@ public class Generator implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
     public static String baseDirectory = "";
     public static String tocDirectory = "";
-    public static final String ROOTNODENAME = "Constellation Documentation";
+    public static final String TOC_FILE_NAME = "toc.md";
+    public static final String ROOT_NODE_NAME = "Constellation Documentation";
 
+    // TODO: Remove this flag and all occurrences when in prod/dev.
+    // Toggled to allow switching between dev and release versions
+    private static final boolean DEBUG_FLAG = false;
+
+    /**
+     * Generate a table of contents in dev versions of code
+     */
     @Override
     public void run() {
-        // Preferences prefs = NbPreferences.forModule(Generator.class);
-        // prefs.put("onlineHelp", "false");
+
+        // TODO: Possibly check if file exists?
+        baseDirectory = getBaseDirectory();
+        tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
 
         // DO NOT RUN IN EXECUTABLE, ONLY RUN IN IDE
         // TODO: Double check if this is necessary and also foolproof for other module suites.
-        if (!"IDE(CORE)".equals(System.getProperty("constellation.environment"))) {
+        if (!"IDE(CORE)".equals(System.getProperty("constellation.environment")) || DEBUG_FLAG) {
+            // Ensure that the mappings are generated for clicks on help icons within the application.
+            HelpMapper.updateMappings();
             return;
         }
-        final String sep = File.separator;
-        // Get the current directory and make the file within the help module.
-        String userDir = System.getProperty("user.dir");
-        String pattern = Pattern.quote(sep);
-        String[] splitUserDir = userDir.split(pattern);
-        while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
-            splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
-        }
-        // split once more
-        splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
-        tocDirectory = "constellation" + sep + "toc.md";
-        String tocPath = String.join(sep, splitUserDir) + sep + tocDirectory;
-        baseDirectory = String.join(sep, splitUserDir) + sep;
 
         // Create TOCGenerator with the location of the resources file
-        final TOCGenerator tocGenerator = new TOCGenerator(tocPath);
+        final TOCGenerator tocGenerator = new TOCGenerator(baseDirectory + tocDirectory);
 
         // Create the root node for application-wide table of contents
-        final TreeNode root = new TreeNode(new TOCItem(ROOTNODENAME, ""));
+        final TreeNode root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
 
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
@@ -83,6 +82,20 @@ public class Generator implements Runnable {
         // Generate Application-wide TOC based on each modules TOC
         // Stores it within the root TreeNode
         tocGenerator.convertXMLMappings(tocXMLFiles, root);
+    }
+
+    private String getBaseDirectory() {
+        final String sep = File.separator;
+        // Get the current directory and make the file within the base project directory.
+        final String userDir = System.getProperty("user.dir");
+        String[] splitUserDir = userDir.split(Pattern.quote(sep));
+        while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
+            splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
+        }
+        // split once more
+        splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
+
+        return String.join(sep, splitUserDir) + sep;
     }
 
 }
