@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ScrollPane;
@@ -185,8 +186,9 @@ public class ParameterIOUtilitiesNGTest {
                 new FileInputStream(getClass().getResource("resources/plugin-preferences.json").getPath())
         );
 
+        Optional<String> dirName = Optional.of("DataAccessView");
         jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
-                eq("DataAccessView"),
+                eq(dirName),
                 any(ObjectMapper.class),
                 eq(expectedJsonTree)
         ));
