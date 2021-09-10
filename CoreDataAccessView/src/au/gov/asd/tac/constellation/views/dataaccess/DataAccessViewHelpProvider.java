@@ -56,7 +56,7 @@ public class DataAccessViewHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIO", dataModulePath + "data-access-options.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewTopComponent", dataModulePath + "data-access-view.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.SplitNodesPlugin", dataModulePath + "split-nodes.md");
-        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveUnusedAttributesPlugin", dataModulePath + "remove-unused-attribute.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveUnusedAttributesPlugin", dataModulePath + "remove-unused-attributes.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin", dataModulePath + "extract-types-from-text.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin", dataModulePath + "extract-words-from-text.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin", dataModulePath + "merge-nodes.md");

@@ -147,7 +147,10 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         // If it doesn't exist (maybe because someone forgot to put the helpId
         // in their .rst file), go to the root page.
         final String sep = File.separator;
-        String helpTOCPath = "constellation" + sep + "toc.md";
+
+        // Switched base help page to About Constellation
+        //String helpTOCPath = "constellation" + sep + "toc.md";
+        String helpTOCPath = "constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/docs/about-constellation.md";
 
         // use the requested help file, or the table of contents if it doesnt exist
         final String helpLink = StringUtils.isNotEmpty(HelpMapper.getHelpAddress(helpId)) ? HelpMapper.getHelpAddress(helpId) : helpTOCPath;

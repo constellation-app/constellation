@@ -67,7 +67,7 @@ public class Generator implements Runnable {
         final TOCGenerator tocGenerator = new TOCGenerator(tocPath);
 
         // Create the root node for application-wide table of contents
-        final TreeNode root = new TreeNode(new TOCItem("Help Contents", ""));
+        final TreeNode root = new TreeNode(new TOCItem("Help Pages", ""));
 
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();

@@ -55,7 +55,7 @@ public class MapViewHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.views.mapview.MapViewTopComponent", mapModulePath + "map-view.md");
         map.put("au.gov.asd.tac.constellation.views.mapview.layers.DayNightLayer", mapModulePath + "mapview-layers-day-night.md");
         map.put("au.gov.asd.tac.constellation.views.mapview.layers.AbstractHeatmapLayer", mapModulePath + "mapview-layers-heatmap.md");
-        map.put("au.gov.asd.tac.constellation.views.mapview.layers.AbstractPathsLayer", mapModulePath + "mapview-layers-path.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.layers.AbstractPathsLayer", mapModulePath + "mapview-layers-paths.md");
         map.put("au.gov.asd.tac.constellation.views.mapview.layers.ThiessenPolygonsLayer", mapModulePath + "mapview-layers-thiessen-polygons.md");
         map.put("au.gov.asd.tac.constellation.views.mapview.overlays.InfoOverlay", mapModulePath + "mapview-overlays-info.md");
         map.put("au.gov.asd.tac.constellation.views.mapview.overlays.ToolsOverlay", mapModulePath + "mapview-overlays-tools.md");

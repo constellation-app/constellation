@@ -59,7 +59,7 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.graph.visual.mergeNodes", visualModulePath + "merge-nodes.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.selectBackbone", visualModulePath + "select-backbone.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.selectOneNeighbour", visualModulePath + "select-one-neighbour.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.selectSingleton", visualModulePath + "selec-singleton.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.selectSingleton", visualModulePath + "select-singleton.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.selectBlazes", visualModulePath + "select-blazes.md");
         return map;
     }
