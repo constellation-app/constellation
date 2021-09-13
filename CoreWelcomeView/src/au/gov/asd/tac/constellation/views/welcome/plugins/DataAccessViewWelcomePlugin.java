@@ -41,8 +41,8 @@ import org.openide.windows.WindowManager;
 public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
 
     public static final String IMPORT = "resources/welcome_data_access.png";
-    final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
-    final Button importButton = new Button();
+    private final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
+    private final Button importButton = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -57,7 +57,6 @@ public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
     /**
      * This method describes what action should be taken when the link is
      * clicked on the Welcome Page
-     *
      */
     @Override
     public void run() {
@@ -100,5 +99,4 @@ public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
         importButton.setGraphic(layoutVBox);
         return importButton;
     }
-
 }
