@@ -123,16 +123,16 @@ public class ParameterIOUtilitiesNGTest {
         final Map<String, PluginParameter<?>> map = Map.of(someKey, pluginParameter);
         when(pluginParameters.getParameters()).thenReturn(map);
 
-        final DataAccessState expectedTab = new DataAccessState();
-        expectedTab.newTab();
-        expectedTab.add("someKey", "something");
-
         // mock graph
         final Graph graph = mock(Graph.class);
         final WritableGraph wGraph = mock(WritableGraph.class);
         when(graph.getWritableGraph("Update Data Access State", true)).thenReturn(wGraph);
 
         ParameterIOUtilities.saveDataAccessState(tabPane, graph);
+
+        final DataAccessState expectedTab = new DataAccessState();
+        expectedTab.newTab();
+        expectedTab.add("someKey", "something");
 
         assertEquals(expectedTab.getState().size(), 1);
         verify(wGraph).setObjectValue(0, 0, expectedTab);
