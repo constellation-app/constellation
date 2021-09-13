@@ -110,7 +110,7 @@ public class PreferencesMenu {
                 // Load preferences starts work on JavaFX thread. We cannot update
                 // the pagination until that work is complete.
                 final CountDownLatch latch = new CountDownLatch(1);
-                Platform.runLater(() -> latch.countDown());
+                Platform.runLater(latch::countDown);
                 
                 try {
                     latch.await();
