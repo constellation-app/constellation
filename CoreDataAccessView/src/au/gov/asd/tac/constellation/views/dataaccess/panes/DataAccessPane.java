@@ -389,16 +389,15 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
 //        optionsMenu.getChildren().addAll(loadTemplatesButton, saveTemplatesButton, saveResultsItem, deselectPluginsOnExecution);
         final GridPane menuGrid = new GridPane();
-        final GridPane templateGrid = new GridPane();
-        templateGrid.add(loadTemplatesButton, 0, 0);
-        templateGrid.add(saveTemplatesButton, 1, 0);
 
-        menuGrid.setMinHeight(32);
-        menuGrid.add(templateGrid, 0, 0);
+        menuGrid.add(loadTemplatesButton, 0, 0);
+        menuGrid.add(saveTemplatesButton, 1, 0);
         menuGrid.add(saveResultsItem, 0, 1);
-        menuGrid.add(deselectPluginsOnExecution, 0, 2);
+        menuGrid.add(deselectPluginsOnExecution, 1, 1);
         menuGrid.setHgap(2);
         menuGrid.setVgap(2);
+        menuGrid.setPadding(new Insets(2));
+        menuGrid.setMinHeight(32);
 
         final VBox vbox = new VBox(menuGrid, searchPluginTextField, dataAccessTabPane);
         VBox.setVgrow(dataAccessTabPane, Priority.ALWAYS);
