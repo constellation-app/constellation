@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
@@ -96,13 +97,13 @@ public class JsonIONGTest {
         
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
             jsonIoMockedStatic.when(() -> JsonIO
-                .loadJsonPreferences(any(Optional.class), any(Class.class)))
+                .loadJsonPreferences(any(Optional.class), any(TypeReference.class)))
                 .thenCallRealMethod();
             
-            JsonIO.loadJsonPreferences(SUB_DIRECTORY, MyPreferences.class);
+            JsonIO.loadJsonPreferences(SUB_DIRECTORY, new TypeReference<MyPreferences>() {});
             
             jsonIoMockedStatic.verify(() -> JsonIO
-                .loadJsonPreferences(SUB_DIRECTORY, Optional.empty(), MyPreferences.class));
+                .loadJsonPreferences(SUB_DIRECTORY, Optional.empty(), new TypeReference<MyPreferences>() {}));
         }
     }
     
@@ -136,7 +137,7 @@ public class JsonIONGTest {
                     .thenReturn(new File(JsonIONGTest.class.getResource("resources").toURI()));
             
             final MyPreferences loadedPreferences = JsonIO
-                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, MyPreferences.class);
+                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new TypeReference<MyPreferences>() {});
             
             assertEquals(loadedPreferences, fixture());
         }
@@ -159,7 +160,7 @@ public class JsonIONGTest {
                     .thenReturn(new File(System.getProperty("java.io.tmpdir") + "/samplefile"));
             
             final MyPreferences loadedPreferences = JsonIO
-                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, MyPreferences.class);
+                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new TypeReference<MyPreferences>() {});
             
             assertEquals(loadedPreferences, null);
         }
