@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
@@ -36,13 +35,13 @@ import org.openide.windows.WindowManager;
  *
  * @author Atlas139mkm
  */
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"WELCOME"})
+@PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("DataAcessViewWelcomePluging=Data Acess View Welcome Plugin")
 public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
 
-    public static final String IMPORT = "resources/welcome_data_access.png";
-    private final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
-    private final Button importButton = new Button();
+    public static final String OPEN = "resources/welcome_data_access.png";
+    private final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
+    private final Button openButton = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -89,14 +88,14 @@ public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
      */
     @Override
     public Button getButton() {
-        importImage.setFitHeight(75);
-        importImage.setFitWidth(75);
+        openImage.setFitHeight(75);
+        openImage.setFitWidth(75);
         final Label imTitle = new Label("Open");
         final Label imSubtitle = new Label("Data Access View");
         imSubtitle.setId("smallInfoText");
-        final VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
+        final VBox layoutVBox = new VBox(openImage, imTitle, imSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
-        importButton.setGraphic(layoutVBox);
-        return importButton;
+        openButton.setGraphic(layoutVBox);
+        return openButton;
     }
 }
