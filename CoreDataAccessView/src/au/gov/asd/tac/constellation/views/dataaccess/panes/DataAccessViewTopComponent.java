@@ -47,7 +47,9 @@ import org.openide.windows.TopComponent;
 )
 @ActionReferences({
     @ActionReference(path = "Menu/Views", position = 400),
-    @ActionReference(path = "Shortcuts", name = "CS-D")
+    @ActionReference(path = "Shortcuts", name = "CS-D"),
+    @ActionReference(path = "Toolbars/Views", position = 200)
+
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_DataAccessViewAction",
