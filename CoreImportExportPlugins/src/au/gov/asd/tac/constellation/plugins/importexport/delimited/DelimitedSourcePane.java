@@ -211,7 +211,7 @@ public class DelimitedSourcePane extends SourcePane {
                     sb.append("\n");
                     sb.append(file.getName());
                     LOGGER.log(Level.INFO, "Unable to parse the file {0}, " + "excluding from import set.", new Object[]{file.toString()});
-                    LOGGER.log(Level.WARNING, ex.toString(), ex);
+                    LOGGER.log(Level.WARNING, ex.toString());
                 }
             }
 
