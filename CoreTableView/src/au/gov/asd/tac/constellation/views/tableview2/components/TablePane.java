@@ -97,12 +97,14 @@ public final class TablePane extends BorderPane {
     }
 
     /**
-     * Update the whole table using the graph.
+     * Update the whole table using the graph. This method will submit a task to the
+     * executor service and return but there is also a check for an existing update
+     * which could cause a race condition if two threads access this method simultaneously.
      *
      * @param graph the graph to retrieve data from
      * @param state the current table view state
      */
-    public void updateTable(final Graph graph, final TableViewState state) {
+    public synchronized void updateTable(final Graph graph, final TableViewState state) {
         if (future != null) {
             future.cancel(true);
         }

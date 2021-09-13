@@ -82,7 +82,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     public static final Object TABLE_LOCK = new Object();
     
-    private final ExecutorService executorService = Executors.newScheduledThreadPool(1);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
     
     private final TablePane pane;
     private final Set<AttributeValueMonitor> columnAttributeMonitors;
