@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-13 node_labels_bottom/top changed
+<p>The above two graph attributes have been changed to node_bottom/top_labels_colours.</p>
+<p>The attributes now also show the colours for example: Label: (White), Identifier (#9980e6)</p>
+
 == 2021-09-06 Import From File
 <p>Updated the UI to only enable and expand sections once a file is added</p>
 
