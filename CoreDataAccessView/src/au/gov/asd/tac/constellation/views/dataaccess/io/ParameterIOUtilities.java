@@ -262,58 +262,11 @@ public class ParameterIOUtilities {
                         final boolean isEnabled = plugins.get(isEnabledId).booleanValue();
 //                                pane.validityChanged(isEnabled);
                         if (isEnabled) {
-                            pane.setParameterValues(ppmap.get(pane.getPlugin().getClass().getSimpleName()));
-                            // TODO: review this section, remove it if its working, else fix it
-////                                    pane.setExpanded(true);
-//                                    final PluginParameters parameters = pane.getParameters();
-//                                    if(parameters != null)
-//                                    {
-//                                        parameters.getParameters().entrySet().stream().forEach((param) ->
-//                                        {
-//                                            final String id = param.getKey();
-//                                            if(!globalParams.contains(id) && plugins.has(id))
-//                                            {
-//                                                final JsonNode newValue = plugins.get(id);
-//                                                final PluginParameter pp = param.getValue();
-//                                                // Don't set action type parameters.
-//                                                // Since their only reason for existence is to perform an action,
-//                                                // they don't have values, and setting them would kick off the action.
-//                                                //                                                if(!pp.getId().equals(ActionParameterType.ID))
-//                                                {
-//                                                    // There appears to be a listener on each parameter so that if it is updated,
-//                                                    // it will be selected. We want to avoid this: only set a parameter value if
-//                                                    // the new value is different (including allowing for null).
-//                                                    //                                                    final String oldValue = pp.getStringValue();
-//                                                    if(oldValue==null)
-//                                                    {
-//                                                        if(!newValue.isNull())
-//                                                        {
-//                                                            pp.setStringValue(newValue.textValue());
-//                                                        }
-//                                                    }
-//                                                    else
-//                                                    {
-//                                                        if(newValue.isNull())
-//                                                        {
-//                                                            pp.setStringValue(null);
-//                                                        }
-//                                                        else
-//                                                        {
-//                                                            final String s = newValue.textValue();
-//                                                            if(!s.equals(oldValue))
-//                                                            {
-//                                                                pp.setStringValue(s);
-//                                                            }
-//                                                        }
-//                                                    }
-//                                                }
-//                                            }
-//                                        });
-//                                    }
-
-//                                pane.validityChanged(isEnabled);
+                            // There may be batch plugins with different names in the PLUGINS_OBJECT
+                            for (final Map.Entry<String, Map<String, String>> entry : ppmap.entrySet()) {
+                                pane.setParameterValues(entry.getValue());
+                            }
                         }
-//                                pane.validityChanged(isEnabled);
                     } else {
                         // This plugin isn't mentioned in the JSON, so disable it.
                         pane.validityChanged(false);
