@@ -70,10 +70,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
@@ -84,6 +82,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -336,18 +335,17 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         updateForPlugins(false);
 
         // Options menu.
-        final Menu optionsMenu = new Menu("Options");
-        final MenuItem loadMenuItem = new MenuItem("Load...");
-        loadMenuItem.setOnAction(event -> {
+        final Button loadTemplatesButton = new Button("Load Templates");
+        loadTemplatesButton.setOnAction(event -> {
             ParameterIOUtilities.loadParameters(this);
         });
 
-        final MenuItem saveMenuItem = new MenuItem("Save");
-        saveMenuItem.setOnAction(event -> {
+        final Button saveTemplatesButton = new Button("Save Templates");
+        saveTemplatesButton.setOnAction(event -> {
             ParameterIOUtilities.saveParameters(dataAccessTabPane);
         });
 
-        final CheckMenuItem saveResultsItem = new CheckMenuItem("Save Results");
+        final CheckBox saveResultsItem = new CheckBox("Save Results");
         final File daDir = DataAccessPreferenceKeys.getDataAccessResultsDir();
         saveResultsItem.setSelected(daDir != null);
         saveResultsItem.selectedProperty().addListener((ov, oldValue, newValue) -> {
@@ -370,7 +368,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             }
         });
 
-        final CheckMenuItem deselectPluginsOnExecution = new CheckMenuItem("Deselect Plugins On Go");
+        final CheckBox deselectPluginsOnExecution = new CheckBox("Deselect Plugins On Go");
         deselectPluginsOnExecution.setSelected(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled());
         deselectPluginsOnExecution.setOnAction(event -> {
             DataAccessPreferenceKeys.setDeselectPluginsOnExecute(deselectPluginsOnExecution.isSelected());
@@ -389,12 +387,20 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             manageFavourites();
         });
 
-        optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem, deselectPluginsOnExecution);
-        final MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().add(optionsMenu);
-        menuBar.setMinHeight(32);
+//        optionsMenu.getChildren().addAll(loadTemplatesButton, saveTemplatesButton, saveResultsItem, deselectPluginsOnExecution);
+        final GridPane menuGrid = new GridPane();
+        final GridPane templateGrid = new GridPane();
+        templateGrid.add(loadTemplatesButton, 0, 0);
+        templateGrid.add(saveTemplatesButton, 1, 0);
 
-        final VBox vbox = new VBox(menuBar, searchPluginTextField, dataAccessTabPane);
+        menuGrid.setMinHeight(32);
+        menuGrid.add(templateGrid, 0, 0);
+        menuGrid.add(saveResultsItem, 0, 1);
+        menuGrid.add(deselectPluginsOnExecution, 0, 2);
+        menuGrid.setHgap(2);
+        menuGrid.setVgap(2);
+
+        final VBox vbox = new VBox(menuGrid, searchPluginTextField, dataAccessTabPane);
         VBox.setVgrow(dataAccessTabPane, Priority.ALWAYS);
         AnchorPane.setTopAnchor(vbox, 0.0);
         AnchorPane.setBottomAnchor(vbox, 0.0);
