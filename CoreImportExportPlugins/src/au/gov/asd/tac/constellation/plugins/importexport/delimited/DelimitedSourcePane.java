@@ -235,6 +235,11 @@ public class DelimitedSourcePane extends SourcePane {
         final ObservableList<File> files = fileListView.getItems();
         files.remove(file);
         fileListView.setItems(files);
+
+        if (files.isEmpty()) {
+            DelimitedImportController delimitedImportController = (DelimitedImportController) importController;
+            delimitedImportController.clearFilters();
+        }
     }
 
     /**
