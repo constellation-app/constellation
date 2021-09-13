@@ -30,6 +30,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToolBar;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -134,6 +135,50 @@ public class TablePaneNGTest {
         WaitForAsyncUtils.waitForFxEvents();
         
         verify(table).updateSortOrder();
+    }
+    
+    @Test
+    public void updateTable_interrupt() {
+        final Graph graph = mock(Graph.class);
+        final TableViewState tableViewState = new TableViewState();
+        
+        final Table table = mock(Table.class);
+        
+        final ProgressBar progressBar = mock(ProgressBar.class);
+        final TableToolbar tableToolbar = mock(TableToolbar.class);
+        
+        when(tablePane.getTable()).thenReturn(table);
+        when(tablePane.getProgressBar()).thenReturn(progressBar);
+        when(tablePane.getTableToolbar()).thenReturn(tableToolbar);
+        
+        doAnswer(mockitoInvocation -> {
+            System.out.println("Interrupt: " + Thread.currentThread().getName());
+            Thread.currentThread().interrupt();
+            return null;
+        }).when(table).updateColumns(graph, tableViewState);
+        
+        tablePane.updateTable(graph, tableViewState);
+        
+        try {
+            tablePane.getFuture().get(30, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
+            fail("The update thread did not finish as expected within the allowed time. "
+                    + "Something went wrong");
+        }
+        
+        verify(tableToolbar).updateToolbar(tableViewState);
+        
+        // Update columns is called
+        verify(table).updateColumns(graph, tableViewState);
+        
+        // Verify everything after that is not called
+        verify(table, times(0)).updateData(graph, tableViewState, progressBar);
+        verify(table, times(0)).updateSelection(graph, tableViewState);
+        
+        // The future finished but maybe not the JavaFX thread
+        WaitForAsyncUtils.waitForFxEvents();
+        
+        verify(table, times(0)).updateSortOrder();
     }
     
     @Test

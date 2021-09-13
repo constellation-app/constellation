@@ -315,10 +315,8 @@ public class Table {
                 }
 
                 final UpdateDataTask updateDataTask = new UpdateDataTask(this, rows);
-
                 Platform.runLater(updateDataTask);
-
-                // Wait for the update data task to complete.
+                
                 try {
                     updateDataTask.getUpdateDataLatch().await();
                 } catch (final InterruptedException ex) {

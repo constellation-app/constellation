@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
@@ -223,7 +224,9 @@ public class ColumnVisibilityContextMenu {
         destinationVertexColumnMenu = createDynamicColumnMenu(destinationVertexColumnsButton, columnCheckboxesDestination);
         tansactionColumnMenu = createDynamicColumnMenu(transactionColumnsButton, columnCheckboxesTransaction);
         
-        contextMenu.getItems().addAll(sourceVertexColumnsMenu, destinationVertexColumnMenu, tansactionColumnMenu);
+        Optional.ofNullable(sourceVertexColumnsMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
+        Optional.ofNullable(destinationVertexColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
+        Optional.ofNullable(tansactionColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
     }
     
     /**
@@ -419,7 +422,7 @@ public class ColumnVisibilityContextMenu {
      *
      * @param button the button that will hold the column check boxes and be added to the new menu
      * @param columnCheckboxes a list of check boxes representing columns to be added to the menu
-     * @return the created menu item
+     * @return the created menu item or null if column check boxes is empty
      */
     private CustomMenuItem createDynamicColumnMenu(final MenuButton button,
                                                    final List<CustomMenuItem> columnCheckboxes) {

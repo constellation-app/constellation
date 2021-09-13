@@ -20,7 +20,9 @@ import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import java.util.List;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
 import javafx.application.Platform;
 import javafx.scene.layout.BorderPane;
 
@@ -32,6 +34,25 @@ import javafx.scene.layout.BorderPane;
  * @author antares
  */
 public final class TablePane extends BorderPane {
+    /**
+     * Runs the passed runnable in the current thread but only if the current
+     * thread in <b>NOT</b> interrupted. If the thread is interrupted then nothing
+     * is done.
+     */
+    private static final Consumer<Runnable> CHECK_INTERRUPT_AND_RUN = (runnable) -> {
+        if (!Thread.currentThread().isInterrupted()) {
+            runnable.run();
+        }
+    };
+    
+    /**
+     * Runs the list of runnables in order on the current thread. Should the thread become
+     * interrupted at some point all runnables after that point will not be run.
+     */
+    private static final Consumer<List<Runnable>> CHECK_INTERRUPT_AND_RUN_EACH = (runnables) -> {
+        runnables.forEach(CHECK_INTERRUPT_AND_RUN);
+    };
+    
     private final TableViewTopComponent parentComponent;
     
     private final Table table;
@@ -88,14 +109,20 @@ public final class TablePane extends BorderPane {
         }
 
         future = getParentComponent().getExecutorService().submit(() -> {
-            getTableToolbar().updateToolbar(state);
+            CHECK_INTERRUPT_AND_RUN.accept(() -> getTableToolbar().updateToolbar(state));
+            
             if (graph != null) {
-                getTable().updateColumns(graph, state);
-                getTable().updateData(graph, state, getProgressBar());
-                getTable().updateSelection(graph, state);
-                Platform.runLater(() -> getTable().updateSortOrder());
+                // Executed in order and interruption status checked between each step
+                CHECK_INTERRUPT_AND_RUN_EACH.accept(List.of(
+                        () -> getTable().updateColumns(graph, state),
+                        () -> getTable().updateData(graph, state, getProgressBar()),
+                        () -> getTable().updateSelection(graph, state),
+                        () -> Platform.runLater(() -> getTable().updateSortOrder())
+                ));
             } else {
-                Platform.runLater(() -> getTable().getTableView().getColumns().clear());
+                CHECK_INTERRUPT_AND_RUN.accept(() -> Platform.runLater(
+                        () -> getTable().getTableView().getColumns().clear()
+                ));
             }
         });
     }
