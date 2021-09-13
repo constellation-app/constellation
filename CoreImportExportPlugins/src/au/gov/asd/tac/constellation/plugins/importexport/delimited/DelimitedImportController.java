@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.importexport.ActionPane;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
@@ -54,6 +55,8 @@ public class DelimitedImportController extends ImportController {
     private File sampleFile;
     private ImportFileParser importFileParser;
     private boolean filesIncludeHeaders;
+
+    protected ActionPane actionPane;
 
     public DelimitedImportController() {
         super();
@@ -224,5 +227,17 @@ public class DelimitedImportController extends ImportController {
 
     public ImportFileParser getImportFileParser() {
         return importFileParser;
+    }
+
+    // expands or shrinks the import pane based on if there is a file present
+    // within the imported files list
+    void openConfigPane(final boolean b) {
+        importPane.expandPane(b);
+    }
+
+    // enables or disables the import button based on if there is a file present
+    // within the imported files list
+    void disableButton(final boolean b) {
+        importPane.disableButton(b);
     }
 }
