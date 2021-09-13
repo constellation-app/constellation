@@ -44,11 +44,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
@@ -100,10 +98,12 @@ public class JsonIONGTest {
                 .loadJsonPreferences(any(Optional.class), any(TypeReference.class)))
                 .thenCallRealMethod();
             
-            JsonIO.loadJsonPreferences(SUB_DIRECTORY, new TypeReference<MyPreferences>() {});
+            final TypeReference<MyPreferences> type = new TypeReference<MyPreferences>() {};
+            
+            JsonIO.loadJsonPreferences(SUB_DIRECTORY, type);
             
             jsonIoMockedStatic.verify(() -> JsonIO
-                .loadJsonPreferences(SUB_DIRECTORY, Optional.empty(), new TypeReference<MyPreferences>() {}));
+                .loadJsonPreferences(eq(SUB_DIRECTORY), eq(Optional.empty()), same(type)));
         }
     }
     
