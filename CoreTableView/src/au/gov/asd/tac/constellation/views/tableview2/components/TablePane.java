@@ -39,7 +39,7 @@ public final class TablePane extends BorderPane {
      * thread in <b>NOT</b> interrupted. If the thread is interrupted then nothing
      * is done.
      */
-    private static final Consumer<Runnable> CHECK_INTERRUPT_AND_RUN = (runnable) -> {
+    private static final Consumer<Runnable> CHECK_INTERRUPT_AND_RUN = runnable -> {
         if (!Thread.currentThread().isInterrupted()) {
             runnable.run();
         }
@@ -49,9 +49,8 @@ public final class TablePane extends BorderPane {
      * Runs the list of runnables in order on the current thread. Should the thread become
      * interrupted at some point all runnables after that point will not be run.
      */
-    private static final Consumer<List<Runnable>> CHECK_INTERRUPT_AND_RUN_EACH = (runnables) -> {
+    private static final Consumer<List<Runnable>> CHECK_INTERRUPT_AND_RUN_EACH = runnables ->
         runnables.forEach(CHECK_INTERRUPT_AND_RUN);
-    };
     
     private final TableViewTopComponent parentComponent;
     
