@@ -22,8 +22,6 @@ import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
-import static au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities.GLOBAL_OBJECT;
-import static au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities.PLUGINS_OBJECT;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
@@ -40,7 +38,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class DataAccessStateIoProvider extends AbstractGraphIOProvider {
-
+    private static final String GLOBAL_OBJECT = "global";
+    private static final String PLUGINS_OBJECT = "plugins";
+    
     @Override
     public String getName() {
         return DataAccessConcept.MetaAttribute.DATAACCESS_STATE.getAttributeType();

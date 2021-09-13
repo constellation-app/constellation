@@ -106,7 +106,7 @@ public final class DataAccessUserPreferences {
         return globalParameters;
     }
 
-    public void setGlobalParameters(Map<String, String> globalParameters) {
+    public void setGlobalParameters(final Map<String, String> globalParameters) {
         this.globalParameters = globalParameters;
     }
 
@@ -114,7 +114,7 @@ public final class DataAccessUserPreferences {
         return pluginParameters;
     }
 
-    public void setPluginParameters(Map<String, String> pluginParameters) {
+    public void setPluginParameters(final Map<String, String> pluginParameters) {
         this.pluginParameters = pluginParameters;
     }
     
