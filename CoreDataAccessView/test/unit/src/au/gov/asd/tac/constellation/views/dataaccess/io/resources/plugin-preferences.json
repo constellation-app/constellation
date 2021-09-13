@@ -1,0 +1,6 @@
+[ {
+  "global" : {
+   "CoreGlobalParameters.query_name": "query_value"
+  },
+  "plugins" : {}
+} ]
