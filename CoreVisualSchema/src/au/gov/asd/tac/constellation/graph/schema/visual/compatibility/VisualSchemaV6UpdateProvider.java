@@ -57,7 +57,7 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
     }
 
     @Override
-    protected void schemaUpdate(StoreGraph graph) {
+    protected void schemaUpdate(final StoreGraph graph) {
 
         // retrieve the attribute Id of both the graph_labels_top/bottom
         final int oldGraphBottomlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, GRAPH_BOTTOM_LABELS);
@@ -66,14 +66,14 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
         // retrieve the new values for the graph_labels_bottom and set it to the
         // new values
         final int newGraphBottomLabelsAttributeId = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(graph);
-        final String bottomLabelValue = graph.getStringValue(oldGraphBottomlabelsAttributeId, DEFAULT_VERSION);
-        graph.setStringValue(newGraphBottomLabelsAttributeId, DEFAULT_VERSION, bottomLabelValue);
+        final String bottomLabelValue = graph.getStringValue(oldGraphBottomlabelsAttributeId, 0);
+        graph.setStringValue(newGraphBottomLabelsAttributeId, 0, bottomLabelValue);
 
         // retrieve the new values for the graph_labels_top and set it to the
         // new values
         final int newGraphTopLabelsAttributeId = VisualConcept.GraphAttribute.TOP_LABELS.ensure(graph);
-        final String topLabelValue = graph.getStringValue(oldGraphToplabelsAttributeId, DEFAULT_VERSION);
-        graph.setStringValue(newGraphTopLabelsAttributeId, DEFAULT_VERSION, topLabelValue);
+        final String topLabelValue = graph.getStringValue(oldGraphToplabelsAttributeId, 0);
+        graph.setStringValue(newGraphTopLabelsAttributeId, 0, topLabelValue);
 
         // remove the old attributes
         graph.removeAttribute(oldGraphBottomlabelsAttributeId);
