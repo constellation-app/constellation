@@ -79,12 +79,10 @@ public final class Vector4d {
     }
 
     public void getMatrixColumn(final Vector4d dst, final int column) {
-//        memcpy(dst, src+(4*column), sizeof(float)*4);
         System.arraycopy(a, 4 * column, dst.a, 0, 4);
     }
 
     public void setMatrixColumn(final Vector4d dst, final int column) {
-//        memcpy(dst+(4*column), src, sizeof(float)*4);
         System.arraycopy(a, 0, dst.a, 4 * column, 4);
     }
 }
