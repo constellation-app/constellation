@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
@@ -43,6 +44,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.openide.NotifyDescriptor;
@@ -94,13 +96,15 @@ public class JsonIONGTest {
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
             jsonIoMockedStatic.when(() -> JsonIO
-                    .loadJsonPreferences(any(Optional.class), any(Class.class)))
-                    .thenCallRealMethod();
-
-            JsonIO.loadJsonPreferences(SUB_DIRECTORY, MyPreferences.class);
-
+                .loadJsonPreferences(any(Optional.class), any(TypeReference.class)))
+                .thenCallRealMethod();
+            
+            final TypeReference<MyPreferences> type = new TypeReference<MyPreferences>() {};
+            
+            JsonIO.loadJsonPreferences(SUB_DIRECTORY, type);
+            
             jsonIoMockedStatic.verify(() -> JsonIO
-                    .loadJsonPreferences(SUB_DIRECTORY, Optional.empty(), MyPreferences.class));
+                .loadJsonPreferences(eq(SUB_DIRECTORY), eq(Optional.empty()), same(type)));
         }
     }
 
@@ -134,8 +138,8 @@ public class JsonIONGTest {
                     .thenReturn(new File(JsonIONGTest.class.getResource("resources").toURI()));
 
             final MyPreferences loadedPreferences = JsonIO
-                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, MyPreferences.class);
-
+                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new TypeReference<MyPreferences>() {});
+            
             assertEquals(loadedPreferences, fixture());
         }
     }
@@ -157,8 +161,8 @@ public class JsonIONGTest {
                     .thenReturn(new File(System.getProperty("java.io.tmpdir") + "/samplefile"));
 
             final MyPreferences loadedPreferences = JsonIO
-                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, MyPreferences.class);
-
+                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new TypeReference<MyPreferences>() {});
+            
             assertEquals(loadedPreferences, null);
         }
     }
@@ -550,7 +554,7 @@ public class JsonIONGTest {
         public void setVolume(int volume) {
             this.volume = volume;
         }
-
+        
         @Override
         public boolean equals(final Object o) {
             if (this == o) {
