@@ -51,13 +51,13 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableViewPreferencesIOUtilitiesNGTest {
+public class TableViewPreferencesIoProviderNGTest {
 
     private static MockedStatic<JsonIO> jsonIOStaticMock;
     private static MockedStatic<NbPreferences> nbPreferencesStaticMock;
     private static MockedStatic<ApplicationPreferenceKeys> applicationPrefKeysStaticMock;
 
-    public TableViewPreferencesIOUtilitiesNGTest() {
+    public TableViewPreferencesIoProviderNGTest() {
     }
 
     @BeforeClass
@@ -89,6 +89,27 @@ public class TableViewPreferencesIOUtilitiesNGTest {
     public void tearDownMethod() throws Exception {
     }
 
+    @Test
+    public void getPreferencesOldVersionWithEmptyEmptySort() throws IOException {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final JsonNode jsonNode = objectMapper.readTree(
+                new FileInputStream(getClass().getResource("resources/old-preferences.json").getPath())
+        );
+
+        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(Optional.of("TableViewPreferences"), Optional.of("vertex-")))
+                .thenReturn(jsonNode);
+
+        final UserTablePreferences tablePreferences
+                = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
+
+        final UserTablePreferences expected = new UserTablePreferences();
+        expected.setColumnOrder(List.of("ABC", "DEF"));
+        expected.setSortByColumn(ImmutablePair.of("", TableColumn.SortType.ASCENDING));
+        expected.setMaxRowsPerPage(500);
+
+        assertEquals(expected, tablePreferences);
+    }
+    
     @Test
     public void getPreferencesMultiplePrefsPicksLast() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();

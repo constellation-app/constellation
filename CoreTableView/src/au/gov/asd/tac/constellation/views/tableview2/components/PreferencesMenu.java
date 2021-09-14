@@ -291,7 +291,7 @@ public class PreferencesMenu {
 
                 // If no columns were found then the user abandoned the load as saves
                 // cannot occur with 0 columns
-                if (CollectionUtils.isEmpty(tablePrefs.getColumnOrder())) {
+                if (tablePrefs == null || CollectionUtils.isEmpty(tablePrefs.getColumnOrder())) {
                     return;
                 }
 

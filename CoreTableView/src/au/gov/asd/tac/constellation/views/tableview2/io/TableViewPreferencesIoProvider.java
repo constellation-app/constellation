@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -32,6 +33,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.openide.NotifyDescriptor;
@@ -128,9 +130,17 @@ public class TableViewPreferencesIoProvider {
             if (root == null) {
                 tablePreferences = new UserTablePreferences();
             } else {
-                final ObjectMapper mapper = new ObjectMapper();
+                final ObjectMapper mapper = new ObjectMapper()
+                        .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL);
+                
                 tablePreferences = mapper
                         .treeToValue(((ArrayNode) root).get(0), UserTablePreferences.class);
+            }
+            
+            // TODO This needs to be removed once all old versions are deprecated.
+            // This is purely here for backward compatibility.
+            if (ImmutablePair.of("", null).equals(tablePreferences.getSort())) {
+                tablePreferences.setSortByColumn(ImmutablePair.of("", TableColumn.SortType.ASCENDING));
             }
             
             return tablePreferences;
