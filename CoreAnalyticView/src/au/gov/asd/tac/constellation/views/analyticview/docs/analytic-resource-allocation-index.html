@@ -15,5 +15,30 @@
             It is calculated by summing 1 divided by the degree of each common neighbour node. 
             The Soundarajan-Hopcroft Community Resource Allocation parameter will only score pairs of nodes that are both selected (that is, sharing resources within the same community).
         </p>
+        
+        <h2>Parameters</h2>
+        <ul>
+            <li><em>Transaction Types</em> - 
+                Calculate on only the subgraph of transactions of these types
+            </li>
+            <li><em>Include Incoming</em> - 
+                Include incoming connections
+            </li>
+            <li><em>Include Outgoing</em> - 
+                Include outgoing connections
+            </li>
+            <li><em>Include Undirected</em> - 
+                Treat undirected connections as bidirectional connections
+            </li>
+            <li><em>Minimum Common Features</em> - 
+                Only calculate similarity between nodes that share at least this many features
+            </li>
+            <li><em>Selected Only</em> - 
+                Calculate using only selected graph elements
+            </li>
+            <li><em>Community Resource Allocation Soundarajan-Hopcroft Score</em> - 
+                Only calculates score when both nodes are selected
+            </li>
+        </ul>
     </body>
 </html>
