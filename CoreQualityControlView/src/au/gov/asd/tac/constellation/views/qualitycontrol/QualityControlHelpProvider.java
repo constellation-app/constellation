@@ -17,9 +17,7 @@ package au.gov.asd.tac.constellation.views.qualitycontrol;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -32,18 +30,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class)
 @NbBundle.Messages("QualityControlHelpProvider=Quality Control Help Provider")
 public class QualityControlHelpProvider extends HelpPageProvider {
-
-    @Override
-    public List<String> getHelpPages() {
-        List<String> filePaths = new ArrayList<>();
-        return filePaths;
-    }
-
-    @Override
-    public List<String> getHelpResources() {
-        List<String> filePaths = new ArrayList<>();
-        return filePaths;
-    }
 
     @Override
     public Map<String, String> getHelpMap() {

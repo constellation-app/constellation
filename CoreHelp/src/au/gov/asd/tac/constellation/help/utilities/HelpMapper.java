@@ -16,11 +16,8 @@
 package au.gov.asd.tac.constellation.help.utilities;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import org.apache.commons.collections4.MapUtils;
 import org.openide.util.Lookup;
 
@@ -31,9 +28,6 @@ import org.openide.util.Lookup;
 public class HelpMapper {
 
     private final static Map<String, String> mappings = new HashMap<>();
-    private static List<String> filePaths = new ArrayList<>();
-
-    private static final Logger LOGGER = Logger.getLogger(HelpMapper.class.getName());
 
     /**
      * Uses the classname to find the location of the markdown file.
@@ -47,24 +41,6 @@ public class HelpMapper {
             address = mappings.get(className);
         }
         return address;
-    }
-
-    /**
-     * Uses the address of the markdown file to get the classname
-     *
-     * @param address
-     * @return the location of the class
-     */
-    public static String getHelpFilePath(final String address) {
-        String className = "";
-        if (mappings.containsKey(address)) {
-            for (String path : filePaths) {
-                if (path.contains(address)) {
-                    className = path;
-                }
-            }
-        }
-        return className;
     }
 
     /**
@@ -87,7 +63,6 @@ public class HelpMapper {
     public static void updateMappings() {
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
             mappings.putAll(provider.getHelpMap());
-            filePaths.addAll(provider.getHelpPages());
         });
     }
 }

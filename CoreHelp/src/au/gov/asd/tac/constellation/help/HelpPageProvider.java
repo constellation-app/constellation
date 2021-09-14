@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.help;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,24 +23,6 @@ import java.util.Map;
  * @author Delphinus8821
  */
 public abstract class HelpPageProvider {
-
-    /**
-     * Provides a list of all of the help pages in the module
-     *
-     * @return List of help pages
-     */
-    public List<String> getHelpPages() {
-        return null;
-    }
-
-    /**
-     * Provides a list of all of the help resources in the module
-     *
-     * @return List of help resources
-     */
-    public List<String> getHelpResources() {
-        return null;
-    }
 
     /**
      * Provides a map of all the help files Maps the file name to the md file

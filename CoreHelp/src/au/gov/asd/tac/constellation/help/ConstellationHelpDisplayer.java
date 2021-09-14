@@ -32,14 +32,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -52,25 +50,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     private static final Logger LOGGER = Logger.getLogger(ConstellationHelpDisplayer.class.getName());
 
-    // This system property controls where the help is displayed from.
-    //
-    // Define it in this module's project.properties file or another
-    // appropriate place as (for example):
-    //
-    // run.args.extra="-J-Dconstellation.help=D:/tmp/help.zip"
-    // run.args.extra="-J-Dconstellation.help=http://localhost:8000"
-    // run.args.extra="-J-Dconstellation.help=https://example.com"
-    //
-    // Set the value to the following github url to have the pages served from readthedocs.io
-    //
-    // run.args.extra="-J-Dconstellation.help=https://github.com/constellation-app/constellation/raw/master/docs"
-    //
-    // A special case to use the readthedocs.io website if the HELP_MAP file is
-    // in the official GitHub repository
-    //
-    private static final String OFFICIAL_GITHUB_REPOSITORY = "https://github.com/constellation-app/constellation";
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/";
-    private static final String READ_THE_DOCS = "https://constellation.readthedocs.io/en/latest/%s";
 
     protected static int currentPort = 0;
 
@@ -209,10 +189,9 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String sep = File.separator;
 
         // Switched base help page to About Constellation
-        //String helpTOCPath = "constellation" + sep + "toc.md";
         String helpTOCPath = "constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/docs/about-constellation.md";
 
-        // use the requested help file, or the table of contents if it doesnt exist
+        // use the requested help file, or the About Constellation page if one is not given
         final String helpLink = StringUtils.isNotEmpty(HelpMapper.getHelpAddress(helpId)) ? HelpMapper.getHelpAddress(helpId).substring(2) : helpTOCPath;
 
         if (!helpLink.isEmpty()) {
@@ -229,28 +208,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 } else {
 
                     url = OFFICIAL_CONSTELLATION_WEBSITE;
-
-                    // Uncomment below when pages are online
-                    // url = String.format("https://www.constellation-app.com/%1$s/%2$s/%3$s/%4$s/", "docs" ,"v2_4" ,"constellation", fileUrl);
                 }
-
-                /* if (helpSource == null || !helpSource.startsWith("http")) {
-                // The help source is an internal zipped resource or an actual zip file,
-                // therefore we need to invoke the internal web server's help servlet,
-                // so insert /help into the path. The servlet will call copy() to get
-                // the file from the resource/file.
-                //
-
-                } */ /* else if (helpSource.startsWith(OFFICIAL_GITHUB_REPOSITORY)) {
-                // If the helpSource points to github contellation-app/constellation then
-                // we are going to use read the docs to serve the help pages
-                // url = String.format(READ_THE_DOCS, part);
-                } else {
-                // The help source is an external web server, so we just
-                // assemble the URL and disavow all knowledge.
-                //
-                // url = String.format("%s/html/%s", helpSource, part);
-                } */
 
                 LOGGER.log(Level.INFO, "help url {0}", url);
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
@@ -261,12 +219,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                             Desktop.getDesktop().browse(new URI(url));
                         } catch (URISyntaxException | IOException ex) {
                             LOGGER.log(Level.SEVERE, "Tried to browse a url.", ex);
-                            final String msg = "Unable to browse to that location.";
-                            /* NotificationDisplayer.getDefault().notify("Help displayer",
-                            UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.RED.getJavaColor()),
-                            msg,
-                            null
-                            ); */
                         }
                     }).start();
 
@@ -275,27 +227,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             } catch (MalformedURLException ex) {
                 Exceptions.printStackTrace(ex);
             }
-        } else {
-            final String msg = "Help not available; see logs for the reason.";
-            /* NotificationDisplayer.getDefault().notify("Help displayer",
-                    UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.RED.getJavaColor()),
-                    msg,
-                    null
-            ); */
         }
-
         return false;
-    }
-
-    /**
-     * Use a lookup to get all of the help pages
-     *
-     * @return help pages
-     */
-    public List<String> getHelpPages() {
-        final HelpPageProvider helpFiles = Lookup.getDefault().lookup(HelpPageProvider.class);
-
-        List<String> pages = helpFiles.getHelpPages();
-        return pages;
     }
 }

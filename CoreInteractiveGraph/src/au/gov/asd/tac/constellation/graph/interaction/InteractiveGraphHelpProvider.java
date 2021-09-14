@@ -17,9 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -32,18 +30,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class)
 @NbBundle.Messages("InteractiveGraphHelpProvider=Interactive Graph Help Provider")
 public class InteractiveGraphHelpProvider extends HelpPageProvider {
-
-    @Override
-    public List<String> getHelpPages() {
-        final List<String> filePaths = new ArrayList<>();
-        return filePaths;
-    }
-
-    @Override
-    public List<String> getHelpResources() {
-        final List<String> filePaths = new ArrayList<>();
-        return filePaths;
-    }
 
     @Override
     public Map<String, String> getHelpMap() {

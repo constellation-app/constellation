@@ -16,9 +16,7 @@
 package au.gov.asd.tac.constellation.views.tableview;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -32,17 +30,6 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("TableViewHelpProvider=Table View Help Provider")
 public class TableViewHelpProvider extends HelpPageProvider {
 
-    @Override
-    public List<String> getHelpPages() {
-        List<String> filePaths = new ArrayList<>();
-        return filePaths;
-    }
-
-    @Override
-    public List<String> getHelpResources() {
-        List<String> filePaths = new ArrayList<>();
-        return filePaths;
-    }
 
     @Override
     public Map<String, String> getHelpMap() {

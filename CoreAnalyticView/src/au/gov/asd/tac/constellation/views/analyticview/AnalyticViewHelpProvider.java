@@ -17,11 +17,8 @@ package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.apache.commons.io.FileUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -33,37 +30,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class)
 @NbBundle.Messages("AnalyticViewHelpProvider=Analytic View Help Provider")
 public class AnalyticViewHelpProvider extends HelpPageProvider {
-
-    @Override
-    public List<String> getHelpPages() {
-        final List<String> filePaths = new ArrayList<>();
-        return filePaths;
-    }
-
-    @Override
-    public List<String> getHelpResources() {
-        // Get the current directory and make the file within the module.
-        final String userDir = System.getProperty("user.dir");
-        final String sep = File.separator;
-        final int count = userDir.length() - 13;
-        final String substr = userDir.substring(count);
-        final String analyticViewPath;
-        if ("constellation".equals(substr)) {
-            analyticViewPath = userDir + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
-        } else {
-            analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
-        }
-        final File dir = new File(analyticViewPath);
-        final String[] extensions = new String[]{"png"};
-        final List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
-        final List<String> filePaths = new ArrayList<>();
-        for (final File file : files) {
-            filePaths.add(file.getPath());
-        }
-        return filePaths;
-    }
 
     @Override
     public Map<String, String> getHelpMap() {

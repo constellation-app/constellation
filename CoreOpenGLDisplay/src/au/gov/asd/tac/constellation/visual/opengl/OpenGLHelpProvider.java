@@ -16,9 +16,8 @@
 package au.gov.asd.tac.constellation.visual.opengl;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.util.ArrayList;
+import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -33,25 +32,21 @@ import org.openide.util.lookup.ServiceProvider;
 public class OpenGLHelpProvider extends HelpPageProvider {
 
     @Override
-    public List<String> getHelpPages() {
-        List<String> filePaths = new ArrayList<>();
-        return filePaths;
-    }
-
-    @Override
-    public List<String> getHelpResources() {
-        List<String> filePaths = new ArrayList<>();
-        return filePaths;
-    }
-
-    @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String openGLModulePath = ".." + sep + "constellation" + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + "constellation" + sep + "visual" + sep + "opengl" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.visual.opengl.labelfonts", openGLModulePath + "label-fonts-preferences.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String openGLPath = "constellation" + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + "constellation" + sep + "visual" + sep + "opengl" + sep + "docs" + sep + "opengl-toc.xml";
+        return openGLPath;
     }
 }
