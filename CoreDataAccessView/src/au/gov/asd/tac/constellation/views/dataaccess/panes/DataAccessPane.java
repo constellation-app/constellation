@@ -411,7 +411,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         });
 
         // Options menu.
-        final Menu optionsMenu = new Menu("Options", settingsImage);
+        final Menu optionsMenu = new Menu("Workflow Options", settingsImage);
         optionsMenu.getItems().addAll(loadTemplatesMenuItem, saveTemplatesMenuItem, saveResultsMenuItem, deselectPluginsOnExecution);
 
         final MenuBar menuBar = new MenuBar();
