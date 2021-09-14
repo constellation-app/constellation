@@ -167,7 +167,7 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The name of the transaction attribute that will determine transaction colors")
                 .create()
                 .build();
-        public static final SchemaAttribute TRANSACTION_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, TransactionGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "transaction_labels")
+        public static final SchemaAttribute TRANSACTION_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, TransactionGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "transaction_labels_colours")
                 .setDescription("The labels on transactions")
                 .setDefaultValue(GraphLabels.NO_LABELS)
                 .create()

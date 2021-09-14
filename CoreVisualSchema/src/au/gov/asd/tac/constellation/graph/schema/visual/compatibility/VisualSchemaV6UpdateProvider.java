@@ -38,6 +38,7 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
 
     private static final String GRAPH_BOTTOM_LABELS = "node_labels_bottom";
     private static final String GRAPH_TOP_LABELS = "node_labels_top";
+    private static final String GRAPH_TRANSACTION_LABELS = "transaction_labels";
 
     public static final int SCHEMA_VERSION_THIS_UPDATE = 6;
 
@@ -62,6 +63,7 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
         // retrieve the attribute Id of both the graph_labels_top/bottom
         final int oldGraphBottomlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, GRAPH_BOTTOM_LABELS);
         final int oldGraphToplabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, GRAPH_TOP_LABELS);
+        final int oldGraphTransactionlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, GRAPH_TRANSACTION_LABELS);
 
         // retrieve the new values for the graph_labels_bottom and set it to the
         // new values
@@ -75,9 +77,16 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
         final String topLabelValue = graph.getStringValue(oldGraphToplabelsAttributeId, 0);
         graph.setStringValue(newGraphTopLabelsAttributeId, 0, topLabelValue);
 
+        // retrieve the new values for the transaction_labels and set it to the
+        // new values
+        final int newGraphTransactionlabelsAttributeId = VisualConcept.GraphAttribute.TRANSACTION_LABELS.ensure(graph);
+        final String transactionLabelValue = graph.getStringValue(oldGraphTransactionlabelsAttributeId, 0);
+        graph.setStringValue(newGraphTransactionlabelsAttributeId, 0, transactionLabelValue);
+
         // remove the old attributes
         graph.removeAttribute(oldGraphBottomlabelsAttributeId);
         graph.removeAttribute(oldGraphToplabelsAttributeId);
+        graph.removeAttribute(oldGraphTransactionlabelsAttributeId);
 
     }
 
