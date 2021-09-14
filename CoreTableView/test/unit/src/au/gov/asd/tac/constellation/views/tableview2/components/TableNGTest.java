@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateColumnsTask;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateDataTask;
 import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -179,6 +180,33 @@ public class TableNGTest {
             tableViewState.setSelectedOnly(true);
             
             table.updateSelection(graph, tableViewState);
+            
+            platformMockedStatic.verify(() -> Platform.runLater(any(Runnable.class)), times(0));
+        }
+    }
+    
+    @Test
+    public void updateSelectionThreadInterrupted() {
+        try (
+                MockedStatic<TableViewUtilities> tableUtilsMockedStatic = Mockito.mockStatic(TableViewUtilities.class);
+                final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class);
+            ) {
+            final TableViewState tableViewState = new TableViewState();
+            tableViewState.setSelectedOnly(false);
+            
+            when(activeTableReference.getElementIdToRowIndex()).thenReturn(Map.of());
+            
+            tableUtilsMockedStatic.when(() -> TableViewUtilities.getSelectedIds(graph, tableViewState))
+                    .thenReturn(List.of());
+            
+            Thread.currentThread().interrupt();
+            
+            table.updateSelection(graph, tableViewState);
+
+            assertTrue(Thread.currentThread().isInterrupted());
+            
+            // Clears the current threads interrupt status
+            Thread.interrupted();
             
             platformMockedStatic.verify(() -> Platform.runLater(any(Runnable.class)), times(0));
         }
@@ -377,6 +405,34 @@ public class TableNGTest {
             
             table.updateColumns(graph, new TableViewState());
         }
+    }
+    
+    @Test
+    public void updateColumnsThreadInterrupted() {
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+        
+        when(activeTableReference.getColumnIndex()).thenReturn(new ArrayList<>());
+        
+        // Set up the table state
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.TRANSACTION);
+        tableViewState.setColumnAttributes(new ArrayList<>());
+        
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(false);
+            
+            Thread.currentThread().interrupt();
+            
+            table.updateColumns(graph, tableViewState);
+            
+            assertTrue(Thread.currentThread().isInterrupted());
+            
+            platformMockedStatic.verify(() -> Platform.runLater(any(Runnable.class)), times(0));
+        }
+        
+        // Clears the interrupted state
+        Thread.interrupted();
     }
     
     @Test
@@ -673,6 +729,39 @@ public class TableNGTest {
     }
     
     @Test
+    public void updateDataThreadInterrupted() {
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.TRANSACTION);
+        tableViewState.setSelectedOnly(false);
+        
+        final BorderPane progressPane = mock(BorderPane.class);
+        
+        final ProgressBar progressBar = mock(ProgressBar.class);
+        when(progressBar.getProgressPane()).thenReturn(progressPane);
+        
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+        
+        doReturn(new HashMap<>()).when(activeTableReference).getElementIdToRowIndex();
+        doReturn(new HashMap<>()).when(activeTableReference).getRowToElementIdIndex();
+        
+        when(readableGraph.getTransactionCount()).thenReturn(0);
+        
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            Thread.currentThread().interrupt();
+            
+            table.updateData(graph, tableViewState, progressBar);
+            
+            assertTrue(Thread.currentThread().isInterrupted());
+            
+            platformMockedStatic.verify(() -> Platform.runLater(any(UpdateDataTask.class)), times(0));
+        }
+        
+        // Clears interrupt status
+        Thread.interrupted();
+    }
+    
+    @Test
     public void updateDataTransactionStateNotSelectedOnly() {
         final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
@@ -878,12 +967,6 @@ public class TableNGTest {
         
         final ProgressBar progressBar = mock(ProgressBar.class);
         when(progressBar.getProgressPane()).thenReturn(progressPane);
-        
-        final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
-        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
-        
-        doReturn(tableSelectionListener).when(table).getTableSelectionListener();
-        doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
         
         final ReadableGraph readableGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(readableGraph);

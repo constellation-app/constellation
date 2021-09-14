@@ -225,10 +225,14 @@ public class Table {
                     column.setCellFactory(cellColumn -> new TableCellFactory(cellColumn, this));
                 });
 
-                // The update columns task holds state between executions. So we need to
-                // reset some fields each time before it is run.
-                updateColumnsTask.reset(columnReferenceMap, state);
-                Platform.runLater(updateColumnsTask);
+                // If the update has been cancelled then don't update the UI with the
+                // calculated column changes
+                if (!Thread.currentThread().isInterrupted()) {
+                    // The update columns task holds state between executions. So we need to
+                    // reset some fields each time before it is run.
+                    updateColumnsTask.reset(columnReferenceMap, state);
+                    Platform.runLater(updateColumnsTask);
+                }
             }
         }
     }
@@ -314,14 +318,21 @@ public class Table {
                     readableGraph.release();
                 }
 
-                final UpdateDataTask updateDataTask = new UpdateDataTask(this, rows);
-                Platform.runLater(updateDataTask);
-                
-                try {
-                    updateDataTask.getUpdateDataLatch().await();
-                } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data");
-                    Thread.currentThread().interrupt();
+                // Don't want to trigger the UI update if the update has been cancelled
+                // The progress bare will remain in place as a result but the next update
+                // that cancelled this one will run through, complete and remove the progress
+                // bar.
+                if (!Thread.currentThread().isInterrupted()) {
+                    final UpdateDataTask updateDataTask = new UpdateDataTask(this, rows);
+                    Platform.runLater(updateDataTask);
+
+                    try {
+                        updateDataTask.getUpdateDataLatch().await();
+                    } catch (final InterruptedException ex) {
+                        LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data");
+                        updateDataTask.setInterrupted(true);
+                        Thread.currentThread().interrupt();
+                    }
                 }
             }
         }
@@ -366,20 +377,23 @@ public class Table {
                             .mapToInt(i -> i)
                             .toArray();
 
-                    Platform.runLater(() -> {
-                        getSelectedProperty().removeListener(getTableSelectionListener());
-                        getTableView().getSelectionModel().getSelectedItems()
-                                .removeListener(getSelectedOnlySelectionListener());
-                        
-                        getTableView().getSelectionModel().clearSelection();
-                        if (!selectedIds.isEmpty()) {
-                            getTableView().getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
-                        }
-                        
-                        getTableView().getSelectionModel().getSelectedItems()
-                                .addListener(getSelectedOnlySelectionListener());
-                        getSelectedProperty().addListener(getTableSelectionListener());
-                    });
+                    // Don't want to trigger the UI update if the update has been cancelled
+                    if (!Thread.currentThread().isInterrupted()) {
+                        Platform.runLater(() -> {
+                            getSelectedProperty().removeListener(getTableSelectionListener());
+                            getTableView().getSelectionModel().getSelectedItems()
+                                    .removeListener(getSelectedOnlySelectionListener());
+
+                            getTableView().getSelectionModel().clearSelection();
+                            if (!selectedIds.isEmpty()) {
+                                getTableView().getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
+                            }
+
+                            getTableView().getSelectionModel().getSelectedItems()
+                                    .addListener(getSelectedOnlySelectionListener());
+                            getSelectedProperty().addListener(getTableSelectionListener());
+                        });
+                    }
                 }
             }
         }

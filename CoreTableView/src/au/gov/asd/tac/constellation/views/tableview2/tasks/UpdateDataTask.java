@@ -39,7 +39,7 @@ public class UpdateDataTask implements Runnable {
     
     private final CountDownLatch updateDataLatch;
     
-    private List<ObservableList<String>> filteredRowList;
+    private boolean interrupted = false;
     
     /**
      * Creates a new update data task.
@@ -68,6 +68,10 @@ public class UpdateDataTask implements Runnable {
      */
     @Override
     public void run() {
+        if (isInterrupted()) {
+            return;
+        }
+        
         // remove listeners so they are not triggered during the update
         table.getSelectedProperty().removeListener(table.getTableSelectionListener());
         table.getTableView().getSelectionModel().getSelectedItems()
@@ -93,8 +97,10 @@ public class UpdateDataTask implements Runnable {
         });
         filter.getFilteredList().predicateProperty().addListener((v, o, n) -> {
             getActiveTableReference().getSortedRowList().comparatorProperty().unbind();
-            filteredRowList = new FilteredList<>(FXCollections.observableArrayList(rows),
-                    filter.getFilteredList().getPredicate());
+            final List<ObservableList<String>> filteredRowList = new FilteredList<>(
+                    FXCollections.observableArrayList(rows),
+                    filter.getFilteredList().getPredicate()
+            );
             getActiveTableReference().setSortedRowList(new SortedList<>(
                     FXCollections.observableArrayList(filteredRowList)));
             
@@ -102,10 +108,13 @@ public class UpdateDataTask implements Runnable {
                     getActiveTableReference().getSortedRowList(), table.getParentComponent());
         });
         
-        // trigger a pagination update so the table only shows the current page
-        getActiveTableReference().updatePagination(getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
-                getActiveTableReference().getSortedRowList(), table.getParentComponent());
-        
+        // Trigger a pagination update so the table only shows the current page. This
+        // is an expensive task so it should not be done if a new update has come in
+        // and superseeded/cancelled this one.
+        if (!isInterrupted()) {
+            getActiveTableReference().updatePagination(getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
+                    getActiveTableReference().getSortedRowList(), table.getParentComponent());
+        }
         updateDataLatch.countDown();
 
         // restore listeners now the update is complete
@@ -141,5 +150,13 @@ public class UpdateDataTask implements Runnable {
      */
     private ActiveTableReference getActiveTableReference() {
         return table.getParentComponent().getActiveTableReference();
+    }
+
+    public synchronized boolean isInterrupted() {
+        return interrupted;
+    }
+
+    public synchronized void setInterrupted(boolean interrupted) {
+        this.interrupted = interrupted;
     }
 }

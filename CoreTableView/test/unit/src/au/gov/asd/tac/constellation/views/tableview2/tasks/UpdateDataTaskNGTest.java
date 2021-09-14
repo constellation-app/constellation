@@ -45,7 +45,9 @@ import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
@@ -232,5 +234,48 @@ public class UpdateDataTaskNGTest {
                                     predicate)
                     )
         ), tablePane);
+    }
+    
+    @Test
+    public void runThreadInterrupted() throws InterruptedException {
+        updateDataTask.setInterrupted(true);
+        updateDataTask.run();
+        
+        verifyNoInteractions(table);
+    }
+    
+    @Test
+    public void runThreadInterruptedPartWayThrough() throws InterruptedException {
+        final TableFilter.Builder filterBuilder = mock(TableFilter.Builder.class);
+        final TableFilter<ObservableList<String>> filter = mock(TableFilter.class);
+        
+        final FilteredList<ObservableList<String>> filteredList = mock(FilteredList.class);
+        final ObjectProperty<Predicate<? super ObservableList<String>>> filterPredicateProperty
+                = mock(ObjectProperty.class);
+        
+        when(filter.getFilteredList()).thenReturn(filteredList);
+        when(filteredList.predicateProperty()).thenAnswer(mock -> {
+            // When this method is called also set the state to interrupted
+            // before returning the mock.
+            updateDataTask.setInterrupted(true);
+            
+            return filterPredicateProperty;
+        });
+        
+        try (final MockedStatic<TableFilter> tableFilterMockedStatic
+                = Mockito.mockStatic(TableFilter.class)) {
+            tableFilterMockedStatic.when(() -> TableFilter.forTableView(tableView))
+                    .thenReturn(filterBuilder);
+            
+            when(filterBuilder.lazy(true)).thenReturn(filterBuilder);
+            when(filterBuilder.apply()).thenReturn(filter);
+        
+            updateDataTask.run();
+            
+            // Because the task is now 'interrupted' it should not run the update
+            // pagination
+            verify(activeTableReference, times(0))
+                    .updatePagination(anyInt(), any(List.class), any(TablePane.class));
+        }
     }
 }

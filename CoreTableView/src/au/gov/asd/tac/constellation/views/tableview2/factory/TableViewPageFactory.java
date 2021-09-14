@@ -24,10 +24,6 @@ import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -46,8 +42,6 @@ import org.apache.commons.lang3.tuple.Pair;
  * @author formalhaunt
  */
 public class TableViewPageFactory implements Callback<Integer, Node> {
-    private static final Logger LOGGER = Logger.getLogger(TableViewPageFactory.class.getName());
-    
     private final TablePane tablePane;
     
     private final ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
@@ -294,29 +288,18 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                 throw new IllegalStateException("Not processing on the JavaFX Application Thread");
             }
             
-            final CompletableFuture<int[]> future = CompletableFuture.supplyAsync(() ->
-                    // Gets the selected element IDs from the graph, maps them to table
-                    // rows and then maps the rows to the row index
-                    getSelectedIds(graph, state).stream()
-                        .map(id -> elementIdToRowIndex.get(id))
-                        .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
-                        .mapToInt(i -> i)
-                        .toArray(), tablePane.getParentComponent().getExecutorService());
+            // Gets the selected element IDs from the graph, maps them to table
+            // rows and then maps the rows to the row index
+            final int[] selectedIndices = getSelectedIds(graph, state).stream()
+                .map(id -> elementIdToRowIndex.get(id))
+                .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
+                .mapToInt(i -> i)
+                .toArray();
             
-            
-            try {
-                final int[] selectedIndices = future.get();
-                
-                tablePane.getTable().getTableView().getSelectionModel().clearSelection();
-                if (selectedIndices.length != 0) {
-                    tablePane.getTable().getTableView().getSelectionModel()
-                            .selectIndices(selectedIndices[0], selectedIndices);
-                }
-            } catch (InterruptedException ex) {
-                LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table selection");
-                Thread.currentThread().interrupt();
-            } catch (ExecutionException ex) {
-                LOGGER.log(Level.SEVERE, "Error encountered while updating table selection", ex);
+            tablePane.getTable().getTableView().getSelectionModel().clearSelection();
+            if (selectedIndices.length != 0) {
+                tablePane.getTable().getTableView().getSelectionModel()
+                        .selectIndices(selectedIndices[0], selectedIndices);
             }
         }
     }
