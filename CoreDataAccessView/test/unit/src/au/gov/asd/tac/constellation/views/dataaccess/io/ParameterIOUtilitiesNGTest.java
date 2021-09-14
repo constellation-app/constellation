@@ -334,7 +334,6 @@ public class ParameterIoUtilitiesNGTest {
             if (isSaveExpected) {
                 jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
                         eq(Optional.of("DataAccessView")),
-                        any(ObjectMapper.class),
                         eq(mockedPrefConstruction.constructed())
                 ));
             } else {

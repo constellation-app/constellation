@@ -117,9 +117,9 @@ public class JsonIO {
      *
      */
     public static void saveJsonPreferences(final Optional<String> saveDir,
-                                           final ObjectMapper mapper,
+                                           final Optional<String> filePrefix,
                                            final Object rootNode,
-                                           final Optional<String> filePrefix) {
+                                           final ObjectMapper mapper) {
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
         
         // If the preference directory cannot be accessed then return
@@ -206,9 +206,40 @@ public class JsonIO {
      * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional) 
      */
     public static void saveJsonPreferences(final Optional<String> saveDir,
-                                           final ObjectMapper mapper,
+                                           final Object rootNode,
+                                           final ObjectMapper mapper) {
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper);
+    }
+    
+    /**
+     * Save the supplied JSON data in a file, within an allocated subdirectory
+     * of the users configuration directory.
+     *
+     * @param saveDir directory name within the users directory to save the
+     *     configuration file to or empty if it is to be save at the top level
+     * @param rootNode the root object representing the preferences to be written
+     * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional) 
+     */
+    public static void saveJsonPreferences(final Optional<String> saveDir,
                                            final Object rootNode) {
-        saveJsonPreferences(saveDir, mapper, rootNode, Optional.empty());
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER);
+    }
+    
+    /**
+     * Save the supplied JSON data in a file, within an allocated subdirectory
+     * of the users configuration directory.
+     *
+     * @param saveDir directory name within the users directory to save the
+     *     configuration file to or empty if it is to be save at the top level
+     * @param filePrefix prefix to be pre-pended to the file name the user provides
+     *     or empty if no prefix to be provided
+     * @param rootNode the root object representing the preferences to be written
+     * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional) 
+     */
+    public static void saveJsonPreferences(final Optional<String> saveDir,
+                                           final Optional<String> filePrefix,
+                                           final Object rootNode) {
+        saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER);
     }
 
     /**
@@ -271,16 +302,19 @@ public class JsonIO {
      *     preference file from or empty if it is to be loaded at the top level
      * @param filePrefix prefix that is expected to be pre-pended to the file name
      *     of the preference file being loaded or empty if no prefix filter is required
-     * @param expectedFormat
+     * @param expectedFormat the type representing the JSON in the file to
+     *     be loaded
+     * @param objectMapper the object mapper to perform the de-serialization
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function) 
      */
     public static <T> T loadJsonPreferences(final Optional<String> loadDir,
                                             final Optional<String> filePrefix,
-                                            final TypeReference<T> expectedFormat) {
+                                            final TypeReference<T> expectedFormat,
+                                            final ObjectMapper objectMapper) {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
             try {
-                return OBJECT_MAPPER.readValue(file, expectedFormat);
+                return objectMapper.readValue(file, expectedFormat);
             } catch (final IOException ioe) {
                 LOGGER.log(
                         Level.WARNING,
@@ -297,20 +331,40 @@ public class JsonIO {
     
     /**
      * Allow user to select a preference file to load from the supplied
-     * directory. If filePrefix was provided, then only files prefixed with this
-     * value are available to the user to load.
+     * directory.
      *
      * @param <T> the class that the JSON file to be loaded will be in
      * @param loadDir directory name within the users directory to load the
      *     preference file from or empty if it is to be loaded at the top level
-     * @param expectedFormat the class representing the JSON in the file to
+     * @param expectedFormat the type representing the JSON in the file to
      *     be loaded
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function) 
      */
     public static <T> T loadJsonPreferences(final Optional<String> loadDir,
                                             final TypeReference<T> expectedFormat) {
-        return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat);
+        return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat, OBJECT_MAPPER);
+    }
+    
+    /**
+     * Allow user to select a preference file to load from the supplied
+     * directory. If filePrefix was provided, then only files prefixed with this
+     * value are available to the user to load.
+     *
+     * @param <T> the class that the JSON file to be loaded will be in
+     * @param loadDir directory name within the users directory to load the
+     *     preference file from or empty if it is to be loaded at the top level
+     * @param filePrefix prefix that is expected to be pre-pended to the file name
+     *     of the preference file being loaded or empty if no prefix filter is required
+     * @param expectedFormat the type representing the JSON in the file to
+     *     be loaded
+     * @return the de-serialized JSON in the requested format
+     * @see #loadJsonPreferences(Optional, Optional, Function) 
+     */
+    public static <T> T loadJsonPreferences(final Optional<String> loadDir,
+                                            final Optional<String> filePrefix,
+                                            final TypeReference<T> expectedFormat) {
+        return loadJsonPreferences(loadDir, filePrefix, expectedFormat, OBJECT_MAPPER);
     }
     
     /**
