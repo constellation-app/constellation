@@ -406,7 +406,7 @@ public class Table {
      */
     public void updateSortOrder() {
         final Pair<String, TableColumn.SortType> sortPreference
-                = getActiveTableReference().getUserTablePreferences().getSort();
+                = getActiveTableReference().getUserTablePreferences().getSortByColumn();
         
         if (sortPreference != null && !sortPreference.getLeft().isBlank()) {
             // Iterate through the table columns and find the one with a matching column name

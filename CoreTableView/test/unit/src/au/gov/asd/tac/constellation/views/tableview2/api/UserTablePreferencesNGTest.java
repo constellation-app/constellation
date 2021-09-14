@@ -102,20 +102,6 @@ public class UserTablePreferencesNGTest {
     }
     
     @Test
-    public void getSort() {
-        final UserTablePreferences userTablePreferences = new UserTablePreferences();
-        userTablePreferences.setSortByColumn(ImmutablePair.of(
-                "DEF", TableColumn.SortType.DESCENDING
-        ));
-        
-        assertEquals(ImmutablePair.of("DEF", TableColumn.SortType.DESCENDING), userTablePreferences.getSort());
-        
-        userTablePreferences.setSortByColumn(null);
-        
-        assertNull(userTablePreferences.getSort());
-    }
-    
-    @Test
     public void updateMaxRowsPerPage() {
         final UserTablePreferences userTablePreferences = new UserTablePreferences();
         userTablePreferences.setMaxRowsPerPage(42);

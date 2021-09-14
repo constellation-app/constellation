@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.views.tableview2.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javafx.scene.control.TableColumn;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -43,8 +43,9 @@ public final class UserTablePreferences {
     private List<String> columnOrder = new ArrayList<>();
     
     @JsonProperty("SortByColumn")
-    private Map.Entry<String, TableColumn.SortType> sortByColumn
-            = Pair.of("", TableColumn.SortType.ASCENDING);
+    @JsonDeserialize(using = ColumnSortOrderDeserializer.class)
+    private Pair<String, TableColumn.SortType> sortByColumn
+            = ImmutablePair.of("", TableColumn.SortType.ASCENDING);
     
     public synchronized int getMaxRowsPerPage() {
         return maxRowsPerPage;
@@ -62,11 +63,11 @@ public final class UserTablePreferences {
         this.columnOrder = columnOrder;
     }
 
-    public synchronized Map.Entry<String, TableColumn.SortType> getSortByColumn() {
+    public synchronized Pair<String, TableColumn.SortType> getSortByColumn() {
         return sortByColumn;
     }
 
-    public synchronized void setSortByColumn(final Map.Entry<String, TableColumn.SortType> sortByColumn) {
+    public synchronized void setSortByColumn(final Pair<String, TableColumn.SortType> sortByColumn) {
         this.sortByColumn = sortByColumn;
     }
     
@@ -92,21 +93,6 @@ public final class UserTablePreferences {
     public synchronized TableColumn.SortType getSortDirection() {
         if (getSortByColumn() != null) {
             return getSortByColumn().getValue();
-        }
-        return null;
-    }
-    
-    /**
-     * Thread safe conversion of the sort column details into a more easily
-     * read and handled immutable {@link Pair}.
-     *
-     * @return the created {@link Pair} or null if the actual sort column property is null
-     */
-    @JsonIgnore
-    public synchronized Pair<String, TableColumn.SortType> getSort() {
-        if (getSortByColumn() != null) {
-            return ImmutablePair.of(getSortByColumn().getKey(),
-                    getSortByColumn().getValue());
         }
         return null;
     }

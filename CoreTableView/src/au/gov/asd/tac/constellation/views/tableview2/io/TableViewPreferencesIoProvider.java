@@ -16,28 +16,15 @@
 package au.gov.asd.tac.constellation.views.tableview2.io;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import java.io.File;
-import java.io.IOException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.openide.NotifyDescriptor;
-import org.openide.util.NbPreferences;
 
 /**
  * Save and Load table preferences.
@@ -46,13 +33,14 @@ import org.openide.util.NbPreferences;
  * @author serpens24
  */
 public class TableViewPreferencesIoProvider {
-    private static final Logger LOGGER = Logger.getLogger(TableViewPreferencesIoProvider.class.getName());
-    
     private static final String TABLE_VIEW_PREF_DIR = "TableViewPreferences";
     
     private static final String VERTEX_FILE_PREFIX = "vertex-";
     private static final String TRANSACTION_FILE_PREFIX = "transaction-";
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private TableViewPreferencesIoProvider() {
     }
 
@@ -68,21 +56,8 @@ public class TableViewPreferencesIoProvider {
     public static void savePreferences(final GraphElementType tableElementType,
                                        final TableView<ObservableList<String>> table,
                                        final int pageSize) {
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-        final File prefDir = new File(userDir, TABLE_VIEW_PREF_DIR);
         final String filePrefix = tableElementType == GraphElementType.VERTEX
                 ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
-
-        // Ensure preferences directory exists.
-        if (!prefDir.exists()) {
-            prefDir.mkdir();
-        }
-        if (!prefDir.isDirectory()) {
-            final String msg = String.format("Can't create data access directory '%s'.", prefDir);
-            NotifyDisplayer.display(msg, NotifyDescriptor.ERROR_MESSAGE);
-            return;
-        }
         
         final UserTablePreferences tablePreferences = new UserTablePreferences();
         
@@ -104,10 +79,8 @@ public class TableViewPreferencesIoProvider {
             );
         }
         
-        final ObjectMapper mapper = new ObjectMapper();
-        
-        JsonIO.saveJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), mapper,
-                mapper.valueToTree(List.of(tablePreferences)), Optional.of(filePrefix));
+        JsonIO.saveJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), Optional.of(filePrefix),
+                List.of(tablePreferences));
     }
 
     /**
@@ -123,32 +96,12 @@ public class TableViewPreferencesIoProvider {
         final String filePrefix = tableElementType == GraphElementType.VERTEX
                 ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
         
-        try {
-            final JsonNode root = JsonIO.loadJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), Optional.of(filePrefix));
-
-            final UserTablePreferences tablePreferences;
-            if (root == null) {
-                tablePreferences = new UserTablePreferences();
-            } else {
-                final ObjectMapper mapper = new ObjectMapper()
-                        .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL);
-                
-                tablePreferences = mapper
-                        .treeToValue(((ArrayNode) root).get(0), UserTablePreferences.class);
-            }
-            
-            // TODO This needs to be removed once all old versions are deprecated.
-            // This is purely here for backward compatibility.
-            if (ImmutablePair.of("", null).equals(tablePreferences.getSort())) {
-                tablePreferences.setSortByColumn(ImmutablePair.of("", TableColumn.SortType.ASCENDING));
-            }
-            
-            return tablePreferences;
-        } catch (final IOException ex) {
-            final String errorMsg = "An error occured converting preference file contents into "
-                    + "the expected object";
-            LOGGER.log(Level.WARNING, errorMsg, ex);
-            return null;
-        }
+        final List<UserTablePreferences> root = JsonIO.loadJsonPreferences(
+                Optional.of(TABLE_VIEW_PREF_DIR),
+                Optional.of(filePrefix),
+                new TypeReference<List<UserTablePreferences>>() {}
+        );
+        
+        return root == null ? new UserTablePreferences() : root.get(0);
     }
 }
