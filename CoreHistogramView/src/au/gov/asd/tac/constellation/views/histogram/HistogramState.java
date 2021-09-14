@@ -52,7 +52,7 @@ public final class HistogramState {
 
     public HistogramState() {
         this.elementType = GraphElementType.VERTEX;
-        this.setElementState();
+        setElementState();
         this.binFormatterParameters = BinFormatter.DEFAULT_BIN_FORMATTER.createParameters();
         this.binComparator = BinComparator.REVERSE_KEY;
         this.binSelectionMode = BinSelectionMode.FREE_SELECTION;
@@ -61,14 +61,14 @@ public final class HistogramState {
     public HistogramState(final HistogramState original) {
         if (original == null) {
             this.elementType = GraphElementType.VERTEX;
-            this.setElementState();
+            setElementState();
             this.binFormatterParameters = BinFormatter.DEFAULT_BIN_FORMATTER.createParameters();
             this.binComparator = BinComparator.REVERSE_KEY;
             this.binSelectionMode = BinSelectionMode.FREE_SELECTION;
         } else {
             this.elementStateMap = Map.copyOf(original.elementStateMap);
             this.elementType = original.elementType;
-            this.setElementState();
+            setElementState();
             this.binFormatterParameters = original.binFormatterParameters == null ? null : original.binFormatterParameters.copy();
             this.binFormatter.updateParameters(this.binFormatterParameters);
             this.binComparator = original.binComparator;
