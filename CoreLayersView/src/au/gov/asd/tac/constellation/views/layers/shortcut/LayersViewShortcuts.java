@@ -74,7 +74,7 @@ public class LayersViewShortcuts extends AbstractAction {
         final Future<?> future = LayersViewController.getDefault().writeState();
 
         try {
-            if(future != null){
+            if (future != null) {
                 future.get();
             }
         } catch (final InterruptedException ex) {

@@ -79,7 +79,7 @@ public class SingleChoiceInputPane extends HBox {
 
         parameter.addListener((final PluginParameter<?> scParameter, final ParameterChange change) -> {
             Platform.runLater(() -> {
-                assert(scParameter.getParameterValue() instanceof SingleChoiceParameterValue);
+                assert (scParameter.getParameterValue() instanceof SingleChoiceParameterValue);
                 final SingleChoiceParameterValue scParameterValue = (SingleChoiceParameterValue) scParameter.getParameterValue();
                 switch (change) {
                     case VALUE:
@@ -101,7 +101,7 @@ public class SingleChoiceInputPane extends HBox {
                         field.setItems(options);
                         field.setOnAction(handler);
 
-                        if (initialRun){
+                        if (initialRun) {
                             // This is a workaround to fix dynamically changing drop downs.
                             // Otherwise when the Constellation is loaded for the first time,
                             // such lists wouldn't populate until clicked twice on the arrow.
@@ -120,7 +120,6 @@ public class SingleChoiceInputPane extends HBox {
                         }
 
                         break;
-
 
                     case ENABLED:
                         field.setDisable(!scParameter.isEnabled());

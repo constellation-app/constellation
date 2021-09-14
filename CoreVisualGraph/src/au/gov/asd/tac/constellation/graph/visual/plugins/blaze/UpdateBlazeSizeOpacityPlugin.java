@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 @NbBundle.Messages("UpdateBlazeSizeOpacityPlugin=Blazes: Update Size and Opacity")
 public class UpdateBlazeSizeOpacityPlugin extends SimpleEditPlugin {
 

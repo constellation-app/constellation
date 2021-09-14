@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.font;
 
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.ApplicationFontPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,14 +48,13 @@ public class FontUtilities {
     private static final Map<String, Font> FONTS = new HashMap<>();
     private static final Map<String, Font> OUTPUT_FONTS = new HashMap<>();
 
-    
     /**
      * Set the default font size as a preference if its not already defined.
      * <p>
- Top Components listen for changes in
- ApplicationFontPreferenceKeys.FONT_PREFERENCES and if its not defined then
- the listener will not be registered. This initialise method is called
- when the application starts to make sure a preference is defined.
+     * Top Components listen for changes in
+     * ApplicationFontPreferenceKeys.FONT_PREFERENCES and if its not defined
+     * then the listener will not be registered. This initialise method is
+     * called when the application starts to make sure a preference is defined.
      */
     public static synchronized void initialiseApplicationFontPreferenceOnFirstUse() {
         final Preferences p = NbPreferences.root();
@@ -64,17 +63,17 @@ public class FontUtilities {
                 p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).put(ApplicationFontPreferenceKeys.FONT_SIZE, ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT);
                 p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).put(ApplicationFontPreferenceKeys.FONT_FAMILY, ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT);
             } else {
-                ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT = p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).get(ApplicationFontPreferenceKeys.FONT_SIZE, 
+                ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT = p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).get(ApplicationFontPreferenceKeys.FONT_SIZE,
                         ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT);
-                ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT = p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).get(ApplicationFontPreferenceKeys.FONT_FAMILY, 
+                ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT = p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).get(ApplicationFontPreferenceKeys.FONT_FAMILY,
                         ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT);
             }
         } catch (final BackingStoreException ex) {
             Exceptions.printStackTrace(ex);
-        } 
+        }
     }
-    
-     /**
+
+    /**
      * Return a cached font to be used for the application.
      * <p>
      * The font is based on the user's font preference.
@@ -95,8 +94,8 @@ public class FontUtilities {
      * Return the user's default font size.
      * <p>
      * This retrieves the font size specified in Setup &rarr; Options &rarr;
-     * Constellation &rarr; Application Font &rarr; Font Size. The default if not
-     * specified is 12.
+     * Constellation &rarr; Application Font &rarr; Font Size. The default if
+     * not specified is 12.
      *
      * @return The user's default font size.
      */
@@ -105,7 +104,7 @@ public class FontUtilities {
         try {
             final Preferences p = NbPreferences.root();
             if (p.nodeExists(ApplicationFontPreferenceKeys.FONT_PREFERENCES)) {
-                final String fontSizePreference = p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).get(ApplicationFontPreferenceKeys.FONT_SIZE, 
+                final String fontSizePreference = p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).get(ApplicationFontPreferenceKeys.FONT_SIZE,
                         ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT);
                 fontSize = Integer.parseInt(fontSizePreference);
             } else {
@@ -123,13 +122,13 @@ public class FontUtilities {
      * Return the user's default font family.
      * <p>
      * This retrieves the font family specified in Setup &rarr; Options &rarr;
-     * Constellation &rarr; Application Font &rarr; Default Font. The default if not
-     * specified is Arial.
+     * Constellation &rarr; Application Font &rarr; Default Font. The default if
+     * not specified is Arial.
      *
      * @return The user's default font family.
      */
     public static String getApplicationFontFamily() {
-        String fontFamily;         
+        String fontFamily;
         try {
             final Preferences p = NbPreferences.root();
             if (p.nodeExists(ApplicationFontPreferenceKeys.FONT_PREFERENCES)) {
@@ -145,8 +144,7 @@ public class FontUtilities {
         LOGGER.log(Level.FINE, "Font family is {0}", fontFamily);
         return fontFamily;
     }
-     
-    
+
     /**
      * Set the default font size as a preference if its not already defined.
      * <p>

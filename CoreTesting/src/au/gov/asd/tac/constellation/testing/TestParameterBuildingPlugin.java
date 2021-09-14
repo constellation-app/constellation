@@ -16,7 +16,9 @@
 package au.gov.asd.tac.constellation.testing;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -44,6 +46,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @Messages("TestParameterBuildingPlugin=Test Parameter Building")
+@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "DEVELOPER", "CREATE"})
 public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
 
     public static final String LOCALDATE_PARAMETER_ID = PluginParameter.buildId(TestParameterBuildingPlugin.class, "localdate");
@@ -59,7 +62,7 @@ public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
     public static final String FLOAT_NAME = "Some Float";
     public static final String FLOAT_DESCRIPTION = "Enter some float between 0 and 1.";
     public static final String SOME_BOOLEAN_NAME = "Some Boolean";
-    public static final String SOME_BOOLEAN_DESCRIPTION = "If ture, it is so!";
+    public static final String SOME_BOOLEAN_DESCRIPTION = "If true, it is so!";
 
     private static final Logger LOGGER = Logger.getLogger(TestParameterBuildingPlugin.class.getName());
 

@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.Rece
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.io.File;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -36,6 +35,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -47,7 +47,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
@@ -194,6 +193,8 @@ public class WelcomeViewPane extends BorderPane {
                 createRecentButtons(recentGraphButtons[i]);
                 if (i < fileNames.size()) {
                     recentGraphButtons[i].setText(fileNames.get(i));
+                    final Tooltip toolTip = new Tooltip(recentGraphButtons[i].getText());
+                    recentGraphButtons[i].setTooltip(toolTip);
                 }
                 final String text = recentGraphButtons[i].getText();
 
@@ -205,6 +206,13 @@ public class WelcomeViewPane extends BorderPane {
                     imageView.setFitHeight(145);
                     imageView.setFitWidth(145);
                     recentGraphButtons[i].setGraphic(imageView);
+                } else if (i < fileNames.size()) {
+                    final ImageView defaultImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream("resources/Constellation_Application_Icon_Small.png")));
+                    final Rectangle2D valueDefault = new Rectangle2D(0, 0, 145, 145);
+                    defaultImage.setViewport(valueDefault);
+                    defaultImage.setFitHeight(145);
+                    defaultImage.setFitWidth(145);
+                    recentGraphButtons[i].setGraphic(defaultImage);
                 }
 
                 //Calls the method for the recent graphs to open

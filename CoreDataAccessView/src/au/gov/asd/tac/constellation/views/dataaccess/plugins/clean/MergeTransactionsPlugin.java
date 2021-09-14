@@ -26,8 +26,10 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegist
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -64,6 +66,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @Messages("MergeTransactionsPlugin=Merge Transactions")
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     private static final Map<String, Comparator<Long>> LEAD_TRANSACTION_CHOOSERS = new LinkedHashMap<>();

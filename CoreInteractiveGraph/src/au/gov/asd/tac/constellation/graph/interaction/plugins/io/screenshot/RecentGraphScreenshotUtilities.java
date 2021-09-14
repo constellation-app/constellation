@@ -39,7 +39,8 @@ public class RecentGraphScreenshotUtilities {
     }
 
     /**
-     * Retrieve the screenshots user directory that is used to save a screenshot of the graph
+     * Retrieve the screenshots user directory that is used to save a screenshot
+     * of the graph
      *
      * @return The screenshot directory location
      */
@@ -63,8 +64,9 @@ public class RecentGraphScreenshotUtilities {
     /**
      * Take a screenshot of the graph and save it to the screenshots directory.
      * <p>
-     * Note that most of the code in this method was taken from the {@code ExportToImagePlugin}. Due to module
-     * dependencies, the ExportToImagePlugin could not be run directly.
+     * Note that most of the code in this method was taken from the
+     * {@code ExportToImagePlugin}. Due to module dependencies, the
+     * ExportToImagePlugin could not be run directly.
      *
      * @param filename The filename of the graph
      */

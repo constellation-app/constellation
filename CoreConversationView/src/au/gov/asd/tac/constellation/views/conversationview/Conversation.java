@@ -110,7 +110,7 @@ public class Conversation {
     private Set<ConversationContributionProvider> contributingContributionProviders = new TreeSet<>();
     private List<String> possibleSenderAttributes = new ArrayList<>();
 
-    // thread names
+    // Thread names.
     private static final String CONVERSATION_VIEW_UPDATE_COLOUR_THREAD_NAME = "Conversation View: Update Colour Stage";
     private static final String CONVERSATION_VIEW_UPDATE_CONTRIBUTIONS_THREAD_NAME = "Conversation View: Update Contributions";
     private static final String CONVERSATION_VIEW_UPDATE_DATETIME_THREAD_NAME = "Conversation View: Update Datetime";
@@ -122,11 +122,11 @@ public class Conversation {
      * Create a new Conversation.
      */
     public Conversation() {
-        conversationExistanceUpdater.dependOn(graphUpdateController.getNewGraphUpdateComponent());  
-        
+        conversationExistanceUpdater.dependOn(graphUpdateController.getNewGraphUpdateComponent());
+
         conversationStateUpdater.dependOn(conversationExistanceUpdater);
         conversationStateUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE));
-        
+
         possibleSenderAttributeUpdater.dependOn(conversationExistanceUpdater);
         possibleSenderAttributeUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
 
@@ -135,11 +135,11 @@ public class Conversation {
 
         contributionProviderUpdater.dependOn(conversationExistanceUpdater);
         contributionProviderUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
-        
+
         messageUpdater.dependOn(conversationExistanceUpdater);
         messageUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(VisualConcept.VertexAttribute.SELECTED));
         messageUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(VisualConcept.TransactionAttribute.SELECTED));
-        
+
         contributionUpdater.dependOn(messageUpdater);
 
         datetimeUpdater.dependOn(contributionUpdater);
@@ -199,8 +199,6 @@ public class Conversation {
 
         @Override
         protected boolean update(GraphReadMethods graph) {
-
-            
             ConversationState newConversationState;
             if (graph != null) {
                 final int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
@@ -401,7 +399,7 @@ public class Conversation {
                                     }
                                 }
 
-                                // we only want to add messages that contain any content in them
+                                // We only want to add messages that contain any content in them.
                                 if (message.getDatetime() != null && thereIsTextContribution) {
                                     temporalMessages.add(message);
                                 }
@@ -503,7 +501,6 @@ public class Conversation {
 
             return true;
         }
-
     };
 
     /**
@@ -594,7 +591,7 @@ public class Conversation {
 
     /**
      * Set the resulting list of messages (post filtering and formatting) that
-     * will be observed by the GUI
+     * will be observed by the GUI.
      *
      * @param resultMessageList An ObservableList of messages.
      */
@@ -621,5 +618,15 @@ public class Conversation {
 
         updateController.registerChange(contributorUpdater);
         updateController.update();
+    }
+
+    /**
+     * Returns the current list of visible messages for the current
+     * conversation.
+     *
+     * @return List of current visible messages.
+     */
+    protected final List<ConversationMessage> getVisibleMessages() {
+        return visibleMessages;
     }
 }

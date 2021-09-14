@@ -24,8 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This describes a type of attribute whose values represent icons in CONSTELLATION. The icons are stored by name as
- * strings.
+ * This describes a type of attribute whose values represent icons in
+ * CONSTELLATION. The icons are stored by name as strings.
  * <p>
  * Attribute values of this type can be set and retrieved as strings.
  *

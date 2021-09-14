@@ -36,17 +36,16 @@ import org.openide.util.NbBundle;
  *
  * @author canis_majoris
  */
-
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("OpenGraphWelcomePlugin=Open Graph Welcome Plugin")
-public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
-    
+public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
+
     public static final String OPEN = "resources/welcome_open_folder.png";
     final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
     final Button openFile = new Button();
-    
+
     /**
-     * Get a unique reference that is used to identify the plugin 
+     * Get a unique reference that is used to identify the plugin
      *
      * @return a unique reference
      */
@@ -54,10 +53,10 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
     public String getName() {
         return "Open Graph Welcome";
     }
-    
+
     /**
-     * This method describes what action should be taken when the 
-     * link is clicked on the Welcome Page
+     * This method describes what action should be taken when the link is
+     * clicked on the Welcome Page
      *
      */
     @Override
@@ -75,7 +74,7 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
     }
 
     /**
-     * Determines whether this analytic appear on the Welcome Page 
+     * Determines whether this analytic appear on the Welcome Page
      *
      * @return true is this analytic should be visible, false otherwise.
      */
@@ -83,15 +82,14 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
     public boolean isVisible() {
         return true;
     }
-    
-    
-     /**
+
+    /**
      * Creates the button object to represent this plugin
-     * 
+     *
      * @return the button object
      */
     @Override
-    public Button getButton(){
+    public Button getButton() {
         openImage.setFitHeight(75);
         openImage.setFitWidth(75);
         final Label title = new Label("Open");

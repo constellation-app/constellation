@@ -51,7 +51,7 @@ public class MinScoreAggregator implements AnalyticAggregator<ScoreResult> {
             aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce(Math::min).orElse(0.0f));
             aggregateResult.add(new ElementScore(key.getElementType(), key.getElementId(), key.getIdentifier(), false, aggregateScores));
         });
-        
+
         return aggregateResult;
     }
 

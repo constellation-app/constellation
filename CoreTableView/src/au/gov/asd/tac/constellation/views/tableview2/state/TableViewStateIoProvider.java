@@ -54,10 +54,10 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, 
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph,
             final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader,
             final ImmutableObjectCache cache) throws IOException {
-        if (!jnode.isNull()) {
+        if (!jnode.isNull() && !jnode.isEmpty()) {
             final boolean selectedOnly = jnode.get("selectedOnly").asBoolean();
             final GraphElementType elementType = GraphElementType.valueOf(jnode.get("elementType").asText());
             final List<Tuple<String, Attribute>> transactionColumnAttributes = new ArrayList<>();
@@ -95,7 +95,7 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, 
+    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator,
             final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
             final TableViewState state = (TableViewState) graph.getObjectValue(attribute.getId(), elementId);

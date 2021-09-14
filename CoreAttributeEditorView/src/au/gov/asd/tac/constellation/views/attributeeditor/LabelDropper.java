@@ -49,7 +49,8 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Drop a label indicator onto a graph, change the top node label or transaction label.
+ * Drop a label indicator onto a graph, change the top node label or transaction
+ * label.
  *
  * @author algol
  */
@@ -93,40 +94,7 @@ public class LabelDropper implements GraphDropper {
                 }
                 if (data != null) {
                     return (graph, dropInfo) -> {
-                        PluginExecution.withPlugin(new SimpleEditPlugin("Attribute Editor: Set Top Label") {
-                            @Override
-                            public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                final GraphElementType et;
-                                final String labelAttribute;
-                                final int ix = data.indexOf(':');
-                                if (ix != -1) {
-                                    et = GraphElementType.getValue(data.substring(0, ix));
-                                    labelAttribute = data.substring(ix + 1);
-
-                                    final int attrId = wg.getAttribute(et, labelAttribute);
-                                    final int labelsId = et == GraphElementType.VERTEX ? VisualConcept.GraphAttribute.TOP_LABELS.get(wg) : VisualConcept.GraphAttribute.TRANSACTION_LABELS.get(wg);
-                                    final ConstellationColor color = et == GraphElementType.VERTEX ? wg.getSchema().getFactory().getVertexLabelColor() : wg.getSchema().getFactory().getConnectionLabelColor();
-
-                                    if (attrId != Graph.NOT_FOUND && labelsId != Graph.NOT_FOUND) {
-                                        final GraphLabels oldGraphLabels = wg.getObjectValue(labelsId, 0);
-                                        final List<GraphLabel> newLabels = new ArrayList<>();
-                                        if (oldGraphLabels != null) {
-                                            newLabels.addAll(oldGraphLabels.getLabels());
-                                        }
-                                        newLabels.add(new GraphLabel(labelAttribute, color));
-
-                                        wg.setObjectValue(labelsId, 0, new GraphLabels(newLabels));
-                                    }
-
-                                    ConstellationLoggerHelper.importPropertyBuilder(
-                                            this,
-                                            Arrays.asList(data),
-                                            null,
-                                            ConstellationLoggerHelper.SUCCESS
-                                    );
-                                }
-                            }
-                        }).executeLater(graph);
+                        PluginExecution.withPlugin(new SetTopLabelPlugin(data)).executeLater(graph);
                     };
                 }
 
@@ -139,4 +107,53 @@ public class LabelDropper implements GraphDropper {
 
         return null;
     }
+
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    public static class SetTopLabelPlugin extends SimpleEditPlugin {
+
+        final String data;
+
+        public SetTopLabelPlugin(final String data) {
+            this.data = data;
+        }
+
+        @Override
+        public String getName() {
+            return "Attribute Editor: Set Top Label";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final GraphElementType et;
+            final String labelAttribute;
+            final int ix = data.indexOf(':');
+            if (ix != -1) {
+                et = GraphElementType.getValue(data.substring(0, ix));
+                labelAttribute = data.substring(ix + 1);
+
+                final int attrId = wg.getAttribute(et, labelAttribute);
+                final int labelsId = et == GraphElementType.VERTEX ? VisualConcept.GraphAttribute.TOP_LABELS.get(wg) : VisualConcept.GraphAttribute.TRANSACTION_LABELS.get(wg);
+                final ConstellationColor color = et == GraphElementType.VERTEX ? wg.getSchema().getFactory().getVertexLabelColor() : wg.getSchema().getFactory().getConnectionLabelColor();
+
+                if (attrId != Graph.NOT_FOUND && labelsId != Graph.NOT_FOUND) {
+                    final GraphLabels oldGraphLabels = wg.getObjectValue(labelsId, 0);
+                    final List<GraphLabel> newLabels = new ArrayList<>();
+                    if (oldGraphLabels != null) {
+                        newLabels.addAll(oldGraphLabels.getLabels());
+                    }
+                    newLabels.add(new GraphLabel(labelAttribute, color));
+
+                    wg.setObjectValue(labelsId, 0, new GraphLabels(newLabels));
+                }
+
+                ConstellationLoggerHelper.importPropertyBuilder(
+                        this,
+                        Arrays.asList(data),
+                        null,
+                        ConstellationLoggerHelper.SUCCESS
+                );
+            }
+        }
+    }
+
 }

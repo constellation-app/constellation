@@ -19,35 +19,25 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterType;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessConcept;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessState;
+import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessUserPreferences;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.prefs.Preferences;
+import java.util.Optional;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.Exceptions;
-import org.openide.util.NbPreferences;
 
 /**
  * Save and load data access view plugin parameters.
@@ -62,11 +52,7 @@ import org.openide.util.NbPreferences;
  * @author algol
  */
 public class ParameterIOUtilities {
-
     private static final String DATA_ACCESS_DIR = "DataAccessView";
-    public static final String GLOBAL_OBJECT = "global";
-    public static final String PLUGINS_OBJECT = "plugins";
-    public static final String IS_ENABLED = "__is_enabled__";
 
     /**
      * Load the data access graph state and update the data access view.
@@ -146,215 +132,102 @@ public class ParameterIOUtilities {
         }
     }
 
+    /**
+     * Saves the global and plugin parameters from the passed tabs that belong to
+     * the {@link DataAccessPane}. The parameters will be saved to a JSON file as
+     * an array with each element representing one tab.
+     *
+     * @param tabs the tabs to extract the global and plugin parameters from
+     * @see JsonIO#saveJsonPreferences(Optional, ObjectMapper, Object) 
+     */
     public static void saveParameters(final TabPane tabs) {
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-        final File dataAccessDir = new File(userDir, DATA_ACCESS_DIR);
-        if (!dataAccessDir.exists()) {
-            dataAccessDir.mkdir();
-        }
-
-        if (!dataAccessDir.isDirectory()) {
-            final String msg = String.format("Can't create data access directory '%s'.", dataAccessDir);
-            final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
-            return;
-        }
-
-        // A JSON document to store everything in;
-        // an array of objects where each array element is a tab, and the objects are the parameters in each tab.
-        final ObjectMapper mapper = new ObjectMapper();
-        final ArrayNode rootNode = mapper.createArrayNode();
+        final List<DataAccessUserPreferences> dataAccessUserPreferenceses = new ArrayList<>();
 
         String queryName = null;
         for (final Tab step : tabs.getTabs()) {
-            // Remember the global parameters: if plugins have these, they don't need to be saved.
-            final Set<String> globalParams = new HashSet<>();
-
-            final ObjectNode tabNode = rootNode.addObject();
-            final ObjectNode global = tabNode.putObject(GLOBAL_OBJECT);
             final QueryPhasePane pluginPane = (QueryPhasePane) ((ScrollPane) step.getContent()).getContent();
-            for (final Map.Entry<String, PluginParameter<?>> param : pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet()) {
-                final String id = param.getKey();
-                final String value = param.getValue().getStringValue();
-                if (value != null) {
-                    global.put(id, value);
-                } else {
-                    global.putNull(id);
-                }
 
-                globalParams.add(id);
+            // Translate the plugin pane to the JSON format
+            final DataAccessUserPreferences preferences = new DataAccessUserPreferences(pluginPane);
 
-                // Remember the first non-null, non-blank query name.
-                if (queryName == null && id.equals(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID) && StringUtils.isNotBlank(value)) {
-                    queryName = value;
-                }
+            // Remember the first non-null, non-blank query name.
+            if (queryName == null
+                    && preferences.getGlobalParameters().containsKey(
+                            CoreGlobalParameters.QUERY_NAME_PARAMETER_ID
+                    )
+                    && StringUtils.isNotBlank(preferences.getGlobalParameters().get(
+                            CoreGlobalParameters.QUERY_NAME_PARAMETER_ID
+                    ))) {
+                queryName = preferences.getGlobalParameters().get(
+                        CoreGlobalParameters.QUERY_NAME_PARAMETER_ID
+                );
             }
 
-            final ObjectNode plugins = tabNode.putObject(PLUGINS_OBJECT);
-            for (final DataSourceTitledPane pane : pluginPane.getDataAccessPanes()) {
-                // Is this plugin enabled?
-                // Only save data if it is.
-                if (pane.isQueryEnabled()) {
-                    final String isEnabledId = String.format("%s.%s", pane.getPlugin().getClass().getSimpleName(), IS_ENABLED);
-                    plugins.put(isEnabledId, pane.isQueryEnabled());
-
-                    final PluginParameters parameters = pane.getParameters();
-                    if (parameters != null) {
-                        parameters.getParameters().entrySet().stream().forEach(param -> {
-                            if (!PasswordParameterType.ID.equals(param.getValue().getType().getId())) {
-                                final String id = param.getKey();
-                                final String value = param.getValue().getStringValue();
-                                if (!globalParams.contains(id)) {
-                                    if (value != null) {
-                                        plugins.put(id, value);
-                                    } else {
-                                        plugins.putNull(id);
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-            }
+            dataAccessUserPreferenceses.add(preferences);
         }
 
+        // Only save if the query name parameter is present
         if (queryName != null) {
-            JsonIO.saveJsonPreferences(DATA_ACCESS_DIR, mapper, rootNode);
-        }
-    }
-
-    public static void loadParameters(final DataAccessPane dap) {
-        final JsonNode root = JsonIO.loadJsonPreferences(DATA_ACCESS_DIR);
-        if ((root != null) && (root.isArray())) {
-            // Remove all the existing tabs and start some new ones.
-            dap.removeTabs();
-            for (final JsonNode step : root) {
-                final QueryPhasePane pluginPane = dap.newTab();
-
-                // Remember the global parameters: if plugins have these, they don't need to be loaded.
-                final Set<String> globalParams = new HashSet<>();
-
-                // Load the per-step global parameters.
-                final JsonNode global = step.get(GLOBAL_OBJECT);
-                pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
-                    final String id = param.getKey();
-                    if (global.has(id)) {
-                        final JsonNode value = global.get(id);
-                        final PluginParameter<?> pp = param.getValue();
-                        pp.setStringValue(value.isNull() ? null : value.textValue());
-
-                        globalParams.add(id);
-                    }
-                });
-
-                // Load the per-step plugin parameters.
-                final JsonNode plugins = step.get(PLUGINS_OBJECT);
-                final Map<String, Map<String, String>> ppmap = toPerPluginParamMap(plugins);
-                pluginPane.getDataAccessPanes().stream().forEach(pane -> {
-                    // Only load and enable from the JSON if the JSON contains data for this plugin
-                    // and it's enabled; otherwise, disable the plugin.
-                    // They're disabled by default anyway, but let's be obvious.)
-                    final String isEnabledId = String.format("%s.%s", pane.getPlugin().getClass().getSimpleName(), IS_ENABLED);
-                    if (plugins.has(isEnabledId)) {
-                        // Is this plugin enabled in the saved JSON?
-                        final boolean isEnabled = plugins.get(isEnabledId).booleanValue();
-//                                pane.validityChanged(isEnabled);
-                        if (isEnabled) {
-                            pane.setParameterValues(ppmap.get(pane.getPlugin().getClass().getSimpleName()));
-                            // TODO: review this section, remove it if its working, else fix it
-////                                    pane.setExpanded(true);
-//                                    final PluginParameters parameters = pane.getParameters();
-//                                    if(parameters != null)
-//                                    {
-//                                        parameters.getParameters().entrySet().stream().forEach((param) ->
-//                                        {
-//                                            final String id = param.getKey();
-//                                            if(!globalParams.contains(id) && plugins.has(id))
-//                                            {
-//                                                final JsonNode newValue = plugins.get(id);
-//                                                final PluginParameter pp = param.getValue();
-//                                                // Don't set action type parameters.
-//                                                // Since their only reason for existence is to perform an action,
-//                                                // they don't have values, and setting them would kick off the action.
-//                                                //                                                if(!pp.getId().equals(ActionParameterType.ID))
-//                                                {
-//                                                    // There appears to be a listener on each parameter so that if it is updated,
-//                                                    // it will be selected. We want to avoid this: only set a parameter value if
-//                                                    // the new value is different (including allowing for null).
-//                                                    //                                                    final String oldValue = pp.getStringValue();
-//                                                    if(oldValue==null)
-//                                                    {
-//                                                        if(!newValue.isNull())
-//                                                        {
-//                                                            pp.setStringValue(newValue.textValue());
-//                                                        }
-//                                                    }
-//                                                    else
-//                                                    {
-//                                                        if(newValue.isNull())
-//                                                        {
-//                                                            pp.setStringValue(null);
-//                                                        }
-//                                                        else
-//                                                        {
-//                                                            final String s = newValue.textValue();
-//                                                            if(!s.equals(oldValue))
-//                                                            {
-//                                                                pp.setStringValue(s);
-//                                                            }
-//                                                        }
-//                                                    }
-//                                                }
-//                                            }
-//                                        });
-//                                    }
-
-//                                pane.validityChanged(isEnabled);
-                        }
-//                                pane.validityChanged(isEnabled);
-                    } else {
-                        // This plugin isn't mentioned in the JSON, so disable it.
-                        pane.validityChanged(false);
-                    }
-                });
-            }
+            JsonIO.saveJsonPreferences(Optional.of(DATA_ACCESS_DIR), new ObjectMapper(), dataAccessUserPreferenceses);
         }
     }
 
     /**
-     * Convert the contents of a JSON "plugins" node to a per-plugin key:value
-     * map.
-     * <p>
-     * The JSON object looks like:
-     * <pre>
-     *      plugina.param1: value,
-     *      plugina.param2: value,
-     *      pluginb.param1: value,
-     *      pluginc.param1: value
-     * </pre> Build a Map mapping plugin names to Maps of param key:values.
-     *
-     * @param pluginsNode
-     * @return
+     * Loads global and plugin parameters from a JSON file into the passed {@link DataAccessPane}.
+     * If the JSON is loaded then all existing tabs will be removed and then new tabs added
+     * for each entry in the loaded JSON array.
+     * 
+     * @param dataAccessPane the pane to load the JSON parameter file into
+     * @see JsonIO#loadJsonPreferences(Optional, TypeReference) 
      */
-    private static Map<String, Map<String, String>> toPerPluginParamMap(final JsonNode pluginsNode) {
-        final Map<String, Map<String, String>> pluginMap = new HashMap<>();
-        for (final Iterator<Map.Entry<String, JsonNode>> i = pluginsNode.fields(); i.hasNext();) {
-            final Map.Entry<String, JsonNode> entry = i.next();
-            final String name = entry.getKey();
-            final String value = entry.getValue().textValue();
+    public static void loadParameters(final DataAccessPane dataAccessPane) {
+        final List<DataAccessUserPreferences> loadedParameters = JsonIO
+                .loadJsonPreferences(
+                        Optional.of(DATA_ACCESS_DIR),
+                        new TypeReference<List<DataAccessUserPreferences>>() {}
+                );
+        
+        if (loadedParameters != null) {
+            dataAccessPane.removeTabs();
 
-            final int ix = name.indexOf('.');
-            if (ix != -1) {
-                final String plugin = name.substring(0, ix);
-                if (!pluginMap.containsKey(plugin)) {
-                    pluginMap.put(plugin, new HashMap<>());
-                }
+            loadedParameters.forEach(loadedParameter -> {
+                final QueryPhasePane pluginPane = dataAccessPane.newTab();
 
-                pluginMap.get(plugin).put(name, value);
-            }
+                // If an existing global parameter is in the JSON then update it,
+                // otherwise ignore it
+                pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream()
+                        .filter(param -> loadedParameter.getGlobalParameters().containsKey(param.getKey()))
+                        .forEach(param -> {
+                            param.getValue().setStringValue(
+                                    loadedParameter.getGlobalParameters().get(param.getKey())
+                            );
+                        });
+
+                // Groups all the parameters in to the plugin groups. Common parameters
+                // are based on the plugin name that is before the first '.' in the key values
+                final Map<String, Map<String, String>> ppmap = loadedParameter.toPerPluginParamMap();
+
+                pluginPane.getDataAccessPanes().stream()
+                        // Plugins are disabled by defult. Only load and enable from
+                        // the JSON if the JSON contains data for this plugin and it's
+                        // enabled.
+                        .filter(pane -> loadedParameter.getPluginParameters().containsKey(getEnabledPluginKey(pane)) 
+                                && Boolean.valueOf(loadedParameter.getPluginParameters().get(getEnabledPluginKey(pane))))
+                        .forEach(pane -> pane.setParameterValues(
+                                ppmap.get(pane.getPlugin().getClass().getSimpleName())
+                        ));
+            });
         }
-
-        return pluginMap;
+    }
+    
+    /**
+     * Generates the JSON 'enabled' property name for the plugin associated to the
+     * passed {@link DataSourceTitledPane}.
+     *
+     * @param pane the pane that contains the plugin
+     * @return the generated property name
+     */
+    private static String getEnabledPluginKey(final DataSourceTitledPane pane) {
+        return DataAccessUserPreferences.getEnabledPluginKey(pane.getPlugin().getClass());
     }
 }

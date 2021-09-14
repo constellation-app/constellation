@@ -40,8 +40,8 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
 /**
- * The default implementation of CustomIconProvider, saves and loads custom icons to and from the CONSTELLATION user
- * directory.
+ * The default implementation of CustomIconProvider, saves and loads custom
+ * icons to and from the CONSTELLATION user directory.
  *
  * @author cygnus_x-1
  */

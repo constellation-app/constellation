@@ -73,6 +73,7 @@ public class JDBCSourcePane extends SourcePane {
     private static final int GAP = 10;
     private static final String ACTION_CANCEL = "Cancel";
     private static final String TITLE_JDBC_IMPORT = "JDBC Import";
+    private static final String PROMT_TEXT_COLOUR = "-fx-prompt-text-fill: grey";
 
     private final ComboBox<JDBCConnection> dbConnectionComboBox;
 
@@ -163,6 +164,7 @@ public class JDBCSourcePane extends SourcePane {
                     connectionsTable.getItems().addAll(connectionManager.getConnections());
                     connections.clear();
                     connections.addAll(connectionManager.getConnections());
+                    dbConnectionComboBox.setItems(connections);
                 }
             });
             connectionsPane.add(removeBtn, 2, 1, 1, 1);
@@ -416,11 +418,17 @@ public class JDBCSourcePane extends SourcePane {
         final Label nameLabel = new Label("Connection Name");
         gp.add(nameLabel, 0, 0, 1, 1);
         final TextField cn = new TextField(add ? "" : connection.getConnectionName());
+        cn.setPromptText("Enter a name for your connection");
+        cn.setStyle(PROMT_TEXT_COLOUR);
+        cn.setFocusTraversable(false);
         gp.add(cn, 1, 0, 2, 1);
         final Label driverLabel = new Label("Driver");
         gp.add(driverLabel, 0, 1, 1, 1);
         driversComboBox.getItems().clear();
         driversComboBox.getItems().addAll(driverManager.getDrivers());
+        if (!driverManager.getDrivers().isEmpty()) {
+            driversComboBox.getSelectionModel().select(driversComboBox.getItems().get(0));
+        }
         if (!add) {
             driversComboBox.getSelectionModel().select(connection.getDriver());
         }
@@ -428,14 +436,24 @@ public class JDBCSourcePane extends SourcePane {
         final Label connectionStringLabel = new Label("Connection String");
         gp.add(connectionStringLabel, 0, 2, 1, 1);
         final TextField connectionStringF = new TextField(add ? "" : connection.getConnectionString());
+        connectionStringF.setPromptText("jdbc:sqlite:C:/my folder/database.sqlite");
+        connectionStringF.setStyle(PROMT_TEXT_COLOUR);
+        connectionStringF.setFocusTraversable(false);
         gp.add(connectionStringF, 1, 2, 2, 1);
         final Label usernameLabel = new Label("Username");
         gp.add(usernameLabel, 0, 3, 1, 1);
         final TextField username = new TextField();
+        username.setPromptText("Optional: Set a username");
+        username.setStyle(PROMT_TEXT_COLOUR);
+        username.setFocusTraversable(false);
         gp.add(username, 1, 3, 2, 1);
         final Label passwordLabel = new Label("Password");
         gp.add(passwordLabel, 0, 4, 1, 1);
         final PasswordField password = new PasswordField();
+        password.setPromptText("Optional: Set a password");
+        password.setStyle(PROMT_TEXT_COLOUR);
+        password.setFocusTraversable(false);
+
         gp.add(password, 1, 4, 2, 1);
         final Button addConnection = new Button(add ? "Add" : "Save");
         addConnection.setOnAction((final ActionEvent t2) -> {
@@ -465,6 +483,7 @@ public class JDBCSourcePane extends SourcePane {
                 connectionsTable.getItems().addAll(connectionManager.getConnections());
                 connections.clear();
                 connections.addAll(connectionManager.getConnections());
+                dbConnectionComboBox.setItems(connections);
                 stage.close();
             }
         });

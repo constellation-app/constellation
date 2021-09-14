@@ -24,9 +24,11 @@ import java.util.Stack;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Evaluates a query expression made up of a chain of operations of the form (a op1 b op2 c ...).
+ * Evaluates a query expression made up of a chain of operations of the form (a
+ * op1 b op2 c ...).
  * <p>
- * Based on https://www.geeksforgeeks.org/operatorStack-set-4-evaluation-postfix-expression/
+ * Based on
+ * https://www.geeksforgeeks.org/operatorStack-set-4-evaluation-postfix-expression/
  *
  * @author aldebaran30701
  */
@@ -64,12 +66,15 @@ public class QueryEvaluator {
      * <li>color == (#ffffff) - Evaluated as</li>
      * </ul>
      * <p>
-     * iterate all chars in input - check if moreToEscape if (, add term to list of tokens if |, and previousChar was |
-     * then add || to list of tokens if &, and previousChar was & then add && to list of tokens if ), add term to list
-     * of tokens else, an escaped character or normal input so add to currentString
+     * iterate all chars in input - check if moreToEscape if (, add term to list
+     * of tokens if |, and previousChar was | then add || to list of tokens if
+     * &, and previousChar was & then add && to list of tokens if ), add term to
+     * list of tokens else, an escaped character or normal input so add to
+     * currentString
      * <p>
      * @param input the query as written by the user to tokenise.
-     * @return List<String> stringTokens is the items within the input string, stored as a list.
+     * @return List<String> stringTokens is the items within the input string,
+     * stored as a list.
      */
     public static List<String> tokeniser(final String input) {
         final List<String> stringTokens = new ArrayList<>();
@@ -220,10 +225,11 @@ public class QueryEvaluator {
     }
 
     /**
-     * Accepts a postfix string containing the following operators and operands: - && - || Operands - true - false
+     * Accepts a postfix string containing the following operators and operands:
+     * - && - || Operands - true - false
      *
-     * This evaluates the posfix representation in a way that maintains the correct evaluation order to achieve the
-     * correct boolean result.
+     * This evaluates the posfix representation in a way that maintains the
+     * correct evaluation order to achieve the correct boolean result.
      *
      * @param postfix the String representation of the postfix query
      * @return true or false depending on what it evaluated to.

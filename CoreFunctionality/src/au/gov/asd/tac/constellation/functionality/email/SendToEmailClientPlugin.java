@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.functionality.email;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
@@ -42,6 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author arcturus
  */
 @ServiceProvider(service = Plugin.class)
+@PluginInfo(pluginType = PluginType.NONE, tags = {"UTILITY"})
 @NbBundle.Messages("SendToEmailClientPlugin=Send To Email Client")
 public class SendToEmailClientPlugin extends SimplePlugin {
 

@@ -107,10 +107,10 @@ public abstract class AbstractInclusionGraph {
     private final ArrayList<Attribute> attributesToCopy;
 
     private boolean updatePositionIfExisting;
-    
+
     // Attribute used to store whether a vertexes position should be pinned and not auto arranged
     private final int pinnedAttr;
-    
+
     /**
      * Create a new inclusion graph.
      *
@@ -156,18 +156,18 @@ public abstract class AbstractInclusionGraph {
         int pinnedCount = 0;
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
-            if (isVertexIncluded(vxId)) { 
-                incCount++; 
+            if (isVertexIncluded(vxId)) {
+                incCount++;
             }
-            if (!wg.getBooleanValue(pinnedAttr, vxId)) { 
-                pinnedCount++; 
+            if (!wg.getBooleanValue(pinnedAttr, vxId)) {
+                pinnedCount++;
             }
         }
 
         // If every vertex is a candidate to be moved we can just return the
         // current graph.
-        inclusionGraphIsOriginalGraph =
-                (incCount == vxCount || incCount == 0) && (pinnedCount == 0);
+        inclusionGraphIsOriginalGraph
+                = (incCount == vxCount || incCount == 0) && (pinnedCount == 0);
         if (inclusionGraphIsOriginalGraph) {
             // All vertices are (implicitly or explicitly) selected.
             // Pass the graph straight through.
@@ -186,7 +186,7 @@ public abstract class AbstractInclusionGraph {
         final int lradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(wg);
 
         // Are the x2, y2, z2 attributes set
-        final boolean xyz2AreSet =  x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
+        final boolean xyz2AreSet = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
 
         // Create the inclusion graph.
         // We need to create some essential attributes, plus whatever other

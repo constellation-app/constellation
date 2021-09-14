@@ -421,8 +421,8 @@ public abstract class InfomapBase {
     }
 
     /**
-     * Like mergeAndConsolidateRepeatedly but let it build up the tree for each new level of aggregation. It doesn't
-     * create new Infomap instances.
+     * Like mergeAndConsolidateRepeatedly but let it build up the tree for each
+     * new level of aggregation. It doesn't create new Infomap instances.
      */
     private int findSuperModulesIterativelyFast(final PartitionQueue partitionQueue) {
         final boolean verbose = subLevel == 0;
@@ -903,10 +903,13 @@ public abstract class InfomapBase {
     }
 
     /**
-     * Coarse-tune: 1. Partition each cluster to find optimal modules in each module, i.e. sub modules. 2. Move the
-     * leaf-nodes into the sub-module structure. 3. Consolidate the sub-modules. 3a.	Consolidate the sub-modules under
-     * their modules in the tree. 3b.	Store their module index and delete the top module level. 4. Move the sub-modules
-     * into the former module structure. 5. Optimize by trying to move and merge sub-modules. 6. Consolidate the result.
+     * Coarse-tune: 1. Partition each cluster to find optimal modules in each
+     * module, i.e. sub modules. 2. Move the leaf-nodes into the sub-module
+     * structure. 3. Consolidate the sub-modules. 3a.	Consolidate the
+     * sub-modules under their modules in the tree. 3b.	Store their module index
+     * and delete the top module level. 4. Move the sub-modules into the former
+     * module structure. 5. Optimize by trying to move and merge sub-modules. 6.
+     * Consolidate the result.
      */
     private void coarseTune(final int recursiveCount) {
         if (DEBUG) {
@@ -955,9 +958,10 @@ public abstract class InfomapBase {
     }
 
     /**
-     * For each module, create a new infomap instance and clone the interior structure of the module as the new network
-     * to partition. Collect the results by populating the index member of each leaf node with the sub-module structure
-     * found by partitioning each module.
+     * For each module, create a new infomap instance and clone the interior
+     * structure of the module as the new network to partition. Collect the
+     * results by populating the index member of each leaf node with the
+     * sub-module structure found by partitioning each module.
      */
     private void partitionEachModule(final int recursiveCount, final boolean fast) {
         int moduleIndexOffset = 0;
@@ -1191,7 +1195,8 @@ public abstract class InfomapBase {
     }
 
     /**
-     * Return an int[] such that int[i] is the cluster number of the vertex at position i.
+     * Return an int[] such that int[i] is the cluster number of the vertex at
+     * position i.
      *
      * @return the cluster vector.
      */
@@ -1350,20 +1355,26 @@ public abstract class InfomapBase {
     }
 
     /**
-     * Take the non-empty dynamic modules from the optimization of the active network and create module nodes to insert
-     * above the active network in the tree. Also aggregate the links from the active network to inter-module links in
-     * the new modular network.
+     * Take the non-empty dynamic modules from the optimization of the active
+     * network and create module nodes to insert above the active network in the
+     * tree. Also aggregate the links from the active network to inter-module
+     * links in the new modular network.
      *
-     * @param replaceExistingStructure If true, it doesn't add any depth to the tree but replacing either the existing
-     * modular parent structure (if <code>asSubModules</code> is true) or the active network itself if it's not the leaf
-     * level, in which case it will add a level of depth to the tree anyway.
+     * @param replaceExistingStructure If true, it doesn't add any depth to the
+     * tree but replacing either the existing modular parent structure (if
+     * <code>asSubModules</code> is true) or the active network itself if it's
+     * not the leaf level, in which case it will add a level of depth to the
+     * tree anyway.
      *
-     * @param asSubModules Set to true to consolidate the dynamic modules as submodules under existing modules, and
-     * store existing parent structure on the index member of the submodules. Presupposes that the active network
-     * already have a modular parent structure, and that the dynamic structure that will be consolidated actually
-     * contains nothing but strict sub-structures of the existing modules, i.e. that the index property of two nodes
-     * with different parent must be different. Presumably the sub-module structure initiated on the active network is
-     * found by partitioning each existing module.
+     * @param asSubModules Set to true to consolidate the dynamic modules as
+     * submodules under existing modules, and store existing parent structure on
+     * the index member of the submodules. Presupposes that the active network
+     * already have a modular parent structure, and that the dynamic structure
+     * that will be consolidated actually contains nothing but strict
+     * sub-structures of the existing modules, i.e. that the index property of
+     * two nodes with different parent must be different. Presumably the
+     * sub-module structure initiated on the active network is found by
+     * partitioning each existing module.
      *
      * @return The number of created modules
      */
@@ -1414,10 +1425,11 @@ public abstract class InfomapBase {
     protected abstract void moveNodesToPredefinedModules();
 
     /**
-     * Loop through each node and move it to the module that reduces the total codelength the most. Start over until
-     * converged.
+     * Loop through each node and move it to the module that reduces the total
+     * codelength the most. Start over until converged.
      *
-     * @return The number of effective optimization rounds, i.e. zero if no move was made.
+     * @return The number of effective optimization rounds, i.e. zero if no move
+     * was made.
      */
     protected abstract int optimizeModules();
 

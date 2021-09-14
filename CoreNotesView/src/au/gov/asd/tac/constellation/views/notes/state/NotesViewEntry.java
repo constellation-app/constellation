@@ -34,6 +34,8 @@ public class NotesViewEntry implements PluginReportListener {
     private Boolean graphAttribute;
     private List<Integer> nodesSelected;
     private List<Integer> transactionsSelected;
+    private List<String> tags = new ArrayList<>();
+    private boolean editMode;
 
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute) {
         this.dateTime = dateTime;
@@ -41,6 +43,7 @@ public class NotesViewEntry implements PluginReportListener {
         this.noteContent = noteContent;
         this.userCreated = userCreated;
         this.graphAttribute = graphAttribute;
+        this.editMode = false;
         if (userCreated) {
             this.nodesSelected = new ArrayList<>();
             this.transactionsSelected = new ArrayList<>();
@@ -70,6 +73,7 @@ public class NotesViewEntry implements PluginReportListener {
     public void setGraphAttribute(final Boolean graphAttribute) {
         this.graphAttribute = graphAttribute;
     }
+
     public List<Integer> getNodesSelected() {
         return nodesSelected;
     }
@@ -92,6 +96,22 @@ public class NotesViewEntry implements PluginReportListener {
 
     public void setNoteContent(final String noteContent) {
         this.noteContent = noteContent;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(final List<String> tags) {
+        this.tags = tags;
+    }
+
+    public boolean getEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
     }
 
     @Override

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -68,7 +69,7 @@ public class TableViewPreferencesIOUtilities {
      * of transaction mode.
      * @param table the tables content.
      */
-    public static void savePreferences(final GraphElementType tableType, final TableView<ObservableList<String>> table, 
+    public static void savePreferences(final GraphElementType tableType, final TableView<ObservableList<String>> table,
             final int pageSize) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
@@ -110,8 +111,8 @@ public class TableViewPreferencesIOUtilities {
         } else {
             // the table isn't being sorted by any column so don't save anything
             colSortNode.put("", "");
-        }        
-        JsonIO.saveJsonPreferences(TABLE_VIEW_PREF_DIR, mapper, rootNode, filePrefix);
+        }
+        JsonIO.saveJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), mapper, rootNode, Optional.of(filePrefix));
     }
 
     /**
@@ -119,16 +120,16 @@ public class TableViewPreferencesIOUtilities {
      *
      * @param tableType Indication of whether the table is displaying in vertex
      * of transaction mode.
-     * @param defaultPageSize The page size to load in if the preference being 
+     * @param defaultPageSize The page size to load in if the preference being
      * loaded in doesn't have one.
      *
      * @return A Tuple containing: ordered list of table columns (1) and second
      * Tuple (2) containing details of sort column (1) and sort order (2).
      */
-    public static ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> getPreferences(final GraphElementType tableType, 
+    public static ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> getPreferences(final GraphElementType tableType,
             final int defaultPageSize) {
         final String filePrefix = (tableType == GraphElementType.VERTEX ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX);
-        final JsonNode root = JsonIO.loadJsonPreferences(TABLE_VIEW_PREF_DIR, filePrefix);
+        final JsonNode root = JsonIO.loadJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), Optional.of(filePrefix));
         final List<String> colOrder = new ArrayList<>();
         String sortColumn = "";
         TableColumn.SortType sortType = TableColumn.SortType.ASCENDING;
@@ -147,10 +148,11 @@ public class TableViewPreferencesIOUtilities {
 
                 // Extract sort order details
                 sortColumn = colSortNode.fieldNames().next();
-                if (colSortNode.get(sortColumn).asText().equals("DESCENDING")) {
+                if (TableColumn.SortType.DESCENDING.name()
+                        .equals(colSortNode.get(sortColumn).asText())) {
                     sortType = TableColumn.SortType.DESCENDING;
                 }
-                
+
                 // Extract page size details
                 if (pageSizeNode == null) {
                     pageSize = defaultPageSize;

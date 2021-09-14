@@ -191,12 +191,12 @@ public class ConfigurationPane extends AnchorPane {
      * @return A List&lt;ImportDefinition&gt; where each list element
      * corresponds to a RunPane tab.
      */
-    public List<ImportDefinition> createDefinitions() {
+    public List<ImportDefinition> createDefinitions(final boolean isFilesIncludeHeadersEnabled) {
         List<ImportDefinition> definitions = new ArrayList<>(tabPane.getTabs().size());
 
         for (Tab tab : tabPane.getTabs()) {
             RunPane runPane = (RunPane) tab.getContent();
-            definitions.add(runPane.createDefinition());
+            definitions.add(runPane.createDefinition(isFilesIncludeHeadersEnabled ? 1 : 0));
         }
 
         return Collections.unmodifiableList(definitions);
@@ -253,5 +253,9 @@ public class ConfigurationPane extends AnchorPane {
                 runPane.update(id);
             }
         });
+    }
+
+    public void clearFilters() {
+        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> runPane.clearFilters());
     }
 }

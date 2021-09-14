@@ -63,7 +63,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     /**
      * A thread pool to create parameters in.
      */
-    public static final ExecutorService PARAM_CREATOR = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private static final ExecutorService PARAM_CREATOR = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     private static final Label DUMMY_LABEL = new Label("Waiting...");
     private static final String DAV_CREATOR_THREAD_NAME = "DAV Pane Creator";
@@ -141,7 +141,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
         ((HBox) getGraphic()).getChildren().add(pi);
 
         // Create the plugin parameters in a background thread.
-        PARAM_CREATOR.execute(() -> {
+        getParamCreator().execute(() -> {
             // In case two overlapping loads are happening at the same time...
             synchronized (this) {
                 Thread.currentThread().setName(DAV_CREATOR_THREAD_NAME);
@@ -351,5 +351,16 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     @Override
     public void hierarchicalUpdate() {
         top.hierarchicalUpdate();
+    }
+
+    /**
+     * Access to the parameter creator executor service. Primarily used for
+     * testing purposes.
+     *
+     * @return the static executor service that should be used when creating
+     * parameters
+     */
+    public ExecutorService getParamCreator() {
+        return PARAM_CREATOR;
     }
 }

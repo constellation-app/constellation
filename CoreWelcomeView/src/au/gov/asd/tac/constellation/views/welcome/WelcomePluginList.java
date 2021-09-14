@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.views.welcome.plugins.AddModeWelcomePlugin;
+import au.gov.asd.tac.constellation.views.welcome.plugins.DataAccessViewWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.DelimitedFileWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.GettingStartedWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.JDBCImportWelcomePlugin;
@@ -31,52 +32,50 @@ import java.util.List;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
-
 /**
  * Creates 2 lists of the plugins to be added to the welcome page
  *
  * @author Delphinus8821
  */
-
 @ServiceProvider(service = WelcomePageLayoutProvider.class, position = 1000)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("WelcomePluginList=Welcome Plugin List")
 
 public class WelcomePluginList extends WelcomePageLayoutProvider {
-    
-     /**
+
+    /**
      * Gets the plugins for the top part of the welcome page
-     * 
+     *
      * @return a list of plugins
      */
     @Override
-    public List<WelcomePluginInterface> getTopPlugins(){
+    public List<WelcomePluginInterface> getTopPlugins() {
         final List<WelcomePluginInterface> topPlugins = new ArrayList<>();
         topPlugins.add(new AddModeWelcomePlugin());
         topPlugins.add(new SelectionModeWelcomePlugin());
         topPlugins.add(new SphereGraphWelcomePlugin());
         topPlugins.add(new OpenGraphWelcomePlugin());
+        topPlugins.add(new DataAccessViewWelcomePlugin());
         topPlugins.add(new DelimitedFileWelcomePlugin());
         topPlugins.add(new JDBCImportWelcomePlugin());
-        
+
         return topPlugins;
     }
-  
-    
+
     /**
      * Gets the plugins for the side of the welcome page
-     * 
+     *
      * @return a list of plugins
      */
     @Override
-    public List<WelcomePluginInterface> getSidePlugins(){
+    public List<WelcomePluginInterface> getSidePlugins() {
         final List<WelcomePluginInterface> sidePlugins = new ArrayList<>();
         sidePlugins.add(new GettingStartedWelcomePlugin());
         sidePlugins.add(new WhatsNewWelcomePlugin());
         sidePlugins.add(new ProvideFeedbackWelcomePlugin());
         sidePlugins.add(new JoinCommWelcomePlugin());
-                
+
         return sidePlugins;
     }
-    
+
 }

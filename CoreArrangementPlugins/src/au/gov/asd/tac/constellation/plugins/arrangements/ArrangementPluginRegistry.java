@@ -23,8 +23,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.gather.GatherNodesInGra
 import au.gov.asd.tac.constellation.plugins.arrangements.gather.GatherNodesPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridComponentsPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridGeneralPlugin;
-import au.gov.asd.tac.constellation.plugins.arrangements.group.ArrangeByGroupPlugin;
-import au.gov.asd.tac.constellation.plugins.arrangements.group.ArrangeByLayerPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.group.ArrangeByNodeAttributePlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.hde.HighDimensionEmbeddingPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.ArrangeInHierarchyPlugin;
@@ -66,10 +64,8 @@ public class ArrangementPluginRegistry {
     public static final String GATHER_NODES_IN_GRAPH = GatherNodesInGraphPlugin.class.getName();
     public static final String GRID_GENERAL = ArrangeInGridGeneralPlugin.class.getName();
     public static final String GRID_COMPOSITE = ArrangeInGridComponentsPlugin.class.getName();
-    public static final String GROUP = ArrangeByGroupPlugin.class.getName();
     public static final String HIERARCHICAL = ArrangeInHierarchyPlugin.class.getName();
     public static final String HIGH_DIMENSION_EMBEDDING = HighDimensionEmbeddingPlugin.class.getName();
-    public static final String LAYER = ArrangeByLayerPlugin.class.getName();
     public static final String MDS = ArrangeInMDSPlugin.class.getName();
     public static final String PENDANTS = PendantsArranger.class.getName();
     public static final String RANDOM = RandomArrangementPlugin.class.getName();

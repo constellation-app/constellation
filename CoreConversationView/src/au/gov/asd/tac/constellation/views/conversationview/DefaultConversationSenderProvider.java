@@ -51,7 +51,7 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
     public void updateMessageSenders(GraphReadMethods graph, List<ConversationMessage> messages, List<String> senderAttributes) {
         assert !SwingUtilities.isEventDispatchThread();
 
-        if(graph == null || messages.isEmpty()){
+        if (graph == null || messages.isEmpty()) {
             return; //Nothing to do
         }
         try {

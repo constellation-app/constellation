@@ -7,10 +7,10 @@
     </head>
     <body>
         <h1>Add and Selection Modes</h1>
-        
+
         <h2>Add Mode</h2>
         <p>
-            Select the <img src="resources/add.png" alt="Add Mode Icon"> icon to switch to add mode. This mode allows the user to 
+            Select the <img src="resources/add.png" alt="Add Mode Icon"> icon to switch to add mode. This mode allows the user to
             manually create nodes and transactions.
         </p>
         <table border="1">
@@ -28,8 +28,8 @@
                 <td>
                     <ol>
                         <li>Left-click on a node</li>
-                        <li>Left-click on another node (or same node for a loop)</li>                        
-                    </ol>               
+                        <li>Left-click on another node (or same node for a loop)</li>
+                    </ol>
                 </td>
             </tr>
             <tr>
@@ -38,7 +38,7 @@
                     <ol>
                         <li>Left-click on a node</li>
                         <li>
-                            Ctrl-left-click on another node (or same node for a loop). A second transaction will automatically be 
+                            Ctrl-left-click on another node (or same node for a loop). A second transaction will automatically be
                             created starting from that node.
                         </li>
                         <li>Repeat step 2 until final transaction.</li>
@@ -52,7 +52,7 @@
                     <ol>
                         <li>Left-click on a node</li>
                         <li>
-                            Shift-left-click on another node (or same node for a loop). A second transaction will automatically be 
+                            Shift-left-click on another node (or same node for a loop). A second transaction will automatically be
                             created starting from the original node.
                         </li>
                         <li>Repeat step 2 until final transaction.</li>
@@ -66,18 +66,18 @@
         </p>
         <p>
             When creating transactions, you can choose whether to generate directed or undirected transactions by selecting either
-            the <img src="resources/directed.png" alt="Directed Transactions Icon"> icon (for directed) or the   
-            <img src="resources/undirected.png" alt="Undirected Transactions Icon"> icon (for undirected). By default, directed will 
+            the <img src="resources/directed.png" alt="Directed Transactions Icon"> icon (for directed) or the
+            <img src="resources/undirected.png" alt="Undirected Transactions Icon"> icon (for undirected). By default, directed will
             be selected.
         </p>
-        
+
         <h2>Selection Mode</h2>
         <p>
-            Select the <img src="resources/select.png" alt="Selection Mode Icon"> icon to switch to selection mode. This mode allows 
+            Select the <img src="resources/select.png" alt="Selection Mode Icon"> icon to switch to selection mode. This mode allows
             the user to select elements in the graph and perform graphical operations such as zoom, pan, and rotate.
         </p>
         <p>
-            Navigating the graph in selection mode using the mouse is done as follows (In general the left button is for selecting, 
+            Navigating the graph in selection mode using the mouse is done as follows (In general the left button is for selecting,
             the middle button for rotating, and the right button for dragging and panning):
         </p>
         <table border="1">
@@ -108,15 +108,27 @@
             </tr>
             <tr>
                 <td>Left-drag</td>
-                <td>Select multiple nodes and/or transactions.</td>
+                <td>Select multiple nodes and/or transactions with a box selection.</td>
             </tr>
             <tr>
                 <td>Shift-left-drag</td>
-                <td>Select additional multiple nodes and/or transactions.</td>
+                <td>Select additional multiple nodes and/or transactions with a box selection.</td>
             </tr>
             <tr>
                 <td>Ctrl-left-drag</td>
-                <td>Toggle selection of multiple nodes and/or transactions.</td>
+                <td>Toggle selection of multiple nodes and/or transactions with a box selection.</td>
+            </tr>
+            <tr>
+                <td>Alt-left-drag</td>
+                <td>Select multiple nodes and/or transactions with a freeform selection.</td>
+            </tr>
+            <tr>
+                <td>Alt-shift-left-drag</td>
+                <td>Select additional multiple nodes and/or transactions with a freeform selection.</td>
+            </tr>
+            <tr>
+                <td>Alt-ctrl-left-drag</td>
+                <td>Toggle selection of multiple nodes and/or transactions with a freeform selection.</td>
             </tr>
             <tr>
                 <td>Middle-drag</td>

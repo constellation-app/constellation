@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -45,6 +46,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterVa
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.sql.Connection;
@@ -53,6 +56,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.application.Platform;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -154,6 +159,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 final boolean isPositional = attributeDefintionIsPositional(definition.getDefinitions(AttributeType.SOURCE_VERTEX), definition.getDefinitions(AttributeType.DESTINATION_VERTEX));
                 positionalAtrributesExist = (positionalAtrributesExist || isPositional);
             }
+            displaySummaryAlert(data.size(), connection.getConnectionName());
 
             // If at least one positional attribute has been received for either the src or destination vertex we will assume that the user is trying to import positions and won't auto arrange
             // the graph. This does mean some nodes could sit on top of each other if multiple nodes have the same coordinates.
@@ -168,6 +174,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                         .followedBy(ArrangementPluginRegistry.PENDANTS)
                         .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
+                        .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeNow(vlGraph.getInclusionGraph());
                 vlGraph.retrieveCoords();
             }
@@ -295,4 +302,31 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
             }
         });
     }
+
+    /**
+     * Build up an import summary dialog detailing successful and unsuccessful
+     * DB connection imports.
+     *
+     * @param importedRows is the number of rows of data imported
+     * @param connectionName the name of the connection
+     */
+    private void displaySummaryAlert(final int importedRows, final String connectionName) {
+        Platform.runLater(() -> {
+            final StringBuilder sbHeader = new StringBuilder();
+            final StringBuilder sbMessage = new StringBuilder();
+
+            if (importedRows > 0) {
+                // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
+                // issues for. If there were any files with issues use a warning dialog.
+                sbHeader.append(String.format("Imported %d rows of data from connection: %s", importedRows, connectionName));
+
+            } else {
+                // No rows were imported list all files that resulted in failures.
+                sbHeader.append("No data found to import");
+                sbMessage.append(String.format("The connection %s could not be parsed. no data was extracted:", connectionName));
+            }
+            NotificationDisplayer.getDefault().notify(sbHeader.toString(), UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
+        });
+    }
+
 }

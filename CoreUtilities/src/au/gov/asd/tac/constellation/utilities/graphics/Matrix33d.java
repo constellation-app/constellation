@@ -49,7 +49,6 @@ public final class Matrix33d {
     }
 
     public void getMatrixColumn(final Vector3d dst, final int column) {
-//        memcpy(dst, src+(3*column), sizeof(float)*3);
         final int col = column * 3;
         dst.a[0] = a[col];
         dst.a[1] = a[col + 1];
@@ -57,7 +56,6 @@ public final class Matrix33d {
     }
 
     public void setMatrixColumn(final Vector3d src, final int column) {
-//        memcpy(dst+(3*column), src, sizeof(float)*3);
         final int col = column * 3;
         a[col] = src.a[0];
         a[col + 1] = src.a[1];

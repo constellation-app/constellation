@@ -1,0 +1,12 @@
+[
+    {
+        "ColumnOrder": [
+            "ABC",
+            "DEF"
+        ],
+        "SortByColumn": {
+            "DEF": "ASCENDING"
+        },
+        "PageSize": 5
+    }
+]

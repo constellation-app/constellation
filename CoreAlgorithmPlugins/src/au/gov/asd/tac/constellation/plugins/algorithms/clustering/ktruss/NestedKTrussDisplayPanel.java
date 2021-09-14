@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.Color;
@@ -332,6 +334,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         // Override required for MouseInputListener, intentionally left blank
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"SELECT"})
     // Used to select the vertices contained in a component represented by a rectangle when the user clicks on that rectangle
     private static final class Select extends SimpleEditPlugin {
 

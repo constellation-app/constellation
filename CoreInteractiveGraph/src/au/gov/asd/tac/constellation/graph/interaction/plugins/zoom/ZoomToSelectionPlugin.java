@@ -39,8 +39,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 @Messages("ZoomToSelectionPlugin=Zoom to Selection")
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {"VIEW"})
 public final class ZoomToSelectionPlugin extends SimpleEditPlugin {
 
     @Override

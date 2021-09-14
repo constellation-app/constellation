@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -87,7 +88,7 @@ public class LineBatcher implements SceneBatcher {
     public LineBatcher() {
 
         // Create the batch
-        batch = new Batch(GL3.GL_LINES);
+        batch = new Batch(GL.GL_LINES);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         connectionInfoTarget = batch.newIntBuffer(CONNECTION_INFO_BUFFER_WIDTH, false);
     }
@@ -314,10 +315,10 @@ public class LineBatcher implements SceneBatcher {
             // Uniform variables
             gl.glUseProgram(lineShader);
             if (drawForHitTest) {
-                gl.glUniform1i(lineShaderLocDrawHitTest, GL3.GL_TRUE);
+                gl.glUniform1i(lineShaderLocDrawHitTest, GL.GL_TRUE);
                 gl.glUniform1f(lineShaderDirectionMotion, -1);
             } else {
-                gl.glUniform1i(lineShaderLocDrawHitTest, GL3.GL_FALSE);
+                gl.glUniform1i(lineShaderLocDrawHitTest, GL.GL_FALSE);
                 gl.glUniform1f(lineShaderDirectionMotion, motion);
             }
             gl.glUniformMatrix4fv(lineShaderMVMatrix, 1, false, mvMatrix.a, 0);
@@ -332,10 +333,10 @@ public class LineBatcher implements SceneBatcher {
 
             gl.glUseProgram(lineLineShader);
             if (drawForHitTest) {
-                gl.glUniform1i(lineLineShaderLocDrawHitTest, GL3.GL_TRUE);
+                gl.glUniform1i(lineLineShaderLocDrawHitTest, GL.GL_TRUE);
                 gl.glUniform1f(lineLineShaderDirectionMotion, -1);
             } else {
-                gl.glUniform1i(lineLineShaderLocDrawHitTest, GL3.GL_FALSE);
+                gl.glUniform1i(lineLineShaderLocDrawHitTest, GL.GL_FALSE);
                 gl.glUniform1f(lineLineShaderDirectionMotion, motion);
             }
             gl.glUniformMatrix4fv(lineLineShaderMVMatrix, 1, false, mvMatrix.a, 0);
