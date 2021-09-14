@@ -168,15 +168,10 @@ public final class DataAccessUserPreferences {
                         (params1, params2) -> {
                             // Don't need to worry about key clashes as they values
                             // were originally in a map guaranteeing uniquness
-                            return Stream.concat(
-                                    params1.entrySet().stream(),
-                                    params2.entrySet().stream()
-                            ).collect(
-                                    Collectors.toMap(
-                                            Map.Entry::getKey,
-                                            Map.Entry::getValue
-                                    )
-                            );
+                            final Map<String, String> m = new HashMap<>();
+                            m.putAll(params1);
+                            m.putAll(params2);
+                            return m;
                         }
                 ));
     }

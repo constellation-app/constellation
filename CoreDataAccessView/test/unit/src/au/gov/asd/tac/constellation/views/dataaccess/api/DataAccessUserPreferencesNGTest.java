@@ -160,10 +160,10 @@ public class DataAccessUserPreferencesNGTest {
         pluginParams.put("plugin1.param1", "plugin1_param1_value");
         pluginParams.put("plugin2.param1", "plugin2_param1_value");
         pluginParams.put("badparam", "value");
+        pluginParams.put("plugin3.param1", null);
         pluginParams.put("plugin1.param2", "plugin1_param2_value");
         pluginParams.put("plugin2.param2", "plugin2_param2_value");
         pluginParams.put("plugin2.param3", "plugin2_param3_value");
-        pluginParams.put("plugin3.param1", null);
         
         preferences.setPluginParameters(pluginParams);
         
