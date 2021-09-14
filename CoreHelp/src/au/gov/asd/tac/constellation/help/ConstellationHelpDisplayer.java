@@ -112,25 +112,71 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
         final String sep = File.separator;
 
+        final File cssFile = new File(Generator.baseDirectory + sep + "constellation/bootstrap/assets/css/app.css");
+        final URL cssURL = cssFile.toURI().toURL();
+        final String css = String.format("<link href=\"\\%s\" rel='stylesheet'></link>", cssURL.toString());
+
+        final File noScriptCss = new File(Generator.baseDirectory + sep + "constellation/bootstrap/assets/css/noscript.css");
+        final URL noScriptURL = noScriptCss.toURI().toURL();
+        final String noScript = String.format("<link href=\"\\%s\" rel='stylesheet'></link>", noScriptURL.toString());
+
         final File bootstrapCSS = new File(Generator.baseDirectory + sep + "constellation/bootstrap/css/bootstrap.css");
         final URL bootstrapCSSURL = bootstrapCSS.toURI().toURL();
-        final String css = String.format("<link href=\"\\%s\" rel='stylesheet'></link>", bootstrapCSSURL.toString());
+        final String cssBootstrap = String.format("<link href=\"\\%s\" rel='stylesheet'></link>", bootstrapCSSURL.toString());
+
+        final File jqueryFile = new File(Generator.baseDirectory + sep + "constellation/bootstrap/assets/js/jquery.min.js");
+        final URL jqueryURL = jqueryFile.toURI().toURL();
+        final String jquery = String.format("<script src=\"\\%s\" ></script>", jqueryURL.toString());
+
+        final File jqueryDropotronFile = new File(Generator.baseDirectory + sep + "constellation/bootstrap/assets/js/jquery.dropotron.min.js");
+        final URL jqueryDropotronURL = jqueryDropotronFile.toURI().toURL();
+        final String dropotron = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", jqueryDropotronURL.toString());
+
+        final File jqueryScrollyFile = new File(Generator.baseDirectory + sep + "constellation/bootstrap/assets/js/jquery.scrolly.min.js");
+        final URL jqueryScrollyURL = jqueryScrollyFile.toURI().toURL();
+        final String scrolly = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", jqueryScrollyURL.toString());
+
+        final File jqueryScrollexFile = new File(Generator.baseDirectory + sep + "constellation/bootstrap/assets/js/jquery.scrollex.min.js");
+        final URL jqueryScrollexURL = jqueryScrollexFile.toURI().toURL();
+        final String scrollex = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", jqueryScrollexURL.toString());
+
+        final File browserFile = new File(Generator.baseDirectory + sep + "constellation/bootstrap/assets/js/browser.min.js");
+        final URL browserURL = browserFile.toURI().toURL();
+        final String browser = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", browserURL.toString());
+
+        final File breakpointsFile = new File(Generator.baseDirectory + sep + "constellation/bootstrap/assets/js/breakpoints.min.js");
+        final URL breakpointsURL = breakpointsFile.toURI().toURL();
+        final String breakpoints = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", breakpointsURL.toString());
+
+        final File appFile = new File(Generator.baseDirectory + sep + "constellation/bootstrap/assets/js/app.js");
+        final URL appURL = appFile.toURI().toURL();
+        final String appJS = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", appURL.toString());
 
         final File bootstrapJS = new File(Generator.baseDirectory + sep + "constellation/bootstrap/js/bootstrap.js");
         final URL bootstrapJSURL = bootstrapJS.toURI().toURL();
         final String boostrapjs = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", bootstrapJSURL);
 
-        final String jquery = "<script src=\"https://code.jquery.com/jquery-3.4.1.slim.min.js\" integrity=\"sha384-J6qa4849blE"
-                + "2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n\" crossorigin=\"anonymous\"></script>";
-        final String popper = "<script src=\"https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js\" integrity=\"sha384"
-                + "-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo\" crossorigin=\"anonymous\"></script>";
 
         // Add items to StringBuilder
         html.append(css);
         html.append("\n");
+        html.append(noScript);
+        html.append("\n");
+        html.append(cssBootstrap);
+        html.append("\n");
         html.append(jquery);
         html.append("\n");
-        html.append(popper);
+        html.append(dropotron);
+        html.append("\n");
+        html.append(scrolly);
+        html.append("\n");
+        html.append(scrollex);
+        html.append("\n");
+        html.append(browser);
+        html.append("\n");
+        html.append(breakpoints);
+        html.append("\n");
+        html.append(appJS);
         html.append("\n");
         html.append(boostrapjs);
         html.append("\n");
@@ -175,7 +221,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 final boolean isOnline = prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP);
 
                 final String url;
-                if (isOnline) {
+                if (!isOnline) {
                     final File file = new File(Generator.baseDirectory + sep + helpLink);
                     final URL fileUrl = file.toURI().toURL();
                     currentPort = HelpWebServer.start();

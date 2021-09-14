@@ -50,7 +50,6 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
         final HelpOptionsPanel helpOptionsPanel = getPanel();
 
         helpOptionsPanel.setOnlineHelpOption(prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP));
-
     }
 
     @Override
