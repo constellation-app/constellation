@@ -31,7 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -200,7 +202,7 @@ public class ActiveTableReference {
      * @param updateState the manner in which the state will be updated with
      *     the column attributes
      */
-    public void updateVisibleColumns(final Graph graph,
+    public Future<?> updateVisibleColumns(final Graph graph,
                                      final TableViewState state,
                                      final List<Tuple<String, Attribute>> columnAttributes,
                                      final UpdateMethod updateState) {
@@ -227,10 +229,11 @@ public class ActiveTableReference {
             }
 
             newState.setColumnAttributes(newColumnAttributes);
-            PluginExecution.withPlugin(
+            return PluginExecution.withPlugin(
                     new UpdateStatePlugin(newState)
             ).executeLater(graph);
         }
+        return CompletableFuture.completedFuture(null);
     }
     
     /**

@@ -30,6 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -47,6 +51,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import org.apache.commons.collections4.CollectionUtils;
+import org.testfx.util.WaitForAsyncUtils;
 
 /**
  * Creates a preferences menu that allows users to load, save and set different
@@ -106,19 +111,6 @@ public class PreferencesMenu {
         loadPreferencesMenu = createPreferencesMenu(LOAD_PREFERENCES, e -> {
             if (GraphManager.getDefault().getActiveGraph() != null) {
                 loadPreferences();
-                
-                // Load preferences starts work on JavaFX thread. We cannot update
-                // the pagination until that work is complete.
-                final CountDownLatch latch = new CountDownLatch(1);
-                Platform.runLater(latch::countDown);
-                
-                try {
-                    latch.await();
-                } catch (final InterruptedException ex) {
-                    LOGGER.warning("Thread interrupted whilst waiting for JavaFX "
-                            + "thread work to complete.");
-                    Thread.currentThread().interrupt();
-                }
                 
                 tablePane.getActiveTableReference().updatePagination(
                         tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
@@ -345,12 +337,19 @@ public class PreferencesMenu {
                         tablePrefs.getSortDirection()
                 );
                 
-                // Update the visibile columns
-                getActiveTableReference().updateVisibleColumns(getTableViewTopComponent().getCurrentGraph(),
-                        getTableViewTopComponent().getCurrentState(),
-                        orderedColumns,
-                        UpdateMethod.REPLACE
-                );
+                try {
+                    // Update the visibile columns and wait for the state plugin to complete its update
+                    getActiveTableReference().updateVisibleColumns(getTableViewTopComponent().getCurrentGraph(),
+                            getTableViewTopComponent().getCurrentState(),
+                            orderedColumns,
+                            UpdateMethod.REPLACE
+                    ).get(1000, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException ex) {
+                    LOGGER.log(Level.WARNING, "Update state plugin was interrupted");
+                    Thread.currentThread().interrupt();
+                } catch (TimeoutException | ExecutionException ex) {
+                    LOGGER.log(Level.WARNING, "Update state plugin failed to complete within the alloted time", ex);
+                }
                 
                 // Update the page size menu selection and page size preferences
                 for (final Toggle t : getPageSizeToggle().getToggles()) {

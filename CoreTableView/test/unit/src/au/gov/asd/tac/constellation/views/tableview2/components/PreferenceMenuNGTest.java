@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
@@ -283,6 +284,13 @@ public class PreferenceMenuNGTest {
             loadedTablePreferences.setColumnOrder(List.of("Column1", "Column2", "Column4"));
             loadedTablePreferences.setSortByColumn(ImmutablePair.of("Column2", TableColumn.SortType.DESCENDING));
             loadedTablePreferences.setMaxRowsPerPage(150);
+            
+            when(activeTableReference.updateVisibleColumns(
+                    any(Graph.class),
+                    any(TableViewState.class),
+                    any(List.class),
+                    eq(UpdateMethod.REPLACE)
+            )).thenReturn(CompletableFuture.completedFuture(null));
             
             // Create page size option menu items, with one matching the pages size
             // in the loaded prefs above
