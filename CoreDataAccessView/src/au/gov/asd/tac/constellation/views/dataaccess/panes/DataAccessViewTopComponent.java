@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
+import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIoUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import javafx.application.Platform;
 import org.openide.awt.ActionID;
@@ -126,7 +126,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         if (needsUpdate() && dataAccessViewPane != null) {
             dataAccessViewPane.update(graph);
             Platform.runLater(() -> {
-                ParameterIOUtilities.loadDataAccessState(dataAccessViewPane, graph);
+                ParameterIoUtilities.loadDataAccessState(dataAccessViewPane, graph);
             });
         }
     }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.dataaccess;
+package au.gov.asd.tac.constellation.views.dataaccess.io;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
@@ -22,6 +22,8 @@ import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessConcept;
+import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;

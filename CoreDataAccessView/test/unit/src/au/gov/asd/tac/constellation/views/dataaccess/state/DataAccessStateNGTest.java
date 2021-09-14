@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.dataaccess;
+package au.gov.asd.tac.constellation.views.dataaccess.state;
 
+import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

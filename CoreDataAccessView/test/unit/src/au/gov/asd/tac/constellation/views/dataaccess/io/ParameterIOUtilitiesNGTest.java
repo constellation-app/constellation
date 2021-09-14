@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessState;
+import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessUserPreferences;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
@@ -66,9 +66,9 @@ import org.testng.annotations.Test;
  *
  * @author mimosa2
  */
-public class ParameterIOUtilitiesNGTest {
+public class ParameterIoUtilitiesNGTest {
 
-    public ParameterIOUtilitiesNGTest() {
+    public ParameterIoUtilitiesNGTest() {
     }
 
     @BeforeClass
@@ -91,7 +91,7 @@ public class ParameterIOUtilitiesNGTest {
     }
 
     /**
-     * Test of saveDataAccessState method, of class ParameterIOUtilities.
+     * Test of saveDataAccessState method, of class ParameterIoUtilities.
      */
     @Test
     public void testsaveDataAccessState() throws Exception {
@@ -128,7 +128,7 @@ public class ParameterIOUtilitiesNGTest {
         final WritableGraph wGraph = mock(WritableGraph.class);
         when(graph.getWritableGraph("Update Data Access State", true)).thenReturn(wGraph);
 
-        ParameterIOUtilities.saveDataAccessState(tabPane, graph);
+        ParameterIoUtilities.saveDataAccessState(tabPane, graph);
 
         final DataAccessState expectedTab = new DataAccessState();
         expectedTab.newTab();
@@ -251,7 +251,7 @@ public class ParameterIOUtilitiesNGTest {
             jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("DataAccessView")), any(TypeReference.class)))
                     .thenReturn(preferences);
 
-            ParameterIOUtilities.loadParameters(dataAccessPane);
+            ParameterIoUtilities.loadParameters(dataAccessPane);
         }
         
         verify(dataAccessPane, times(2)).newTab();
@@ -329,7 +329,7 @@ public class ParameterIOUtilitiesNGTest {
                 final MockedConstruction<DataAccessUserPreferences> mockedPrefConstruction = 
                         Mockito.mockConstruction(DataAccessUserPreferences.class, mockInitializer);
             ) {
-            ParameterIOUtilities.saveParameters(tabPane);
+            ParameterIoUtilities.saveParameters(tabPane);
             
             if (isSaveExpected) {
                 jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(

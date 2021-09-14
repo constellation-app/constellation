@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessConcept;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessState;
+import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessUserPreferences;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
@@ -51,7 +51,7 @@ import org.openide.util.Exceptions;
  *
  * @author algol
  */
-public class ParameterIOUtilities {
+public class ParameterIoUtilities {
     private static final String DATA_ACCESS_DIR = "DataAccessView";
 
     /**
