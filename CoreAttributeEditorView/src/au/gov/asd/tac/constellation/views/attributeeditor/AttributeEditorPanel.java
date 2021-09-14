@@ -561,6 +561,7 @@ public class AttributeEditorPanel extends BorderPane {
             editButton.setDisable(true);
         } else {
             editButton.setOnMouseClicked(getEditValueHandler(attribute, editorFactory, values));
+            attributeValueNode.setOnMouseClicked(getEditValueHandler(attribute, editorFactory, values));
         }
 
         // If we don't do anything here, right-clicking on the Node will produce two context menus:
