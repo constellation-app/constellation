@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.GlobalParametersPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -154,33 +155,36 @@ public class DataAccessUserPreferencesNGTest {
     @Test
     public void toPerPluginParamMap() {
         final DataAccessUserPreferences preferences = new DataAccessUserPreferences();
-        preferences.setPluginParameters(
-                Map.of(
-                        "plugin1.param1", "plugin1_param1_value",
-                        "plugin2.param1", "plugin2_param1_value",
-                        "badparam", "value",
-                        "plugin1.param2", "plugin1_param2_value",
-                        "plugin2.param2", "plugin2_param2_value",
-                        "plugin2.param3", "plugin2_param3_value",
-                        "plugin3.param1", "plugin3_param1_value"
-                )
-        );
+        
+        final Map<String, String> pluginParams = new HashMap<>();
+        pluginParams.put("plugin1.param1", "plugin1_param1_value");
+        pluginParams.put("plugin2.param1", "plugin2_param1_value");
+        pluginParams.put("badparam", "value");
+        pluginParams.put("plugin1.param2", "plugin1_param2_value");
+        pluginParams.put("plugin2.param2", "plugin2_param2_value");
+        pluginParams.put("plugin2.param3", "plugin2_param3_value");
+        pluginParams.put("plugin3.param1", null);
+        
+        preferences.setPluginParameters(pluginParams);
         
         final Map<String, Map<String, String>> perPluginParamMap = preferences.toPerPluginParamMap();
         
+        final Map<String, String> plugin1Map = new HashMap<>();
+        plugin1Map.put("plugin1.param1", "plugin1_param1_value");
+        plugin1Map.put("plugin1.param2", "plugin1_param2_value");
+        
+        final Map<String, String> plugin2Map = new HashMap<>();
+        plugin2Map.put("plugin2.param1", "plugin2_param1_value");
+        plugin2Map.put("plugin2.param2", "plugin2_param2_value");
+        plugin2Map.put("plugin2.param3", "plugin2_param3_value");
+        
+        final Map<String, String> plugin3Map = new HashMap<>();
+        plugin3Map.put("plugin3.param1", null);
+        
         final Map<String, Map<String, String>> expectedPerPluginParamMap = Map.of(
-                "plugin1", Map.of(
-                        "plugin1.param1", "plugin1_param1_value",
-                        "plugin1.param2", "plugin1_param2_value"
-                ),
-                "plugin2", Map.of(
-                        "plugin2.param1", "plugin2_param1_value",
-                        "plugin2.param2", "plugin2_param2_value",
-                        "plugin2.param3", "plugin2_param3_value"
-                ),
-                "plugin3", Map.of(
-                        "plugin3.param1", "plugin3_param1_value"
-                )
+                "plugin1", plugin1Map,
+                "plugin2", plugin2Map,
+                "plugin3", plugin3Map
         
         );
         

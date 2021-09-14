@@ -154,7 +154,10 @@ public final class DataAccessUserPreferences {
                     if (index != -1) {
                         final String plugin = name.substring(0, index);
                         
-                        return new AbstractMap.SimpleImmutableEntry<>(plugin, Map.of(name, value));
+                        final Map<String, String> pluginParams = new HashMap<>();
+                        pluginParams.put(name, value);
+                        
+                        return new AbstractMap.SimpleImmutableEntry<>(plugin, pluginParams);
                     }
                     return null;
                 })
