@@ -36,7 +36,7 @@ import org.openide.util.NbBundle.Messages;
         iconBase = "au/gov/asd/tac/constellation/plugins/importexport/image/exportToImage.png",
         surviveFocusChange = true)
 @ActionReference(path = "Menu/File/Export", position = 0)
-@Messages("CTL_ExportToImage=To Image...")
+@Messages("CTL_ExportToImage=To Screenshot Image...")
 public final class ExportToImageAction implements ActionListener {
 
     private static final String EXT = ".png";
