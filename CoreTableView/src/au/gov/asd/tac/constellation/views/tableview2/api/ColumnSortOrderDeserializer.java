@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.tableview2.api;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
@@ -36,24 +37,8 @@ import org.apache.commons.lang3.tuple.Pair;
  * 
  * @author formalhaunt
  */
-public class ColumnSortOrderDeserializer extends StdDeserializer<Pair<String, TableColumn.SortType>> {
+public class ColumnSortOrderDeserializer extends JsonDeserializer<Pair<String, TableColumn.SortType>> {
 
-    /**
-     * Creates a new column sort order pair de-serializer.
-     */
-    public ColumnSortOrderDeserializer() {
-        this(null);
-    }
-    
-    /**
-     * Creates a new column sort order pair de-serializer.
-     *
-     * @param vc the type of classes this de-serializer can handle, can be null
-     */
-    public ColumnSortOrderDeserializer(final Class<?> vc) {
-        super(vc);
-    }
-    
     /**
      * De-serializes JSON into a column sort order pair. If the sort direction is
      * null or an empty string then ascending is chosen.

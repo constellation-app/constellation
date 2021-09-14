@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -37,7 +36,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -51,7 +49,6 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import org.apache.commons.collections4.CollectionUtils;
-import org.testfx.util.WaitForAsyncUtils;
 
 /**
  * Creates a preferences menu that allows users to load, save and set different
@@ -344,10 +341,10 @@ public class PreferencesMenu {
                             orderedColumns,
                             UpdateMethod.REPLACE
                     ).get(1000, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     LOGGER.log(Level.WARNING, "Update state plugin was interrupted");
                     Thread.currentThread().interrupt();
-                } catch (TimeoutException | ExecutionException ex) {
+                } catch (final TimeoutException | ExecutionException ex) {
                     LOGGER.log(Level.WARNING, "Update state plugin failed to complete within the alloted time", ex);
                 }
                 
