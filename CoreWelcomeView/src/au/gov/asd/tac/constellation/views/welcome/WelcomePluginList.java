@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.views.welcome.plugins.AddModeWelcomePlugin;
+import au.gov.asd.tac.constellation.views.welcome.plugins.DataAccessViewWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.DelimitedFileWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.GettingStartedWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.JDBCImportWelcomePlugin;
@@ -54,6 +55,7 @@ public class WelcomePluginList extends WelcomePageLayoutProvider {
         topPlugins.add(new SelectionModeWelcomePlugin());
         topPlugins.add(new SphereGraphWelcomePlugin());
         topPlugins.add(new OpenGraphWelcomePlugin());
+        topPlugins.add(new DataAccessViewWelcomePlugin());
         topPlugins.add(new DelimitedFileWelcomePlugin());
         topPlugins.add(new JDBCImportWelcomePlugin());
 
