@@ -7,11 +7,17 @@ find */src/ -path '*/docs/*' -name "*.md" |
    	 pandoc --template="onlinePandocTemplate.txt" -f commonmark -t html $x > "$x".html
     done
 
-# we do need to rename them to .html instead of .md.html for the next line to work 
+echo "renaming all .md.html to .html" 
+find */src -path '*/docs/*' -name "*.md.html" | 
+    while read x 
+    do 
+        mv "$x" "${x%.md.html}".html 
+    done 
+
 
 # move all html files to the docs folder 
-find */src/ -path '*/docs/*' -name "*html" | xargs cp --parents -t ./documentation
+find */src -path '*/docs/*' -name "*html" | xargs cp --parents -t website/documentation
 
 # move all of the png & jpegs to the docs folder structure 
-find */src/ -path '*/docs/*' -name "*.png" | xargs cp --parents -t ./documentation
-find */src/ -path '*/docs/*' -name "*.jpg" | xargs cp --parents -t ./documentation
+find */src -path '*/docs/*' -name "*.png" | xargs cp --parents -t website/documentation
+find */src -path '*/docs/*' -name "*.jpg" | xargs cp --parents -t website/documentation

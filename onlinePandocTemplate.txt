@@ -1,30 +1,41 @@
 <head>
-    <base href="/constellation/">
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet"></link>
-    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script> 
-    (function(){
-      ("#includedContent").load("toc.html"); 
-    });
+    <base href="/constellation-app.github.io/documentation/constellation/">
+
+     <!-- Scripts -->
+	<link rel="stylesheet" href="../../assets/css/app.css" />
+        <noscript><link rel="stylesheet" href="../../assets/css/noscript.css" /></noscript>
+	<link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css" />
+        <script src="../../assets/js/jquery.min.js"></script>
+        <script src="../../assets/js/jquery.dropotron.min.js"></script>
+        <script src="../../assets/js/jquery.scrolly.min.js"></script>
+        <script src="../../assets/js/jquery.scrollex.min.js"></script>
+        <script src="../../assets/js/browser.min.js"></script>
+        <script src="../../assets/js/breakpoints.min.js"></script>
+        <script src="../../assets/js/app.js"></script>
+	<script src="../../assets/bootstrap/js/bootstrap.js"></script>
+
+ <script> 
+        $$(function(){
+          $$("#includedContent").load("../../toc.html"); 
+        });
     </script> 
 
-$title$
-</head>
-<body>
-    <!-- Nav -->
+<!-- Nav -->
     <nav id="nav">
         <ul>
-            <li><a href="index.html">Home</a></li>
+            <li><a href="../../index.html">Home</a></li>
             <li><a href="#banner" class="scrolly">About</a></li>
             <li><a href="#features" class="scrolly">Features</a></li>
-            <li><a href="download.html" class="scrolly">Download</a></li>
-            <li><a href="blog.html" class="scrolly">Blog</a></li>
-            <li><a href="\documentation\CoreFunctionality\src\au\gov\asd\tac\constellation\functionality\docs\about-constellation.html" class="scrolly">Documentation</a><li>
+            <li><a href="../../download.html" class="scrolly">Download</a></li>
+            <li><a href="../../blog.html" class="scrolly">Blog</a></li>
+            <li><a href="CoreFunctionality\src\au\gov\asd\tac\constellation\functionality\docs\about-constellation.html" class="scrolly">Documentation</a></li>
             <li><a href="#contact" class="scrolly">Contact</a></li>
         </ul>
     </nav>
+
+</head>
+<body style="padding-top: 65px;">
+
     <div class="row">
        <div class="col-4 col-sm-3">
            <div id="includedContent"></div>
@@ -33,6 +44,7 @@ $title$
         $body$
         </div>
     </div>
+
 <!-- Footer -->
             <div id="footer">
                 <div class="container">
@@ -50,17 +62,8 @@ $title$
                                     <span>&nbsp;&nbsp;&nbsp;</span>
                                     <a href="https://github.com/constellation-app/constellation/blob/master/CONTRIBUTING.md#reporting-bugs" class="button">Report Issue</a>
                                 </p>
-                                <!--
-                                <ul class="icons">
-                                    <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-                                    <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-                                    <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-                                    <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-                                    <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-                                    <li><a href="#" class="icon brands fa-linkedin-in"><span class="label">Linkedin</span></a></li>
-                                </ul>
-                                -->
                             </section>
+
                             <!-- Copyright -->
                             <div class="copyright">
                                 <ul class="menu">
@@ -72,14 +75,7 @@ $title$
                 </div>
             </div>
         </div>
-        <!-- Scripts -->
-        <script src="assets/js/jquery.min.js"></script>
-        <script src="assets/js/jquery.dropotron.min.js"></script>
-        <script src="assets/js/jquery.scrolly.min.js"></script>
-        <script src="assets/js/jquery.scrollex.min.js"></script>
-        <script src="assets/js/browser.min.js"></script>
-        <script src="assets/js/breakpoints.min.js"></script>
-        <script src="assets/js/app.js"></script>
+
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139401597-2"></script>
         <script>
