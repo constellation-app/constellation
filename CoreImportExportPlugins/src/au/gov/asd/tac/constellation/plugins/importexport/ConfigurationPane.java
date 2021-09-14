@@ -256,8 +256,6 @@ public class ConfigurationPane extends AnchorPane {
     }
 
     public void clearFilters() {
-        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
-            runPane.clearFilters();
-        });
+        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> runPane.clearFilters());
     }
 }
