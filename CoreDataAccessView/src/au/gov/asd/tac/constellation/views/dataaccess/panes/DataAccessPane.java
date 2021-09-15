@@ -67,6 +67,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
@@ -85,6 +86,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -195,7 +197,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 .addListener((oldValue, newValue) -> update());
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
-        helpButton.paddingProperty().set(new Insets(0, 8, 0, 64));
+        helpButton.paddingProperty().set(new Insets(0, 8, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Data Access"));
         helpButton.setOnAction(event -> {
             new HelpCtx(DataAccessViewTopComponent.class.getName()).display();
@@ -427,23 +429,46 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         AnchorPane.setRightAnchor(vbox, 0.0);
         getChildren().add(vbox);
 
-        final HBox options = new HBox();
-        options.setSpacing(10.0);
-        options.getChildren().addAll(helpButton, addButton, favouriteButton);
+        final GridPane options = new GridPane();
+        options.setHgap(4);
+        options.setVgap(4);
+        final HBox helpAddFavHBox = new HBox(helpButton, addButton, favouriteButton);
+        helpAddFavHBox.setSpacing(4);
+        final HBox rabRegionExectueHBox = new HBox();
+        rabRegionExectueHBox.setSpacing(4);
 
         final QualityControlAutoButton rab = Lookup.getDefault().lookup(QualityControlAutoButton.class);
         if (rab != null) {
-            options.getChildren().add(rab);
+            rabRegionExectueHBox.getChildren().add(rab);
         }
 
         // add some padding between the Go button and the previous button to avoid accidental clicking
         final Region region = new Region();
         region.setMinSize(20, 0);
-        options.getChildren().add(region);
-        options.getChildren().add(executeButton);
+        rabRegionExectueHBox.getChildren().addAll(region, executeButton);
+        options.add(helpAddFavHBox, 0, 0);
+        options.add(rabRegionExectueHBox, 1, 0);
         AnchorPane.setTopAnchor(options, 5.0);
         AnchorPane.setRightAnchor(options, 5.0);
         getChildren().add(options);
+
+        widthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() <= 430) {
+                options.getChildren().remove(helpAddFavHBox);
+                options.getChildren().remove(rabRegionExectueHBox);
+                options.add(rabRegionExectueHBox, 0, 0);
+                options.add(helpAddFavHBox, 0, 1);
+                options.setHalignment(helpAddFavHBox, HPos.LEFT);
+                menuBar.setPadding(new Insets(4, 4, 20, 4));
+            } else {
+                options.getChildren().remove(helpAddFavHBox);
+                options.getChildren().remove(rabRegionExectueHBox);
+                options.add(helpAddFavHBox, 0, 0);
+                options.add(rabRegionExectueHBox, 1, 0);
+                options.setHalignment(helpAddFavHBox, HPos.CENTER);
+                menuBar.setPadding(new Insets(4));
+            }
+        });
     }
 
     /**
@@ -503,7 +528,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
                     // Now fetch the DataAccessPlugin instances.
                     final Map<String, DataAccessPlugin> pluginOverrides = new HashMap<>();
-                    Lookup.getDefault().lookupAll(DataAccessPlugin.class).stream().forEach(plugin -> {
+                    Lookup.getDefault().lookupAll(DataAccessPlugin.class
+                    ).stream().forEach(plugin -> {
                         if (!plugin.isEnabled()) {
                             // If plugin is disabled, ignore the plugin.
                             LOGGER.log(Level.INFO, "Disabled data access plugin {0} ({1})", new Object[]{plugin.getName(), plugin.getType()});
@@ -528,7 +554,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                                 LOGGER.log(Level.INFO, "Discovered data access plugin {0} ({1})", new Object[]{plugin.getName(), DataAccessPluginCoreType.FAVOURITES});
                             }
                         }
-                    });
+                    }
+                    );
 
                     // Remove any overridden plugins.
                     pluginOverrides.forEach((pluginName, overridingPlugin) -> {
@@ -1088,6 +1115,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 executeButton.setText(EXECUTE_CALCULATING);
                 executeButton.setStyle(CALCULATING_STYLE);
             });
+
         }
     }
 
