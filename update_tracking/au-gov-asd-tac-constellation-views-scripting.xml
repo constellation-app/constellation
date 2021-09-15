@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.views.scripting">
+    <module_version install_time="1621978575038" last="true" origin="installer" specification_version="2.0.20210421.090325">
+        <file crc="1499842179" name="config/Modules/au-gov-asd-tac-constellation-views-scripting.xml"/>
+        <file crc="1698814355" name="modules/au-gov-asd-tac-constellation-views-scripting.jar"/>
+        <file crc="1128879493" name="modules/ext/scripting_getting_started.txt"/>
+    </module_version>
+</module>

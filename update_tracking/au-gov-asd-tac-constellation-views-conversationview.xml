@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.views.conversationview">
+    <module_version install_time="1621978562120" last="true" origin="installer" specification_version="2.0.20210525.195640">
+        <file crc="1339601319" name="config/Modules/au-gov-asd-tac-constellation-views-conversationview.xml"/>
+        <file crc="2020038351" name="modules/au-gov-asd-tac-constellation-views-conversationview.jar"/>
+    </module_version>
+</module>

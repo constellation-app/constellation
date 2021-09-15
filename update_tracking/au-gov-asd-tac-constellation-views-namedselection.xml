@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.views.namedselection">
+    <module_version install_time="1621978565085" last="true" origin="installer" specification_version="2.0.20210525.195640">
+        <file crc="4038844704" name="config/Modules/au-gov-asd-tac-constellation-views-namedselection.xml"/>
+        <file crc="2490600915" name="modules/au-gov-asd-tac-constellation-views-namedselection.jar"/>
+    </module_version>
+</module>

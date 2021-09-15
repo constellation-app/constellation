@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.views.welcome">
+    <module_version install_time="1621978577040" last="true" origin="installer" specification_version="2.0.20210524.230253">
+        <file crc="2982253273" name="config/Modules/au-gov-asd-tac-constellation-views-welcome.xml"/>
+        <file crc="2847635641" name="modules/au-gov-asd-tac-constellation-views-welcome.jar"/>
+    </module_version>
+</module>

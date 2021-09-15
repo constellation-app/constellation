@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.graph.schema.visual">
+    <module_version install_time="1621978555418" last="true" origin="installer" specification_version="2.0.20210525.195640">
+        <file crc="508869798" name="config/Modules/au-gov-asd-tac-constellation-graph-schema-visual.xml"/>
+        <file crc="3263548209" name="modules/au-gov-asd-tac-constellation-graph-schema-visual.jar"/>
+    </module_version>
+</module>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.graph">
+    <module_version install_time="1621978551260" last="true" origin="installer" specification_version="2.0.20210525.205019">
+        <file crc="186360868" name="config/Modules/au-gov-asd-tac-constellation-graph.xml"/>
+        <file crc="2531920750" name="modules/au-gov-asd-tac-constellation-graph.jar"/>
+        <file crc="3621987802" name="modules/ext/icons/edge_square.png"/>
+        <file crc="1896252798" name="modules/ext/icons/flat_square.png"/>
+        <file crc="3813517449" name="modules/ext/icons/star.png"/>
+        <file crc="2030579598" name="modules/ext/icons/unknown.png"/>
+    </module_version>
+</module>

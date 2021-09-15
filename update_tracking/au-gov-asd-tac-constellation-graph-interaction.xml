@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.graph.interaction">
+    <module_version install_time="1621978569770" last="true" origin="installer" specification_version="2.0.20210525.195640">
+        <file crc="1310610728" name="config/Modules/au-gov-asd-tac-constellation-graph-interaction.xml"/>
+        <file crc="2081130109" name="modules/au-gov-asd-tac-constellation-graph-interaction.jar"/>
+    </module_version>
+</module>

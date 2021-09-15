@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.graph.node">
+    <module_version install_time="1621978554564" last="true" origin="installer" specification_version="2.0.20210510.122057">
+        <file crc="2862296112" name="config/Modules/au-gov-asd-tac-constellation-graph-node.xml"/>
+        <file crc="3737061830" name="modules/au-gov-asd-tac-constellation-graph-node.jar"/>
+    </module_version>
+</module>

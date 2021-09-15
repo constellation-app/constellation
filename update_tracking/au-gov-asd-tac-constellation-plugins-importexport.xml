@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.plugins.importexport">
+    <module_version install_time="1621978574164" last="true" origin="installer" specification_version="2.0.20210525.203814">
+        <file crc="769688814" name="config/Modules/au-gov-asd-tac-constellation-plugins-importexport.xml"/>
+        <file crc="116160138" name="modules/au-gov-asd-tac-constellation-plugins-importexport.jar"/>
+    </module_version>
+</module>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.views.mapview">
+    <module_version install_time="1621978581375" last="true" origin="installer" specification_version="2.0.20210525.195640">
+        <file crc="303111103" name="config/Modules/au-gov-asd-tac-constellation-views-mapview.xml"/>
+        <file crc="108189536" name="modules/au-gov-asd-tac-constellation-views-mapview.jar"/>
+        <file crc="2384941708" name="modules/ext/data/Lato-Bold-14.vlw"/>
+        <file crc="2934951377" name="modules/ext/data/Lato-Regular-11.vlw"/>
+        <file crc="2099247329" name="modules/ext/data/marker-shadow.png"/>
+        <file crc="1329146146" name="modules/ext/data/marker-template-icon.png"/>
+        <file crc="4087979116" name="modules/ext/data/unfolding-mini-icon.png"/>
+        <file crc="144220071" name="modules/ext/defaultMap.mbtiles"/>
+    </module_version>
+</module>

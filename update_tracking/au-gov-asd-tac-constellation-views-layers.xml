@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.views.layers">
+    <module_version install_time="1621978564491" last="true" origin="installer" specification_version="2.0.20210525.195640">
+        <file crc="2812180573" name="config/Modules/au-gov-asd-tac-constellation-views-layers.xml"/>
+        <file crc="3971974211" name="modules/au-gov-asd-tac-constellation-views-layers.jar"/>
+    </module_version>
+</module>

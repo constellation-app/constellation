@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.views.scatterplot">
+    <module_version install_time="1621978566858" last="true" origin="installer" specification_version="2.0.20210525.195640">
+        <file crc="421926752" name="config/Modules/au-gov-asd-tac-constellation-views-scatterplot.xml"/>
+        <file crc="3231240671" name="modules/au-gov-asd-tac-constellation-views-scatterplot.jar"/>
+    </module_version>
+</module>

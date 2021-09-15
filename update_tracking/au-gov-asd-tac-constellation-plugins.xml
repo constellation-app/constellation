@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.plugins">
+    <module_version install_time="1621978552456" last="true" origin="installer" specification_version="2.0.20210525.004212">
+        <file crc="1740376085" name="config/Modules/au-gov-asd-tac-constellation-plugins.xml"/>
+        <file crc="688587076" name="modules/au-gov-asd-tac-constellation-plugins.jar"/>
+    </module_version>
+</module>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.visual.opengl">
+    <module_version install_time="1621978568520" last="true" origin="installer" specification_version="2.0.20210518.052115">
+        <file crc="3517521894" name="config/Modules/au-gov-asd-tac-constellation-visual-opengl.xml"/>
+        <file crc="1733937175" name="modules/au-gov-asd-tac-constellation-visual-opengl.jar"/>
+    </module_version>
+</module>

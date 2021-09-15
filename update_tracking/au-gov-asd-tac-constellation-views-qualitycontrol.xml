@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.views.qualitycontrol">
+    <module_version install_time="1621978577665" last="true" origin="installer" specification_version="2.0.20210524.230253">
+        <file crc="368969658" name="config/Modules/au-gov-asd-tac-constellation-views-qualitycontrol.xml"/>
+        <file crc="391142182" name="modules/au-gov-asd-tac-constellation-views-qualitycontrol.jar"/>
+    </module_version>
+</module>

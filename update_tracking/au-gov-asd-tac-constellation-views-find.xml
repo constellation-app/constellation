@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.views.find">
+    <module_version install_time="1621978562935" last="true" origin="installer" specification_version="2.0.20210421.090325">
+        <file crc="772293810" name="config/Modules/au-gov-asd-tac-constellation-views-find.xml"/>
+        <file crc="1096198565" name="modules/au-gov-asd-tac-constellation-views-find.jar"/>
+    </module_version>
+</module>

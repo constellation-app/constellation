@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="au.gov.asd.tac.constellation.views.pluginreporter">
+    <module_version install_time="1621978566153" last="true" origin="installer" specification_version="2.0.20210524.230253">
+        <file crc="83884811" name="config/Modules/au-gov-asd-tac-constellation-views-pluginreporter.xml"/>
+        <file crc="2632476524" name="modules/au-gov-asd-tac-constellation-views-pluginreporter.jar"/>
+    </module_version>
+</module>
