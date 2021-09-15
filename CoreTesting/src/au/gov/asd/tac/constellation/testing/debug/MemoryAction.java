@@ -36,8 +36,8 @@ public final class MemoryAction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         final float freemem = (Runtime.getRuntime().freeMemory() / divideBy) / divideBy;
-        final float totalmem = (Runtime.getRuntime().totalMemory() / divideBy) / divideBy;;
-        final float maxmem = (Runtime.getRuntime().maxMemory() / divideBy) / divideBy;;
+        final float totalmem = (Runtime.getRuntime().totalMemory() / divideBy) / divideBy;
+        final float maxmem = (Runtime.getRuntime().maxMemory() / divideBy) / divideBy;
 
         final StringBuilder b = new StringBuilder();
         b.append(String.format("Free memory: %,6.2f %s %n", freemem, "MB"));
