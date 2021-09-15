@@ -72,6 +72,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.CheckComboBox;
 import org.netbeans.api.javahelp.Help;
 import org.openide.util.HelpCtx;
@@ -258,8 +259,6 @@ public final class ConversationBox extends StackPane {
             highlightRegions();
             refreshCountUI(false);
         });
-        foundLabel.setText(FOUND_TEXT + foundCount);
-        foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
         foundLabel.setPadding(new Insets(4, 8, 4, 8));
         searchVBox.getChildren().addAll(searchTextField, foundLabel);
 
@@ -278,7 +277,7 @@ public final class ConversationBox extends StackPane {
             foundCount = 0;
         }
 
-        foundLabel.setText(FOUND_TEXT + foundCount);
+        foundLabel.setText(StringUtils.isBlank(searchTextField.getText())? "" : FOUND_TEXT + foundCount);
         foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
     }
 
