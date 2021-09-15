@@ -66,9 +66,9 @@ import org.testng.annotations.Test;
  *
  * @author mimosa2
  */
-public class ParameterIoUtilitiesNGTest {
+public class DataAccessPreferencesIoProviderNGTest {
 
-    public ParameterIoUtilitiesNGTest() {
+    public DataAccessPreferencesIoProviderNGTest() {
     }
 
     @BeforeClass
@@ -91,7 +91,7 @@ public class ParameterIoUtilitiesNGTest {
     }
 
     /**
-     * Test of saveDataAccessState method, of class ParameterIoUtilities.
+     * Test of saveDataAccessState method, of class DataAccessPreferencesIoUtilities.
      */
     @Test
     public void testsaveDataAccessState() throws Exception {
@@ -128,7 +128,7 @@ public class ParameterIoUtilitiesNGTest {
         final WritableGraph wGraph = mock(WritableGraph.class);
         when(graph.getWritableGraph("Update Data Access State", true)).thenReturn(wGraph);
 
-        ParameterIoUtilities.saveDataAccessState(tabPane, graph);
+        DataAccessPreferencesIoProvider.saveDataAccessState(tabPane, graph);
 
         final DataAccessState expectedTab = new DataAccessState();
         expectedTab.newTab();
@@ -251,7 +251,7 @@ public class ParameterIoUtilitiesNGTest {
             jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("DataAccessView")), any(TypeReference.class)))
                     .thenReturn(preferences);
 
-            ParameterIoUtilities.loadParameters(dataAccessPane);
+            DataAccessPreferencesIoProvider.loadParameters(dataAccessPane);
         }
         
         verify(dataAccessPane, times(2)).newTab();
@@ -329,7 +329,7 @@ public class ParameterIoUtilitiesNGTest {
                 final MockedConstruction<DataAccessUserPreferences> mockedPrefConstruction = 
                         Mockito.mockConstruction(DataAccessUserPreferences.class, mockInitializer);
             ) {
-            ParameterIoUtilities.saveParameters(tabPane);
+            DataAccessPreferencesIoProvider.saveParameters(tabPane);
             
             if (isSaveExpected) {
                 jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(

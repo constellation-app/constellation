@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.create.NewDefaultSchemaGraphAction;
@@ -37,12 +38,12 @@ import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginType;
-import static au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginType.getTypeWithPosition;
-import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIoUtilities;
-import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType.getTypeWithPosition;
+import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoProvider;
+import au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessPreferenceUtils;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
@@ -126,7 +127,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     private static final String CONTINUE_STYLE = "-fx-background-color: rgb(255,180,0); -fx-padding: 2 5 2 5;";
     private static final String CALCULATING_STYLE = "-fx-background-color: rgb(0,100,255); -fx-padding: 2 5 2 5;";
 
-    private final Preferences dataAccessPrefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
+    private final Preferences dataAccessPrefs = NbPreferences.forModule(DataAccessPreferenceUtils.class);
 
     private DataAccessViewTopComponent topComponent;
     private TabPane dataAccessTabPane;
@@ -248,7 +249,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 setExecuteButtonToStop();
                 graphState.get(GraphManager.getDefault().getActiveGraph().getId()).queriesRunning = true;
 
-                final File outputDir = DataAccessPreferenceKeys.getDataAccessResultsDirEx();
+                final File outputDir = DataAccessPreferenceUtils.getDataAccessResultsDirEx();
                 if (outputDir != null && outputDir.isDirectory()) {
                     final String msg = String.format("Data access results will be written to %s", outputDir.getAbsolutePath());
                     StatusDisplayer.getDefault().setStatusText(msg);
@@ -266,7 +267,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 PluginExecution.withPlugin(new SimplePlugin("Data Access View: Save State") {
                     @Override
                     protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                        ParameterIoUtilities.saveDataAccessState(dataAccessTabPane, GraphManager.getDefault().getActiveGraph());
+                        DataAccessPreferencesIoProvider.saveDataAccessState(dataAccessTabPane, GraphManager.getDefault().getActiveGraph());
                     }
                 }).executeLater(null);
 
@@ -329,7 +330,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             } else {
                 // Do nothing
             }
-            if (DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled()) {
+            if (DataAccessPreferenceUtils.isDeselectPluginsOnExecuteEnabled()) {
                 deselectAllPlugins();
             }
         });
@@ -339,41 +340,41 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         final Menu optionsMenu = new Menu("Options");
         final MenuItem loadMenuItem = new MenuItem("Load...");
         loadMenuItem.setOnAction(event -> {
-            ParameterIoUtilities.loadParameters(this);
+            DataAccessPreferencesIoProvider.loadParameters(this);
         });
 
         final MenuItem saveMenuItem = new MenuItem("Save");
         saveMenuItem.setOnAction(event -> {
-            ParameterIoUtilities.saveParameters(dataAccessTabPane);
+            DataAccessPreferencesIoProvider.saveParameters(dataAccessTabPane);
         });
 
         final CheckMenuItem saveResultsItem = new CheckMenuItem("Save Results");
-        final File daDir = DataAccessPreferenceKeys.getDataAccessResultsDir();
+        final File daDir = DataAccessPreferenceUtils.getDataAccessResultsDir();
         saveResultsItem.setSelected(daDir != null);
         saveResultsItem.selectedProperty().addListener((ov, oldValue, newValue) -> {
             if (newValue) {
                 final DirectoryChooser dc = new DirectoryChooser();
                 dc.setTitle("Folder to save data access results to");
-                final File prev = DataAccessPreferenceKeys.getPreviousDataAccessResultsDir();
+                final File prev = DataAccessPreferenceUtils.getPreviousDataAccessResultsDir();
                 if (prev != null && prev.isDirectory()) {
                     dc.setInitialDirectory(prev);
                 }
 
                 final File dir = dc.showDialog(getScene().getWindow());
                 if (dir != null) {
-                    DataAccessPreferenceKeys.setDataAccessResultsDir(dir);
+                    DataAccessPreferenceUtils.setDataAccessResultsDir(dir);
                 } else {
                     saveResultsItem.setSelected(false);
                 }
             } else {
-                DataAccessPreferenceKeys.setDataAccessResultsDir(null);
+                DataAccessPreferenceUtils.setDataAccessResultsDir(null);
             }
         });
 
         final CheckMenuItem deselectPluginsOnExecution = new CheckMenuItem("Deselect Plugins On Go");
-        deselectPluginsOnExecution.setSelected(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled());
+        deselectPluginsOnExecution.setSelected(DataAccessPreferenceUtils.isDeselectPluginsOnExecuteEnabled());
         deselectPluginsOnExecution.setOnAction(event -> {
-            DataAccessPreferenceKeys.setDeselectPluginsOnExecute(deselectPluginsOnExecution.isSelected());
+            DataAccessPreferenceUtils.setDeselectPluginsOnExecute(deselectPluginsOnExecution.isSelected());
         });
 
         searchPluginTextField = new TextField();
@@ -722,7 +723,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      * plug-ins if there is a graph open and plug-ins are selected for running
      *
      */
-    protected void update() {
+    public void update() {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph == null) {
             update((String) null);
@@ -737,7 +738,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      * @param graph the DataAccessPane will be updated to reflect the state of
      * this graph.
      */
-    protected void update(final Graph graph) {
+    public void update(final Graph graph) {
         if (getCurrentTab() != null) {
             final List<DataSourceTitledPane> panes = getQueryPhasePane(getCurrentTab()).getDataAccessPanes();
             for (DataSourceTitledPane pane : panes) {

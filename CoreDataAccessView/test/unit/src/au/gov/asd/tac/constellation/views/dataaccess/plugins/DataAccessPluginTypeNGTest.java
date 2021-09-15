@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.dataaccess;
+package au.gov.asd.tac.constellation.views.dataaccess.plugins;
 
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import java.util.List;
 import java.util.Map;
 import static org.testng.Assert.assertTrue;

@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.dataaccess.state;
+package au.gov.asd.tac.constellation.views.dataaccess.utils;
 
-import static au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys.DESELECT_PLUGINS_ON_EXECUTE_PREF;
-import static au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys.PREVIOUS_DATA_DIR_PREF;
-import static au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys.SAVE_DATA_DIR_PREF;
+import au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessPreferenceUtils;
+import static au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessPreferenceUtils.DESELECT_PLUGINS_ON_EXECUTE_PREF;
+import static au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessPreferenceUtils.PREVIOUS_DATA_DIR_PREF;
+import static au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessPreferenceUtils.SAVE_DATA_DIR_PREF;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -40,11 +41,11 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class DataAccessPreferenceKeysNGTest {
+public class DataAccessPreferenceUtilsNGTest {
 
     Preferences prefs;
 
-    public DataAccessPreferenceKeysNGTest() {
+    public DataAccessPreferenceUtilsNGTest() {
     }
 
     @BeforeClass
@@ -76,10 +77,10 @@ public class DataAccessPreferenceKeysNGTest {
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
+            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
 
             final File expResult = null;
-            final File result = DataAccessPreferenceKeys.getDir(key);
+            final File result = DataAccessPreferenceUtils.getDir(key);
 
             assertEquals(result, expResult);
         }
@@ -98,10 +99,10 @@ public class DataAccessPreferenceKeysNGTest {
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
+            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
 
             final File expResult = new File("preferenceValue");
-            final File result = DataAccessPreferenceKeys.getDir(key);
+            final File result = DataAccessPreferenceUtils.getDir(key);
             final Path expectedPath = Paths.get(expResult.getAbsolutePath());
             final Path resultantPath = Paths.get(result.getAbsolutePath());
 
@@ -123,10 +124,10 @@ public class DataAccessPreferenceKeysNGTest {
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
+            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
 
             final File expResult = null;
-            final File result = DataAccessPreferenceKeys.getDir(key);
+            final File result = DataAccessPreferenceUtils.getDir(key);
 
             assertEquals(result, expResult);
         }
@@ -152,22 +153,22 @@ public class DataAccessPreferenceKeysNGTest {
 
             // Create static mock of NbPreferences to return the preferences mock
             try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-                mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
-                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), Mockito.never());
+                mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
+                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), Mockito.never());
 
-                final File result = DataAccessPreferenceKeys.getDir(key);
-                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), times(1));
+                final File result = DataAccessPreferenceUtils.getDir(key);
+                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), times(1));
 
                 // Verify mock is working correctly
                 assertEquals(result, tempFile);
 
                 // Verify no file is returned because it needs to be a directory
                 final File expResult = null;
-                assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDir(), expResult);
+                assertEquals(DataAccessPreferenceUtils.getDataAccessResultsDir(), expResult);
 
                 // Test saveResultsEnabled with invalid DataAccessResultsDirectory
                 boolean expResult2 = false;
-                boolean result2 = DataAccessPreferenceKeys.isSaveResultsEnabled();
+                boolean result2 = DataAccessPreferenceUtils.isSaveResultsEnabled();
                 assertEquals(result2, expResult2);
             }
         } finally {
@@ -194,20 +195,20 @@ public class DataAccessPreferenceKeysNGTest {
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
+            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
 
             final File expResult = new File(System.getProperty("user.dir"));
-            final File result = DataAccessPreferenceKeys.getDir(key);
+            final File result = DataAccessPreferenceUtils.getDir(key);
             final Path expectedPath = Paths.get(expResult.getAbsolutePath());
             final Path resultantPath = Paths.get(result.getAbsolutePath());
 
             assertEquals(resultantPath.normalize(), expectedPath.normalize());
 
-            assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDir(), expResult);
+            assertEquals(DataAccessPreferenceUtils.getDataAccessResultsDir(), expResult);
 
             // Test saveResultsEnabled with valid DataAccessResultsDirectory
             boolean expResult2 = true;
-            boolean result2 = DataAccessPreferenceKeys.isSaveResultsEnabled();
+            boolean result2 = DataAccessPreferenceUtils.isSaveResultsEnabled();
             assertEquals(result2, expResult2);
 
         }
@@ -235,18 +236,18 @@ public class DataAccessPreferenceKeysNGTest {
 
             // Create static mock of NbPreferences to return the preferences mock
             try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-                mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
-                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), Mockito.never());
+                mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
+                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), Mockito.never());
 
-                final File result = DataAccessPreferenceKeys.getDir(key);
-                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), times(1));
+                final File result = DataAccessPreferenceUtils.getDir(key);
+                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), times(1));
 
                 // Verify mock is working correctly
                 assertEquals(result, tempFile);
 
                 // Verify no file is returned because it needs to be a directory
                 final File expResult = null;
-                assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDir(), expResult);
+                assertEquals(DataAccessPreferenceUtils.getDataAccessResultsDir(), expResult);
             }
         } finally {
             // Cleanup
@@ -258,7 +259,7 @@ public class DataAccessPreferenceKeysNGTest {
 
     /**
      * Test of getDataAccessResultsDir method, of class
-     * DataAccessPreferenceKeys.
+ DataAccessPreferenceUtils.
      */
     @Test
     public void testGetDataAccessResultsDir2() {
@@ -271,21 +272,21 @@ public class DataAccessPreferenceKeysNGTest {
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
-            mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), Mockito.never());
+            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
+            mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), Mockito.never());
             final File expResult = null;
-            final File result = DataAccessPreferenceKeys.getDir(key);
-            mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), times(1));
+            final File result = DataAccessPreferenceUtils.getDir(key);
+            mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), times(1));
 
             assertEquals(result, expResult);
 
-            assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDir(), expResult);
+            assertEquals(DataAccessPreferenceUtils.getDataAccessResultsDir(), expResult);
         }
     }
 
     /**
      * Test of getDataAccessResultsDir method, of class
-     * DataAccessPreferenceKeys.
+ DataAccessPreferenceUtils.
      */
     @Test
     public void testGetDataAccessResultsDir3() {
@@ -298,22 +299,22 @@ public class DataAccessPreferenceKeysNGTest {
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
+            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
 
             final File expResult = new File(System.getProperty("user.dir"));
-            final File result = DataAccessPreferenceKeys.getDir(key);
+            final File result = DataAccessPreferenceUtils.getDir(key);
             final Path expectedPath = Paths.get(expResult.getAbsolutePath());
             final Path resultantPath = Paths.get(result.getAbsolutePath());
 
             assertEquals(resultantPath.normalize(), expectedPath.normalize());
 
-            assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDir(), expResult);
+            assertEquals(DataAccessPreferenceUtils.getDataAccessResultsDir(), expResult);
         }
     }
 
     /**
      * Test of getDataAccessResultsDirEx method, of class
-     * DataAccessPreferenceKeys.Test valid directory
+ DataAccessPreferenceUtils.Test valid directory
      *
      */
     @Test
@@ -328,18 +329,18 @@ public class DataAccessPreferenceKeysNGTest {
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
+            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
 
             final File expResult = new File(System.getProperty("user.dir"));
-            final File result = DataAccessPreferenceKeys.getDir(key);
+            final File result = DataAccessPreferenceUtils.getDir(key);
             final Path expectedPath = Paths.get(expResult.getAbsolutePath());
             final Path resultantPath = Paths.get(result.getAbsolutePath());
 
             assertEquals(resultantPath.normalize(), expectedPath.normalize());
 
-            assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDir(), expResult);
+            assertEquals(DataAccessPreferenceUtils.getDataAccessResultsDir(), expResult);
 
-            assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDirEx(), expResult);
+            assertEquals(DataAccessPreferenceUtils.getDataAccessResultsDirEx(), expResult);
         }
     }
 
@@ -364,21 +365,21 @@ public class DataAccessPreferenceKeysNGTest {
 
             // Create static mock of NbPreferences to return the preferences mock
             try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-                mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
-                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), Mockito.never());
+                mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
+                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), Mockito.never());
 
-                final File result = DataAccessPreferenceKeys.getDir(key);
-                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), times(1));
+                final File result = DataAccessPreferenceUtils.getDir(key);
+                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), times(1));
 
                 // Verify mock is working correctly
                 assertEquals(result, tempFile);
 
                 // Verify no file is returned because it needs to be a directory
                 final File expResult = null;
-                assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDir(), expResult);
+                assertEquals(DataAccessPreferenceUtils.getDataAccessResultsDir(), expResult);
 
                 // Verify that a file is returned because it does not care about directory.
-                assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDirEx(), tempFile);
+                assertEquals(DataAccessPreferenceUtils.getDataAccessResultsDirEx(), tempFile);
             }
         } finally {
             // Cleanup
@@ -400,7 +401,7 @@ public class DataAccessPreferenceKeysNGTest {
         final String previousDir = PREVIOUS_DATA_DIR_PREF;
         final String currentDir = SAVE_DATA_DIR_PREF;
 
-        final Preferences preferences = NbPreferences.forModule(DataAccessPreferenceKeys.class);
+        final Preferences preferences = NbPreferences.forModule(DataAccessPreferenceUtils.class);
         preferences.remove(PREVIOUS_DATA_DIR_PREF);
         preferences.remove(SAVE_DATA_DIR_PREF);
 
@@ -408,7 +409,7 @@ public class DataAccessPreferenceKeysNGTest {
         assertEquals(preferences.get(previousDir, null), null);
 
         final File dir = null;
-        DataAccessPreferenceKeys.setDataAccessResultsDir(dir);
+        DataAccessPreferenceUtils.setDataAccessResultsDir(dir);
 
         assertEquals(preferences.get(currentDir, null), "");
         assertEquals(preferences.get(previousDir, null), null);
@@ -426,7 +427,7 @@ public class DataAccessPreferenceKeysNGTest {
         final String previousDir = PREVIOUS_DATA_DIR_PREF;
         final String currentDir = SAVE_DATA_DIR_PREF;
 
-        final Preferences preferences = NbPreferences.forModule(DataAccessPreferenceKeys.class);
+        final Preferences preferences = NbPreferences.forModule(DataAccessPreferenceUtils.class);
         preferences.remove(PREVIOUS_DATA_DIR_PREF);
         preferences.remove(SAVE_DATA_DIR_PREF);
 
@@ -437,7 +438,7 @@ public class DataAccessPreferenceKeysNGTest {
         try {
             dir = File.createTempFile("testfile", ".txt");
 
-            DataAccessPreferenceKeys.setDataAccessResultsDir(dir);
+            DataAccessPreferenceUtils.setDataAccessResultsDir(dir);
 
             assertEquals(preferences.get(currentDir, null), "");
             assertEquals(preferences.get(previousDir, null), null);
@@ -462,7 +463,7 @@ public class DataAccessPreferenceKeysNGTest {
         final String previousDir = PREVIOUS_DATA_DIR_PREF;
         final String currentDir = SAVE_DATA_DIR_PREF;
 
-        final Preferences preferences = NbPreferences.forModule(DataAccessPreferenceKeys.class);
+        final Preferences preferences = NbPreferences.forModule(DataAccessPreferenceUtils.class);
 
         preferences.remove(PREVIOUS_DATA_DIR_PREF);
         preferences.remove(SAVE_DATA_DIR_PREF);
@@ -471,12 +472,12 @@ public class DataAccessPreferenceKeysNGTest {
         assertEquals(preferences.get(previousDir, null), null);
 
         final File dir = new File(System.getProperty("user.dir"));
-        DataAccessPreferenceKeys.setDataAccessResultsDir(dir);
+        DataAccessPreferenceUtils.setDataAccessResultsDir(dir);
         assertEquals(preferences.get(currentDir, null), dir.getAbsolutePath());
         assertEquals(preferences.get(previousDir, null), "");
 
         final File dir2 = new File(System.getProperty("user.home"));
-        DataAccessPreferenceKeys.setDataAccessResultsDir(dir2);
+        DataAccessPreferenceUtils.setDataAccessResultsDir(dir2);
         assertEquals(preferences.get(currentDir, null), dir2.getAbsolutePath());
         assertEquals(preferences.get(previousDir, null), dir.getAbsolutePath());
     }
@@ -502,18 +503,18 @@ public class DataAccessPreferenceKeysNGTest {
 
             // Create static mock of NbPreferences to return the preferences mock
             try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-                mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
-                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), Mockito.never());
+                mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
+                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), Mockito.never());
 
-                final File result = DataAccessPreferenceKeys.getDir(key);
-                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), times(1));
+                final File result = DataAccessPreferenceUtils.getDir(key);
+                mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), times(1));
 
                 // Verify mock is working correctly
                 assertEquals(result, tempFile);
 
                 // Verify no file is returned because it needs to be a directory
                 final File expResult = null;
-                assertEquals(DataAccessPreferenceKeys.getPreviousDataAccessResultsDir(), expResult);
+                assertEquals(DataAccessPreferenceUtils.getPreviousDataAccessResultsDir(), expResult);
             }
         } finally {
             // Cleanup
@@ -525,7 +526,7 @@ public class DataAccessPreferenceKeysNGTest {
 
     /**
      * Test of getPreviousDataAccessResultsDir method, of class
-     * DataAccessPreferenceKeys.
+ DataAccessPreferenceUtils.
      */
     @Test
     public void testGetPreviousDataAccessResultsDir2() {
@@ -538,21 +539,21 @@ public class DataAccessPreferenceKeysNGTest {
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
-            mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), Mockito.never());
+            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
+            mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), Mockito.never());
             final File expResult = null;
-            final File result = DataAccessPreferenceKeys.getDir(key);
-            mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class)), times(1));
+            final File result = DataAccessPreferenceUtils.getDir(key);
+            mockedStatic.verify(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class)), times(1));
 
             assertEquals(result, expResult);
 
-            assertEquals(DataAccessPreferenceKeys.getPreviousDataAccessResultsDir(), expResult);
+            assertEquals(DataAccessPreferenceUtils.getPreviousDataAccessResultsDir(), expResult);
         }
     }
 
     /**
      * Test of getPreviousDataAccessResultsDir method, of class
-     * DataAccessPreferenceKeys.
+ DataAccessPreferenceUtils.
      */
     @Test
     public void testGetPreviousDataAccessResultsDir3() {
@@ -565,16 +566,16 @@ public class DataAccessPreferenceKeysNGTest {
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
-            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceKeys.class))).thenReturn(prefs);
+            mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(DataAccessPreferenceUtils.class))).thenReturn(prefs);
 
             final File expResult = new File(System.getProperty("user.dir"));
-            final File result = DataAccessPreferenceKeys.getDir(key);
+            final File result = DataAccessPreferenceUtils.getDir(key);
             final Path expectedPath = Paths.get(expResult.getAbsolutePath());
             final Path resultantPath = Paths.get(result.getAbsolutePath());
 
             assertEquals(resultantPath.normalize(), expectedPath.normalize());
 
-            assertEquals(DataAccessPreferenceKeys.getPreviousDataAccessResultsDir(), expResult);
+            assertEquals(DataAccessPreferenceUtils.getPreviousDataAccessResultsDir(), expResult);
         }
     }
 
@@ -588,13 +589,13 @@ public class DataAccessPreferenceKeysNGTest {
         System.out.println("isDeselectPluginsOnExecuteEnabled");
         final String preferenceKey = DESELECT_PLUGINS_ON_EXECUTE_PREF;
 
-        final Preferences preferences = NbPreferences.forModule(DataAccessPreferenceKeys.class);
+        final Preferences preferences = NbPreferences.forModule(DataAccessPreferenceUtils.class);
 
         preferences.remove(preferenceKey);
 
         // Verify preference does not exist and also returns the correct default of false
         assertEquals(preferences.getBoolean(preferenceKey, false), false);
-        assertEquals(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled(), false);
+        assertEquals(DataAccessPreferenceUtils.isDeselectPluginsOnExecuteEnabled(), false);
         assertEquals(preferences.getBoolean(preferenceKey, false), false);
 
         // verify preference is set correctly
@@ -602,16 +603,16 @@ public class DataAccessPreferenceKeysNGTest {
         assertEquals(preferences.getBoolean(preferenceKey, false), true);
 
         // Verify method call returns correct value
-        assertEquals(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled(), true);
+        assertEquals(DataAccessPreferenceUtils.isDeselectPluginsOnExecuteEnabled(), true);
 
         // put in a false value to check toggling, recheck
         preferences.putBoolean(preferenceKey, false);
         assertEquals(preferences.getBoolean(preferenceKey, false), false);
-        assertEquals(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled(), false);
+        assertEquals(DataAccessPreferenceUtils.isDeselectPluginsOnExecuteEnabled(), false);
         assertEquals(preferences.getBoolean(preferenceKey, false), false);
 
         // Verify method call returns correct value
-        assertEquals(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled(), false);
+        assertEquals(DataAccessPreferenceUtils.isDeselectPluginsOnExecuteEnabled(), false);
 
     }
 
@@ -626,24 +627,24 @@ public class DataAccessPreferenceKeysNGTest {
 
         final String preferenceKey = DESELECT_PLUGINS_ON_EXECUTE_PREF;
 
-        final Preferences preferences = NbPreferences.forModule(DataAccessPreferenceKeys.class);
+        final Preferences preferences = NbPreferences.forModule(DataAccessPreferenceUtils.class);
 
         boolean expValue = false;
         preferences.remove(preferenceKey);
 
         // Verify preference does not exist and also returns the correct default of false
         assertEquals(preferences.getBoolean(preferenceKey, false), expValue);
-        DataAccessPreferenceKeys.setDeselectPluginsOnExecute(expValue);
+        DataAccessPreferenceUtils.setDeselectPluginsOnExecute(expValue);
         assertEquals(preferences.getBoolean(preferenceKey, false), expValue);
 
         // Test setting true value
         expValue = true;
-        DataAccessPreferenceKeys.setDeselectPluginsOnExecute(expValue);
+        DataAccessPreferenceUtils.setDeselectPluginsOnExecute(expValue);
         assertEquals(preferences.getBoolean(preferenceKey, false), expValue);
 
         // Test toggling
         expValue = false;
-        DataAccessPreferenceKeys.setDeselectPluginsOnExecute(expValue);
+        DataAccessPreferenceUtils.setDeselectPluginsOnExecute(expValue);
         assertEquals(preferences.getBoolean(preferenceKey, false), expValue);
     }
 }

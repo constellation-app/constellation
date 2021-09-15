@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.dataaccess.state;
+package au.gov.asd.tac.constellation.views.dataaccess.utils;
 
 import java.io.File;
 import java.util.prefs.Preferences;
@@ -24,12 +24,17 @@ import org.openide.util.NbPreferences;
  *
  * @author cygnus_x-1
  */
-public final class DataAccessPreferenceKeys {
-
+public final class DataAccessPreferenceUtils {
     protected static final String SAVE_DATA_DIR_PREF = "saveDataDir";
     protected static final String PREVIOUS_DATA_DIR_PREF = "prevSaveDataDir";
     protected static final String DESELECT_PLUGINS_ON_EXECUTE_PREF = "deselectPluginsOnExecute";
 
+    /**
+     * No constructor, all static.
+     */
+    private DataAccessPreferenceUtils() {
+    }
+    
     /**
      * Return whether the save results is enabled or not
      *
@@ -80,7 +85,7 @@ public final class DataAccessPreferenceKeys {
      * write results.
      */
     public static void setDataAccessResultsDir(final File dir) {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
+        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtils.class);
         if (dir != null && dir.isDirectory()) {
             prefs.put(PREVIOUS_DATA_DIR_PREF, prefs.get(SAVE_DATA_DIR_PREF, StringUtils.EMPTY));
         }
@@ -107,26 +112,12 @@ public final class DataAccessPreferenceKeys {
     }
 
     /**
-     * The preference as a directory; null if the directory is not set.
-     *
-     * @param pref The preference.
-     *
-     * @return The preference as a directory; null if the directory is not set.
-     */
-    protected static File getDir(final String pref) {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
-        final String s = prefs.get(pref, StringUtils.EMPTY);
-
-        return StringUtils.isNotEmpty(s) ? new File(s) : null;
-    }
-
-    /**
      * Whether the Deselect plugins on go preference is enabled
      *
      * @return The current preference
      */
     public static boolean isDeselectPluginsOnExecuteEnabled() {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
+        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtils.class);
         return prefs.getBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, false);
     }
 
@@ -138,13 +129,21 @@ public final class DataAccessPreferenceKeys {
      *
      */
     public static void setDeselectPluginsOnExecute(boolean checkChanged) {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
+        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtils.class);
         prefs.putBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, checkChanged);
     }
-
+    
     /**
-     * No constructor, all static.
+     * The preference as a directory; null if the directory is not set.
+     *
+     * @param pref The preference.
+     *
+     * @return The preference as a directory; null if the directory is not set.
      */
-    private DataAccessPreferenceKeys() {
+    protected static File getDir(final String pref) {
+        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtils.class);
+        final String s = prefs.get(pref, StringUtils.EMPTY);
+
+        return StringUtils.isNotEmpty(s) ? new File(s) : null;
     }
 }

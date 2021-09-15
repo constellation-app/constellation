@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcep
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.io.SaveGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.Map;

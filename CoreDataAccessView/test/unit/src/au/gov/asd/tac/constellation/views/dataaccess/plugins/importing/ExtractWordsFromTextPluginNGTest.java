@@ -32,7 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginRegistry;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginRegistry;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.USE_REGEX_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID;

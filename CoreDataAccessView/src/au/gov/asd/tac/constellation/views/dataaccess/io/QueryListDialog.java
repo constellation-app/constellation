@@ -27,13 +27,29 @@ import javafx.scene.control.ListView;
  *
  * @author algol
  */
-class QueryListDialog {
+public final class QueryListDialog {
 
-    static String getQueryName(final Object owner, final String[] queryNames) {
+    /**
+     * Private constructor to prevent initialization.
+     */
+    private QueryListDialog() {
+    }
+    
+    /**
+     * Displays a dialog listing the passed query names. They user can select one
+     * query name and click OK. That selected query name is the value returned.
+     * <p/>
+     * This method will block until the user responds to the dialog.
+     *
+     * @param queryNames the list of query names to display
+     * @return the selected item or null if no item is selected or cancel is selected
+     */
+    public static String getQueryName(final String[] queryNames) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
 
-        final ObservableList<String> q = FXCollections.observableArrayList(queryNames);
-        final ListView<String> nameList = new ListView<>(q);
+        final ListView<String> nameList = new ListView<>(
+                FXCollections.observableArrayList(queryNames)
+        );
         nameList.setCellFactory(p -> new DraggableCell<>());
         nameList.setEditable(false);
         nameList.setOnMouseClicked(event -> {

@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessUtilities;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,7 +79,7 @@ public class DataAccessSearchProvider implements SearchProvider {
         @Override
         public void run() {
             final String message;
-            final DataAccessPane dapane = DataAccessUtilities.getDataAccessPane();
+            final DataAccessPane dapane = DataAccessUtils.getDataAccessPane();
             if (dapane != null) {
                 final Tab tab = dapane.getCurrentTab();
                 if (tab != null) {

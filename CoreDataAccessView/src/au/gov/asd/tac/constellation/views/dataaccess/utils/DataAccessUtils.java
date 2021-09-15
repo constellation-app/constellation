@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.dataaccess;
+package au.gov.asd.tac.constellation.views.dataaccess.utils;
 
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
-import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewTopComponent;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 import org.openide.util.Exceptions;
@@ -27,7 +27,7 @@ import org.openide.windows.WindowManager;
  *
  * @author algol
  */
-public class DataAccessUtilities {
+public class DataAccessUtils {
 
     /**
      * A convenience method for getting the Pane used by the Data Access view.
