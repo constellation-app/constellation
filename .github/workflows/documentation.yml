@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: set tag env
-        uses: actions/checkout@v2
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: test env set correctly # found here: https://stackoverflow.com/questions/58177786/get-the-current-pushed-tag-in-github-actions
         run: |
