@@ -3,11 +3,10 @@
 <toc version="2.0">
     <tocitem text="Graph">
         <tocitem text="File Operations">
-            <tocitem text="Auto Backup Feature" target="au.gov.asd.tac.constellation.graph.file.autosave"/>
+            <tocitem text="Autosave" target="au.gov.asd.tac.constellation.graph.file.autosave"/>
             <tocitem text="Nebula" target="au.gov.asd.tac.constellation.graph.file.nebula"/>
             <tocitem text="New Graph" target="au.gov.asd.tac.constellation.graph.file.newGraph"/>
             <tocitem text="Open Graph" target="au.gov.asd.tac.constellation.graph.file.openGraph"/>
-            <tocitem text="Open Recent Graph" target="au.gov.asd.tac.constellation.graph.file.openRecentGraph"/>
             <tocitem text="Save Graph" target="au.gov.asd.tac.constellation.graph.file.saveGraph"/>
         </tocitem>
     </tocitem>
