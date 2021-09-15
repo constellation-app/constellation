@@ -11,6 +11,10 @@
 -   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
     rotation values in the wrong value positions.
 
+-   Moved `DataAccessPlugin`, `DataAccessPluginCoreType`, `DataAccessPluginRegistry
+    and `DataAccessPluginType` from `au.gov.asd.tac.constellation.views.dataaccess`
+    to `au.gov.asd.tac.constellation.views.dataaccess.plugins`.
+
 ## Changes in August 2021
 
 -   Added `updateTagsFiltersAvailable`, `updateSelectedTagsCombo`,
