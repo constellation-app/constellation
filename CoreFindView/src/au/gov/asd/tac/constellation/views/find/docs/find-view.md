@@ -1,7 +1,6 @@
 # Find and Replace
 
 <table class="table table-striped">
-<caption>Find Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -27,8 +26,6 @@
 </tr>
 </tbody>
 </table>
-
-Find Actions
 
 The Find View allows the creation of sophisticated rules to be searched
 for, and 'matched' on a graph. You can choose to find on nodes,

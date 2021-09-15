@@ -1,7 +1,6 @@
 # Flatten Z-Field
 
 <table class="table table-striped">
-<caption>Flatten Z-Field Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Flatten Z-Field Actions
 
 Flatten Z-Field sets the Z attribute of all nodes to zero, making the
 graph 2D. This is performed on all nodes, regardless of the current

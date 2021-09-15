@@ -1,7 +1,6 @@
 # Grid
 
 <table class="table table-striped">
-<caption>Grid Arrangement Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Grid Arrangement Actions
 
 The grid arrangement arranges each separate component of the graph into
 a square grid. Nodes within a grid are ordered left-to-right,

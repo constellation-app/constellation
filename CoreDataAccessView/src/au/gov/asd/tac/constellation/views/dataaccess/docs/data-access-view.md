@@ -1,7 +1,6 @@
 # Data Access View
 
 <table class="table table-striped">
-<caption>Data Access View Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Data Access View Actions
 
 ## Introduction
 

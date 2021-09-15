@@ -1,7 +1,6 @@
 # Tree
 
 <table class="table table-striped">
-<caption>Tree Arrangement Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Tree Arrangement Actions
 
 The tree arrangement arranges all the nodes in tree-like structures with
 "root" nodes arranged by proximity and then "leaf" nodes placed around

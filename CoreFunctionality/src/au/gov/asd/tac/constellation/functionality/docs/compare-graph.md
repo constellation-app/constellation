@@ -3,7 +3,6 @@
 ## Compare two graphs and show the differences in a new graph
 
 <table class="table table-striped">
-<caption>Compare Graph Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -21,8 +20,6 @@
 </tr>
 </tbody>
 </table>
-
-Compare Graph Actions
 
 Compare Graph does a comparison of two open graphs and shows the
 differences in a new graph. An output window will also displayed with

@@ -54,7 +54,6 @@ is the current list of supported operators.
   
 
 <table class="table table-striped">
-<caption>Expression Query Operators</caption>
 <thead>
 <tr class="header">
 <th><strong>Operator</strong></th>
@@ -192,8 +191,6 @@ is the current list of supported operators.
 </tr>
 </tbody>
 </table>
-
-Expression Query Operators
 
 ## Nested Queries
 

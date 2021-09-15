@@ -1,7 +1,6 @@
 # Scatter Plot
 
 <table class="table table-striped">
-<caption>Scatter Plot Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -27,8 +26,6 @@
 </tr>
 </tbody>
 </table>
-
-Scatter Plot Actions
 
 The Scatter Plot provides an interface for comparing numerical
 attributes in a graph with the intention of discovering patterns, or

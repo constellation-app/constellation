@@ -1,7 +1,6 @@
 # Perspective Bookmarks
 
 <table class="table table-striped">
-<caption>Perspective Bookmarks Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Perspective Bookmarks Actions
 
 ## Introduction
 

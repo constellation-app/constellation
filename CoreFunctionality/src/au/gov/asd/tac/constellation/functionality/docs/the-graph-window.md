@@ -21,7 +21,6 @@ assignments using Tools -> Options -> Keymap.
 Each graph display has a sidebar containing some commonly used actions:
 
 <table class="table table-striped">
-<caption>Actions that can be found on sidebar</caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -109,8 +108,6 @@ Visualising a large graph will have an impact on performance so this helps reduc
 </tr>
 </tbody>
 </table>
-
-Actions that can be found on sidebar
 
 When links and edges are drawn and the underlying transactions have
 different colors, grey is used. When transactions are drawn (each

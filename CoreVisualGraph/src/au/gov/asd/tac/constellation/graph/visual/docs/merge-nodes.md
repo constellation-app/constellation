@@ -3,7 +3,6 @@
 ## Merge all the selected nodes into a single node.
 
 <table class="table table-striped">
-<caption>Merge Nodes Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -21,8 +20,6 @@
 </tr>
 </tbody>
 </table>
-
-Merge Nodes Actions
 
 NOTE: This is a standalone plugin. For the Data Access Plugin, go
 [here](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/merge-nodes.md)

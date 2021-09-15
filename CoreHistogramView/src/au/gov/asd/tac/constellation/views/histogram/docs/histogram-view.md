@@ -1,7 +1,6 @@
 # Histogram
 
 <table class="table table-striped">
-<caption>Histogram Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -27,8 +26,6 @@
 </tr>
 </tbody>
 </table>
-
-Histogram Actions
 
 ## Introduction
 

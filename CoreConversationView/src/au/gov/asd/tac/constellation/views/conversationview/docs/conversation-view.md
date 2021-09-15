@@ -1,7 +1,6 @@
 # Conversation View
 
 <table class="table table-striped">
-<caption>Conversation View Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Conversation View Actions
 
 ## Introduction
 

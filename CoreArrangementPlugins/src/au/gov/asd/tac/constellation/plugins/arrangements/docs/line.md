@@ -1,7 +1,6 @@
 # Line
 
 <table class="table table-striped">
-<caption>Line Arrangement Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -25,8 +24,6 @@
 </tr>
 </tbody>
 </table>
-
-Line Arrangement Actions
 
 The line arrangements arrange all the nodes of the graph into either a
 horizontal or vertical line. The horizontal line orders nodes across the

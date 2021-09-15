@@ -1,7 +1,6 @@
 # Induced Subgraph
 
 <table class="table table-triped">
-<caption>Induced Subgraph Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -25,8 +24,6 @@
 </tr>
 </tbody>
 </table>
-
-Induced Subgraph Actions
 
 ## Half Hop Induced Subgraph
 

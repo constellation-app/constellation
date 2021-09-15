@@ -1,7 +1,6 @@
 # Quality Control View
 
 <table class="table table-striped">
-<caption>Quality Control View Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -43,8 +42,6 @@
 </tr>
 </tbody>
 </table>
-
-Quality Control View Actions
 
 ## IMPORTANT!!!
 

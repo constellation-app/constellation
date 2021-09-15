@@ -1,7 +1,6 @@
 # Analytic View
 
 <table class="table table-striped">
-<caption>Analytic View Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -27,8 +26,6 @@
 </tr>
 </tbody>
 </table>
-
-Analytic View Actions
 
 ## Introduction
 

@@ -1,7 +1,6 @@
 # Hierarchy
 
 <table class="table table-striped">
-<caption>Hierarchy Arrangement Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Hierarchy Arrangement Actions
 
 The hierarchy arrangement arranges each component into a hierarchical
 structure with specified roots at the top and each subsequent level

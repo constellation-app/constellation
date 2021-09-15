@@ -5,7 +5,6 @@ square. Icons need not be square: they may use transparent pixels to be
 displayed with different shapes.
 
 <table class="table table-striped">
-<caption>Different attributes that make up a node icon</caption>
 <thead>
 <tr class="header">
 <th>Attribute</th>
@@ -31,8 +30,6 @@ displayed with different shapes.
 </tr>
 </tbody>
 </table>
-
-Different attributes that make up a node icon
 
 The sizes specified above are indicative; for instance, an icon of a
 tree may be higher than 48 pixels and narrower than 48 pixels. However,

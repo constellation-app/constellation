@@ -1,7 +1,6 @@
 # Export From Constellation
 
 <table class="table table-striped">
-<caption>Export Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -49,8 +48,6 @@
 </tr>
 </tbody>
 </table>
-
-Export Actions
 
 Constellation provides a number of options for exporting a graph. Some
 of these will present dialog boxes and details on those are further down

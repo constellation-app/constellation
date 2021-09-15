@@ -1,7 +1,6 @@
 # Circle
 
 <table class="table table-striped">
-<caption>Circle Arrangement Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Circle Arrangement Actions
 
 The circle arrangement arranges all the nodes of the graph into a
 circle. Nodes within a circle are ordered clockwise by their internal

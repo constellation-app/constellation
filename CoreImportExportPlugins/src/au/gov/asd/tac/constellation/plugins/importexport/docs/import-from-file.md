@@ -1,7 +1,6 @@
 # Import From File
 
 <table class="table table-striped">
-<caption>Import From File Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Import From File Actions
 
 ## Introduction
 

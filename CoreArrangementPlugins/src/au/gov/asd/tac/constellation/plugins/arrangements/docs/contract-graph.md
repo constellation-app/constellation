@@ -1,7 +1,6 @@
 # Contract Graph
 
 <table class="table table-striped">
-<caption>Contract Graph Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Contract Graph Actions
 
 Contract Graph alters the X, Y, and Z attributes of the selected nodes
 and transactions to contract the graph. This reduces the graph to a

@@ -8,7 +8,6 @@ icon to switch to add mode. This mode allows the user to manually create
 nodes and transactions.
 
 <table class="table table-striped">
-<caption>Creating the Graph in Add Mode using the Mouse</caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -51,8 +50,6 @@ nodes and transactions.
 </tr>
 </tbody>
 </table>
-
-Creating the Graph in Add Mode using the Mouse
 
 NOTE: While creating a transaction, you can left-click on the background
 or press ESC to abort creating it.

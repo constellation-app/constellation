@@ -1,7 +1,6 @@
 # Map View
 
 <table class="table table-striped">
-<caption>Map View Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -27,8 +26,6 @@
 </tr>
 </tbody>
 </table>
-
-Map View Actions
 
 ## Introduction
 

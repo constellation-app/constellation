@@ -1,7 +1,6 @@
 # General Selection
 
 <table class="table table-striped">
-<caption>General Selection Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -43,8 +42,6 @@
 </tr>
 </tbody>
 </table>
-
-General Selection Actions
 
 There are a few general selection actions that can be run:
 

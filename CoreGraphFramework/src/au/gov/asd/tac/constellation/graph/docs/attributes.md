@@ -13,7 +13,6 @@ Each attribute is defined by a name, description, type and a default
 value. The set of attribute types that are commonly used include:
 
 <table class="table table-striped">
-<caption>Attribute Types</caption>
 <thead>
 <tr class="header">
 <th><strong>Type</strong></th>
@@ -119,8 +118,6 @@ value. The set of attribute types that are commonly used include:
 </tr>
 </tbody>
 </table>
-
-Attribute Types
 
 There is also a number of other attribute types you will find but have
 generally been designed for a specific attribute (usually the type has a

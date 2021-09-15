@@ -1,7 +1,6 @@
 # Named Selections
 
 <table class="table table-striped">
-<caption>Named Selections Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -27,8 +26,6 @@
 </tr>
 </tbody>
 </table>
-
-Named Selections Actions
 
 ## Introduction
 

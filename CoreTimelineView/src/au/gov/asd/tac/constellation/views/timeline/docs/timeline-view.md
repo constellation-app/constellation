@@ -1,7 +1,6 @@
 # Timeline
 
 <table class="table table-striped">
-<caption>Timeline Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -27,8 +26,6 @@
 </tr>
 </tbody>
 </table>
-
-Timeline Actions
 
 If the graph that you are currently analysing contains temporal data on
 its transactions, it can be viewed using the Timeline View. The Timeline

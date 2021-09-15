@@ -1,7 +1,6 @@
 # Hop Out
 
 <table class="table table-striped">
-<caption>Hop Out Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -31,8 +30,6 @@
 </tr>
 </tbody>
 </table>
-
-Hop Out Actions
 
 ## Hop Out Half
 

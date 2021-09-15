@@ -1,7 +1,6 @@
 # Table View
 
 <table class="table table-striped">
-<caption>Table View Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -28,8 +27,6 @@
 </tbody>
 </table>
 
-Table View Actions
-
 ## Introduction
 
 The Table View presents attribute data from the graph in a tabular
@@ -39,12 +36,8 @@ control buttons) will result in the selection of the table rows and the
 associated elements in the graph itself. Conversely, changes to the
 graph selection are reflected in the table.
 
-<div style="text-align: center">
-
 ![Table
 View](../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/TableView.png)
-
-</div>
 
 ## Column Sorting
 

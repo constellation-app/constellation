@@ -1,7 +1,6 @@
 # Scripting View
 
 <table class="table table-striped">
-<caption>Scripting View Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -27,8 +26,6 @@
 </tr>
 </tbody>
 </table>
-
-Scripting View Actions
 
 ## Introduction
 

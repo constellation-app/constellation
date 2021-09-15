@@ -1,7 +1,6 @@
 # Expand Graph
 
 <table class="table table-striped">
-<caption>Expand Graph Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Expand Graph Actions
 
 Expand Graph alters the X, Y, and Z attributes of the selected nodes and
 transactions to expand the graph. This spreads the graph to a larger

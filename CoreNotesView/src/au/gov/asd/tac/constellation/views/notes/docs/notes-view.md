@@ -1,7 +1,6 @@
 # Notes View
 
 <table class="table table-striped">
-<caption>Notes View Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Notes View Actions
 
 ## Introduction
 

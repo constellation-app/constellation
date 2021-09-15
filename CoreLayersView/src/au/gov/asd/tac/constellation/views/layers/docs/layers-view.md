@@ -1,7 +1,6 @@
 # Layers View
 
 <table class="table table-striped">
-<caption>Layers View Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -45,8 +44,6 @@
 </tr>
 </tbody>
 </table>
-
-Layers View Actions
 
 The Layers View holds a collection of Layers. Each Layer can represent a
 static set of elements, or a dynamically calculated set of elements

@@ -1,7 +1,6 @@
 # Sphere
 
 <table class="table table-striped">
-<caption>Sphere Arrangement Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Sphere Arrangement Actions
 
 The sphere arrangement arranges all the nodes of the graph into a
 sphere.

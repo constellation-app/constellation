@@ -1,7 +1,6 @@
 # Node Attribute
 
 <table class="table table-stiped">
-<caption>Node Attribute Arrangement Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Node Attribute Arrangement Actions
 
 The node attribute arrangement arranges nodes based on the value of a
 specified node attribute. The way the nodes are arranged is dependent on

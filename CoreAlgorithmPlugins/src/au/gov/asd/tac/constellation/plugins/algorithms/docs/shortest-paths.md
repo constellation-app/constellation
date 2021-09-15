@@ -1,7 +1,6 @@
 # Shortest Paths
 
 <table class="table table-striped">
-<caption>Shortest Paths Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -25,8 +24,6 @@
 </tr>
 </tbody>
 </table>
-
-Shortest Paths Actions
 
 Shortest Paths is an implementation of the Dijkstra shortest paths
 algorithm. When nodes within the same component are selected, the

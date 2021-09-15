@@ -1,7 +1,6 @@
 # Attribute Editor
 
 <table class="table table-striped">
-<caption>Attribute Editor Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Attribute Editor Actions
 
 ## Introduction
 

@@ -1,7 +1,6 @@
 # Structure Selection
 
 <table class="table table-striped">
-<caption>Structure Selection Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -49,8 +48,6 @@
 </tr>
 </tbody>
 </table>
-
-Structure Selection Actions
 
 ## Select Singletons
 

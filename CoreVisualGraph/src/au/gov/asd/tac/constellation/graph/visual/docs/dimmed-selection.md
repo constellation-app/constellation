@@ -1,7 +1,6 @@
 # Dimmed Selection
 
 <table class="table table-striped">
-<caption>Dimmed Selection Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -25,8 +24,6 @@
 </tr>
 </tbody>
 </table>
-
-Dimmed Selection Actions
 
 Select Dimmed adds all nodes and transactions that are dimmed to the
 current selection. Similarly, Select Undimmed adds all nodes and

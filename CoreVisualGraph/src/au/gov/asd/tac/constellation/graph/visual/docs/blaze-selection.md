@@ -1,7 +1,6 @@
 # Blaze Selection
 
 <table class="table table-striped">
-<caption>Blaze Selection Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -25,8 +24,6 @@
 </tr>
 </tbody>
 </table>
-
-Blaze Selection Actions
 
 Select Blazes adds all nodes that are blazed to the current selection.
 Conversely, Deselect Blazes deselects any nodes in the current selection

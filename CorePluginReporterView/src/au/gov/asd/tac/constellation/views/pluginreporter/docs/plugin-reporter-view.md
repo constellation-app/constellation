@@ -1,7 +1,6 @@
 # Plugin Reporter
 
 <table class="table table-striped">
-<caption>Plugin Reporter Actions</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -27,8 +26,6 @@
 </tr>
 </tbody>
 </table>
-
-Plugin Reporter Actions
 
 The Plugin Reporter stores a history of any plugin run on the graph
 currently in focus.

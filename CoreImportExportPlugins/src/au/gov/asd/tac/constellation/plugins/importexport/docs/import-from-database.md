@@ -1,7 +1,6 @@
 # Import from Database
 
 <table class="table table-striped">
-<caption>Import From Database Actions</caption>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -19,8 +18,6 @@
 </tr>
 </tbody>
 </table>
-
-Import From Database Actions
 
 ## Introduction
 
