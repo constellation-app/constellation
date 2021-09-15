@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.tableview2;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -34,11 +35,20 @@ public class TableViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String tableModulePath = ".." + sep + "constellation" + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "tableview2" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent", tableModulePath + "table-view.md");
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "";
+        final String sep = File.separator;
+        final String tableViewPath = "constellation" + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + "constellation" + sep + "views" + sep + "tableview2" + sep + "docs" + sep + "tableview-toc.xml";
+
+        return tableViewPath;
     }
 }
