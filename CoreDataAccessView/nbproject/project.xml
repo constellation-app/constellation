@@ -238,6 +238,7 @@
             <public-packages>
                 <package>au.gov.asd.tac.constellation.views.dataaccess</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.panes</package>
+                <package>au.gov.asd.tac.constellation.views.dataaccess.plugins</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.plugins.clean</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.plugins.importing</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.plugins.utility</package>
