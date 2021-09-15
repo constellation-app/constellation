@@ -36,7 +36,7 @@ import org.openide.util.NbBundle.Messages;
         iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/group/resources/arrangeByNode.png",
         surviveFocusChange = true)
 @ActionReference(path = "Menu/Arrange", position = 500)
-@Messages("CTL_ArrangeByNodeAttributeAction=Arrange by Node Attribute")
+@Messages("CTL_ArrangeByNodeAttributeAction=Node Attribute")
 public final class ArrangeByNodeAttributeAction implements ActionListener {
 
     private final GraphNode context;

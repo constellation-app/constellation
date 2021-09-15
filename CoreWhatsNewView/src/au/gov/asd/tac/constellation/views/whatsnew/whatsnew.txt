@@ -1,6 +1,16 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-13 node_labels_bottom/top and transaction_labels changed
+<p>The above three graph attributes have been changed to node_bottom/top_labels_colours and transaction_labels_colours.</p>
+<p>The attributes now also show the colours for example: Label: (White), Identifier: (#9980e6)</p>
+
+== 2021-09-10 Histogram View
+<p>Options selected for the Category and Property are now associated with the chosen Graph Element; Node, Transaction, Edge, or Link, and will not reset to defaults when switching between Graph Element options.</p>
+
+== 2021-09-06 Import From File
+<p>Updated the UI to clear the Attribute Filter and the table filters in the Configuration Run tabs, when all the source files are removed.</p>
+
 == 2021-09-06 Import From File
 <p>Updated the UI to only enable and expand sections once a file is added</p>
 
