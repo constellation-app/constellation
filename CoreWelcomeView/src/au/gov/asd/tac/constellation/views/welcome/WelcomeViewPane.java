@@ -26,6 +26,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -60,6 +61,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
@@ -77,6 +80,11 @@ public class WelcomeViewPane extends BorderPane {
 
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
+
+    //Resized image height/width
+    final static int IMAGE_SIZE = 145;
+
+    public final Logger LOGGER = Logger.getLogger(WelcomeViewPane.class.getName());
 
     private static final Button[] recentGraphButtons = new Button[10];
 
@@ -215,41 +223,15 @@ public class WelcomeViewPane extends BorderPane {
 
                 if (new File(screenshotFilename).exists()) {
 
-                    final int IMAGE_SIZE = 145;
-
                     if (!new File(screenshotFilenameResize).exists()) {
                         Path source = Paths.get(screenshotFilename);
                         Path target = Paths.get(screenshotFilenameResize);
 
                         try (InputStream is = new FileInputStream(source.toFile())) {
-                            BufferedImage originalImage = ImageIO.read(is);
+                            resize(is, target, IMAGE_SIZE, IMAGE_SIZE);
 
-                            // create a new BufferedImage for drawing
-                            BufferedImage newResizedImage
-                                    = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
-                            Graphics2D g = newResizedImage.createGraphics();
-
-                            g.setComposite(AlphaComposite.Src);
-                            g.fillRect(0, 0, IMAGE_SIZE, IMAGE_SIZE);
-
-                            Map<RenderingHints.Key, Object> hints = new HashMap<>();
-                            hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                            hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                            hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                            g.addRenderingHints(hints);
-
-                            // puts the original image into the newResizedImage
-                            g.drawImage(originalImage, 0, 0, IMAGE_SIZE, IMAGE_SIZE, null);
-                            g.dispose();
-
-                            // get file extension
-                            String s = target.getFileName().toString();
-                            String fileExtension = s.substring(s.lastIndexOf(".") + 1);
-
-                            // we want image in png format
-                            ImageIO.write(newResizedImage, fileExtension, target.toFile());
-                        } catch (Exception e) {
-
+                        } catch (Exception ex) {
+                            LOGGER.log(Level.WARNING, ex.getLocalizedMessage(), ex);
                         }
                     }
                     final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilenameResize));
@@ -280,6 +262,44 @@ public class WelcomeViewPane extends BorderPane {
             this.setCenter(welcomeViewPane);
             scrollPane.setVvalue(-1);
         });
+    }
+
+    /**
+     * Referenced from https://mkyong.com/java/how-to-resize-an-image-in-java/
+     *
+     * @param is the input stream
+     * @param target the file path were we want to store the resized image
+     * @param height the new height of the resized image
+     * @param width the new width of the resized image
+     * @throws IOException
+     */
+    public void resize(InputStream is, Path target, int height, int width) throws IOException {
+        final BufferedImage originalImage = ImageIO.read(is);
+
+        // create a new BufferedImage for drawing
+        final BufferedImage newResizedImage
+                = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g = newResizedImage.createGraphics();
+
+        g.setComposite(AlphaComposite.Src);
+        g.fillRect(0, 0, width, height);
+
+        Map<RenderingHints.Key, Object> hints = new HashMap<>();
+        hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.addRenderingHints(hints);
+
+        // puts the original image into the newResizedImage
+        g.drawImage(originalImage, 0, 0, width, height, null);
+        g.dispose();
+
+        // get file extension
+        final String s = target.getFileName().toString();
+        final String fileExtension = s.substring(s.lastIndexOf(".") + 1);
+
+        // we want image in png format
+        ImageIO.write(newResizedImage, fileExtension, target.toFile());
     }
 
     public void setButtonProps(final Button button) {
