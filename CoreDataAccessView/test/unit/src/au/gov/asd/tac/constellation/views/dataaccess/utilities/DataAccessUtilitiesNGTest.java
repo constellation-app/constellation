@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.dataaccess.utils;
+package au.gov.asd.tac.constellation.views.dataaccess.utilities;
 
-import au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessUtils;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import java.lang.reflect.InvocationTargetException;
@@ -41,13 +41,13 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataAccessUtilsNGTest {
+public class DataAccessUtilitiesNGTest {
 
     private static MockedStatic<SwingUtilities> swingUtilitiesStaticMock;
     private static MockedStatic<WindowManager> windowManagerStaticMock;
-    private static MockedStatic<DataAccessUtils> dataAccessUtilitiesStaticMock;
+    private static MockedStatic<DataAccessUtilities> dataAccessUtilitiesStaticMock;
 
-    public DataAccessUtilsNGTest() {
+    public DataAccessUtilitiesNGTest() {
     }
 
     @BeforeClass
@@ -86,7 +86,7 @@ public class DataAccessUtilsNGTest {
         when(topComponent.isOpened()).thenReturn(false);
         when(topComponent.getDataAccessPane()).thenReturn(dataAccessPane);
 
-        DataAccessPane actual = DataAccessUtils.getDataAccessPane();
+        DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
 
         verify(topComponent, times(1)).open();
         verify(topComponent, times(1)).requestVisible();
@@ -104,7 +104,7 @@ public class DataAccessUtilsNGTest {
 
         when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(null);
 
-        DataAccessPane actual = DataAccessUtils.getDataAccessPane();
+        DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
 
         assertNull(actual);
     }
@@ -130,7 +130,7 @@ public class DataAccessUtilsNGTest {
         when(topComponent.isOpened()).thenReturn(false);
         when(topComponent.getDataAccessPane()).thenReturn(dataAccessPane);
 
-        DataAccessPane actual = DataAccessUtils.getDataAccessPane();
+        DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
 
         assertSame(actual, dataAccessPane);
     }
@@ -141,7 +141,7 @@ public class DataAccessUtilsNGTest {
         swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
                 .thenThrow(new InvocationTargetException(new RuntimeException("Something Bad")));
 
-        final DataAccessPane actual = DataAccessUtils.getDataAccessPane();
+        final DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
 
         assertNull(actual);
     }
@@ -152,7 +152,7 @@ public class DataAccessUtilsNGTest {
         swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
                 .thenThrow(new InterruptedException());
 
-        final DataAccessPane actual = DataAccessUtils.getDataAccessPane();
+        final DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
 
         assertTrue(Thread.interrupted());
     }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.dataaccess.utils;
+package au.gov.asd.tac.constellation.views.dataaccess.utilities;
 
 import java.io.File;
 import java.util.prefs.Preferences;
@@ -24,7 +24,7 @@ import org.openide.util.NbPreferences;
  *
  * @author cygnus_x-1
  */
-public final class DataAccessPreferenceUtils {
+public final class DataAccessPreferenceUtilities {
     protected static final String SAVE_DATA_DIR_PREF = "saveDataDir";
     protected static final String PREVIOUS_DATA_DIR_PREF = "prevSaveDataDir";
     protected static final String DESELECT_PLUGINS_ON_EXECUTE_PREF = "deselectPluginsOnExecute";
@@ -32,7 +32,7 @@ public final class DataAccessPreferenceUtils {
     /**
      * No constructor, all static.
      */
-    private DataAccessPreferenceUtils() {
+    private DataAccessPreferenceUtilities() {
     }
     
     /**
@@ -85,7 +85,7 @@ public final class DataAccessPreferenceUtils {
      * write results.
      */
     public static void setDataAccessResultsDir(final File dir) {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtils.class);
+        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
         if (dir != null && dir.isDirectory()) {
             prefs.put(PREVIOUS_DATA_DIR_PREF, prefs.get(SAVE_DATA_DIR_PREF, StringUtils.EMPTY));
         }
@@ -117,7 +117,7 @@ public final class DataAccessPreferenceUtils {
      * @return The current preference
      */
     public static boolean isDeselectPluginsOnExecuteEnabled() {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtils.class);
+        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
         return prefs.getBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, false);
     }
 
@@ -129,7 +129,7 @@ public final class DataAccessPreferenceUtils {
      *
      */
     public static void setDeselectPluginsOnExecute(boolean checkChanged) {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtils.class);
+        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
         prefs.putBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, checkChanged);
     }
     
@@ -141,7 +141,7 @@ public final class DataAccessPreferenceUtils {
      * @return The preference as a directory; null if the directory is not set.
      */
     protected static File getDir(final String pref) {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtils.class);
+        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
         final String s = prefs.get(pref, StringUtils.EMPTY);
 
         return StringUtils.isNotEmpty(s) ? new File(s) : null;

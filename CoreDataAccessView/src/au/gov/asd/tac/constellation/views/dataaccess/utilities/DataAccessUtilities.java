@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.dataaccess.utils;
+package au.gov.asd.tac.constellation.views.dataaccess.utilities;
 
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
@@ -27,7 +27,7 @@ import org.openide.windows.WindowManager;
  *
  * @author algol
  */
-public class DataAccessUtils {
+public class DataAccessUtilities {
 
     /**
      * A convenience method for getting the Pane used by the Data Access view.
