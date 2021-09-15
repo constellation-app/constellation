@@ -2,7 +2,7 @@
 
 # convert toc from markdown to html
 echo "find toc.md and convert with pandoc"
-pandoc -f commonmark -t html ./constellation/toc.md > "toc".html
+pandoc -f commonmark -t html ./constellation/toc.md > ./constellation/toc.html
 
 echo "search and replace start"
 while read a; do
