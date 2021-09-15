@@ -20,7 +20,13 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.Rece
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
@@ -50,6 +56,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import javax.imageio.ImageIO;
 
 /**
  * WelcomeViewPane contains the content for WelcomeTopComponent
@@ -198,14 +209,55 @@ public class WelcomeViewPane extends BorderPane {
                 }
                 final String text = recentGraphButtons[i].getText();
 
-                final Rectangle2D value = new Rectangle2D(700, 150, 500, 500);
+                final Rectangle2D value = new Rectangle2D(0, 0, 145, 145);
                 final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
+                final String screenshotFilenameResize = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + "Resize" + ".png";
+
                 if (new File(screenshotFilename).exists()) {
-                    final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilename));
+
+                    final int IMAGE_SIZE = 145;
+
+                    if (!new File(screenshotFilenameResize).exists()) {
+                        Path source = Paths.get(screenshotFilename);
+                        Path target = Paths.get(screenshotFilenameResize);
+
+                        try (InputStream is = new FileInputStream(source.toFile())) {
+                            BufferedImage originalImage = ImageIO.read(is);
+
+                            // create a new BufferedImage for drawing
+                            BufferedImage newResizedImage
+                                    = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
+                            Graphics2D g = newResizedImage.createGraphics();
+
+                            g.setComposite(AlphaComposite.Src);
+                            g.fillRect(0, 0, IMAGE_SIZE, IMAGE_SIZE);
+
+                            Map<RenderingHints.Key, Object> hints = new HashMap<>();
+                            hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                            hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                            hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                            g.addRenderingHints(hints);
+
+                            // puts the original image into the newResizedImage
+                            g.drawImage(originalImage, 0, 0, IMAGE_SIZE, IMAGE_SIZE, null);
+                            g.dispose();
+
+                            // get file extension
+                            String s = target.getFileName().toString();
+                            String fileExtension = s.substring(s.lastIndexOf(".") + 1);
+
+                            // we want image in png format
+                            ImageIO.write(newResizedImage, fileExtension, target.toFile());
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilenameResize));
                     imageView.setViewport(value);
                     imageView.setFitHeight(145);
                     imageView.setFitWidth(145);
                     recentGraphButtons[i].setGraphic(imageView);
+
                 } else if (i < fileNames.size()) {
                     final ImageView defaultImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream("resources/Constellation_Application_Icon_Small.png")));
                     final Rectangle2D valueDefault = new Rectangle2D(0, 0, 145, 145);
