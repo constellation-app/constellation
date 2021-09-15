@@ -430,6 +430,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         getChildren().add(vbox);
 
         final GridPane options = new GridPane();
+        options.setPadding(new Insets(4));
         options.setHgap(4);
         options.setVgap(4);
         final HBox helpAddFavHBox = new HBox(helpButton, addButton, favouriteButton);
@@ -444,7 +445,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         // add some padding between the Go button and the previous button to avoid accidental clicking
         final Region region = new Region();
-        region.setMinSize(20, 0);
+        region.setMinSize(10, 0);
         rabRegionExectueHBox.getChildren().addAll(region, executeButton);
         options.add(helpAddFavHBox, 0, 0);
         options.add(rabRegionExectueHBox, 1, 0);
@@ -453,7 +454,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         getChildren().add(options);
 
         widthProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.intValue() <= 430) {
+            if (newValue.intValue() <= 455) {
                 options.getChildren().remove(helpAddFavHBox);
                 options.getChildren().remove(rabRegionExectueHBox);
                 options.add(rabRegionExectueHBox, 0, 0);
