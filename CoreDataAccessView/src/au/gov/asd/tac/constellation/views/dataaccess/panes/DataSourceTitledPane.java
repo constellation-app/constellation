@@ -146,7 +146,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
             synchronized (this) {
                 Thread.currentThread().setName(DAV_CREATOR_THREAD_NAME);
                 boolean paramsCreated;
-                String f;
+                String failureMessage;
 
                 // warn when there is no error to the console, otherwise we forget to add help.
                 final boolean requiresHelp = !DataAccessPluginCoreType.EXPERIMENTAL.equals(plugin.getType()) && !DataAccessPluginCoreType.DEVELOPER.equals(plugin.getType());
@@ -160,7 +160,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
                         dataSourceParameters = dataSourceParameters.copy();
                     }
 
-                    if (perPluginParamMap != null) {
+                    if (perPluginParamMap != null && dataSourceParameters != null) {
                         dataSourceParameters.startParameterLoading();
                         perPluginParamMap.entrySet().stream().forEach(entry -> {
                             final String key = entry.getKey();
@@ -178,17 +178,19 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
                     }
 
                     paramsCreated = true;
-                    f = null;
-                } catch (final Throwable t) {
-                    System.out.printf("Parameter creation for plugin %s failed:\n", plugin.getName());
-                    t.printStackTrace(System.out);
+                    failureMessage = null;
+                } catch (final Throwable throwable) {
+                    LOGGER.log(Level.SEVERE,
+                            String.format("Parameter creation for plugin %s failed:\n", plugin.getName()),
+                            throwable
+                    );
 
                     paramsCreated = false;
-                    f = String.format("%s: %s", t.getClass().getName(), t.getMessage());
+                    failureMessage = String.format("%s: %s", throwable.getClass().getName(), throwable.getMessage());
                 }
 
                 parametersCreated = paramsCreated;
-                paramFailureMsg = f;
+                paramFailureMsg = failureMessage;
 
                 Platform.runLater(() -> {
                     if (perPluginParamMap != null) {
