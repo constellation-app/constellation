@@ -461,7 +461,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 options.add(helpAddFavHBox, 0, 1);
                 options.setHalignment(helpAddFavHBox, HPos.LEFT);
                 menuBar.setMinHeight(60);
-//                menuBar.setPadding(new Insets(4, 4, 24, 4));
             } else {
                 options.getChildren().remove(helpAddFavHBox);
                 options.getChildren().remove(rabRegionExectueHBox);
@@ -469,8 +468,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 options.add(rabRegionExectueHBox, 1, 0);
                 options.setHalignment(helpAddFavHBox, HPos.CENTER);
                 menuBar.setMinHeight(36);
-//                menuBar.setPadding(new Insets(4));
-
             }
         });
     }
