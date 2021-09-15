@@ -5,9 +5,8 @@
             "DEF"
         ],
         "SortByColumn": {
-            "DEF": "ASCENDING"
-        },
-        "PageSize": 5
+            "DEF": "DESCENDING"
+        }
     },
     {
         "ColumnOrder": [
@@ -15,7 +14,8 @@
             "DEF"
         ],
         "SortByColumn": {
-            "DEF": "DESCENDING"
-        }
+            "DEF": "ASCENDING"
+        },
+        "PageSize": 5
     }
 ]
