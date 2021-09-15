@@ -1,19 +1,18 @@
 #!/bin/bash
 
-# convert toc from markdown to html 
+# convert toc from markdown to html
 echo "find toc.md and convert with pandoc"
-pandoc -f commonmark -t html toc.md > "toc".html
+pandoc -f commonmark -t html ./constellation/toc.md > "toc".html
 
 echo "rename toc.md.html to toc.html"
-mv "$toc.md.html" "${toc.md.html}".html
+mv "./constellation/toc.md.html" "./constellation/toc.html"
 
 
 echo "search and replace start"
 
 while read a; do
     echo ${a//md/html}
-done < toc.html > toc.html.t
-mv toc.html{.t,}
-
+done < ./constellation/toc.html > ./constellation/toc.html.t
+mv ./constellation/toc.html{.t,}
+mv ./constellation/toc.html ./pages/docs/help/toc.html
 echo "search and replace end"
-
