@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -38,7 +39,6 @@ import java.util.stream.Collectors;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbPreferences;
@@ -277,7 +277,7 @@ public class JsonIO {
      */
     public static <T> T loadJsonPreferences(final Optional<String> loadDir,
                                             final Optional<String> filePrefix,
-                                            final Class<T> expectedFormat) {
+                                            final TypeReference<T> expectedFormat) {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
             try {
                 return OBJECT_MAPPER.readValue(file, expectedFormat);
@@ -309,7 +309,7 @@ public class JsonIO {
      * @see #loadJsonPreferences(Optional, Optional, Function) 
      */
     public static <T> T loadJsonPreferences(final Optional<String> loadDir,
-                                            final Class<T> expectedFormat) {
+                                            final TypeReference<T> expectedFormat) {
         return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat);
     }
     

@@ -102,7 +102,14 @@ public class DelimitedImportController extends ImportController {
             this.sampleFile = sampleFile;
         }
 
+        if (sampleFile == null && CollectionUtils.isEmpty(files)) {
+            clearFilters();
+        }
         updateSampleData();
+    }
+
+    public void clearFilters() {
+        configurationPane.clearFilters();
     }
 
     @Override

@@ -93,7 +93,7 @@ public class CommonNeighboursPlugin extends SimpleEditPlugin {
 
         final PluginParameter<BooleanParameterValue> communityParameter = BooleanParameterType.build(COMMUNITY_PARAMETER_ID);
         communityParameter.setName("Common Neighbours Soundarajan-Hopcroft Score");
-        communityParameter.setDescription("If both nodes are selected, adds bonus of 1 to score.");
+        communityParameter.setDescription("If both nodes are selected, adds bonus of 1 to score");
         communityParameter.setBooleanValue(false);
         parameters.addParameter(communityParameter);
 
