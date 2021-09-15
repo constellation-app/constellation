@@ -168,7 +168,7 @@ public class ParameterIOUtilities {
 
         // Only save if the query name parameter is present
         if (queryName != null) {
-            JsonIO.saveJsonPreferences(Optional.of(DATA_ACCESS_DIR), new ObjectMapper(), dataAccessUserPreferenceses);
+            JsonIO.saveJsonPreferences(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses);
         }
     }
 
