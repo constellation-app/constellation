@@ -1,13 +1,13 @@
 # Dimmed Selection
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Dimmed Selection Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,13 +15,13 @@
 <td>Run Select Dimmed</td>
 <td></td>
 <td>Selection -&gt; Select Dimmed</td>
-<td style="text-align: center;"><img src="../plugins/dim/resources/select_dimmed.png" alt="Select Dimmed Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/select_dimmed.png" alt="Select Dimmed Icon" /></td>
 </tr>
 <tr class="even">
 <td>Run Select Undimmed</td>
 <td></td>
 <td>Selection -&gt; Select Undimmed</td>
-<td style="text-align: center;"><img src="../plugins/dim/resources/select_undimmed.png" alt="Select Undimmed Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/select_undimmed.png" alt="Select Undimmed Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -37,7 +37,7 @@ Before Any Dimmed Selection is run:
 <div style="text-align: center">
 
 ![Graph before Dimmed Selection is
-run](resources/SelectDimmedBefore.png)
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectDimmedBefore.png)
 
 </div>
 
@@ -45,7 +45,8 @@ After Select Dimmed is run:
 
 <div style="text-align: center">
 
-![Graph after Select Dimmed is run](resources/SelectDimmedAfter.png)
+![Graph after Select Dimmed is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectDimmedAfter.png)
 
 </div>
 
@@ -53,6 +54,7 @@ After Select Undimmed is run:
 
 <div style="text-align: center">
 
-![Graph after Select Undimmed is run](resources/SelectUndimmedAfter.png)
+![Graph after Select Undimmed is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectUndimmedAfter.png)
 
 </div>

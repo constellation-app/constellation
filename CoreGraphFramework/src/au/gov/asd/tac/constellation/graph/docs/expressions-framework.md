@@ -53,14 +53,14 @@ is the current list of supported operators.
 
   
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Expression Query Operators</caption>
 <thead>
 <tr class="header">
-<th scope="col"><strong>Operator</strong></th>
-<th scope="col"><strong>Query Representation</strong></th>
-<th scope="col"><strong>Word Operator</strong></th>
-<th scope="col"><strong>Precedence</strong></th>
+<th><strong>Operator</strong></th>
+<th><strong>Query Representation</strong></th>
+<th><strong>Word Operator</strong></th>
+<th><strong>Precedence</strong></th>
 </tr>
 </thead>
 <tbody>

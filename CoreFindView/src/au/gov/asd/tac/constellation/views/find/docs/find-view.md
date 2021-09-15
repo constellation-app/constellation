@@ -1,6 +1,6 @@
 # Find and Replace
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Find Actions</caption>
 <colgroup>
 <col style="width: 25%" />
@@ -10,10 +10,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,7 +22,7 @@
 <td>Ctrl + F</td>
 <td>Edit -&gt; Find...</td>
 <td><div style="text-align: center">
-<img src="../resources/find.png" width="16" height="16" />
+<img src="../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
@@ -36,7 +36,7 @@ transactions, edges, or links.
 
 <div style="text-align: center">
 
-![Find](resources/FindView.png)
+![Find](../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/FindView.png)
 
 </div>
 
@@ -83,21 +83,21 @@ in various ways. Attribute types that are not registered as one of the
 following types will be searched as 'strings.' The types are as follows:
 
 -   Boolean searches:  
-    ![](resources/find-boolean.png)
+    ![](../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-boolean.png)
 -   Colour searches:  
-    ![](resources/find-color.png)
+    ![](../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-color.png)
 -   Date searches:  
-    ![](resources/find-date.png)
+    ![](../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-date.png)
 -   DateTime searches:  
-    ![](resources/find-datetime.png)
+    ![](../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-datetime.png)
 -   Float searches:  
-    ![](resources/find-float.png)
+    ![](../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-float.png)
 -   Icon searches:  
-    ![](resources/find-icon.png)
+    ![](../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-icon.png)
 -   String searches:  
-    ![](resources/find-string.png)
+    ![](../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-string.png)
 -   Time searches:  
-    ![](resources/find-time.png)
+    ![](../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-time.png)
 
 Once you have setup your search, click "Find" to select everything on
 the graph matching any or all (depending on what was selected) of the

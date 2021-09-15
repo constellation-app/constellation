@@ -2,11 +2,12 @@
 
 ## Add Mode
 
-Select the ![Add Mode Icon](resources/add.png) icon to switch to add
-mode. This mode allows the user to manually create nodes and
-transactions.
+Select the ![Add Mode
+Icon](../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/add.png)
+icon to switch to add mode. This mode allows the user to manually create
+nodes and transactions.
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Creating the Graph in Add Mode using the Mouse</caption>
 <colgroup>
 <col style="width: 50%" />
@@ -14,8 +15,8 @@ transactions.
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Graph Action</th>
-<th scope="col">Mouse Actions</th>
+<th>Graph Action</th>
+<th>Mouse Actions</th>
 </tr>
 </thead>
 <tbody>
@@ -58,21 +59,25 @@ or press ESC to abort creating it.
 
 When creating transactions, you can choose whether to generate directed
 or undirected transactions by selecting either the ![Directed
-Transactions Icon](resources/directed.png) icon (for directed) or the
-![Undirected Transactions Icon](resources/undirected.png) icon (for
-undirected). By default, directed will be selected.
+Transactions
+Icon](../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/directed.png)
+icon (for directed) or the ![Undirected Transactions
+Icon](../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/undirected.png)
+icon (for undirected). By default, directed will be selected.
 
 ## Selection Mode
 
-Select the ![Selection Mode Icon](resources/select.png) icon to switch
-to selection mode. This mode allows the user to select elements in the
-graph and perform graphical operations such as zoom, pan, and rotate.
+Select the ![Selection Mode
+Icon](../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/select.png)
+icon to switch to selection mode. This mode allows the user to select
+elements in the graph and perform graphical operations such as zoom,
+pan, and rotate.
 
 Navigating the graph in selection mode using the mouse is done as
 follows (In general the left button is for selecting, the middle button
 for rotating, and the right button for dragging and panning):
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Navigating the Graph in Selection Mode using the Mouse</caption>
 <colgroup>
 <col style="width: 50%" />
@@ -80,8 +85,8 @@ for rotating, and the right button for dragging and panning):
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Mouse Action</th>
-<th scope="col">Graph Action</th>
+<th>Mouse Action</th>
+<th>Graph Action</th>
 </tr>
 </thead>
 <tbody>

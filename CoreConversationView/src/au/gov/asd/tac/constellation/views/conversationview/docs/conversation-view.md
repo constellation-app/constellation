@@ -1,13 +1,13 @@
 # Conversation View
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Conversation View Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Open Conversation View</td>
 <td>Ctrl + Shift + C</td>
 <td>Views -&gt; Conversation View</td>
-<td style="text-align: center;"><img src="../resources/conversation_view.png" alt="Conversation View Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreConversationView/src/au/gov/asd/tac/constellation/views/conversationview/docs/resources/conversation_view.png" alt="Conversation View Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -34,7 +34,8 @@ then no conversation text will be displayed.
 
 <div style="text-align: center">
 
-![Conversation View](resources/ConversationView.png)
+![Conversation
+View](../constellation/CoreConversationView/src/au/gov/asd/tac/constellation/views/conversationview/docs/resources/ConversationView.png)
 
 </div>
 

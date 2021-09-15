@@ -1,13 +1,13 @@
 # Node Attribute
 
-<table data-border="1">
+<table class="table table-stiped">
 <caption>Node Attribute Arrangement Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Run Node Attribute Arrangement</td>
 <td></td>
 <td>Arrange -&gt; Node Attribute</td>
-<td style="text-align: center;"><img src="../group/resources/arrangeByNode.png" alt="Node Attribute Arrangement Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/arrangeByNode.png" alt="Node Attribute Arrangement Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -35,7 +35,7 @@ Example Node Attribute 2D Arrangement:
 <div style="text-align: center">
 
 ![Example Node Attribute 2D
-Arrangement](resources/NodeAttribute2DArrangement.png)
+Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/NodeAttribute2DArrangement.png)
 
 </div>
 
@@ -44,6 +44,6 @@ Example Node Attribute 3D Arrangement:
 <div style="text-align: center">
 
 ![Example Node Attribute 3D
-Arrangement](resources/NodeAttribute3DArrangement.png)
+Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/NodeAttribute3DArrangement.png)
 
 </div>

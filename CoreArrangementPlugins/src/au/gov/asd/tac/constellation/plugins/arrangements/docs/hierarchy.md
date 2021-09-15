@@ -1,13 +1,13 @@
 # Hierarchy
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Hierarchy Arrangement Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Run Hierarchy Arrangement</td>
 <td>Ctrl + H</td>
 <td>Arrange -&gt; Hierarchy</td>
-<td style="text-align: center;"><img src="../hierarchical/resources/arrangeInHierarchy.png" alt="Hierarchy Arrangement Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/arrangeInHierarchy.png" alt="Hierarchy Arrangement Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -31,7 +31,7 @@ grid, similarly for doublets (pairs of nodes only connected to each
 other).
 
 The roots are specified via Named Selections (refer
-[here](/au/gov/asd/tac/constellation/views/namedselection/docs/named-selections-view.html)
+[here](../constellation/CoreNamedSelectionView/src/au/gov/asd/tac/constellation/views/namedselection/docs/named-selections-view.md)
 for creating a named selection). When you run the arrangement, choose
 the named selection which will form the roots (the arrangement can't be
 run if no named selection exists). Only one component is required to
@@ -43,6 +43,7 @@ Example Hierarchy Arrangement:
 
 <div style="text-align: center">
 
-![Example Hierarchy Arrangement](resources/HierarchyArrangement.png)
+![Example Hierarchy
+Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/HierarchyArrangement.png)
 
 </div>

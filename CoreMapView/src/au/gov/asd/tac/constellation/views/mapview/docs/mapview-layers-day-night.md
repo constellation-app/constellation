@@ -5,6 +5,7 @@ currently night time (as well as the various stages of twilight).
 
 <div style="text-align: center">
 
-![Day/Night Layer](resources/MapLayersDayNight.png)
+![Day/Night
+Layer](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapLayersDayNight.png)
 
 </div>

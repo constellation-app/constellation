@@ -1,13 +1,13 @@
 # Attribute Editor
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Attribute Editor Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Open Attribute Editor</td>
 <td>Ctrl + Shift + E</td>
 <td>Views -&gt; Attribute Editor</td>
-<td style="text-align: center;"><img src="../resources/attribute_editor.png" width="16" height="16" alt="Attribute Editor Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/attribute_editor.png" width="16" height="16" alt="Attribute Editor Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -37,7 +37,8 @@ occur if only one graph element selected).
 
 <div style="text-align: center">
 
-![Attribute Editor](resources/AttributeEditor.png)
+![Attribute
+Editor](../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditor.png)
 
 </div>
 
@@ -59,7 +60,8 @@ Attribute Editor:
 ## Editing An Attribute
 
 To edit an attribute, select the nodes and transactions you want to edit
-and then click on the ![Edit Icon](resources/AttributeEditorEdit.png)
+and then click on the ![Edit
+Icon](../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorEdit.png)
 button. This will bring up a dialog box to change the value. Once you
 have finished changing the value, press "Ok" to apply the change. If
 more than one graph element is selected than the new value will be
@@ -73,21 +75,22 @@ the selected nodes/transactions only.
 ## Adding An Attribute
 
 To add an attribute to your graph, click on the ![Add
-Icon](resources/AttributeEditorAdd.png) button of the relevant graph
-element type and choose the attribute you want to add. If you select
-"Custom", you will be required to fill in all the details of the new
-attribute.
+Icon](../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorAdd.png)
+button of the relevant graph element type and choose the attribute you
+want to add. If you select "Custom", you will be required to fill in all
+the details of the new attribute.
 
 ## Editing Primary Key
 
 From the Attribute Editor, you can also edit the primary key for a graph
 element type (recall these are the attributes which uniquely define a
 graph element). To do so, click on the ![Primary Key
-Icon](resources/AttributeEditorKey.png) button of the relevant graph
-element type and select which elements you want to be a part of the
-primary key. You will only be able to choose from attributes that are
-already on the graph (refer to adding an attribute if the attribute you
-want to add to the primary key isn't currently on the graph).
+Icon](../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorKey.png)
+button of the relevant graph element type and select which elements you
+want to be a part of the primary key. You will only be able to choose
+from attributes that are already on the graph (refer to adding an
+attribute if the attribute you want to add to the primary key isn't
+currently on the graph).
 
 ## Autocomplete with Schema
 

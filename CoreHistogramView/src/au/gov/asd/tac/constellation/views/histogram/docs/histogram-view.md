@@ -1,6 +1,6 @@
 # Histogram
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Histogram Actions</caption>
 <colgroup>
 <col style="width: 25%" />
@@ -10,10 +10,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,7 +22,7 @@
 <td>Ctrl + Shift + H</td>
 <td>Views -&gt; Histogram</td>
 <td><div style="text-align: center">
-<img src="../resources/histogram.png" width="16" height="16" />
+<img src="../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/histogram.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
@@ -36,7 +36,8 @@ The Histogram View provides a way to summarise both the structural
 properties of a graph and the values of attributes, as well as the
 capability to filter and make selections based on these properties.
 
-![Histogram View](resources/Histogram-Overview.png)
+![Histogram
+View](../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Overview.png)
 
 ## Histogram Panel
 
@@ -243,7 +244,8 @@ The Selection Mode will toggle the interactivity of the Histogram View.
     Holding the shift key while left clicking will change red elements
     of rows to yellow. Holding the ctrl key while left clicking will
     toggle elements of rows between red and yellow. ![Within Existing
-    Selection example](resources/Histogram-Within.png)
+    Selection
+    example](../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Within.png)
 -   *Add To Existing Selection* - Clicking rows will not change the
     selection on the graph until the adjacent "Select" button is
     pressed. This mode will allow for adding rows to the existing graph
@@ -253,11 +255,12 @@ The Selection Mode will toggle the interactivity of the Histogram View.
     elements. Holding the shift key while left clicking will change blue
     elements of rows to yellow. Holding the ctrl key while left clicking
     will toggle elements of rows between blue and yellow. ![Add to
-    Existing Selection example](resources/Histogram-Add.png)
+    Existing Selection
+    example](../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Add.png)
 
 ## Filter
 
-![](resources/Histogram-Filter.png)
+![](../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Filter.png)
 
 The Filter on Selection button will hide unselected elements from the
 Histogram View, until such time as the Clear Filter Button is pressed.

@@ -1,13 +1,13 @@
 # Import from Database
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Import From Database Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Open Database Importer</td>
 <td></td>
 <td>File -&gt; Import -&gt; From Database...</td>
-<td style="text-align: center;"><img src="../jdbc/resources/jdbc_import.png" alt="Import From Database Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/jdbc_import.png" alt="Import From Database Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -29,7 +29,8 @@ database using a JDBC Connection.
 
 <div style="text-align: center">
 
-![Database Importer](resources/dragging_attributes_jdbc_import.png)
+![Database
+Importer](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/dragging_attributes_jdbc_import.png)
 
 </div>
 

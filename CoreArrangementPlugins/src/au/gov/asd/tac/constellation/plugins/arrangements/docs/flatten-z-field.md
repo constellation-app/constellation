@@ -1,13 +1,13 @@
 # Flatten Z-Field
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Flatten Z-Field Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Run Flatten Z-Field</td>
 <td></td>
 <td>Arrange -&gt; Flatten Z-Field</td>
-<td style="text-align: center;"><img src="../utilities/resources/zflat.png" alt="Flatten Z-Field Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/zflat.png" alt="Flatten Z-Field Icon" /></td>
 </tr>
 </tbody>
 </table>

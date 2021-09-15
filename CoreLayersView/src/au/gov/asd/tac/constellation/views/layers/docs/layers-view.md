@@ -1,6 +1,6 @@
 # Layers View
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Layers View Actions</caption>
 <colgroup>
 <col style="width: 25%" />
@@ -10,10 +10,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,7 +22,7 @@
 <td>Ctrl + Shift + L</td>
 <td>Experimental -&gt; Views -&gt; Layers View</td>
 <td><div style="text-align: center">
-<img src="../resources/layers-view.png" width="16" height="16" />
+<img src="../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-view.png" width="16" height="16" />
 </div></td>
 </tr>
 <tr class="even">
@@ -60,7 +60,8 @@ attribute value toggled to 0.0 (invisible).
 Arrangements on graphs with a visual schema will be ran on the base
 layer 0.
 
-![Fig.1 - Layers view interface](resources/layers-view-example.png)
+![Fig.1 - Layers view
+interface](../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-view-example.png)
 
   
 
@@ -81,7 +82,7 @@ results is needed.
 ## Layer Types
 
 ![Fig.2 - Right-click context menu used for adding elements to a manual
-layer.](resources/layers-context.png)
+layer.](../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-context.png)
 
   
 
@@ -110,5 +111,5 @@ NOTE: Layers View does not allow for the use of the assignment operator
 = or keyword assign.
 
 Click
-[here](nbdocs://au.gov.asd.tac.constellation.graph/au/gov/asd/tac/constellation/graph/docs/expressions-framework.html)
+[here](../constellation/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/docs/expressions-framework.md)
 for more information on the structure of the expression framework

@@ -1,13 +1,13 @@
 # Quality Control View
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Quality Control View Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Open Quality Control View</td>
 <td>Keyboard Shortcut: Ctrl + Shift + Q</td>
 <td>Views -&gt; Quality Control View</td>
-<td style="text-align: center;"><img src="../resources/quality-control-view.png" width="16" height="16" alt="Quality Control View Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreQualityControlView/src/au/gov/asd/tac/constellation/views/qualitycontrol/docs/resources/quality-control-view.png" width="16" height="16" alt="Quality Control View Icon" /></td>
 </tr>
 <tr class="even">
 <td>Select rows</td>
@@ -66,7 +66,8 @@ via the buttons at the bottom of the view.
 
 <div style="text-align: center">
 
-![Quality Control View](resources/QualityControlView.png)
+![Quality Control
+View](../constellation/CoreQualityControlView/src/au/gov/asd/tac/constellation/views/qualitycontrol/docs/resources/QualityControlView.png)
 
 </div>
 

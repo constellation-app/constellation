@@ -1,13 +1,13 @@
 # Sphere
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Sphere Arrangement Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Run Sphere Arrangement</td>
 <td>Ctrl + Alt + K</td>
 <td>Arrange -&gt; Sphere</td>
-<td style="text-align: center;"><img src="../circle/resources/circle3D.png" alt="Sphere Arrangement Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/circle3D.png" alt="Sphere Arrangement Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -29,6 +29,7 @@ Example Sphere Arrangement:
 
 <div style="text-align: center">
 
-![Example Sphere Arrangement](resources/SphereArrangement.png)
+![Example Sphere
+Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/SphereArrangement.png)
 
 </div>

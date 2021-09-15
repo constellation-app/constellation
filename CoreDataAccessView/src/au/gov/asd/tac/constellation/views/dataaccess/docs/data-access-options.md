@@ -1,8 +1,8 @@
 # Data Access View Options
 
 All the options can be accessed via the ![Options
-Button](resources/DataAccessOptions.png) menu in the top left corner of
-the Data Access View.
+Button](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessOptions.png)
+menu in the top left corner of the Data Access View.
 
 ## Saving and loading data access preferences
 

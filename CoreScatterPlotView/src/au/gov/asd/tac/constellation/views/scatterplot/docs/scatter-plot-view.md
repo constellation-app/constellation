@@ -1,6 +1,6 @@
 # Scatter Plot
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Scatter Plot Actions</caption>
 <colgroup>
 <col style="width: 25%" />
@@ -10,10 +10,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,7 +22,7 @@
 <td>Ctrl + Shift + O</td>
 <td>Views -&gt; Scatter Plot</td>
 <td><div style="text-align: center">
-<img src="../resources/scatter-plot.png" width="16" height="16" />
+<img src="../constellation/CoreScatterPlotView/src/au/gov/asd/tac/constellation/views/scatterplot/docs/resources/scatter-plot.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
@@ -36,7 +36,8 @@ rather oddities within patterns in your graph.
 
 <div style="text-align: center">
 
-![Scatter Plot View](resources/ScatterPlot.png)
+![Scatter Plot
+View](../constellation/CoreScatterPlotView/src/au/gov/asd/tac/constellation/views/scatterplot/docs/resources/ScatterPlot.png)
 
 </div>
 

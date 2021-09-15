@@ -9,7 +9,7 @@ indicate whether a relative or absolute range is being used.
 <div style="text-align: center">
 
 ![Datetime Range Global
-Parameter](resources/DataAccessDatetimeRange.png)
+Parameter](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessDatetimeRange.png)
 
 </div>
 

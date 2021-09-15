@@ -1,13 +1,13 @@
 # Export From Constellation
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Export Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,37 +15,37 @@
 <td>Export to PNG</td>
 <td></td>
 <td>File -&gt; Export -&gt; To Screenshot Image...</td>
-<td style="text-align: center;"><img src="../image/exportToImage.png" alt="Export to Screenshot Image Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/exportToImage.png" alt="Export to Screenshot Image Icon" /></td>
 </tr>
 <tr class="even">
 <td>Export to JSON</td>
 <td></td>
 <td>File -&gt; Export -&gt; To JSON...</td>
-<td style="text-align: center;"><img src="../json/exportToJSON.png" alt="Export to JSON Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/exportToJSON.png" alt="Export to JSON Icon" /></td>
 </tr>
 <tr class="odd">
 <td>Export to GeoJSON</td>
 <td></td>
 <td>File -&gt; Export -&gt; To GeoJSON...</td>
-<td style="text-align: center;"><img src="../geospatial/exportToGeoJSON.png" alt="Export to GeoJSON Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/exportToGeoJSON.png" alt="Export to GeoJSON Icon" /></td>
 </tr>
 <tr class="even">
 <td>Export to GeoPackage</td>
 <td></td>
 <td>File -&gt; Export -&gt; To GeoPackage...</td>
-<td style="text-align: center;"><img src="../geospatial/exportToGeoPackage.png" alt="Export to GeoPackage Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/exportToGeoPackage.png" alt="Export to GeoPackage Icon" /></td>
 </tr>
 <tr class="odd">
 <td>Export to Shapefile</td>
 <td></td>
 <td>File -&gt; Export -&gt; To Shapefile...</td>
-<td style="text-align: center;"><img src="../geospatial/exportToShapeFile.png" alt="Export to Shapefile Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/exportToShapeFile.png" alt="Export to Shapefile Icon" /></td>
 </tr>
 <tr class="even">
 <td>Export to KML</td>
 <td></td>
 <td>File -&gt; Export -&gt; To KML...</td>
-<td style="text-align: center;"><img src="../geospatial/exportToKML.png" alt="Export to KML Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/exportToKML.png" alt="Export to KML Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -60,7 +60,7 @@ this page:
     .png
 -   *JSON* - Export a JSON representation of the graph (described in
     detail
-    [here](/au/gov/asd/tac/constellation/graph/docs/constellation-file-format.html))
+    [here](../constellation/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/docs/constellation-file-format.md))
 -   *GeoJSON* - Export a GeoJSON representation of the graph
 -   *GeoPackage* - Export the graph as a GeoPackage file
 -   *Shapefile* - Export the graph as a Shapefile file
@@ -111,5 +111,5 @@ this page:
 
 Constellation also provides options to export to CSV and Excel (XLSX)
 via the Table View. Refer
-[here](/au/gov/asd/tac/constellation/views/tableview/docs/table-view.html)
+[here](../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/table-view.md)
 for details.

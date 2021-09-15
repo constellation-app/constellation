@@ -6,6 +6,6 @@ colored segments which equally separate markers.
 <div style="text-align: center">
 
 ![Thiessen Polygon
-Layer](resources/mapview-layers-thiessen-polygons.png)
+Layer](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/mapview-layers-thiessen-polygons.png)
 
 </div>

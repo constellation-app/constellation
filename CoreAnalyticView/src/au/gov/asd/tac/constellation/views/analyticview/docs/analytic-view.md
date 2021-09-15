@@ -10,10 +10,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -39,10 +39,12 @@ functionality from scoring based on the structure of a graph, to
 clustering and partitioning the graph, and even analysing content stored
 on a graph.
 
+<div style="text-align: center">
 
 ![Analytic
 View](../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/AnalyticView.png)
 
+</div>
 
 ## Asking a Question
 

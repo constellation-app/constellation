@@ -21,4 +21,4 @@ the data in the same way, but puts transactions on a separate layer
 options to see which one works best for you.
 
 ![Layer by Time
-Interface](resources/layer_by_time_parameters_gui_screenshot.jpg)
+Interface](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/layer_by_time_parameters_gui_screenshot.jpg)

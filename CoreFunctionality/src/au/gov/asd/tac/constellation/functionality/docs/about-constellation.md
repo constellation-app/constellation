@@ -10,6 +10,7 @@ composition and many more.
 
 <div style="text-align: center">
 
-![Constellation Overview](resources/Constellation.png)
+![Constellation
+Overview](../constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/docs/resources/Constellation.png)
 
 </div>

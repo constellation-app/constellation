@@ -1,13 +1,13 @@
 # Perspective Bookmarks
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Perspective Bookmarks Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Open Perspective Bookmarks</td>
 <td></td>
 <td>Experimental -&gt; Views -&gt; Perspective Bookmarks</td>
-<td style="text-align: center;"><img src="../perspectives/resources/perspective-bookmarks.png" alt="Perspective Bookmarks Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreGraphUtilities/src/au/gov/asd/tac/constellation/graph/utilities/docs/resources/perspective-bookmarks.png" alt="Perspective Bookmarks Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -30,7 +30,8 @@ on your graph.
 
 <div style="text-align: center">
 
-![Perspective Bookmarks](resources/PerspectiveBookmarks.png)
+![Perspective
+Bookmarks](../constellation/CoreGraphUtilities/src/au/gov/asd/tac/constellation/graph/utilities/docs/resources/PerspectiveBookmarks.png)
 
 </div>
 

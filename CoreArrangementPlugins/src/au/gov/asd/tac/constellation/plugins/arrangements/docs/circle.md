@@ -1,13 +1,13 @@
 # Circle
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Circle Arrangement Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Run Circle Arrangement</td>
 <td>Ctrl + K</td>
 <td>Arrange -&gt; Circle</td>
-<td style="text-align: center;"><img src="../circle/resources/arrangeInCircle.png" alt="Circle Arrangement Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/arrangeInCircle.png" alt="Circle Arrangement Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -30,6 +30,7 @@ Example Circle Arrangement:
 
 <div style="text-align: center">
 
-![Example Circle Arrangement](resources/CircleArrangement.png)
+![Example Circle
+Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/CircleArrangement.png)
 
 </div>

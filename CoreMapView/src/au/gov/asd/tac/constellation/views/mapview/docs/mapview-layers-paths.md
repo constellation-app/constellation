@@ -25,6 +25,7 @@ maximum line width, the widths will be scaled to the maximum line width.
 
 <div style="text-align: center">
 
-![Location Paths Layer](resources/mapview-layers-paths.png)
+![Location Paths
+Layer](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/mapview-layers-paths.png)
 
 </div>

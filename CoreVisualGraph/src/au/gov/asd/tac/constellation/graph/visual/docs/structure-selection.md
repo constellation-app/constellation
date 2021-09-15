@@ -1,13 +1,13 @@
 # Structure Selection
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Structure Selection Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,37 +15,37 @@
 <td>Run Select Singletons</td>
 <td></td>
 <td>Selection -&gt; Select Singletons</td>
-<td style="text-align: center;"><img src="../plugins/select/structure/resources/singleton.png" alt="Select Singletons Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/singleton.png" alt="Select Singletons Icon" /></td>
 </tr>
 <tr class="even">
 <td>Run Select Pendants</td>
 <td></td>
 <td>Selection -&gt; Select Pendants</td>
-<td style="text-align: center;"><img src="../plugins/select/structure/resources/pendant.png" alt="Select Pendants Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/pendant.png" alt="Select Pendants Icon" /></td>
 </tr>
 <tr class="odd">
 <td>Run Select Loops</td>
 <td></td>
 <td>Selection -&gt; Select Loops</td>
-<td style="text-align: center;"><img src="../plugins/select/structure/resources/loop.png" alt="Select Loops Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/loop.png" alt="Select Loops Icon" /></td>
 </tr>
 <tr class="even">
 <td>Run Select Sources</td>
 <td></td>
 <td>Selection -&gt; Select Sources</td>
-<td style="text-align: center;"><img src="../plugins/select/structure/resources/source.png" alt="Select Sources Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/source.png" alt="Select Sources Icon" /></td>
 </tr>
 <tr class="odd">
 <td>Run Select Sinks</td>
 <td></td>
 <td>Selection -&gt; Select Sinks</td>
-<td style="text-align: center;"><img src="../plugins/select/structure/resources/sink.png" alt="Select Sinks Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/sink.png" alt="Select Sinks Icon" /></td>
 </tr>
 <tr class="even">
 <td>Run Select Backbone</td>
 <td></td>
 <td>Selection -&gt; Select Backbone</td>
-<td style="text-align: center;"><img src="../plugins/select/structure/resources/backbone.png" alt="Select Backbone Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/backbone.png" alt="Select Backbone Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -62,7 +62,7 @@ After Select Singletons is run (nothing previously selected):
 <div style="text-align: center">
 
 ![Graph after Select Singletons is
-run](resources/SelectSingletonsAfter.png)
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectSingletonsAfter.png)
 
 </div>
 
@@ -75,7 +75,8 @@ After Select Pendants is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Pendants is run](resources/SelectPendantsAfter.png)
+![Graph after Select Pendants is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectPendantsAfter.png)
 
 </div>
 
@@ -87,7 +88,8 @@ After Select Loops is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Loops is run](resources/SelectLoopsAfter.png)
+![Graph after Select Loops is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectLoopsAfter.png)
 
 </div>
 
@@ -100,7 +102,8 @@ After Select Sources is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Sources is run](resources/SelectSourcesAfter.png)
+![Graph after Select Sources is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectSourcesAfter.png)
 
 </div>
 
@@ -113,7 +116,8 @@ After Select Sinks is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Sinks is run](resources/SelectSinksAfter.png)
+![Graph after Select Sinks is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectSinksAfter.png)
 
 </div>
 
@@ -127,6 +131,7 @@ After Select Backbone is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Backbone is run](resources/SelectBackboneAfter.png)
+![Graph after Select Backbone is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectBackboneAfter.png)
 
 </div>

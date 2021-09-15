@@ -5,7 +5,8 @@ interacting with the map.
 
 <div style="text-align: center">
 
-![Tools Overlay](resources/MapOverlayTools.png)
+![Tools
+Overlay](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapOverlayTools.png)
 
 </div>
 

@@ -1,6 +1,6 @@
 # Schema View
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Schema View Actions</caption>
 <colgroup>
 <col style="width: 25%" />
@@ -10,10 +10,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,7 +22,7 @@
 <td>Ctrl + Shift + S</td>
 <td>Views -&gt; Schema View</td>
 <td><div style="text-align: center">
-<img src="../resources/schema_view.png" width="16" height="16" />
+<img src="../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/schema_view.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
@@ -38,7 +38,8 @@ current graph.
 
 <div style="text-align: center">
 
-![Schema View](resources/SchemaView.png)
+![Schema
+View](../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaView.png)
 
 </div>
 
@@ -50,11 +51,14 @@ you can view the attribute type, attribute name, data type, and
 description. The attribute type is identified by the icon next to the
 attribute name:
 
--   Node - ![Node Attribute Icon](resources/SchemaNodeAttribute.png)
+-   Node - ![Node Attribute
+    Icon](../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaNodeAttribute.png)
 -   Transaction - ![Transaction Attribute
-    Icon](resources/SchemaTransactionAttribute.png)
--   Graph - ![Graph Attribute Icon](resources/SchemaGraphAttribute.png)
--   Meta - ![Meta Attribute Icon](resources/SchemaMetaAttribute.png)
+    Icon](../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaTransactionAttribute.png)
+-   Graph - ![Graph Attribute
+    Icon](../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaGraphAttribute.png)
+-   Meta - ![Meta Attribute
+    Icon](../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaMetaAttribute.png)
 
 ## Types
 

@@ -1,13 +1,13 @@
 # Hop Out
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Hop Out Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,19 +15,19 @@
 <td>Run Hop Out Half</td>
 <td>Ctrl + Shift + Right</td>
 <td>Selection -&gt; Hop Out Half</td>
-<td style="text-align: center;"><img src="../plugins/hop/resources/hop_half.png" alt="Hop Out Half Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/hop_half.png" alt="Hop Out Half Icon" /></td>
 </tr>
 <tr class="even">
 <td>Run Hop Out One</td>
 <td>Ctrl + Right</td>
 <td>Selection -&gt; Hop Out One</td>
-<td style="text-align: center;"><img src="../plugins/hop/resources/hop_one.png" alt="Hop Out One Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/hop_one.png" alt="Hop Out One Icon" /></td>
 </tr>
 <tr class="odd">
 <td>Run Hop Out Full</td>
 <td></td>
 <td>Selection -&gt; Hop Out Full</td>
-<td style="text-align: center;"><img src="../plugins/hop/resources/hop_full.png" alt="Hop Out Full Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/hop_full.png" alt="Hop Out Full Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -59,7 +59,8 @@ Before Any Hop Out is run:
 
 <div style="text-align: center">
 
-![Graph before Hop Out is run](resources/HopOutBefore.png)
+![Graph before Hop Out is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/HopOutBefore.png)
 
 </div>
 
@@ -67,7 +68,8 @@ After Hop Out Half is run:
 
 <div style="text-align: center">
 
-![Graph after Hop Out Half is run](resources/HopOutHalfAfter.png)
+![Graph after Hop Out Half is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/HopOutHalfAfter.png)
 
 </div>
 
@@ -75,7 +77,8 @@ After Hop Out One is run:
 
 <div style="text-align: center">
 
-![Graph after Hop Out One is run](resources/HopOutOneAfter.png)
+![Graph after Hop Out One is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/HopOutOneAfter.png)
 
 </div>
 
@@ -83,6 +86,7 @@ After Hop Out Full is run:
 
 <div style="text-align: center">
 
-![Graph after Hop Out Full is run](resources/HopOutFullAfter.png)
+![Graph after Hop Out Full is
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/HopOutFullAfter.png)
 
 </div>

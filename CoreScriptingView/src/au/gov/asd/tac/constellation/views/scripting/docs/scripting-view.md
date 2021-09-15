@@ -1,6 +1,6 @@
 # Scripting View
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Scripting View Actions</caption>
 <colgroup>
 <col style="width: 25%" />
@@ -10,10 +10,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,7 +22,7 @@
 <td>Ctrl + Shift + X</td>
 <td>Views -&gt; Scripting View</td>
 <td><div style="text-align: center">
-<img src="../scripting_view.png" width="16" height="16" />
+<img src="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/resources/scripting_view.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
@@ -41,7 +41,8 @@ data-structures.
 
 <div style="text-align: center">
 
-![Scripting View](resources/ScriptingView.png)
+![Scripting
+View](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/resources/ScriptingView.png)
 
 </div>
 
@@ -52,14 +53,14 @@ objects for you to make use of in your scripts:
     allows you to take a copy for reading from using "readableGraph()",
     or a copy for writing to using "writableGraph(editName)". For
     information on how to use this object, refer to the
-    [javadoc](javadoc/au-gov-asd-tac-constellation-scripting/au/gov/asd/tac/constellation/scripting/graph/SGraph.html).
+    [javadoc](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SGraph.html).
 -   *utilities* - This object provides various convenience functions
     provided by the core developers (e.g. "openFile(dirKey)" to activate
     a Netbeans file open dialog and return the selected file path as a
     string). If your chosen scripting language is Python, you can use
     its "dir" function to see what else is available, otherwise refer to
     the
-    [javadoc](javadoc/au-gov-asd-tac-constellation-scripting/au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html)
+    [javadoc](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/utilities/ScriptingUtilities.html)
     for more information on how to use this object.
 
 You can add your own custom objects by extending the ScriptingModule
@@ -75,7 +76,7 @@ from and writing to the graph. Under the hood, the graph object is an
 "SGraph", which provides access for interrogation and editing of the
 underlying Constellation graph. The SGraph object, as well as all the
 objects obtainable from an SGraph are documented in the [API
-javadoc](javadoc/au-gov-asd-tac-constellation-scripting/index.html).
+javadoc](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index.html).
 
 Using the utilities object, you can access all other open graphs using
 "getOpenGraphs()". This function will return a map or dictionary of

@@ -1,6 +1,6 @@
 # Plugin Reporter
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Plugin Reporter Actions</caption>
 <colgroup>
 <col style="width: 25%" />
@@ -10,10 +10,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,7 +22,7 @@
 <td>Ctrl + Shift + P</td>
 <td>Views -&gt; Plugin Reporter</td>
 <td><div style="text-align: center">
-<img src="../resources/plugin-reporter.png" width="16" height="16" />
+<img src="../constellation/CorePluginReporterView/src/au/gov/asd/tac/constellation/views/pluginreporter/docs/resources/plugin-reporter.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
@@ -35,7 +35,8 @@ currently in focus.
 
 <div style="text-align: center">
 
-![Plugin Reporter](resources/PluginReporter.png)
+![Plugin
+Reporter](../constellation/CorePluginReporterView/src/au/gov/asd/tac/constellation/views/pluginreporter/docs/resources/PluginReporter.png)
 
 </div>
 
@@ -46,31 +47,36 @@ based on the current status of the plugin they represent.
 -   Green indicates the plugin is currently running.
     <div style="text-align: center">
 
-    ![ Running Plugin Report](resources/PluginReportGreen.png)
+    ![ Running Plugin
+    Report](../constellation/CorePluginReporterView/src/au/gov/asd/tac/constellation/views/pluginreporter/docs/resources/PluginReportGreen.png)
 
     </div>
 -   Blue indicates that the plugin was cancelled.
     <div style="text-align: center">
 
-    ![Cancelled Plugin Report](resources/PluginReportBlue.png)
+    ![Cancelled Plugin
+    Report](../constellation/CorePluginReporterView/src/au/gov/asd/tac/constellation/views/pluginreporter/docs/resources/PluginReportBlue.png)
 
     </div>
 -   Orange indicates that an anticipated error occurred.
     <div style="text-align: center">
 
-    ![Anticipated Error Plugin Report](resources/PluginReportOrange.png)
+    ![Anticipated Error Plugin
+    Report](../constellation/CorePluginReporterView/src/au/gov/asd/tac/constellation/views/pluginreporter/docs/resources/PluginReportOrange.png)
 
     </div>
 -   Red indicates that an unexpected error occurred.
     <div style="text-align: center">
 
-    ![Unexpected Error Plugin Report](resources/PluginReportRed.png)
+    ![Unexpected Error Plugin
+    Report](../constellation/CorePluginReporterView/src/au/gov/asd/tac/constellation/views/pluginreporter/docs/resources/PluginReportRed.png)
 
     </div>
 -   Grey indicates that the plugin finished successfully.
     <div style="text-align: center">
 
-    ![Successful Plugin Report](resources/PluginReportGrey.png)
+    ![Successful Plugin
+    Report](../constellation/CorePluginReporterView/src/au/gov/asd/tac/constellation/views/pluginreporter/docs/resources/PluginReportGrey.png)
 
     </div>
 

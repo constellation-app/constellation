@@ -4,12 +4,12 @@ Nodes are displayed using a combination of several icons in a 64x64
 square. Icons need not be square: they may use transparent pixels to be
 displayed with different shapes.
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Different attributes that make up a node icon</caption>
 <thead>
 <tr class="header">
-<th scope="col">Attribute</th>
-<th scope="col">Description</th>
+<th>Attribute</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>

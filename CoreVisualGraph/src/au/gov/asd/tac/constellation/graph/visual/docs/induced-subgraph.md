@@ -1,13 +1,13 @@
 # Induced Subgraph
 
-<table data-border="1">
+<table class="table table-triped">
 <caption>Induced Subgraph Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,13 +15,13 @@
 <td>Run Select Half Hop Induced Subgraph</td>
 <td></td>
 <td>Selection -&gt; Select Half Hop Induced Subgraph</td>
-<td style="text-align: center;"><img src="../plugins/select/structure/resources/half_hop_induced_subgraph.png" alt="Select Half Hop Induced Subgraph Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/half_hop_induced_subgraph.png" alt="Select Half Hop Induced Subgraph Icon" /></td>
 </tr>
 <tr class="even">
 <td>Run Select One Hop Induced Subgraph</td>
 <td></td>
 <td>Selection -&gt; Select One Hop Induced Subgraph</td>
-<td style="text-align: center;"><img src="../plugins/select/structure/resources/one_hop_induced_subgraph.png" alt="Select One Hop Induced Subgraph Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/one_hop_induced_subgraph.png" alt="Select One Hop Induced Subgraph Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -45,7 +45,7 @@ Before Any Induced Subgraph Selection is run:
 <div style="text-align: center">
 
 ![Graph before Induced Subgraph Selection is
-run](resources/SelectInducedSubgraphBefore.png)
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectInducedSubgraphBefore.png)
 
 </div>
 
@@ -54,7 +54,7 @@ After Select Half Hop Induced Subgraph is run:
 <div style="text-align: center">
 
 ![Graph after Select Half Hop Induced Subgraph is
-run](resources/SelectHalfHopInducedSubgraphAfter.png)
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectHalfHopInducedSubgraphAfter.png)
 
 </div>
 
@@ -63,6 +63,6 @@ After Select One Hop Induced Subgraph is run:
 <div style="text-align: center">
 
 ![Graph after Select One Hop Induced Subgraph is
-run](resources/SelectOneHopInducedSubgraphAfter.png)
+run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectOneHopInducedSubgraphAfter.png)
 
 </div>

@@ -1,13 +1,13 @@
 # Import From File
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Import From File Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Open Delimited File Importer</td>
 <td></td>
 <td>File -&gt; Import -&gt; From File...</td>
-<td style="text-align: center;"><img src="../delimited/resources/importDelimited.png" alt="Import From File Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/importDelimited.png" alt="Import From File Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -35,7 +35,8 @@ following sources:
 
 <div style="text-align: center">
 
-![Delimited File Importer](resources/DelimitedFileImporter.png)
+![Delimited File
+Importer](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/DelimitedFileImporter.png)
 
 </div>
 
@@ -45,8 +46,9 @@ The following is a high level workflow an analyst can follow (explained
 in detail later on):
 
 1.  Select the file type you want to import with File Parser
-2.  Click on the ![Add File Button](resources/plus_coloured.png) to add
-    files.
+2.  Click on the ![Add File
+    Button](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_coloured.png)
+    to add files.
 3.  Select your destination graph.
 4.  Drag and drop attributes from the bottom pane onto your columns.
 5.  Right click an attribute for more options.
@@ -66,10 +68,11 @@ Hints:
 ## Add and Remove Files to Import
 
 Add files to import using the ![Add File
-Button](resources/plus_coloured.png) and remove a file using the
-![Remove File Button](resources/minus_coloured.png). Once a file has
-been selected, the full name will appear. If the entire file location is
-not visible, extend the window to see the full name.
+Button](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_coloured.png)
+and remove a file using the ![Remove File
+Button](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/minus_coloured.png).
+Once a file has been selected, the full name will appear. If the entire
+file location is not visible, extend the window to see the full name.
 
 Once you add a file, the Configuration section will display the first
 100 rows of the file as a preview. If you have imported multiple files,
@@ -108,8 +111,9 @@ right click on the DateTime attribute and select the format from the
 drop down list or enter your own.
 
 If you want to create your own attributes then you can by clicking on
-![Add Attribute Icon](resources/plus_black.png) and selecting a type and
-entering a label.
+![Add Attribute
+Icon](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_black.png)
+and selecting a type and entering a label.
 
 ## Directed and Undirected Transactions
 

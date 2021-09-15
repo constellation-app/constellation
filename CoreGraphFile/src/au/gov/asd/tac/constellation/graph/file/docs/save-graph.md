@@ -1,7 +1,7 @@
 # Save Graph
 
 Constellation saves the graph to a custom format (check it out
-[here](/au/gov/asd/tac/constellation/graph/docs/constellation-file-format.html))
+[here](../constellation/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/docs/constellation-file-format.md))
 with file suffix ".star". A saved Constellation file retains almost
 everything about the graph's current state including layout, selections,
 attribute definitions and values.

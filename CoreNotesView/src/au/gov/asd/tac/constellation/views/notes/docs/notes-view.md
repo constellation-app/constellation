@@ -1,13 +1,13 @@
 # Notes View
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Notes View Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +15,7 @@
 <td>Open Notes View</td>
 <td>Ctrl + Shift + A</td>
 <td>Views -&gt; Notes View</td>
-<td style="text-align: center;"><img src="../resources/notes-view.png" alt="Notes View Icon" /></td>
+<td style="text-align: center;"><img src="../constellatin/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/docs/resources/notes-view.png" alt="Notes View Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -30,7 +30,8 @@ plugins have been run.
 
 <div style="text-align: center">
 
-![Notes View](resources/NotesView.png)
+![Notes
+View](../constellatin/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/docs/resources/NotesView.png)
 
 </div>
 
