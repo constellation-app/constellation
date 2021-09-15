@@ -1,8 +1,15 @@
 # Analytic View
 
 <table class="table table-striped">
+<caption>Analytic View Actions</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th scope="col">Constellation Action</th>
 <th scope="col">Keyboard Shortcut</th>
 <th scope="col">User Action</th>
@@ -10,7 +17,7 @@
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Open Analytic View</td>
 <td>Ctrl + Shift + Z</td>
 <td>Views -&gt; Analytic View</td>
@@ -34,7 +41,7 @@ on a graph.
 
 <div style="text-align: center">
 
-![Analytic View](resources/AnalyticView.png)
+![Analytic View](../resources/AnalyticView.png)
 
 </div>
 
@@ -56,7 +63,7 @@ help pages for selected analytics here by clicking on the
 "Documentation" tab.
 
 Once you have finished configuring your question, you can run it by
-pressing the ![Run Icon](resources/AnalyticRun.png) button.
+pressing the ![Run Icon](../resources/AnalyticRun.png) button.
 
 ## Visualising the Results
 
