@@ -418,7 +418,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         final MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
-        menuBar.setMinHeight(32);
+        menuBar.setMinHeight(36);
         menuBar.setPadding(new Insets(4));
 
         final VBox vbox = new VBox(menuBar, searchPluginTextField, dataAccessTabPane);
@@ -445,7 +445,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         // add some padding between the Go button and the previous button to avoid accidental clicking
         final Region region = new Region();
-        region.setMinSize(10, 0);
+        region.setMinSize(20, 0);
         rabRegionExectueHBox.getChildren().addAll(region, executeButton);
         options.add(helpAddFavHBox, 0, 0);
         options.add(rabRegionExectueHBox, 1, 0);
@@ -454,20 +454,23 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         getChildren().add(options);
 
         widthProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.intValue() <= 455) {
+            if (newValue.intValue() <= 460) {
                 options.getChildren().remove(helpAddFavHBox);
                 options.getChildren().remove(rabRegionExectueHBox);
                 options.add(rabRegionExectueHBox, 0, 0);
                 options.add(helpAddFavHBox, 0, 1);
                 options.setHalignment(helpAddFavHBox, HPos.LEFT);
-                menuBar.setPadding(new Insets(4, 4, 20, 4));
+                menuBar.setMinHeight(60);
+//                menuBar.setPadding(new Insets(4, 4, 24, 4));
             } else {
                 options.getChildren().remove(helpAddFavHBox);
                 options.getChildren().remove(rabRegionExectueHBox);
                 options.add(helpAddFavHBox, 0, 0);
                 options.add(rabRegionExectueHBox, 1, 0);
                 options.setHalignment(helpAddFavHBox, HPos.CENTER);
-                menuBar.setPadding(new Insets(4));
+                menuBar.setMinHeight(36);
+//                menuBar.setPadding(new Insets(4));
+
             }
         });
     }
