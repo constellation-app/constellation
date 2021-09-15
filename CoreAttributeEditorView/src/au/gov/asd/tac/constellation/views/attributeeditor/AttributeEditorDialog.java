@@ -54,7 +54,7 @@ public class AttributeEditorDialog extends ConstellationDialog {
         errorLabel = new Label("");
         errorLabel.setId("error");
 
-        okButton = new Button("Ok");
+        okButton = new Button("OK");
         cancelButton = new Button("Cancel");
         defaultButton = new Button("Restore Default");
 
