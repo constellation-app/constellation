@@ -11,3 +11,10 @@ node’s neighbourhood is to being a clique. It is the ratio of the number
 of relationships that exist in the neighbourhood compared to the number
 of relationships that could possibly exist. It is a measure of a node’s
 interconnectedness.
+
+## Parameters
+
+-   *Transaction Types* - Calculate on only the subgraph of transactions
+    of these types
+-   *Normalise By Max Available Score* - Normalise calculated scores by
+    the maximum calculated score

@@ -109,5 +109,6 @@ the whole graph.
 NOTE: Layers View does not allow for the use of the assignment operator
 = or keyword assign.
 
-[BROKEN LINK - Click here for more information on the structure of the expression
-framework.](nbdocs://au.gov.asd.tac.constellation.graph/au/gov/asd/tac/constellation/graph/docs/expressions.html)
+Click
+[here](nbdocs://au.gov.asd.tac.constellation.graph/au/gov/asd/tac/constellation/graph/docs/expressions-framework.html)
+for more information on the structure of the expression framework

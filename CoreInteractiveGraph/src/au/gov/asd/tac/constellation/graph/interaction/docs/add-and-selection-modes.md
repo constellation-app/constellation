@@ -107,17 +107,29 @@ for rotating, and the right button for dragging and panning):
 </tr>
 <tr class="even">
 <td>Left-drag</td>
-<td>Select multiple nodes and/or transactions.</td>
+<td>Select multiple nodes and/or transactions with a box selection.</td>
 </tr>
 <tr class="odd">
 <td>Shift-left-drag</td>
-<td>Select additional multiple nodes and/or transactions.</td>
+<td>Select additional multiple nodes and/or transactions with a box selection.</td>
 </tr>
 <tr class="even">
 <td>Ctrl-left-drag</td>
-<td>Toggle selection of multiple nodes and/or transactions.</td>
+<td>Toggle selection of multiple nodes and/or transactions with a box selection.</td>
 </tr>
 <tr class="odd">
+<td>Alt-left-drag</td>
+<td>Select multiple nodes and/or transactions with a freeform selection.</td>
+</tr>
+<tr class="even">
+<td>Alt-shift-left-drag</td>
+<td>Select additional multiple nodes and/or transactions with a freeform selection.</td>
+</tr>
+<tr class="odd">
+<td>Alt-ctrl-left-drag</td>
+<td>Toggle selection of multiple nodes and/or transactions with a freeform selection.</td>
+</tr>
+<tr class="even">
 <td>Middle-drag</td>
 <td>Rotate the graph.
 <ul>
@@ -126,15 +138,15 @@ for rotating, and the right button for dragging and panning):
 <li>Dragging the mouse along the edges of the window will rotate around the Z axis.</li>
 </ul></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Right-drag on background</td>
 <td>Pan the graph.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Right-drag on node</td>
 <td>Drag the node and other selected nodes.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Right-drag on transaction</td>
 <td>Pan the graph.</td>
 </tr>

@@ -1,8 +1,15 @@
 # Analytic View
 
 <table class="table table-striped">
+<caption>Analytic View Actions</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th scope="col">Constellation Action</th>
 <th scope="col">Keyboard Shortcut</th>
 <th scope="col">User Action</th>
@@ -10,12 +17,12 @@
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Open Analytic View</td>
 <td>Ctrl + Shift + Z</td>
 <td>Views -&gt; Analytic View</td>
 <td><div style="text-align: center">
-<img src="../resources/analytic-view.png" width="16" height="16" />
+<img src="../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/analytic-view.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
@@ -32,11 +39,10 @@ functionality from scoring based on the structure of a graph, to
 clustering and partitioning the graph, and even analysing content stored
 on a graph.
 
-<div style="text-align: center">
 
-![Analytic View](resources/AnalyticView.png)
+![Analytic
+View](../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/AnalyticView.png)
 
-</div>
 
 ## Asking a Question
 
@@ -56,7 +62,9 @@ help pages for selected analytics here by clicking on the
 "Documentation" tab.
 
 Once you have finished configuring your question, you can run it by
-pressing the ![Run Icon](resources/AnalyticRun.png) button.
+pressing the ![Run
+Icon](../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/AnalyticRun.png)
+button.
 
 ## Visualising the Results
 

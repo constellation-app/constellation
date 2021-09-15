@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # remove any existing markdown files
-find */src/ -name \*.md | 
+find */src/ -path '*/docs/*' -name \*.md | 
     xargs rm
 
 # convert html to markdown
-find */src/ -name *.html | 
+find */src/ -path '*/docs/*' -name *.html | 
     while read x
     do 
-        ~/AppData/Local/Pandoc/pandoc -f html -t commonmark $x > "$x".md
+        pandoc -f html -t commonmark $x > "$x".md
     done
 
-find */src/ -name *.html.md | 
+find */src/ -path '*/docs/*' -name *.html.md | 
     while read x
     do
         mv "$x" "${x%.html.md}".md

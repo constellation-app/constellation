@@ -39,8 +39,7 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
                 + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "arrangements" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridAction", arrangementModulePath + "grid.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridGeneralPlugin", arrangementModulePath + "grid-general.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.ArrangeInHierarchyAction", arrangementModulePath + "hierarchical.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.ArrangeInHierarchyAction", arrangementModulePath + "hierarchy.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.tree.ArrangeInTreesAction", arrangementModulePath + "tree.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.circle.ArrangeInCircleAction", arrangementModulePath + "circle.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.scatter.ArrangeInScatter3dAction", arrangementModulePath + "scatter3d.md");
@@ -49,8 +48,6 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.resize.ContractGraphAction", arrangementModulePath + "contract-graph.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.resize.ExpandGraphAction", arrangementModulePath + "expand-graph.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.time.LayerByTimeAction", arrangementModulePath + "layer-by-time.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.trees.BubbleTreeAction", arrangementModulePath + "bubble-tree.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.clustersOnHilbertCurve", arrangementModulePath + "hilbert.md");
         return map;
     }
 

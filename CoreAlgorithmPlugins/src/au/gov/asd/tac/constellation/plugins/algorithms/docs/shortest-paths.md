@@ -15,13 +15,13 @@
 <td>Run Shortest Paths</td>
 <td></td>
 <td>Selection -&gt; Shortest Paths</td>
-<td style="text-align: center;"><img src="../paths/shortestpaths.png" alt="Shortest Paths Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/shortestpaths.png" alt="Shortest Paths Icon" /></td>
 </tr>
 <tr class="even">
 <td>Run Directed Shortest Paths</td>
 <td></td>
 <td>Selection -&gt; Directed Shortest Paths</td>
-<td style="text-align: center;"><img src="../paths/shortestpathsfd.png" alt="Directed Shortest Paths Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/shortestpathsfd.png" alt="Directed Shortest Paths Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -46,7 +46,8 @@ Before Shortest Paths is run:
 
 <div style="text-align: center">
 
-![Graph before Shortest Paths is run](resources/ShortestPathBefore.png)
+![Graph before Shortest Paths is
+run](../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathBefore.png)
 
 </div>
 
@@ -54,7 +55,8 @@ After Shortest Paths is run:
 
 <div style="text-align: center">
 
-![Graph after Shortest Paths is run](resources/ShortestPathAfter.png)
+![Graph after Shortest Paths is
+run](../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathAfter.png)
 
 </div>
 
@@ -63,6 +65,6 @@ After Directed Shortest Paths is run (Source Node is Vertex #0):
 <div style="text-align: center">
 
 ![Graph after Directed Shortest Paths is
-run](resources/ShortestPathAfterDirected.png)
+run](../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathAfterDirected.png)
 
 </div>

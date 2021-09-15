@@ -54,10 +54,11 @@ constellation_client.py file to your .ipython folder. The
 constellation_client.py provides easy access to make Restful calls to
 Constellation.
 
-## Save Location
+## Open/Save Location
 
-By default, Constellation goes your last save location when you go to
-save a file using "Save As". This can be altered in preferences by
-unticking the "Remember Save Location" tickbox option. When this option
-is unticked, Constellation will default to the user's home directory
-instead.
+By default, Constellation opens your previous opened or saved location
+when you try to open or save a file, and it will remember the last
+location accessed for the next session. This can be altered in
+preferences by unticking the "Remember Open/Save Location" option. When
+this is unticked, the open or save location defaults to the user's home
+directory.

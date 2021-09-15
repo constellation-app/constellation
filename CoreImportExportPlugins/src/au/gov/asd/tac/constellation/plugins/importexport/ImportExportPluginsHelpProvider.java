@@ -38,9 +38,9 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
         final String importExportModulePath = ".." + sep + "constellation" + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "importexport" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane", importExportModulePath + "import-from-delimited-file.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane", importExportModulePath + "import-from-file.md");
         map.put("au.gov.asd.tac.constellation.plugins.importexport.export", importExportModulePath + "export-from-constellation.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane", importExportModulePath + "import-from-jdbc.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane", importExportModulePath + "import-from-database.md");
         return map;
     }
 

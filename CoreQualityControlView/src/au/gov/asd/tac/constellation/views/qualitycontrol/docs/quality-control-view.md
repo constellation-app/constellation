@@ -72,20 +72,23 @@ via the buttons at the bottom of the view.
 
 ## Quality Control Categories
 
-There are five levels of quality control categories for nodes that are
+There are six levels of quality control categories for nodes that are
 selected.
 
--   *FATAL* - Any node which is specifically disallowed (whether it be
-    disallowed for queries, or simply should not be in your graph) will
-    have a black background, and may be blocked from further analysis.
+-   *CRITICAL* - Any node which is specifically disallowed (whether it
+    be disallowed for queries, or simply should not be in your graph)
+    will have a dark red background, and may be blocked from further
+    analysis.
 -   *SEVERE* - Any node which is considered of particularly bad quality
     will have a red background, but will never be blocked.
--   *WARNING* - Any node which is considered of very questionable
-    quality will have a purple background.
--   *INFO* - Any node which is considered of questionable quality will
-    have a blue background.
--   *DEFAULT* - Any node which is considered of good quality will have a
-    white background. This does not mean that these nodes are
+-   *MAJOR* - Any node which is considered of very questionable quality
+    will have an orange background.
+-   *MEDIUM* - Any node which is considered of questionable quality will
+    have a yellow background.
+-   *MINOR* - Any node which is considered of slightly questionable
+    quality will have a blue background.
+-   *OK* - Any node which is considered of good quality will have a
+    green background. This does not mean that these nodes are
     necessarily of high quality, only that no quality control rules
     matched - such nodes require manual checking by the user.
 

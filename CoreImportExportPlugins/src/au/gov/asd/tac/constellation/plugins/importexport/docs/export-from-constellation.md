@@ -14,8 +14,8 @@
 <tr class="odd">
 <td>Export to PNG</td>
 <td></td>
-<td>File -&gt; Export -&gt; To Image...</td>
-<td style="text-align: center;"><img src="../image/exportToImage.png" alt="Export to Image Icon" /></td>
+<td>File -&gt; Export -&gt; To Screenshot Image...</td>
+<td style="text-align: center;"><img src="../image/exportToImage.png" alt="Export to Screenshot Image Icon" /></td>
 </tr>
 <tr class="even">
 <td>Export to JSON</td>
@@ -56,7 +56,8 @@ Constellation provides a number of options for exporting a graph. Some
 of these will present dialog boxes and details on those are further down
 this page:
 
--   *Image* - Export a screenshot of the graph window as a .png
+-   *Screenshot Image* - Export a screenshot of the graph window as a
+    .png
 -   *JSON* - Export a JSON representation of the graph (described in
     detail
     [here](/au/gov/asd/tac/constellation/graph/docs/constellation-file-format.html))

@@ -80,13 +80,31 @@ the "Filter" drop down menu. NOTE: You will only be able to filter tags
 which are present in plugins that have already been executed. The list
 of tags you can filter on may include:
 
--   *Analytic* - Plugins which perform some analytic calculation based
-    on information on the graph.
--   *Import* - Plugins which add information to the graph, generally
-    these will be found in the Data Access View.
 -   *General* - Plugins which don't fit into any specific category.
+-   *Create* - Plugins which create graphs, nodes, and transactions.
+-   *Modify* - Plugins that change the graph in some way.
+-   *Delete* - Plugins that delete things from the graph.
+-   *Search* - Plugins that search the graph.
+-   *Select* - Plugins which change what is selected on the graph.
+-   *View* - Plugins the change the camera view of the graph.
+-   *Import* - Plugins which add data from other sources to the graph.
+    Generally found in the Data Access View.
+-   *Export* - Plugins which export data from Constellation into other
+    sources
+-   *Clean* - Plugins which clean up the existing data on your graph.
+    Found in the Data Access View.
+-   *Enrich* - Plugins which add more information to the existing nodes
+    and transactions on your graph. Found in the Data Access View.
+-   *Extend* - Plugins which add more information with new nodes and
+    transactions to your graph. Found in Data Access View.
+-   *Utility* - Plugins which perform utility functions.
+-   *Experimental* - Plugins which perform experimental features in
+    Constellation.
+-   *Developer* - Plugins designed for use by Constellation developers.
+-   *Analytic* - Plugins which perform some analytic calculation based
+    on information on the graph. Found in the Analytic View
 -   *Low Level* - Plugins which are generally hidden from the user.
--   *Selection* - Plugins which change what is selected on the graph.
+-   *Welcome* - Plugins which are accessed from the Welcome Page.
 
 The "Clear" button will clear all currently displayed plugin reports,
 and only display new plugin reports for the active graph.

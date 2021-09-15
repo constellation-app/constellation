@@ -1,0 +1,49 @@
+# Node Attribute
+
+<table data-border="1">
+<caption>Node Attribute Arrangement Actions</caption>
+<thead>
+<tr class="header">
+<th scope="col">Constellation Action</th>
+<th scope="col">Keyboard Shortcut</th>
+<th scope="col">User Action</th>
+<th style="text-align: center;" scope="col">Menu Icon</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Run Node Attribute Arrangement</td>
+<td></td>
+<td>Arrange -&gt; Node Attribute</td>
+<td style="text-align: center;"><img src="../group/resources/arrangeByNode.png" alt="Node Attribute Arrangement Icon" /></td>
+</tr>
+</tbody>
+</table>
+
+Node Attribute Arrangement Actions
+
+The node attribute arrangement arranges nodes based on the value of a
+specified node attribute. The way the nodes are arranged is dependent on
+whether you specify arranging in 3D or not. If you opt to arrange in 3D,
+nodes are layered across the z-axis with nodes that have the same
+specified attribute value being positioned at the same point on the
+z-axis. If you opt not to, nodes with the same specified attribute value
+are grouped together in a square grid arrangement.
+
+Example Node Attribute 2D Arrangement:
+
+<div style="text-align: center">
+
+![Example Node Attribute 2D
+Arrangement](resources/NodeAttribute2DArrangement.png)
+
+</div>
+
+Example Node Attribute 3D Arrangement:
+
+<div style="text-align: center">
+
+![Example Node Attribute 3D
+Arrangement](resources/NodeAttribute3DArrangement.png)
+
+</div>

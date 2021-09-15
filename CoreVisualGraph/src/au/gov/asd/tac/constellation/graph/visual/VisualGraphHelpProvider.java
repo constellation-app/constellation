@@ -39,14 +39,12 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
                 + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "visual" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.visual.inducedSubgraph", visualModulePath + "induced-subgraph.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.hopOutFull", visualModulePath + "hop-out-full.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.hopOutHalf", visualModulePath + "hop-out-half.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.hopOutOne", visualModulePath + "hop-out-one.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.hopOut", visualModulePath + "hop-out.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.mergeNodes", visualModulePath + "merge-nodes.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.selectBackbone", visualModulePath + "select-backbone.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.selectOneNeighbour", visualModulePath + "select-one-neighbour.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.selectSingleton", visualModulePath + "select-singleton.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.selectBlazes", visualModulePath + "select-blazes.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.generalSelection", visualModulePath + "general-selection.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.dimmedSelection", visualModulePath + "dimmed-selection.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.structureSelection", visualModulePath + "structure-selection.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.selectBlazes", visualModulePath + "blaze-selection.md");
         return map;
     }
 

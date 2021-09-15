@@ -16,4 +16,5 @@
             <tocitem text="Expand Graph" target="au.gov.asd.tac.constellation.plugins.arrangements.expandGraph"/>
             <tocitem text="Layer by Time" target="au.gov.asd.tac.constellation.plugins.arrangements.layerByTime"/>
         </tocitem>
+    </tocitem>
 </toc>
