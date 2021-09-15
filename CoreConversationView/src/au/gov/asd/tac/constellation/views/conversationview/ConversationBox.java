@@ -277,7 +277,7 @@ public final class ConversationBox extends StackPane {
             foundCount = 0;
         }
 
-        foundLabel.setText(StringUtils.isBlank(searchTextField.getText())? "" : FOUND_TEXT + foundCount);
+        foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + foundCount);
         foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
     }
 
