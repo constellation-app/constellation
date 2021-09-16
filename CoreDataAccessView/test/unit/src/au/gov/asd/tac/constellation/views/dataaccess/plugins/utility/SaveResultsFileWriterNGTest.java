@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessPreferenceUtils;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
 import java.util.Properties;
 import java.util.Scanner;
@@ -53,7 +53,7 @@ import org.testng.annotations.Test;
 public class SaveResultsFileWriterNGTest {
 
     // Mocked dependencies
-    private MockedStatic<DataAccessPreferenceUtils> mockedDataAccessPreferenceKeys;
+    private MockedStatic<DataAccessPreferenceUtilities> mockedDataAccessPreferenceKeys;
     private MockedStatic<RecordStoreUtilities> mockedRecordStoreUtilities;
     private MockedStatic<ConstellationLoggerHelper> mockedConstellationLoggerHelper;
 
@@ -75,7 +75,7 @@ public class SaveResultsFileWriterNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        mockedDataAccessPreferenceKeys = mockStatic(DataAccessPreferenceUtils.class);
+        mockedDataAccessPreferenceKeys = mockStatic(DataAccessPreferenceUtilities.class);
         mockedRecordStoreUtilities = mockStatic(RecordStoreUtilities.class);
         mockedConstellationLoggerHelper = mockStatic(ConstellationLoggerHelper.class);
     }
@@ -114,7 +114,7 @@ public class SaveResultsFileWriterNGTest {
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
 
-        mockedDataAccessPreferenceKeys.when(() -> DataAccessPreferenceUtils.getDataAccessResultsDir()).thenReturn(null);
+        mockedDataAccessPreferenceKeys.when(() -> DataAccessPreferenceUtilities.getDataAccessResultsDir()).thenReturn(null);
         SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
         Assert.assertTrue(true, "Testing writing record to non existant directory - code will do nothing.");
     }
@@ -132,7 +132,7 @@ public class SaveResultsFileWriterNGTest {
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
 
-        mockedDataAccessPreferenceKeys.when(() -> DataAccessPreferenceUtils.getDataAccessResultsDir()).thenReturn(new File("/BADDIR/"));
+        mockedDataAccessPreferenceKeys.when(() -> DataAccessPreferenceUtilities.getDataAccessResultsDir()).thenReturn(new File("/BADDIR/"));
         mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             File passedFile = (File) args[2];
@@ -183,7 +183,7 @@ public class SaveResultsFileWriterNGTest {
         tabularRecordStore.set(key, value);
 
         // This test actually creates the output file in user.home directory, checks its contents, and then removes it.
-        mockedDataAccessPreferenceKeys.when(DataAccessPreferenceUtils::getDataAccessResultsDir).thenReturn(new File(System.getProperty("user.home")));
+        mockedDataAccessPreferenceKeys.when(DataAccessPreferenceUtilities::getDataAccessResultsDir).thenReturn(new File(System.getProperty("user.home")));
         mockedRecordStoreUtilities.when(() -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any())).thenCallRealMethod();
         mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer((var invocation) -> {
             Object[] args = invocation.getArguments();

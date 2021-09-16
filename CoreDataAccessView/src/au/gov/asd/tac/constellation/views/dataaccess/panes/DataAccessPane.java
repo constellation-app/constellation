@@ -43,7 +43,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCor
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType.getTypeWithPosition;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoProvider;
-import au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessPreferenceUtils;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
@@ -130,7 +130,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     private static final String CONTINUE_STYLE = "-fx-background-color: rgb(255,180,0); -fx-padding: 2 5 2 5;";
     private static final String CALCULATING_STYLE = "-fx-background-color: rgb(0,100,255); -fx-padding: 2 5 2 5;";
 
-    private final Preferences dataAccessPrefs = NbPreferences.forModule(DataAccessPreferenceUtils.class);
+    private final Preferences dataAccessPrefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
 
     private DataAccessViewTopComponent topComponent;
     private TabPane dataAccessTabPane;
@@ -263,7 +263,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 setExecuteButtonToStop();
                 graphState.get(GraphManager.getDefault().getActiveGraph().getId()).queriesRunning = true;
 
-                final File outputDir = DataAccessPreferenceUtils.getDataAccessResultsDirEx();
+                final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDirEx();
                 if (outputDir != null && outputDir.isDirectory()) {
                     final String msg = String.format("Data access results will be written to %s", outputDir.getAbsolutePath());
                     StatusDisplayer.getDefault().setStatusText(msg);
@@ -344,7 +344,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             } else {
                 // Do nothing
             }
-            if (DataAccessPreferenceUtils.isDeselectPluginsOnExecuteEnabled()) {
+            if (DataAccessPreferenceUtilities.isDeselectPluginsOnExecuteEnabled()) {
                 deselectAllPlugins();
             }
         });
@@ -363,12 +363,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         final MenuItem loadTemplatesMenuItem = new MenuItem("Load Templates", loadTemplateImage);
         loadTemplatesMenuItem.setOnAction(event -> {
-            ParameterIOUtilities.loadParameters(this);
+            DataAccessPreferencesIoProvider.loadParameters(this);
         });
 
         final MenuItem saveTemplatesMenuItem = new MenuItem("Save Templates", saveTemplateImage);
         saveTemplatesMenuItem.setOnAction(event -> {
-            ParameterIOUtilities.saveParameters(dataAccessTabPane);
+            DataAccessPreferencesIoProvider.saveParameters(dataAccessTabPane);
         });
 
         final CheckMenuItem saveResultsMenuItem = new CheckMenuItem("Save Results", saveResultsImage);
@@ -378,26 +378,26 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             if (newValue) {
                 final DirectoryChooser dc = new DirectoryChooser();
                 dc.setTitle("Folder to save data access results to");
-                final File prev = DataAccessPreferenceUtils.getPreviousDataAccessResultsDir();
+                final File prev = DataAccessPreferenceUtilities.getPreviousDataAccessResultsDir();
                 if (prev != null && prev.isDirectory()) {
                     dc.setInitialDirectory(prev);
                 }
 
                 final File dir = dc.showDialog(getScene().getWindow());
                 if (dir != null) {
-                    DataAccessPreferenceUtils.setDataAccessResultsDir(dir);
+                    DataAccessPreferenceUtilities.setDataAccessResultsDir(dir);
                 } else {
                     saveResultsMenuItem.setSelected(false);
                 }
             } else {
-                DataAccessPreferenceUtils.setDataAccessResultsDir(null);
+                DataAccessPreferenceUtilities.setDataAccessResultsDir(null);
             }
         });
 
         final CheckMenuItem deselectPluginsOnExecution = new CheckMenuItem("Deselect On Go", uncheckedImage);
-        deselectPluginsOnExecution.setSelected(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled());
+        deselectPluginsOnExecution.setSelected(DataAccessPreferenceUtilities.isDeselectPluginsOnExecuteEnabled());
         deselectPluginsOnExecution.setOnAction(event -> {
-            DataAccessPreferenceUtils.setDeselectPluginsOnExecute(deselectPluginsOnExecution.isSelected());
+            DataAccessPreferenceUtilities.setDeselectPluginsOnExecute(deselectPluginsOnExecution.isSelected());
         });
 
         searchPluginTextField = new TextField();

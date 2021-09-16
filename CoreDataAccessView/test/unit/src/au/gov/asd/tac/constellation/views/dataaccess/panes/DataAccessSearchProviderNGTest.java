@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessUtils;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessSearchProvider.PluginDisplayer;
 import javafx.scene.control.Tab;
 import javax.swing.Icon;
@@ -99,9 +99,9 @@ public class DataAccessSearchProviderNGTest {
 
         // Create mock of DataAccessUtils to return the data access pane mock
         // Mock of DataAccessPane will return a blank new tab when called
-        try (MockedStatic<DataAccessUtils> mockedStatic2 = Mockito.mockStatic(DataAccessUtils.class)) {
+        try (MockedStatic<DataAccessUtilities> mockedStatic2 = Mockito.mockStatic(DataAccessUtilities.class)) {
             when(daPane.getCurrentTab()).thenReturn(new Tab());
-            mockedStatic2.when(() -> DataAccessUtils.getDataAccessPane()).thenReturn(daPane);
+            mockedStatic2.when(() -> DataAccessUtilities.getDataAccessPane()).thenReturn(daPane);
         }
 
         // Mock the request text to be an unmatchable string
@@ -136,9 +136,9 @@ public class DataAccessSearchProviderNGTest {
 
         // Create mock of DataAccessUtils to return the data access pane mock
         // Mock of DataAccessPane will return a blank new tab when called
-        try (MockedStatic<DataAccessUtils> mockedStatic2 = Mockito.mockStatic(DataAccessUtils.class)) {
+        try (MockedStatic<DataAccessUtilities> mockedStatic2 = Mockito.mockStatic(DataAccessUtilities.class)) {
             when(daPane.getCurrentTab()).thenReturn(new Tab());
-            mockedStatic2.when(() -> DataAccessUtils.getDataAccessPane()).thenReturn(daPane);
+            mockedStatic2.when(() -> DataAccessUtilities.getDataAccessPane()).thenReturn(daPane);
         }
 
         // Mock the request text to be null
@@ -172,9 +172,9 @@ public class DataAccessSearchProviderNGTest {
 
         // Create mock of DataAccessUtils to return the data access pane mock
         // Mock of DataAccessPane will return a blank new tab when called
-        try (MockedStatic<DataAccessUtils> mockedStatic2 = Mockito.mockStatic(DataAccessUtils.class)) {
+        try (MockedStatic<DataAccessUtilities> mockedStatic2 = Mockito.mockStatic(DataAccessUtilities.class)) {
             when(daPane.getCurrentTab()).thenReturn(new Tab());
-            mockedStatic2.when(() -> DataAccessUtils.getDataAccessPane()).thenReturn(daPane);
+            mockedStatic2.when(() -> DataAccessUtilities.getDataAccessPane()).thenReturn(daPane);
         }
 
         // Mock request to return the selected text
@@ -218,8 +218,8 @@ public class DataAccessSearchProviderNGTest {
             when(daPane.getCurrentTab()).thenReturn(new Tab());
 
             // Mock the static method getDataAccessPane and return the mocked DataAccessPane
-            try (MockedStatic<DataAccessUtils> mockedStatic2 = Mockito.mockStatic(DataAccessUtils.class)) {
-                mockedStatic2.when(() -> DataAccessUtils.getDataAccessPane()).thenReturn(daPane);
+            try (MockedStatic<DataAccessUtilities> mockedStatic2 = Mockito.mockStatic(DataAccessUtilities.class)) {
+                mockedStatic2.when(() -> DataAccessUtilities.getDataAccessPane()).thenReturn(daPane);
 
                 try {
                     PluginDisplayer pd = new PluginDisplayer("SelectTopN");
@@ -256,9 +256,9 @@ public class DataAccessSearchProviderNGTest {
         };
 
         // Setting up a mock for DataAccessUtils to return null when fetching the pane.
-        try (MockedStatic<DataAccessUtils> mockedStatic1 = Mockito.mockStatic(DataAccessUtils.class)) {
+        try (MockedStatic<DataAccessUtilities> mockedStatic1 = Mockito.mockStatic(DataAccessUtilities.class)) {
             when(daPane.getCurrentTab()).thenReturn(null);
-            mockedStatic1.when(() -> DataAccessUtils.getDataAccessPane()).thenReturn(daPane);
+            mockedStatic1.when(() -> DataAccessUtilities.getDataAccessPane()).thenReturn(daPane);
 
             // Mock the static method getDefault() to return the mock of NotificationDisplayer
             try (MockedStatic<NotificationDisplayer> mockedStatic3 = Mockito.mockStatic(NotificationDisplayer.class)) {
@@ -294,8 +294,8 @@ public class DataAccessSearchProviderNGTest {
         };
 
         // Setting up a mock for DataAccessUtils to return null when fetching the pane.
-        try (MockedStatic<DataAccessUtils> mockedStatic1 = Mockito.mockStatic(DataAccessUtils.class)) {
-            mockedStatic1.when(() -> DataAccessUtils.getDataAccessPane()).thenReturn(null);
+        try (MockedStatic<DataAccessUtilities> mockedStatic1 = Mockito.mockStatic(DataAccessUtilities.class)) {
+            mockedStatic1.when(() -> DataAccessUtilities.getDataAccessPane()).thenReturn(null);
 
             // Mock the static method getDefault() to return the mock of NotificationDisplayer
             try (MockedStatic<NotificationDisplayer> mockedStatic3 = Mockito.mockStatic(NotificationDisplayer.class)) {

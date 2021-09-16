@@ -58,7 +58,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.views.dataaccess.utils.DataAccessPreferenceUtils;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.QueryNameValidator;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
 import java.io.File;
@@ -410,7 +410,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         });
         LOGGER.log(Level.INFO, "==== end string values");
 
-        final File outputDir = DataAccessPreferenceUtils.getDataAccessResultsDir();
+        final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDir();
         if (outputDir != null) {
             final String fnam = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")) + "-testChainer.txt";
             final File fout = new File(outputDir, fnam);
