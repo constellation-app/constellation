@@ -967,7 +967,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     private void notifyProtected(final String name) {
         final NamedSelectionProtectedPanel panel = new NamedSelectionProtectedPanel(name);
         final DialogDescriptor dd = new DialogDescriptor(panel, Bundle.ProtectedSelection());
-        dd.setOptions(new Object[]{"Ok"});
+        dd.setOptions(new Object[]{"OK"});
         DialogDisplayer.getDefault().notify(dd);
     }
 
