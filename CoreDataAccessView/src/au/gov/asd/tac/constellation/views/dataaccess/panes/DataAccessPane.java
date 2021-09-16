@@ -45,6 +45,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
+import au.gov.asd.tac.constellation.views.qualitycontrol.widget.DefaultQualityControlAutoButton;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
 import java.io.File;
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
@@ -137,6 +139,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     private GraphState currentGraphState = null;
     private String graphId;
     private final Button executeButton = new Button(EXECUTE_GO);
+    private final Button executeButtonBottom = new Button(EXECUTE_GO);
 
     // search plugins
     private final TextField searchPluginTextField;
@@ -228,6 +231,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         }
 
         executeButton.setStyle(GO_STYLE);
+        executeButtonBottom.setStyle(GO_STYLE);
         executeButton.setOnAction((ActionEvent event) -> {
             boolean pluginSelected = false;
             boolean selectedPluginsValid = true;
@@ -347,6 +351,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 deselectAllPlugins();
             }
         });
+        executeButtonBottom.setOnAction(executeButton.getOnAction());
+
         updateForPlugins(false);
 
         settingsImage.setFitHeight(20);
@@ -438,15 +444,28 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         final HBox rabRegionExectueHBox = new HBox();
         rabRegionExectueHBox.setSpacing(4);
 
+        final HBox goBottomHBox = new HBox();
+        goBottomHBox.setAlignment(Pos.TOP_RIGHT);
+        goBottomHBox.setPadding(new Insets(10));
+        vbox.getChildren().add(goBottomHBox);
+
         final QualityControlAutoButton rab = Lookup.getDefault().lookup(QualityControlAutoButton.class);
+        final QualityControlAutoButton rabBottom = DefaultQualityControlAutoButton.defaultQualityControlAutoButton(rab);
+
         if (rab != null) {
             rabRegionExectueHBox.getChildren().add(rab);
+            goBottomHBox.getChildren().add(rabBottom);
         }
 
         // add some padding between the Go button and the previous button to avoid accidental clicking
         final Region region = new Region();
         region.setMinSize(20, 0);
+        final Region regionBottom = new Region();
+        regionBottom.setMinSize(27, 0);
+
         rabRegionExectueHBox.getChildren().addAll(region, executeButton);
+        goBottomHBox.getChildren().addAll(regionBottom, executeButtonBottom);
+
         options.add(helpAddFavHBox, 0, 0);
         options.add(rabRegionExectueHBox, 1, 0);
         AnchorPane.setTopAnchor(options, 5.0);
@@ -879,6 +898,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         // Otherwise, disable if there is no selected plugin, an invalid time range, or the selected plugins contain invalid parameter values.
         final boolean disable = !queryIsRunning && (!pluginSelected || !validTimeRange || !selectedPluginsValid);
         executeButton.setDisable(disable);
+        executeButtonBottom.setDisable(disable);
     }
 
     /**
@@ -969,6 +989,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         Platform.runLater(() -> {
             executeButton.setText(EXECUTE_GO);
             executeButton.setStyle(GO_STYLE);
+            executeButtonBottom.setText(EXECUTE_GO);
+            executeButtonBottom.setStyle(GO_STYLE);
         });
     }
 
@@ -982,6 +1004,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         Platform.runLater(() -> {
             executeButton.setText(EXECUTE_STOP);
             executeButton.setStyle(STOP_STYLE);
+            executeButtonBottom.setText(EXECUTE_STOP);
+            executeButtonBottom.setStyle(STOP_STYLE);
         });
     }
 
@@ -995,6 +1019,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         Platform.runLater(() -> {
             executeButton.setText("Continue");
             executeButton.setStyle(CONTINUE_STYLE);
+            executeButtonBottom.setText("Continue");
+            executeButtonBottom.setStyle(CONTINUE_STYLE);
         });
     }
 
@@ -1109,14 +1135,19 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 executeButton.setDisable(!canRun);
                 executeButton.setText(EXECUTE_GO);
                 executeButton.setStyle(GO_STYLE);
+                executeButtonBottom.setDisable(!canRun);
+                executeButtonBottom.setText(EXECUTE_GO);
+                executeButtonBottom.setStyle(GO_STYLE);
             });
         } else {
             Platform.runLater(() -> {
                 executeButton.setDisable(!canRun);
                 executeButton.setText(EXECUTE_CALCULATING);
                 executeButton.setStyle(CALCULATING_STYLE);
+                executeButtonBottom.setDisable(!canRun);
+                executeButtonBottom.setText(EXECUTE_CALCULATING);
+                executeButtonBottom.setStyle(CALCULATING_STYLE);
             });
-
         }
     }
 
