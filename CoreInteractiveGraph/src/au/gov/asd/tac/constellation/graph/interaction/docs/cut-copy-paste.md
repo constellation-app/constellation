@@ -21,7 +21,8 @@ and three transactions (with keys T1, T2, T3):
 
 <div style="text-align: center">
 
-![Example Graph diagram](resources/cut-copy-paste-graph.png)
+<img src="../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/cut-copy-paste-graph.png" alt="Example Graph
+diagram" />
 
 </div>
 

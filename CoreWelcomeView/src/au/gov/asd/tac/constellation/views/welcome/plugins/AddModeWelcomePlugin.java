@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -39,17 +40,16 @@ import org.openide.util.NbBundle;
  *
  * @author canis_majoris
  */
-
-@PluginInfo(tags = {"WELCOME"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE", "WELCOME"})
 @NbBundle.Messages("AddModeWelcomePlugin=Add Mode Welcome Plugin")
 public class AddModeWelcomePlugin implements WelcomePluginInterface {
-    
+
     public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
     final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
     final Button newButton = new Button();
-        
+
     /**
-     * Get a unique reference that is used to identify the plugin 
+     * Get a unique reference that is used to identify the plugin
      *
      * @return a unique reference
      */
@@ -57,10 +57,10 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
     public String getName() {
         return "Add Graph Welcome";
     }
-    
+
     /**
-     * This method describes what action should be taken when the 
-     * link is clicked on the Welcome Page
+     * This method describes what action should be taken when the link is
+     * clicked on the Welcome Page
      *
      */
     @Override
@@ -78,7 +78,7 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
     }
 
     /**
-     * Determines whether this analytic appear on the Welcome Page 
+     * Determines whether this analytic appear on the Welcome Page
      *
      * @return true is this analytic should be visible, false otherwise.
      */
@@ -86,14 +86,14 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
     public boolean isVisible() {
         return true;
     }
-    
-     /**
+
+    /**
      * Creates the button object to represent this plugin
-     * 
+     *
      * @return the button object
      */
     @Override
-    public Button getButton(){
+    public Button getButton() {
         addView.setFitHeight(75);
         addView.setFitWidth(75);
         final Label title = new Label("New Graph");

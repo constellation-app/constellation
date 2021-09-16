@@ -23,7 +23,9 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionP
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
@@ -447,6 +449,7 @@ public class ScatterChartPane extends BorderPane {
      * Refresh the state of the ScatterChartPane based on the given
      * ScatterPlotState.
      */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
     private class ScatterPlotRefresher extends SimpleReadPlugin {
 
         private final ScatterPlotState scatterPlotState;

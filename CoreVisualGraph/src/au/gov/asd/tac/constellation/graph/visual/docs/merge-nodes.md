@@ -2,14 +2,13 @@
 
 ## Merge all the selected nodes into a single node.
 
-<table data-border="1">
-<caption>Merge Nodes Actions</caption>
+<table class="table table-striped">
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -17,15 +16,13 @@
 <td>Run Merge Nodes</td>
 <td></td>
 <td>Tools -&gt; Merge Nodes</td>
-<td style="text-align: center;"><img src="../plugins/merge/mergeNodes.png" alt="Merge Nodes Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/mergeNodes.png" alt="Merge Nodes Icon" /></td>
 </tr>
 </tbody>
 </table>
 
-Merge Nodes Actions
-
 NOTE: This is a standalone plugin. For the Data Access Plugin, go
-[here](/au/gov/asd/tac/constellation/views/dataaccess/docs/merge-nodes.html)
+[here](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/merge-nodes.md)
 
 This plugin alters the structure of the graph by deleting all but one of
 the nodes and reconnecting all the transactions to the remaining node.
@@ -33,7 +30,8 @@ It requires at least two selected nodes in order to work.
 
 <div style="text-align: center">
 
-![Merge Nodes Dialog](resources/PermanentMergeNodes.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/PermanentMergeNodes.png" alt="Merge Nodes
+Dialog" />
 
 </div>
 

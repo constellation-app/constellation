@@ -28,7 +28,9 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
@@ -64,6 +66,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @NbBundle.Messages("SplitNodesPlugin=Split Nodes Based on Identifier")
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlugin {
 
     public static final String SPLIT_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split");
@@ -297,17 +300,22 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     /**
      * The arrangement to be done after the plugin completes.
      * <p>
-     * Some plugins result in new nodes being created in a graph. In order to make these nodes visible to the user, the
-     * new nodes should undergo a default arrangement.
+     * Some plugins result in new nodes being created in a graph. In order to
+     * make these nodes visible to the user, the new nodes should undergo a
+     * default arrangement.
      * <p>
-     * Be cautious when specifying no arrangement. Due to various graphics card/driver quirks, we can't leave the nodes
-     * at (0,0,0). It's easy to crash the display this way. Also, we don't want to crush the new nodes too close
-     * together: the camera will zoom in and make them bigger and slower to draw. Therefore it is highly recommended
-     * that plugins do not specify no arrangement unless they know what they're doing.
+     * Be cautious when specifying no arrangement. Due to various graphics
+     * card/driver quirks, we can't leave the nodes at (0,0,0). It's easy to
+     * crash the display this way. Also, we don't want to crush the new nodes
+     * too close together: the camera will zoom in and make them bigger and
+     * slower to draw. Therefore it is highly recommended that plugins do not
+     * specify no arrangement unless they know what they're doing.
      * <p>
-     * Note: PluginExecutors should be arrangements. Do the sensible thing when overriding.
+     * Note: PluginExecutors should be arrangements. Do the sensible thing when
+     * overriding.
      *
-     * @return A PluginExecutor that does an arrangement, or null if no arrangement is to be done.
+     * @return A PluginExecutor that does an arrangement, or null if no
+     * arrangement is to be done.
      */
     public PluginExecutor completionArrangement() {
         return PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)

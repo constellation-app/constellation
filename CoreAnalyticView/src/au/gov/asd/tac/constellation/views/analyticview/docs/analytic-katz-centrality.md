@@ -17,3 +17,18 @@ would also score highly, which would not be especially useful
 analytically. PageRank Centrality, the algorithm used by Google to rank
 search results, attempts to resolve this issue by evenly distributing
 the centrality a node has to share.
+
+## Parameters
+
+-   *Transaction Types* - Calculate on only the subgraph of transactions
+    of these types
+-   *Alpha* - The attenuation factor
+-   *Beta* - The weight attributed to the immediate neighbourhood
+-   *Iterations* - The number of iterations to run before returning a
+    result
+-   *Epsilon* - The change threshold at which equilibrium can be
+    considered reached
+-   *Normalise By Max Possible Score* - Normalise calculated scores by
+    the maximum possible score
+-   *Normalise By Max Available Score* - Normalise calculated scores by
+    the maximum calculated score

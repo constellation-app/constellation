@@ -6,6 +6,7 @@ the map by dragging this viewport around the overview overlay.
 
 <div style="text-align: center">
 
-![Overview Overlay](resources/MapOverlayOverview.png)
+<img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapOverlayOverview.png" alt="Overview
+Overlay" />
 
 </div>

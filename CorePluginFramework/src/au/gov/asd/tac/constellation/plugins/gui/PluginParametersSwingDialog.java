@@ -123,6 +123,11 @@ public class PluginParametersSwingDialog {
             final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null, excludedParameters);
             root.setCenter(parametersPane);
             final Scene scene = new Scene(root);
+
+            // TODO: the main stylesheet isn't loaded here and should be
+            // something like the following
+//            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+//            scene.getStylesheets().add(JavafxStyleManager.getDynamicStyleSheet());
             xp.setScene(scene);
             xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
             latch.countDown();
@@ -141,7 +146,7 @@ public class PluginParametersSwingDialog {
         final Object r = DialogDisplayer.getDefault().notify(dd);
         result = r == DialogDescriptor.OK_OPTION ? OK : r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
     }
-    
+
     public void showAndWaitNoFocus() {
         //Having 'No' button as initial value means focus is off of 'Ok' and 'Cancel' buttons
         final DialogDescriptor dd = new DialogDescriptor(xp, title, true, DialogDescriptor.OK_CANCEL_OPTION, DialogDescriptor.NO_OPTION, null);

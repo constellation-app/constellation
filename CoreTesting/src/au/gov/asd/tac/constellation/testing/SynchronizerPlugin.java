@@ -17,7 +17,9 @@ package au.gov.asd.tac.constellation.testing;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -32,6 +34,7 @@ import java.util.Map;
  *
  * @author sirius
  */
+@PluginInfo(pluginType = PluginType.NONE, tags = {"DEVELOPER"})
 public class SynchronizerPlugin extends SimpleQueryPlugin {
 
     private static int NEXT_ID = 1;

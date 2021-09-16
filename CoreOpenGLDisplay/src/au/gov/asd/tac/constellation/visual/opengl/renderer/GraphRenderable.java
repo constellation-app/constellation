@@ -33,6 +33,8 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.NodeLabelBatc
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.SceneBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.io.IOException;
@@ -357,10 +359,10 @@ public final class GraphRenderable implements GLRenderable {
             connectionLabelBatcher.createShader(gl);
             iconBatcher.createShader(gl);
         } catch (final IOException | RenderException ex) {
-            // If we get here, a shader didn't compile. This obviously shouldn't happen in production; 
-            // our shaders are static and read from built-in resource files (it happens a lot in 
-            // development when we edit a shader, but that's OK). Since at least one shader is null, 
-            // there will be subsequent NullPointerExceptions, but there's nothing we can do about that. 
+            // If we get here, a shader didn't compile. This obviously shouldn't happen in production;
+            // our shaders are static and read from built-in resource files (it happens a lot in
+            // development when we edit a shader, but that's OK). Since at least one shader is null,
+            // there will be subsequent NullPointerExceptions, but there's nothing we can do about that.
             // Without shaders, we're dead in the water anyway.
             final String msg
                     = "This error may have occurred because your video card and/or driver is\n"
@@ -437,19 +439,19 @@ public final class GraphRenderable implements GLRenderable {
                 motion = -1;
             }
 
-            gl.glEnable(GL3.GL_LINE_SMOOTH);
-            gl.glEnable(GL3.GL_POLYGON_OFFSET_FILL);
+            gl.glEnable(GL.GL_LINE_SMOOTH);
+            gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
             gl.glClearColor(graphBackgroundColor[0], graphBackgroundColor[1], graphBackgroundColor[2], graphBackgroundColor[3]);
-            gl.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
+            gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
             // Bind the textures to their texture units.
             // This only needs to be done once.
-            gl.glActiveTexture(GL3.GL_TEXTURE0 + TextureUnits.VERTICES);
-            gl.glBindTexture(GL3.GL_TEXTURE_BUFFER, xyzTexturiser.getTextureName());
-            gl.glActiveTexture(GL3.GL_TEXTURE0 + TextureUnits.ICONS);
-            gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, iconTextureArray);
-            gl.glActiveTexture(GL3.GL_TEXTURE0 + TextureUnits.VERTEX_FLAGS);
-            gl.glBindTexture(GL3.GL_TEXTURE_BUFFER, vertexFlagsTexturiser.getTextureName());
+            gl.glActiveTexture(GL.GL_TEXTURE0 + TextureUnits.VERTICES);
+            gl.glBindTexture(GL2ES3.GL_TEXTURE_BUFFER, xyzTexturiser.getTextureName());
+            gl.glActiveTexture(GL.GL_TEXTURE0 + TextureUnits.ICONS);
+            gl.glBindTexture(GL2ES3.GL_TEXTURE_2D_ARRAY, iconTextureArray);
+            gl.glActiveTexture(GL.GL_TEXTURE0 + TextureUnits.VERTEX_FLAGS);
+            gl.glBindTexture(GL2ES3.GL_TEXTURE_BUFFER, vertexFlagsTexturiser.getTextureName());
 
             // We attempt to use PolygonOffset() to keep the lines behind the icons.
             // One factor,unit for lines, another factor,unit for points.
@@ -504,17 +506,17 @@ public final class GraphRenderable implements GLRenderable {
             if (hitTestFboName > 0 && drawHitTest) {
                 // Draw the lines and icons again with unique colors on the hitTest framebuffer.
                 // The lines will be thicker for easier hitting.
-                gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, hitTestFboName);
+                gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, hitTestFboName);
 
                 // Explicitly clear the color to black: we need the default color to be 0 so elements drawn as non-zero are recognised.
                 gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-                gl.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
-                gl.glDisable(GL3.GL_LINE_SMOOTH);
+                gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+                gl.glDisable(GL.GL_LINE_SMOOTH);
 
                 // Is this the default anyway?
                 final int[] fboBuffers = {
-                    GL3.GL_COLOR_ATTACHMENT0
+                    GL.GL_COLOR_ATTACHMENT0
                 };
                 gl.glDrawBuffers(1, fboBuffers, 0);
 
@@ -536,16 +538,16 @@ public final class GraphRenderable implements GLRenderable {
                 }
 
                 gl.glPolygonOffset(0, 0);
-                gl.glDisable(GL3.GL_POLYGON_OFFSET_FILL);
+                gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
 
-                gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, 0);
-                gl.glEnable(GL3.GL_LINE_SMOOTH);
+                gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, 0);
+                gl.glEnable(GL.GL_LINE_SMOOTH);
             }
         }
 
         // Get the graph displayer to render its contents to the screen
         graphDisplayer.display(drawable, pMatrix);
-        
+
     }
 
     /**

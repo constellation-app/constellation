@@ -42,7 +42,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1000),
+    @ActionReference(path = "Menu/Views", position = 1100),
     @ActionReference(path = "Shortcuts", name = "CS-Q")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_QualityControlViewAction",

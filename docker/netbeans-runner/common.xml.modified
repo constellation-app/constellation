@@ -39,7 +39,7 @@
     </condition>
     <property name="testcoverage.import" value="no-testcoverage.xml"/>
     <import file="${testcoverage.import}"/>
-    
+
     <target name="-build-dir-init">
         <property name="build.dir" location="build"/>
     </target>
@@ -50,7 +50,7 @@
         <property file="nbproject/project.properties"/>
         <!-- Do not try to set module.classpath here, in particular: -->
         <!-- during a clean, the ${foo/bar.dir} properties may not be set. -->
-        <parseprojectxml project="." 
+        <parseprojectxml project="."
                          codenamebaseproperty="code.name.base"
                          codenamebasedashesproperty="code.name.base.dashes"
                          codenamebaseslashesproperty="code.name.base.slashes"
@@ -118,7 +118,7 @@
         <macrodef name="custom-javac-presetdef">
             <attribute name="javacval"/>
             <sequential>
-               <presetdef name="custom-javac">
+                <presetdef name="custom-javac">
                     <custom-javac executable="@{javacval}"/>
                 </presetdef>
             </sequential>
@@ -309,10 +309,10 @@
             <fileset dir="${release.dir}">
                 <patternset includes="${release.files}"/>
             </fileset>
-        </copy>        
+        </copy>
     </target>
 
-    
+
     <target name="chmod-executables" depends="-init-executables">
         <chmod perm="a+x">
             <fileset refid="module.executable.files"/>
@@ -320,7 +320,7 @@
     </target>
 
     <target name="verify-class-linkage" depends="jar,release">
-<!--        <verifyclasslinkage jar="${cluster}/${module.jar}" failonerror="false" ignores="${module.jar.verifylinkageignores}" maxwarnings="10">
+        <!--        <verifyclasslinkage jar="${cluster}/${module.jar}" failonerror="false" ignores="${module.jar.verifylinkageignores}" maxwarnings="10">
             <classpath refid="cp"/>
             <classpath path="${nbjdk.bootclasspath}"/>
         </verifyclasslinkage>-->
@@ -356,8 +356,8 @@
 
     <target name="-netbeans" depends="init,jar,netbeans-extra,javahelp,module-auto-deps,release,module-xml-regular,
             module-xml-autoload,module-xml-eager,chmod-executables,verify-class-linkage,
-            -validate-layers,-verify-apichanges"/> 
-    
+            -validate-layers,-verify-apichanges"/>
+
     <target name="netbeans" depends="-netbeans">
         <property name="module.files.toString" refid="module.files"/>
         <echo level="verbose">Basic matching module files: ${module.files.toString}</echo>
@@ -465,7 +465,7 @@
                  releasedate="${nbm.release.date}"
                  moduleauthor="${nbm.module.author}"
                  locales="${nbm.locales}"
-                 >
+        >
             <license file="${license.file.override}"/>
             <signature keystore="${keystore}" storepass="${storepass}" alias="${nbm_alias}"/>
             <updaterjar>
@@ -500,7 +500,7 @@
                  releasedate="${nbm.release.date}"
                  moduleauthor="${nbm.module.author}"
                  locales="${nbm.locales}"
-                 >
+        >
             <license file="${license.file.override}"/>
             <updaterjar>
                 <pathfileset>
@@ -570,15 +570,15 @@
                         <propertyref name="test.timeout"/>
                         <mapper type="glob" from="test.timeout" to="nbjunit.hard.timeout"/>
                     </propertyset>
-                    </propertyset>
-                    <condition property="exists.test.@{test.type}.src.dir">
-                        <and>
-                            <available file="${test.@{test.type}.src.dir}" type="dir"/>
-                            <not>
-                                <istrue value="${disable.@{test.type}.tests}"/>
-                            </not>
-                        </and>
-                    </condition>
+                </propertyset>
+                <condition property="exists.test.@{test.type}.src.dir">
+                    <and>
+                        <available file="${test.@{test.type}.src.dir}" type="dir"/>
+                        <not>
+                            <istrue value="${disable.@{test.type}.tests}"/>
+                        </not>
+                    </and>
+                </condition>
 
             </sequential>
         </macrodef>
@@ -828,7 +828,7 @@
             <attribute name="test.type"/>
             <sequential>
                 <fail unless="test.includes">Must set test.includes</fail>
-                <property name="run.jvmargs.ide" value=""/> 
+                <property name="run.jvmargs.ide" value=""/>
                 <mkdir dir="${build.test.@{test.type}.results.dir}"/>
                 <condition property="test.runner" value ="testng" else="junit">
                     <available classname="org.testng.annotations.Test" classpath="${test.@{test.type}.runtime.cp}"/>
@@ -843,7 +843,7 @@
         </macrodef>
         <property name="test.type" value="unit"/>
         <property name="run.args.ide" value=""/>
-        
+
         <test-single test.type="${test.type}"/>
     </target>
 
@@ -1115,7 +1115,7 @@
         <property name="test.type" value="unit"/>
         <debug-test-single-nb test.type="${test.type}"/>
     </target>
-    
+
     <target name="test-method" depends="init,test-init,test-build">
         <macrodef name="test-method">
             <attribute name="test.type"/>
@@ -1135,7 +1135,7 @@
         <property name="test.type" value="unit"/>
         <test-method test.type="${test.type}"/>
     </target>
-    
+
     <target name="-do-junit-testmethod" depends="test-init">
         <macrodef name="junit-impl">
             <attribute name="test.type"/>
@@ -1267,7 +1267,7 @@
         <property name="test.type" value="unit"/>
         <debug-test-main-nb test.type="${test.type}"/>
     </target>
-    
+
     <target name="-pre-debug-fix" depends="init">
         <fail unless="fix.class">Must set fix.class to e.g. org/netbeans/modules/foo/Bar</fail>
         <property name="javac.includes" value="${fix.class}.java"/>
@@ -1329,11 +1329,11 @@
         <profile-test-single-nb test.type="${test.type}"/>
     </target>
 
-    <target name="profile-test-single-nb" depends="-profile-check,init,test-init,test-build,-profile-test-single-nb-pre72" if="profiler.configured" unless="profiler.info.jvmargs.agent">        
+    <target name="profile-test-single-nb" depends="-profile-check,init,test-init,test-build,-profile-test-single-nb-pre72" if="profiler.configured" unless="profiler.info.jvmargs.agent">
         <startprofiler/>
         <antcall target="test-single"/>
     </target>
-    
+
     <target name="profile-test-main-nb" depends="-profile-check,init,test-init,test-build" if="profiler.configured" unless="profiler.info.jvmargs.agent">
         <startprofiler/>
         <antcall target="run-test-main"/>
@@ -1344,9 +1344,9 @@
         <loadproperties srcFile="${manifest.mf}" prefix="mf.">
             <filterchain>
                 <replaceregex pattern="[\n\r]+ ([^ ][^\n\r]*)"
-                            replace="\1"
-                            flags="g"
-                            byline="false"/>
+                              replace="\1"
+                              flags="g"
+                              byline="false"/>
             </filterchain>
         </loadproperties>
         <property file="${src.dir}/${mf.OpenIDE-Module-Localizing-Bundle}" prefix="bundle."/>
@@ -1389,7 +1389,7 @@
         <property name="test.user.dir.lock" location="${test.user.dir}/lock"/>
         <condition property="app.running">
             <islocked file="${test.user.dir.lock}"/>
-        </condition> 
+        </condition>
     </target>
     <target name="-testuserdir-delete-ok" depends="-testuserdir-delete-init" unless="app.running">
         <delete dir="${test.user.dir}"/>
@@ -1539,5 +1539,5 @@
         </fail>
         <nbbrowse file="${testcoverage.unit.report.dir}/index.html"/>
     </target>
-    
+
 </project>

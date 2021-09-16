@@ -12,12 +12,11 @@ user or by plugins that are run.
 Each attribute is defined by a name, description, type and a default
 value. The set of attribute types that are commonly used include:
 
-<table data-border="1">
-<caption>Attribute Types</caption>
+<table class="table table-striped">
 <thead>
 <tr class="header">
-<th scope="col"><strong>Type</strong></th>
-<th scope="col"><strong>Description</strong></th>
+<th><strong>Type</strong></th>
+<th><strong>Description</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -119,8 +118,6 @@ value. The set of attribute types that are commonly used include:
 </tr>
 </tbody>
 </table>
-
-Attribute Types
 
 There is also a number of other attribute types you will find but have
 generally been designed for a specific attribute (usually the type has a

@@ -1,13 +1,12 @@
 # Shortest Paths
 
-<table data-border="1">
-<caption>Shortest Paths Actions</caption>
+<table class="table table-striped">
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,18 +14,16 @@
 <td>Run Shortest Paths</td>
 <td></td>
 <td>Selection -&gt; Shortest Paths</td>
-<td style="text-align: center;"><img src="../paths/shortestpaths.png" alt="Shortest Paths Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/shortestpaths.png" alt="Shortest Paths Icon" /></td>
 </tr>
 <tr class="even">
 <td>Run Directed Shortest Paths</td>
 <td></td>
 <td>Selection -&gt; Directed Shortest Paths</td>
-<td style="text-align: center;"><img src="../paths/shortestpathsfd.png" alt="Directed Shortest Paths Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/shortestpathsfd.png" alt="Directed Shortest Paths Icon" /></td>
 </tr>
 </tbody>
 </table>
-
-Shortest Paths Actions
 
 Shortest Paths is an implementation of the Dijkstra shortest paths
 algorithm. When nodes within the same component are selected, the
@@ -46,7 +43,8 @@ Before Shortest Paths is run:
 
 <div style="text-align: center">
 
-![Graph before Shortest Paths is run](resources/ShortestPathBefore.png)
+<img src="../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathBefore.png" alt="Graph before Shortest Paths is
+run" />
 
 </div>
 
@@ -54,7 +52,8 @@ After Shortest Paths is run:
 
 <div style="text-align: center">
 
-![Graph after Shortest Paths is run](resources/ShortestPathAfter.png)
+<img src="../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathAfter.png" alt="Graph after Shortest Paths is
+run" />
 
 </div>
 
@@ -62,7 +61,7 @@ After Directed Shortest Paths is run (Source Node is Vertex #0):
 
 <div style="text-align: center">
 
-![Graph after Directed Shortest Paths is
-run](resources/ShortestPathAfterDirected.png)
+<img src="../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathAfterDirected.png" alt="Graph after Directed Shortest Paths is
+run" />
 
 </div>

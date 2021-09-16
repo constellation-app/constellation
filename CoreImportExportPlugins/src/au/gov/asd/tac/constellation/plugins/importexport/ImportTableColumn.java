@@ -35,7 +35,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.layout.BorderPane;
 
 /**
- * ImportTableColumn extends a standard JavaFX table column to add field validation.
+ * ImportTableColumn extends a standard JavaFX table column to add field
+ * validation.
  *
  * @author sirius
  */

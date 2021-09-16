@@ -22,7 +22,9 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
@@ -128,22 +130,9 @@ public class SetGraphValues extends RestService {
     }
 
     private static void setGraphAttributes(final Graph graph, final ArrayNode columns, final ArrayNode row) {
-        final Plugin p = new SimpleEditPlugin("Set graph attributes from REST API") {
-            @Override
-            protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                for (int i = 0; i < columns.size(); i++) {
-                    final String attributeName = columns.get(i).asText();
-                    int attributeId = graph.getAttribute(GraphElementType.GRAPH, attributeName);
-                    if (attributeId == Graph.NOT_FOUND) {
-                        attributeId = graph.addAttribute(GraphElementType.GRAPH, StringAttributeDescription.ATTRIBUTE_NAME, attributeName, null, null, null);
-                    }
-                    final String attributeValue = row.get(i).asText();
-                    graph.setStringValue(attributeId, 0, attributeValue);
-                }
-            }
-        };
+        final Plugin p = new SetGraphAttributesFromRestApiPlugin(columns, row);
 
-        PluginExecution pe = PluginExecution.withPlugin(p);
+        final PluginExecution pe = PluginExecution.withPlugin(p);
 
         try {
             pe.executeNow(graph);
@@ -152,6 +141,36 @@ public class SetGraphValues extends RestService {
             throw new RestServiceException(ex);
         } catch (final PluginException ex) {
             throw new RestServiceException(ex);
+        }
+    }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    private static class SetGraphAttributesFromRestApiPlugin extends SimpleEditPlugin {
+
+        private final ArrayNode columns;
+        private final ArrayNode row;
+
+        public SetGraphAttributesFromRestApiPlugin(final ArrayNode columns, final ArrayNode row) {
+            this.columns = columns;
+            this.row = row;
+        }
+
+        @Override
+        public String getName() {
+            return "Set graph attributes from REST API";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            for (int i = 0; i < columns.size(); i++) {
+                final String attributeName = columns.get(i).asText();
+                int attributeId = graph.getAttribute(GraphElementType.GRAPH, attributeName);
+                if (attributeId == Graph.NOT_FOUND) {
+                    attributeId = graph.addAttribute(GraphElementType.GRAPH, StringAttributeDescription.ATTRIBUTE_NAME, attributeName, null, null, null);
+                }
+                final String attributeValue = row.get(i).asText();
+                graph.setStringValue(attributeId, 0, attributeValue);
+            }
         }
     }
 }

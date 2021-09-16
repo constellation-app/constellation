@@ -25,7 +25,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * The result of an AnalyticPlugin, which will be supported by one or more AnalyticVisualisation.
+ * The result of an AnalyticPlugin, which will be supported by one or more
+ * AnalyticVisualisation.
  *
  * @author cygnus_x-1
  * @param <D>

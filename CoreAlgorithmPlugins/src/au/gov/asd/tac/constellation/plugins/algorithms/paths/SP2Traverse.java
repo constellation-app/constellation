@@ -27,8 +27,8 @@ import java.util.BitSet;
 public class SP2Traverse {
 
     /**
-     * This method uses parallel-BFS to traverse the graph and gather the eccentricities of each node, ignoring
-     * direction.
+     * This method uses parallel-BFS to traverse the graph and gather the
+     * eccentricities of each node, ignoring direction.
      *
      * @param graph
      * @return

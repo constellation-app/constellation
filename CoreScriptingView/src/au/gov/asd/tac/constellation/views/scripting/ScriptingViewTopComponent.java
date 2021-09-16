@@ -40,7 +40,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.scripting.ScriptingViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1300),
+    @ActionReference(path = "Menu/Views", position = 1400),
     @ActionReference(path = "Shortcuts", name = "CS-X")
 })
 

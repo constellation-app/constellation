@@ -23,8 +23,10 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -107,6 +109,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("TestParametersPlugin=Test Parameters")
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"DEVELOPER", "MODIFY"})
 public class TestParametersPlugin extends RecordStoreQueryPlugin implements DataAccessPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(TestParametersPlugin.class.getName());
@@ -277,7 +280,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         final PluginParameter<FloatParameterValue> probability = FloatParameterType.build(PROBABILITY_PARAMETER_ID);
         probability.setName("Probability");
-        probability.setDescription("0 ≤ p ≤ 1");
+        probability.setDescription("0 <= p <= 1");
         FloatParameterType.setMinimum(probability, 0f);
         FloatParameterType.setMaximum(probability, 1f);
         FloatParameterType.setStep(probability, 0.1f);

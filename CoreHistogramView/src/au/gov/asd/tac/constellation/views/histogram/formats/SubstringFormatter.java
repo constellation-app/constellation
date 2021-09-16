@@ -25,7 +25,8 @@ import au.gov.asd.tac.constellation.views.histogram.bins.StringBin;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A BinFormatter that allows the user to bin String values by a substring of their original values.
+ * A BinFormatter that allows the user to bin String values by a substring of
+ * their original values.
  *
  * @author sirius
  */

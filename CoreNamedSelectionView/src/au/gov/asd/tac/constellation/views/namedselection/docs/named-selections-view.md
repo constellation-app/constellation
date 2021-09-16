@@ -1,7 +1,6 @@
 # Named Selections
 
-<table data-border="1">
-<caption>Named Selections Actions</caption>
+<table class="table table-striped">
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -10,10 +9,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,13 +21,11 @@
 <td>Ctrl + Shift + N</td>
 <td>Views -&gt; Named Selections</td>
 <td><div style="text-align: center">
-<img src="../resources/named_selections.png" width="16" height="16" />
+<img src="../constellation/CoreNamedSelectionView/src/au/gov/asd/tac/constellation/views/namedselection/docs/resources/named_selections.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
 </table>
-
-Named Selections Actions
 
 ## Introduction
 
@@ -38,7 +35,8 @@ use in union (binary OR) and intersection (binary AND) operations.
 
 <div style="text-align: center">
 
-![Named Selections](resources/namedselections.png)
+<img src="../constellation/CoreNamedSelectionView/src/au/gov/asd/tac/constellation/views/namedselection/docs/resources/namedselections.png" alt="Named
+Selections" />
 
 </div>
 
@@ -74,7 +72,7 @@ unselected.
 
 <div style="text-align: center">
 
-![](resources/namedselection-context.png)
+<img src="../constellation/CoreNamedSelectionView/src/au/gov/asd/tac/constellation/views/namedselection/docs/resources/namedselection-context.png" />
 
 </div>
 

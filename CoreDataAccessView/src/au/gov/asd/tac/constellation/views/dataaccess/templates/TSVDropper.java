@@ -66,9 +66,7 @@ public class TSVDropper implements GraphDropper {
         // Only work on files
         final Transferable transferable = dtde.getTransferable();
         if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-
             try {
-
                 // Get the data as a list of files
                 final Object data = dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                 @SuppressWarnings("unchecked") //data will be list of files which extends Object type
@@ -78,12 +76,11 @@ public class TSVDropper implements GraphDropper {
                 final RecordStore recordStore = new GraphRecordStore();
 
                 boolean badData = false;
-                // Process each file...
-                for (File file : files) {
 
+                // Process each file...
+                for (final File file : files) {
                     // Only process files
                     if (file.isFile()) {
-
                         // Only process files that have a .tsv or .tsv.gz extension
                         // If any file does not have this extension then reject all the files.
                         final InputStream in;
@@ -98,19 +95,17 @@ public class TSVDropper implements GraphDropper {
 
                         // Open a reader so that we can read the file line by line
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
-
                             String[] columnHeaders = null;
 
                             String line = reader.readLine();
                             while (line != null) {
-
                                 String[] fields = line.split(SeparatorConstants.TAB);
 
                                 if (columnHeaders == null) {
                                     columnHeaders = fields;
                                 } else {
                                     recordStore.add();
-                                    int fieldsCount = Math.min(columnHeaders.length, fields.length);
+                                    final int fieldsCount = Math.min(columnHeaders.length, fields.length);
                                     for (int i = 0; i < fieldsCount; i++) {
                                         recordStore.set(columnHeaders[i], fields[i]);
                                     }
@@ -119,7 +114,6 @@ public class TSVDropper implements GraphDropper {
                                 line = reader.readLine();
                             }
                         }
-
                         // If any directories are encountered then don't allow the drop
                     } else {
                         badData = true;
@@ -129,19 +123,7 @@ public class TSVDropper implements GraphDropper {
 
                 if (!badData && recordStore.size() > 0) {
                     return (graph, dropInfo) -> {
-
-                        PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: TSV File to Graph") {
-                            @Override
-                            protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                ConstellationLoggerHelper.importPropertyBuilder(
-                                        this,
-                                        recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                        files,
-                                        ConstellationLoggerHelper.SUCCESS
-                                );
-                                return recordStore;
-                            }
-                        }).executeLater(graph);
+                        PluginExecution.withPlugin(new TSVDropperToGraphPlugin(recordStore, files)).executeLater(graph);
                     };
                 }
             } catch (final UnsupportedFlavorException | IOException ex) {
@@ -150,5 +132,34 @@ public class TSVDropper implements GraphDropper {
         }
 
         return null;
+    }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    public static class TSVDropperToGraphPlugin extends RecordStoreQueryPlugin {
+
+        private final RecordStore recordStore;
+        private final List<File> files;
+
+        public TSVDropperToGraphPlugin(final RecordStore recordStore, final List<File> files) {
+            this.recordStore = recordStore;
+            this.files = files;
+        }
+
+        @Override
+        protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            ConstellationLoggerHelper.importPropertyBuilder(
+                    this,
+                    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                    files,
+                    ConstellationLoggerHelper.SUCCESS
+            );
+            return recordStore;
+        }
+
+        @Override
+        public String getName() {
+            return "Drag and Drop: TSV File to Graph";
+        }
+
     }
 }

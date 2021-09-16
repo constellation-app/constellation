@@ -130,11 +130,11 @@ public final class FloatArray implements Iterable<Float> {
      */
     public FloatArray(final int initialCapacity) {
         super();
-        
+
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         }
-        
+
         this.elementData = new float[initialCapacity];
         size = 0;
     }

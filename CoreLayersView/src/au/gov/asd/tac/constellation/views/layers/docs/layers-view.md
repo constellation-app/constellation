@@ -1,19 +1,12 @@
 # Layers View
 
-<table data-border="1">
-<caption>Layers View Actions</caption>
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-</colgroup>
+<table class="table table-striped">
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,7 +15,7 @@
 <td>Ctrl + Shift + L</td>
 <td>Experimental -&gt; Views -&gt; Layers View</td>
 <td><div style="text-align: center">
-<img src="../resources/layers-view.png" width="16" height="16" />
+<img src="../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-view.png" width="16" height="16" />
 </div></td>
 </tr>
 <tr class="even">
@@ -46,8 +39,6 @@
 </tbody>
 </table>
 
-Layers View Actions
-
 The Layers View holds a collection of Layers. Each Layer can represent a
 static set of elements, or a dynamically calculated set of elements
 which match a query criteria. The query structure is based on the
@@ -60,8 +51,8 @@ attribute value toggled to 0.0 (invisible).
 Arrangements on graphs with a visual schema will be ran on the base
 layer 0.
 
-![Fig.1 - Layers view interface](resources/layers-view-example.png)
-
+<img src../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-view-example.png" alt="Fig.1 - Layers view
+interface" />
   
 
 ## Creating and Using Layers
@@ -80,8 +71,8 @@ results is needed.
 
 ## Layer Types
 
-![Fig.2 - Right-click context menu used for adding elements to a manual
-layer.](resources/layers-context.png)
+<img src="../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-context.png" alt="Fig.2 - Right-click context menu used for adding elements to a manual
+layer." />
 
   
 
@@ -109,5 +100,6 @@ the whole graph.
 NOTE: Layers View does not allow for the use of the assignment operator
 = or keyword assign.
 
-[Click here for more information on the structure of the expression
-framework.](nbdocs://au.gov.asd.tac.constellation.graph/au/gov/asd/tac/constellation/graph/docs/expressions.html)
+Click
+[here](../constellation/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/docs/expressions-framework.md)
+for more information on the structure of the expression framework

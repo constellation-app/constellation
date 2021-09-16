@@ -1,13 +1,12 @@
 # Quality Control View
 
-<table data-border="1">
-<caption>Quality Control View Actions</caption>
+<table class="table table-striped">
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,7 +14,7 @@
 <td>Open Quality Control View</td>
 <td>Keyboard Shortcut: Ctrl + Shift + Q</td>
 <td>Views -&gt; Quality Control View</td>
-<td style="text-align: center;"><img src="../resources/quality-control-view.png" width="16" height="16" alt="Quality Control View Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreQualityControlView/src/au/gov/asd/tac/constellation/views/qualitycontrol/docs/resources/quality-control-view.png" width="16" height="16" alt="Quality Control View Icon" /></td>
 </tr>
 <tr class="even">
 <td>Select rows</td>
@@ -44,8 +43,6 @@
 </tbody>
 </table>
 
-Quality Control View Actions
-
 ## IMPORTANT!!!
 
 Although Constellation provides this Quality Control View, the user
@@ -66,26 +63,30 @@ via the buttons at the bottom of the view.
 
 <div style="text-align: center">
 
-![Quality Control View](resources/QualityControlView.png)
+<img src="../constellation/CoreQualityControlView/src/au/gov/asd/tac/constellation/views/qualitycontrol/docs/resources/QualityControlView.png" alt="Quality Control
+View" />
 
 </div>
 
 ## Quality Control Categories
 
-There are five levels of quality control categories for nodes that are
+There are six levels of quality control categories for nodes that are
 selected.
 
--   *FATAL* - Any node which is specifically disallowed (whether it be
-    disallowed for queries, or simply should not be in your graph) will
-    have a black background, and may be blocked from further analysis.
+-   *CRITICAL* - Any node which is specifically disallowed (whether it
+    be disallowed for queries, or simply should not be in your graph)
+    will have a dark red background, and may be blocked from further
+    analysis.
 -   *SEVERE* - Any node which is considered of particularly bad quality
     will have a red background, but will never be blocked.
--   *WARNING* - Any node which is considered of very questionable
-    quality will have a purple background.
--   *INFO* - Any node which is considered of questionable quality will
-    have a blue background.
--   *DEFAULT* - Any node which is considered of good quality will have a
-    white background. This does not mean that these nodes are
+-   *MAJOR* - Any node which is considered of very questionable quality
+    will have an orange background.
+-   *MEDIUM* - Any node which is considered of questionable quality will
+    have a yellow background.
+-   *MINOR* - Any node which is considered of slightly questionable
+    quality will have a blue background.
+-   *OK* - Any node which is considered of good quality will have a
+    green background. This does not mean that these nodes are
     necessarily of high quality, only that no quality control rules
     matched - such nodes require manual checking by the user.
 

@@ -1,1 +1,0 @@
-# Bubble tree arrangement

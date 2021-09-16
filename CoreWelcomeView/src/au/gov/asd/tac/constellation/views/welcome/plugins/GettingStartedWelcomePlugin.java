@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
@@ -29,11 +26,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 
 /**
- * The plugin for the Welcome Page that leads to the Getting Started guides and
- * resources
+ * The plugin for the Welcome Page that leads to the Getting Started Help Page
  *
  * @author Delphinus8821
  */
@@ -44,6 +41,8 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
     final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
     final Button startedBtn = new Button();
+    
+    private static final String GETTING_STARTED_HELP_PAGE = "au.gov.asd.tac.constellation.functionality.gettingstarted";
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -61,12 +60,7 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
      */
     @Override
     public void run() {
-        String url = "https://constellation.readthedocs.io/en/latest/";
-
-        PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
-                .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open " + getName())
-                .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, url)
-                .executeLater(null);
+        new HelpCtx(GETTING_STARTED_HELP_PAGE).display();
     }
 
     /**
@@ -90,7 +84,7 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
         started.setFitWidth(25);
         final Text title = new Text("Getting Started");
         title.setFill(Color.WHITE);
-        final Text subtitle = new Text("Guides & Resources");
+        final Text subtitle = new Text("Quick Start Guide");
         subtitle.setId("smallInfoText");
         subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);

@@ -1,13 +1,12 @@
 # Conversation View
 
-<table data-border="1">
-<caption>Conversation View Actions</caption>
+<table class="table table-striped">
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -15,12 +14,10 @@
 <td>Open Conversation View</td>
 <td>Ctrl + Shift + C</td>
 <td>Views -&gt; Conversation View</td>
-<td style="text-align: center;"><img src="../resources/conversation_view.png" alt="Conversation View Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreConversationView/src/au/gov/asd/tac/constellation/views/conversationview/docs/resources/conversation_view.png" alt="Conversation View Icon" /></td>
 </tr>
 </tbody>
 </table>
-
-Conversation View Actions
 
 ## Introduction
 
@@ -34,7 +31,8 @@ then no conversation text will be displayed.
 
 <div style="text-align: center">
 
-![Conversation View](resources/ConversationView.png)
+<img src="../constellation/CoreConversationView/src/au/gov/asd/tac/constellation/views/conversationview/docs/resources/ConversationView.png" alt="Conversation
+View" />
 
 </div>
 
@@ -66,3 +64,13 @@ the Conversation View. If it is not already there, you can click on the
 "Add Content Attributes" button found at the top of the Conversation
 View. This will add all of the content attributes to your graph
 (including "Content" and "Content.Translated").
+
+## Searching Conversations
+
+Using the search bar at the top of the view, you are able to search the
+conversations (and translations) currently presented. Simply type in a
+search term and the view will highlight all the matches found as well as
+present a count of how many matches there are. It will only search the
+visible parts of a bubble (i.e. the parts toggled on using the buttons
+at the top of the window). If you change what parts of the bubble are
+shown, the search will update with the new results.

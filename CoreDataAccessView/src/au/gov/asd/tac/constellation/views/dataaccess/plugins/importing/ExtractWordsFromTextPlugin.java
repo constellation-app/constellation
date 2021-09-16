@@ -36,7 +36,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -75,8 +74,8 @@ import org.openide.util.lookup.ServiceProviders;
 @ServiceProviders({
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @Messages("ExtractWordsFromTextPlugin=Extract Words from Text")
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     public static final String ATTRIBUTE_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "attribute");
@@ -536,7 +535,6 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         }
 
         PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
-                .followedBy(ArrangementPluginRegistry.TREES)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .executeNow(wg);
 
