@@ -50,7 +50,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     private static final Logger LOGGER = Logger.getLogger(ConstellationHelpDisplayer.class.getName());
 
-    private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/";
+    private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
 
     protected static int currentPort = 0;
 
@@ -189,7 +189,8 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String sep = File.separator;
 
         // Switched base help page to About Constellation
-        String helpTOCPath = "constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/docs/about-constellation.md";
+        String helpTOCPath = sep + "constellation" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "docs" + sep + "about-constellation.md";
 
         // use the requested help file, or the About Constellation page if one is not given
         final String helpLink = StringUtils.isNotEmpty(HelpMapper.getHelpAddress(helpId)) ? HelpMapper.getHelpAddress(helpId).substring(2) : helpTOCPath;
@@ -207,7 +208,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                     url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
                 } else {
 
-                    url = OFFICIAL_CONSTELLATION_WEBSITE;
+                    url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink;
                 }
 
                 LOGGER.log(Level.INFO, "help url {0}", url);
