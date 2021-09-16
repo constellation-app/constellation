@@ -37,7 +37,8 @@ import org.openide.windows.OnShowing;
 /**
  * Start the autosaver in the background.
  * <p>
- * An OnShowing Runnable runs in the EDT. This is good, because we need to look for autosaved unsaved graphs.
+ * An OnShowing Runnable runs in the EDT. This is good, because we need to look
+ * for autosaved unsaved graphs.
  *
  * @author algol
  */

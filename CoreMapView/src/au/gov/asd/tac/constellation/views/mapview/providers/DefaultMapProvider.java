@@ -53,7 +53,7 @@ public class DefaultMapProvider extends MapProvider {
         final File defaultMap = ConstellationInstalledFileLocator.locate(
                 "modules/ext/defaultMap.mbtiles",
                 "au.gov.asd.tac.constellation.views.mapview",
-                false, DefaultMapProvider.class.getProtectionDomain());
+                DefaultMapProvider.class.getProtectionDomain());
         final String connection = String.format("jdbc:sqlite:%s", defaultMap.getAbsolutePath());
         final int zoom = (int) coordinate.zoom;
         final float gridSize = PApplet.pow(2, coordinate.zoom);

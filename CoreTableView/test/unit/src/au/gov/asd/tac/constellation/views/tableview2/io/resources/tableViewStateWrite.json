@@ -1,0 +1,20 @@
+{
+    "ATTR NAME": {
+        "selectedOnly": true,
+        "elementType": "VERTEX",
+        "transactionColumnAttributes": [
+            {
+                "attributePrefix": "transactionPrefix",
+                "attributeElementType": "TRANSACTION",
+                "attributeName": "My Transaction"
+            }
+        ],
+        "vertexColumnAttributes": [
+            {
+                "attributePrefix": "vertexPrefix",
+                "attributeElementType": "VERTEX",
+                "attributeName": "My Vertex"
+            }
+        ]
+    }
+}

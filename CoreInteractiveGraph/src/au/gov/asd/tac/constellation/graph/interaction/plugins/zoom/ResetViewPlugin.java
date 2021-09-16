@@ -45,8 +45,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 @Messages("ResetViewPlugin=Reset View")
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {"VIEW"})
 public final class ResetViewPlugin extends SimpleEditPlugin {
 
     public static final String AXIS_PARAMETER_ID = PluginParameter.buildId(ResetViewPlugin.class, "axis");

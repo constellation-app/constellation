@@ -23,10 +23,9 @@ import au.gov.asd.tac.constellation.graph.file.open.OpenFilePlugin;
  * @author canis_majoris
  */
 public final class GraphFilePluginRegistry {
-    
+
     private GraphFilePluginRegistry() {
     }
 
-    
     public static final String OPEN_FILE = OpenFilePlugin.class.getName();
 }

@@ -122,12 +122,12 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         downloadPythonClientCheckBox.setSelected(downloadPythonClient);
     }
 
-    public boolean getRememberSaveLocation() {
-        return rememberSaveLocationCheckBox.isSelected();
+    public boolean getRememberOpenSaveLocation() {
+        return rememberOpenAndSaveLocationCheckBox.isSelected();
     }
 
-    public void setRememberSaveLocation(final boolean rememberSaveLocation) {
-        this.rememberSaveLocationCheckBox.setSelected(rememberSaveLocation);
+    public void setRememberOpenSaveLocation(final boolean rememberSaveLocation) {
+        this.rememberOpenAndSaveLocationCheckBox.setSelected(rememberSaveLocation);
     }
 
     /**
@@ -159,8 +159,8 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         notebookDirectoryText = new JTextField();
         notebookDirectoryButton = new JButton();
         downloadPythonClientCheckBox = new JCheckBox();
-        saveLocationPanel = new JPanel();
-        rememberSaveLocationCheckBox = new JCheckBox();
+        openAndSaveLocationPanel = new JPanel();
+        rememberOpenAndSaveLocationCheckBox = new JCheckBox();
 
         Mnemonics.setLocalizedText(userDirectoryLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.userDirectoryLabel.text")); // NOI18N
 
@@ -197,7 +197,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(autosaveSpinner, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(autosaveLabel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addContainerGap(182, Short.MAX_VALUE))
         );
         autosavePanelLayout.setVerticalGroup(autosavePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(autosavePanelLayout.createSequentialGroup()
@@ -225,7 +225,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(startupWhatsNewCheckbox)
                     .addComponent(startupWelcomeCheckbox))
-                .addContainerGap(380, Short.MAX_VALUE))
+                .addContainerGap(349, Short.MAX_VALUE))
         );
         startupPanelLayout.setVerticalGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(startupPanelLayout.createSequentialGroup()
@@ -265,7 +265,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                     .addGroup(webserverPanelLayout.createSequentialGroup()
                         .addComponent(webserverPortSpinner, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(restDirectoryText, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE))
+                    .addComponent(restDirectoryText, GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(restDirectoryButton)
                 .addGap(4, 4, 4))
@@ -313,7 +313,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                     .addGroup(notebookPanelLayout.createSequentialGroup()
                         .addComponent(notebookDirectoryLabel)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(notebookDirectoryText, GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                        .addComponent(notebookDirectoryText, GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(notebookDirectoryButton)))
                 .addContainerGap())
@@ -330,44 +330,44 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        saveLocationPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.saveLocationPanel.border.title"))); // NOI18N
+        openAndSaveLocationPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.openAndSaveLocationPanel.border.title"))); // NOI18N
 
-        rememberSaveLocationCheckBox.setSelected(true);
-        Mnemonics.setLocalizedText(rememberSaveLocationCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.rememberSaveLocationCheckBox.text")); // NOI18N
-        rememberSaveLocationCheckBox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.rememberSaveLocationCheckBox.actionCommand")); // NOI18N
+        rememberOpenAndSaveLocationCheckBox.setSelected(true);
+        Mnemonics.setLocalizedText(rememberOpenAndSaveLocationCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.rememberOpenAndSaveLocationCheckBox.text")); // NOI18N
+        rememberOpenAndSaveLocationCheckBox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.rememberOpenAndSaveLocationCheckBox.actionCommand")); // NOI18N
 
-        GroupLayout saveLocationPanelLayout = new GroupLayout(saveLocationPanel);
-        saveLocationPanel.setLayout(saveLocationPanelLayout);
-        saveLocationPanelLayout.setHorizontalGroup(saveLocationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(saveLocationPanelLayout.createSequentialGroup()
+        GroupLayout openAndSaveLocationPanelLayout = new GroupLayout(openAndSaveLocationPanel);
+        openAndSaveLocationPanel.setLayout(openAndSaveLocationPanelLayout);
+        openAndSaveLocationPanelLayout.setHorizontalGroup(openAndSaveLocationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(openAndSaveLocationPanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addComponent(rememberSaveLocationCheckBox)
+                .addComponent(rememberOpenAndSaveLocationCheckBox)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        saveLocationPanelLayout.setVerticalGroup(saveLocationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(saveLocationPanelLayout.createSequentialGroup()
+        openAndSaveLocationPanelLayout.setVerticalGroup(openAndSaveLocationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(openAndSaveLocationPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(rememberSaveLocationCheckBox)
+                .addComponent(rememberOpenAndSaveLocationCheckBox)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addComponent(startupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(autosavePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(startupPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(autosavePanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(userDirectoryLabel)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(userDirectoryText)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(userDirectoryButton))
-                    .addComponent(webserverPanel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(notebookPanel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(saveLocationPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(webserverPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(notebookPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(openAndSaveLocationPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -386,12 +386,12 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(notebookPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(saveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addComponent(openAndSaveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N
-        saveLocationPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.saveLocationPanel.AccessibleContext.accessibleName")); // NOI18N
+        openAndSaveLocationPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.openAndSaveLocationPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void userDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_userDirectoryButtonActionPerformed
@@ -450,11 +450,11 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JLabel notebookDirectoryLabel;
     private JTextField notebookDirectoryText;
     private JPanel notebookPanel;
-    private JCheckBox rememberSaveLocationCheckBox;
+    private JPanel openAndSaveLocationPanel;
+    private JCheckBox rememberOpenAndSaveLocationCheckBox;
     private JButton restDirectoryButton;
     private JLabel restDirectoryLabel;
     private JTextField restDirectoryText;
-    private JPanel saveLocationPanel;
     private JPanel startupPanel;
     private JCheckBox startupWelcomeCheckbox;
     private JCheckBox startupWhatsNewCheckbox;

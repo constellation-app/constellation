@@ -138,19 +138,19 @@ public final class GLRenderer implements GLEventListener {
             GLInfo.printGLCapabilities(gl);
         }
 
-        gl.glEnable(GL3.GL_DEPTH_TEST);
-        gl.glDepthFunc(GL3.GL_LEQUAL);
-        gl.glEnable(GL3.GL_BLEND);
-        gl.glBlendFunc(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA);
-        gl.glEnable(GL3.GL_LINE_SMOOTH);
-        gl.glHint(GL3.GL_LINE_SMOOTH_HINT, GL3.GL_NICEST);
+        gl.glEnable(GL.GL_DEPTH_TEST);
+        gl.glDepthFunc(GL.GL_LEQUAL);
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glEnable(GL.GL_LINE_SMOOTH);
+        gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST);
 
         renderables.forEach(renderable -> {
             renderable.init(drawable);
         });
 
         // Reset to the default framebuffer.
-        gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, 0);
+        gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, 0);
     }
 
     @Override

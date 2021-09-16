@@ -1,5 +1,52 @@
 == 3030-12-31 Getting Started
-<p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
+<p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
+
+== 2021-09-15 Quick Start Guide
+<p>The Quick Start Guide on the Whats New Page has been removed. You can now discover that information via the Getting Started link on the Welcome Page which now links 
+to the Getting Started help page.</p>
+
+== 2021-09-13 node_labels_bottom/top and transaction_labels changed
+<p>The above three graph attributes have been changed to node_bottom/top_labels_colours and transaction_labels_colours.</p>
+<p>The attributes now also show the colours for example: Label: (White), Identifier: (#9980e6)</p>
+
+== 2021-09-10 Histogram View
+<p>Options selected for the Category and Property are now associated with the chosen Graph Element; Node, Transaction, Edge, or Link, and will not reset to defaults when switching between Graph Element options.</p>
+
+== 2021-09-06 Import From File
+<p>Updated the UI to clear the Attribute Filter and the table filters in the Configuration Run tabs, when all the source files are removed.</p>
+
+== 2021-09-06 Import From File
+<p>Updated the UI to only enable and expand sections once a file is added</p>
+
+== 2021-09-08 Notes View UI Improvements
+<p>New features:</p>
+<ul>
+<li>Replaced edit pop up with direct note editable text fields</li>
+<li>Right click note to add and remove selected graph elements</li>
+<li>Delete note confirmation pop up</li>
+</ul>
+
+== 2021-09-06 Freeform Selection 
+<p>You can now draw a freeform selection shape by holding down Alt whilst selecting.</p>
+
+== 2021-09-06 Reset graph view after importing
+<p>When data is imported with the Import from File or the Import from Database, the graph view is now reset to the full view to display everything that has been imported.</p>
+
+== 2021-08-23 Moved Notes View to Views menu
+<p>The Notes View can now be found in the Views menu instead of in the Experimental > Views menu.</p>
+
+== 2021-08-18 Layers View Delete Layer
+<p>Added functionality to delete a layer in the layers view.</p>
+
+== 2021-08-18 Removed Old Table View
+<p>Removed the old table view implementation as the new one has now fully replaced it.</p>
+
+== 2021-08-05 Auto Notes Filters
+<p>Additional filters have been added to the Notes View to filter on which Auto Notes are shown. When the Auto Notes filter is selected, an additional drop down list of filters for the Auto Notes is displayed.</p>
+
+== 2021-07-30 Remember File Open/Save Location
+<p>By default, the "Remember Open/Save Location" preference is enabled, which will default the previously opened or saved location when opening or saving a file. </p>
+<p>When this option is unticked, the open or save location defaults to the user's home directory</p>
 
 == 2021-07-27 Keep multiple values expanded in the Attribute Editor
 <p>When the graph selection is changed, any expanded node or transaction attributes in the Attribute Editor will now remain expanded and populate values of the new selection.</p>
@@ -10,7 +57,10 @@
 
 == 2021-07-26 Quality Control Category Changes
 <p>Quality Control category names and colours have been updated to match commonly seen category names and colours. The category names are now Minor, Medium, Major, Severe and Critical.</p>
-<p>A new category OK has been added for when a Quality Control rule has not been flagged.<p> 
+<p>A new category OK has been added for when a Quality Control rule has not been flagged.</p>
+
+== 2021-07-21 Conversation View
+<p>The Conversation View now has a search bar where a letter or passage can be searched for within the currently visible conversation.</p>
 
 == 2021-07-15 Notes View Selection
 <p>User Notes now have the option to include nodes and transactions on the graph that are selected when the note is created. If no elements are selected, the note will be applied to the whole graph.</p>
@@ -18,7 +68,7 @@
 
 == 2021-06-04 Select All Plugin
 <p>The Select All Plugin in the Data Access View now selects everything on the graph including transactions.</p>
-<p>Previously it only selected the vertices on the graph.</p> 
+<p>Previously it only selected the vertices on the graph.</p>
 
 == 2021-05-28 Freeze Graph View Removed
 <p>The freeze graph view option has been removed as the functionality has been replaced by pin/unpin nodes</p>

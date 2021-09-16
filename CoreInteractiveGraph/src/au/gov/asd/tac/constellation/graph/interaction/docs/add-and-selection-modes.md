@@ -2,20 +2,20 @@
 
 ## Add Mode
 
-Select the ![Add Mode Icon](resources/add.png) icon to switch to add
-mode. This mode allows the user to manually create nodes and
-transactions.
+Select the <img src="../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/add.png" alt="Add Mode
+Icon" />
+icon to switch to add mode. This mode allows the user to manually create
+nodes and transactions.
 
-<table data-border="1">
-<caption>Creating the Graph in Add Mode using the Mouse</caption>
+<table class="table table-striped">
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Graph Action</th>
-<th scope="col">Mouse Actions</th>
+<th>Graph Action</th>
+<th>Mouse Actions</th>
 </tr>
 </thead>
 <tbody>
@@ -51,28 +51,29 @@ transactions.
 </tbody>
 </table>
 
-Creating the Graph in Add Mode using the Mouse
-
 NOTE: While creating a transaction, you can left-click on the background
 or press ESC to abort creating it.
 
 When creating transactions, you can choose whether to generate directed
-or undirected transactions by selecting either the ![Directed
-Transactions Icon](resources/directed.png) icon (for directed) or the
-![Undirected Transactions Icon](resources/undirected.png) icon (for
-undirected). By default, directed will be selected.
+or undirected transactions by selecting either the <img src="../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/directed.png" alt="Directed
+Transactions Icon" />
+icon (for directed) or the <img src="../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/undirected.png" alt="Undirected Transactions
+Icon" />
+icon (for undirected). By default, directed will be selected.
 
 ## Selection Mode
 
-Select the ![Selection Mode Icon](resources/select.png) icon to switch
-to selection mode. This mode allows the user to select elements in the
-graph and perform graphical operations such as zoom, pan, and rotate.
+Select the <img src="../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/select.png" alt="Selection Mode
+Icon" />
+icon to switch to selection mode. This mode allows the user to select
+elements in the graph and perform graphical operations such as zoom,
+pan, and rotate.
 
 Navigating the graph in selection mode using the mouse is done as
 follows (In general the left button is for selecting, the middle button
 for rotating, and the right button for dragging and panning):
 
-<table data-border="1">
+<table class="table table-striped">
 <caption>Navigating the Graph in Selection Mode using the Mouse</caption>
 <colgroup>
 <col style="width: 50%" />
@@ -80,8 +81,8 @@ for rotating, and the right button for dragging and panning):
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Mouse Action</th>
-<th scope="col">Graph Action</th>
+<th>Mouse Action</th>
+<th>Graph Action</th>
 </tr>
 </thead>
 <tbody>
@@ -107,17 +108,29 @@ for rotating, and the right button for dragging and panning):
 </tr>
 <tr class="even">
 <td>Left-drag</td>
-<td>Select multiple nodes and/or transactions.</td>
+<td>Select multiple nodes and/or transactions with a box selection.</td>
 </tr>
 <tr class="odd">
 <td>Shift-left-drag</td>
-<td>Select additional multiple nodes and/or transactions.</td>
+<td>Select additional multiple nodes and/or transactions with a box selection.</td>
 </tr>
 <tr class="even">
 <td>Ctrl-left-drag</td>
-<td>Toggle selection of multiple nodes and/or transactions.</td>
+<td>Toggle selection of multiple nodes and/or transactions with a box selection.</td>
 </tr>
 <tr class="odd">
+<td>Alt-left-drag</td>
+<td>Select multiple nodes and/or transactions with a freeform selection.</td>
+</tr>
+<tr class="even">
+<td>Alt-shift-left-drag</td>
+<td>Select additional multiple nodes and/or transactions with a freeform selection.</td>
+</tr>
+<tr class="odd">
+<td>Alt-ctrl-left-drag</td>
+<td>Toggle selection of multiple nodes and/or transactions with a freeform selection.</td>
+</tr>
+<tr class="even">
 <td>Middle-drag</td>
 <td>Rotate the graph.
 <ul>
@@ -126,15 +139,15 @@ for rotating, and the right button for dragging and panning):
 <li>Dragging the mouse along the edges of the window will rotate around the Z axis.</li>
 </ul></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Right-drag on background</td>
 <td>Pan the graph.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Right-drag on node</td>
 <td>Drag the node and other selected nodes.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Right-drag on transaction</td>
 <td>Pan the graph.</td>
 </tr>

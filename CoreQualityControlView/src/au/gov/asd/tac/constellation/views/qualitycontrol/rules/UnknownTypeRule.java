@@ -53,6 +53,15 @@ public class UnknownTypeRule extends QualityControlRule {
         return RISK;
     }
 
+    /**
+     * ExecuteRule will return true when the vertex type exists and the type is
+     * 'Unknown'. False will be returned when the type is null or when the type
+     * is not 'Unknown'
+     *
+     * @param graph the readable graph
+     * @param vertexId the vertex to check against the rule
+     * @return boolean true if it matches the rule, false otherwise.
+     */
     @Override
     protected boolean executeRule(final GraphReadMethods graph, final int vertexId) {
         final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);

@@ -11,3 +11,15 @@ network (eg. node A contacted node B, node A is correlated to node B).
 This basically results in a high similarity score being assigned to any
 pair of nodes which are connected to similar neighbours a similar amount
 of times.
+
+## Parameters
+
+-   *Transaction Types* - Calculate on only the subgraph of transactions
+    of these types
+-   *Include Incoming* - Include incoming connections
+-   *Include Outgoing* - Include outgoing connections
+-   *Include Undirected* - Treat undirected connections as bidirectional
+    connections
+-   *Minimum Common Features* - Only calculate similarity between nodes
+    that share at least this many features
+-   *Selected Only* - Calculate using only selected graph elements

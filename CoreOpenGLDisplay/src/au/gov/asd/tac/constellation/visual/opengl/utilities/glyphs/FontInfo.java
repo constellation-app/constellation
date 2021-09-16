@@ -124,7 +124,8 @@ public class FontInfo {
      * <p>
      * The font must not exclude any Unicode scripts.
      *
-     * @param defaultName The name of the default font used when all other fonts aren't suitable.
+     * @param defaultName The name of the default font used when all other fonts
+     * aren't suitable.
      *
      * @return True if this is a suitable default font, otherwise false.
      */
@@ -188,7 +189,8 @@ public class FontInfo {
     }
 
     /**
-     * Parse lines of a string to find fontName[,bold|plain|block]... for each line.
+     * Parse lines of a string to find fontName[,bold|plain|block]... for each
+     * line.
      *
      * @param lines
      * @param fontSize

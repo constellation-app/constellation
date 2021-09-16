@@ -16,19 +16,14 @@
 package au.gov.asd.tac.constellation.views.scatterplot;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotConcept;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
+import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotStateWriter;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.openide.awt.ActionID;
@@ -54,7 +49,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1100),
+    @ActionReference(path = "Menu/Views", position = 1200),
     @ActionReference(path = "Shortcuts", name = "CS-O")
 })
 @TopComponent.OpenActionRegistration(
@@ -258,33 +253,4 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-    /**
-     * Write the given ScatterPlotState to the active graph.
-     */
-    @PluginInfo(tags = {"LOW LEVEL"})
-    private static class ScatterPlotStateWriter extends SimpleEditPlugin {
-
-        private final ScatterPlotState scatterPlotState;
-
-        public ScatterPlotStateWriter(ScatterPlotState scatterPlotState) {
-            this.scatterPlotState = scatterPlotState;
-        }
-
-        @Override
-        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final int scatterPlotStateAttribute = ScatterPlotConcept.MetaAttribute.SCATTER_PLOT_STATE.ensure(graph);
-            final ScatterPlotState state = new ScatterPlotState(scatterPlotState);
-            graph.setObjectValue(scatterPlotStateAttribute, 0, state);
-        }
-
-        @Override
-        protected boolean isSignificant() {
-            return true;
-        }
-
-        @Override
-        public String getName() {
-            return "Scatter Plot: Update State";
-        }
-    }
 }

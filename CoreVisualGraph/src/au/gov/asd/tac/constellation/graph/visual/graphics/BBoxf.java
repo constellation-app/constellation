@@ -66,9 +66,11 @@ public class BBoxf {
     }
 
     /**
-     * Return true if nothing has been added to the bounding box, false otherwise.
+     * Return true if nothing has been added to the bounding box, false
+     * otherwise.
      *
-     * @return True if nothing has been added to the bounding box, false otherwise.
+     * @return True if nothing has been added to the bounding box, false
+     * otherwise.
      */
     public boolean isEmpty() {
         return min[X] > max[X];
@@ -144,7 +146,8 @@ public class BBoxf {
      * Takes mixing into account.
      *
      * @param rg The graph to create a bounding box from.
-     * @param selectedOnly True to only include selected vertices, false to include all vertices.
+     * @param selectedOnly True to only include selected vertices, false to
+     * include all vertices.
      *
      * @return The bounding box of the relevant vertices.
      */

@@ -32,7 +32,9 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -62,6 +64,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("CompleteGraphBuilderPlugin=Complete Graph Builder")
+@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
 public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
 
     public static final String N_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "n");

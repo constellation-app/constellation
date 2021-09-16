@@ -1,19 +1,12 @@
 # Analytic View
 
 <table class="table table-striped">
-<caption>Analytic View Actions</caption>
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,13 +15,11 @@
 <td>Ctrl + Shift + Z</td>
 <td>Views -&gt; Analytic View</td>
 <td><div style="text-align: center">
-<img src="../resources/analytic-view.png" width="16" height="16" />
+<img src="../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/analytic-view.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
 </table>
-
-Analytic View Actions
 
 ## Introduction
 
@@ -41,7 +32,7 @@ on a graph.
 
 <div style="text-align: center">
 
-![Analytic View](../resources/AnalyticView.png)
+<img src="../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/AnalyticView.png" alt="Analytic View" />
 
 </div>
 
@@ -63,7 +54,8 @@ help pages for selected analytics here by clicking on the
 "Documentation" tab.
 
 Once you have finished configuring your question, you can run it by
-pressing the ![Run Icon](../resources/AnalyticRun.png) button.
+pressing the <img src="../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/AnalyticRun.png" alt="Run Icon" />
+button.
 
 ## Visualising the Results
 

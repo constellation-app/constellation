@@ -42,7 +42,9 @@ public class VertexGraphLabelsAttributeInteraction extends AbstractAttributeInte
         StringBuilder labelsString = new StringBuilder();
         labelsValue.getLabels().forEach(label -> {
             labelsString.append(label.getAttributeName());
-            labelsString.append(", ");
+            labelsString.append(": (");
+            labelsString.append(label.getColor());
+            labelsString.append("), ");
         });
         return labelsString.length() > 0 ? labelsString.substring(0, labelsString.length() - 2) : labelsString.toString();
     }

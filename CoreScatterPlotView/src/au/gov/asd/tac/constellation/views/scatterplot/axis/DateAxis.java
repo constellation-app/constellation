@@ -31,7 +31,8 @@ import javafx.scene.chart.Axis;
 import javafx.util.StringConverter;
 
 /**
- * An axis for representing Date objects, based on the DateAxis class available in the ExtFX library.
+ * An axis for representing Date objects, based on the DateAxis class available
+ * in the ExtFX library.
  *
  * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
  *
@@ -49,8 +50,8 @@ public class DateAxis extends Axis<Date> {
     private Interval actualInterval = Interval.DECADE;
 
     /**
-     * the min and max date of the data provided. if {@link #autoRanging} is true, these are used as lower and upper
-     * bounds.
+     * the min and max date of the data provided. if {@link #autoRanging} is
+     * true, these are used as lower and upper bounds.
      */
     private Date minDate;
     private Date maxDate;
@@ -116,7 +117,8 @@ public class DateAxis extends Axis<Date> {
     };
 
     /**
-     * Default constructor. The lower and upper bound are calculated by the data.
+     * Default constructor. The lower and upper bound are calculated by the
+     * data.
      */
     public DateAxis() {
     }
@@ -414,8 +416,8 @@ public class DateAxis extends Axis<Date> {
     }
 
     /**
-     * Makes dates even, in the sense of that years always begin in January, months always begin on the 1st and days
-     * always at midnight.
+     * Makes dates even, in the sense of that years always begin in January,
+     * months always begin on the 1st and days always at midnight.
      *
      * @param dates The list of dates.
      * @return The new list of dates.
@@ -583,8 +585,9 @@ public class DateAxis extends Axis<Date> {
     }
 
     /**
-     * The intervals, which are used for the tick labels. Beginning with the largest interval, the axis tries to
-     * calculate the tick values for this interval. If a smaller interval is better suited for, that one is taken.
+     * The intervals, which are used for the tick labels. Beginning with the
+     * largest interval, the axis tries to calculate the tick values for this
+     * interval. If a smaller interval is better suited for, that one is taken.
      */
     private enum Interval {
 

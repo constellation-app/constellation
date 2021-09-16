@@ -1,15 +1,14 @@
-## Icons
+# Icons
 
 Nodes are displayed using a combination of several icons in a 64x64
 square. Icons need not be square: they may use transparent pixels to be
 displayed with different shapes.
 
-<table>
-<caption>A description of the different attributes that make up a node icon</caption>
+<table class="table table-striped">
 <thead>
 <tr class="header">
-<th scope="col">Attribute</th>
-<th scope="col">Description</th>
+<th>Attribute</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
@@ -23,16 +22,14 @@ displayed with different shapes.
 </tr>
 <tr class="odd">
 <td>color</td>
-<td>The background icon is combined with this color.</td>
+<td>The background icon is combined with this colour.</td>
 </tr>
 <tr class="even">
 <td>selected</td>
-<td>This icon is used by CONSTELLATION to indicate that a node is selected. This cannot be changed.</td>
+<td>This icon is used by Constellation to indicate that a node is selected. This cannot be changed.</td>
 </tr>
 </tbody>
 </table>
-
-A description of the different attributes that make up a node icon
 
 The sizes specified above are indicative; for instance, an icon of a
 tree may be higher than 48 pixels and narrower than 48 pixels. However,
@@ -41,23 +38,19 @@ turn should be smaller than the selected icon.
 
 ## Custom Icons
 
-CONSTELLATION has its own built-in set of icons. You can augment the
-icons with your own personal icons; however, you cannot override a
-built-in icon with your own custom icon. Custom icons can be <span
-class="mono">PNG</span> or <span class="mono">JPG</span> format.
+Constellation has its own built-in set of icons. You can also augment
+the icons with your own personal icons. However, you cannot override a
+built-in icon with your own custom icon. Custom icons can be PNG or JPG
+format.
 
-In your <span class="mono">.CONSTELLATION</span> directory is a a
-subdirectory <span class="mono">Icons</span>. When CONSTELLATION starts,
-it looks in this directory for custom icons.
+In your .CONSTELLATION directory is a a subdirectory "Icons". When
+Constellation starts, it looks in this directory for custom icons.
 
-Icon names must be categorised. For example, <span
-class="mono">Person.DoctorWho.png</span> is in the <span
-class="mono">Person</span> category, whereas <span
-class="mono">Vehicle.DoctorWho.Tardis.png</span> is in category <span
-class="mono">Vehicle</span>, subcategory <span
-class="mono">DoctorWho</span>. The icon selection dialog uses the
-categories to organise the icons, so an icon called <span
-class="mono">MyIcon.png</span> will not be used.
+Icon names must be categorised. For example, "Person.DoctorWho.png" is
+in the Person category, whereas "Vehicle.DoctorWho.Tardis.png" is in
+category Vehicle, subcategory DoctorWho. The icon selection dialog uses
+the categories to organise the icons, so an icon called "MyIcon.png"
+will not be used.
 
 Icons can be any size, however any icon greater than 48 pixels in width
 or height will be automatically reduced to no more than 48 pixels.
@@ -66,25 +59,22 @@ used.
 
 ## Icon Aliases
 
-Icons are specified by name in the <span class="mono">icon</span>
-attribute. For instance, to display the custom Doctor Who icon above,
-use <span class="mono">Person.DoctorWho</span> as the <span
-class="mono">icon</span> attribute value.
+Icons are specified by name in the "icon" attribute. For instance, to
+display the custom Doctor Who icon above, use "Person.DoctorWho" as the
+icon attribute value.
 
 Icons can also be referred to by their alias, which is just the last
-part of the name. This means that the <span class="mono">icon</span>
-attribute value <span class="mono">DoctorWho</span> will also display
-the <span class="mono">Person.DoctorWho</span> icon.
+part of the name. This means that the icon attribute value "DoctorWho"
+will also display the "Person.DoctorWho" icon.
 
-If there is more than one icon with the same alias (e.g. <span
-class="mono">Person.DoctorWho</span> and <span
-class="mono">TVSeries.DoctorWho</span>, an arbitrary decision will be
-made as to which one to use.
+If there is more than one icon with the same alias (e.g.
+"Person.DoctorWho" and "TVSeries.DoctorWho"), an arbitrary decision will
+be made as to which one to use.
 
 ## Characters
 
 Included in the built-in icons are the ASCII characters 32 (space) to
-126 (tilde) in the <span class="mono">Char</span> category. These icons
-are white on a transparent background, so when they are used as values
-of the <span class="mono">background_icon</span> attribute, their color
-can be changed using the <span class="mono">color</span> attribute.
+126 (tilde) in the "Char" category. These icons are white on a
+transparent background, so when they are used as values of the
+"background_icon" attribute, their color can be changed using the
+"color" attribute.

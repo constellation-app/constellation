@@ -8,3 +8,16 @@ The eccentricity of a node is the shortest path distance between it and
 the furthest node. It is a measure that can be used to determine whether
 a node is located in the middle of a network (low eccentricity), or on
 the outskirts of a network (high eccentricity).
+
+## Parameters
+
+-   *Transaction Types* - Calculate on only the subgraph of transactions
+    of these types
+-   *Include Incoming* - Include incoming connections
+-   *Include Outgoing* - Include outgoing connections
+-   *Include Undirected* - Treat undirected connections as bidirectional
+    connections
+-   *Normalise By Max Available Score* - Normalise calculated scores by
+    the maximum calculated score
+-   *Normalise Connected Components* - Apply normalisation separately
+    for each connected component

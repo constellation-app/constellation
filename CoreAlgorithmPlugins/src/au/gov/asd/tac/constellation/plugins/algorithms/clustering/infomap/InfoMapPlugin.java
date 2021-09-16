@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
@@ -40,6 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
+@PluginInfo(tags = {"ANALYTIC"})
 @NbBundle.Messages("InfoMapPlugin=Info Map")
 public class InfoMapPlugin extends SimpleEditPlugin {
 

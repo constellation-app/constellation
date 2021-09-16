@@ -2,14 +2,13 @@
 
 ## Compare two graphs and show the differences in a new graph
 
-<table data-border="1">
-<caption>Compare Graph Actions</caption>
+<table class="table table-striped">
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th style="text-align: center;" scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -17,12 +16,10 @@
 <td>Run Compare Graph</td>
 <td></td>
 <td>Tools -&gt; Compare Graph</td>
-<td style="text-align: center;"><img src="../compare/compareGraph.png" alt="Compare Graph Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/docs/resources/CompareGraph.png" alt="Compare Graph Icon" /></td>
 </tr>
 </tbody>
 </table>
-
-Compare Graph Actions
 
 Compare Graph does a comparison of two open graphs and shows the
 differences in a new graph. An output window will also displayed with
@@ -31,7 +28,8 @@ additions, deletions, and attribute value changes.
 
 <div style="text-align: center">
 
-![Compare Graph Dialog](resources/CompareGraph.png)
+<img src="../constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/docs/resources/compareGraph.png" alt="Compare Graph
+Dialog" />
 
 </div>
 

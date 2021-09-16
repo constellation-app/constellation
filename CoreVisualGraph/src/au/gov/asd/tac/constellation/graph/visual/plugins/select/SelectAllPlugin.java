@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECTION"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
 @Messages("SelectAllPlugin=Add to Selection: All")
 public class SelectAllPlugin extends SimpleEditPlugin {
 

@@ -15,9 +15,10 @@ that you can immediately start playing with:
 4.  Select Views -> Attribute Editor. This displays the attribute values
     of the current selection on the graph.
 5.  Go
-    [here](/au/gov/asd/tac/constellation/functionality/docs/the-graph-window.html)
+    [here](../constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/docs/the-graph-window.md)
     to find out how navigate around the graph.
-6.  Go [here](/au/gov/asd/tac/constellation/graph/docs/graph-model.html)
+6.  Go
+    [here](../constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/graph/docs/graph-model.md)
     to learn about the graph structure.
 
 ## Importing Your Own Data

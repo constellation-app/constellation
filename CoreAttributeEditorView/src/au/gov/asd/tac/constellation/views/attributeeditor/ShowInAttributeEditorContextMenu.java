@@ -22,7 +22,9 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
@@ -63,53 +65,63 @@ public class ShowInAttributeEditorContextMenu implements ContextMenuProvider {
 
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
-        final SimpleEditPlugin plugin = new SimpleEditPlugin() {
-            @Override
-            public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                // Unselect vertices that need unselecting.
-                final int vxSelectedId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-                final int vxCount = wg.getVertexCount();
-                for (int position = 0; position < vxCount; position++) {
-                    final int vxId = wg.getVertex(position);
+        PluginExecution.withPlugin(new ShowInEditorPlugin(elementType, elementId)).executeLater(graph);
+    }
 
-                    if (wg.getBooleanValue(vxSelectedId, vxId)) {
-                        wg.setBooleanValue(vxSelectedId, vxId, false);
-                    }
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    public static class ShowInEditorPlugin extends SimpleEditPlugin {
+
+        final GraphElementType elementType;
+        final int elementId;
+
+        public ShowInEditorPlugin(final GraphElementType elementType, final int elementId) {
+            this.elementType = elementType;
+            this.elementId = elementId;
+        }
+
+        @Override
+        public String getName() {
+            return TEXT;
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            // Unselect vertices that need unselecting.
+            final int vxSelectedId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+            final int vxCount = wg.getVertexCount();
+            for (int position = 0; position < vxCount; position++) {
+                final int vxId = wg.getVertex(position);
+
+                if (wg.getBooleanValue(vxSelectedId, vxId)) {
+                    wg.setBooleanValue(vxSelectedId, vxId, false);
                 }
-
-                // Unselect transactions that need unselecting.
-                final int txSelectedId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-                final int txCount = wg.getTransactionCount();
-                for (int position = 0; position < txCount; position++) {
-                    final int txId = wg.getTransaction(position);
-
-                    if (wg.getBooleanValue(txSelectedId, txId)) {
-                        wg.setBooleanValue(txSelectedId, txId, false);
-                    }
-                }
-
-                // Select the element under the popup menu.
-                final int selectedId = elementType == GraphElementType.VERTEX ? vxSelectedId : txSelectedId;
-                wg.setBooleanValue(selectedId, elementId, true);
-
-                // Open the value editor if it isn't open already.
-                SwingUtilities.invokeLater(() -> {
-                    final TopComponent tc = WindowManager.getDefault().findTopComponent(AttributeEditorTopComponent.class.getSimpleName());
-                    if (tc != null) {
-                        if (!tc.isOpened()) {
-                            tc.open();
-                        }
-                        tc.requestActive();
-                    }
-                });
             }
 
-            @Override
-            public String getName() {
-                return TEXT;
-            }
-        };
+            // Unselect transactions that need unselecting.
+            final int txSelectedId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+            final int txCount = wg.getTransactionCount();
+            for (int position = 0; position < txCount; position++) {
+                final int txId = wg.getTransaction(position);
 
-        PluginExecution.withPlugin(plugin).executeLater(graph);
+                if (wg.getBooleanValue(txSelectedId, txId)) {
+                    wg.setBooleanValue(txSelectedId, txId, false);
+                }
+            }
+
+            // Select the element under the popup menu.
+            final int selectedId = elementType == GraphElementType.VERTEX ? vxSelectedId : txSelectedId;
+            wg.setBooleanValue(selectedId, elementId, true);
+
+            // Open the value editor if it isn't open already.
+            SwingUtilities.invokeLater(() -> {
+                final TopComponent tc = WindowManager.getDefault().findTopComponent(AttributeEditorTopComponent.class.getSimpleName());
+                if (tc != null) {
+                    if (!tc.isOpened()) {
+                        tc.open();
+                    }
+                    tc.requestActive();
+                }
+            });
+        }
     }
 }

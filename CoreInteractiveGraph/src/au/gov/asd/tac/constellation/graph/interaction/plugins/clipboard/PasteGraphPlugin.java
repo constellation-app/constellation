@@ -21,7 +21,9 @@ import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -46,6 +48,7 @@ import org.openide.util.lookup.ServiceProvider;
     "MSG_VxAttrs=Node attributes don't match",
     "MSG_TxAttrs=Transaction attributes don't match"
 })
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 public final class PasteGraphPlugin extends SimpleEditPlugin {
 
     // The graph being pasted from the paste buffer.

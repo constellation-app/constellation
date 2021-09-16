@@ -1,8 +1,8 @@
 # Data Access View Options
 
-All the options can be accessed via the ![Options
-Button](resources/DataAccessOptions.png) menu in the top left corner of
-the Data Access View.
+All the options can be accessed via the <img src="../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessOptions.png" alt="Options
+Button" />
+menu in the top left corner of the Data Access View.
 
 ## Saving and loading data access preferences
 
@@ -18,7 +18,7 @@ with file system limitations.) Files in this directory can be copied and
 deleted using your favourite file management utility.
 
 When you select "Load...", you will be presented with a list of saved
-preferences. Select one from the list and select Ok. The preference will
+preferences. Select one from the list and select OK. The preference will
 be loaded and will appear exactly as it was when it was saved. You can
 also remove a saved preference from here by selecting one from the list
 and selecting Remove.

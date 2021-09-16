@@ -31,7 +31,7 @@ public class FileIconData extends IconData {
     private final File file;
 
     public FileIconData(final String relativePath, final String codeNameBase) {
-        final File locatedFile = ConstellationInstalledFileLocator.locate(relativePath, codeNameBase, false, FileIconData.class.getProtectionDomain());
+        final File locatedFile = ConstellationInstalledFileLocator.locate(relativePath, codeNameBase, FileIconData.class.getProtectionDomain());
         this.file = locatedFile;
     }
 

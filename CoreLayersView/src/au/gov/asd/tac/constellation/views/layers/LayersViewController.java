@@ -25,15 +25,20 @@ import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.layers.context.LayerAction;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
+import au.gov.asd.tac.constellation.views.layers.utilities.ShuffleElementBitmaskPlugin;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateElementBitmaskPlugin;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +96,7 @@ public class LayersViewController {
     }
 
     public void setListenedAttributes() {
-        if(parent == null){
+        if (parent == null) {
             return;
         }
         parent.removeValueHandlers(valueMonitors);
@@ -104,22 +109,7 @@ public class LayersViewController {
     public void updateListenedAttributes() {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         if (activeGraph != null) {
-            PluginExecution.withPlugin(new SimpleReadPlugin("Layers View: Capture Listened Attributes") {
-                @Override
-                public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    final int layerStateId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
-                    if (layerStateId == Graph.NOT_FOUND) {
-                        return;
-                    }
-
-                    final LayersViewState state = graph.getObjectValue(layerStateId, 0);
-                    if (state != null) {
-                        changeListeners.clear();
-                        changeListeners.addAll(state.getLayerAttributes());
-                        LayersViewController.getDefault().setListenedAttributes();
-                    }
-                }
-            }).executeLater(activeGraph);
+            PluginExecution.withPlugin(new CaptureListenedAttributesPlugin(changeListeners)).executeLater(activeGraph);
         }
     }
 
@@ -129,17 +119,7 @@ public class LayersViewController {
     public void addAttributes() {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         if (activeGraph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Layers View: Add Required Attributes") {
-                @Override
-                public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
-                    LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
-                    LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-                    LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
-                    LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-                    LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
-                }
-            }).executeLater(activeGraph);
+            PluginExecution.withPlugin(new AddAttributesPlugin()).executeLater(activeGraph);
         }
     }
 
@@ -175,7 +155,7 @@ public class LayersViewController {
      * View pane.
      */
     public void readState() {
-        if(parent == null){
+        if (parent == null) {
             return;
         }
         final LayersViewPane pane = parent.getContent();
@@ -183,7 +163,7 @@ public class LayersViewController {
         if (pane == null || graph == null) {
             return;
         }
-        PluginExecution.withPlugin(new LayersViewStateReader(pane))
+        PluginExecution.withPlugin(new LayersStateReaderPlugin(pane))
                 .executeLater(graph);
     }
 
@@ -192,7 +172,7 @@ public class LayersViewController {
     }
 
     public void readStateFuture() {
-        if(parent == null){
+        if (parent == null) {
             return;
         }
         final LayersViewPane pane = parent.getContent();
@@ -200,7 +180,7 @@ public class LayersViewController {
         if (pane == null || graph == null) {
             return;
         }
-        final Future<?> f = PluginExecution.withPlugin(new LayersViewStateReader(pane))
+        final Future<?> f = PluginExecution.withPlugin(new LayersStateReaderPlugin(pane))
                 .executeLater(graph);
         try {
             f.get();
@@ -224,7 +204,8 @@ public class LayersViewController {
             return null;
         }
 
-        return PluginExecution.withPlugin(new LayersViewStateWriter(vxBitMaskCollection.getQueries(), txBitMaskCollection.getQueries()))
+        return PluginExecution.withPlugin(new LayersStateWriterPlugin(vxBitMaskCollection.getQueries(),
+                txBitMaskCollection.getQueries()))
                 .executeLater(graph);
 
     }
@@ -234,8 +215,7 @@ public class LayersViewController {
         if (graph == null) {
             return;
         }
-        final UpdateQueryPlugin updatePlugin = new UpdateQueryPlugin(vxBitMaskCollection, txBitMaskCollection);
-        PluginExecution.withPlugin(updatePlugin).executeLater(graph);
+        PluginExecution.withPlugin(new UpdateQueryPlugin(vxBitMaskCollection, txBitMaskCollection)).executeLater(graph);
     }
 
     public void updateQueriesFuture(final Graph currentGraph) {
@@ -243,8 +223,8 @@ public class LayersViewController {
         if (graph == null) {
             return;
         }
-        final UpdateQueryPlugin updatePlugin = new UpdateQueryPlugin(vxBitMaskCollection, txBitMaskCollection);
-        final Future<?> f = PluginExecution.withPlugin(updatePlugin).executeLater(graph);
+        final Future<?> f = PluginExecution.withPlugin(new UpdateQueryPlugin(vxBitMaskCollection,
+                txBitMaskCollection)).executeLater(graph);
         try {
             f.get();
         } catch (final InterruptedException ex) {
@@ -264,13 +244,67 @@ public class LayersViewController {
     }
 
     /**
+     * Removes the bitmask specified by currentIndex from all elements on the
+     * graph
+     *
+     * @param currentIndex the layer index (bitmask) to use when removing from
+     * elements.
+     */
+    public void removeBitmaskFromElements(final int currentIndex) {
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph == null) {
+            return;
+        }
+        final Future<?> f = PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(currentIndex,
+                LayerAction.REMOVE, false)).executeLater(graph);
+        try {
+            f.get();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+    }
+
+    /**
+     * Move the layer from current layer to one lower. Used for deletion of
+     * layers to maintain order.
+     *
+     * @param currentIndex the layer which is blank and needs to be shifted
+     * into.
+     */
+    public void shuffleElementBitmasks(final int currentIndex) {
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph == null) {
+            return;
+        }
+        final Future<?> f = PluginExecution.withPlugin(new ShuffleElementBitmaskPlugin(currentIndex)).executeLater(graph);
+        try {
+            f.get();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+    }
+
+    protected LayersViewTopComponent getParent() {
+        return parent;
+    }
+
+    /**
      * Read the current state from the graph.
      */
-    private static final class LayersViewStateReader extends SimpleReadPlugin {
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL", "MODIFY"})
+    protected static final class LayersStateReaderPlugin extends SimpleReadPlugin {
 
         private final LayersViewPane pane;
 
-        public LayersViewStateReader(final LayersViewPane pane) {
+        protected LayersStateReaderPlugin(final LayersViewPane pane) {
             this.pane = pane;
         }
 
@@ -301,12 +335,13 @@ public class LayersViewController {
     /**
      * Write the current state to the graph.
      */
-    private static final class LayersViewStateWriter extends SimpleEditPlugin {
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL", "MODIFY"})
+    protected static final class LayersStateWriterPlugin extends SimpleEditPlugin {
 
         private final BitMaskQuery[] vxLayers;
         private final BitMaskQuery[] txLayers;
 
-        public LayersViewStateWriter(final BitMaskQuery[] vxLayers, final BitMaskQuery[] txLayers) {
+        protected LayersStateWriterPlugin(final BitMaskQuery[] vxLayers, final BitMaskQuery[] txLayers) {
             this.vxLayers = vxLayers;
             this.txLayers = txLayers;
         }
@@ -352,12 +387,13 @@ public class LayersViewController {
      * Plugin to update all bit masks relating to the queries held in both
      * vertex and transaction query collections.
      */
-    public static class UpdateQueryPlugin extends SimpleEditPlugin {
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL", "MODIFY"})
+    protected static class UpdateQueryPlugin extends SimpleEditPlugin {
 
         private final BitMaskQueryCollection vxBitMasks;
         private final BitMaskQueryCollection txBitMasks;
 
-        public UpdateQueryPlugin(final BitMaskQueryCollection vxbitMasks, final BitMaskQueryCollection txbitMasks) {
+        protected UpdateQueryPlugin(final BitMaskQueryCollection vxbitMasks, final BitMaskQueryCollection txbitMasks) {
             this.vxBitMasks = vxbitMasks;
             this.txBitMasks = txbitMasks;
         }
@@ -389,5 +425,62 @@ public class LayersViewController {
                 LayersViewController.getDefault().updateListenedAttributes();
             }
         }
+    }
+
+    /**
+     * Plugin to capture the listened attributes on the graph. This list allows
+     * the view to update the graph when one of those attributes changes value.
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    protected static class CaptureListenedAttributesPlugin extends SimpleReadPlugin {
+
+        final List<SchemaAttribute> changeListeners;
+
+        protected CaptureListenedAttributesPlugin(final List<SchemaAttribute> changeListeners) {
+            this.changeListeners = changeListeners;
+        }
+
+        @Override
+        public String getName() {
+            return "Layers View: Capture Listened Attributes";
+        }
+
+        @Override
+        public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            final int layerStateId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
+            if (layerStateId == Graph.NOT_FOUND) {
+                return;
+            }
+
+            final LayersViewState state = graph.getObjectValue(layerStateId, 0);
+            if (state != null) {
+                changeListeners.clear();
+                changeListeners.addAll(state.getLayerAttributes());
+                LayersViewController.getDefault().setListenedAttributes();
+            }
+        }
+    }
+
+    /**
+     * Plugin to add the required Layers View attributes.
+     */
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+    protected static class AddAttributesPlugin extends SimpleEditPlugin {
+
+        @Override
+        public String getName() {
+            return "Layers View: Add Required Attributes";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+            LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
+            LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+            LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+            LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
+            LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
+        }
+
     }
 }

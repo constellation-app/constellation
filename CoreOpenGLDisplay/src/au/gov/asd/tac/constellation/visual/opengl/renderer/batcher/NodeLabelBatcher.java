@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.NodeGlyphStream;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.NodeGlyphStreamContext;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -80,7 +81,7 @@ public class NodeLabelBatcher implements SceneBatcher {
 
     public NodeLabelBatcher() {
         // Create the batches
-        topBatch = new Batch(GL3.GL_POINTS);
+        topBatch = new Batch(GL.GL_POINTS);
         labelFloatsTarget = topBatch.newFloatBuffer(FLOAT_BUFFERS_WIDTH, false);
         labelIntsTarget = topBatch.newIntBuffer(INT_BUFFERS_WIDTH, false);
         bottomBatch = new Batch(topBatch);

@@ -1,7 +1,6 @@
 # Timeline
 
-<table data-border="1">
-<caption>Timeline Actions</caption>
+<table class="table table-striped">
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -10,10 +9,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col">Constellation Action</th>
-<th scope="col">Keyboard Shortcut</th>
-<th scope="col">User Action</th>
-<th scope="col">Menu Icon</th>
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -22,13 +21,11 @@
 <td>Ctrl + Shift + T</td>
 <td>Views -&gt; Timeline</td>
 <td><div style="text-align: center">
-<img src="../resources/timeline.png" width="16" height="16" />
+<img src="../constellation/CoreTimelineView/src/au/gov/asd/tac/constellation/views/timeline/docs/resources/timeline.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
 </table>
-
-Timeline Actions
 
 If the graph that you are currently analysing contains temporal data on
 its transactions, it can be viewed using the Timeline View. The Timeline
@@ -36,7 +33,8 @@ will plot the data from the graph relative to its occurrence in time.
 
 <div style="text-align: center">
 
-![Timeline View](resources/TimelineView.png)
+<img src="../constellation/CoreTimelineView/src/au/gov/asd/tac/constellation/views/timeline/docs/resources/TimelineView.png" alt="Timeline
+View" />
 
 </div>
 

@@ -38,7 +38,7 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
         final String graphUtilitiesModulePath = ".." + sep + "constellation" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "utilities" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives", graphUtilitiesModulePath + "perspective.md");
+        map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives", graphUtilitiesModulePath + "perspective-bookmarks-view.md");
         return map;
     }
 

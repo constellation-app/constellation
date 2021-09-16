@@ -39,10 +39,9 @@ public class GraphFileHelpProvider extends HelpPageProvider {
                 + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.file.autosave", graphFileModulePath + "autosave.md");
-        map.put("au.gov.asd.tac.constellation.graph.file.openGraph", graphFileModulePath + "openGraph.md");
-        map.put("au.gov.asd.tac.constellation.graph.file.openRecentGraph", graphFileModulePath + "openRecentGraph.md");
-        map.put("au.gov.asd.tac.constellation.graph.file.newGraph", graphFileModulePath + "newGraph.md");
-        map.put("au.gov.asd.tac.constellation.graph.file.saveGraph", graphFileModulePath + "saveGraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.openGraph", graphFileModulePath + "open-graph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.newGraph", graphFileModulePath + "new-graph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.saveGraph", graphFileModulePath + "save-graph.md");
         map.put("au.gov.asd.tac.constellation.graph.file.nebula", graphFileModulePath + "nebula.md");
         return map;
     }

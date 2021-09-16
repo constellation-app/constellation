@@ -41,7 +41,7 @@ public class GraphFrameworkHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.graph.about", graphFrameworkModulePath + "graph-model.md");
         map.put("au.gov.asd.tac.constellation.graph.attributes", graphFrameworkModulePath + "attributes.md");
         map.put("au.gov.asd.tac.constellation.graph.types", graphFrameworkModulePath + "types.md");
-        map.put("au.gov.asd.tac.constellation.graph.expressions", graphFrameworkModulePath + "expressions.md");
+        map.put("au.gov.asd.tac.constellation.graph.expressions", graphFrameworkModulePath + "expressions-framework.md");
         map.put("au.gov.asd.tac.constellation.graph.io.fileformat", graphFrameworkModulePath + "constellation-file-format.md");
         map.put("au.gov.asd.tac.constellation.graph.io.pythonreader", graphFrameworkModulePath + "example-file-reader-python.md");
         map.put("au.gov.asd.tac.constellation.graph.io.pythonwriter", graphFrameworkModulePath + "example-file-writer-python.md");

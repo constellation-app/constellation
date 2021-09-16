@@ -28,8 +28,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 
 /**
- * The DestinationPane displays the UI that allows the user to specify where the imported graph elements should be
- * placed. At present, there are 2 options: into a currently existing graph, or into a new graph based on a specified
+ * The DestinationPane displays the UI that allows the user to specify where the
+ * imported graph elements should be placed. At present, there are 2 options:
+ * into a currently existing graph, or into a new graph based on a specified
  * schema.
  *
  * @author sirius

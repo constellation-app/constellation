@@ -93,7 +93,7 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
 
         final PluginParameter<BooleanParameterValue> normaliseConnectedComponentsParameter = BooleanParameterType.build(NORMALISE_CONNECTED_COMPONENTS_PARAMETER_ID);
         normaliseConnectedComponentsParameter.setName("Normalise Connected Components");
-        normaliseConnectedComponentsParameter.setDescription("Apply normalisation seperately for each connected component");
+        normaliseConnectedComponentsParameter.setDescription("Apply normalisation separately for each connected component");
         normaliseConnectedComponentsParameter.setBooleanValue(false);
         parameters.addParameter(normaliseConnectedComponentsParameter);
 
@@ -171,7 +171,7 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
             } else {
                 betweennessAttributeValue = betweennesses[vertexPosition];
             }
-            
+
             graph.setFloatValue(betweennessAttribute, vertexId, Float.isNaN(betweennessAttributeValue) ? 0 : betweennessAttributeValue);
         }
     }

@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.testing.construction.SudokuGraphBuilderPlugi
 public class CoreTestingPluginRegistry {
 
     public static final String FIVE_SECOND_READ_LOCK = FiveSecondReadLockPlugin.class.getName();
+    public static final String FIVE_SECOND_WRITE_LOCK = FiveSecondWriteLockPlugin.class.getName();
     public static final String PLUGIN_EXCEPTION = PluginExceptionPlugin.class.getName();
 
     public static final String COMPLETE_GRAPH_BUILDER = CompleteGraphBuilderPlugin.class.getName();
