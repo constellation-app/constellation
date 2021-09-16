@@ -217,7 +217,7 @@ public class WelcomeViewPane extends BorderPane {
                 }
                 final String text = recentGraphButtons[i].getText();
 
-                final Rectangle2D value = new Rectangle2D(0, 0, 145, 145);
+                final Rectangle2D value = new Rectangle2D(0, 0, IMAGE_SIZE, IMAGE_SIZE);
                 final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
                 final String screenshotFilenameResize = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + "Resize" + ".png";
 
@@ -236,16 +236,16 @@ public class WelcomeViewPane extends BorderPane {
                     }
                     final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilenameResize));
                     imageView.setViewport(value);
-                    imageView.setFitHeight(145);
-                    imageView.setFitWidth(145);
+                    imageView.setFitHeight(IMAGE_SIZE);
+                    imageView.setFitWidth(IMAGE_SIZE);
                     recentGraphButtons[i].setGraphic(imageView);
 
                 } else if (i < fileNames.size()) {
                     final ImageView defaultImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream("resources/Constellation_Application_Icon_Small.png")));
-                    final Rectangle2D valueDefault = new Rectangle2D(0, 0, 145, 145);
+                    final Rectangle2D valueDefault = new Rectangle2D(0, 0, IMAGE_SIZE, IMAGE_SIZE);
                     defaultImage.setViewport(valueDefault);
-                    defaultImage.setFitHeight(145);
-                    defaultImage.setFitWidth(145);
+                    defaultImage.setFitHeight(IMAGE_SIZE);
+                    defaultImage.setFitWidth(IMAGE_SIZE);
                     recentGraphButtons[i].setGraphic(defaultImage);
                 }
 
