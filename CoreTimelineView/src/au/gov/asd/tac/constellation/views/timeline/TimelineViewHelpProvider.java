@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 2400)
 @NbBundle.Messages("TimelineViewHelpProvider=Timeline View Help Provider")
 public class TimelineViewHelpProvider extends HelpPageProvider {
 

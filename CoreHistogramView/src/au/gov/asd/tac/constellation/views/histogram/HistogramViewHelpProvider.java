@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 1200)
 @NbBundle.Messages("HistogramViewHelpProvider=Histogram View Help Provider")
 public class HistogramViewHelpProvider extends HelpPageProvider {
 

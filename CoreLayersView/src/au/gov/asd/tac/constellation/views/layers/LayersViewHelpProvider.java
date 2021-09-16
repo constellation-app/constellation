@@ -25,7 +25,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Provider to get help pages for the layers view * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 1300)
 @NbBundle.Messages("LayersViewHelpProvider=Layers View Help Provider")
 public class LayersViewHelpProvider extends HelpPageProvider {
 

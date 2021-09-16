@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 700)
 @NbBundle.Messages("AnalyticViewHelpProvider=Analytic View Help Provider")
 public class AnalyticViewHelpProvider extends HelpPageProvider {
 

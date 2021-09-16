@@ -188,11 +188,12 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String sep = File.separator;
 
         // Switched base help page to About Constellation
-        String helpTOCPath = sep + "constellation" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
+        String helpDefaultPath = sep + "constellation" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "docs" + sep + "about-constellation.md";
 
         // use the requested help file, or the About Constellation page if one is not given
-        final String helpLink = StringUtils.isNotEmpty(HelpMapper.getHelpAddress(helpId)) ? HelpMapper.getHelpAddress(helpId).substring(2) : helpTOCPath;
+        final String helpLink = StringUtils.isNotEmpty(HelpMapper.getHelpAddress(helpId)) ? HelpMapper.getHelpAddress(helpId).substring(2)
+                : helpDefaultPath;
 
         if (!helpLink.isEmpty()) {
             try {

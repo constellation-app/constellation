@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 2900)
 @NbBundle.Messages("OpenGLHelpProvider=Open GL Help Provider")
 public class OpenGLHelpProvider extends HelpPageProvider {
 

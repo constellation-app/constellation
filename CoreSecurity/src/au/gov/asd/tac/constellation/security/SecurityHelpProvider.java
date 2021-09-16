@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 3100)
 @NbBundle.Messages("SecurityHelpProvider=Security Help Provider")
 public class SecurityHelpProvider extends HelpPageProvider {
 

@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 800)
 @NbBundle.Messages("AttributeEditorHelpProvider=Attribute Editor Help Provider")
 public class AttributeEditorHelpProvider extends HelpPageProvider {
 
