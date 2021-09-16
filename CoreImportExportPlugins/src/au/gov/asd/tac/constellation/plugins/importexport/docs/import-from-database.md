@@ -127,7 +127,7 @@ the column names in the current query. If a template is loaded before
 any queries are selected, there are no columns to match against.
 
 When you select "Load...", you will be presented with a list of saved
-templates. Select one from the list and select Ok. The template will be
+templates. Select one from the list and select OK. The template will be
 loaded and will appear as it was when it was saved.
 
 ## Share Templates

@@ -60,7 +60,7 @@ To edit an attribute, select the nodes and transactions you want to edit
 and then click on the <img src="../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorEdit.png alt="Edit
 Icon" />
 button. This will bring up a dialog box to change the value. Once you
-have finished changing the value, press "Ok" to apply the change. If
+have finished changing the value, press "OK" to apply the change. If
 more than one graph element is selected than the new value will be
 applied to all the relevant selected graph elements.
 
