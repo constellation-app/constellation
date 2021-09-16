@@ -372,7 +372,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         });
 
         final CheckMenuItem saveResultsMenuItem = new CheckMenuItem("Save Results", saveResultsImage);
-        final File daDir = DataAccessPreferenceKeys.getDataAccessResultsDir();
+        final File daDir = DataAccessPreferenceUtilities.getDataAccessResultsDir();
         saveResultsMenuItem.setSelected(daDir != null);
         saveResultsMenuItem.selectedProperty().addListener((ov, oldValue, newValue) -> {
             if (newValue) {
