@@ -1,7 +1,8 @@
 <div class="container"><div id="accordion">
 <div class="card"><div class="card-header"><h2 class="mb-0">Constellation Documentation</h2></div>
 <div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Preferences" aria-expanded="false" aria-controls="Preferences">Preferences</button></h2></div>
-<div id="Preferences" class="collapse" aria-labelledby="Preferences" data-parent="#Preferences"> <div class="card-body">    <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\application-preferences.md">Application</a><br/>
+<div id="Preferences" class="collapse" aria-labelledby="Preferences" data-parent="#Preferences"> <div class="card-body">    <a href="..\constellation\CoreHelp\src\au\gov\asd\tac\constellation\help\docs\help-options.md">Online Help</a><br/>
+    <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\application-preferences.md">Application</a><br/>
     <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\application-font-preferences.md">Application Font</a><br/>
     <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\developer-preferences.md">Developer</a><br/>
     <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\graph-preferences.md">Graph</a><br/>
