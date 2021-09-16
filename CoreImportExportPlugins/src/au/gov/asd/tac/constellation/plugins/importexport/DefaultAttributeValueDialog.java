@@ -94,7 +94,7 @@ public class DefaultAttributeValueDialog extends Stage {
         buttonPane.setHgap(GAP);
         root.setBottom(buttonPane);
 
-        final Button okButton = new Button("Ok");
+        final Button okButton = new Button("OK");
         okButton.setOnAction((ActionEvent event) -> {
             defaultValue = labelText.getText();
             DefaultAttributeValueDialog.this.hide();
