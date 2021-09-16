@@ -87,6 +87,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String USE_ALL_DISPLAYABLE_CHARS_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "use_all_displayable_chars");
     public static final String DRAW_MANY_TX_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "draw_many_tx");
     public static final String DRAW_MANY_DECORATORS_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "draw_many_deco");
+    public static final String EXPLICIT_LOOPS = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "explicit_loops");
 
     private static final String NODE = "~Node ";
     private static final String TYPE = "~Type ";
@@ -165,6 +166,12 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         randomIcons.setBooleanValue(true);
         params.addParameter(randomIcons);
 
+        final PluginParameter<BooleanParameterValue> explicitLoops = BooleanParameterType.build(EXPLICIT_LOOPS);
+        randomIcons.setName("Explicit loops");
+        randomIcons.setDescription("Add explicit transaction loops");
+        randomIcons.setBooleanValue(true);
+        params.addParameter(explicitLoops);
+
         return params;
     }
 
@@ -198,6 +205,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final boolean drawManyTx = params.get(DRAW_MANY_TX_PARAMETER_ID).getBooleanValue();
         final boolean drawManyDecorators = params.get(DRAW_MANY_DECORATORS_PARAMETER_ID).getBooleanValue();
         final boolean useRandomIcons = params.get(USE_RANDOM_ICONS_PARAMETER_ID).getBooleanValue();
+        final boolean explicitLoops = params.get(EXPLICIT_LOOPS).getBooleanValue();
 
         // select some icons to put in the graph
         final List<String> iconLabels = new ArrayList<>();
@@ -628,22 +636,24 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DIAMOND);
 
         // Loops.
-        txId = graph.addTransaction(vx2, vx2, true);
-        graph.setIntValue(txIdAttr, txId, txId);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.PINK);
+        if (explicitLoops) {
+            txId = graph.addTransaction(vx2, vx2, true);
+            graph.setIntValue(txIdAttr, txId, txId);
+            graph.setObjectValue(txColorAttr, txId, ConstellationColor.PINK);
 
-        txId = graph.addTransaction(vx4, vx4, false);
-        graph.setIntValue(txIdAttr, txId, txId);
-        graph.setBooleanValue(txDirectedAttr, txId, false);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.LIGHT_BLUE);
+            txId = graph.addTransaction(vx4, vx4, false);
+            graph.setIntValue(txIdAttr, txId, txId);
+            graph.setBooleanValue(txDirectedAttr, txId, false);
+            graph.setObjectValue(txColorAttr, txId, ConstellationColor.LIGHT_BLUE);
 
-        txId = graph.addTransaction(vx5, vx5, true);
-        graph.setIntValue(txIdAttr, txId, txId);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.ORANGE);
+            txId = graph.addTransaction(vx5, vx5, true);
+            graph.setIntValue(txIdAttr, txId, txId);
+            graph.setObjectValue(txColorAttr, txId, ConstellationColor.ORANGE);
 
-        txId = graph.addTransaction(vx5, vx5, false);
-        graph.setIntValue(txIdAttr, txId, txId);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.GREEN);
+            txId = graph.addTransaction(vx5, vx5, false);
+            graph.setIntValue(txIdAttr, txId, txId);
+            graph.setObjectValue(txColorAttr, txId, ConstellationColor.GREEN);
+        }
 
         // Dimmed transactions.
         txId = graph.addTransaction(vx0, vx5, true);

@@ -23,7 +23,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author groombridge34a
  */
-public class StereoCameraNGTest {
+public class AnaglyphCameraNGTest {
      
     private static final float F1 = -471.78F;
     private static final float F2 = -105.53F;
@@ -71,7 +71,7 @@ public class StereoCameraNGTest {
      */
     @Test
     public void testApplyFrustum() {
-        final StereoCamera sc = new StereoCamera(F1, F2, F3, F4, F5, F6);
+        final AnaglyphCamera sc = new AnaglyphCamera(F1, F2, F3, F4, F5, F6);
         
         // apply a left frustum
         final Matrix44f expected1 = new Matrix44f();
@@ -111,7 +111,7 @@ public class StereoCameraNGTest {
         expected.setRow(4.1351226E-4F, 0F, -1.5762731F, -1.0F, 2);
         expected.setRow(0F, 0F, 271.87408F, 0F, 3);
         
-        final StereoCamera sc = new StereoCamera(F6, F5, F4, F3, F2, F1);
+        final AnaglyphCamera sc = new AnaglyphCamera(F6, F5, F4, F3, F2, F1);
         sc.applyRightFrustum(copyMatrix(M1));
         
         assertEquals(sc.getProjectionMatrix().toString(), expected.toString());
@@ -128,7 +128,7 @@ public class StereoCameraNGTest {
         expected.setRow(-4.6575613F, 5.7916403F, -58868.332F, 764.66F, 2);
         expected.setRow(15.206118F, -5.946508F, 193637.56F, -311.68F, 3);
         
-        final StereoCamera sc = new StereoCamera(F3, F6, F2, F5, F1, F4);
+        final AnaglyphCamera sc = new AnaglyphCamera(F3, F6, F2, F5, F1, F4);
         sc.applyRightFrustum(copyMatrix(M1));
         
         assertEquals(sc.getMvpMatrix(copyMatrix(M2)).toString(), 
