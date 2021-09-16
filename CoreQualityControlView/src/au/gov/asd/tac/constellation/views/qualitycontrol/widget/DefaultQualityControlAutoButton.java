@@ -46,10 +46,9 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
     public static final String QUERY_RISK_DEFAULT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-padding: 2 5 2 5;";
     public static final String QUALITY_CONTROL_WIDGET_TEXT = "Quality Category: %s";
 
-    public static QualityControlAutoButton defaultQualityControlAutoButton(QualityControlAutoButton copyButton) {
-        return new DefaultQualityControlAutoButton();
-    }
-
+//    public static QualityControlAutoButton defaultQualityControlAutoButton(QualityControlAutoButton copyButton) {
+//        return new DefaultQualityControlAutoButton();
+//    }
     public DefaultQualityControlAutoButton() {
         getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
         setStyle(QUERY_RISK_DEFAULT_STYLE + BUTTON_STYLE + String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
@@ -102,4 +101,10 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
             setTooltip(tooltipText != null ? new Tooltip(tooltipText) : null);
         });
     }
+
+    @Override
+    public DefaultQualityControlAutoButton copy() {
+        return new DefaultQualityControlAutoButton();
+    }
+
 }

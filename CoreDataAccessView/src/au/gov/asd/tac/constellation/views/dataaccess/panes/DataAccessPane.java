@@ -45,7 +45,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
-import au.gov.asd.tac.constellation.views.qualitycontrol.widget.DefaultQualityControlAutoButton;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
 import java.io.File;
 import java.util.ArrayList;
@@ -450,7 +449,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         vbox.getChildren().add(goBottomHBox);
 
         final QualityControlAutoButton rab = Lookup.getDefault().lookup(QualityControlAutoButton.class);
-        final QualityControlAutoButton rabBottom = DefaultQualityControlAutoButton.defaultQualityControlAutoButton(rab);
+        final QualityControlAutoButton rabBottom = rab.copy();
 
         if (rab != null) {
             rabRegionExectueHBox.getChildren().add(rab);

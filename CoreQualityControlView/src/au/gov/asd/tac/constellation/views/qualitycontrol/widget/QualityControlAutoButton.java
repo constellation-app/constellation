@@ -32,4 +32,6 @@ public abstract class QualityControlAutoButton extends Button {
      * @param state the new QualityControlState.
      */
     protected abstract void update(final QualityControlState state);
+
+    public abstract QualityControlAutoButton copy();
 }
