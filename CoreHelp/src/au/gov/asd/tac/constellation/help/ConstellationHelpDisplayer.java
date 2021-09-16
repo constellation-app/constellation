@@ -136,7 +136,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final URL bootstrapJSURL = bootstrapJS.toURI().toURL();
         final String boostrapjs = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", bootstrapJSURL);
 
-
         // Add items to StringBuilder
         html.append(css);
         html.append("\n");
@@ -217,7 +216,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                     new Thread(() -> {
                         Thread.currentThread().setName("Browse Help");
                         try {
-                            Desktop.getDesktop().browse(new URI(url));
+                            Desktop.getDesktop().browse(new URI(url.replace("\\", "/")));
                         } catch (URISyntaxException | IOException ex) {
                             LOGGER.log(Level.SEVERE, "Tried to browse a url.", ex);
                         }
