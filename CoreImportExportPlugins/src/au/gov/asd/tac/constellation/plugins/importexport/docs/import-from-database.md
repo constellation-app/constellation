@@ -26,8 +26,8 @@ database using a JDBC Connection.
 
 <div style="text-align: center">
 
-![Database
-Importer](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/dragging_attributes_jdbc_import.png)
+<img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/dragging_attributes_jdbc_import.png" alt="Database
+Importer" />
 
 </div>
 

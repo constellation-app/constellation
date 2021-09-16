@@ -33,8 +33,8 @@ rather oddities within patterns in your graph.
 
 <div style="text-align: center">
 
-![Scatter Plot
-View](../constellation/CoreScatterPlotView/src/au/gov/asd/tac/constellation/views/scatterplot/docs/resources/ScatterPlot.png)
+<img src="../constellation/CoreScatterPlotView/src/au/gov/asd/tac/constellation/views/scatterplot/docs/resources/ScatterPlot.png" src="Scatter Plot
+View" />
 
 </div>
 

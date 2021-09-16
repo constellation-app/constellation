@@ -27,8 +27,8 @@ plugins have been run.
 
 <div style="text-align: center">
 
-![Notes
-View](../constellatin/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/docs/resources/NotesView.png)
+<img src="../constellatin/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/docs/resources/NotesView.png" alt="Notes
+View" />
 
 </div>
 

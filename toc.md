@@ -30,7 +30,7 @@
       <a href="..\constellation\CoreGraphFile\src\au\gov\asd\tac\constellation\graph\file\docs\save-graph.md">Save Graph</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Selection" aria-expanded="false" aria-controls="Selection">Selection</button></h2></div>
 <div id="Selection" class="collapse" aria-labelledby="Selection" data-parent="#Selection"> <div class="card-body">      <a href="..\constellation\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\docs\general-selection.md">General Selection</a><br/>
-      Blaze Selection
+      <a href="..\constellation\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\docs\blaze-selection.md">Blaze Selection</a><br/>
       <a href="..\constellation\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\docs\dimmed-selection.md">Dimmed Selection</a><br/>
       <a href="..\constellation\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\docs\structure-selection.md">Structure Selection</a><br/>
       <a href="..\constellation\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\docs\induced-subgraph.md">Induced Subgraph</a><br/>
@@ -152,18 +152,18 @@
 <div id="Cluster" class="collapse" aria-labelledby="Cluster" data-parent="#Cluster"> <div class="card-body">          <a href="..\constellation\CoreAlgorithmPlugins\src\au\gov\asd\tac\constellation\plugins\algorithms\docs\chinese-whispers.md">Chinese Whispers</a><br/>
           <a href="..\constellation\CoreAlgorithmPlugins\src\au\gov\asd\tac\constellation\plugins\algorithms\docs\k-truss.md">K-Truss</a><br/>
 </a> </div> </div> </div></a> </div> </div> </div></a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Arrangements" aria-expanded="false" aria-controls="Arrangements">Arrangements</button></h2></div>
-<div id="Arrangements" class="collapse" aria-labelledby="Arrangements" data-parent="#Arrangements"> <div class="card-body">      Grid
-      Line
-      Circle
-      Tree
-      Hierarchy
-      Node Attribute
-      Scatter 3D
-      Sphere
-      Flatten Z-Field
-      Contract Graph
-      Expand Graph
-      Layer by Time
+<div id="Arrangements" class="collapse" aria-labelledby="Arrangements" data-parent="#Arrangements"> <div class="card-body">      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\grid.md">Grid</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\line.md">Line</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\circle.md">Circle</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\tree.md">Tree</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\hierarchy.md">Hierarchy</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\node-attribute.md">Node Attribute</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\scatter3d.md">Scatter 3D</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\sphere.md">Sphere</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\flatten-z-field.md">Flatten Z-Field</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\contract-graph.md">Contract Graph</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\expand-graph.md">Expand Graph</a><br/>
+      <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\layer-by-time.md">Layer by Time</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#ImportExport" aria-expanded="false" aria-controls="ImportExport">Import/Export</button></h2></div>
 <div id="ImportExport" class="collapse" aria-labelledby="ImportExport" data-parent="#ImportExport"> <div class="card-body">      <a href="..\constellation\CoreImportExportPlugins\src\au\gov\asd\tac\constellation\plugins\importexport\docs\import-from-file.md">Import From File</a><br/>
       <a href="..\constellation\CoreImportExportPlugins\src\au\gov\asd\tac\constellation\plugins\importexport\docs\import-from-database.md">Import from Database</a><br/>

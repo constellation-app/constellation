@@ -27,7 +27,7 @@ Example Grid Arrangement:
 
 <div style="text-align: center">
 
-![Example Grid
-Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/GridArrangement.png)
+<img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/GridArrangement.png" alt="Example Grid
+Arrangement" />
 
 </div>

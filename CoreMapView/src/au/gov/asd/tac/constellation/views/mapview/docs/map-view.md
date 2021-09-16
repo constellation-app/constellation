@@ -34,8 +34,8 @@ Constellation graph as well as features for basic geospatial analysis.
 
 <div style="text-align: center">
 
-![Map
-View](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapView.png)
+<img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapView.png" alt="Map
+View" />
 
 </div>
 
@@ -46,30 +46,30 @@ default map being a simple built-in map consisting only of country
 borders. The Map View can be extended to source its base map data from a
 custom location (refer to the Developer Guide for more information on
 how to do this). You can switch between available base maps using the
-![Base Maps
-Menu](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapBaseMapsMenu.png)
+<img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapBaseMapsMenu.png" alt="Base Maps
+Menu" />
 menu.
 
 ## Layers
 
 Layers can be rendered on top of the map in order to provide additional
 visualisations for analytic purposes. Layers can be switched on and off
-using the ![Layers
-Menu](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapLayersMenu.png)
+using the <img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapLayersMenu.png" alt="Layers
+Menu" />
 menu.
 
 ## Overlays
 
 Overlays can be rendered on top of the map in order to provide
 additional information or features to the Map View. Overlays can be
-switched on and off using the ![Overlay
-Menu](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapOverlayMenu.png)
+switched on and off using the <img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapOverlayMenu.png" alt="Overlay
+Menu" />
 menu.
 
 ## Zooming
 
-You can zoom to markers or custom locations on the map using the ![Zoom
-Menu](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapZoomMenu.png)
+You can zoom to markers or custom locations on the map using the <img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapZoomMenu.png" alt="Zoom
+Menu" />
 menu.
 
 ## Marker Types
@@ -81,22 +81,22 @@ point data, and the "Geo.Shape" attribute for line, polygon and
 multi-polygon data, where it will expect to find a GeoJSON object
 representing the shape as a Feature Collection. The Map View can also
 render clusters (calculated using marker centroids). All of these marker
-types can be switched on and off using the ![Marker Visibility
-Menu](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapMarkerVisibilityMenu.png)
+types can be switched on and off using the <img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapMarkerVisibilityMenu.png" alt="Marker Visibility
+Menu" />
 menu.
 
 ## Marker Customisation
 
 You customise markers with colours and labels using data on the graph.
-This can be achieved by selecting options in the ![Marker Colours
-Menu](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapMarkerColoursMenu.png)
-and ![Marker Labels
-Menu](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapMarkerLabelsMenu.png)
+This can be achieved by selecting options in the <img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapMarkerColoursMenu.png" alt="Marker Colours
+Menu" />
+and <img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapMarkerLabelsMenu.png" alt="Marker Labels
+Menu" />
 menus.
 
 ## Exporting Data
 
 Geospatial data can be exported to a range of open data formats using
-the ![Export
-Menu](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapExportMenu.png)
+the <img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapExportMenu.png" alt="Export
+Menu" />
 menu.

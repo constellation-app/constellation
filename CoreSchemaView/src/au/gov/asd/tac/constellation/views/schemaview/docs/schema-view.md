@@ -35,8 +35,8 @@ current graph.
 
 <div style="text-align: center">
 
-![Schema
-View](../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaView.png)
+<img src="../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaView.png" alt="Schema
+View" />
 
 </div>
 
@@ -48,14 +48,14 @@ you can view the attribute type, attribute name, data type, and
 description. The attribute type is identified by the icon next to the
 attribute name:
 
--   Node - ![Node Attribute
-    Icon](../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaNodeAttribute.png)
--   Transaction - ![Transaction Attribute
-    Icon](../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaTransactionAttribute.png)
--   Graph - ![Graph Attribute
-    Icon](../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaGraphAttribute.png)
--   Meta - ![Meta Attribute
-    Icon](../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaMetaAttribute.png)
+-   Node - <img src="../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaNodeAttribute.png" alt="Node Attribute
+    Icon" />
+-   Transaction - <img src="../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaTransactionAttribute.png" alt="Transaction Attribute
+    Icon" />
+-   Graph - <img src="../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaGraphAttribute.png" alt="Graph Attribute
+    Icon" />
+-   Meta - <img src="../constellation/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/docs/resources/SchemaMetaAttribute.png" alt="Meta Attribute
+    Icon" />
 
 ## Types
 

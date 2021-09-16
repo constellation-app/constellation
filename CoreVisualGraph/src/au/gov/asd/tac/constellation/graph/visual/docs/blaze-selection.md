@@ -33,8 +33,8 @@ Before Select Blazes is run:
 
 <div style="text-align: center">
 
-![Graph before Select Blazes is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectBlazesBefore.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectBlazesBefore.png" alt="Graph before Select Blazes is
+run" />
 
 </div>
 
@@ -42,7 +42,7 @@ After Select Blazes is run:
 
 <div style="text-align: center">
 
-![Graph after Select Blazes is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectBlazesAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectBlazesAfter.png" alt="Graph after Select Blazes is
+run" />
 
 </div>

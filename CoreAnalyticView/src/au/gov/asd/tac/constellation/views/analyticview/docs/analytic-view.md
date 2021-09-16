@@ -38,8 +38,7 @@ on a graph.
 
 <div style="text-align: center">
 
-![Analytic
-View](../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/AnalyticView.png)
+<img src="../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/AnalyticView.png" alt="Analytic View" />
 
 </div>
 
@@ -61,8 +60,7 @@ help pages for selected analytics here by clicking on the
 "Documentation" tab.
 
 Once you have finished configuring your question, you can run it by
-pressing the ![Run
-Icon](../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/AnalyticRun.png)
+pressing the <img src="../constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/resources/AnalyticRun.png" alt="Run Icon" />
 button.
 
 ## Visualising the Results

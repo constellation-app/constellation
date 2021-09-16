@@ -34,8 +34,8 @@ occur if only one graph element selected).
 
 <div style="text-align: center">
 
-![Attribute
-Editor](../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditor.png)
+<img src="../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditor.png" alt="Attribute
+Editor" />
 
 </div>
 
@@ -57,8 +57,8 @@ Attribute Editor:
 ## Editing An Attribute
 
 To edit an attribute, select the nodes and transactions you want to edit
-and then click on the ![Edit
-Icon](../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorEdit.png)
+and then click on the <img src="../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorEdit.png alt="Edit
+Icon" />
 button. This will bring up a dialog box to change the value. Once you
 have finished changing the value, press "Ok" to apply the change. If
 more than one graph element is selected than the new value will be
@@ -71,8 +71,8 @@ the selected nodes/transactions only.
 
 ## Adding An Attribute
 
-To add an attribute to your graph, click on the ![Add
-Icon](../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorAdd.png)
+To add an attribute to your graph, click on the <img src="../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorAdd.png" alt="Add
+Icon" />
 button of the relevant graph element type and choose the attribute you
 want to add. If you select "Custom", you will be required to fill in all
 the details of the new attribute.
@@ -81,8 +81,8 @@ the details of the new attribute.
 
 From the Attribute Editor, you can also edit the primary key for a graph
 element type (recall these are the attributes which uniquely define a
-graph element). To do so, click on the ![Primary Key
-Icon](../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorKey.png)
+graph element). To do so, click on the <img src="../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorKey.png" alt="Primary Key
+Icon" />
 button of the relevant graph element type and select which elements you
 want to be a part of the primary key. You will only be able to choose
 from attributes that are already on the graph (refer to adding an

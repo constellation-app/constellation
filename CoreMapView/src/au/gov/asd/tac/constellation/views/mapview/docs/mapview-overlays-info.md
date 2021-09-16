@@ -6,8 +6,8 @@ mouse pointer, and the current zoom level.
 
 <div style="text-align: center">
 
-![Info
-Overlay](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapOverlayInfo.png)
+<img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapOverlayInfo.png" alt="Info
+Overlay" />
 
 </div>
 

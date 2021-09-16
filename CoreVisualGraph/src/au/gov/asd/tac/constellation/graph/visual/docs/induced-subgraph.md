@@ -41,8 +41,8 @@ Before Any Induced Subgraph Selection is run:
 
 <div style="text-align: center">
 
-![Graph before Induced Subgraph Selection is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectInducedSubgraphBefore.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectInducedSubgraphBefore.png" alt="Graph before Induced Subgraph Selection is
+run" />
 
 </div>
 
@@ -50,8 +50,8 @@ After Select Half Hop Induced Subgraph is run:
 
 <div style="text-align: center">
 
-![Graph after Select Half Hop Induced Subgraph is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectHalfHopInducedSubgraphAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectHalfHopInducedSubgraphAfter.png" alt="Graph after Select Half Hop Induced Subgraph is
+run" />
 
 </div>
 
@@ -59,7 +59,7 @@ After Select One Hop Induced Subgraph is run:
 
 <div style="text-align: center">
 
-![Graph after Select One Hop Induced Subgraph is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectOneHopInducedSubgraphAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectOneHopInducedSubgraphAfter.png" alt="Graph after Select One Hop Induced Subgraph is
+run" />
 
 </div>

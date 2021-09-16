@@ -8,8 +8,8 @@ indicate whether a relative or absolute range is being used.
 
 <div style="text-align: center">
 
-![Datetime Range Global
-Parameter](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessDatetimeRange.png)
+<img src="../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessDatetimeRange.png" alt="Datetime Range Global
+Parameter" />
 
 </div>
 

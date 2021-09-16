@@ -27,19 +27,19 @@ things such as import, enrich, and clean data, all from the one window.
 
 <div style="text-align: center">
 
-![Data Access
-View](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessView.png)
+<img src="../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessView.png" alt="Data Access
+View" />
 
 </div>
 
 ## Running Queries
 
-At the very top, there is a list of tabs. Pressing the ![Add
-Icon](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessAdd.png)
+At the very top, there is a list of tabs. Pressing the <img src="../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessAdd.png" alt="Add
+Icon" />
 button allows steps to be added (as tabs), and the X in the tab name
 will remove it. Tabs can be customised to perform different queries, and
-when ready, pressing the ![Go
-Icon](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessGo.png)
+when ready, pressing the <img src="../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessGo.png" alt="Go
+Icon" />
 button will cause each tab to run their queries sequentially. The Go
 button will only highlight once a check box has been selected and a
 graph has been opened.
@@ -67,7 +67,7 @@ restored.
 ## Global Parameters
 
 Refer to the [Global
-Parameters](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/datetime-range.md)
+Parameters]../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/datetime-range.md)
 page for more details on the global parameters section.
 
 ## Filtering

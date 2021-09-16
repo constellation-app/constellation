@@ -58,8 +58,8 @@ After Select Singletons is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Singletons is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectSingletonsAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectSingletonsAfter.png" alt="Graph after Select Singletons is
+run" />
 
 </div>
 
@@ -72,8 +72,8 @@ After Select Pendants is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Pendants is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectPendantsAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectPendantsAfter.png" alt="Graph after Select Pendants is
+run" />
 
 </div>
 
@@ -85,8 +85,8 @@ After Select Loops is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Loops is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectLoopsAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectLoopsAfter.png" alt="Graph after Select Loops is
+run" />
 
 </div>
 
@@ -99,8 +99,8 @@ After Select Sources is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Sources is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectSourcesAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectSourcesAfter.png" alt="Graph after Select Sources is
+run" />
 
 </div>
 
@@ -113,8 +113,8 @@ After Select Sinks is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Sinks is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectSinksAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectSinksAfter.png" alt="Graph after Select Sinks is
+run" />
 
 </div>
 
@@ -128,7 +128,7 @@ After Select Backbone is run (nothing previously selected):
 
 <div style="text-align: center">
 
-![Graph after Select Backbone is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectBackboneAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectBackboneAfter.png" alt="Graph after Select Backbone is
+run" />
 
 </div>

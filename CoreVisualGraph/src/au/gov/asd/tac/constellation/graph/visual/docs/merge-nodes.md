@@ -30,8 +30,8 @@ It requires at least two selected nodes in order to work.
 
 <div style="text-align: center">
 
-![Merge Nodes
-Dialog](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/PermanentMergeNodes.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/PermanentMergeNodes.png" alt="Merge Nodes
+Dialog" />
 
 </div>
 

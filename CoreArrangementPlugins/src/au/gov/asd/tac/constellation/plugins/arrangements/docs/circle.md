@@ -27,7 +27,6 @@ Example Circle Arrangement:
 
 <div style="text-align: center">
 
-![Example Circle
-Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/CircleArrangement.png)
+<img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/CircleArrangement.png" alt="Example Circle Arrangement" />
 
 </div>

@@ -43,8 +43,8 @@ Before Shortest Paths is run:
 
 <div style="text-align: center">
 
-![Graph before Shortest Paths is
-run](../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathBefore.png)
+<img src="../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathBefore.png" alt="Graph before Shortest Paths is
+run" />
 
 </div>
 
@@ -52,8 +52,8 @@ After Shortest Paths is run:
 
 <div style="text-align: center">
 
-![Graph after Shortest Paths is
-run](../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathAfter.png)
+<img src="../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathAfter.png" alt="Graph after Shortest Paths is
+run" />
 
 </div>
 
@@ -61,7 +61,7 @@ After Directed Shortest Paths is run (Source Node is Vertex #0):
 
 <div style="text-align: center">
 
-![Graph after Directed Shortest Paths is
-run](../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathAfterDirected.png)
+<img src="../constellation/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/docs/resources/ShortestPathAfterDirected.png" alt="Graph after Directed Shortest Paths is
+run" />
 
 </div>

@@ -2,8 +2,8 @@
 
 ## Add Mode
 
-Select the ![Add Mode
-Icon](../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/add.png)
+Select the <img src="../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/add.png" alt="Add Mode
+Icon" />
 icon to switch to add mode. This mode allows the user to manually create
 nodes and transactions.
 
@@ -55,17 +55,16 @@ NOTE: While creating a transaction, you can left-click on the background
 or press ESC to abort creating it.
 
 When creating transactions, you can choose whether to generate directed
-or undirected transactions by selecting either the ![Directed
-Transactions
-Icon](../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/directed.png)
-icon (for directed) or the ![Undirected Transactions
-Icon](../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/undirected.png)
+or undirected transactions by selecting either the <img src="../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/directed.png" alt="Directed
+Transactions Icon" />
+icon (for directed) or the <img src="../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/undirected.png" alt="Undirected Transactions
+Icon" />
 icon (for undirected). By default, directed will be selected.
 
 ## Selection Mode
 
-Select the ![Selection Mode
-Icon](../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/select.png)
+Select the <img src="../constellation/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/resources/select.png" alt="Selection Mode
+Icon" />
 icon to switch to selection mode. This mode allows the user to select
 elements in the graph and perform graphical operations such as zoom,
 pan, and rotate.

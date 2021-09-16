@@ -4,8 +4,8 @@ The diagram below shows the components of a graph:
 
 <div style="text-align: center">
 
-![Graph
-Model](../constellation/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/docs/resources/graph-model.png)
+<img src="../constellation/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/docs/resources/graph-model.png" alt="Graph
+Model" />
 
 </div>
 

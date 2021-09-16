@@ -33,8 +33,8 @@ Before Any Dimmed Selection is run:
 
 <div style="text-align: center">
 
-![Graph before Dimmed Selection is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectDimmedBefore.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectDimmedBefore.png" alt="Graph before Dimmed Selection is
+run" />
 
 </div>
 
@@ -42,8 +42,8 @@ After Select Dimmed is run:
 
 <div style="text-align: center">
 
-![Graph after Select Dimmed is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectDimmedAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectDimmedAfter.png" alt="Graph after Select Dimmed is
+run" />
 
 </div>
 
@@ -51,7 +51,7 @@ After Select Undimmed is run:
 
 <div style="text-align: center">
 
-![Graph after Select Undimmed is
-run](../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectUndimmedAfter.png)
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/SelectUndimmedAfter.png" alt="Graph after Select Undimmed is
+run" />
 
 </div>

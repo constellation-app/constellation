@@ -27,8 +27,8 @@ on your graph.
 
 <div style="text-align: center">
 
-![Perspective
-Bookmarks](../constellation/CoreGraphUtilities/src/au/gov/asd/tac/constellation/graph/utilities/docs/resources/PerspectiveBookmarks.png)
+<img src="../constellation/CoreGraphUtilities/src/au/gov/asd/tac/constellation/graph/utilities/docs/resources/PerspectiveBookmarks.png" alt="Perspective
+Bookmarks" />
 
 </div>
 

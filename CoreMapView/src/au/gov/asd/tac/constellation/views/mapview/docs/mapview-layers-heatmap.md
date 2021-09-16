@@ -28,7 +28,7 @@ representing a node with only one adjacent transaction.
 
 <div style="text-align: center">
 
-![Heatmap (Activity)
-Layer](../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/mapview-layers-heatmap.png)
+<img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/mapview-layers-heatmap.png" alt="Heatmap (Activity)
+Layer" />
 
 </div>

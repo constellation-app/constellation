@@ -34,7 +34,7 @@ Example Tree Arrangement:
 
 <div style="text-align: center">
 
-![Example Tree
-Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/TreeArrangement.png)
+<img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/TreeArrangement.png" alt="Example Tree
+Arrangement" />
 
 </div>

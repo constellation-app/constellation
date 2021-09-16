@@ -20,5 +20,5 @@ the data in the same way, but puts transactions on a separate layer
 (between their source and destination nodes). Experiment with both
 options to see which one works best for you.
 
-![Layer by Time
-Interface](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/layer_by_time_parameters_gui_screenshot.jpg)
+<img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/layer_by_time_parameters_gui_screenshot.jpg" alt="Layer by Time
+Interface" />

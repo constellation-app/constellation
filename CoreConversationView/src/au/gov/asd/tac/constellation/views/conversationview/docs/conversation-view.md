@@ -31,8 +31,8 @@ then no conversation text will be displayed.
 
 <div style="text-align: center">
 
-![Conversation
-View](../constellation/CoreConversationView/src/au/gov/asd/tac/constellation/views/conversationview/docs/resources/ConversationView.png)
+<img src="../constellation/CoreConversationView/src/au/gov/asd/tac/constellation/views/conversationview/docs/resources/ConversationView.png" alt="Conversation
+View" />
 
 </div>
 

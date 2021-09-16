@@ -35,8 +35,8 @@ use in union (binary OR) and intersection (binary AND) operations.
 
 <div style="text-align: center">
 
-![Named
-Selections](../constellation/CoreNamedSelectionView/src/au/gov/asd/tac/constellation/views/namedselection/docs/resources/namedselections.png)
+<img src="../constellation/CoreNamedSelectionView/src/au/gov/asd/tac/constellation/views/namedselection/docs/resources/namedselections.png" alt="Named
+Selections" />
 
 </div>
 
@@ -72,7 +72,7 @@ unselected.
 
 <div style="text-align: center">
 
-![](../constellation/CoreNamedSelectionView/src/au/gov/asd/tac/constellation/views/namedselection/docs/resources/namedselection-context.png)
+<img src="../constellation/CoreNamedSelectionView/src/au/gov/asd/tac/constellation/views/namedselection/docs/resources/namedselection-context.png" />
 
 </div>
 

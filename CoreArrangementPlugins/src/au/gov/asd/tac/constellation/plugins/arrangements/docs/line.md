@@ -34,7 +34,7 @@ Example Line Arrangements (Horizontal on left, Vertical on right):
 
 <div style="text-align: center">
 
-![Example Line
-Arrangements](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/LineArrangement.png)
+<img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/LineArrangement.png" alt="Example Line
+Arrangements" />
 
 </div>

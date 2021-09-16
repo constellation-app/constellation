@@ -33,8 +33,8 @@ The Histogram View provides a way to summarise both the structural
 properties of a graph and the values of attributes, as well as the
 capability to filter and make selections based on these properties.
 
-![Histogram
-View](../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Overview.png)
+<img src="../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Overview.png" alt="Histogram
+View" />
 
 ## Histogram Panel
 
@@ -240,9 +240,9 @@ The Selection Mode will toggle the interactivity of the Histogram View.
     will change the selection on the graph to all yellow elements.
     Holding the shift key while left clicking will change red elements
     of rows to yellow. Holding the ctrl key while left clicking will
-    toggle elements of rows between red and yellow. ![Within Existing
+    toggle elements of rows between red and yellow. <img src="../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Within.png" alt="Within Existing
     Selection
-    example](../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Within.png)
+    example" />
 -   *Add To Existing Selection* - Clicking rows will not change the
     selection on the graph until the adjacent "Select" button is
     pressed. This mode will allow for adding rows to the existing graph
@@ -251,13 +251,13 @@ The Selection Mode will toggle the interactivity of the Histogram View.
     button will change the selection on the graph to all yellow
     elements. Holding the shift key while left clicking will change blue
     elements of rows to yellow. Holding the ctrl key while left clicking
-    will toggle elements of rows between blue and yellow. ![Add to
+    will toggle elements of rows between blue and yellow. <img src="../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Add.png" alt="Add to
     Existing Selection
-    example](../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Add.png)
+    example" />
 
 ## Filter
 
-![](../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Filter.png)
+<img src="../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Filter.png" />
 
 The Filter on Selection button will hide unselected elements from the
 Histogram View, until such time as the Clear Filter Button is pressed.

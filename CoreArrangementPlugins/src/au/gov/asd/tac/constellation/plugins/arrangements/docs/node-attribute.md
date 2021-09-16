@@ -31,8 +31,8 @@ Example Node Attribute 2D Arrangement:
 
 <div style="text-align: center">
 
-![Example Node Attribute 2D
-Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/NodeAttribute2DArrangement.png)
+<img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/NodeAttribute2DArrangement.png" alt="Example Node Attribute 2D
+Arrangement" />
 
 </div>
 
@@ -40,7 +40,7 @@ Example Node Attribute 3D Arrangement:
 
 <div style="text-align: center">
 
-![Example Node Attribute 3D
-Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/NodeAttribute3DArrangement.png)
+<img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/NodeAttribute3DArrangement.png" alt="Example Node Attribute 3D
+Arrangement" />
 
 </div>

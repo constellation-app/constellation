@@ -44,7 +44,7 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.graph.visual.generalSelection", visualModulePath + "general-selection.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.dimmedSelection", visualModulePath + "dimmed-selection.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.structureSelection", visualModulePath + "structure-selection.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.selectBlazes", visualModulePath + "blaze-selection.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.blazeSelection", visualModulePath + "blaze-selection.md");
         return map;
     }
 

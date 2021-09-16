@@ -32,8 +32,8 @@ following sources:
 
 <div style="text-align: center">
 
-![Delimited File
-Importer](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/DelimitedFileImporter.png)
+<img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/DelimitedFileImporter.png" alt="Delimited File
+Importer" />
 
 </div>
 
@@ -43,8 +43,8 @@ The following is a high level workflow an analyst can follow (explained
 in detail later on):
 
 1.  Select the file type you want to import with File Parser
-2.  Click on the ![Add File
-    Button](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_coloured.png)
+2.  Click on the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_coloured.png" alt="Add File
+    Button" />
     to add files.
 3.  Select your destination graph.
 4.  Drag and drop attributes from the bottom pane onto your columns.
@@ -64,10 +64,10 @@ Hints:
 
 ## Add and Remove Files to Import
 
-Add files to import using the ![Add File
-Button](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_coloured.png)
-and remove a file using the ![Remove File
-Button](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/minus_coloured.png).
+Add files to import using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_coloured.png" alt="Add File
+Button" />
+and remove a file using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/minus_coloured.png" alt="Remove File
+Button" />.
 Once a file has been selected, the full name will appear. If the entire
 file location is not visible, extend the window to see the full name.
 
@@ -108,8 +108,8 @@ right click on the DateTime attribute and select the format from the
 drop down list or enter your own.
 
 If you want to create your own attributes then you can by clicking on
-![Add Attribute
-Icon](../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_black.png)
+<img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_black.png" alt="Add Attribute
+Icon" />
 and selecting a type and entering a label.
 
 ## Directed and Undirected Transactions

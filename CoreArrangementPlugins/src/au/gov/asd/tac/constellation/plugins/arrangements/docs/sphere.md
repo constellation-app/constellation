@@ -26,7 +26,7 @@ Example Sphere Arrangement:
 
 <div style="text-align: center">
 
-![Example Sphere
-Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/SphereArrangement.png)
+<img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/SphereArrangement.png" alt="Example Sphere
+Arrangement" />
 
 </div>

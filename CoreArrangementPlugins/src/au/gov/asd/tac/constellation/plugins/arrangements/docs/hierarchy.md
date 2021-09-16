@@ -40,7 +40,7 @@ Example Hierarchy Arrangement:
 
 <div style="text-align: center">
 
-![Example Hierarchy
-Arrangement](../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/HierarchyArrangement.png)
+<img src="../constellation/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/docs/resources/HierarchyArrangement.png" alt="Example Hierarchy
+Arrangement" />
 
 </div>

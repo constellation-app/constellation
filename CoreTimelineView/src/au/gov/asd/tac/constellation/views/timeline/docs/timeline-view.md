@@ -33,8 +33,8 @@ will plot the data from the graph relative to its occurrence in time.
 
 <div style="text-align: center">
 
-![Timeline
-View](../constellation/CoreTimelineView/src/au/gov/asd/tac/constellation/views/timeline/docs/resources/TimelineView.png)
+<img src="../constellation/CoreTimelineView/src/au/gov/asd/tac/constellation/views/timeline/docs/resources/TimelineView.png" alt="Timeline
+View" />
 
 </div>
 

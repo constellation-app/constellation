@@ -57,9 +57,8 @@ attribute value toggled to 0.0 (invisible).
 Arrangements on graphs with a visual schema will be ran on the base
 layer 0.
 
-![Fig.1 - Layers view
-interface](../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-view-example.png)
-
+<img src../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-view-example.png" alt="Fig.1 - Layers view
+interface" />
   
 
 ## Creating and Using Layers
@@ -78,8 +77,8 @@ results is needed.
 
 ## Layer Types
 
-![Fig.2 - Right-click context menu used for adding elements to a manual
-layer.](../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-context.png)
+<img src="../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-context.png" alt="Fig.2 - Right-click context menu used for adding elements to a manual
+layer." />
 
   
 

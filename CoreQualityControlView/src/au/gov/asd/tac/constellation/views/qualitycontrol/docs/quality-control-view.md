@@ -63,8 +63,8 @@ via the buttons at the bottom of the view.
 
 <div style="text-align: center">
 
-![Quality Control
-View](../constellation/CoreQualityControlView/src/au/gov/asd/tac/constellation/views/qualitycontrol/docs/resources/QualityControlView.png)
+<img src="../constellation/CoreQualityControlView/src/au/gov/asd/tac/constellation/views/qualitycontrol/docs/resources/QualityControlView.png" alt="Quality Control
+View" />
 
 </div>
 
