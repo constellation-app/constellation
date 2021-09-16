@@ -82,9 +82,9 @@ public class WelcomeViewPane extends BorderPane {
     public static final String LOGO = "resources/constellation-logo.png";
 
     //Resized image height/width
-    final static int IMAGE_SIZE = 145;
+    private static final int IMAGE_SIZE = 145;
 
-    public final Logger LOGGER = Logger.getLogger(WelcomeViewPane.class.getName());
+    private final Logger LOGGER = Logger.getLogger(WelcomeViewPane.class.getName());
 
     private static final Button[] recentGraphButtons = new Button[10];
 
@@ -224,13 +224,13 @@ public class WelcomeViewPane extends BorderPane {
                 if (new File(screenshotFilename).exists()) {
 
                     if (!new File(screenshotFilenameResize).exists()) {
-                        Path source = Paths.get(screenshotFilename);
-                        Path target = Paths.get(screenshotFilenameResize);
+                        final Path source = Paths.get(screenshotFilename);
+                        final Path target = Paths.get(screenshotFilenameResize);
 
-                        try (InputStream is = new FileInputStream(source.toFile())) {
+                        try (final InputStream is = new FileInputStream(source.toFile())) {
                             resize(is, target, IMAGE_SIZE, IMAGE_SIZE);
 
-                        } catch (Exception ex) {
+                        } catch (final IOException ex) {
                             LOGGER.log(Level.WARNING, ex.getLocalizedMessage(), ex);
                         }
                     }
@@ -273,7 +273,7 @@ public class WelcomeViewPane extends BorderPane {
      * @param width the new width of the resized image
      * @throws IOException
      */
-    public void resize(InputStream is, Path target, int height, int width) throws IOException {
+    public void resize(final InputStream is, final Path target, final int height, final int width) throws IOException {
         final BufferedImage originalImage = ImageIO.read(is);
 
         // create a new BufferedImage for drawing
@@ -284,7 +284,7 @@ public class WelcomeViewPane extends BorderPane {
         g.setComposite(AlphaComposite.Src);
         g.fillRect(0, 0, width, height);
 
-        Map<RenderingHints.Key, Object> hints = new HashMap<>();
+        final Map<RenderingHints.Key, Object> hints = new HashMap<>();
         hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
