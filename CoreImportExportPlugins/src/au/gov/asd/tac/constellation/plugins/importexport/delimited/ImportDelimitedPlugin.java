@@ -152,7 +152,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 for (int i = 0; i < validFilenames.size(); i++) {
                     final File f = new File(validFilenames.get(i));
                     sbMessage.append(f.getName());
-                    if (validFilenames.size() - 1 != i) {
+                    if (i != validFilenames.size() - 1) {
                         sbMessage.append(", ");
                     }
                 }
@@ -163,7 +163,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     for (int i = 0; i < invalidFilenames.size(); i++) {
                         final File f = new File(invalidFilenames.get(i));
                         sbMessage.append(f.getName());
-                        if (validFilenames.size() - 1 != i) {
+                        if (i != invalidFilenames.size() - 1) {
                             sbMessage.append(", ");
                         }
                     }
@@ -175,7 +175,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 for (int i = 0; i < invalidFilenames.size(); i++) {
                     final File f = new File(invalidFilenames.get(i));
                     sbMessage.append(f.getName());
-                    if (validFilenames.size() - 1 != i) {
+                    if (i != invalidFilenames.size() - 1) {
                         sbMessage.append(", ");
                     }
                 }
