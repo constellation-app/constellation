@@ -63,6 +63,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
 
@@ -103,6 +104,9 @@ public class TimelinePanel extends Region {
     private ToggleButton selectedOnlyButton;
     private ToggleButton btnShowLabels;
     private Button btnZoomToSelection;
+    private Button btnPlayVideo;
+    private Button btnReversePlayVideo;
+    private Button btnResetVideo;
     private ComboBox<ZoneId> timeZoneComboBox;
     private long expectedvxMod = Long.MIN_VALUE;
     private long expectedtxMod = Long.MIN_VALUE;
@@ -148,7 +152,6 @@ public class TimelinePanel extends Region {
         this.getStylesheets().add(TimelinePanel.class.getResource(DARK_THEME).toExternalForm());
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Layout Layers">
     /**
      * Creates organises the TimelinePanel's layers.
      */
@@ -197,9 +200,7 @@ public class TimelinePanel extends Region {
         // Attach the inner pane to the root:
         this.getChildren().add(innerPane);
     }
-    // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Populate and De-Populate Timeline">
     public void populateFromGraph(final GraphReadMethods graph, final String dateTimeAttribute,
             final String nodeLabelAttr, final boolean selectedOnly, final ZoneId zoneId) {
         this.nodeLabelAttr = nodeLabelAttr;
@@ -378,9 +379,7 @@ public class TimelinePanel extends Region {
         clusteringManager.clearTree();
         GraphManager.getDefault().setElementSelected(false);
     }
-    // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Extents">
     protected void setTimelineExtent(final GraphReadMethods graph,
             final double lowerTimeExtent, final double upperTimeExtent, final boolean showSelectedOnly, final ZoneId zoneId) {
         final double millisPerPixel = (upperTimeExtent - lowerTimeExtent) / timeline.getWidth();
@@ -439,9 +438,7 @@ public class TimelinePanel extends Region {
         });
         PluginExecution.withPlugin(updatePlugin).executeLater(graph);
     }
-    // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Toolbar">
     private ToolBar createToolBar() {
         final ToolBar tb = new ToolBar();
 
@@ -504,28 +501,42 @@ public class TimelinePanel extends Region {
             }
         });
 
-        //btnDim = new ToggleButton(Bundle.DimGraphLabel());
-        // Register a toggle event listeners for the toggle buttons:
-        /*btnDim.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
-                if (!Objects.equals(oldValue, newValue) && coordinator != null) {
-                    coordinator.setIsDimming(newValue);
-                }
-            }
-        });*/
         // Handle
         btnShowLabels = new ToggleButton(Bundle.ShowLabels());
         btnShowLabels.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
-            //                if(oldValue != newValue)
-//                {
             coordinator.setIsShowingNodeLabels(newValue);
-//                }
         });
 
         btnZoomToSelection = new Button(Bundle.ZoomtoSelection());
         btnZoomToSelection.setOnAction(e -> {
             coordinator.setExtents();
+        });
+
+        btnPlayVideo = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_RIGHT.buildImage(16)));
+        btnPlayVideo.setTooltip(new Tooltip("Plays the time selection"));
+        btnPlayVideo.setOnAction(e -> {
+            try {
+                coordinator.playVideo();
+            } catch (InterruptedException ex) {
+                coordinator.resetVideo();
+            }
+        });
+
+
+        btnReversePlayVideo = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_LEFT.buildImage(16)));
+        btnReversePlayVideo.setTooltip(new Tooltip("Plays in reverse the time selection"));
+        btnReversePlayVideo.setOnAction(e -> {
+            try {
+                coordinator.stopVideo();
+            } catch (InterruptedException ex) {
+                coordinator.resetVideo();
+            }
+        });
+
+        btnResetVideo = new Button("", new ImageView(UserInterfaceIconProvider.CROSS.buildImage(16)));
+        btnResetVideo.setTooltip(new Tooltip("Resets to the original chosen selection"));
+        btnResetVideo.setOnAction(e -> {
+            coordinator.resetVideo();
         });
 
         selectedOnlyButton = new ToggleButton(Bundle.Lbl_ShowSelectedOnly());
@@ -558,6 +569,9 @@ public class TimelinePanel extends Region {
                 spacer4,
                 btnShowLabels,
                 spacer5,
+                btnPlayVideo,
+                btnResetVideo,
+                btnReversePlayVideo,
                 helpButton, cmbAttributeNames);
 
         tb.setCursor(Cursor.DEFAULT);
@@ -652,7 +666,6 @@ public class TimelinePanel extends Region {
                     cmbDatetimeAttributes.getItems().indexOf(currentDateTimeAttr));
         }
     }
-    // </editor-fold>
 
     void setTimeZone(final ZoneId timeZone) {
         timeZoneComboBox.getSelectionModel().select(timeZone);
@@ -662,7 +675,6 @@ public class TimelinePanel extends Region {
         final double midpoint = timeline.getWidth() / 2;
         timeline.performZoom(se, midpoint);
     }
-    // <editor-fold defaultstate="collapsed" desc="Time Extent Labels">
 
     private Label createExtentLabel() {
         final Label newLabel = new Label();
@@ -680,5 +692,4 @@ public class TimelinePanel extends Region {
 
         return newLabel;
     }
-    // </editor-fold>
 }

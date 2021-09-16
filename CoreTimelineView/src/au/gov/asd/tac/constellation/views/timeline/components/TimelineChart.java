@@ -113,7 +113,6 @@ public class TimelineChart extends XYChart<Number, Number> {
     private boolean isSelecting = false;
     private boolean firstaxisUpdate = false;
 
-    // <editor-fold defaultstate="collapsed" desc="Timeline Event Handlers">
     private final EventHandler<Event> timelineMouseHandler = new EventHandler<Event>() {
         @Override
         public void handle(final Event t) {
@@ -214,7 +213,6 @@ public class TimelineChart extends XYChart<Number, Number> {
             }
         }
     };
-    // </editor-fold>
 
     /**
      * Constructs a new <code>TimelineChart</code> component given a parent
@@ -320,7 +318,6 @@ public class TimelineChart extends XYChart<Number, Number> {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Axes Look and Feel">
     /**
      * Formats the axes to set the required look and feel of a timeline rather
      * than a generic chart which axes are originally suited for.
@@ -378,9 +375,7 @@ public class TimelineChart extends XYChart<Number, Number> {
             }
         });
     }
-    // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Time Properties">
     /**
      * Provides access to the lower time extent property.
      *
@@ -398,7 +393,6 @@ public class TimelineChart extends XYChart<Number, Number> {
     public StringProperty upperTimeExtentProperty() {
         return upperTimeExtentProperty;
     }
-    // </editor-fold>
 
     /**
      * Publishes data to the <code>TimelineChart</code> instance.
@@ -420,7 +414,6 @@ public class TimelineChart extends XYChart<Number, Number> {
         this.setData(data);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Range Determination Functions">
     /**
      * Returns the current lower time extent displayed by the timeline.
      *
@@ -589,7 +582,6 @@ public class TimelineChart extends XYChart<Number, Number> {
         xAxis.setMinorTickCount(minorTicks);
         xAxis.setTickUnit(tickUnit);
     }
-    // </editor-fold>
 
     /**
      * Helper method that creates a tooltip.
@@ -618,7 +610,6 @@ public class TimelineChart extends XYChart<Number, Number> {
         return newSelection;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Chart Methods">
     @Override
     protected void dataItemAdded(final Series<Number, Number> series,
             final int itemIndex, final Data<Number, Number> item) {
@@ -850,5 +841,4 @@ public class TimelineChart extends XYChart<Number, Number> {
             this.yAxis.setAutoRanging(true);
         }
     }
-    // </editor-fold>
 }

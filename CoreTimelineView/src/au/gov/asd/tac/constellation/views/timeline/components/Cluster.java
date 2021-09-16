@@ -61,7 +61,6 @@ public class Cluster extends Group {
     private long upperDisplayPos;
     private boolean isDragging = false;
 
-    // <editor-fold defaultstate="collapsed" desc="Mouse Handler">
     /**
      * The mouse event handler for <code>Cluster</code> objects.
      * <p>
@@ -100,7 +99,6 @@ public class Cluster extends Group {
             }
         }
     };
-    // </editor-fold>
 
     /**
      * Creates a new <code>Cluster</code> instance.

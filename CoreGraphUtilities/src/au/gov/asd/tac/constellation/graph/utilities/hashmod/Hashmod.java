@@ -143,7 +143,7 @@ public class Hashmod {
     }
 
     private String getColumnOfTransaction(int transactionCol, String regex) {
-        final Pattern cardNamePattern = Pattern.compile(regex);
+        final Pattern transactionPattern = Pattern.compile(regex);
 
         final String[] headers = getCSVFileHeaders();
         if (headers != null) {
@@ -151,7 +151,7 @@ public class Hashmod {
             for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
                 if (headers[i].matches(HEADER_MATCH_STRING)) {
                     if (numTransactions == transactionCol) {
-                        Matcher matchPattern = cardNamePattern.matcher(headers[i]);
+                        Matcher matchPattern = transactionPattern.matcher(headers[i]);
                         if (matchPattern.find()) {
                             return matchPattern.group(1);
                         }
@@ -168,7 +168,16 @@ public class Hashmod {
     }
 
     public String getSecondColumnOfTransaction(int transactionCol) {
-        return getColumnOfTransaction(transactionCol, ".*?\\.\\.\\.([^\"]+)");
+        return getColumnOfTransaction(transactionCol, ".*?\\.\\.\\.([^\"]+?)(;;;.*|$)");
+    }
+
+    public String getTransactionAttribute(String attributeFromCSV) {
+        final Pattern transactionPattern = Pattern.compile("^.*;;;([^\"]+)");
+        Matcher matchPattern = transactionPattern.matcher(attributeFromCSV);
+        if (matchPattern.find()) {
+            return matchPattern.group(1);
+        }
+        return "";
     }
 
     public String getCSVHeader(final int col) {

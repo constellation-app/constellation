@@ -118,7 +118,6 @@ public class OverviewPanel extends Pane {
         this.coordinator = parent;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="POV Extent">
     /**
      * Given a time extent, updates the POV dimensions to represent the extent
      * of time observed on the histogram component.
@@ -159,9 +158,7 @@ public class OverviewPanel extends Pane {
         pov.setX(lowX);
         pov.setWidth(povWidth);
     }
-    // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Populate Data">
     /**
      * Reads the temporal data from the given graph and creates a histogram view
      * of the data.
@@ -274,9 +271,7 @@ public class OverviewPanel extends Pane {
                     coordinator.getTimelineUpperTimeExtent());
         }
     }
-    // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Histogram Component">
     private AreaChart<Number, Number> createHistogram() {
         // Create the axes:
         xAxis = new NumberAxis();
@@ -302,9 +297,7 @@ public class OverviewPanel extends Pane {
         // Return the newly created histogram:
         return chart;
     }
-    // </ editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="POV Component">
     /**
      * Helper method that creates and styles a POV object.
      *
@@ -379,7 +372,6 @@ public class OverviewPanel extends Pane {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="POV Listeners">
     /**
      * Private class that implements mouse controls for the POV component in
      * order to capture events like clicks and drags and drops.
@@ -575,7 +567,4 @@ public class OverviewPanel extends Pane {
             }
         }
     }
-
-    // </editor-fold>
-    // </editor-fold>
 }
