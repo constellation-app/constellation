@@ -31,6 +31,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
@@ -138,9 +139,12 @@ public class JDBCSourcePane extends SourcePane {
             final EventHandler<ActionEvent> addConnectionAction
                     = (final ActionEvent event) -> addOrModifyConnection(connectionsTable, null);
 
+            final GridPane addRemModGp = new GridPane();
+            addRemModGp.setHgap(GAP);
+
             final Button openAddConnectionWindowButton = new Button("Add");
             openAddConnectionWindowButton.setOnAction(addConnectionAction);
-            connectionsPane.add(openAddConnectionWindowButton, 0, 1, 1, 1);
+            addRemModGp.add(openAddConnectionWindowButton, 0, 1, 1, 1);
 
             //Modify Connection Button
             final EventHandler<ActionEvent> editConnectionAction = (final ActionEvent event) -> {
@@ -152,8 +156,9 @@ public class JDBCSourcePane extends SourcePane {
                 }
             };
             final Button editConnectionButton = new Button("Modify");
+            editConnectionButton.setAlignment(Pos.CENTER_LEFT);
             editConnectionButton.setOnAction(editConnectionAction);
-            connectionsPane.add(editConnectionButton, 1, 1, 1, 1);
+            addRemModGp.add(editConnectionButton, 2, 1, 1, 1);
 
             final Button removeBtn = new Button("Remove");
             removeBtn.setOnAction((final ActionEvent t1) -> {
@@ -167,9 +172,10 @@ public class JDBCSourcePane extends SourcePane {
                     dbConnectionComboBox.setItems(connections);
                 }
             });
-            connectionsPane.add(removeBtn, 2, 1, 1, 1);
+            addRemModGp.add(removeBtn, 1, 1, 1, 1);
+            connectionsPane.add(addRemModGp, 0, 1, 1, 1);
 
-            final Button buttonCancel2 = new Button(ACTION_CANCEL);
+            final Button buttonCancel2 = new Button("Ok");
             buttonCancel2.setOnAction((final ActionEvent event) -> {
                 event.consume();
                 final Stage stage = (Stage) buttonCancel2.getScene().getWindow();
@@ -309,9 +315,9 @@ public class JDBCSourcePane extends SourcePane {
 
             final Button removeBtn1 = new Button("Remove");
             removeBtn1.setOnAction(removebtnAction);
-            driversTabGridPane.add(removeBtn1, 2, 1, 1, 1);
+            driversTabGridPane.add(removeBtn1, 1, 1, 1, 1);
 
-            final Button buttonCancel = new Button(ACTION_CANCEL);
+            final Button buttonCancel = new Button("Ok");
             buttonCancel.setOnAction((final ActionEvent event) -> {
                 event.consume();
                 final Stage stage = (Stage) buttonCancel.getScene().getWindow();
@@ -487,8 +493,8 @@ public class JDBCSourcePane extends SourcePane {
                 stage.close();
             }
         });
-        gp.add(addConnection, 0, 5, 1, 1);
-        final Button test = new Button("Test");
+        gp.add(addConnection, 1, 5, 1, 1);
+        final Button test = new Button("Test Connection");
         test.setOnAction(t -> {
             if (!cn.getText().isBlank()
                     && driversComboBox.getValue() != null
@@ -498,7 +504,7 @@ public class JDBCSourcePane extends SourcePane {
                 NotifyDisplayer.displayAlert(TITLE_JDBC_IMPORT, "Connection Success", "", AlertType.INFORMATION);
             }
         });
-        gp.add(test, 1, 5, 1, 1);
+        gp.add(test, 0, 5, 1, 1);
 
         final Button buttonCancel = new Button(ACTION_CANCEL);
         buttonCancel.setOnAction((final ActionEvent event) -> {
