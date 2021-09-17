@@ -43,6 +43,8 @@ public class BlazeBatcher implements SceneBatcher {
     private final Batch batch;
     private int shader;
 
+    private boolean greyscale = false; // anaglyphic drawing
+
     private float blazeSize;
     private float blazeOpacity;
 
@@ -56,6 +58,7 @@ public class BlazeBatcher implements SceneBatcher {
     private int shaderImagesTexture;
     private int shaderScale;
     private int shaderOpacity;
+    private int shaderGreyscale; // anaglyphic drawing
 
     private FloatArray blazeColors;
     private IntArray blazeInfo;
@@ -95,6 +98,7 @@ public class BlazeBatcher implements SceneBatcher {
         shaderImagesTexture = gl.glGetUniformLocation(shader, "images");
         shaderScale = gl.glGetUniformLocation(shader, "scale");
         shaderOpacity = gl.glGetUniformLocation(shader, "opacity");
+        shaderGreyscale = gl.glGetUniformLocation(shader, "greyscale");
     }
 
     @Override
@@ -160,6 +164,10 @@ public class BlazeBatcher implements SceneBatcher {
         }
     }
 
+    public void setNextDrawIsGreyscale() {
+        greyscale = true;
+    }
+
     @Override
     public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
 
@@ -174,10 +182,12 @@ public class BlazeBatcher implements SceneBatcher {
             gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
             gl.glUniform1f(shaderScale, blazeSize);
             gl.glUniform1f(shaderOpacity, blazeOpacity);
+            gl.glUniform1i(shaderGreyscale, greyscale ? 1 : 0);
 
             gl.glDisable(GL.GL_DEPTH_TEST);
             batch.draw(gl);
             gl.glEnable(GL.GL_DEPTH_TEST);
         }
+        greyscale = false;
     }
 }
