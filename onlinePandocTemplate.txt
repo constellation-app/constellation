@@ -34,7 +34,7 @@
     </nav>
 
 </head>
-<body style="padding-top: 65px;">
+<body style="padding-top: 100px;">
 
     <div class="row">
        <div class="col-4 col-sm-3">

@@ -98,7 +98,7 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("");
+        return new HelpCtx("au.gov.asd.tac.constellation.help.helpOptions");
     }
 
     @Override
