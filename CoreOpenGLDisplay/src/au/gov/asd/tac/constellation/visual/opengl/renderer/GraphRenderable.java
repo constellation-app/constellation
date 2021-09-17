@@ -17,8 +17,10 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.camera.AnaglyphCamera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
@@ -469,79 +471,176 @@ public final class GraphRenderable implements GLRenderable {
 
             final Matrix44f mvMatrix = parent.getDisplayModelViewMatrix();
 
-            if (drawFlags.drawConnections()) {
-                lineBatcher.setMotion(motion);
-                lineBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-                loopBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-            }
+            if (AnaglyphicDisplayAction.isAnaglyphicDisplay()) {
+                // Draw (some parts of) the graph in anaglyph format.
+                // To do this, we use an AnaglyphicCamera to draw the graph twice,
+                // from the viewpoints of the left and right eyes.
+                //
 
-            gl.glPolygonOffset(nearer_f, nearer_u);
+                final Vector3f eye = camera.lookAtEye;
+                final Vector3f centre = camera.lookAtCentre;
+                final float distanceToCentre = (float)Math.sqrt(Math.pow(centre.getX()-eye.getX(), 2) + Math.pow(centre.getY()-eye.getY(), 2) + Math.pow(centre.getZ()-eye.getZ(), 2));
 
-            // Draw node icons
-            if (drawFlags.drawNodes()) {
-                iconBatcher.setPixelDensity(pixelDensity);
-                iconBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-            }
+                // The convergence is the plane where objects appear to be at the same depth as the screen.
+                // Objects closer than this appear to be in fronr of the screen; objects further than
+                // this appear to be inside the screen.
+                //
+                final float convergence = Camera.PERSPECTIVE_NEAR + distanceToCentre;
+                final float eyeSeparation = 0.25f;
+                final float aspect = (float)graphDisplayer.getWidth()/(float)graphDisplayer.getHeight();
+                final AnaglyphCamera anaglyphCam = new AnaglyphCamera(convergence, eyeSeparation, aspect, Camera.FIELD_OF_VIEW, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
 
-            // Draw node labels
-            if (drawFlags.drawNodes() && drawFlags.drawNodeLabels()) {
-                nodeLabelBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-            }
+                // Draw view from left eye.
+                //
 
-            gl.glPolygonOffset(further_f, further_u);
+                Matrix44f mv = anaglyphCam.applyLeftFrustum(mvMatrix);
+                Matrix44f p = anaglyphCam.getProjectionMatrix();
+//                Matrix44f mvp = stereoCam.getMvpMatrix(mv);
+                gl.glColorMask(true, false, true, true);
+                
+                if (drawFlags.drawConnections()) {
+                    lineBatcher.setMotion(motion);
+                    lineBatcher.setNextDrawIsGreyscale();
+                    lineBatcher.drawBatch(gl, camera, mv, p);
+                    loopBatcher.setNextDrawIsGreyscale();
+                    loopBatcher.drawBatch(gl, camera, mv, p);
+                }
 
-            // Draw connection labels
-            if (drawFlags.drawConnectionLabels() && drawFlags.drawConnections()) {
-                connectionLabelBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-            }
+                gl.glPolygonOffset(nearer_f, nearer_u);
 
-            gl.glPolygonOffset(0, 0);
+                // Draw node icons
+                if (drawFlags.drawNodes()) {
+                    iconBatcher.setPixelDensity(pixelDensity);
+                    iconBatcher.setNextDrawIsGreyscale();
+                    iconBatcher.drawBatch(gl, camera, mv, p);
+                }
 
-            // Blazes are only drawn if points are being drawn.
-            // Blazes are drawn last because we want them to be on top of everything else.
-            if (drawFlags.drawNodes() && drawFlags.drawBlazes()) {
-                blazeBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-            }
+                gl.glPolygonOffset(0, 0);
 
-            if (hitTestFboName > 0 && drawHitTest) {
-                // Draw the lines and icons again with unique colors on the hitTest framebuffer.
-                // The lines will be thicker for easier hitting.
-                gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, hitTestFboName);
+                // Blazes are only drawn if points are being drawn.
+                // Blazes are drawn last because we want them to be on top of everything else.
+                if (drawFlags.drawNodes() && drawFlags.drawBlazes()) {
+                    blazeBatcher.setNextDrawIsGreyscale();
+                    blazeBatcher.drawBatch(gl, camera, mv, p);
+                }
 
-                // Explicitly clear the color to black: we need the default color to be 0 so elements drawn as non-zero are recognised.
-                gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                // Draw view from right eye.
+                //
 
-                gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-                gl.glDisable(GL.GL_LINE_SMOOTH);
+                gl.glPolygonOffset(0, 0);
+                
+                gl.glClear(GL3.GL_DEPTH_BUFFER_BIT);
 
-                // Is this the default anyway?
-                final int[] fboBuffers = {
-                    GL.GL_COLOR_ATTACHMENT0
-                };
-                gl.glDrawBuffers(1, fboBuffers, 0);
+                mv = anaglyphCam.applyRightFrustum(mvMatrix);
+                p = anaglyphCam.getProjectionMatrix();
+//                mvp = stereoCam.getMvpMatrix(mv);
+                gl.glColorMask(false, true, false, true);
+                
+                if (drawFlags.drawConnections()) {
+                    lineBatcher.setMotion(motion);
+                    lineBatcher.setNextDrawIsGreyscale();
+                    lineBatcher.drawBatch(gl, camera, mv, p);
+                    loopBatcher.setNextDrawIsGreyscale();
+                    loopBatcher.drawBatch(gl, camera, mv, p);
+                }
 
-                gl.glPolygonOffset(further_f, further_u);
+                gl.glPolygonOffset(nearer_f, nearer_u);
+
+                // Draw node icons
+                if (drawFlags.drawNodes()) {
+                    iconBatcher.setPixelDensity(pixelDensity);
+                    iconBatcher.setNextDrawIsGreyscale();
+                    iconBatcher.drawBatch(gl, camera, mv, p);
+                }
+
+                gl.glPolygonOffset(0, 0);
+
+                // Blazes are only drawn if points are being drawn.
+                // Blazes are drawn last because we want them to be on top of everything else.
+                if (drawFlags.drawNodes() && drawFlags.drawBlazes()) {
+                    blazeBatcher.setNextDrawIsGreyscale();
+                    blazeBatcher.drawBatch(gl, camera, mv, p);
+                }
+
+                gl.glColorMask(true, true, true, true);
+            } else {
+                // Draw the graph normally.
+                //
 
                 if (drawFlags.drawConnections()) {
-                    lineBatcher.setNextDrawIsHitTest();
+                    lineBatcher.setMotion(motion);
                     lineBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-                    loopBatcher.setNextDrawIsHitTest();
                     loopBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
                 }
 
                 gl.glPolygonOffset(nearer_f, nearer_u);
 
-                // Draw node icons into hit test buffer
+                // Draw node icons
                 if (drawFlags.drawNodes()) {
-                    iconBatcher.setNextDrawIsHitTest();
+                    iconBatcher.setPixelDensity(pixelDensity);
                     iconBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
                 }
 
-                gl.glPolygonOffset(0, 0);
-                gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
+                // Draw node labels
+                if (drawFlags.drawNodes() && drawFlags.drawNodeLabels()) {
+                    nodeLabelBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+                }
 
-                gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, 0);
-                gl.glEnable(GL.GL_LINE_SMOOTH);
+                gl.glPolygonOffset(further_f, further_u);
+
+                // Draw connection labels
+                if (drawFlags.drawConnectionLabels() && drawFlags.drawConnections()) {
+                    connectionLabelBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+                }
+
+                gl.glPolygonOffset(0, 0);
+
+                // Blazes are only drawn if points are being drawn.
+                // Blazes are drawn last because we want them to be on top of everything else.
+                if (drawFlags.drawNodes() && drawFlags.drawBlazes()) {
+                    blazeBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+                }
+
+                if (hitTestFboName > 0 && drawHitTest) {
+                    // Draw the lines and icons again with unique colors on the hitTest framebuffer.
+                    // The lines will be thicker for easier hitting.
+                    gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, hitTestFboName);
+
+                    // Explicitly clear the color to black: we need the default color to be 0 so elements drawn as non-zero are recognised.
+                    gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+                    gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+                    gl.glDisable(GL.GL_LINE_SMOOTH);
+
+                    // Is this the default anyway?
+                    final int[] fboBuffers = {
+                        GL.GL_COLOR_ATTACHMENT0
+                    };
+                    gl.glDrawBuffers(1, fboBuffers, 0);
+
+                    gl.glPolygonOffset(further_f, further_u);
+
+                    if (drawFlags.drawConnections()) {
+                        lineBatcher.setNextDrawIsHitTest();
+                        lineBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+                        loopBatcher.setNextDrawIsHitTest();
+                        loopBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+                    }
+
+                    gl.glPolygonOffset(nearer_f, nearer_u);
+
+                    // Draw node icons into hit test buffer
+                    if (drawFlags.drawNodes()) {
+                        iconBatcher.setNextDrawIsHitTest();
+                        iconBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+                    }
+
+                    gl.glPolygonOffset(0, 0);
+                    gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
+
+                    gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, 0);
+                    gl.glEnable(GL.GL_LINE_SMOOTH);
+                }
             }
         }
 
