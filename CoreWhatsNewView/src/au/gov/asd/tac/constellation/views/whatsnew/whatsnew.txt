@@ -1,6 +1,11 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-17 Data Access View
+<p>The Quality Control widget and Go button have also been added to the bottom
+of the view to improve the UX workflow as you select plugins from the top going
+downwards.</p>
+
 == 2021-09-17 Histogram sort by Labels (Numbers)
 <p>Histogram view now has an option to sort labels by numeric value on top of the existing string value</p>
 
@@ -8,11 +13,11 @@
 <p>Clicking on the attribute field now brings up the interface to edit the value. The Edit button is now redundant and will be removed later.</p>
 <p>Value can be selected by dragging the mouse over the required part of the string.</p>
 
-== 2021-09-17 Anaglyphic display
+== 2021-09-17 Anaglyphic Display
 <p>The graph can be displayed in anaglyphic 3D. This requires glasses with colored lenses, currently hard-coded to be left eye green, right eye magenta.</p>
 
 == 2021-09-15 Quick Start Guide
-<p>The Quick Start Guide on the Whats New Page has been removed. You can now discover that information via the Getting Started link on the Welcome Page which now links 
+<p>The Quick Start Guide on the Whats New Page has been removed. You can now discover that information via the Getting Started link on the Welcome Page which now links
 to the Getting Started help page.</p>
 
 == 2021-09-13 node_labels_bottom/top and transaction_labels changed
@@ -36,7 +41,7 @@ to the Getting Started help page.</p>
 <li>Delete note confirmation pop up</li>
 </ul>
 
-== 2021-09-06 Freeform Selection 
+== 2021-09-06 Freeform Selection
 <p>You can now draw a freeform selection shape by holding down Alt whilst selecting.</p>
 
 == 2021-09-06 Reset graph view after importing
