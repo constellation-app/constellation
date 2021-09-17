@@ -167,9 +167,9 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         params.addParameter(randomIcons);
 
         final PluginParameter<BooleanParameterValue> explicitLoops = BooleanParameterType.build(EXPLICIT_LOOPS);
-        randomIcons.setName("Explicit loops");
-        randomIcons.setDescription("Add explicit transaction loops");
-        randomIcons.setBooleanValue(true);
+        explicitLoops.setName("Explicit loops");
+        explicitLoops.setDescription("Add explicit transaction loops");
+        explicitLoops.setBooleanValue(true);
         params.addParameter(explicitLoops);
 
         return params;

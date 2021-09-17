@@ -30,7 +30,7 @@ import org.openide.util.actions.Presenter;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.visual.opengl.renderer.AnaglyphicDisplayAction")
 @ActionRegistration(displayName = "#CTL_AnaglyphicDisplayAction", surviveFocusChange = true, lazy = false)
 @ActionReference(path = "Menu/Experimental/Display", position = 1200)
-@Messages("CTL_AnaglyphicDisplayAction=Anaglyphic Display")
+@Messages("CTL_AnaglyphicDisplayAction=Anaglyphic")
 public final class AnaglyphicDisplayAction extends AbstractAction implements Presenter.Menu {
 
     private final JCheckBoxMenuItem menuItem;

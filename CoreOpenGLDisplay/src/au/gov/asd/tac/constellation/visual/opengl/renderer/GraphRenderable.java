@@ -470,27 +470,39 @@ public final class GraphRenderable implements GLRenderable {
             gl.glPolygonOffset(further_f, further_u);
 
             final Matrix44f mvMatrix = parent.getDisplayModelViewMatrix();
-            
+
             if (AnaglyphicDisplayAction.isAnaglyphicDisplay()) {
-                // Draw (some parts of) the graph in 3D
+                // Draw (some parts of) the graph in anaglyph format.
+                // To do this, we use an AnaglyphicCamera to draw the graph twice,
+                // from the viewpoints of the left and right eyes.
+                //
+
                 final Vector3f eye = camera.lookAtEye;
                 final Vector3f centre = camera.lookAtCentre;
                 final float distanceToCentre = (float)Math.sqrt(Math.pow(centre.getX()-eye.getX(), 2) + Math.pow(centre.getY()-eye.getY(), 2) + Math.pow(centre.getZ()-eye.getZ(), 2));
 
+                // The convergence is the plane where objects appear to be at the same depth as the screen.
+                // Objects closer than this appear to be in fronr of the screen; objects further than
+                // this appear to be inside the screen.
+                //
                 final float convergence = Camera.PERSPECTIVE_NEAR + distanceToCentre;
                 final float eyeSeparation = 0.25f;
                 final float aspect = (float)graphDisplayer.getWidth()/(float)graphDisplayer.getHeight();
-                final AnaglyphCamera stereoCam = new AnaglyphCamera(convergence, eyeSeparation, aspect, Camera.FIELD_OF_VIEW, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
+                final AnaglyphCamera anaglyphCam = new AnaglyphCamera(convergence, eyeSeparation, aspect, Camera.FIELD_OF_VIEW, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
 
-                Matrix44f mv = stereoCam.applyLeftFrustum(mvMatrix);
-                Matrix44f p = stereoCam.getProjectionMatrix();
+                // Draw view from left eye.
+                //
+
+                Matrix44f mv = anaglyphCam.applyLeftFrustum(mvMatrix);
+                Matrix44f p = anaglyphCam.getProjectionMatrix();
 //                Matrix44f mvp = stereoCam.getMvpMatrix(mv);
                 gl.glColorMask(true, false, true, true);
                 
-                // Draw stuff here.
                 if (drawFlags.drawConnections()) {
                     lineBatcher.setMotion(motion);
+                    lineBatcher.setNextDrawIsGreyscale();
                     lineBatcher.drawBatch(gl, camera, mv, p);
+                    loopBatcher.setNextDrawIsGreyscale();
                     loopBatcher.drawBatch(gl, camera, mv, p);
                 }
 
@@ -499,22 +511,36 @@ public final class GraphRenderable implements GLRenderable {
                 // Draw node icons
                 if (drawFlags.drawNodes()) {
                     iconBatcher.setPixelDensity(pixelDensity);
+                    iconBatcher.setNextDrawIsGreyscale();
                     iconBatcher.drawBatch(gl, camera, mv, p);
                 }
+
+                gl.glPolygonOffset(0, 0);
+
+                // Blazes are only drawn if points are being drawn.
+                // Blazes are drawn last because we want them to be on top of everything else.
+                if (drawFlags.drawNodes() && drawFlags.drawBlazes()) {
+                    blazeBatcher.setNextDrawIsGreyscale();
+                    blazeBatcher.drawBatch(gl, camera, mv, p);
+                }
+
+                // Draw view from right eye.
+                //
 
                 gl.glPolygonOffset(0, 0);
                 
                 gl.glClear(GL3.GL_DEPTH_BUFFER_BIT);
 
-                mv = stereoCam.applyRightFrustum(mvMatrix);
-                p = stereoCam.getProjectionMatrix();
+                mv = anaglyphCam.applyRightFrustum(mvMatrix);
+                p = anaglyphCam.getProjectionMatrix();
 //                mvp = stereoCam.getMvpMatrix(mv);
                 gl.glColorMask(false, true, false, true);
                 
-                // Draw stuff here.
                 if (drawFlags.drawConnections()) {
                     lineBatcher.setMotion(motion);
+                    lineBatcher.setNextDrawIsGreyscale();
                     lineBatcher.drawBatch(gl, camera, mv, p);
+                    loopBatcher.setNextDrawIsGreyscale();
                     loopBatcher.drawBatch(gl, camera, mv, p);
                 }
 
@@ -523,13 +549,24 @@ public final class GraphRenderable implements GLRenderable {
                 // Draw node icons
                 if (drawFlags.drawNodes()) {
                     iconBatcher.setPixelDensity(pixelDensity);
+                    iconBatcher.setNextDrawIsGreyscale();
                     iconBatcher.drawBatch(gl, camera, mv, p);
                 }
 
                 gl.glPolygonOffset(0, 0);
-                
+
+                // Blazes are only drawn if points are being drawn.
+                // Blazes are drawn last because we want them to be on top of everything else.
+                if (drawFlags.drawNodes() && drawFlags.drawBlazes()) {
+                    blazeBatcher.setNextDrawIsGreyscale();
+                    blazeBatcher.drawBatch(gl, camera, mv, p);
+                }
+
                 gl.glColorMask(true, true, true, true);
             } else {
+                // Draw the graph normally.
+                //
+
                 if (drawFlags.drawConnections()) {
                     lineBatcher.setMotion(motion);
                     lineBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
