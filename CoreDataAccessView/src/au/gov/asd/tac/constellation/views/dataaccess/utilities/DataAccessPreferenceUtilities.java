@@ -25,10 +25,16 @@ import org.openide.util.NbPreferences;
  * @author cygnus_x-1
  */
 public final class DataAccessPreferenceUtilities {
-    protected static final String SAVE_DATA_DIR_PREF = "saveDataDir";
-    protected static final String PREVIOUS_DATA_DIR_PREF = "prevSaveDataDir";
-    protected static final String DESELECT_PLUGINS_ON_EXECUTE_PREF = "deselectPluginsOnExecute";
-
+    private static final Preferences PREFERENCES = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
+    
+    private static final String SAVE_DATA_DIR_PREF = "saveDataDir";
+    private static final String PREVIOUS_DATA_DIR_PREF = "prevSaveDataDir";
+    private static final String DESELECT_PLUGINS_ON_EXECUTE_PREF = "deselectPluginsOnExecute";
+    
+    private static final String EXPAND = "Expand";
+    private static final String FAVOURITE = "Favourite";
+    private static final String STRING_STRING_FORMAT = "%s.%s";
+    
     /**
      * No constructor, all static.
      */
@@ -85,12 +91,16 @@ public final class DataAccessPreferenceUtilities {
      * write results.
      */
     public static void setDataAccessResultsDir(final File dir) {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
         if (dir != null && dir.isDirectory()) {
-            prefs.put(PREVIOUS_DATA_DIR_PREF, prefs.get(SAVE_DATA_DIR_PREF, StringUtils.EMPTY));
+            PREFERENCES.put(
+                    PREVIOUS_DATA_DIR_PREF,
+                    PREFERENCES.get(SAVE_DATA_DIR_PREF, StringUtils.EMPTY)
+            );
         }
-        prefs.put(SAVE_DATA_DIR_PREF, dir == null || !dir.isDirectory() ? StringUtils.EMPTY : dir.getAbsolutePath());
-
+        PREFERENCES.put(
+                SAVE_DATA_DIR_PREF, 
+                dir == null || !dir.isDirectory() ? StringUtils.EMPTY : dir.getAbsolutePath()
+        );
     }
 
     /**
@@ -117,8 +127,7 @@ public final class DataAccessPreferenceUtilities {
      * @return The current preference
      */
     public static boolean isDeselectPluginsOnExecuteEnabled() {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
-        return prefs.getBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, false);
+        return PREFERENCES.getBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, false);
     }
 
     /**
@@ -129,8 +138,63 @@ public final class DataAccessPreferenceUtilities {
      *
      */
     public static void setDeselectPluginsOnExecute(boolean checkChanged) {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
-        prefs.putBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, checkChanged);
+        PREFERENCES.putBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, checkChanged);
+    }
+    
+    /**
+     * Set an expanded preference.
+     * <p>
+     * Typically called from an expandedProperty ChangeListener.
+     *
+     * @param title Preference title.
+     * @param isExpanded Boolean value.
+     */
+    public static void setExpanded(final String title, final boolean isExpanded) {
+        PREFERENCES.putBoolean(
+                String.format(STRING_STRING_FORMAT, EXPAND, title),
+                isExpanded
+        );
+    }
+
+    /**
+     * Retrieve an expanded preference.
+     *
+     * @param title Preference title.
+     * @param defaultExpanded If the preference is not yet set, use this value
+     * as the default.
+     *
+     * @return The value of the preference.
+     */
+    public static boolean isExpanded(final String title, final boolean defaultExpanded) {
+        return PREFERENCES.getBoolean(
+                String.format(STRING_STRING_FORMAT, EXPAND, title),
+                defaultExpanded
+        );
+    }
+
+    /**
+     * 
+     * @param title
+     * @param isExpanded 
+     */
+    public static void setFavourite(final String title, final boolean isExpanded) {
+        PREFERENCES.putBoolean(
+                String.format(STRING_STRING_FORMAT, FAVOURITE, title),
+                isExpanded
+        );
+    }
+
+    /**
+     * 
+     * @param title
+     * @param defaultExpanded
+     * @return 
+     */
+    public static boolean isfavourite(final String title, final boolean defaultExpanded) {
+        return PREFERENCES.getBoolean(
+                String.format(STRING_STRING_FORMAT, FAVOURITE, title),
+                defaultExpanded
+        );
     }
     
     /**
@@ -141,8 +205,7 @@ public final class DataAccessPreferenceUtilities {
      * @return The preference as a directory; null if the directory is not set.
      */
     protected static File getDir(final String pref) {
-        final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
-        final String s = prefs.get(pref, StringUtils.EMPTY);
+        final String s = PREFERENCES.get(pref, StringUtils.EMPTY);
 
         return StringUtils.isNotEmpty(s) ? new File(s) : null;
     }

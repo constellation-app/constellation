@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.utilities;
 
-import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +44,6 @@ public class DataAccessUtilitiesNGTest {
 
     private static MockedStatic<SwingUtilities> swingUtilitiesStaticMock;
     private static MockedStatic<WindowManager> windowManagerStaticMock;
-    private static MockedStatic<DataAccessUtilities> dataAccessUtilitiesStaticMock;
 
     public DataAccessUtilitiesNGTest() {
     }

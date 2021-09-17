@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +43,7 @@ import org.testng.annotations.Test;
  */
 public class HeadingPaneNGTest {
 
-    private static MockedStatic<DataAccessPreferences> dataAccessPreferencesMockedStatic;
+    private static MockedStatic<DataAccessPreferenceUtilities> dataAccessPreferenceUtilitiesMockedStatic;
     private final PluginParametersPaneListener top = mock(PluginParametersPaneListener.class);
     private final DataAccessPlugin dataAccessPlugin = mock(DataAccessPlugin.class);
     private HeadingPane headingPane;
@@ -58,21 +59,21 @@ public class HeadingPaneNGTest {
         FxToolkit.registerPrimaryStage();
         FxToolkit.showStage();
         
-        dataAccessPreferencesMockedStatic = Mockito.mockStatic(DataAccessPreferences.class);
+        dataAccessPreferenceUtilitiesMockedStatic = Mockito.mockStatic(DataAccessPreferenceUtilities.class);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
         FxToolkit.hideStage();
         
-        dataAccessPreferencesMockedStatic.close();
+        dataAccessPreferenceUtilitiesMockedStatic.close();
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         pluginsList = Arrays.asList(dataAccessPlugin, dataAccessPlugin, dataAccessPlugin);
 
-        dataAccessPreferencesMockedStatic.reset();
+        dataAccessPreferenceUtilitiesMockedStatic.reset();
 
         headingPane = new HeadingPane(headingText, pluginsList, top, globalParamLabels);
     }
@@ -109,7 +110,7 @@ public class HeadingPaneNGTest {
         System.out.println("testValidityChanged_disabled");
 
         String headingText = "Heading Text 2";
-        dataAccessPreferencesMockedStatic.when(() -> DataAccessPreferences.isExpanded(headingText, true)).thenReturn(false);
+        dataAccessPreferenceUtilitiesMockedStatic.when(() -> DataAccessPreferenceUtilities.isExpanded(headingText, true)).thenReturn(false);
 
         final HeadingPane instance = new HeadingPane(headingText, pluginsList, top, globalParamLabels);
         instance.validityChanged(false);

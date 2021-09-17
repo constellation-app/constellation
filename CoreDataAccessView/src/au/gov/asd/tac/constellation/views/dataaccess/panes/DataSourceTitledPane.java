@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -68,6 +69,9 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     private static final Label DUMMY_LABEL = new Label("Waiting...");
     private static final String DAV_CREATOR_THREAD_NAME = "DAV Pane Creator";
 
+    // Insets with 0 top and bottom so the title doesn't change size vertically.
+    private static final Insets HELP_INSETS = new Insets(0, 8, 0, 8);
+    
     private volatile PluginParameters dataSourceParameters;
     private final DataAccessPlugin plugin;
     private final CheckBox enabled;
@@ -101,7 +105,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
         setGraphic(createTitleBar());
         enabled.setDisable(true);
 
-        final boolean isExpanded = DataAccessPreferences.isExpanded(plugin.getName(), false);
+        final boolean isExpanded = DataAccessPreferenceUtilities.isExpanded(plugin.getName(), false);
 
         createParameters(isExpanded, null);
 
@@ -242,7 +246,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
                 }
 
                 expandedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
-                    DataAccessPreferences.setExpanded(plugin.getName(), newValue);
+                    DataAccessPreferenceUtilities.setExpanded(plugin.getName(), newValue);
                     if (newValue && !isLoaded) {
                         isLoaded = true;
                         final PluginParametersPane parametersPane = PluginParametersPane.buildPane(dataSourceParameters, this, globalParamLabels);
@@ -285,7 +289,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
         if (helpCtx != null) {
             final ImageView helpView = new ImageView(HELP_ICON);
             final Button helpButton = new Button("", helpView);
-            helpButton.paddingProperty().set(DataAccessPane.HELP_INSETS);
+            helpButton.paddingProperty().set(HELP_INSETS);
             helpButton.setTooltip(new Tooltip(String.format("Display help for %s", plugin.getName())));
             helpButton.setOnAction(event -> {
                 plugin.getHelpCtx().display();

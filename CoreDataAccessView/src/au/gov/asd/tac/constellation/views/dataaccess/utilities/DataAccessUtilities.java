@@ -58,6 +58,10 @@ public class DataAccessUtilities {
         return panes[0];
     }
 
+    /**
+     * 
+     * @return 
+     */
     private static DataAccessPane getInternalDataAccessPane() {
         final TopComponent tc = WindowManager.getDefault().findTopComponent(DataAccessViewTopComponent.class.getSimpleName());
         if (tc != null) {

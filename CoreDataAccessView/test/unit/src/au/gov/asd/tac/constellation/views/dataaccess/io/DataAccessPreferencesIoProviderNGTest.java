@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessUserPreferences;
+import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.GlobalParametersPane;
@@ -183,10 +184,13 @@ public class DataAccessPreferencesIoProviderNGTest {
     @Test
     public void loadParameters() throws IOException {
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
+        final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
+        
+        when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         
         final QueryPhasePane tab1 = mock(QueryPhasePane.class);
         final QueryPhasePane tab2 = mock(QueryPhasePane.class);
-        when(dataAccessPane.newTab()).thenReturn(tab1).thenReturn(tab2);
+        when(dataAccessTabPane.newTab()).thenReturn(tab1).thenReturn(tab2);
         
         final GlobalParametersPane globalParametersPane1 = mock(GlobalParametersPane.class); 
         final GlobalParametersPane globalParametersPane2 = mock(GlobalParametersPane.class); 
@@ -254,7 +258,7 @@ public class DataAccessPreferencesIoProviderNGTest {
             DataAccessPreferencesIoProvider.loadParameters(dataAccessPane);
         }
         
-        verify(dataAccessPane, times(2)).newTab();
+        verify(dataAccessTabPane, times(2)).newTab();
         
         // tab1 global parameters
         verify(pluginParameter1).setStringValue("tab1_param1_value");

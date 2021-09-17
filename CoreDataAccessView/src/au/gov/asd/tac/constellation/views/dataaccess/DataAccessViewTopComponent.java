@@ -22,6 +22,8 @@ import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -63,7 +65,9 @@ import org.openide.windows.TopComponent;
 })
 public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAccessPane> {
 
-    private DataAccessPane dataAccessViewPane;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
+    
+    private final DataAccessPane dataAccessViewPane;
 
     public DataAccessViewTopComponent() {
         setName(Bundle.CTL_DataAccessViewTopComponent());
@@ -72,6 +76,8 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         initComponents();
 
         dataAccessViewPane = new DataAccessPane(DataAccessViewTopComponent.this);
+        dataAccessViewPane.addUIComponents();
+        
         initContent();
 
         addAttributeCountChangeHandler(graph -> {
@@ -92,6 +98,10 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
      */
     public DataAccessPane getDataAccessPane() {
         return dataAccessViewPane;
+    }
+    
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 
     @Override

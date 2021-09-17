@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -68,7 +69,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
         setContentDisplay(ContentDisplay.RIGHT);
         setGraphicTextGap(5);
         setCollapsible(true);
-        setExpanded(DataAccessPreferences.isExpanded(headingText, true));
+        setExpanded(DataAccessPreferenceUtilities.isExpanded(headingText, true));
         getStyleClass().add("titled-pane-heading");
         VBox sources = new VBox();
         sources.setPadding(Insets.EMPTY);
@@ -80,7 +81,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
         }
 
         expandedProperty().addListener((ChangeListener) (final ObservableValue observable, final Object oldValue, final Object newValue)
-                -> DataAccessPreferences.setExpanded(headingText, (boolean) newValue));
+                -> DataAccessPreferenceUtilities.setExpanded(headingText, (boolean) newValue));
     }
 
     public List<DataSourceTitledPane> getDataSources() {

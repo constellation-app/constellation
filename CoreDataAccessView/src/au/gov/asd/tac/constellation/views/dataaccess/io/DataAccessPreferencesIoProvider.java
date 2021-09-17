@@ -64,7 +64,7 @@ public class DataAccessPreferencesIoProvider {
      * @param graph The active graph to load the state from
      */
     public static void loadDataAccessState(final DataAccessPane dap, final Graph graph) {
-        if (graph != null && dap.getCurrentTab() != null) {
+        if (graph != null && dap.getDataAccessTabPane().getCurrentTab() != null) {
             final ReadableGraph rg = graph.getReadableGraph();
             try {
                 final int dataAccessStateAttribute = DataAccessConcept.MetaAttribute.DATAACCESS_STATE.get(rg);
@@ -73,7 +73,7 @@ public class DataAccessPreferencesIoProvider {
                     if (dataAccessState != null && dataAccessState.getState().size() > 0) {
                         // TODO: support multiple tabs (not just first one in state) and not introduce memory leaks
                         final Map<String, String> tabState = dataAccessState.getState().get(0);
-                        final Tab step = dap.getCurrentTab().getTabPane().getTabs().get(0);
+                        final Tab step = dap.getDataAccessTabPane().getCurrentTab().getTabPane().getTabs().get(0);
                         final QueryPhasePane pluginPane = (QueryPhasePane) ((ScrollPane) step.getContent()).getContent();
                         pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
                             final PluginParameter<?> pp = param.getValue();
@@ -188,10 +188,10 @@ public class DataAccessPreferencesIoProvider {
                 );
         
         if (loadedParameters != null) {
-            dataAccessPane.removeTabs();
+            dataAccessPane.getDataAccessTabPane().removeTabs();
 
             loadedParameters.forEach(loadedParameter -> {
-                final QueryPhasePane pluginPane = dataAccessPane.newTab();
+                final QueryPhasePane pluginPane = dataAccessPane.getDataAccessTabPane().newTab();
 
                 // If an existing global parameter is in the JSON then update it,
                 // otherwise ignore it
