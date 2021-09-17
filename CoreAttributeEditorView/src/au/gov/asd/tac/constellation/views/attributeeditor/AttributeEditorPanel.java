@@ -560,10 +560,7 @@ public class AttributeEditorPanel extends BorderPane {
         if (editorFactory == null || values == null) {
             editButton.setDisable(true);
         } else {
-            editButton.setOnMouseClicked(event -> {
-                getEditValueHandler(attribute, editorFactory, values);
-            });
-
+            editButton.setOnMouseClicked(event -> getEditValueHandler(attribute, editorFactory, values));
 
             attributeValueNode.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
