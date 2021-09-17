@@ -47,6 +47,7 @@ public class LoopBatcher implements SceneBatcher {
     private int shader;
 
     private boolean drawForHitTest = false;
+    private boolean greyscale = false; // anaglyphic drawing
 
     // Uniform locations in the shader for drawing the batch
     private int shaderMVMatrix;
@@ -57,6 +58,7 @@ public class LoopBatcher implements SceneBatcher {
     private int shaderMorphMix;
     private int shaderXyzTexture;
     private int shaderImagesTexture;
+    private int shaderGreyscale; // anaglyphic drawing
 
     private final int colorTarget;
     private final int loopInfoTarget;
@@ -92,6 +94,7 @@ public class LoopBatcher implements SceneBatcher {
         shaderMorphMix = gl.glGetUniformLocation(shader, "morphMix");
         shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
         shaderImagesTexture = gl.glGetUniformLocation(shader, "images");
+        shaderGreyscale = gl.glGetUniformLocation(shader, "greyscale");
     }
 
     @Override
@@ -184,6 +187,10 @@ public class LoopBatcher implements SceneBatcher {
         this.drawForHitTest = true;
     }
 
+    public void setNextDrawIsGreyscale() {
+        greyscale = true;
+    }
+
     @Override
     public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
 
@@ -204,7 +211,9 @@ public class LoopBatcher implements SceneBatcher {
             gl.glUniform1f(shaderMorphMix, camera.getMix());
             gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
+            gl.glUniform1i(shaderGreyscale, greyscale ? 1 : 0);
             batch.draw(gl);
         }
+        greyscale = false;
     }
 }
