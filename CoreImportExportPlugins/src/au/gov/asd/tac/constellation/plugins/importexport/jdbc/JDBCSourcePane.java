@@ -158,7 +158,7 @@ public class JDBCSourcePane extends SourcePane {
             final Button editConnectionButton = new Button("Modify");
             editConnectionButton.setAlignment(Pos.CENTER_LEFT);
             editConnectionButton.setOnAction(editConnectionAction);
-            addRemModGp.add(editConnectionButton, 2, 1, 1, 1);
+            addRemModGp.add(editConnectionButton, 1, 1, 1, 1);
 
             final Button removeBtn = new Button("Remove");
             removeBtn.setOnAction((final ActionEvent t1) -> {
@@ -172,10 +172,10 @@ public class JDBCSourcePane extends SourcePane {
                     dbConnectionComboBox.setItems(connections);
                 }
             });
-            addRemModGp.add(removeBtn, 1, 1, 1, 1);
+            addRemModGp.add(removeBtn, 2, 1, 1, 1);
             connectionsPane.add(addRemModGp, 0, 1, 1, 1);
 
-            final Button buttonCancel2 = new Button("Ok");
+            final Button buttonCancel2 = new Button("OK");
             buttonCancel2.setOnAction((final ActionEvent event) -> {
                 event.consume();
                 final Stage stage = (Stage) buttonCancel2.getScene().getWindow();
@@ -317,7 +317,7 @@ public class JDBCSourcePane extends SourcePane {
             removeBtn1.setOnAction(removebtnAction);
             driversTabGridPane.add(removeBtn1, 1, 1, 1, 1);
 
-            final Button buttonCancel = new Button("Ok");
+            final Button buttonCancel = new Button("OK");
             buttonCancel.setOnAction((final ActionEvent event) -> {
                 event.consume();
                 final Stage stage = (Stage) buttonCancel.getScene().getWindow();
