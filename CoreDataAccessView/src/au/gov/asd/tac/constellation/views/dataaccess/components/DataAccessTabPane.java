@@ -143,12 +143,12 @@ public final class DataAccessTabPane {
         tabContextMenu.init();
 
         queryPane.addGraphDependentMenuItems(
-                tabContextMenu.getRun(),
-                tabContextMenu.getRunFromHere(),
-                tabContextMenu.getRunToHere()
+                tabContextMenu.getRunMenuItem(),
+                tabContextMenu.getRunFromHereMenuItem(),
+                tabContextMenu.getRunToHereMenuItem()
         );
         queryPane.addPluginDependentMenuItems(
-                tabContextMenu.getDeactivateAllPlugins()
+                tabContextMenu.getDeactivateAllPluginsMenuItem()
         );
 
         final ScrollPane queryPhaseScroll = new ScrollPane();

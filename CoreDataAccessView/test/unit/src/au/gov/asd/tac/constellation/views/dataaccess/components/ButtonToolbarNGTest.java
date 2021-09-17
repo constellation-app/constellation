@@ -308,10 +308,12 @@ public class ButtonToolbarNGTest {
     }
     
     /**
-     * 
-     * @param pluginTitle
-     * @param selectedOption
-     * @param preferenceUtilsVerification 
+     * Verifies that when manage favourites is called, depending on the user action
+     * against the dialog, different outcomes will occur.
+     *
+     * @param pluginTitle the plugin title of the only selected pane that is enabled
+     * @param selectedOption the option that the user selection in the dialog
+     * @param preferenceUtilsVerification the verification against {@link DataAccessPreferenceUtilities}
      */
     private void verifyManageFavouritesWithUserInput(final String pluginTitle,
                                                      final Object selectedOption,
@@ -374,12 +376,19 @@ public class ButtonToolbarNGTest {
         }
     }
     
+    /**
+     * Verifies that the add button creates a new tab using the global plugin configuration
+     * from the last tab if available.
+     *
+     * @param addButton the button to verify
+     */
     private void verifyAddTabAction(final Button addButton) {
         final ActionEvent actionEvent = mock(ActionEvent.class);
         
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         
+        // Set up the current tab pane. The code will take the last tab, i.e. tab2
         final Tab tab1 = mock(Tab.class);
         final Tab tab2 = mock(Tab.class);
         final ObservableList<Tab> tabs = FXCollections.observableArrayList(tab1, tab2);
@@ -394,16 +403,30 @@ public class ButtonToolbarNGTest {
         
         try (final MockedStatic<DataAccessTabPane> tabPaneMockedStatic =
                 Mockito.mockStatic(DataAccessTabPane.class)) {
+            // There will be no interaction with tab1 so only mock out tab2
             tabPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(tab2))
                     .thenReturn(queryPhasePane);
             
+            // Run the action
             addButton.getOnAction().handle(actionEvent);
             
+            // Verify a new tab is created with the existing last tab's parameters
             verify(dataAccessTabPane).newTab(pluginParameters);
             verify(actionEvent).consume();
         }
     }
     
+    /**
+     * Verifies the passed button has the correct text, style, tool tip and icon.
+     *
+     * @param button the button to test
+     * @param text the text that should be on the button
+     * @param style the style the button should have
+     * @param tooltipText the tool tip text the button should have or null if
+     *     no tool tip should be set
+     * @param icon the icon that should be on the button or null if no icon
+     *     should be set
+     */
     private void verifyButton(final Button button,
                               final String text,
                               final String style,

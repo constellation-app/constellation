@@ -15,11 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
-import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.PluginFinder;
-import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -27,6 +24,7 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tab;
 
 /**
+ * Creates a context menu for a specific tab.
  *
  * @author formalhaunt
  */
@@ -42,20 +40,22 @@ public final class TabContextMenu {
     private final DataAccessTabPane dataAccessTabPane;
     private final Tab tab;
     
-    private MenuItem deactivateAllPlugins;
-    private MenuItem findPlugin;
-    private MenuItem openAllSections;
-    private MenuItem closeAllSections;
-    private MenuItem run;
-    private MenuItem runFromHere;
-    private MenuItem runToHere;
+    private MenuItem deactivateAllPluginsMenuItem;
+    private MenuItem findPluginMenuItem;
+    private MenuItem openAllSectionsMenuItem;
+    private MenuItem closeAllSectionsMenuItem;
+    private MenuItem runMenuItem;
+    private MenuItem runFromHereMenuItem;
+    private MenuItem runToHereMenuItem;
     
     private ContextMenu contextMenu;
     
     /**
-     * 
-     * @param dataAccessTabPane
-     * @param tab 
+     * Creates a new context menu for the passed tab that exists on the passed
+     * tab pane.
+     *
+     * @param dataAccessTabPane the tab pane that the passed tab belongs to
+     * @param tab the tab that this context menu will open on
      */
     public TabContextMenu(final DataAccessTabPane dataAccessTabPane,
                           final Tab tab) {
@@ -64,61 +64,107 @@ public final class TabContextMenu {
     }
     
     /**
-     * 
+     * Initializes the context menu. Until this method is called, all context menu
+     * UI components will be null.
      */
     public void init() {
-        deactivateAllPlugins = new MenuItem(DEACTIVATE_ALL_PLUGINS_TEXT);
-        deactivateAllPlugins.setOnAction((ActionEvent event) -> {
-            QueryPhasePane queryPhasePane = dataAccessTabPane.getQueryPhasePane(tab);
-            for (DataSourceTitledPane dataSourceTitledPane : queryPhasePane.getDataAccessPanes()) {
-                if (dataSourceTitledPane.isQueryEnabled()) {
-                    dataSourceTitledPane.validityChanged(false);
-                }
-            }
+        
+        ///////////////////////////////////////
+        // De-Activate All Plugins Menu Item
+        ///////////////////////////////////////
+        
+        deactivateAllPluginsMenuItem = new MenuItem(DEACTIVATE_ALL_PLUGINS_TEXT);
+        deactivateAllPluginsMenuItem.setOnAction((ActionEvent event) -> {
+            DataAccessTabPane.getQueryPhasePane(tab).getDataAccessPanes().stream()
+                    .filter(dataSourceTitledPane -> (dataSourceTitledPane.isQueryEnabled()))
+                    .forEachOrdered(dataSourceTitledPane -> {
+                        dataSourceTitledPane.validityChanged(false);
+                    });
+            
+            event.consume();
         });
 
-        findPlugin = new MenuItem(FIND_PLUGIN_TEXT);
-        findPlugin.setOnAction(event -> {
+        ////////////////////////////
+        // Find Plugin Menu Item
+        ////////////////////////////
+        
+        findPluginMenuItem = new MenuItem(FIND_PLUGIN_TEXT);
+        findPluginMenuItem.setOnAction(event -> {
             // Run it later to allow the menu to close.
             Platform.runLater(() -> {
                 final PluginFinder pluginFinder = new PluginFinder();
                 pluginFinder.find(
                         dataAccessTabPane.getDataAccessPane(),
-                        dataAccessTabPane.getQueryPhasePane(tab)
+                        DataAccessTabPane.getQueryPhasePane(tab)
                 );
             });
+            
+            event.consume();
         });
 
-        openAllSections = new MenuItem(OPEN_ALL_SECTIONS_TEXT);
-        openAllSections.setOnAction(event -> {
-            final QueryPhasePane queryPhasePane = dataAccessTabPane.getQueryPhasePane(tab);
-            queryPhasePane.setHeadingsExpanded(true, false);
+        ////////////////////////////////
+        // Open All Sections Menu Item
+        ////////////////////////////////
+        
+        openAllSectionsMenuItem = new MenuItem(OPEN_ALL_SECTIONS_TEXT);
+        openAllSectionsMenuItem.setOnAction(event -> {
+            DataAccessTabPane.getQueryPhasePane(tab)
+                    .setHeadingsExpanded(true, false);
+            
+            event.consume();
         });
 
-        closeAllSections = new MenuItem(CLOSE_ALL_SECTIONS_TEXT);
-        closeAllSections.setOnAction(event -> {
-            final QueryPhasePane queryPhasePane = dataAccessTabPane.getQueryPhasePane(tab);
-            queryPhasePane.setHeadingsExpanded(false, false);
+        ////////////////////////////////
+        // Close All Sections Menu Item
+        ////////////////////////////////
+        
+        closeAllSectionsMenuItem = new MenuItem(CLOSE_ALL_SECTIONS_TEXT);
+        closeAllSectionsMenuItem.setOnAction(event -> {
+            DataAccessTabPane.getQueryPhasePane(tab)
+                    .setHeadingsExpanded(false, false);
+            
+            event.consume();
         });
 
-        run = new MenuItem(RUN_TEXT);
-        run.setOnAction((ActionEvent event) -> {
-            int index = dataAccessTabPane.getTabPane().getTabs().indexOf(tab);
+        ////////////////////////////////
+        // Run Single Tab Menu Item
+        ////////////////////////////////
+        
+        runMenuItem = new MenuItem(RUN_TEXT);
+        runMenuItem.setOnAction((ActionEvent event) -> {
+            final int index = dataAccessTabPane.getTabPane().getTabs().indexOf(tab);
             dataAccessTabPane.runTabs(index, index);
+            
+            event.consume();
         });
 
-        runFromHere = new MenuItem(RUN_FROM_HERE_TEXT);
-        runFromHere.setOnAction((ActionEvent event) -> {
-            ObservableList<Tab> allTabs = dataAccessTabPane.getTabPane().getTabs();
-            int index = allTabs.indexOf(tab);
-            dataAccessTabPane.runTabs(index, allTabs.size() - 1);
+        ////////////////////////////////
+        // Run Tabs From Here Menu Item
+        ////////////////////////////////
+        
+        runFromHereMenuItem = new MenuItem(RUN_FROM_HERE_TEXT);
+        runFromHereMenuItem.setOnAction((ActionEvent event) -> {
+            final int index = dataAccessTabPane.getTabPane().getTabs().indexOf(tab);
+            dataAccessTabPane.runTabs(index, dataAccessTabPane.getTabPane().getTabs().size() - 1);
+            
+            event.consume();
         });
 
-        runToHere = new MenuItem(RUN_TO_HERE_TEXT);
-        runToHere.setOnAction((ActionEvent event) -> {
-            int index = dataAccessTabPane.getTabPane().getTabs().indexOf(tab);
+        ////////////////////////////////
+        // Run Tabs To Here Menu Item
+        ////////////////////////////////
+        
+        runToHereMenuItem = new MenuItem(RUN_TO_HERE_TEXT);
+        runToHereMenuItem.setOnAction((ActionEvent event) -> {
+            final int index = dataAccessTabPane.getTabPane().getTabs().indexOf(tab);
             dataAccessTabPane.runTabs(0, index);
+            
+            event.consume();
         });
+        
+        ////////////////////////////////
+        // Context Menu
+        ////////////////////////////////
         
         /**
          * The position order of the menu options has been considered carefully
@@ -128,51 +174,84 @@ public final class TabContextMenu {
          * accidentally.
          */
         contextMenu = new ContextMenu();
-        contextMenu.getItems().addAll(
-                deactivateAllPlugins,
+        contextMenu.getItems().addAll(deactivateAllPluginsMenuItem,
                 new SeparatorMenuItem(),
-                findPlugin,
-                openAllSections,
-                closeAllSections,
+                findPluginMenuItem,
+                openAllSectionsMenuItem,
+                closeAllSectionsMenuItem,
                 new SeparatorMenuItem(),
-                run,
-                runFromHere,
-                runToHere
+                runMenuItem,
+                runFromHereMenuItem,
+                runToHereMenuItem
         );
     }
 
-    public MenuItem getDeactivateAllPlugins() {
-        return deactivateAllPlugins;
+    /**
+     * Gets the menu item that will disable all plugins on this tab that are
+     * currently enabled.
+     *
+     * @return the deactivate all plugins menu item
+     */
+    public MenuItem getDeactivateAllPluginsMenuItem() {
+        return deactivateAllPluginsMenuItem;
     }
 
-    public void setDeactivateAllPlugins(MenuItem deactivateAllPlugins) {
-        this.deactivateAllPlugins = deactivateAllPlugins;
+    /**
+     * TODO
+     * @return 
+     */
+    public MenuItem getFindPluginMenuItem() {
+        return findPluginMenuItem;
     }
 
-    public MenuItem getFindPlugin() {
-        return findPlugin;
+    /**
+     * TODO
+     * @return 
+     */
+    public MenuItem getOpenAllSectionsMenuItem() {
+        return openAllSectionsMenuItem;
     }
 
-    public MenuItem getOpenAllSections() {
-        return openAllSections;
+    /**
+     * TODO
+     * @return 
+     */
+    public MenuItem getCloseAllSectionsMenuItem() {
+        return closeAllSectionsMenuItem;
     }
 
-    public MenuItem getCloseAllSections() {
-        return closeAllSections;
+    /**
+     * Gets the menu item that runs this tab's plugins.
+     *
+     * @return the run menu item
+     */
+    public MenuItem getRunMenuItem() {
+        return runMenuItem;
     }
 
-    public MenuItem getRun() {
-        return run;
+    /**
+     * Gets the menu item that runs all tabs from this tab (left to right).
+     *
+     * @return the run from here menu item
+     */
+    public MenuItem getRunFromHereMenuItem() {
+        return runFromHereMenuItem;
     }
 
-    public MenuItem getRunFromHere() {
-        return runFromHere;
+    /**
+     * Gets the menu item that runs all the tabs up to this tab (left to right).
+     *
+     * @return the run to here menu item
+     */
+    public MenuItem getRunToHereMenuItem() {
+        return runToHereMenuItem;
     }
 
-    public MenuItem getRunToHere() {
-        return runToHere;
-    }
-
+    /**
+     * Gets the context menu to display for this tab.
+     *
+     * @return this tab's context menu
+     */
     public ContextMenu getContextMenu() {
         return contextMenu;
     }

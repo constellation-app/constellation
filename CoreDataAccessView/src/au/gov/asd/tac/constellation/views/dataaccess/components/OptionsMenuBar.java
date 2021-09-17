@@ -15,10 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
@@ -28,20 +29,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
+ * Creates a options menu that is added to the Data Access view panel.
  *
  * @author formalhaunt
  */
 public final class OptionsMenuBar {
-    private final ImageView SETTINGS_ICON = new ImageView(new Image(
-            DataAccessViewTopComponent.class.getResourceAsStream("resources/DataAccessSettings.png")));
-    private final ImageView SAVE_TEMPLATE_ICON = new ImageView(new Image(
-            DataAccessViewTopComponent.class.getResourceAsStream("resources/DataAccessSaveTemplate.png")));
-    private final ImageView LOAD_TEMPLATE_ICON = new ImageView(new Image(
-            DataAccessViewTopComponent.class.getResourceAsStream("resources/DataAccessLoadTemplate.png")));
-    private final ImageView SAVE_RESULTS_ICON = new ImageView(new Image(
-            DataAccessViewTopComponent.class.getResourceAsStream("resources/DataAccessSaveResults.png")));
-    private final ImageView UNCHECKED_ICON = new ImageView(new Image(
-            DataAccessViewTopComponent.class.getResourceAsStream("resources/DataAccessUnchecked.png")));
+    private static final ImageView SETTINGS_ICON;
+    private static final ImageView SAVE_TEMPLATE_ICON;
+    private static final ImageView LOAD_TEMPLATE_ICON;
+    private static final ImageView SAVE_RESULTS_ICON;
+    private static final ImageView UNCHECKED_ICON;
     
     private static final String LOAD_MENU_ITEM_TEXT = "Load Templates";
     private static final String SAVE_MENU_ITEM_TEXT = "Save Templates";
@@ -49,6 +46,33 @@ public final class OptionsMenuBar {
     private static final String DESELECT_PLUGINS_ON_EXECUTION_MENU_ITEM_TEXT = "Deselect On Go";
     
     private static final String OPTIONS_MENU_TEXT = "Workflow Options";
+    
+    static {
+        SETTINGS_ICON = new ImageView(new Image(
+            OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSettings.png")));
+        SETTINGS_ICON.setFitHeight(20);
+        SETTINGS_ICON.setFitWidth(20);
+        
+        SAVE_TEMPLATE_ICON = new ImageView(new Image(
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveTemplate.png")));
+        SAVE_TEMPLATE_ICON.setFitHeight(15);
+        SAVE_TEMPLATE_ICON.setFitWidth(15);
+        
+        LOAD_TEMPLATE_ICON = new ImageView(new Image(
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessLoadTemplate.png")));
+        LOAD_TEMPLATE_ICON.setFitHeight(15);
+        LOAD_TEMPLATE_ICON.setFitWidth(15);
+        
+        SAVE_RESULTS_ICON = new ImageView(new Image(
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveResults.png")));
+        SAVE_RESULTS_ICON.setFitHeight(15);
+        SAVE_RESULTS_ICON.setFitWidth(15);
+        
+        UNCHECKED_ICON = new ImageView(new Image(
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessUnchecked.png")));
+        UNCHECKED_ICON.setFitHeight(15);
+        UNCHECKED_ICON.setFitWidth(15);
+    }
     
     private final DataAccessPane dataAccessPane;
     
@@ -60,18 +84,20 @@ public final class OptionsMenuBar {
     private MenuItem saveMenuItem;
     
     private CheckMenuItem saveResultsItem;
-    private CheckMenuItem deselectPluginsOnExecution;
+    private CheckMenuItem deselectPluginsOnExecutionMenuItem;
     
     /**
-     * 
-     * @param dataAccessPane 
+     * Creates a new option menu bar.
+     *
+     * @param dataAccessPane the data access pane that the menu bar will be added to
      */
     public OptionsMenuBar(final DataAccessPane dataAccessPane) {
         this.dataAccessPane = dataAccessPane;
     }
     
     /**
-     * 
+     * Initializes the options menu. Until this method is called, all menu
+     * UI components will be null.
      */
     public void init() {
         
@@ -79,75 +105,60 @@ public final class OptionsMenuBar {
         // Load Menu
         ////////////////////
         
-        LOAD_TEMPLATE_ICON.setFitHeight(15);
-        LOAD_TEMPLATE_ICON.setFitWidth(15);
-        
         loadMenuItem = new MenuItem(LOAD_MENU_ITEM_TEXT, LOAD_TEMPLATE_ICON);
         loadMenuItem.setOnAction(event -> {
             DataAccessPreferencesIoProvider.loadParameters(dataAccessPane);
+            
+            event.consume();
         });
 
         ////////////////////
         // Save Menu
         ////////////////////
         
-        SAVE_TEMPLATE_ICON.setFitHeight(15);
-        SAVE_TEMPLATE_ICON.setFitWidth(15);
-        
         saveMenuItem = new MenuItem(SAVE_MENU_ITEM_TEXT, SAVE_TEMPLATE_ICON);
         saveMenuItem.setOnAction(event -> {
             DataAccessPreferencesIoProvider.saveParameters(
                     dataAccessPane.getDataAccessTabPane().getTabPane()
             );
+            
+            event.consume();
         });
 
         ////////////////////
         // Save Results Menu
         ////////////////////
         
-        SAVE_RESULTS_ICON.setFitHeight(15);
-        SAVE_RESULTS_ICON.setFitWidth(15);
-        
         saveResultsItem = new CheckMenuItem(SAVE_RESULTS_MENU_ITEM_TEXT, SAVE_RESULTS_ICON);
         saveResultsItem.setSelected(DataAccessPreferenceUtilities.getDataAccessResultsDir() != null);
-        saveResultsItem.selectedProperty().addListener((ov, oldValue, newValue) -> {
-            if (newValue) {
-                final DataAccessResultsDirChooser dirChooser = new DataAccessResultsDirChooser();
-                
-                if(dirChooser.openAndSaveToPreferences() == null) {
-                    saveResultsItem.setSelected(false);
-                }
-            } else {
-                DataAccessPreferenceUtilities.setDataAccessResultsDir(null);
-            }
-        });
+        saveResultsItem.selectedProperty().addListener(new SaveResultsListener());
 
         ////////////////////////////////////////
         // De-Select Plugins On Execution Menu
         ////////////////////////////////////////
         
-        UNCHECKED_ICON.setFitHeight(15);
-        UNCHECKED_ICON.setFitWidth(15);
-        
-        deselectPluginsOnExecution = new CheckMenuItem(DESELECT_PLUGINS_ON_EXECUTION_MENU_ITEM_TEXT, UNCHECKED_ICON);
-        deselectPluginsOnExecution.setSelected(DataAccessPreferenceUtilities.isDeselectPluginsOnExecuteEnabled()
+        deselectPluginsOnExecutionMenuItem = new CheckMenuItem(
+                DESELECT_PLUGINS_ON_EXECUTION_MENU_ITEM_TEXT,
+                UNCHECKED_ICON
         );
-        deselectPluginsOnExecution.setOnAction(event -> {
+        deselectPluginsOnExecutionMenuItem.setSelected(
+                DataAccessPreferenceUtilities.isDeselectPluginsOnExecuteEnabled()
+        );
+        deselectPluginsOnExecutionMenuItem.setOnAction(event -> {
             DataAccessPreferenceUtilities.setDeselectPluginsOnExecute(
-                    deselectPluginsOnExecution.isSelected()
+                    deselectPluginsOnExecutionMenuItem.isSelected()
             );
+            
+            event.consume();
         });
         
         ////////////////////
         // Menu Setup
         ////////////////////
         
-        SETTINGS_ICON.setFitHeight(20);
-        SETTINGS_ICON.setFitWidth(20);
-        
         optionsMenu = new Menu(OPTIONS_MENU_TEXT, SETTINGS_ICON);
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem,
-                deselectPluginsOnExecution);
+                deselectPluginsOnExecutionMenuItem);
         
         menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
@@ -155,31 +166,103 @@ public final class OptionsMenuBar {
         menuBar.setPadding(new Insets(4));
     }
 
+    /**
+     * Get the data access pane that this options menu will be attached to.
+     *
+     * @return the data access pane
+     */
     public DataAccessPane getDataAccessPane() {
         return dataAccessPane;
     }
 
+    /**
+     * Get the options menu bar for the data access panel.
+     *
+     * @return the menu bar
+     */
     public MenuBar getMenuBar() {
         return menuBar;
     }
 
+    /**
+     * Get the workflow options menu.
+     *
+     * @return the workflow options menu
+     */
     public Menu getOptionsMenu() {
         return optionsMenu;
     }
 
+    /**
+     * Get the load menu item that loads previously save data access view tabs
+     * into the UI from a JSON file.
+     *
+     * @return the load menu item
+     */
     public MenuItem getLoadMenuItem() {
         return loadMenuItem;
     }
 
+    /**
+     * Get the menu item that save the current tab structure to a JSON file so
+     * that it can be loaded back in at a later stage.
+     *
+     * @return the save menu item
+     */
     public MenuItem getSaveMenuItem() {
         return saveMenuItem;
     }
 
+    /**
+     * A checkbox menu item representing if the results of running a tab's plugins
+     * should be saved.
+     *
+     * @return the save results menu item
+     */
     public CheckMenuItem getSaveResultsItem() {
         return saveResultsItem;
     }
 
-    public CheckMenuItem getDeselectPluginsOnExecution() {
-        return deselectPluginsOnExecution;
+    /**
+     * TODO
+     * @return 
+     */
+    public CheckMenuItem getDeselectPluginsOnExecutionMenuItem() {
+        return deselectPluginsOnExecutionMenuItem;
+    }
+    
+    /**
+     * This is a listener that is attached to the save results menu item and listens
+     * for changes in the selection.
+     */
+    protected class SaveResultsListener implements ChangeListener<Boolean> {
+        
+        /**
+         * If the save result menu checkbox becomes selected then present the user
+         * with a directory chooser to select the save directory. If the user cancels
+         * then de-select the save result menu checkbox.
+         * <p/>
+         * If the save result menu checkbox becomes de-selected then clear the users
+         * save directory preferences.
+         *
+         * @param observable the {@code ObservableValue} which value changed
+         * @param oldValue the old value of the save results menu checkbox
+         * @param newValue the new value of the save results menu checkbox
+         */
+        @Override
+        public void changed(final ObservableValue<? extends Boolean> observable,
+                            final Boolean oldValue,
+                            final Boolean newValue) {
+            if (newValue) {
+                final DataAccessResultsDirChooser dirChooser = new DataAccessResultsDirChooser();
+                
+                if(dirChooser.openAndSaveToPreferences() == null) {
+                    getSaveResultsItem().setSelected(false);
+                }
+            } else {
+                DataAccessPreferenceUtilities.setDataAccessResultsDir(null);
+            }
+        }
+        
     }
 }
