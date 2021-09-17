@@ -4,6 +4,10 @@
 == 2021-09-17 Anaglyphic display
 <p>The graph can be displayed in anaglyphic 3D. This requires glasses with colored lenses, currently hard-coded to be left eye green, right eye magenta.</p>
 
+== 2021-09-15 Quick Start Guide
+<p>The Quick Start Guide on the Whats New Page has been removed. You can now discover that information via the Getting Started link on the Welcome Page which now links 
+to the Getting Started help page.</p>
+
 == 2021-09-13 node_labels_bottom/top and transaction_labels changed
 <p>The above three graph attributes have been changed to node_bottom/top_labels_colours and transaction_labels_colours.</p>
 <p>The attributes now also show the colours for example: Label: (White), Identifier: (#9980e6)</p>
