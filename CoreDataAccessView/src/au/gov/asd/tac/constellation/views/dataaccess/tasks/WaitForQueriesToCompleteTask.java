@@ -28,6 +28,8 @@ import javax.swing.Icon;
 import org.openide.awt.NotificationDisplayer;
 
 /**
+ * Task that can be dispatched to track the completion of queries and notifications
+ * of failures.
  *
  * @author formalhaunt
  */
@@ -43,6 +45,12 @@ public class WaitForQueriesToCompleteTask implements Runnable {
     private final DataAccessPane dataAccessPane;
     private final String graphId;
     
+    /**
+     * Create a new wait for queries to complete task.
+     *
+     * @param dataAccessPane the data access pane
+     * @param graphId the ID of the graph that the queries are running on
+     */
     public WaitForQueriesToCompleteTask(final DataAccessPane dataAccessPane,
                                         final String graphId) {
         this.dataAccessPane = dataAccessPane;
@@ -50,7 +58,13 @@ public class WaitForQueriesToCompleteTask implements Runnable {
     }
     
     /**
-     * 
+     * Gets all running queries for the provided graph ID and waits for each one
+     * to finish. If any complete exceptionally then a notification is displayed
+     * describing what failed.
+     * <p/>
+     * Once all queries have been completed, the running queries state for the graph
+     * is set back to false and if it is the current graph then the data access
+     * pane view is also updated.
      */
     @Override
     public void run() {

@@ -135,23 +135,11 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         
         widthProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.intValue() <= 460) {
-                buttonToolbar.getOptionsToolbar().getChildren().remove(buttonToolbar.getHelpAddFavHBox());
-                buttonToolbar.getOptionsToolbar().getChildren().remove(buttonToolbar.getRabRegionExectueHBox());
-                
-                buttonToolbar.getOptionsToolbar().add(buttonToolbar.getRabRegionExectueHBox(), 0, 0);
-                buttonToolbar.getOptionsToolbar().add(buttonToolbar.getHelpAddFavHBox(), 0, 1);
-                
-                GridPane.setHalignment(buttonToolbar.getHelpAddFavHBox(), HPos.LEFT);
+                buttonToolbar.handleShrinkingPane();
                 
                 optionsMenuBar.getMenuBar().setMinHeight(60);
             } else {
-                buttonToolbar.getOptionsToolbar().getChildren().remove(buttonToolbar.getHelpAddFavHBox());
-                buttonToolbar.getOptionsToolbar().getChildren().remove(buttonToolbar.getRabRegionExectueHBox());
-                
-                buttonToolbar.getOptionsToolbar().add(buttonToolbar.getHelpAddFavHBox(), 0, 0);
-                buttonToolbar.getOptionsToolbar().add(buttonToolbar.getRabRegionExectueHBox(), 1, 0);
-                
-                GridPane.setHalignment(buttonToolbar.getHelpAddFavHBox(), HPos.CENTER);
+                buttonToolbar.handleGrowingPane();
                 
                 optionsMenuBar.getMenuBar().setMinHeight(36);
             }

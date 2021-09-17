@@ -15,10 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.state;
 
-import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -84,6 +85,12 @@ public class DataAccessStateNGTest {
         // Verify the second tab has one entry and it is the expected key/value pair
         assertEquals(dataAccessState.getState().get(1).size(), 1);
         assertEquals(dataAccessState.getState().get(1).get(key), value);
-
+    }
+    
+    @Test
+    public void equality() {
+        EqualsVerifier.forClass(DataAccessState.class)
+                .suppress(Warning.NONFINAL_FIELDS)
+                .verify();
     }
 }

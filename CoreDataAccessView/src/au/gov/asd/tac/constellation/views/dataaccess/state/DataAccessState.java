@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * A Data Access state object used to hold the state of the Data Access View per
@@ -31,8 +32,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author arcturus
  */
-public class DataAccessState {
-
+public final class DataAccessState {
     private final List<Map<String, String>> state;
 
     public DataAccessState() {
@@ -77,6 +77,8 @@ public class DataAccessState {
 
     @Override
     public String toString() {
-        return "DataAccessState{" + "state=" + state + '}';
+        return new ToStringBuilder(this)
+                .append("state", getState())
+                .toString();
     }
 }

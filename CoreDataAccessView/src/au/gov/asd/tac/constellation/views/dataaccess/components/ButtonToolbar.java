@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -224,6 +225,32 @@ public final class ButtonToolbar {
         });
     }
 
+    /**
+     * Sets the grid pane to be a 2 x 1 grid or single column.
+     */
+    public void handleShrinkingPane() {
+        getOptionsToolbar().getChildren().remove(getHelpAddFavHBox());
+        getOptionsToolbar().getChildren().remove(getRabRegionExectueHBox());
+
+        getOptionsToolbar().add(getRabRegionExectueHBox(), 0, 0);
+        getOptionsToolbar().add(getHelpAddFavHBox(), 0, 1);
+
+        GridPane.setHalignment(getHelpAddFavHBox(), HPos.LEFT);
+    }
+    
+    /**
+     * Sets the grid pane to be 1 x 2 grid or a single row.
+     */
+    public void handleGrowingPane() {
+        getOptionsToolbar().getChildren().remove(getHelpAddFavHBox());
+        getOptionsToolbar().getChildren().remove(getRabRegionExectueHBox());
+
+        getOptionsToolbar().add(getHelpAddFavHBox(), 0, 0);
+        getOptionsToolbar().add(getRabRegionExectueHBox(), 1, 0);
+
+        GridPane.setHalignment(getHelpAddFavHBox(), HPos.CENTER);
+    }
+    
     /**
      * Get the help button that displays help information for the data access view.
      *

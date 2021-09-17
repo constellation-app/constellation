@@ -33,11 +33,13 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -242,6 +244,41 @@ public class ButtonToolbarNGTest {
         verify(executeButton).setText("Stop");
         verify(executeButton).setStyle("-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
         verify(executeButton).setDisable(false);
+    }
+    
+    @Test
+    public void resizingPanes() {
+        buttonToolbar.init();
+        
+        buttonToolbar.handleShrinkingPane();
+        
+        assertEquals(
+                buttonToolbar.getOptionsToolbar().getChildren(),
+                FXCollections.observableArrayList(
+                        buttonToolbar.getRabRegionExectueHBox(),
+                        buttonToolbar.getHelpAddFavHBox()
+                )
+        );
+        
+        assertEquals(buttonToolbar.getOptionsToolbar().getRowCount(), 2);
+        assertEquals(buttonToolbar.getOptionsToolbar().getColumnCount(), 1);
+        
+        assertEquals(GridPane.getHalignment(buttonToolbar.getHelpAddFavHBox()), HPos.LEFT);
+        
+        buttonToolbar.handleGrowingPane();
+        
+        assertEquals(
+                buttonToolbar.getOptionsToolbar().getChildren(),
+                FXCollections.observableArrayList(
+                        buttonToolbar.getHelpAddFavHBox(),
+                        buttonToolbar.getRabRegionExectueHBox()
+                )
+        );
+        
+        assertEquals(buttonToolbar.getOptionsToolbar().getRowCount(), 1);
+        assertEquals(buttonToolbar.getOptionsToolbar().getColumnCount(), 2);
+        
+        assertEquals(GridPane.getHalignment(buttonToolbar.getHelpAddFavHBox()), HPos.CENTER);
     }
     
     @Test
