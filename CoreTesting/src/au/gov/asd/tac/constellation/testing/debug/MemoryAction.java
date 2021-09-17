@@ -31,16 +31,18 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_MemoryAction=Memory")
 public final class MemoryAction implements ActionListener {
 
+    private final float divideBy = 1024;
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        final long freemem = Runtime.getRuntime().freeMemory();
-        final long totalmem = Runtime.getRuntime().totalMemory();
-        final long maxmem = Runtime.getRuntime().maxMemory();
+        final float freemem = (Runtime.getRuntime().freeMemory() / divideBy) / divideBy;
+        final float totalmem = (Runtime.getRuntime().totalMemory() / divideBy) / divideBy;
+        final float maxmem = (Runtime.getRuntime().maxMemory() / divideBy) / divideBy;
 
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("Free memory: %,d%n", freemem));
-        b.append(String.format("Total memory: %,d%n", totalmem));
-        b.append(String.format("Maximum memory: %,d%n", maxmem));
+        b.append(String.format("Free memory: %,6.2f %s %n", freemem, "MB"));
+        b.append(String.format("Total memory: %,6.2f %s %n", totalmem, "MB"));
+        b.append(String.format("Maximum memory: %,6.2f %s %n", maxmem, "MB"));
 
 //        // test
 //        for (MemoryPoolMXBean memoryPoolMXBeans : ManagementFactory.getMemoryPoolMXBeans()) {

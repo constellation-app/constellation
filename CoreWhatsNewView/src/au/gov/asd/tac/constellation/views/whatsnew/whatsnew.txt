@@ -1,9 +1,27 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+
 == 2021-09-17 Attribute Editor Improvement
 <p>Clicking on the attribute field now brings up the interface to edit the value. The Edit button is now redundant and will be removed later.</p>
 <p>Value can be selected by dragging the mouse over the required part of the string.</p>
+
+== 2021-09-17 Anaglyphic display
+<p>The graph can be displayed in anaglyphic 3D. This requires glasses with colored lenses, currently hard-coded to be left eye green, right eye magenta.</p>
+
+== 2021-09-15 Quick Start Guide
+<p>The Quick Start Guide on the Whats New Page has been removed. You can now discover that information via the Getting Started link on the Welcome Page which now links 
+to the Getting Started help page.</p>
+
+== 2021-09-13 node_labels_bottom/top and transaction_labels changed
+<p>The above three graph attributes have been changed to node_bottom/top_labels_colours and transaction_labels_colours.</p>
+<p>The attributes now also show the colours for example: Label: (White), Identifier: (#9980e6)</p>
+
+== 2021-09-10 Histogram View
+<p>Options selected for the Category and Property are now associated with the chosen Graph Element; Node, Transaction, Edge, or Link, and will not reset to defaults when switching between Graph Element options.</p>
+
+== 2021-09-06 Import From File
+<p>Updated the UI to clear the Attribute Filter and the table filters in the Configuration Run tabs, when all the source files are removed.</p>
 
 == 2021-09-06 Import From File
 <p>Updated the UI to only enable and expand sections once a file is added</p>
