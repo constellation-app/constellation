@@ -22,24 +22,27 @@ import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 /**
  * Provide asymetric frustums for an anaglyphic view of the world.
  * <p>
- * The human visual system needs depth cues from a flat image (photograph or display-screen) in terms of
- * how much an object shifts laterally between the left eye and the right eye.
- * When we say parallax, we mean exactly this kind of displacement in the image.
- * In rendering an anaglyph, all that we're trying to achieve is to get the right kind of parallax
- * for the objects in the scene and the rest is automatically done in the brain, for free!
+ * The human visual system needs depth cues from a flat image (photograph or
+ * display-screen) in terms of how much an object shifts laterally between the
+ * left eye and the right eye. When we say parallax, we mean exactly this kind
+ * of displacement in the image. In rendering an anaglyph, all that we're trying
+ * to achieve is to get the right kind of parallax for the objects in the scene
+ * and the rest is automatically done in the brain, for free!
  * <p>
- * Parallax is not just qualitative, it has a numeric value and can be positive, negative or zero.
- * In the application, parallax is created by defining two cameras corresponding to the left and right eyes
- * separated by some distance (called interocular distance or simply eye-separation) and having a plane
- * at a certain depth along the viewing direction (called convergence distance) at which the parallax is zero.
- * Objects at the convergence depth will appear to be at the same depth as the screen.
- * Objects closer to the camera than the convergence distance will seem to be out-of-screen
- * and objects further in depth than the convergence distance will appear inside the screen.
+ * Parallax is not just qualitative, it has a numeric value and can be positive,
+ * negative or zero. In the application, parallax is created by defining two
+ * cameras corresponding to the left and right eyes separated by some distance
+ * (called interocular distance or simply eye-separation) and having a plane at
+ * a certain depth along the viewing direction (called convergence distance) at
+ * which the parallax is zero. Objects at the convergence depth will appear to
+ * be at the same depth as the screen. Objects closer to the camera than the
+ * convergence distance will seem to be out-of-screen and objects further in
+ * depth than the convergence distance will appear inside the screen.
  * <p>
  * See
  * http://quiescentspark.blogspot.com/2011/05/rendering-3d-anaglyph-in-opengl.html.
  * <p>
- * Because the anaglyphic view works by 
+ * Because the anaglyphic view works by
  *
  * @author algol
  */
@@ -57,13 +60,13 @@ public class AnaglyphCamera {
     private Matrix44f translation;
 
     /**
-     * 
+     *
      * @param convergence
      * @param eyeSeparation
      * @param aspectRatio
      * @param fov
      * @param nearClippingDistance
-     * @param farClippingDistance 
+     * @param farClippingDistance
      */
     public AnaglyphCamera(
             final float convergence,

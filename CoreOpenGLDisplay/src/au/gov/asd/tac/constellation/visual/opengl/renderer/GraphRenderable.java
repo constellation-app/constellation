@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
+import au.gov.asd.tac.constellation.utilities.camera.AnaglyphCamera;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.camera.AnaglyphCamera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
@@ -479,7 +479,7 @@ public final class GraphRenderable implements GLRenderable {
 
                 final Vector3f eye = camera.lookAtEye;
                 final Vector3f centre = camera.lookAtCentre;
-                final float distanceToCentre = (float)Math.sqrt(Math.pow(centre.getX()-eye.getX(), 2) + Math.pow(centre.getY()-eye.getY(), 2) + Math.pow(centre.getZ()-eye.getZ(), 2));
+                final float distanceToCentre = (float) Math.sqrt(Math.pow(centre.getX() - eye.getX(), 2) + Math.pow(centre.getY() - eye.getY(), 2) + Math.pow(centre.getZ() - eye.getZ(), 2));
 
                 // The convergence is the plane where objects appear to be at the same depth as the screen.
                 // Objects closer than this appear to be in fronr of the screen; objects further than
@@ -487,17 +487,16 @@ public final class GraphRenderable implements GLRenderable {
                 //
                 final float convergence = Camera.PERSPECTIVE_NEAR + distanceToCentre;
                 final float eyeSeparation = 0.25f;
-                final float aspect = (float)graphDisplayer.getWidth()/(float)graphDisplayer.getHeight();
+                final float aspect = (float) graphDisplayer.getWidth() / (float) graphDisplayer.getHeight();
                 final AnaglyphCamera anaglyphCam = new AnaglyphCamera(convergence, eyeSeparation, aspect, Camera.FIELD_OF_VIEW, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
 
                 // Draw view from left eye.
                 //
-
                 Matrix44f mv = anaglyphCam.applyLeftFrustum(mvMatrix);
                 Matrix44f p = anaglyphCam.getProjectionMatrix();
 //                Matrix44f mvp = stereoCam.getMvpMatrix(mv);
                 gl.glColorMask(true, false, true, true);
-                
+
                 if (drawFlags.drawConnections()) {
                     lineBatcher.setMotion(motion);
                     lineBatcher.setNextDrawIsGreyscale();
@@ -526,16 +525,15 @@ public final class GraphRenderable implements GLRenderable {
 
                 // Draw view from right eye.
                 //
-
                 gl.glPolygonOffset(0, 0);
-                
+
                 gl.glClear(GL3.GL_DEPTH_BUFFER_BIT);
 
                 mv = anaglyphCam.applyRightFrustum(mvMatrix);
                 p = anaglyphCam.getProjectionMatrix();
 //                mvp = stereoCam.getMvpMatrix(mv);
                 gl.glColorMask(false, true, false, true);
-                
+
                 if (drawFlags.drawConnections()) {
                     lineBatcher.setMotion(motion);
                     lineBatcher.setNextDrawIsGreyscale();

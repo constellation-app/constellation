@@ -977,7 +977,6 @@ public class AttributeEditorPanel extends BorderPane {
         gridPane.add(attributeValueText, displayNodes.size(), 0);
         gridPane.getColumnConstraints().add(displayTextConstraint);
 
-
         final AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
         if (editorFactory != null && values != null) {
             attributeValueText.setOnMouseClicked(event -> {

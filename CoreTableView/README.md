@@ -17,15 +17,15 @@ This is the table state that is embeded in the graph attributes as `table_view_s
 It holds the currently active state of the table. That includes
 
 * __*Selected Only Mode Active:*__
-  
+
   This is a flag specifying if the table is currently in "Selected Only" mode.
-  
-* __*Element Type:*__ 
-  
+
+* __*Element Type:*__
+
   This is the graph element type that the table is currently displaying, VERTEX or TRANSACTION.
-  
-* __*Visible Columns:*__ 
-  
+
+* __*Visible Columns:*__
+
   This is the columns/graph attributes that are currently visible in the table
 
 The below sections provide more information on these properties.
@@ -82,7 +82,7 @@ will be prefixed with "`transaction.`". For example
 This is a list of columns or graph element attributes that are currently visible in the table. The list
 contains `Pair` objects which consist of two parts.
 
-* `attributeNamePrefix`: This is the prefix added to the column name. It will be one of 
+* `attributeNamePrefix`: This is the prefix added to the column name. It will be one of
    "`.source`", "`.destination`", "`.transaction`". See the [Element Type Button](#element-type)
    section for more information.
 * `attribute`: This is the graph element attribute. It links the column back to the source in the graph.
@@ -117,7 +117,7 @@ This is the current list of columns displayed in the table. It is a list of `Col
 objects. Using the properties of the `Column` object you can go from a table column to
 a graph element and vice versa. The `Column` object has the following properties.
 
-* `attributeNamePrefix`: This is the prefix added to the column name. It will be one of 
+* `attributeNamePrefix`: This is the prefix added to the column name. It will be one of
    ".source", ".destination", ".transaction". See the [Element Type Button](#element-type)
    section for more information.
 * `attribute`: This is the graph element attribute. It links the column back to the source in the graph.
@@ -165,13 +165,13 @@ the user. These can be loaded after a graph is opened to override those settings
   visible these columns if they exist for the current table/graph and then update the table state
   with the columns it found and made visible.
 
-  </p>
+</p>
 
   When a user changes the column visibilities through the preference menus, this preference
   data is updated.
 
 * __*Sort*__
-  
+
   The column that the table is sorted by. The table only supports a single column sort.
 
 ## Table View

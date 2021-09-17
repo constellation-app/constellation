@@ -456,6 +456,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField.setText("");
         attributeFilterTextField.clear();
     }
+
     public void deleteAttribute(final Attribute attribute) {
         if (attribute.getElementType() == GraphElementType.VERTEX) {
             sourceVertexAttributeList.deleteAttribute(attribute);

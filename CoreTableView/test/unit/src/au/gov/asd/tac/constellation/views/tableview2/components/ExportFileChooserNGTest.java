@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,8 +38,9 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ExportFileChooserNGTest {
+
     private ExportFileChooser exportFileChooser;
-    
+
     public ExportFileChooserNGTest() {
     }
 
@@ -62,28 +63,28 @@ public class ExportFileChooserNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     @Test
     public void init() throws IOException {
         final JFileChooser chooser = exportFileChooser.getFileChooser().createFileChooser();
-        
+
         assertEquals("My Export", chooser.getDialogTitle());
         assertEquals("A description", chooser.getFileFilter().getDescription());
-        
+
         final File lowercaseCsvFile = File.createTempFile("export", ".csv");
         final File uppdercaseCsvFile = File.createTempFile("export", ".CSV");
         final File nonCsvFile = File.createTempFile("export", ".xslx");
-        
+
         assertFalse(chooser.getFileFilter().accept(new File("/tmp")));
         assertFalse(chooser.getFileFilter().accept(nonCsvFile));
         assertTrue(chooser.getFileFilter().accept(lowercaseCsvFile));
         assertTrue(chooser.getFileFilter().accept(uppdercaseCsvFile));
-        
+
         nonCsvFile.delete();
         lowercaseCsvFile.delete();
         uppdercaseCsvFile.delete();
     }
-    
+
     @Test
     public void openExportFileChooser() {
         verifyFileSelectionChecks("/tmp/other/export/TEST.CSV", "/tmp/other/export/TEST.CSV");
@@ -91,28 +92,28 @@ public class ExportFileChooserNGTest {
         verifyFileSelectionChecks("/tmp/other/export/TEST", "/tmp/other/export/TEST.csv");
         verifyFileSelectionChecks(null, null);
     }
-    
+
     /**
      * Verifies the expected corrections (if any) to the provided file path.
      *
      * @param selectedAbsolutePath the original file path that is checked
-     * @param expectedAbsolutePath the expected file path with corrections, or the
-     *     same as the original if no corrections are expected
+     * @param expectedAbsolutePath the expected file path with corrections, or
+     * the same as the original if no corrections are expected
      */
     private void verifyFileSelectionChecks(final String selectedAbsolutePath,
-                                           final String expectedAbsolutePath) {
+            final String expectedAbsolutePath) {
         final FileChooserBuilder fileChooser = mock(FileChooserBuilder.class);
 
         doReturn(fileChooser).when(exportFileChooser).getFileChooser();
-        
+
         final File file = mock(File.class);
-        
+
         when(fileChooser.showSaveDialog()).thenReturn(file);
-        
+
         when(file.getAbsolutePath()).thenReturn(selectedAbsolutePath);
-        
+
         assertEquals(expectedAbsolutePath,
                 exportFileChooser.openExportFileChooser().getAbsolutePath());
-        
+
     }
 }
