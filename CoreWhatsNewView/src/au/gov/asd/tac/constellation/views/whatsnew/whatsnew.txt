@@ -1,6 +1,8 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-17 Histogram sort by Labels (Numbers)
+<p>Histogram view now has an option to sort labels by numeric value on top of the existing string value</p>
 
 == 2021-09-17 Attribute Editor Improvement
 <p>Clicking on the attribute field now brings up the interface to edit the value. The Edit button is now redundant and will be removed later.</p>
