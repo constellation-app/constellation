@@ -27,7 +27,7 @@ public enum BinComparator implements Comparator<Bin> {
 
     KEY_NUMBER("Label (Number)", true, false) {
         @Override
-        public int compare(Bin o1, Bin o2) {
+        public int compare(final Bin o1, final Bin o2) {
             if (isNumeric(o1.toString()) && isNumeric(o2.toString())) {
                 if (Float.parseFloat(o1.toString()) > Float.parseFloat(o2.toString())) {
                     return -1;
@@ -47,7 +47,7 @@ public enum BinComparator implements Comparator<Bin> {
     },
     REVERSE_KEY_NUMBER("Label (Number ascending)", false, false) {
         @Override
-        public int compare(Bin o1, Bin o2) {
+        public int compare(final Bin o1, final Bin o2) {
             if (isNumeric(o1.toString()) && isNumeric(o2.toString())) {
                 if (Float.parseFloat(o1.toString()) > Float.parseFloat(o2.toString())) {
                     return 1;
@@ -240,13 +240,13 @@ public enum BinComparator implements Comparator<Bin> {
         return usesSelection;
     }
 
-    public boolean isNumeric(String strNum) {
+    public boolean isNumeric(final String strNum) {
         if (strNum == null) {
             return false;
         }
         try {
             Float.parseFloat(strNum);
-        } catch (NumberFormatException nfe) {
+        } catch (final NumberFormatException nfe) {
             return false;
         }
         return true;
