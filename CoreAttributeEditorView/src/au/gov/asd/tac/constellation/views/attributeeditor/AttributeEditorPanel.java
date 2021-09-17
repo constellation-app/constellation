@@ -83,7 +83,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -111,6 +110,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
@@ -560,7 +560,13 @@ public class AttributeEditorPanel extends BorderPane {
         if (editorFactory == null || values == null) {
             editButton.setDisable(true);
         } else {
-            editButton.setOnMouseClicked(getEditValueHandler(attribute, editorFactory, values));
+            editButton.setOnMouseClicked(event -> getEditValueHandler(attribute, editorFactory, values));
+
+            attributeValueNode.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
+                    getEditValueHandler(attribute, editorFactory, values);
+                }
+            });
         }
 
         // If we don't do anything here, right-clicking on the Node will produce two context menus:
@@ -868,20 +874,18 @@ public class AttributeEditorPanel extends BorderPane {
         }
     }
 
-    private EventHandler<MouseEvent> getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
-        return e -> {
-            final Object value = values.length == 1 ? values[0] : null;
-            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attributeData.getDataType());
-            final String editType = editorFactory.getAttributeType();
-            final AttributeValueTranslator fromTranslator = interaction.fromEditTranslator(editType);
-            final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
-            final ValueValidator<?> validator = interaction.fromEditValidator(editType);
-            final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-            final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
-            final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
-            final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
-            dialog.showDialog();
-        };
+    private void getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
+        final Object value = values.length == 1 ? values[0] : null;
+        final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attributeData.getDataType());
+        final String editType = editorFactory.getAttributeType();
+        final AttributeValueTranslator fromTranslator = interaction.fromEditTranslator(editType);
+        final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
+        final ValueValidator<?> validator = interaction.fromEditValidator(editType);
+        final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
+        final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
+        final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
+        final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
+        dialog.showDialog();
     }
 
     private double getTextWidth(final String text) {
@@ -973,6 +977,15 @@ public class AttributeEditorPanel extends BorderPane {
         gridPane.add(attributeValueText, displayNodes.size(), 0);
         gridPane.getColumnConstraints().add(displayTextConstraint);
 
+
+        final AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
+        if (editorFactory != null && values != null) {
+            attributeValueText.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
+                    getEditValueHandler(attribute, editorFactory, values);
+                }
+            });
+        }
         return gridPane;
     }
 
