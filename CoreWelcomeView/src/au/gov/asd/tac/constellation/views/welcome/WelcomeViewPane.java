@@ -219,22 +219,19 @@ public class WelcomeViewPane extends BorderPane {
 
                 final Rectangle2D value = new Rectangle2D(0, 0, IMAGE_SIZE, IMAGE_SIZE);
                 final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
-                final String screenshotFilenameResize = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + "Resize" + ".png";
 
+                // If there is an existing screenshot, retrieve it and resize it
+                // to 145 by 145 so it fits in the welcome page recent graphs
                 if (new File(screenshotFilename).exists()) {
+                    final Path source = Paths.get(screenshotFilename);
 
-                    if (!new File(screenshotFilenameResize).exists()) {
-                        final Path source = Paths.get(screenshotFilename);
-                        final Path target = Paths.get(screenshotFilenameResize);
+                    try (final InputStream is = new FileInputStream(source.toFile())) {
+                        resize(is, source, IMAGE_SIZE, IMAGE_SIZE);
 
-                        try (final InputStream is = new FileInputStream(source.toFile())) {
-                            resize(is, target, IMAGE_SIZE, IMAGE_SIZE);
-
-                        } catch (final IOException ex) {
-                            LOGGER.log(Level.WARNING, ex.getLocalizedMessage(), ex);
-                        }
+                    } catch (final IOException ex) {
+                        LOGGER.log(Level.WARNING, ex.getLocalizedMessage(), ex);
                     }
-                    final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilenameResize));
+                    final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilename));
                     imageView.setViewport(value);
                     imageView.setFitHeight(IMAGE_SIZE);
                     imageView.setFitWidth(IMAGE_SIZE);
@@ -250,7 +247,7 @@ public class WelcomeViewPane extends BorderPane {
                 }
 
                 //Calls the method for the recent graphs to open
-                // on the button action
+                //on the button action
                 recentGraphButtons[i].setOnAction(e -> {
                     RecentFilesWelcomePage.openGraph(text);
                 });
