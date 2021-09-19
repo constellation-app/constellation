@@ -39,19 +39,23 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * A servlet that displays the REST API using swagger-ui.
  * <p>
- * Swagger is obtained from https://github.com/swagger-api/swagger-ui. The swagger packages contain the contents of
- * swagger-ui/dist unzipped as-is with the addition of the constellation.json swagger config file. The index.html file
- * has been modified to link to constellation.json
+ * Swagger is obtained from https://github.com/swagger-api/swagger-ui. The
+ * swagger packages contain the contents of swagger-ui/dist unzipped as-is with
+ * the addition of the constellation.json swagger config file. The index.html
+ * file has been modified to link to constellation.json
  * <p>
- * The JSON returned by the servlet is modified on the fly to contain REST service information, using the information
- * from each service and the PluginParameters instance from each service's createParameters().
+ * The JSON returned by the servlet is modified on the fly to contain REST
+ * service information, using the information from each service and the
+ * PluginParameters instance from each service's createParameters().
  * <p>
  * Some heuristics are used.
  * <ul>
- * <li>If the getName() of a parameter contains the string "(body)", that parameter specified to Swagger as a body
- * parameter instead of a query parameter.</li>
- * <li>If the service returns JSON, and the name of the service starts with "list" (case-insensitive), the schema of the
- * returned JSON is specified as a list of object; otherwise, the default schema is object.
+ * <li>If the getName() of a parameter contains the string "(body)", that
+ * parameter specified to Swagger as a body parameter instead of a query
+ * parameter.</li>
+ * <li>If the service returns JSON, and the name of the service starts with
+ * "list" (case-insensitive), the schema of the returned JSON is specified as a
+ * list of object; otherwise, the default schema is object.
  * </ul>
  *
  * @author algol

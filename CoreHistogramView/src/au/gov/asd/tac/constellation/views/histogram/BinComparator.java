@@ -25,10 +25,50 @@ import java.util.Comparator;
  */
 public enum BinComparator implements Comparator<Bin> {
 
+    KEY_NUMBER("Label (Number)", true, false) {
+        @Override
+        public int compare(final Bin o1, final Bin o2) {
+            if (isNumeric(o1.toString()) && isNumeric(o2.toString())) {
+                if (Float.parseFloat(o1.toString()) > Float.parseFloat(o2.toString())) {
+                    return -1;
+                } else if (Float.parseFloat(o1.toString()) < Float.parseFloat(o2.toString())) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+            return -1;
+        }
+
+        @Override
+        public BinComparator getReverse() {
+            return REVERSE_KEY_NUMBER;
+        }
+    },
+    REVERSE_KEY_NUMBER("Label (Number ascending)", false, false) {
+        @Override
+        public int compare(final Bin o1, final Bin o2) {
+            if (isNumeric(o1.toString()) && isNumeric(o2.toString())) {
+                if (Float.parseFloat(o1.toString()) > Float.parseFloat(o2.toString())) {
+                    return 1;
+                } else if (Float.parseFloat(o1.toString()) < Float.parseFloat(o2.toString())) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+            return -1;
+        }
+
+        @Override
+        public BinComparator getReverse() {
+            return KEY_NUMBER;
+        }
+    },
     /**
      * Sort bins by their keys.
      */
-    KEY("Label", true, false) {
+    KEY("Label (String)", true, false) {
         @Override
         public int compare(Bin o1, Bin o2) {
             return o2.compareTo(o1);
@@ -42,7 +82,7 @@ public enum BinComparator implements Comparator<Bin> {
     /**
      * Sort bins by their keys in reverse order.
      */
-    REVERSE_KEY("Label (ascending)", false, false) {
+    REVERSE_KEY("Label (String ascending)", false, false) {
         @Override
         public int compare(Bin o1, Bin o2) {
             return o1.compareTo(o2);
@@ -198,6 +238,18 @@ public enum BinComparator implements Comparator<Bin> {
 
     public boolean usesSelection() {
         return usesSelection;
+    }
+
+    public boolean isNumeric(final String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            Float.parseFloat(strNum);
+        } catch (final NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     @Override

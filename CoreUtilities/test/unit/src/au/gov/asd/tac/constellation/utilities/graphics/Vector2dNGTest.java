@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@ import org.testng.annotations.Test;
  * @author groombridge34a
  */
 public class Vector2dNGTest {
-    
+
     private static final double D1 = 123D;
     private static final double D2 = 321D;
     private static final double D3 = 456D;
@@ -32,7 +32,7 @@ public class Vector2dNGTest {
     private static final double D7 = 191D;
     private static final double D8 = 828D;
     private static final double D9 = 373D;
-    
+
     /**
      * Can create a new Vector2d.
      */
@@ -43,25 +43,25 @@ public class Vector2dNGTest {
             assertEquals(d, 0D);
         }
     }
-    
+
     /**
      * Can set the values of a vector.
      */
     @Test
     public void testSet() {
         final Vector2d v = new Vector2d();
-        
+
         // set with double values
         v.set(D1, D2);
-        assertEquals(v.getA(), new double[] {D1, D2});
-        
+        assertEquals(v.getA(), new double[]{D1, D2});
+
         // set equal to another vector
         final Vector2d v2 = new Vector2d();
         v2.set(D4, D5);
         v.set(v2);
-        assertEquals(v.getA(), new double[] {D4, D5});
+        assertEquals(v.getA(), new double[]{D4, D5});
     }
-    
+
     /**
      * Can scale a vector.
      */
@@ -70,9 +70,9 @@ public class Vector2dNGTest {
         final Vector2d v = new Vector2d();
         v.set(D1, D2);
         v.scale(0.123D);
-        assertEquals(v.getA(), new double[] {15.129D, 39.483D});
+        assertEquals(v.getA(), new double[]{15.129D, 39.483D});
     }
-    
+
     /**
      * Can add two vectors.
      */
@@ -83,11 +83,11 @@ public class Vector2dNGTest {
         vAdd1.set(D7, D8);
         final Vector2d vAdd2 = new Vector2d();
         vAdd2.set(D5, D6);
-        
+
         Vector2d.add(v, vAdd1, vAdd2);
-        assertEquals(v.getA(), new double[] {980D, 1815D});
+        assertEquals(v.getA(), new double[]{980D, 1815D});
     }
-    
+
     /**
      * Can subtract a vector from another vector.
      */
@@ -98,8 +98,8 @@ public class Vector2dNGTest {
         vSub1.set(D3, D4);
         final Vector2d vSub2 = new Vector2d();
         vSub2.set(D9, D7);
-        
+
         Vector2d.subtract(v, vSub1, vSub2);
-        assertEquals(v.getA(), new double[] {83D, 463D});
+        assertEquals(v.getA(), new double[]{83D, 463D});
     }
 }

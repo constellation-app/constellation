@@ -67,6 +67,11 @@ public class ImportPane extends BorderPane {
     protected EasyGridPane gridPane;
     protected BorderPane root;
 
+    public static final String SAVE_TEMPLATE_LOGO = "resources/ImportExportSaveTemplate.png";
+    private final ImageView saveTemplateImage = new ImageView(new Image(ImportTopComponent.class.getResourceAsStream(SAVE_TEMPLATE_LOGO)));
+    public static final String LOAD_TEMPLATE_LOGO = "resources/ImportExportLoadTemplate.png";
+    private final ImageView loadTemplateImage = new ImageView(new Image(ImportTopComponent.class.getResourceAsStream(LOAD_TEMPLATE_LOGO)));
+
     public ImportPane(final ImportTopComponent importTopComponent, final ImportController controller,
             final ConfigurationPane configurationPane, final SourcePane sourcePane) {
         this.importTopComponent = importTopComponent;
@@ -79,8 +84,13 @@ public class ImportPane extends BorderPane {
         final TitledPane titledSourcePane = new TitledPane("Source and Destination", sourcePane);
         titledSourcePane.setCollapsible(true);
 
-        loadButton = new Button("Load Template");
-        saveButton = new Button("Save Template");
+        loadTemplateImage.setFitHeight(15);
+        loadTemplateImage.setFitWidth(15);
+        saveTemplateImage.setFitHeight(15);
+        saveTemplateImage.setFitWidth(15);
+
+        loadButton = new Button("Load Template", loadTemplateImage);
+        saveButton = new Button("Save Template", saveTemplateImage);
 
         // the menu item gets called when the checkbox value changes so work around it by using a flag
         final boolean[] userClickedTheCheckboxFirst = new boolean[1];

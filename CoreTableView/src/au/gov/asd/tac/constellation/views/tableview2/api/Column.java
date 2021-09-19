@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,23 +25,26 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 /**
  * Description of a column in the table and its link back to the graph. A vertex
  * attribute in the table will generally have two columns in the table. A source
- * and a destination. A transaction attribute will only have one column in the table.
+ * and a destination. A transaction attribute will only have one column in the
+ * table.
  * <p/>
  * The {@link #attributeNamePrefix} will be one of "source.", "destination." or
- * "transaction.". This represents the type of vertex or transaction that the attribute
- * and column represent.
+ * "transaction.". This represents the type of vertex or transaction that the
+ * attribute and column represent.
  * <p/>
- * The {@link #attribute} is the attribute associated to a vertex or transaction.
+ * The {@link #attribute} is the attribute associated to a vertex or
+ * transaction.
  * <p/>
- * The {@link #tableColumn} is the actual table column representing the attribute
- * for the element type with the "direction" where applicable.
+ * The {@link #tableColumn} is the actual table column representing the
+ * attribute for the element type with the "direction" where applicable.
  * <p/>
- * Together {@link #attributeNamePrefix} and {@link #attribute} are a primary key
- * pointing to a single table column.
+ * Together {@link #attributeNamePrefix} and {@link #attribute} are a primary
+ * key pointing to a single table column.
  *
  * @author formalhaunt
  */
 public final class Column {
+
     private String attributeNamePrefix;
     private Attribute attribute;
     private TableColumn<ObservableList<String>, String> tableColumn;
@@ -50,28 +53,29 @@ public final class Column {
      * Creates a new column.
      */
     public Column() {
-        
+
     }
-    
+
     /**
      * Creates a new column.
      *
-     * @param attributeNamePrefix the prefix for the attribute name when set to the column
+     * @param attributeNamePrefix the prefix for the attribute name when set to
+     * the column
      * @param attribute the attribute the column represents
      * @param tableColumn the actual JavaFX column in the table
      */
     public Column(final String attributeNamePrefix,
-                  final Attribute attribute,
-                  final TableColumn<ObservableList<String>, String> tableColumn) {
+            final Attribute attribute,
+            final TableColumn<ObservableList<String>, String> tableColumn) {
         this.attributeNamePrefix = attributeNamePrefix;
         this.attribute = attribute;
         this.tableColumn = tableColumn;
     }
-    
+
     /**
-     * Gets the prefix that is added to the attribute name when setting the table
-     * column text.
-     * 
+     * Gets the prefix that is added to the attribute name when setting the
+     * table column text.
+     *
      * @return the attribute name prefix
      */
     public String getAttributeNamePrefix() {
@@ -107,7 +111,7 @@ public final class Column {
     public void setTableColumn(final TableColumn<ObservableList<String>, String> tableColumn) {
         this.tableColumn = tableColumn;
     }
-    
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

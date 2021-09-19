@@ -96,32 +96,34 @@ public class JsonIONGTest {
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
             jsonIoMockedStatic.when(() -> JsonIO
-                .loadJsonPreferences(any(Optional.class), any(TypeReference.class)))
-                .thenCallRealMethod();
-            
-            final TypeReference<MyPreferences> type = new TypeReference<MyPreferences>() {};
-            
+                    .loadJsonPreferences(any(Optional.class), any(TypeReference.class)))
+                    .thenCallRealMethod();
+
+            final TypeReference<MyPreferences> type = new TypeReference<MyPreferences>() {
+            };
+
             JsonIO.loadJsonPreferences(SUB_DIRECTORY, type);
-            
+
             jsonIoMockedStatic.verify(() -> JsonIO
-                .loadJsonPreferences(eq(SUB_DIRECTORY), eq(Optional.empty()), same(type), any(ObjectMapper.class)));
+                    .loadJsonPreferences(eq(SUB_DIRECTORY), eq(Optional.empty()), same(type), any(ObjectMapper.class)));
         }
     }
-    
+
     @Test
     public void loadJsonPreferences_get_pojo_without_mapper() throws URISyntaxException, FileNotFoundException, IOException {
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
             jsonIoMockedStatic.when(() -> JsonIO
-                .loadJsonPreferences(any(Optional.class), any(Optional.class), any(TypeReference.class)))
-                .thenCallRealMethod();
-            
-            final TypeReference<MyPreferences> type = new TypeReference<MyPreferences>() {};
-            
+                    .loadJsonPreferences(any(Optional.class), any(Optional.class), any(TypeReference.class)))
+                    .thenCallRealMethod();
+
+            final TypeReference<MyPreferences> type = new TypeReference<MyPreferences>() {
+            };
+
             JsonIO.loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, type);
-            
+
             jsonIoMockedStatic.verify(() -> JsonIO
-                .loadJsonPreferences(eq(SUB_DIRECTORY), eq(FILE_PREFIX), same(type), any(ObjectMapper.class)));
+                    .loadJsonPreferences(eq(SUB_DIRECTORY), eq(FILE_PREFIX), same(type), any(ObjectMapper.class)));
         }
     }
 
@@ -145,8 +147,7 @@ public class JsonIONGTest {
 
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS);
-                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
-            ) {
+                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
 
             jsonIoDialogMockedStatic.when(() -> JsonIODialog.getSelection(List.of("preferences"), SUB_DIRECTORY, FILE_PREFIX))
                     .thenReturn(Optional.of("preferences"));
@@ -155,8 +156,9 @@ public class JsonIONGTest {
                     .thenReturn(new File(JsonIONGTest.class.getResource("resources").toURI()));
 
             final MyPreferences loadedPreferences = JsonIO
-                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new TypeReference<MyPreferences>() {});
-            
+                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new TypeReference<MyPreferences>() {
+                    });
+
             assertEquals(loadedPreferences, fixture());
         }
     }
@@ -166,8 +168,7 @@ public class JsonIONGTest {
 
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS);
-                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
-            ) {
+                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
 
             // The returned preference directory is not a directory so the UI is
             // opened with an empty list and the user hits cancel.
@@ -178,8 +179,9 @@ public class JsonIONGTest {
                     .thenReturn(new File(System.getProperty("java.io.tmpdir") + "/samplefile"));
 
             final MyPreferences loadedPreferences = JsonIO
-                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new TypeReference<MyPreferences>() {});
-            
+                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new TypeReference<MyPreferences>() {
+                    });
+
             assertEquals(loadedPreferences, null);
         }
     }
@@ -189,8 +191,7 @@ public class JsonIONGTest {
 
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS);
-                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
-            ) {
+                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
 
             final Optional<String> filePrefix = Optional.empty();
 
@@ -219,8 +220,7 @@ public class JsonIONGTest {
 
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
-                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
-            ) {
+                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
             setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
 
             JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper());
@@ -251,7 +251,7 @@ public class JsonIONGTest {
             Files.deleteIfExists(outputFile.toPath());
         }
     }
-    
+
     @Test
     public void saveJsonPreferences_without_mapper() throws URISyntaxException, FileNotFoundException, IOException {
 
@@ -284,8 +284,7 @@ public class JsonIONGTest {
             final Future<Void> future = WaitForAsyncUtils.asyncFx(() -> {
                 try (
                         final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
-                    final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
-                ) {
+                        final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
                     setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
 
                     JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper());
@@ -324,8 +323,7 @@ public class JsonIONGTest {
             final Future<Void> future = WaitForAsyncUtils.asyncFx(() -> {
                 try (
                         final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
-                    final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
-                ) {
+                        final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
                     setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
 
                     JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper());
@@ -366,8 +364,7 @@ public class JsonIONGTest {
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
-                MockedStatic<Instant> instantMockedStatic = Mockito.mockStatic(Instant.class, Mockito.CALLS_REAL_METHODS);
-            ) {
+                MockedStatic<Instant> instantMockedStatic = Mockito.mockStatic(Instant.class, Mockito.CALLS_REAL_METHODS);) {
             instantMockedStatic.when(Instant::now).thenReturn(fakeNow);
 
             setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("   "));
@@ -388,8 +385,7 @@ public class JsonIONGTest {
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
-                MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic = Mockito.mockStatic(NotifyDisplayer.class);
-            ) {
+                MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic = Mockito.mockStatic(NotifyDisplayer.class);) {
             final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/samplefile");
             jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
                     .thenReturn(preferenceDirectory);
@@ -418,8 +414,7 @@ public class JsonIONGTest {
 
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
-                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
-            ) {
+                MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
             setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.empty());
 
             JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new Object(), new ObjectMapper());
@@ -463,8 +458,7 @@ public class JsonIONGTest {
         try (
                 MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
                 MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic = Mockito.mockStatic(NotifyDisplayer.class);
-                MockedStatic<Files> filesMockedStatic = Mockito.mockStatic(Files.class);
-            ) {
+                MockedStatic<Files> filesMockedStatic = Mockito.mockStatic(Files.class);) {
             filesMockedStatic.when(() -> Files.deleteIfExists(outputFile.toPath())).thenThrow(new SecurityException("Some error"));
 
             jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
@@ -592,7 +586,7 @@ public class JsonIONGTest {
         public void setVolume(int volume) {
             this.volume = volume;
         }
-        
+
         @Override
         public boolean equals(final Object o) {
             if (this == o) {

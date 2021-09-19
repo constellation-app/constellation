@@ -1142,9 +1142,11 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     /**
      * Performs a selection based on a given polygon in the freeformModel.
      *
-     * @param appendSelection whether or not the selection will be appended to the current selection
-     * @param toggleSelection whether or not the selection will toggle the current selection. Note that if
-     * appendSelection is true, this parameter has no effect.
+     * @param appendSelection whether or not the selection will be appended to
+     * the current selection
+     * @param toggleSelection whether or not the selection will toggle the
+     * current selection. Note that if appendSelection is true, this parameter
+     * has no effect.
      */
     private void performFreeformSelection(final GraphReadMethods rg, final boolean appendSelection, final boolean toggleSelection) {
 
