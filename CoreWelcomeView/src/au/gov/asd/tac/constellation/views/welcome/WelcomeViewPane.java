@@ -17,17 +17,11 @@ package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFilesWelcomePage;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
+import static au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities.IMAGE_SIZE;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
@@ -57,13 +51,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 
 /**
  * WelcomeViewPane contains the content for WelcomeTopComponent
@@ -72,24 +59,19 @@ import javax.imageio.ImageIO;
  */
 public class WelcomeViewPane extends BorderPane {
 
-    private final BorderPane welcomeViewPane;
+    private final BorderPane pane;
 
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
-    public static final String WELCOME_TEXT = "Welcome to Constellation";
+    public static final String WELCOME_TEXT = String.format("Welcome to %s", BrandingUtilities.APPLICATION_NAME);
     public static final double SPLIT_POS = 0.2;
 
-    //Place holder images
-    public static final String LOGO = "resources/constellation-logo.png";
-
-    //Resized image height/width
-    private static final int IMAGE_SIZE = 145;
-
-    private final Logger LOGGER = Logger.getLogger(WelcomeViewPane.class.getName());
+    // place holder image
+    public static final String LOGO = "resources/constellation_logo.png";
 
     private static final Button[] recentGraphButtons = new Button[10];
 
     public WelcomeViewPane() {
-        welcomeViewPane = new BorderPane();
+        pane = new BorderPane();
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
 
@@ -101,8 +83,8 @@ public class WelcomeViewPane extends BorderPane {
 
             splitPane.setPrefHeight(visualBounds.getHeight());
             splitPane.setPrefWidth(visualBounds.getWidth());
-            welcomeViewPane.setCenter(scrollPane);
-            welcomeViewPane.autosize();
+            pane.setCenter(scrollPane);
+            pane.autosize();
 
             //Create VBox to handle Browser and controls,
             //or error messages
@@ -217,33 +199,15 @@ public class WelcomeViewPane extends BorderPane {
                 }
                 final String text = recentGraphButtons[i].getText();
 
-                final Rectangle2D value = new Rectangle2D(0, 0, IMAGE_SIZE, IMAGE_SIZE);
                 final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
-
-                // If there is an existing screenshot, retrieve it and resize it
-                // to 145 by 145 so it fits in the welcome page recent graphs
                 if (new File(screenshotFilename).exists()) {
-                    final Path source = Paths.get(screenshotFilename);
-
-                    try (final InputStream is = new FileInputStream(source.toFile())) {
-                        resize(is, source, IMAGE_SIZE, IMAGE_SIZE);
-
-                    } catch (final IOException ex) {
-                        LOGGER.log(Level.WARNING, ex.getLocalizedMessage(), ex);
-                    }
-                    final ImageView imageView = new ImageView(new Image("file:///" + screenshotFilename));
-                    imageView.setViewport(value);
-                    imageView.setFitHeight(IMAGE_SIZE);
-                    imageView.setFitWidth(IMAGE_SIZE);
-                    recentGraphButtons[i].setGraphic(imageView);
-
+                    recentGraphButtons[i].setGraphic(buildGraphic(
+                            new Image("file:///" + screenshotFilename)
+                    ));
                 } else if (i < fileNames.size()) {
-                    final ImageView defaultImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream("resources/Constellation_Application_Icon_Small.png")));
-                    final Rectangle2D valueDefault = new Rectangle2D(0, 0, IMAGE_SIZE, IMAGE_SIZE);
-                    defaultImage.setViewport(valueDefault);
-                    defaultImage.setFitHeight(IMAGE_SIZE);
-                    defaultImage.setFitWidth(IMAGE_SIZE);
-                    recentGraphButtons[i].setGraphic(defaultImage);
+                    recentGraphButtons[i].setGraphic(buildGraphic(
+                            new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"))
+                    ));
                 }
 
                 //Calls the method for the recent graphs to open
@@ -256,47 +220,26 @@ public class WelcomeViewPane extends BorderPane {
             bottomHBox.getChildren().add(flow);
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             VBox.setVgrow(rightVBox, Priority.ALWAYS);
-            this.setCenter(welcomeViewPane);
+            this.setCenter(pane);
             scrollPane.setVvalue(-1);
         });
     }
 
     /**
-     * Referenced from https://mkyong.com/java/how-to-resize-an-image-in-java/
+     * Build an {@code ImageView} from the {@code Image} provided. The
+     * dimensions of the image are determined by {@code IMAGE_SIZE}
      *
-     * @param is the input stream
-     * @param target the file path were we want to store the resized image
-     * @param height the new height of the resized image
-     * @param width the new width of the resized image
-     * @throws IOException
+     * @param image The image to present
+     * @return An {@code ImageView} containing the {@code Image} provided
      */
-    public void resize(final InputStream is, final Path target, final int height, final int width) throws IOException {
-        final BufferedImage originalImage = ImageIO.read(is);
+    private static ImageView buildGraphic(final Image image) {
+        final ImageView defaultImage = new ImageView(image);
+        final Rectangle2D valueDefault = new Rectangle2D(0, 0, IMAGE_SIZE, IMAGE_SIZE);
 
-        // create a new BufferedImage for drawing
-        final BufferedImage newResizedImage
-                = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        final Graphics2D g = newResizedImage.createGraphics();
-
-        g.setComposite(AlphaComposite.Src);
-        g.fillRect(0, 0, width, height);
-
-        final Map<RenderingHints.Key, Object> hints = new HashMap<>();
-        hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.addRenderingHints(hints);
-
-        // puts the original image into the newResizedImage
-        g.drawImage(originalImage, 0, 0, width, height, null);
-        g.dispose();
-
-        // get file extension
-        final String s = target.getFileName().toString();
-        final String fileExtension = s.substring(s.lastIndexOf(".") + 1);
-
-        // we want image in png format
-        ImageIO.write(newResizedImage, fileExtension, target.toFile());
+        defaultImage.setViewport(valueDefault);
+        defaultImage.setFitHeight(IMAGE_SIZE);
+        defaultImage.setFitWidth(IMAGE_SIZE);
+        return defaultImage;
     }
 
     public void setButtonProps(final Button button) {
