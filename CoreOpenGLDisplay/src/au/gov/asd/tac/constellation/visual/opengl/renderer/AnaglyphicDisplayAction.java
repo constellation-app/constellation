@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
@@ -25,6 +26,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 import org.openide.util.actions.Presenter;
 
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.visual.opengl.renderer.AnaglyphicDisplayAction")
@@ -39,6 +41,11 @@ public final class AnaglyphicDisplayAction extends AbstractAction implements Pre
     // but it has to be fast because it's used at every call to display().
     private static final AtomicBoolean displayAnaglyph = new AtomicBoolean(false);
 
+    // Also quite ugly, but these are also used at every call to display().
+    //
+    private static final boolean[] LEFT_EYE = new boolean[4];
+    private static final boolean[] RIGHT_EYE = new boolean[4];
+
     public AnaglyphicDisplayAction() {
         menuItem = new JCheckBoxMenuItem(this);
         menuItem.setSelected(displayAnaglyph.get());
@@ -48,10 +55,28 @@ public final class AnaglyphicDisplayAction extends AbstractAction implements Pre
         return displayAnaglyph.get();
     }
 
+    public static boolean[] getLeftColor() {
+        return LEFT_EYE;
+    }
+
+    public static boolean[] getRightColor() {
+        return RIGHT_EYE;
+    }
+
     @Override
     public void actionPerformed(final ActionEvent e) {
         displayAnaglyph.set(!displayAnaglyph.get());
         menuItem.setSelected(displayAnaglyph.get());
+
+        if (displayAnaglyph.get()) {
+            // Get the current color options and convert them to bit masks.
+            //
+            final Preferences prefs = NbPreferences.forModule(AnaglyphicDisplayPreferenceKeys.class);
+            final String leftColor = prefs.get(AnaglyphicDisplayPreferenceKeys.LEFT_COLOR, AnaglyphicDisplayPreferenceKeys.LEFT_COLOR_DEFAULT);
+            final String rightColor = prefs.get(AnaglyphicDisplayPreferenceKeys.RIGHT_COLOR, AnaglyphicDisplayPreferenceKeys.RIGHT_COLOR_DEFAULT);
+            System.arraycopy(AnaglyphicDisplayOptionsPanelController.getColorMask(leftColor), 0, LEFT_EYE, 0, LEFT_EYE.length);
+            System.arraycopy(AnaglyphicDisplayOptionsPanelController.getColorMask(rightColor), 0, RIGHT_EYE, 0, RIGHT_EYE.length);
+        }
     }
 
     @Override
