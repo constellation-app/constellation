@@ -781,7 +781,8 @@ public class NotesViewPane extends BorderPane {
 
         deleteButton.setOnAction(event -> {
             final Alert deleteAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            deleteAlert.setContentText("Are you sure you want to delete this note? : " + titleLabel.getText());
+            deleteAlert.setHeaderText("Delete Note");
+            deleteAlert.setContentText("Are you sure you want to delete \"" + titleLabel.getText() + "\"?");
 
             deleteAlert.showAndWait();
             if (deleteAlert.getResult() == ButtonType.OK) {
