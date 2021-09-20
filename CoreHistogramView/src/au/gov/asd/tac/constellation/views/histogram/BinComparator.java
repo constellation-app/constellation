@@ -68,7 +68,7 @@ public enum BinComparator implements Comparator<Bin> {
     /**
      * Sort bins by their keys.
      */
-    KEY("Label (String)", true, false) {
+    KEY("Label (Text)", true, false) {
         @Override
         public int compare(Bin o1, Bin o2) {
             return o2.compareTo(o1);
@@ -82,7 +82,7 @@ public enum BinComparator implements Comparator<Bin> {
     /**
      * Sort bins by their keys in reverse order.
      */
-    REVERSE_KEY("Label (String ascending)", false, false) {
+    REVERSE_KEY("Label (Text ascending)", false, false) {
         @Override
         public int compare(Bin o1, Bin o2) {
             return o1.compareTo(o2);
