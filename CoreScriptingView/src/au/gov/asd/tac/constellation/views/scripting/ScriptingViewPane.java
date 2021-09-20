@@ -89,8 +89,8 @@ public class ScriptingViewPane extends JPanel {
 
     private static final Logger LOGGER = Logger.getLogger(ScriptingViewPane.class.getName());
     private static final File GET_STARTED_FILE = ConstellationInstalledFileLocator.locate(
-            "modules/ext/scripting_getting_started.txt", 
-            "au.gov.asd.tac.constellation.views.scripting", 
+            "modules/ext/scripting_getting_started.txt",
+            "au.gov.asd.tac.constellation.views.scripting",
             ScriptingViewPane.class.getProtectionDomain());
     private static final String SCRIPTING_VIEW_THREAD_NAME = "Scripting View";
 

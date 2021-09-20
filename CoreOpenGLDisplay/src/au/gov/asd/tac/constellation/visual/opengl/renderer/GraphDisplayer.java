@@ -228,19 +228,19 @@ public class GraphDisplayer implements GLRenderable {
             needsResize = false;
         }
     }
-    
+
     /**
      * The width of the display window.
-     * 
+     *
      * @return The width of the display window.
      */
     public int getWidth() {
         return width;
     }
-    
+
     /**
      * The height of the display window.
-     * 
+     *
      * @return The height of the display window.
      */
     public int getHeight() {

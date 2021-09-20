@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,27 +24,29 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 
 /**
- * Creates a context menu that will appear when right clicking in a table cell. The
- * menu provides options for converting cell, row and column data surrounding the selected
- * cell into CSV. The CSV is placed into the OS clipboard.
+ * Creates a context menu that will appear when right clicking in a table cell.
+ * The menu provides options for converting cell, row and column data
+ * surrounding the selected cell into CSV. The CSV is placed into the OS
+ * clipboard.
  *
  * @author formalhaunt
  */
 public class RightClickContextMenu {
+
     private static final String COPY_CELL = "Copy Cell";
     private static final String COPY_ROW = "Copy Row";
     private static final String COPY_COLUMN = "Copy Column";
     private static final String COPY_COLUMN_UNIQUE = "Copy Column (Unique)";
-    
+
     private final Table table;
-    
+
     private ContextMenu contextMenu;
-    
+
     private MenuItem copyCell;
     private MenuItem copyRow;
     private MenuItem copyColumn;
     private MenuItem copyColumnUnique;
-    
+
     /**
      * Creates a new right click context menu.
      *
@@ -53,10 +55,10 @@ public class RightClickContextMenu {
     public RightClickContextMenu(final Table table) {
         this.table = table;
     }
-    
+
     /**
-     * Initializes the context menu. Until this method is called, all menu UI components
-     * will be null.
+     * Initializes the context menu. Until this method is called, all menu UI
+     * components will be null.
      *
      * @param cell the table cell that was clicked to initialize the menu
      */
@@ -120,7 +122,8 @@ public class RightClickContextMenu {
     }
 
     /**
-     * Get the menu item that will copy all the in the row of the clicked cell (in CSV).
+     * Get the menu item that will copy all the in the row of the clicked cell
+     * (in CSV).
      *
      * @return the copy row menu item
      */
@@ -129,7 +132,8 @@ public class RightClickContextMenu {
     }
 
     /**
-     * Get the menu item that will copy all values in the column of the clicked cell (in CSV).
+     * Get the menu item that will copy all values in the column of the clicked
+     * cell (in CSV).
      *
      * @return the copy column menu item
      */
@@ -138,8 +142,8 @@ public class RightClickContextMenu {
     }
 
     /**
-     * Get the menu item that will copy all values in the column of the clicked cell (in CSV).
-     * The returned values will be unique.
+     * Get the menu item that will copy all values in the column of the clicked
+     * cell (in CSV). The returned values will be unique.
      *
      * @return the copy column unique values menu item
      */

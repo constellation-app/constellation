@@ -36,8 +36,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.AssertJUnit.assertEquals;
 import org.testfx.api.FxToolkit;
+import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -83,7 +83,8 @@ public class TableViewPreferencesIoProviderNGTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final List<UserTablePreferences> tablePrefs = objectMapper.readValue(
                 new FileInputStream(getClass().getResource("resources/old-preferences.json").getPath()),
-                new TypeReference<List<UserTablePreferences>>() {}
+                new TypeReference<List<UserTablePreferences>>() {
+        }
         );
 
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class)))
@@ -99,13 +100,14 @@ public class TableViewPreferencesIoProviderNGTest {
 
         assertEquals(expected, tablePreferences);
     }
-    
+
     @Test
     public void getPreferencesMultiplePrefsPicksLast() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
         final List<UserTablePreferences> tablePrefs = objectMapper.readValue(
                 new FileInputStream(getClass().getResource("resources/vertex-preferences.json").getPath()),
-                new TypeReference<List<UserTablePreferences>>() {}
+                new TypeReference<List<UserTablePreferences>>() {
+        }
         );
 
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class)))
@@ -127,7 +129,8 @@ public class TableViewPreferencesIoProviderNGTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final List<UserTablePreferences> tablePrefs = objectMapper.readValue(
                 new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath()),
-                new TypeReference<List<UserTablePreferences>>() {}
+                new TypeReference<List<UserTablePreferences>>() {
+        }
         );
 
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("transaction-")), any(TypeReference.class)))
@@ -189,7 +192,8 @@ public class TableViewPreferencesIoProviderNGTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final List<UserTablePreferences> expectedTablePrefs = objectMapper.readValue(
                 new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath()),
-                new TypeReference<List<UserTablePreferences>>() {}
+                new TypeReference<List<UserTablePreferences>>() {
+        }
         );
 
         jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(

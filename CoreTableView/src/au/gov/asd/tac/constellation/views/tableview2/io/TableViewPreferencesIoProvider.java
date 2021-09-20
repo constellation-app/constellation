@@ -33,8 +33,9 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
  * @author serpens24
  */
 public class TableViewPreferencesIoProvider {
+
     private static final String TABLE_VIEW_PREF_DIR = "TableViewPreferences";
-    
+
     private static final String VERTEX_FILE_PREFIX = "vertex-";
     private static final String TRANSACTION_FILE_PREFIX = "transaction-";
 
@@ -45,22 +46,22 @@ public class TableViewPreferencesIoProvider {
     }
 
     /**
-     * Saves details of the table's current preferences. Persists the preferences
-     * as JSON to the local disk.
+     * Saves details of the table's current preferences. Persists the
+     * preferences as JSON to the local disk.
      *
-     * @param tableElementType the current table setting specifying which element
-     *     type to display
+     * @param tableElementType the current table setting specifying which
+     * element type to display
      * @param table the current table
      * @param pageSize the current table page size
      */
     public static void savePreferences(final GraphElementType tableElementType,
-                                       final TableView<ObservableList<String>> table,
-                                       final int pageSize) {
+            final TableView<ObservableList<String>> table,
+            final int pageSize) {
         final String filePrefix = tableElementType == GraphElementType.VERTEX
                 ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
-        
+
         final UserTablePreferences tablePreferences = new UserTablePreferences();
-        
+
         tablePreferences.setColumnOrder(
                 table.getColumns().stream()
                         .filter(column -> column.isVisible())
@@ -69,7 +70,7 @@ public class TableViewPreferencesIoProvider {
         );
 
         tablePreferences.setMaxRowsPerPage(pageSize);
-        
+
         if (!table.getSortOrder().isEmpty()) {
             tablePreferences.setSortByColumn(
                     ImmutablePair.of(
@@ -78,7 +79,7 @@ public class TableViewPreferencesIoProvider {
                     )
             );
         }
-        
+
         JsonIO.saveJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), Optional.of(filePrefix),
                 List.of(tablePreferences));
     }
@@ -87,21 +88,22 @@ public class TableViewPreferencesIoProvider {
      * Load in the preferences from the JSON file into the
      * {@link UserTablePreferences} POJO.
      *
-     * @param tableElementType the current table setting specifying which element
-     *     type to display
+     * @param tableElementType the current table setting specifying which
+     * element type to display
      *
      * @return a populated {@link UserTablePreferences} from the local file
      */
     public static UserTablePreferences getPreferences(final GraphElementType tableElementType) {
         final String filePrefix = tableElementType == GraphElementType.VERTEX
                 ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
-        
+
         final List<UserTablePreferences> root = JsonIO.loadJsonPreferences(
                 Optional.of(TABLE_VIEW_PREF_DIR),
                 Optional.of(filePrefix),
-                new TypeReference<List<UserTablePreferences>>() {}
+                new TypeReference<List<UserTablePreferences>>() {
+        }
         );
-        
+
         return root == null ? new UserTablePreferences() : root.get(0);
     }
 }
