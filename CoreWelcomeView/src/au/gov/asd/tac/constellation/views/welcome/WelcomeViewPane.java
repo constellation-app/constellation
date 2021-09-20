@@ -231,7 +231,7 @@ public class WelcomeViewPane extends BorderPane {
                     } catch (final IOException ex) {
                         LOGGER.log(Level.WARNING, ex.getLocalizedMessage(), ex);
                     }
-                    final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilename));
+                    final ImageView imageView = new ImageView(new Image("file:///" + screenshotFilename));
                     imageView.setViewport(value);
                     imageView.setFitHeight(IMAGE_SIZE);
                     imageView.setFitWidth(IMAGE_SIZE);
