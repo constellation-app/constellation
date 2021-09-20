@@ -175,13 +175,13 @@ public class JDBCSourcePane extends SourcePane {
             addRemModGp.add(removeBtn, 2, 1, 1, 1);
             connectionsPane.add(addRemModGp, 0, 1, 1, 1);
 
-            final Button buttonCancel2 = new Button("OK");
-            buttonCancel2.setOnAction((final ActionEvent event) -> {
+            final Button buttonOk2 = new Button("OK");
+            buttonOk2.setOnAction((final ActionEvent event) -> {
                 event.consume();
-                final Stage stage = (Stage) buttonCancel2.getScene().getWindow();
+                final Stage stage = (Stage) buttonOk2.getScene().getWindow();
                 stage.close();
             });
-            connectionsPane.add(buttonCancel2, 3, 1, 1, 1);
+            connectionsPane.add(buttonOk2, 3, 1, 1, 1);
 
             final Tab driversTab = new Tab("Drivers");
             driversTab.setClosable(false);
@@ -317,13 +317,13 @@ public class JDBCSourcePane extends SourcePane {
             removeBtn1.setOnAction(removebtnAction);
             driversTabGridPane.add(removeBtn1, 1, 1, 1, 1);
 
-            final Button buttonCancel = new Button("OK");
-            buttonCancel.setOnAction((final ActionEvent event) -> {
+            final Button buttonOk = new Button("OK");
+            buttonOk.setOnAction((final ActionEvent event) -> {
                 event.consume();
-                final Stage stage = (Stage) buttonCancel.getScene().getWindow();
+                final Stage stage = (Stage) buttonOk.getScene().getWindow();
                 stage.close();
             });
-            driversTabGridPane.add(buttonCancel, 3, 1, 1, 1);
+            driversTabGridPane.add(buttonOk, 3, 1, 1, 1);
 
             driversTab.setContent(driversTabGridPane);
             connectionsTab.setContent(connectionsPane);
