@@ -479,7 +479,6 @@ public final class GraphRenderable implements GLRenderable {
                 final Vector3f eye = camera.lookAtEye;
                 final Vector3f centre = camera.lookAtCentre;
                 final float distanceToCentre = (float)Math.sqrt(Math.pow(centre.getX()-eye.getX(), 2) + Math.pow(centre.getY()-eye.getY(), 2) + Math.pow(centre.getZ()-eye.getZ(), 2));
-                LOGGER.log(Level.INFO, String.format("distance %s", distanceToCentre));
 
                 // The convergence is the plane where objects appear to be at the same depth as the screen.
                 // Objects closer than this appear to be in front of the screen; objects further than
@@ -504,7 +503,6 @@ public final class GraphRenderable implements GLRenderable {
 
                 final boolean[] leftEye = AnaglyphicDisplayAction.getLeftColor();
                 final boolean[] rightEye = AnaglyphicDisplayAction.getRightColor();
-                LOGGER.log(Level.INFO, String.format("left %s %s %s %s", leftEye[0], leftEye[1], leftEye[2], leftEye[3]));
 
 //                gl.glColorMask(true, false, true, true);
                 gl.glColorMask(rightEye[0], rightEye[1], rightEye[2], rightEye[3]);
