@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,7 +52,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ExportToExcelFilePluginNGTest {
-    
+
     public ExportToExcelFilePluginNGTest() {
     }
 
@@ -74,7 +74,7 @@ public class ExportToExcelFilePluginNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     @Test
     public void exportToExcelFileSelectedOnly() throws IOException, InterruptedException, PluginException {
         final boolean selectedOnly = true;
@@ -213,7 +213,8 @@ public class ExportToExcelFilePluginNGTest {
     }
 
     /**
-     * Open the given Excel file and read it, generating a CSV from its contents.
+     * Open the given Excel file and read it, generating a CSV from its
+     * contents.
      *
      * @param file the Excel file to read
      * @param sheetName the sheet name in the Excel file to read

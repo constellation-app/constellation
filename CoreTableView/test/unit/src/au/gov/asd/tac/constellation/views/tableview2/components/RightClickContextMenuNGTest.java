@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,12 +46,12 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class RightClickContextMenuNGTest {
-    
+
     private Table table;
     private TableView<ObservableList<String>> tableView;
-    
+
     private RightClickContextMenu rightClickContextMenu;
-    
+
     public RightClickContextMenuNGTest() {
     }
 
@@ -70,16 +70,16 @@ public class RightClickContextMenuNGTest {
     public void setUpMethod() throws Exception {
         table = mock(Table.class);
         tableView = mock(TableView.class);
-        
+
         when(table.getTableView()).thenReturn(tableView);
-        
+
         rightClickContextMenu = new RightClickContextMenu(table);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     @Test
     public void allUIComponentsNullBeforeInit() {
         assertNull(rightClickContextMenu.getContextMenu());
@@ -88,49 +88,49 @@ public class RightClickContextMenuNGTest {
         assertNull(rightClickContextMenu.getCopyRow());
         assertNull(rightClickContextMenu.getCopyColumnUnique());
     }
-    
+
     @Test
     public void createExportButtons() {
         final TableCell<ObservableList<String>, String> cell = mock(TableCell.class);
         final TableRow<ObservableList<String>> row = mock(TableRow.class);
         final TableColumn<ObservableList<String>, String> column = mock(TableColumn.class);
-        
+
         final int column2Index = 1;
-        
+
         final ObservableList<String> row1 = FXCollections.observableList(
                 List.of("row1Column1", "row1Column2", "row1Column3"));
         final ObservableList<String> row2 = FXCollections.observableList(
                 List.of("row2Column1", "row2Column2", "row2Column3"));
         final ObservableList<String> row3 = FXCollections.observableList(
                 List.of("row3Column1", "row3Column2", "row3Column3"));
-        
+
         // Column2 is purposefully the same as row 3 in order to verify "copy column UNIQUE"
         final ObservableList<String> row4 = FXCollections.observableList(
                 List.of("row4Column1", "row3Column2", "row4Column3"));
-        
+
         when(tableView.getItems()).thenReturn(FXCollections.observableList(
                 List.of(row1, row2, row3, row4)
         ));
-        
+
         when(cell.getItem()).thenReturn(row2.get(column2Index)); // a.k.a row2Column2
-        
+
         when(cell.getTableRow()).thenReturn(row);
         when(row.getItem()).thenReturn(FXCollections.observableList(row2));
-        
+
         when(cell.getTableColumn()).thenReturn(column);
         when(column.getCellObservableValue(row1)).thenReturn(new SimpleStringProperty(row1.get(column2Index)));
         when(column.getCellObservableValue(row2)).thenReturn(new SimpleStringProperty(row2.get(column2Index)));
         when(column.getCellObservableValue(row3)).thenReturn(new SimpleStringProperty(row3.get(column2Index)));
         when(column.getCellObservableValue(row4)).thenReturn(new SimpleStringProperty(row4.get(column2Index)));
-        
+
         rightClickContextMenu.init(cell);
-        
+
         assertNotNull(rightClickContextMenu.getContextMenu());
         assertNotNull(rightClickContextMenu.getCopyCell());
         assertNotNull(rightClickContextMenu.getCopyColumn());
         assertNotNull(rightClickContextMenu.getCopyRow());
         assertNotNull(rightClickContextMenu.getCopyColumnUnique());
-        
+
         assertEquals(
                 FXCollections.observableList(
                         List.of(
@@ -139,47 +139,47 @@ public class RightClickContextMenuNGTest {
                                 rightClickContextMenu.getCopyColumn(),
                                 rightClickContextMenu.getCopyColumnUnique()
                         )
-                ), 
+                ),
                 rightClickContextMenu.getContextMenu().getItems()
         );
-        
+
         assertEquals("Copy Cell", rightClickContextMenu.getCopyCell().getText());
         verifyCopyAction(rightClickContextMenu.getCopyCell().getOnAction(), "row2Column2");
-        
+
         assertEquals("Copy Row", rightClickContextMenu.getCopyRow().getText());
-        verifyCopyAction(rightClickContextMenu.getCopyRow().getOnAction(), 
+        verifyCopyAction(rightClickContextMenu.getCopyRow().getOnAction(),
                 "row2Column1,row2Column2,row2Column3");
-        
+
         assertEquals("Copy Column", rightClickContextMenu.getCopyColumn().getText());
-        verifyCopyAction(rightClickContextMenu.getCopyColumn().getOnAction(), 
+        verifyCopyAction(rightClickContextMenu.getCopyColumn().getOnAction(),
                 "row1Column2,row2Column2,row3Column2,row3Column2");
-        
+
         assertEquals("Copy Column (Unique)", rightClickContextMenu.getCopyColumnUnique().getText());
-        verifyCopyAction(rightClickContextMenu.getCopyColumnUnique().getOnAction(), 
+        verifyCopyAction(rightClickContextMenu.getCopyColumnUnique().getOnAction(),
                 "row1Column2,row2Column2,row3Column2");
     }
-    
+
     /**
-     * Verify that the passed event handler copies the correct table cells in CSV
-     * form to the OS clipboard.
+     * Verify that the passed event handler copies the correct table cells in
+     * CSV form to the OS clipboard.
      *
      * @param eventHandler the handler to test
      * @param expectedClipboardText the expected CSV copied to the clipboard
      */
     private void verifyCopyAction(final EventHandler<ActionEvent> eventHandler,
-                                  final String expectedClipboardText) {
-        
+            final String expectedClipboardText) {
+
         try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic
                 = Mockito.mockStatic(TableViewUtilities.class)) {
 
             final ActionEvent actionEvent = mock(ActionEvent.class);
-            
+
             eventHandler.handle(actionEvent);
-            
+
             tableViewUtilsMockedStatic.verify(() -> TableViewUtilities
                     .copyToClipboard(expectedClipboardText));
-            
+
             verify(actionEvent).consume();
         }
-    } 
+    }
 }

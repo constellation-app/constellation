@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,8 +40,9 @@ import javafx.scene.control.TableView;
  */
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
 public class ExportToCsvFilePlugin extends SimplePlugin {
+
     private static final String EXPORT_TO_DELIMITED_FILE_PLUGIN = "Table View: Export to Delimited File";
-    
+
     private final File file;
     private final TableView<ObservableList<String>> table;
     private final Pagination pagination;
@@ -53,12 +54,13 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
      * @param file the file to write the CSV to
      * @param table the table to create the CSV from
      * @param pagination the current pagination of the table
-     * @param selectedOnly true if the export should only include selected rows, false otherwise
+     * @param selectedOnly true if the export should only include selected rows,
+     * false otherwise
      */
     public ExportToCsvFilePlugin(final File file,
-                                 final TableView<ObservableList<String>> table,
-                                 final Pagination pagination,
-                                 final boolean selectedOnly) {
+            final TableView<ObservableList<String>> table,
+            final Pagination pagination,
+            final boolean selectedOnly) {
         this.file = file;
         this.table = table;
         this.pagination = pagination;
@@ -67,12 +69,12 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
 
     @Override
     public void execute(final PluginGraphs graphs,
-                        final PluginInteraction interaction,
-                        final PluginParameters parameters) throws InterruptedException, PluginException {
-        
+            final PluginInteraction interaction,
+            final PluginParameters parameters) throws InterruptedException, PluginException {
+
         // Extract all the rows from the table as CSV
         final String csvData = getTableData(table, pagination, true, selectedOnly);
-        
+
         // Write the CSV data to file
         final Thread outputThread = new Thread("Export to CSV File: Writing File") {
             @Override
@@ -121,7 +123,8 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
     }
 
     /**
-     * Get the flag indicating if only selected rows will be included in the export.
+     * Get the flag indicating if only selected rows will be included in the
+     * export.
      *
      * @return true if only selected rows will be included, false otherwise
      */
