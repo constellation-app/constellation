@@ -436,7 +436,7 @@ public class JDBCSourcePane extends SourcePane {
         final Label connectionStringLabel = new Label("Connection String");
         gp.add(connectionStringLabel, 0, 2, 1, 1);
         final TextField connectionStringF = new TextField(add ? "" : connection.getConnectionString());
-        connectionStringF.setPromptText("Enter a URL to connect to, eg. jdbc:sqlite:C/my_folder/database.sqlite");
+        connectionStringF.setPromptText("Enter a URL to connect to, eg. jdbc:sqlite:C:/my_folder/database.sqlite");
         connectionStringF.setStyle(PROMT_TEXT_COLOUR);
         connectionStringF.setFocusTraversable(false);
         gp.add(connectionStringF, 1, 2, 2, 1);
