@@ -41,7 +41,7 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
     final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
     final Button startedBtn = new Button();
-    
+
     private static final String GETTING_STARTED_HELP_PAGE = "au.gov.asd.tac.constellation.functionality.gettingstarted";
 
     /**

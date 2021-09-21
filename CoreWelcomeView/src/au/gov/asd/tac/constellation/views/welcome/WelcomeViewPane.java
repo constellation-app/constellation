@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFilesWelcomePage;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
+import static au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities.IMAGE_SIZE;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
@@ -58,19 +59,19 @@ import org.openide.util.NbPreferences;
  */
 public class WelcomeViewPane extends BorderPane {
 
-    private final BorderPane welcomeViewPane;
+    private final BorderPane pane;
 
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
-    public static final String WELCOME_TEXT = "Welcome to Constellation";
+    public static final String WELCOME_TEXT = String.format("Welcome to %s", BrandingUtilities.APPLICATION_NAME);
     public static final double SPLIT_POS = 0.2;
 
-    //Place holder images
-    public static final String LOGO = "resources/constellation-logo.png";
+    // place holder image
+    public static final String LOGO = "resources/constellation_logo.png";
 
     private static final Button[] recentGraphButtons = new Button[10];
 
     public WelcomeViewPane() {
-        welcomeViewPane = new BorderPane();
+        pane = new BorderPane();
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
 
@@ -82,8 +83,8 @@ public class WelcomeViewPane extends BorderPane {
 
             splitPane.setPrefHeight(visualBounds.getHeight());
             splitPane.setPrefWidth(visualBounds.getWidth());
-            welcomeViewPane.setCenter(scrollPane);
-            welcomeViewPane.autosize();
+            pane.setCenter(scrollPane);
+            pane.autosize();
 
             //Create VBox to handle Browser and controls,
             //or error messages
@@ -198,25 +199,19 @@ public class WelcomeViewPane extends BorderPane {
                 }
                 final String text = recentGraphButtons[i].getText();
 
-                final Rectangle2D value = new Rectangle2D(700, 150, 500, 500);
                 final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
                 if (new File(screenshotFilename).exists()) {
-                    final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilename));
-                    imageView.setViewport(value);
-                    imageView.setFitHeight(145);
-                    imageView.setFitWidth(145);
-                    recentGraphButtons[i].setGraphic(imageView);
+                    recentGraphButtons[i].setGraphic(buildGraphic(
+                            new Image("file:///" + screenshotFilename)
+                    ));
                 } else if (i < fileNames.size()) {
-                    final ImageView defaultImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream("resources/Constellation_Application_Icon_Small.png")));
-                    final Rectangle2D valueDefault = new Rectangle2D(0, 0, 145, 145);
-                    defaultImage.setViewport(valueDefault);
-                    defaultImage.setFitHeight(145);
-                    defaultImage.setFitWidth(145);
-                    recentGraphButtons[i].setGraphic(defaultImage);
+                    recentGraphButtons[i].setGraphic(buildGraphic(
+                            new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"))
+                    ));
                 }
 
                 //Calls the method for the recent graphs to open
-                // on the button action
+                //on the button action
                 recentGraphButtons[i].setOnAction(e -> {
                     RecentFilesWelcomePage.openGraph(text);
                 });
@@ -225,9 +220,26 @@ public class WelcomeViewPane extends BorderPane {
             bottomHBox.getChildren().add(flow);
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             VBox.setVgrow(rightVBox, Priority.ALWAYS);
-            this.setCenter(welcomeViewPane);
+            this.setCenter(pane);
             scrollPane.setVvalue(-1);
         });
+    }
+
+    /**
+     * Build an {@code ImageView} from the {@code Image} provided. The
+     * dimensions of the image are determined by {@code IMAGE_SIZE}
+     *
+     * @param image The image to present
+     * @return An {@code ImageView} containing the {@code Image} provided
+     */
+    private static ImageView buildGraphic(final Image image) {
+        final ImageView defaultImage = new ImageView(image);
+        final Rectangle2D valueDefault = new Rectangle2D(0, 0, IMAGE_SIZE, IMAGE_SIZE);
+
+        defaultImage.setViewport(valueDefault);
+        defaultImage.setFitHeight(IMAGE_SIZE);
+        defaultImage.setFitWidth(IMAGE_SIZE);
+        return defaultImage;
     }
 
     public void setButtonProps(final Button button) {

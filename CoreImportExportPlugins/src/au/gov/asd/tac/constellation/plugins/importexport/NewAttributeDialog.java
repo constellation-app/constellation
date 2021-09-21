@@ -118,7 +118,7 @@ public class NewAttributeDialog extends Stage {
         buttonPane.setHgap(GRIDPANE_GAP);
         root.setBottom(buttonPane);
 
-        final Button okButton = new Button("Ok");
+        final Button okButton = new Button("OK");
         okButton.setOnAction((ActionEvent event) -> {
             attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(),
                     labelText.getText(), descriptionText.getText());

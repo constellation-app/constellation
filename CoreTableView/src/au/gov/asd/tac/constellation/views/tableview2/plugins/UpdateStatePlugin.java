@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,8 +32,9 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
  */
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
 public class UpdateStatePlugin extends SimpleEditPlugin {
+
     private static final String UPDATE_STATE_PLUGIN = "Table View: Update State";
-    
+
     private final TableViewState tableViewState;
 
     public UpdateStatePlugin(final TableViewState tableViewState) {
@@ -42,8 +43,8 @@ public class UpdateStatePlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph,
-                     final PluginInteraction interaction,
-                     final PluginParameters parameters) throws InterruptedException, PluginException {
+            final PluginInteraction interaction,
+            final PluginParameters parameters) throws InterruptedException, PluginException {
         graph.setObjectValue(
                 TableViewConcept.MetaAttribute.TABLE_VIEW_STATE.ensure(graph),
                 0,

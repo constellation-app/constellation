@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.views.tableview2.factory;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableComparatorListener;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSortTypeListener;
+import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.Comparator;
 import java.util.List;
@@ -42,16 +42,17 @@ import org.apache.commons.lang3.tuple.Pair;
  * @author formalhaunt
  */
 public class TableViewPageFactory implements Callback<Integer, Node> {
+
     private final TablePane tablePane;
-    
+
     private final ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
     private final ChangeListener<? super TableColumn.SortType> tableSortTypeListener;
-    
+
     private List<ObservableList<String>> allTableRows;
-    
+
     /**
-     * The previous list of rows that were used when calculating the new page
-     * of data to display in the table. This is to track when graph selection
+     * The previous list of rows that were used when calculating the new page of
+     * data to display in the table. This is to track when graph selection
      * changes if the table is in selected only mode.
      * <p/>
      * If the graph is in selected only mode the full list of table rows is all
@@ -59,9 +60,9 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      * does the list of table rows.
      */
     private List<ObservableList<String>> lastAllTableRows;
-    
+
     private int maxRowsPerPage;
-    
+
     /**
      * Creates a new table page factory.
      *
@@ -69,16 +70,16 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      */
     public TableViewPageFactory(final TablePane tablePane) {
         this.tablePane = tablePane;
-        
+
         this.tableComparatorListener = new TableComparatorListener(tablePane);
         this.tableSortTypeListener = new TableSortTypeListener(tablePane);
     }
-    
+
     /**
      * Updates the factory with new data that is transient and changes between
-     * pagination updates. Because this factory is stateful the same instance
-     * is used between pagination updates and this method <b>MUST</b> be called
-     * if any of these values have changed.
+     * pagination updates. Because this factory is stateful the same instance is
+     * used between pagination updates and this method <b>MUST</b> be called if
+     * any of these values have changed.
      * <p/>
      * <ul>
      * <li>
@@ -94,11 +95,11 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      * @param maxRowsPerPage the maximum number of rows per page in the table
      */
     public void update(final List<ObservableList<String>> allTableRows,
-                       final int maxRowsPerPage) {
+            final int maxRowsPerPage) {
         this.allTableRows = allTableRows;
         this.maxRowsPerPage = maxRowsPerPage;
     }
-    
+
     /**
      * Updates the table's data with the required subset of rows based on the
      * calculated page. The row subset is determined based on the passed page
@@ -115,8 +116,8 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
     @Override
     public Node call(Integer pageIndex) {
         if (allTableRows != null) {
-            
-            // This action only effects selected only mode variables but runs no 
+
+            // This action only effects selected only mode variables but runs no
             // matter if the table is in selected only mode or not.
             // The reasoning is that in selected only mode, if the row list changes
             // then that means the selection on the graph has changed. In this case
@@ -140,7 +141,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
             // passed index and max rows per page
             final int fromIndex = pageIndex * maxRowsPerPage;
             final int toIndex = Math.min(fromIndex + maxRowsPerPage, allTableRows.size());
-            
+
             // Set the new page
             tablePane.getTable().getTableView().setItems(
                     FXCollections.observableArrayList(allTableRows.subList(fromIndex, toIndex))
@@ -152,7 +153,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
             // Re-bind the sorted row list comparator property
             tablePane.getActiveTableReference().getSortedRowList().comparatorProperty()
                     .bind(tablePane.getTable().getTableView().comparatorProperty());
-            
+
             // Restore the selection
             if (tablePane.getParentComponent().getCurrentState() != null) {
                 if (tablePane.getParentComponent().getCurrentState().isSelectedOnly()) {
@@ -161,9 +162,9 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                     // the list electedOnlySelectedRows. Restore the selection from that list.
                     if (!tablePane.getActiveTableReference().getSelectedOnlySelectedRows().isEmpty()) {
                         final int[] selectedIndices = tablePane.getActiveTableReference().getSelectedOnlySelectedRows().stream()
-                            .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
-                            .mapToInt(i -> i)
-                            .toArray();
+                                .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
+                                .mapToInt(i -> i)
+                                .toArray();
 
                         tablePane.getTable().getTableView().getSelectionModel()
                                 .selectIndices(selectedIndices[0], selectedIndices);
@@ -185,10 +186,10 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
 
         return tablePane.getTable().getTableView();
     }
-    
+
     /**
-     * Gets a listener that deals with sort order and sort column changes. The listener
-     * will update the table and cause it to refresh.
+     * Gets a listener that deals with sort order and sort column changes. The
+     * listener will update the table and cause it to refresh.
      *
      * @return the sort change listener
      * @see TableComparatorListener
@@ -198,8 +199,8 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
     }
 
     /**
-     * Gets a listener that deals with sort order and sort column changes. The listener
-     * will update the table and cause it to refresh.
+     * Gets a listener that deals with sort order and sort column changes. The
+     * listener will update the table and cause it to refresh.
      *
      * @return the sort change listener
      * @see TableSortTypeListener
@@ -207,34 +208,36 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
     public ChangeListener<? super TableColumn.SortType> getTableSortTypeListener() {
         return tableSortTypeListener;
     }
-    
+
     /**
      * Get the current sort that is set on the table. If no sort is set, then
      * both left and right parts of the pair will be null.
      * <p/>
-     * Also removes the table sort listener from the sort column if sort is active.
+     * Also removes the table sort listener from the sort column if sort is
+     * active.
      *
-     * @return a pair with the left being the column that sort is set on, and the
-     *     left being the direction
+     * @return a pair with the left being the column that sort is set on, and
+     * the left being the direction
      */
     protected Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> getCurrentSort() {
         TableColumn<ObservableList<String>, ?> sortCol = null;
         TableColumn.SortType sortType = null;
-        
+
         if (!tablePane.getTable().getTableView().getSortOrder().isEmpty()) {
             sortCol = tablePane.getTable().getTableView().getSortOrder().get(0);
             sortType = sortCol.getSortType();
             sortCol.sortTypeProperty().removeListener(getTableSortTypeListener());
         }
-        
+
         return ImmutablePair.of(sortCol, sortType);
     }
-    
+
     /**
      * Restores the sort on the table to the passed sort settings. If the sort
      * column (left) is null then no sort is restored.
      * <p/>
-     * Restores the table sort listener to the sort column if sorting is present.
+     * Restores the table sort listener to the sort column if sorting is
+     * present.
      *
      * @param sortBackup the sort back up to restore in the table
      */
@@ -245,7 +248,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
             sortBackup.getLeft().sortTypeProperty().addListener(getTableSortTypeListener());
         }
     }
-    
+
     /**
      * Restore listeners after the table items have been updated so that future
      * events are responded to appropriately.
@@ -257,10 +260,10 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
         tablePane.getActiveTableReference().getSortedRowList().comparatorProperty()
                 .addListener(getTableComparatorListener());
     }
-    
+
     /**
-     * Remove listeners on the table so that item changes due to pagination updates
-     * do not trigger random actions.
+     * Remove listeners on the table so that item changes due to pagination
+     * updates do not trigger random actions.
      */
     protected void removeListeners() {
         tablePane.getTable().getTableView().getSelectionModel().getSelectedItems()
@@ -269,33 +272,35 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
         tablePane.getActiveTableReference().getSortedRowList()
                 .comparatorProperty().removeListener(getTableComparatorListener());
     }
-    
+
     /**
-     * Restores the table selection from the current element selection in the graph.
+     * Restores the table selection from the current element selection in the
+     * graph.
      * <p/>
-     * It is expected that this method will be called on the FX Application thread.
+     * It is expected that this method will be called on the FX Application
+     * thread.
      *
      * @param graph the graph to read selection from
      * @param state the current table view state
      */
     protected void restoreSelectionFromGraph(final Graph graph,
-                                             final TableViewState state,
-                                             final Map<Integer, ObservableList<String>> elementIdToRowIndex) {
+            final TableViewState state,
+            final Map<Integer, ObservableList<String>> elementIdToRowIndex) {
         // Double check that the table is not in selected only mode
         if (graph != null && state != null && !state.isSelectedOnly()) {
-            
+
             if (!Platform.isFxApplicationThread()) {
                 throw new IllegalStateException("Not processing on the JavaFX Application Thread");
             }
-            
+
             // Gets the selected element IDs from the graph, maps them to table
             // rows and then maps the rows to the row index
             final int[] selectedIndices = getSelectedIds(graph, state).stream()
-                .map(id -> elementIdToRowIndex.get(id))
-                .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
-                .mapToInt(i -> i)
-                .toArray();
-            
+                    .map(id -> elementIdToRowIndex.get(id))
+                    .map(row -> tablePane.getTable().getTableView().getItems().indexOf(row))
+                    .mapToInt(i -> i)
+                    .toArray();
+
             tablePane.getTable().getTableView().getSelectionModel().clearSelection();
             if (selectedIndices.length != 0) {
                 tablePane.getTable().getTableView().getSelectionModel()
@@ -303,20 +308,21 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
             }
         }
     }
-    
+
     /**
      * Based on the tables current element type (vertex or transaction) get all
      * selected elements of that type in the graph and return their element IDs.
      * <p/>
-     * This simply wraps a call to {@link TableViewUtilities#getSelectedIds(Graph, TableViewState)}
-     * and used primarily for testing purposes.
+     * This simply wraps a call to
+     * {@link TableViewUtilities#getSelectedIds(Graph, TableViewState)} and used
+     * primarily for testing purposes.
      *
      * @param graph the graph to read from
      * @param state the current table state
      * @return the IDs of the selected elements
      */
     protected List<Integer> getSelectedIds(final Graph graph,
-                                           final TableViewState state) {
+            final TableViewState state) {
         return TableViewUtilities.getSelectedIds(graph, state);
     }
 }

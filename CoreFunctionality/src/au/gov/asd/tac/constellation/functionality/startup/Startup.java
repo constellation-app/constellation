@@ -43,7 +43,7 @@ public class Startup implements Runnable {
      * thread run in headless mode for tests, etc.
      */
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
-    
+
     @Override
     public void run() {
         ConstellationSecurityManager.startSecurityLater(null);
