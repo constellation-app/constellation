@@ -32,10 +32,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.geometry.HPos;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
@@ -57,6 +55,10 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
     private final TextField searchPluginTextField;
     
+    /**
+     * 
+     * @param parentComponent 
+     */
     public DataAccessPane(final DataAccessViewTopComponent parentComponent) {
         this.parentComponent = parentComponent;
         
@@ -99,7 +101,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         // right click anywhere and get the tab's context menu
         setOnContextMenuRequested(contextMenuEvent -> {
-            dataAccessTabPane.getCurrentTab().getContextMenu()
+            getDataAccessTabPane().getCurrentTab().getContextMenu()
                     .show(
                             DataAccessPane.this,
                             contextMenuEvent.getScreenX(),
@@ -113,13 +115,16 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         update();
     }
 
+    /**
+     * 
+     */
     public void addUIComponents() {
         final VBox vbox = new VBox(
-                optionsMenuBar.getMenuBar(),
-                searchPluginTextField,
-                dataAccessTabPane.getTabPane()
+                getOptionsMenuBar().getMenuBar(),
+                getSearchPluginTextField(),
+                getDataAccessTabPane().getTabPane()
         );
-        VBox.setVgrow(dataAccessTabPane.getTabPane(), Priority.ALWAYS);
+        VBox.setVgrow(getDataAccessTabPane().getTabPane(), Priority.ALWAYS);
         
         AnchorPane.setTopAnchor(vbox, 0.0);
         AnchorPane.setBottomAnchor(vbox, 0.0);
@@ -128,32 +133,24 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         
         getChildren().add(vbox);
         
-        AnchorPane.setTopAnchor(buttonToolbar.getOptionsToolbar(), 5.0);
-        AnchorPane.setRightAnchor(buttonToolbar.getOptionsToolbar(), 5.0);
+        AnchorPane.setTopAnchor(getButtonToolbar().getOptionsToolbar(), 5.0);
+        AnchorPane.setRightAnchor(getButtonToolbar().getOptionsToolbar(), 5.0);
         
-        getChildren().add(buttonToolbar.getOptionsToolbar());
+        getChildren().add(getButtonToolbar().getOptionsToolbar());
         
         widthProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.intValue() <= 460) {
-                buttonToolbar.handleShrinkingPane();
+                getButtonToolbar().handleShrinkingPane();
                 
-                optionsMenuBar.getMenuBar().setMinHeight(60);
+                getOptionsMenuBar().getMenuBar().setMinHeight(60);
             } else {
-                buttonToolbar.handleGrowingPane();
+                getButtonToolbar().handleGrowingPane();
                 
-                optionsMenuBar.getMenuBar().setMinHeight(36);
+                getOptionsMenuBar().getMenuBar().setMinHeight(36);
             }
         });
     }
     
-    /**
-     * 
-     * @return 
-     */
-    public DataAccessViewTopComponent getParentComponent() {
-        return parentComponent;
-    }
-
     /**
      * Update executeButton, tab contextual menus, etc. to enable running
      * plug-ins if there is a graph open and plug-ins are selected for running
@@ -186,14 +183,14 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             }
         }
     }
-
+    
     /**
      * Update executeButton, tab contextual menus, etc. to enable running
      * plug-ins if there is a graph open and plug-ins are selected for running
      *
      * @param newGraphId
      */
-    private void update(final String newGraphId) {
+    public final void update(final String newGraphId) {
         DataAccessPaneState.setCurrentGraphId(newGraphId);
         
         if (DataAccessPaneState.getCurrentGraphId() == null) {
@@ -208,32 +205,47 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         updateExecuteButtonEnablement(getDataAccessTabPane().updateTabMenus());
     }
-
+    
     /**
-     * Called when a field is enabling it's parent plug-in, to enable
-     * executeButton, etc., if there is an open graph.
+     * 
+     * @return 
      */
-    @Override
-    public void hierarchicalUpdate() {
-        update();
+    public DataAccessViewTopComponent getParentComponent() {
+        return parentComponent;
     }
 
     /**
-     * Enable or disable executeButton (not the tab contextual menus) based on
-     * whether any plug-ins are selected. This should *not* be called if
-     * plug-ins are running as in that case executeButton (actually the stop
-     * button) must remain enabled.
+     * 
+     * @return 
      */
-    private void updateExecuteButtonEnablement(final boolean canExecuteTabPane) {
-        final boolean queryIsRunning = DataAccessPaneState.isQueriesRunning();
-
-        // The button cannot be disabled if a query is running.
-        // Otherwise, disable if there is no selected plugin, an invalid time range,
-        // or the selected plugins contain invalid parameter values.
-        final boolean disable = !queryIsRunning && !canExecuteTabPane;
-        getButtonToolbar().getExecuteButton().setDisable(disable);
+    public OptionsMenuBar getOptionsMenuBar() {
+        return optionsMenuBar;
     }
 
+    /**
+     * 
+     * @return 
+     */
+    public ButtonToolbar getButtonToolbar() {
+        return buttonToolbar;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public TextField getSearchPluginTextField() {
+        return searchPluginTextField;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public DataAccessTabPane getDataAccessTabPane() {
+        return dataAccessTabPane;
+    }
+    
     /**
      * Set executeButton to function as "go".
      */
@@ -260,16 +272,25 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         
         getButtonToolbar().changeExecuteButtonState(ExecuteButtonState.CONTINUE);
     }
+    
+    /**
+     * Called when a field is enabling it's parent plug-in, to enable
+     * executeButton, etc., if there is an open graph.
+     */
+    @Override
+    public void hierarchicalUpdate() {
+        update();
+    }
 
     @Override
     public void validityChanged(boolean enabled) {
         // Must be overriden to implement PluginParametersPaneListener
     }
 
-    public DataAccessTabPane getDataAccessTabPane() {
-        return dataAccessTabPane;
-    }
-    
+    /**
+     * 
+     * @param canRun 
+     */
     @Override
     public void qualityControlRuleChanged(final boolean canRun) {
         if (canRun) {
@@ -279,11 +300,21 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         }
     }
 
-    public OptionsMenuBar getOptionsMenuBar() {
-        return optionsMenuBar;
-    }
+    /**
+     * Enable or disable executeButton (not the tab contextual menus) based on
+     * whether any plug-ins are selected.This should *not* be called if
+     * plug-ins are running as in that case executeButton (actually the stop
+     * button) must remain enabled.
+     *
+     * @param canExecuteTabPane
+     */
+    protected void updateExecuteButtonEnablement(final boolean canExecuteTabPane) {
+        final boolean queryIsRunning = DataAccessPaneState.isQueriesRunning();
 
-    public ButtonToolbar getButtonToolbar() {
-        return buttonToolbar;
+        // The button cannot be disabled if a query is running.
+        // Otherwise, disable if there is no selected plugin, an invalid time range,
+        // or the selected plugins contain invalid parameter values.
+        final boolean disable = !queryIsRunning && !canExecuteTabPane;
+        getButtonToolbar().getExecuteButton().setDisable(disable);
     }
 }

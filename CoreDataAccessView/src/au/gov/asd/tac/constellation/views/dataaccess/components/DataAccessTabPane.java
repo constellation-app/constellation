@@ -50,7 +50,7 @@ import javafx.scene.control.Tooltip;
  *
  * @author formalhaunt
  */
-public final class DataAccessTabPane {
+public class DataAccessTabPane {
     private static final Logger LOGGER = Logger.getLogger(DataAccessTabPane.class.getName());
     
     private static final String TAB_TITLE = "Step";
