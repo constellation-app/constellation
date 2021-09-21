@@ -108,6 +108,11 @@ public class ButtonToolbarNGTest {
             protected void update(QualityControlState state) {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
+
+            @Override
+            public QualityControlAutoButton copy() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
         };
         
         try (final MockedStatic<Lookup> lookupMockedStatic = Mockito.mockStatic(Lookup.class)) {
