@@ -23,6 +23,10 @@ public class AnaglyphicDisplayPreferenceKeys {
     public static final String LEFT_COLOR = "anaglyph.left";
     public static final String RIGHT_COLOR = "anaglyph.right";
 
+    // Why are the default colors green and magenta?
+    // Because the DreamWorks movie Monsters vs Aliens came with a 3D short called
+    // Bob's Big Break which uses those colors.
+    //
     public static final String LEFT_COLOR_DEFAULT = "Green";
     public static final String RIGHT_COLOR_DEFAULT = "Magenta";
 }

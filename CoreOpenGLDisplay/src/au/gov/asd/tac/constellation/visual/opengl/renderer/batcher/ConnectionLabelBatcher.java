@@ -136,6 +136,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
         shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
         shaderGlyphInfoTexture = gl.glGetUniformLocation(shader, "glyphInfoTexture");
         shaderGlyphImageTexture = gl.glGetUniformLocation(shader, "glyphImageTexture");
+        shaderGreyscale = gl.glGetUniformLocation(shader, "greyscale");
     }
 
     @Override

@@ -103,7 +103,6 @@ public final class AnaglyphicDisplayOptionsPanelController extends OptionsPanelC
         final String leftEye = panel.getLeftColor();
         final String rightEye = panel.getRightColor();
 
-        final boolean valid = !leftEye.equals(rightEye);
         return !leftEye.equals(rightEye);
     }
 

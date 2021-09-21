@@ -108,33 +108,6 @@ final class AnaglyphicDisplayPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-//    void load() {
-//        // TODO read settings and initialize GUI
-//        // Example:
-//        // someCheckBox.setSelected(Preferences.userNodeForPackage(AnaglyphicDisplayPanel.class).getBoolean("someFlag", false));
-//        // or for org.openide.util with API spec. version >= 7.4:
-//        // someCheckBox.setSelected(NbPreferences.forModule(AnaglyphicDisplayPanel.class).getBoolean("someFlag", false));
-//        // or:
-//        // someTextField.setText(SomeSystemOption.getDefault().getSomeStringProperty());
-//    }
-//
-//    void store() {
-//        // TODO store modified settings
-//        // Example:
-//        // Preferences.userNodeForPackage(AnaglyphicDisplayPanel.class).putBoolean("someFlag", someCheckBox.isSelected());
-//        // or for org.openide.util with API spec. version >= 7.4:
-//        // NbPreferences.forModule(AnaglyphicDisplayPanel.class).putBoolean("someFlag", someCheckBox.isSelected());
-//        // or:
-//        // SomeSystemOption.getDefault().setSomeStringProperty(someTextField.getText());
-//    }
-//
-//    boolean valid() {
-//        final String leftEye = (String)leftEyeColor.getSelectedItem();
-//        final String rightEye = (String)rightEyeColor.getSelectedItem();
-//
-//        return !leftEye.equals(rightEye);
-//    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
