@@ -476,44 +476,61 @@ public final class GraphRenderable implements GLRenderable {
                 // from the viewpoints of the left and right eyes.
                 //
 
-                final Vector3f eye = camera.lookAtEye;
-                final Vector3f centre = camera.lookAtCentre;
-                final float distanceToCentre = (float)Math.sqrt(Math.pow(centre.getX()-eye.getX(), 2) + Math.pow(centre.getY()-eye.getY(), 2) + Math.pow(centre.getZ()-eye.getZ(), 2));
-
                 // The convergence is the plane where objects appear to be at the same depth as the screen.
                 // Objects closer than this appear to be in front of the screen; objects further than
                 // this appear to be inside the screen.
                 //
                 // Ideally we want this to be some fixed distance from the camera(s), taking the size of
-                // the graph into consideration. However, we don't have access to the graph here,
-                // so, we'll use the distance to the lookAt point as a proxy. This is unfortunate, because
-                // the distance will change as the camera moves, but it will have to do.
+                // the graph into consideration; for example, half the width of the graph. However,
+                // this would mean recalculating the physical size of the graph every time we displayed it (because
+                // here we don't want to keep track of which graph we're displaying).
                 //
+                // As a reasonable substitute, we'll use the distance from the eye to the centre.
+                // Resetting the view puts the lookAt centre in the middle of the graph anyway,
+                // and moving around generally seems to keep the centre at the same distance from the eye.
+                // As a convenient side effect, if the centre is changed to a node, then that node will be at the convergence.
+                //
+                final Vector3f eye = camera.lookAtEye;
+                final Vector3f centre = camera.lookAtCentre;
+//                final float distanceToCentre = (float)Math.sqrt(Math.pow(centre.getX()-eye.getX(), 2) + Math.pow(centre.getY()-eye.getY(), 2) + Math.pow(centre.getZ()-eye.getZ(), 2));
+                final float distanceToCentre = Vector3f.subtract(centre, eye).getLength();
+
                 final float convergence = Camera.PERSPECTIVE_NEAR + distanceToCentre;
-                final float eyeSeparation = 0.25f;
+
+                final float eyeSeparation = 0.25f; // This is an arbitrary value, arrived at by experimentation.
                 final float aspect = (float)graphDisplayer.getWidth()/(float)graphDisplayer.getHeight();
                 final AnaglyphCamera anaglyphCam = new AnaglyphCamera(convergence, eyeSeparation, aspect, Camera.FIELD_OF_VIEW, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
+
+                // The eye colors are pulled from the preferences by AnaglyphicDisplayAction when
+                // anaglyphic mode is turned on. A bit ugly, but it gives us quick access to the colors.
+                // Note that the eye glass colors go to the opposite camera.
+                //
+                final AnaglyphicDisplayAction.EyeColorMask leftEyeColor = AnaglyphicDisplayAction.getLeftColorMask();
+                final AnaglyphicDisplayAction.EyeColorMask rightEyeColor = AnaglyphicDisplayAction.getRightColorMask();
 
                 // Draw view from left eye.
                 //
 
                 Matrix44f mv = anaglyphCam.applyLeftFrustum(mvMatrix);
                 Matrix44f p = anaglyphCam.getProjectionMatrix();
-//                Matrix44f mvp = stereoCam.getMvpMatrix(mv);
-
-                final boolean[] leftEye = AnaglyphicDisplayAction.getLeftColor();
-                final boolean[] rightEye = AnaglyphicDisplayAction.getRightColor();
 
 //                gl.glColorMask(true, false, true, true);
-                gl.glColorMask(rightEye[0], rightEye[1], rightEye[2], rightEye[3]);
+                gl.glColorMask(rightEyeColor.red, rightEyeColor.green, rightEyeColor.blue, true);
 
                 drawBatches(gl, mv, p, true);
 
+                // Draw view from right eye.
+                //
+
+                // Don't overwrite the other eye.
+                //
+                gl.glClear(GL3.GL_DEPTH_BUFFER_BIT);
+
                 mv = anaglyphCam.applyRightFrustum(mvMatrix);
                 p = anaglyphCam.getProjectionMatrix();
-//                mvp = stereoCam.getMvpMatrix(mv);
+
 //                gl.glColorMask(false, true, false, true);
-                gl.glColorMask(leftEye[0], leftEye[1], leftEye[2], leftEye[3]);
+                gl.glColorMask(leftEyeColor.red, leftEyeColor.green, leftEyeColor.blue, true);
 
                 drawBatches(gl, mv, p, true);
 

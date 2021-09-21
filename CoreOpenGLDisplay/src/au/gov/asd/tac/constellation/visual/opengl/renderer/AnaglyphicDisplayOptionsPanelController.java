@@ -50,12 +50,12 @@ public final class AnaglyphicDisplayOptionsPanelController extends OptionsPanelC
     // This is a map from the color names to their RGB color bits used by glColorMask.
     //
     private static final Map<String, boolean[]> COLOR_BITS = Map.of(
-            "Blue",    new boolean[]{false, false, true,  true},
-            "Cyan",    new boolean[]{false, true,  true,  true},
-            "Green",   new boolean[]{false, true,  false, true},
-            "Magenta", new boolean[]{true,  false, true,  true},
-            "Red",     new boolean[]{true,  false, false, true},
-            "Yellow",  new boolean[]{true,  true,  false, true}
+            "Blue",    new boolean[]{false, false, true},
+            "Cyan",    new boolean[]{false, true,  true},
+            "Green",   new boolean[]{false, true,  false},
+            "Magenta", new boolean[]{true,  false, true},
+            "Red",     new boolean[]{true,  false, false},
+            "Yellow",  new boolean[]{true,  true,  false}
     );
 
     public static boolean[] getColorMask(final String color) {
