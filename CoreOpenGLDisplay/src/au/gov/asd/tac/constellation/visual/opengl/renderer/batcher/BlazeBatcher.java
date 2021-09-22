@@ -43,8 +43,6 @@ public class BlazeBatcher implements SceneBatcher {
     private final Batch batch;
     private int shader;
 
-    private boolean greyscale = false; // anaglyphic drawing
-
     private float blazeSize;
     private float blazeOpacity;
 
@@ -164,12 +162,8 @@ public class BlazeBatcher implements SceneBatcher {
         }
     }
 
-    public void setNextDrawIsGreyscale() {
-        greyscale = true;
-    }
-
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
 
         if (batch.isDrawable()) {
             gl.glUseProgram(shader);
@@ -188,6 +182,5 @@ public class BlazeBatcher implements SceneBatcher {
             batch.draw(gl);
             gl.glEnable(GL.GL_DEPTH_TEST);
         }
-        greyscale = false;
     }
 }

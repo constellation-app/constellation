@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
@@ -25,6 +26,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 import org.openide.util.actions.Presenter;
 
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.visual.opengl.renderer.AnaglyphicDisplayAction")
@@ -33,11 +35,28 @@ import org.openide.util.actions.Presenter;
 @Messages("CTL_AnaglyphicDisplayAction=Anaglyphic")
 public final class AnaglyphicDisplayAction extends AbstractAction implements Presenter.Menu {
 
+    public static final class EyeColorMask {
+        boolean red;
+        boolean green;
+        boolean blue;
+
+        void set(final boolean[] mask) {
+            red = mask[0];
+            green = mask[1];
+            blue = mask[2];
+        }
+    }
+
     private final JCheckBoxMenuItem menuItem;
 
     // Not a particularly nice way of making a global state available,
     // but it has to be fast because it's used at every call to display().
     private static final AtomicBoolean displayAnaglyph = new AtomicBoolean(false);
+
+    // Also quite ugly, but these are also used at every call to display() when anaglyphic display is active.
+    //
+    private static final EyeColorMask LEFT_EYE = new EyeColorMask();
+    private static final EyeColorMask RIGHT_EYE = new EyeColorMask();
 
     public AnaglyphicDisplayAction() {
         menuItem = new JCheckBoxMenuItem(this);
@@ -48,10 +67,28 @@ public final class AnaglyphicDisplayAction extends AbstractAction implements Pre
         return displayAnaglyph.get();
     }
 
+    public static EyeColorMask getLeftColorMask() {
+        return LEFT_EYE;
+    }
+
+    public static EyeColorMask getRightColorMask() {
+        return RIGHT_EYE;
+    }
+
     @Override
     public void actionPerformed(final ActionEvent e) {
         displayAnaglyph.set(!displayAnaglyph.get());
         menuItem.setSelected(displayAnaglyph.get());
+
+        if (displayAnaglyph.get()) {
+            // Get the current color options and convert them to bit masks.
+            //
+            final Preferences prefs = NbPreferences.forModule(AnaglyphicDisplayPreferenceKeys.class);
+            final String leftColor = prefs.get(AnaglyphicDisplayPreferenceKeys.LEFT_COLOR, AnaglyphicDisplayPreferenceKeys.LEFT_COLOR_DEFAULT);
+            final String rightColor = prefs.get(AnaglyphicDisplayPreferenceKeys.RIGHT_COLOR, AnaglyphicDisplayPreferenceKeys.RIGHT_COLOR_DEFAULT);
+            LEFT_EYE.set(AnaglyphicDisplayOptionsPanelController.getColorMask(leftColor));
+            RIGHT_EYE.set(AnaglyphicDisplayOptionsPanelController.getColorMask(rightColor));
+        }
     }
 
     @Override

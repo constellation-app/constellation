@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-17 Anaglyphic Display
+The anaglyphic 3D display now allows different colors to be selected for left and right eyes.
+
 == 2021-09-17 Data Access View
 <p>The Quality Control widget and Go button have also been added to the bottom
 of the view to improve the UX workflow as you select plugins from the top going
