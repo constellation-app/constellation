@@ -78,7 +78,7 @@ public class BasicFindPanel extends javax.swing.JPanel {
         attributeDropDownMenu = new javax.swing.JPopupMenu();
         inputTypeGroup = new javax.swing.ButtonGroup();
         stdTextRadioButton = new javax.swing.JRadioButton();
-        findTextField = new javax.swing.JTextField();
+        findTextField = new au.gov.asd.tac.constellation.views.find.javax.swing.JTextFieldUndoRedo();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         regexRadioButton = new javax.swing.JRadioButton();
