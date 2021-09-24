@@ -66,22 +66,30 @@ public class HelpServlet extends HttpServlet {
 
         LOGGER.log(Level.INFO, "GET {0}", requestPath);
         try {
-            if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js") || requestPath.contains(".ico")) && !wasRedirect) {
-                final File file = new File(Generator.baseDirectory);
-                final URL fileUrl = file.toURI().toURL();
-                String requestfrontHalfRemoved = requestPath.replace(fileUrl.toString(), ""); // remove first bit
-                String refererfrontHalfRemoved = referer.replace(fileUrl.toString(), ""); // remove first bit
-                refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove filename.md
-                refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove up one level
-                refererfrontHalfRemoved = refererfrontHalfRemoved.replace("http://localhost:" + ConstellationHelpDisplayer.currentPort, "");
+            if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js") || requestPath.contains(".ico"))) {
+                final String repeatedText = "src/au/gov/asd/tac";
+                final int firstIndex = requestPath.indexOf(repeatedText);
+                if (firstIndex != -1) {
+                    final int secondIndex = requestPath.indexOf(repeatedText, firstIndex + repeatedText.length());
+                    if (secondIndex != -1) {
+                        final File file = new File(Generator.baseDirectory);
+                        final URL fileUrl = file.toURI().toURL();
+                        String requestfrontHalfRemoved = requestPath.replace(fileUrl.toString(), ""); // remove first bit
+                        String refererfrontHalfRemoved = referer.replace(fileUrl.toString(), ""); // remove first bit
+                        refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove filename.md
+                        refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove up one level
+                        refererfrontHalfRemoved = refererfrontHalfRemoved.replace("http://localhost:" + ConstellationHelpDisplayer.currentPort, "");
 
-                requestfrontHalfRemoved = requestfrontHalfRemoved.replaceFirst(refererfrontHalfRemoved, "");
+                        requestfrontHalfRemoved = requestfrontHalfRemoved.replaceFirst(refererfrontHalfRemoved, "");
 
-                String redirectURL = Generator.baseDirectory + requestfrontHalfRemoved;
-                final File file2 = new File(redirectURL);
-                final URL fileUrl2 = file2.toURI().toURL();
-                response.sendRedirect("/" + fileUrl2.toString());
-                wasRedirect = true;
+                        String redirectURL = Generator.baseDirectory + requestfrontHalfRemoved;
+                        final File file2 = new File(redirectURL);
+                        final URL fileUrl2 = file2.toURI().toURL();
+                        response.sendRedirect("/" + fileUrl2.toString());
+                        wasRedirect = true;
+                        return;
+                    }
+                }
             } else if (wasRedirect) {
                 wasRedirect = false;
             }
