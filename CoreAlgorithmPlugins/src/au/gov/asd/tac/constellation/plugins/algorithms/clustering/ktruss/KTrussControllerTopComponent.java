@@ -114,9 +114,8 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         isAdjusting = false;
         nestedTrussesHeight = 500;
         nestedPanelIsVisible = false;
-        updateInteractiveButton(interactiveButton.getText() == TOGGLE_ENABLED ? true : false);
+        updateInteractiveButton(interactiveButton.getText().equals(TOGGLE_DISABLED));
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
