@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javafx.stage.FileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -474,7 +474,7 @@ public class JSONImportFileParser extends ImportFileParser {
      * @return the extension filter to use when browsing for files of this type.
      */
     @Override
-    public FileChooser.ExtensionFilter getExtensionFilter() {
-        return new FileChooser.ExtensionFilter("JSON Files", "*.json");
+    public FileNameExtensionFilter getExtensionFilter() {
+        return new FileNameExtensionFilter("JSON Files", "json");
     }
 }

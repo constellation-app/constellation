@@ -24,7 +24,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.stage.FileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -75,7 +75,7 @@ public class TSVImportFileParser extends ImportFileParser {
     }
 
     @Override
-    public FileChooser.ExtensionFilter getExtensionFilter() {
-        return new FileChooser.ExtensionFilter("Tab Separated Files", "*.tsv");
+    public FileNameExtensionFilter getExtensionFilter() {
+        return new FileNameExtensionFilter("Tab Separated Files", "tsv");
     }
 }

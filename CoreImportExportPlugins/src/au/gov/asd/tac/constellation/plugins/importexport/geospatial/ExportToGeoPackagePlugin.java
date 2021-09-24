@@ -25,8 +25,7 @@ import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -41,8 +40,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
 
     @Override
-    protected ExtensionFilter getExportType() {
-        return new FileChooser.ExtensionFilter("GeoPackage", "*.gpkg");
+    protected FileNameExtensionFilter getExportType() {
+        return new FileNameExtensionFilter("GeoPackage", "gpkg");
     }
 
     @Override

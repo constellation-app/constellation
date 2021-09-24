@@ -23,120 +23,60 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import java.awt.Frame;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
-import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.UserCancelException;
+import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
- * Open a file
+ * Open a file.
  *
  * @author canis_majoris
+ * @author sol695510
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("OpenFilePlugin=Open File")
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"LOW LEVEL"})
 public class OpenFilePlugin extends SimpleReadPlugin {
 
-    private boolean running;
-    private static File currentDirectory = null;
+    private static final Frame window = WindowManager.getDefault().getMainWindow();
+    private static final Preferences preferences = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = preferences.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
 
-    private static void setCurrentDirectory(final File currentDir) {
-        currentDirectory = currentDir;
-    }
-
-    /**
-     * Creates and initializes a file chooser.
-     *
-     * @return the initialized file chooser
-     */
-    protected JFileChooser prepareFileChooser() {
-        final JFileChooser chooser = new FileChooser();
-        chooser.setCurrentDirectory(getCurrentDirectory());
-        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
-
-        return chooser;
-    }
+    private final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static File SAVED_DIRECTORY = null;
 
     @Override
     public HelpCtx getHelpCtx() {
         return new HelpCtx(this.getClass().getName());
     }
 
-    /**
-     * Displays the specified file chooser and returns a list of selected files.
-     *
-     * @param chooser file chooser to display
-     * @return array of selected files,
-     * @exception org.openide.util.UserCancelException if the user cancelled the
-     * operation
-     */
-    public static File[] chooseFilesToOpen(final JFileChooser chooser)
-            throws UserCancelException {
-        File[] files;
-        do {
-            final int selectedOption = chooser.showOpenDialog(
-                    WindowManager.getDefault().getMainWindow());
-
-            if (selectedOption != JFileChooser.APPROVE_OPTION) {
-                throw new UserCancelException();
-            }
-            files = chooser.getSelectedFiles();
-        } while (files.length == 0);
-        return files;
-    }
-
-    private static File getCurrentDirectory() {
-        if (Boolean.getBoolean("netbeans.openfile.197063")) {
-            // Prefer to open from parent of active editor, if any.
-            final TopComponent activated = TopComponent.getRegistry().getActivated();
-            if (activated != null && WindowManager.getDefault().isOpenedEditorTopComponent(activated)) {
-                final DataObject d = activated.getLookup().lookup(DataObject.class);
-                if (d != null) {
-                    final File f = FileUtil.toFile(d.getPrimaryFile());
-                    if (f != null) {
-                        return f.getParentFile();
-                    }
-                }
-            }
-        }
-        // Fall back to default location ($HOME or similar).
-        if (currentDirectory == null || !currentDirectory.exists()) {
-            currentDirectory = new File(System.getProperty("user.home"));
-        }
-        return currentDirectory;
-    }
-
     @Override
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        SwingUtilities.invokeLater(() -> {
-            if (running) {
-                return;
-            }
-            try {
-                running = true;
-                final JFileChooser chooser = prepareFileChooser();
-                final File[] files;
-                try {
-                    files = chooseFilesToOpen(chooser);
-                    OpenFilePlugin.setCurrentDirectory(chooser.getCurrentDirectory());
-                    currentDirectory = chooser.getCurrentDirectory();
-                } catch (final UserCancelException ex) {
-                    return;
-                }
-                for (int i = 0; i < files.length; i++) {
-                    OpenFile.openFile(files[i], -1);
-                }
-            } finally {
-                running = false;
-            }
-        });
+
+        final JFileChooser chooser = new FileChooser();
+        chooser.setCurrentDirectory(SAVED_DIRECTORY != null ? SAVED_DIRECTORY : DEFAULT_DIRECTORY);
+        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
+
+        final List<File> selectedFiles = new ArrayList<>();
+
+        if (chooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
+            selectedFiles.addAll(Arrays.asList(chooser.getSelectedFiles()));
+        }
+
+        if (!selectedFiles.isEmpty()) {
+            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? chooser.getCurrentDirectory() : DEFAULT_DIRECTORY;
+
+            selectedFiles.forEach(file -> OpenFile.openFile(file, -1));
+        }
     }
 }

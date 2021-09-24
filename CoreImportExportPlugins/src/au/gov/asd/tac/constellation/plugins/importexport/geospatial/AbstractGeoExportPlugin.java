@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -81,7 +82,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
      *
      * @return an {@link ExtensionFilter}
      */
-    protected abstract ExtensionFilter getExportType();
+    protected abstract FileNameExtensionFilter getExportType();
 
     /**
      *

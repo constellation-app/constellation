@@ -89,7 +89,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
@@ -296,7 +296,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         saveFileParam.setName("Output file");
         saveFileParam.setDescription("A file to write stuff to");
         FileParameterType.setKind(saveFileParam, FileParameterType.FileParameterKind.SAVE);
-        FileParameterType.setFileFilters(saveFileParam, new FileChooser.ExtensionFilter("Text files", "*.txt"));
+        FileParameterType.setFileFilters(saveFileParam, new FileNameExtensionFilter("Text files", "txt"));
         params.addParameter(saveFileParam);
 
         final PluginParameter<ColorParameterValue> color = ColorParameterType.build(COLOR_PARAMETER_ID);

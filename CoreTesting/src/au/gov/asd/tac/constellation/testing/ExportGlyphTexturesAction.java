@@ -15,16 +15,21 @@
  */
 package au.gov.asd.tac.constellation.testing;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
+import org.openide.windows.WindowManager;
 
 @ActionID(
         category = "Experimental",
@@ -37,15 +42,28 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_ExportGlyphTexturesAction=Export Glyph Textures")
 public final class ExportGlyphTexturesAction implements ActionListener {
 
+    private static final Frame window = WindowManager.getDefault().getMainWindow();
+    private static final Preferences preferences = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = preferences.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+
+    private final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private File SAVED_DIRECTORY = null;
+
     @Override
     public void actionPerformed(ActionEvent e) {
-
         final JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Export Glyph Textures");
+        fileChooser.setCurrentDirectory(SAVED_DIRECTORY != null ? SAVED_DIRECTORY : DEFAULT_DIRECTORY);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileFilter(new FileNameExtensionFilter("PNG Images", "png"));
-        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+
+        if (fileChooser.showSaveDialog(window) == JFileChooser.APPROVE_OPTION) {
             final File file = fileChooser.getSelectedFile();
-            SharedDrawable.exportGlyphTextures(file);
+
+            if (file != null) {
+                SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? fileChooser.getCurrentDirectory() : DEFAULT_DIRECTORY;
+                SharedDrawable.exportGlyphTextures(file);
+            }
         }
     }
 }

@@ -24,8 +24,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -40,8 +39,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExportToGeoJsonPlugin extends AbstractGeoExportPlugin {
 
     @Override
-    protected ExtensionFilter getExportType() {
-        return new FileChooser.ExtensionFilter("JSON", "*.json");
+    protected FileNameExtensionFilter getExportType() {
+        return new FileNameExtensionFilter("JSON", "json");
     }
 
     @Override

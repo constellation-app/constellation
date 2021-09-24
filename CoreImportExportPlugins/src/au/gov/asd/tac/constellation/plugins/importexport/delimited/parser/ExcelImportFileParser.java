@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -261,7 +261,7 @@ public class ExcelImportFileParser extends ImportFileParser {
     }
 
     @Override
-    public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("Excel Files", "*.xls", "*.xlsx");
+    public FileNameExtensionFilter getExtensionFilter() {
+        return new FileNameExtensionFilter("Excel Files", "xls", "xlsx");
     }
 }

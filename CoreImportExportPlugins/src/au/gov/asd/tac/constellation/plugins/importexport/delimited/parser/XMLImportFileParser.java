@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import javafx.stage.FileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.transform.TransformerException;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Attr;
@@ -89,8 +89,8 @@ public class XMLImportFileParser extends ImportFileParser {
     }
 
     @Override
-    public FileChooser.ExtensionFilter getExtensionFilter() {
-        return new FileChooser.ExtensionFilter("XML Files", "*.xml");
+    public FileNameExtensionFilter getExtensionFilter() {
+        return new FileNameExtensionFilter("XML Files", "xml");
     }
 
     private void exploreElement(final Element element, final List<String> path, final Map<List<String>, Counter> counts) {

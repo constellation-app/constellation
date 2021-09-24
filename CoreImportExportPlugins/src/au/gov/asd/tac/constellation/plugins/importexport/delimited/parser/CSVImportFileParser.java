@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -76,7 +76,7 @@ public class CSVImportFileParser extends ImportFileParser {
     }
 
     @Override
-    public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("CSV Files", "*.csv");
+    public FileNameExtensionFilter getExtensionFilter() {
+        return new FileNameExtensionFilter("CSV Files", "csv");
     }
 }

@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -66,8 +66,8 @@ public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
     }
 
     @Override
-    protected ExtensionFilter getExportType() {
-        return new ExtensionFilter("Shapefile", "*.shp");
+    protected FileNameExtensionFilter getExportType() {
+        return new FileNameExtensionFilter("Shapefile", "shp");
     }
 
     @Override

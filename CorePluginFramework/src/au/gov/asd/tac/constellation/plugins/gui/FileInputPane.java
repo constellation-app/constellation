@@ -19,11 +19,15 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import java.awt.Frame;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
@@ -35,8 +39,10 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.openide.util.NbPreferences;
+import org.openide.windows.WindowManager;
 
 /**
  * A text-box and file chooser that together allows the selection or manual
@@ -53,8 +59,15 @@ import javafx.stage.FileChooser.ExtensionFilter;
  */
 public class FileInputPane extends HBox {
 
-    public static final int DEFAULT_WIDTH = 300;
+    private static final Frame window = WindowManager.getDefault().getMainWindow();
+    private static final Preferences preferences = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = preferences.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+
     public static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private File SAVED_DIRECTORY = null;
+
+    public static final int DEFAULT_WIDTH = 300;
+
     private final Button fileAddButton;
     private final TextInputControl field;
     private static final Logger LOGGER = Logger.getLogger(FileInputPane.class.getName());
@@ -82,40 +95,30 @@ public class FileInputPane extends HBox {
         final FileParameterValue paramaterValue = parameter.getParameterValue();
         fileAddButton = new Button(paramaterValue.getKind() == FileParameterKind.SAVE ? "Save" : "Open");
         fileAddButton.setOnAction((ActionEvent event) -> {
-            final FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(DEFAULT_DIRECTORY);
-            final ExtensionFilter filter = FileParameterType.getFileFilters(parameter);
+            final JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(SAVED_DIRECTORY != null ? SAVED_DIRECTORY : DEFAULT_DIRECTORY);
+            fileChooser.setMultiSelectionEnabled(true);
+
+            final FileNameExtensionFilter filter = FileParameterType.getFileFilters(parameter);
             if (filter != null) {
-                fileChooser.getExtensionFilters().add(filter);
+                fileChooser.setFileFilter(filter);
             }
 
             final List<File> files = new ArrayList<>();
             switch (paramaterValue.getKind()) {
                 case OPEN:
-                    final File openFile = fileChooser.showOpenDialog(getScene().getWindow());
-                    if (openFile != null) {
-                        files.add(openFile);
+                    if (fileChooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
+                        files.add(fileChooser.getSelectedFile());
                     }
                     break;
                 case OPEN_MULTIPLE:
-                    final List<File> multipleOpenFiles = fileChooser.showOpenMultipleDialog(getScene().getWindow());
-                    if (multipleOpenFiles != null) {
-                        files.addAll(multipleOpenFiles);
+                    if (fileChooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
+                        files.addAll(Arrays.asList(fileChooser.getSelectedFiles()));
                     }
                     break;
                 case SAVE:
-                    final File saveFile = fileChooser.showSaveDialog(getScene().getWindow());
-                    if (saveFile != null) {
-//                        if (filter != null && filter.getExtensions().size() == 1) {
-//                            final String fileExtension = filter.getExtensions().get(0).substring(1);
-//                            if (!file.getName().endsWith(fileExtension)) {
-//                                final File fileWithExtension = new File(file.getAbsolutePath() + fileExtension);
-//                                files.add(fileWithExtension);
-//                            }
-//                        } else {
-//                            files.add(file);
-//                        }
-                        files.add(saveFile);
+                    if (fileChooser.showSaveDialog(window) == JFileChooser.APPROVE_OPTION) {
+                        files.addAll(Arrays.asList(fileChooser.getSelectedFiles()));
                     }
                     break;
                 default:
@@ -124,9 +127,9 @@ public class FileInputPane extends HBox {
             }
 
             if (!files.isEmpty()) {
+                SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? fileChooser.getCurrentDirectory() : DEFAULT_DIRECTORY;
                 parameter.setObjectValue(files);
             }
-
         });
 
         if (suggestedHeight > 1) {

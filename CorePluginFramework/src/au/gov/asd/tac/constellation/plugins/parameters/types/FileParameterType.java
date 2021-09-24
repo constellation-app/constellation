@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -118,7 +119,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      * @param fileFilter An {@link ExtensionFilter} object that describes how
      * files should be filtered by extension.
      */
-    public static void setFileFilters(final PluginParameter<FileParameterValue> parameter, final ExtensionFilter fileFilter) {
+    public static void setFileFilters(final PluginParameter<FileParameterValue> parameter, final FileNameExtensionFilter fileFilter) {
         parameter.getParameterValue().setFilter(fileFilter);
     }
 
@@ -131,7 +132,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      * @return The {@link ExtensionFilter} object that describes how files
      * should be filtered by extension for the given parameter.
      */
-    public static ExtensionFilter getFileFilters(final PluginParameter<FileParameterValue> parameter) {
+    public static FileNameExtensionFilter getFileFilters(final PluginParameter<FileParameterValue> parameter) {
         return parameter.getParameterValue().getFilter();
     }
 
@@ -165,7 +166,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         private final List<String> files;
         private FileParameterKind kind;
-        private ExtensionFilter filter;
+        private FileNameExtensionFilter filter;
 
         /**
          * Constructs a new FileParameterValue
@@ -259,7 +260,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
          * @return An {@link ExtensionFilter} indicating the filtering of file
          * selection.
          */
-        public ExtensionFilter getFilter() {
+        public FileNameExtensionFilter getFilter() {
             return filter;
         }
 
@@ -269,7 +270,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
          * @param filter The {@link ExtensionFilter} indicating the filtering of
          * file selection.
          */
-        public void setFilter(final ExtensionFilter filter) {
+        public void setFilter(final FileNameExtensionFilter filter) {
             this.filter = filter;
         }
 

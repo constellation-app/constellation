@@ -18,13 +18,16 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -53,12 +56,21 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.openide.util.NbPreferences;
+import org.openide.windows.WindowManager;
 
 public class JDBCSourcePane extends SourcePane {
+
+    private static final Frame window = WindowManager.getDefault().getMainWindow();
+    private static final Preferences preferences = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = preferences.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+
+    private File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private File SAVED_DIRECTORY = null;
 
     private static final Logger LOGGER = Logger.getLogger(JDBCSourcePane.class.getName());
     private static final int GRIDPANE_MIN_WIDTH = 200;
@@ -247,11 +259,18 @@ public class JDBCSourcePane extends SourcePane {
                 gp.add(driverName, 1, 1, 1, 1);
                 final Button chooser = new Button(" ... ");
                 chooser.setOnAction((final ActionEvent t2) -> {
-                    final FileChooser cho = new FileChooser();
-                    cho.getExtensionFilters().add(new ExtensionFilter(".jar", "*.jar"));
+                    final JFileChooser cho = new JFileChooser();
+                    cho.setCurrentDirectory(SAVED_DIRECTORY != null ? SAVED_DIRECTORY : DEFAULT_DIRECTORY);
+                    cho.setFileFilter(new FileNameExtensionFilter("JAR", "jar"));
+                    File f = null;
 
-                    final File f = cho.showOpenDialog(d);
+                    if (cho.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
+                        f = cho.getSelectedFile();
+                    }
+
                     if (f != null) {
+                        SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? cho.getCurrentDirectory() : DEFAULT_DIRECTORY;
+
                         try {
                             j.setText(f.getCanonicalPath());
                             driverName.getItems().clear();

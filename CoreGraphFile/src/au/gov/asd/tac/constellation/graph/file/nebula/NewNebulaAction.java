@@ -31,7 +31,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -53,7 +53,7 @@ public final class NewNebulaAction implements ActionListener {
 
         final PluginParameter<FileParameterValue> fileParam = FileParameterType.build(NEBULA_FILE_PARAMETER_ID);
         fileParam.setName("Nebula file");
-        FileParameterType.setFileFilters(fileParam, new ExtensionFilter("Nebula file", "*.nebula"));
+        FileParameterType.setFileFilters(fileParam, new FileNameExtensionFilter("Nebula file", "nebula"));
         fileParam.getParameterValue().setKind(FileParameterKind.SAVE);
         fileParam.setHelpID("au.gov.asd.tac.constellation.file.nebula");
         params.addParameter(fileParam);

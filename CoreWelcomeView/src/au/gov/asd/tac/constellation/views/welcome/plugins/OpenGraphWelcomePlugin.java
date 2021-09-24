@@ -45,7 +45,7 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
     final Button openFile = new Button();
 
     /**
-     * Get a unique reference that is used to identify the plugin
+     * Get a unique reference that is used to identify the plugin.
      *
      * @return a unique reference
      */
@@ -56,8 +56,7 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
 
     /**
      * This method describes what action should be taken when the link is
-     * clicked on the Welcome Page
-     *
+     * clicked on the Welcome Page.
      */
     @Override
     public void run() {
@@ -70,13 +69,12 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
         } catch (PluginException ex) {
             Exceptions.printStackTrace(ex);
         }
-
     }
 
     /**
-     * Determines whether this analytic appear on the Welcome Page
+     * Determines whether this analytic appear on the Welcome Page.
      *
-     * @return true is this analytic should be visible, false otherwise.
+     * @return true is this analytic should be visible, false otherwise
      */
     @Override
     public boolean isVisible() {
@@ -84,7 +82,7 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
     }
 
     /**
-     * Creates the button object to represent this plugin
+     * Creates the button object to represent this plugin.
      *
      * @return the button object
      */
