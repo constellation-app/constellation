@@ -60,8 +60,9 @@ public interface SceneBatcher {
      * @param camera the current camera.
      * @param mvMatrix the model-view matrix.
      * @param pMatrix the projection matrix.
+     * @param greyscale If true, the graph will be drawn in greyscale for anaglyphic display.
      */
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix);
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale);
 
     /**
      * Create the shader with which to draw this SceneBatcher's {@link Batch}.

@@ -186,7 +186,7 @@ public class FPSRenderable implements GLRenderable {
             fpsBatcher.setProjectionScale(pyScale);
             fpsBatcher.updateColors(ConstellationColor.YELLOW).run(gl);
             fpsBatcher.updateIcons(fpsDigits).run(gl);
-            fpsBatcher.drawBatch(gl, CAMERA, fpsMatrix, pMatrix);
+            fpsBatcher.drawBatch(gl, CAMERA, fpsMatrix, pMatrix, false);
 
             // re-enable depth
             gl.glEnable(GL.GL_DEPTH_TEST);
