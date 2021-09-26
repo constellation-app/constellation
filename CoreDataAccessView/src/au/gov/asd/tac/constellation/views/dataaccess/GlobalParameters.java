@@ -48,7 +48,7 @@ public abstract class GlobalParameters {
 
     /**
      * The global parameters defined by this class.
-     * <p>
+     * <p/>
      * The initial values of the parameters should also be set. The previous
      * values can be used if they are present.
      *
@@ -61,7 +61,7 @@ public abstract class GlobalParameters {
 
     /**
      * Perform post-processing on the complete PluginParameters instance.
-     * <p>
+     * <p/>
      * This will typically be something like parameters.addMasterController().
      *
      * @param parameters The complete global PluginParameters instance.
@@ -129,6 +129,14 @@ public abstract class GlobalParameters {
         }
     }
 
+    /**
+     * Clears the global parameters by setting the variable to null. This is primarily
+     * for unit testing purposes and should not be used by actual code.
+     */
+    protected static void clearGlobalParameters() {
+        globalParameters = null;
+    }
+    
     /**
      * A PluginParameter with a position.
      */

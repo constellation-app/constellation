@@ -123,7 +123,7 @@ public class DataAccessTabPane {
      * @param queryPane
      */
     public void newTab(final QueryPhasePane queryPane) {
-        final Tab newTab = new Tab(TAB_TITLE + " " + (tabPane.getTabs().size() + 1));
+        final Tab newTab = new Tab(TAB_TITLE + " " + (getTabPane().getTabs().size() + 1));
         
         // Get a copy of the existing on closed handler and call it after
         // tab counts are corrected and updated.
@@ -131,7 +131,8 @@ public class DataAccessTabPane {
                 Optional.ofNullable(newTab.getOnClosed());
         newTab.setOnClosed(event -> {
             int queryNum = 1;
-            for (Tab tab : tabPane.getTabs()) {
+            for (Tab tab : getTabPane().getTabs()) {
+                System.out.println("TAB: " + tab.toString());
                 tab.setText(TAB_TITLE + " " + queryNum);
                 queryNum++;
             }
@@ -173,7 +174,7 @@ public class DataAccessTabPane {
                 hasEnabledPlugins
         );
         
-        tabPane.getTabs().add(newTab);
+        getTabPane().getTabs().add(newTab);
     }
     
     /**
@@ -295,7 +296,7 @@ public class DataAccessTabPane {
      * @param tab the tab to update the menu item status on
      * @param enabled true if the menu items are to be enabled, false otherwise
      */
-    private void updateTabMenu(final Tab tab,
+    protected void updateTabMenu(final Tab tab,
                                final boolean graphDependentMenuItemsEnabled,
                                final boolean pluginDependentMenuItemsEnabled) {
         final QueryPhasePane queryPhasePane = getQueryPhasePane(tab);
@@ -391,5 +392,9 @@ public class DataAccessTabPane {
 
     public DataAccessPane getDataAccessPane() {
         return dataAccessPane;
+    }
+
+    public Map<String, List<DataAccessPlugin>> getPlugins() {
+        return plugins;
     }
 }

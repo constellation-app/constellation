@@ -65,6 +65,8 @@ public class GlobalParametersNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         lookupStaticMock.reset();
+        
+        GlobalParameters.clearGlobalParameters();
     }
 
     @AfterMethod
