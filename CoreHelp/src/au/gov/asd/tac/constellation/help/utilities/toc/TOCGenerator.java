@@ -25,7 +25,9 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.StringUtils;
+import org.xml.sax.SAXException;
 
 /**
  * Generate the table of contents file toc.md for displaying all currently
@@ -37,12 +39,9 @@ public class TOCGenerator {
 
     private final File toc;
     private static final Logger LOGGER = Logger.getLogger(TOCGenerator.class.getName());
-    private static final String OPEN_RECTANGLE_BRACE = "[";
-    private static final String CLOSE_RECTANGLE_BRACE = "]";
-    private static final String OPEN_PARENTHESIS = "(";
-    private static final String CLOSE_PARENTHESIS = ")";
+    private static final String MARKDOWN_LINK_FORMAT = "[%s](%s)";
+    private static final String HTML_LINK_FORMAT = "<a href=\"%s\">%s</a><br/>";
     private static final String BLANK_STRING = " ";
-    private static final String ASTERISK = "*";
 
     /**
      * Delete old TOC file and generate a new one at the specified path
@@ -79,14 +78,15 @@ public class TOCGenerator {
      *
      * @param xmlFromFile File of XML mappings
      */
-    public void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode root) {
+    public void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode root) throws IOException {
         final FileWriter writer;
         try {
             writer = new FileWriter(toc);
             convertXMLMappings(xmlsFromFile, writer, root);
             writer.close();
         } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to write mappings to file", ex);
+            LOGGER.log(Level.SEVERE, "Failed to write mappings to file - Help documentation may not be complete.");
+            throw ex;
         }
     }
 
@@ -94,12 +94,21 @@ public class TOCGenerator {
      * Generate a table of contents from the XML mapping file
      */
     public static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode root) {
-        writeText(markdownOutput, "<div class=\"container\">");
-        writeText(markdownOutput, "<div id=\"accordion\">");
+        writeText(markdownOutput, String.format("<div class=\"%s\">", "container"));
+        writeText(markdownOutput, Platform.NEWLINE);
+        writeText(markdownOutput, String.format("<div id=\"%s\">", "accordion"));
         writeText(markdownOutput, Platform.NEWLINE);
 
         // Parse XML to tree structure
-        xmlsFromFile.forEach(file -> TOCParser.parse(file, root));
+        xmlsFromFile.forEach(file -> {
+            try {
+                TOCParser.parse(file, root);
+            } catch (final ParserConfigurationException | SAXException ex) {
+                LOGGER.log(Level.WARNING, "Failed to parse Help Contents XML file [{0}] - Help documentation may not be complete.", file == null ? "null" : file.getPath());
+            } catch (final IOException ex) {
+                LOGGER.log(Level.WARNING, "Failed to find Help Contents XML file [{0}] - Help documentation may not be complete.", file == null ? "null" : file.getPath());
+            }
+        });
 
         // Write tree structure to the output
         TreeNode.writeTree(root, markdownOutput, 0);
@@ -115,14 +124,7 @@ public class TOCGenerator {
      * @param url the url to link to
      */
     public static String generateLink(final String title, final String url) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(OPEN_RECTANGLE_BRACE);
-        sb.append(title);
-        sb.append(CLOSE_RECTANGLE_BRACE);
-        sb.append(OPEN_PARENTHESIS);
-        sb.append(url);
-        sb.append(CLOSE_PARENTHESIS);
-        return sb.toString();
+        return String.format(MARKDOWN_LINK_FORMAT, title, url);
     }
 
     /**
@@ -132,14 +134,7 @@ public class TOCGenerator {
      * @param url the url to link to
      */
     public static String generateHTMLLink(final String title, final String url) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("<a href=\"");
-        sb.append(url);
-        sb.append("\">");
-        sb.append(title);
-        sb.append("</a>");
-        sb.append("<br/>");
-        return sb.toString();
+        return String.format(HTML_LINK_FORMAT, url, title);
     }
 
     /**
