@@ -20,12 +20,15 @@ import au.gov.asd.tac.constellation.help.utilities.toc.TOCGenerator;
 import au.gov.asd.tac.constellation.help.utilities.toc.TOCItem;
 import au.gov.asd.tac.constellation.help.utilities.toc.TreeNode;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.windows.OnShowing;
 
@@ -47,6 +50,10 @@ public class Generator implements Runnable {
     // Toggled to allow switching between dev and release versions
     private static final boolean DEBUG_FLAG = false;
 
+    public Generator() {
+        // Intentionally left blank
+    }
+
     /**
      * Generate a table of contents in dev versions of code
      */
@@ -57,7 +64,6 @@ public class Generator implements Runnable {
         baseDirectory = getBaseDirectory();
         tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
 
-        // DO NOT RUN IN EXECUTABLE, ONLY RUN IN IDE
         // TODO: Double check if this is necessary and also foolproof for other module suites.
         if (!"IDE(CORE)".equals(System.getProperty("constellation.environment")) || DEBUG_FLAG) {
             // Ensure that the mappings are generated for clicks on help icons within the application.
@@ -66,11 +72,20 @@ public class Generator implements Runnable {
         }
 
         // Create TOCGenerator with the location of the resources file
-        final TOCGenerator tocGenerator = new TOCGenerator(baseDirectory + tocDirectory);
-
         // Create the root node for application-wide table of contents
+        final TOCGenerator tocGenerator = new TOCGenerator(baseDirectory + tocDirectory);
         final TreeNode root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
+        final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
 
+        try {
+            tocGenerator.convertXMLMappings(tocXMLFiles, root);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, "There was an error creating the documentation file {0} - Documentation may not be complete", baseDirectory + tocDirectory);
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    protected static List<File> getXMLFiles(final String baseDirectory) {
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
@@ -78,13 +93,10 @@ public class Generator implements Runnable {
                 tocXMLFiles.add(new File(baseDirectory + provider.getHelpTOC()));
             }
         });
-
-        // Generate Application-wide TOC based on each modules TOC
-        // Stores it within the root TreeNode
-        tocGenerator.convertXMLMappings(tocXMLFiles, root);
+        return tocXMLFiles;
     }
 
-    private String getBaseDirectory() {
+    protected static String getBaseDirectory() {
         final String sep = File.separator;
         // Get the current directory and make the file within the base project directory.
         final String userDir = System.getProperty("user.dir");
