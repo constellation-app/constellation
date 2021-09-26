@@ -17,13 +17,11 @@ package au.gov.asd.tac.constellation.help.utilities.toc;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,63 +44,55 @@ public class TOCParser {
      * @param xmlFromFile the file to read
      * @param root the root node to place items into
      */
-    public static void parse(final File xmlFromFile, final TreeNode root) {
-        if (StringUtils.isEmpty(xmlFromFile.getPath())) {
+    public static void parse(final File xmlFromFile, final TreeNode root) throws SAXException, IOException, ParserConfigurationException {
+        if (xmlFromFile == null || StringUtils.isEmpty(xmlFromFile.getPath())) {
             return;
         }
 
-        try {
-            TreeNode currentParent = root;
-            final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            final Document doc = dBuilder.parse(xmlFromFile);
-            doc.getDocumentElement().normalize();
+        TreeNode currentParent = root;
+        final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        final Document doc = dBuilder.parse(xmlFromFile);
+        doc.getDocumentElement().normalize();
 
-            // indent when no children
-            final NodeList nList = doc.getElementsByTagName("tocitem");
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-                final Node nNode = nList.item(temp);
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    final Element eElement = (Element) nNode;
-                    final TreeNode current = new TreeNode(new TOCItem(eElement.getAttribute("text"), eElement.getAttribute("target")));
-                    // when has children, then set parent
-                    if (nNode.hasChildNodes()) {
-                        final TreeNode duplicate = TreeNode.search(eElement.getAttribute("text"), eElement.getAttribute("target"), root);
+        // indent when no children
+        final NodeList nList = doc.getElementsByTagName("tocitem");
+        for (int temp = 0; temp < nList.getLength(); temp++) {
+            final Node nNode = nList.item(temp);
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                final Element eElement = (Element) nNode;
+                final TOCItem currentTocItem = new TOCItem(eElement.getAttribute("text"), eElement.getAttribute("target"));
+                final TreeNode current = new TreeNode(currentTocItem);
+                // when has children, then set parent
+                if (nNode.hasChildNodes()) {
+                    final TreeNode duplicate = TreeNode.search(currentTocItem, root);
 
-                        if (duplicate != null) {
-                            //set the current parent to duplicate
-                            currentParent = duplicate;
-                            // dont add child
-                        } else {
-                            // Get parent node in xml, and add it to that node as a child
-                            final Element parentElement = (Element) eElement.getParentNode();
-                            final TreeNode parentDuplicate = TreeNode.search(parentElement.getAttribute("text"), parentElement.getAttribute("target"), root);
-                            if (parentDuplicate == null) {
-                                currentParent.addChild(current);
-                                currentParent = current;
-                            } else {
-                                parentDuplicate.addChild(current);
-                                currentParent = current;
-                            }
-                        }
+                    if (duplicate != null) {
+                        //set the current parent to duplicate
+                        currentParent = duplicate;
+                        // dont add child
                     } else {
+                        // Get parent node in xml, and add it to that node as a child
                         final Element parentElement = (Element) eElement.getParentNode();
-                        final TreeNode parentDuplicate = TreeNode.search(parentElement.getAttribute("text"), parentElement.getAttribute("target"), root);
-                        if (parentDuplicate != null) {
+                        final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute("target"));
+                        final TreeNode parentDuplicate = TreeNode.search(parentTocItem, root);
+                        if (parentDuplicate == null) {
                             currentParent.addChild(current);
+                            currentParent = current;
+                        } else {
+                            parentDuplicate.addChild(current);
+                            currentParent = current;
                         }
+                    }
+                } else {
+                    final Element parentElement = (Element) eElement.getParentNode();
+                    final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute("target"));
+                    final TreeNode parentDuplicate = TreeNode.search(parentTocItem, root);
+                    if (parentDuplicate != null) {
+                        currentParent.addChild(current);
                     }
                 }
             }
-        } catch (final ParserConfigurationException ex) {
-            Exceptions.printStackTrace(ex);
-            LOGGER.log(Level.SEVERE, "Failed to parse XML file", ex);
-        } catch (final SAXException ex) {
-            Exceptions.printStackTrace(ex);
-            LOGGER.log(Level.SEVERE, "Failed to parse XML file", ex);
-        } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
-            LOGGER.log(Level.SEVERE, "Failed to parse XML file", ex);
         }
     }
 }

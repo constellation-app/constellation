@@ -1,4 +1,5 @@
-<div class="container"><div id="accordion">
+<div class="container">
+<div id="accordion">
 <div class="card"><div class="card-header"><h2 class="mb-0">Constellation Documentation</h2></div>
 <div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Overview" aria-expanded="false" aria-controls="Overview">Overview</button></h2></div>
 <div id="Overview" class="collapse" aria-labelledby="Overview" data-parent="#Overview"> <div class="card-body">    <a href="..\constellation\CoreFunctionality\src\au\gov\asd\tac\constellation\functionality\docs\about-constellation.md">About Constellation</a><br/>
