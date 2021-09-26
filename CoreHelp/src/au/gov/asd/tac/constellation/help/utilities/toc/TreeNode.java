@@ -22,7 +22,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
+import java.util.Objects;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,10 +49,9 @@ public class TreeNode<T> {
         this.data = data;
     }
 
-    public TreeNode<T> addChild(final TreeNode<T> child) {
+    public void addChild(final TreeNode<T> child) {
         child.setParent(this);
         this.children.add(child);
-        return child;
     }
 
     public void addChildren(final List<TreeNode<T>> children) {
@@ -76,9 +75,12 @@ public class TreeNode<T> {
         return parent;
     }
 
-    public static <T> void printTree(final TreeNode<T> node, final String appender) {
-        LOGGER.log(Level.WARNING, "{0}", appender + node.getData());
-        node.getChildren().forEach(each -> printTree(each, appender + appender));
+    public static <T> StringBuilder printTree(final TreeNode<T> node, final String appender, final StringBuilder builder) {
+        builder.append(appender);
+        builder.append(node.getData());
+        node.getChildren().forEach(each -> printTree(each, appender, builder));
+
+        return builder;
     }
 
     /**
@@ -100,8 +102,7 @@ public class TreeNode<T> {
     }
 
     /**
-     * Write tree to the file writer provided. Recurses through children on a
-     * Breadth First Search basis.
+     * Write tree to the file writer provided. Recurses through children.
      *
      * @param <T> the type of node to store, usually @TOCItem
      * @param node the tree node which holds the TOCItem information
@@ -151,24 +152,23 @@ public class TreeNode<T> {
     }
 
     /**
-     * Search for the TreeNode nodeToFind which is matched based on the text and
-     * target value. Searches using the root of the tree as searchNode.
+     * Search for the TOCItem findItem which is matched based on the data.
+     * Searches using the root of the tree as searchNode.
      *
-     *
-     * @param nodeToFind the node to look for
+     * @param findItem the TOCItem to look for
      * @param searchNode the node to look within
      * @return the node within searchNode that matches nodeToFind
      */
-    public static TreeNode search(final String textToFind, final String targetToFind, final TreeNode searchNode) {
+    public static TreeNode search(final TOCItem findItem, final TreeNode searchNode) {
         if (searchNode != null) {
             final TOCItem searchTOC = (TOCItem) (searchNode.getData());
-            if (StringUtils.equals(textToFind, searchTOC.getText()) && StringUtils.equals(targetToFind, searchTOC.getTarget())) {
+            if (searchTOC != null && searchTOC.equals(findItem)) {
                 return searchNode;
             } else {
                 TreeNode foundNode = null;
                 for (final Object child : searchNode.getChildren()) {
                     if (foundNode == null) {
-                        foundNode = search(textToFind, targetToFind, (TreeNode) child);
+                        foundNode = search(findItem, (TreeNode) child);
                     }
                 }
                 return foundNode;
@@ -176,5 +176,29 @@ public class TreeNode<T> {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Equals method only checks to ensure the same data is present. This will
+     * not compare parents or children.
+     *
+     * @param obj the comparison object
+     * @return true if the same
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj != null && obj instanceof TreeNode && ((TreeNode) (obj)).getData() != null && (((TreeNode) (obj)).getData().equals(data))) {
+            return true;
+        } else if (obj != null && obj instanceof TreeNode && ((TreeNode) (obj)).getData() == null && data == null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.data);
+        return hash;
     }
 }
