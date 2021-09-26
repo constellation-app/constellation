@@ -49,8 +49,6 @@ public class HelpWebServer {
     private static final String REST_FILE = "rest.json";
 
     protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
-    private static final String IPYTHON = ".ipython";
-    private static final String RESOURCES = "resources/";
 
     public static boolean isRunning() {
         return running;
@@ -72,6 +70,7 @@ public class HelpWebServer {
                         //TODO: Handle case where file not successfully deleted
                     }
                 }
+
                 // On Posix, we can use stricter file permissions.
                 // On Windows, we just create the new file.
                 final String os = System.getProperty("os.name");
@@ -80,11 +79,7 @@ public class HelpWebServer {
                     final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
                     Files.createFile(restPath, PosixFilePermissions.asFileAttribute(perms));
                 }
-                // Download the Python REST client if enabled.
-                // final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
-                //   if (pythonRestClientDownload) {
-                //       downloadPythonClient();
-                //   }
+
                 // Build the server.
                 //
                 final Server server = new Server(new InetSocketAddress(loopback, port));
@@ -96,10 +91,6 @@ public class HelpWebServer {
                 //
                 Lookup.getDefault().lookupAll(HttpServlet.class).forEach(servlet -> {
                     if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
-//                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).value()) {
-//                            Logger.getGlobal().info(String.format("value %s %s", servlet, urlPattern));
-//                            context.addServlet(new ServletHolder(servlet), urlPattern);
-//                        }
                         for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
                             Logger.getGlobal().info(String.format("urlpattern %s %s", servlet, urlPattern));
                             context.addServlet(new ServletHolder(servlet), urlPattern);
