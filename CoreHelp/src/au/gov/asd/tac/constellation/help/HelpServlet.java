@@ -67,7 +67,7 @@ public class HelpServlet extends HttpServlet {
         LOGGER.log(Level.INFO, "GET {0}", requestPath);
         try {
             if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js") || requestPath.contains(".ico"))) {
-                final String repeatedText = "src/au/gov/asd/tac";
+                final String repeatedText = "src/au/gov/asd";
                 final int firstIndex = requestPath.indexOf(repeatedText);
                 if (firstIndex != -1) {
                     final int secondIndex = requestPath.indexOf(repeatedText, firstIndex + repeatedText.length());
