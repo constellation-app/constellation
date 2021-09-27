@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.NodeGlyphStream;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.NodeGlyphStreamContext;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -71,6 +72,7 @@ public class NodeLabelBatcher implements SceneBatcher {
     private int shaderXyzTexture;
     private int shaderGlyphInfoTexture;
     private int shaderGlyphImageTexture;
+    private int shaderGreyscale; // anaglyphic drawing
 
     private final int labelFloatsTarget;
     private final int labelIntsTarget;
@@ -80,7 +82,7 @@ public class NodeLabelBatcher implements SceneBatcher {
 
     public NodeLabelBatcher() {
         // Create the batches
-        topBatch = new Batch(GL3.GL_POINTS);
+        topBatch = new Batch(GL.GL_POINTS);
         labelFloatsTarget = topBatch.newFloatBuffer(FLOAT_BUFFERS_WIDTH, false);
         labelIntsTarget = topBatch.newIntBuffer(INT_BUFFERS_WIDTH, false);
         bottomBatch = new Batch(topBatch);
@@ -112,6 +114,7 @@ public class NodeLabelBatcher implements SceneBatcher {
         shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
         shaderGlyphInfoTexture = gl.glGetUniformLocation(shader, "glyphInfoTexture");
         shaderGlyphImageTexture = gl.glGetUniformLocation(shader, "glyphImageTexture");
+        shaderGreyscale = gl.glGetUniformLocation(shader, "greyscale");
     }
 
     @Override
@@ -269,7 +272,7 @@ public class NodeLabelBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
         if (topBatch.isDrawable() || bottomBatch.isDrawable()) {
             gl.glUseProgram(shader);
 
@@ -291,6 +294,7 @@ public class NodeLabelBatcher implements SceneBatcher {
             gl.glUniform1i(shaderBackgroundGlyphIndex, SharedDrawable.getLabelBackgroundGlyphPosition());
             gl.glUniform4fv(shaderBackgroundColor, 1, backgroundColor, 0);
             gl.glUniform4fv(shaderHighlightColor, 1, highlightColor, 0);
+            gl.glUniform1i(shaderGreyscale, greyscale ? 1 : 0);
 
             if (topBatch.isDrawable()) {
                 topBatch.draw(gl);

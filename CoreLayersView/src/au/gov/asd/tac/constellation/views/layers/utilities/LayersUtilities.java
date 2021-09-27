@@ -57,7 +57,8 @@ public class LayersUtilities {
     }
 
     /**
-     * Add a new additional layer if the space permits. Display a message if there is no space.
+     * Add a new additional layer if the space permits. Display a message if
+     * there is no space.
      *
      * @param state
      */
@@ -76,8 +77,9 @@ public class LayersUtilities {
     }
 
     /**
-     * Add a layer at a certain position. Will override the description of a layer if the position was taken. If the
-     * position is open, a new layer will be added with the description.
+     * Add a layer at a certain position. Will override the description of a
+     * layer if the position was taken. If the position is open, a new layer
+     * will be added with the description.
      *
      * @param state - the state to alter
      * @param description the layer description

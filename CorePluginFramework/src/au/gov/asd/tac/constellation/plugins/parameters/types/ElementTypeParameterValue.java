@@ -106,6 +106,5 @@ public class ElementTypeParameterValue extends ParameterValue {
         final ElementTypeParameterValue other = (ElementTypeParameterValue) obj;
         return this.elementType == other.elementType;
     }
-    
-    
+
 }

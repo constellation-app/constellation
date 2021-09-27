@@ -36,7 +36,7 @@ import org.openide.windows.TopComponent;
         category = "explorer",
         id = "au.gov.asd.tac.constellation.views.schemaview.SchemaViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1200),
+    @ActionReference(path = "Menu/Views", position = 1300),
     @ActionReference(path = "Shortcuts", name = "CS-S")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_SchemaViewAction",

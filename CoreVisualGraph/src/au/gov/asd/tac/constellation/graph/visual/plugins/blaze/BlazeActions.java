@@ -374,7 +374,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
      * @return the painted ImageIcon
      */
     private ImageIcon generateCustomImage(final Color javaColor) {
-        final BufferedImage customImage = this.copyImageBuffer((BufferedImage) ImageUtilities.loadImage(ADD_RECENT_BLAZE_ICON, false));
+        final BufferedImage customImage = BlazeActions.copyImageBuffer((BufferedImage) ImageUtilities.loadImage(ADD_RECENT_BLAZE_ICON, false));
         for (int x = 0; x < customImage.getWidth(); x++) {
             for (int y = 0; y < customImage.getHeight(); y++) {
                 if (customImage.getRGB(x, y) == BLACK_COLOR) {

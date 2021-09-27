@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An implementation of {@link RecordStore} which is structured like a table with rows and columns.
+ * An implementation of {@link RecordStore} which is structured like a table
+ * with rows and columns.
  *
  * @author cygnus_x-1
  */
@@ -50,11 +51,11 @@ public class TabularRecordStore implements RecordStore {
     }
 
     /**
-     * Construct a TabularRecordStore with the optional ability to cache keys and values within the RecordStore for more
-     * efficient lookup.
+     * Construct a TabularRecordStore with the optional ability to cache keys
+     * and values within the RecordStore for more efficient lookup.
      *
-     * @param cacheStrings A flag indicating whether or not to create a cache for {@link String} values to make lookup
-     * faster.
+     * @param cacheStrings A flag indicating whether or not to create a cache
+     * for {@link String} values to make lookup faster.
      */
     public TabularRecordStore(final boolean cacheStrings) {
         if (cacheStrings) {
@@ -65,10 +66,11 @@ public class TabularRecordStore implements RecordStore {
     /**
      * Get the values associated with a column in this TabularRecordStore.
      *
-     * @param key A {@link String value} representing a key in this TabularRecordStore. This can be thought of as a
-     * column name.
-     * @return An array of arrays of {@link Object} representing a set of values from this TabularRecordStore. This data
-     * structure is such that arrays are minimally created, effectively conserving memory.
+     * @param key A {@link String value} representing a key in this
+     * TabularRecordStore. This can be thought of as a column name.
+     * @return An array of arrays of {@link Object} representing a set of values
+     * from this TabularRecordStore. This data structure is such that arrays are
+     * minimally created, effectively conserving memory.
      */
     protected Object[][] getColumn(final String key) {
         Object[][] values = records.get(key);
@@ -81,21 +83,25 @@ public class TabularRecordStore implements RecordStore {
     /**
      * Create a new column for this TabularRecordStore.
      *
-     * @param key A {@link String value} representing a key in this TabularRecordStore. This can be thought of as a
-     * column name.
-     * @param values An array of arrays of {@link Object} representing a set of values from this TabularRecordStore.
-     * This data structure is such that arrays are minimally created, effectively conserving memory.
+     * @param key A {@link String value} representing a key in this
+     * TabularRecordStore. This can be thought of as a column name.
+     * @param values An array of arrays of {@link Object} representing a set of
+     * values from this TabularRecordStore. This data structure is such that
+     * arrays are minimally created, effectively conserving memory.
      */
     protected void createColumn(final String key, final Object[][] values) {
         records.put(key, values);
     }
 
     /**
-     * Check if a value exists in the specified set of values extracted from this TabularRecordStore.
+     * Check if a value exists in the specified set of values extracted from
+     * this TabularRecordStore.
      *
-     * @param values An array of arrays of {@link Object} representing a set of values from this TabularRecordStore.
-     * This data structure is such that arrays are minimally created, effectively conserving memory.
-     * @param record An integer value representing the id of the record you wish to retrieve a value for.
+     * @param values An array of arrays of {@link Object} representing a set of
+     * values from this TabularRecordStore. This data structure is such that
+     * arrays are minimally created, effectively conserving memory.
+     * @param record An integer value representing the id of the record you wish
+     * to retrieve a value for.
      * @return True is the requested value exists, otherwise false.
      */
     protected static boolean hasValue(final Object[][] values, final int record) {
@@ -110,11 +116,14 @@ public class TabularRecordStore implements RecordStore {
     }
 
     /**
-     * Get a value from the specified set of values extracted from this TabularRecordStore.
+     * Get a value from the specified set of values extracted from this
+     * TabularRecordStore.
      *
-     * @param values An array of arrays of {@link Object} representing a set of values from this TabularRecordStore.
-     * This data structure is such that arrays are minimally created, effectively conserving memory.
-     * @param record An integer value representing the id of the record you wish to retrieve a value for.
+     * @param values An array of arrays of {@link Object} representing a set of
+     * values from this TabularRecordStore. This data structure is such that
+     * arrays are minimally created, effectively conserving memory.
+     * @param record An integer value representing the id of the record you wish
+     * to retrieve a value for.
      * @return A {@link String} object representing the requested value.
      */
     protected static String getValue(final Object[][] values, final int record) {

@@ -71,7 +71,7 @@ public class LevenshteinDistancePlugin extends SimpleEditPlugin {
 
         final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> attributeType = SingleChoiceParameterType.build(ATTRIBUTE_PARAMETER_ID);
         attributeType.setName("Compare Attribute");
-        attributeType.setDescription("Set the node attribute to compare");
+        attributeType.setDescription("The node attribute to compare");
         parameters.addParameter(attributeType);
 
         final PluginParameter<IntegerParameterValue> maxDistance = IntegerParameterType.build(MAXIMUM_DISTANCE_PARAMETER_ID);

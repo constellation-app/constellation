@@ -17,7 +17,9 @@ package au.gov.asd.tac.constellation.plugins.arrangements.grid;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -45,6 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
     "ArrangeInGridGeneralPlugin=Arrange in Grid",
     "SelectedOnly=Arrange only selected nodes"
 })
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class ArrangeInGridGeneralPlugin extends SimpleEditPlugin {
 
     public static final String MAINTAIN_MEAN_PARAMETER_ID = PluginParameter.buildId(ArrangeInGridGeneralPlugin.class, "maintain_mean");

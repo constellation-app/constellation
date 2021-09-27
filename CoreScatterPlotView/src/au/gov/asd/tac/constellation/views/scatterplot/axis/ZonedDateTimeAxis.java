@@ -34,7 +34,8 @@ import javafx.scene.chart.Axis;
 import javafx.util.StringConverter;
 
 /**
- * An axis for representing ZonedDateTime objects, based on the DateAxis class available in the ExtFX library.
+ * An axis for representing ZonedDateTime objects, based on the DateAxis class
+ * available in the ExtFX library.
  *
  * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
  *
@@ -115,7 +116,8 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     };
 
     /**
-     * Default constructor. The lower and upper bounds are calculated using the data.
+     * Default constructor. The lower and upper bounds are calculated using the
+     * data.
      */
     public ZonedDateTimeAxis() {
     }
@@ -406,8 +408,8 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     }
 
     /**
-     * Makes datetimes even, in the sense of that years always begin in January, months always begin on the 1st and days
-     * always at midnight.
+     * Makes datetimes even, in the sense of that years always begin in January,
+     * months always begin on the 1st and days always at midnight.
      *
      * @param dateTimes The list of dates.
      * @return The new list of dates.
@@ -575,8 +577,9 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     }
 
     /**
-     * The intervals, which are used for the tick labels. Beginning with the largest interval, the axis tries to
-     * calculate the tick values for this interval. If a smaller interval is better suited for, that one is taken.
+     * The intervals, which are used for the tick labels. Beginning with the
+     * largest interval, the axis tries to calculate the tick values for this
+     * interval. If a smaller interval is better suited for, that one is taken.
      */
     private enum Interval {
 

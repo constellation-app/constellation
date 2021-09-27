@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
@@ -43,7 +44,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Views", position = 500),
+    @ActionReference(path = "Menu/Views", position = 900),
     @ActionReference(path = "Shortcuts", name = "CS-A")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_NotesViewAction",
@@ -71,13 +72,26 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         notesViewPane = new NotesViewPane(notesViewController);
 
         initContent();
+
+        addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
+            notesViewPane.updateNotesUI();
+        });
+
+        addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
+            notesViewPane.updateNotesUI();
+        });
     }
 
     @Override
     protected void handleNewGraph(final Graph graph) {
         if (needsUpdate() && graph != null) {
-            notesViewPane.selectAllFilters();
-            notesViewPane.clearAllNotes();
+            notesViewPane.clearNotes();
             notesViewController.readState(graph);
         }
     }
@@ -85,8 +99,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     protected void handleGraphClosed(final Graph graph) {
         if (needsUpdate() && graph != null) {
-            notesViewPane.closeEdit();
-            notesViewPane.clearAllNotes();
+            notesViewPane.clearNotes();
         }
     }
 
@@ -103,9 +116,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        notesViewPane.closeEdit();
-        notesViewPane.selectAllFilters();
-        notesViewPane.clearAllNotes();
     }
 
     @Override

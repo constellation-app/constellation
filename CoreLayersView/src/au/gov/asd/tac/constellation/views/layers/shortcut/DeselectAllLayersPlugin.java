@@ -20,7 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
@@ -33,6 +35,7 @@ import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionP
  *
  * @author formalhaut69
  */
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public class DeselectAllLayersPlugin extends SimpleEditPlugin {
 
     @Override
@@ -67,7 +70,7 @@ public class DeselectAllLayersPlugin extends SimpleEditPlugin {
 
     @Override
     protected boolean isSignificant() {
-        return false;
+        return true;
     }
 
     @Override

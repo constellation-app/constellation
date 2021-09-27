@@ -28,8 +28,9 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The MultiChoiceParameterType defines {@link PluginParameter} objects that hold a (possibly empty) list of object
- * values chosen from a finite collection of options.
+ * The MultiChoiceParameterType defines {@link PluginParameter} objects that
+ * hold a (possibly empty) list of object values chosen from a finite collection
+ * of options.
  *
  * @author twinkle2_little
  */
@@ -37,7 +38,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class MultiChoiceParameterType extends PluginParameterType<MultiChoiceParameterValue> {
 
     /**
-     * A String ID with which to distinguish parameters that have this type.Single
+     * A String ID with which to distinguish parameters that have this
+     * type.Single
      */
     public static final String ID = "multichoice";
 
@@ -45,13 +47,14 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
     public static final String CHECK_MARK = "\u2713 ";
 
     /**
-     * The singleton instance of the type that should be used to construct all parameters that have this type.
+     * The singleton instance of the type that should be used to construct all
+     * parameters that have this type.
      */
     public static final MultiChoiceParameterType INSTANCE = new MultiChoiceParameterType();
 
     /**
-     * Construct a new {@link PluginParameter} of this type. The collection of options will be
-     * {@link StringParameterValue} objects.
+     * Construct a new {@link PluginParameter} of this type. The collection of
+     * options will be {@link StringParameterValue} objects.
      *
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of MultiChoiceParameterType.
@@ -61,12 +64,12 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
     }
 
     /**
-     * Construct a new {@link PluginParameter} of this type where the collection of options are instances of the given
-     * {@link ParameterValue} class.
+     * Construct a new {@link PluginParameter} of this type where the collection
+     * of options are instances of the given {@link ParameterValue} class.
      *
      * @param id The String id of the parameter to construct.
-     * @param innerClass The {@link ParameterValue} class to type the collection of options for the constructed
-     * parameter.
+     * @param innerClass The {@link ParameterValue} class to type the collection
+     * of options for the constructed parameter.
      * @return A {@link PluginParameter} of MultiChoiceParameterType.
      */
     public static PluginParameter<MultiChoiceParameterValue> build(final String id, final Class<? extends ParameterValue> innerClass) {
@@ -74,11 +77,12 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
     }
 
     /**
-     * Construct a new {@link PluginParameter} of this type with initial value represented by the given
-     * {@link MultiChoiceParameterValue}.
+     * Construct a new {@link PluginParameter} of this type with initial value
+     * represented by the given {@link MultiChoiceParameterValue}.
      *
      * @param id The String id of the parameter to construct.
-     * @param pv A {@link MultiChoiceParameterValue} describing the initial value of the parameter being constructed.
+     * @param pv A {@link MultiChoiceParameterValue} describing the initial
+     * value of the parameter being constructed.
      * @return A {@link PluginParameter} of MultiChoiceParameterType.
      */
     public static PluginParameter<MultiChoiceParameterValue> build(final String id, final MultiChoiceParameterValue pv) {
@@ -86,30 +90,36 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
     }
 
     /**
-     * Get the collection of options for the given parameter as a list of Strings.
+     * Get the collection of options for the given parameter as a list of
+     * Strings.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @return A List of Strings representing the collection of options for the given parameter.
+     * @return A List of Strings representing the collection of options for the
+     * given parameter.
      */
     public static List<String> getOptions(final PluginParameter<MultiChoiceParameterValue> parameter) {
         return parameter.getMultiChoiceValue().getOptions();
     }
 
     /**
-     * Get the collection of options for the given parameter as a list of {@link ParameterValue}.
+     * Get the collection of options for the given parameter as a list of
+     * {@link ParameterValue}.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @return A List of {@link ParameterValue} objects representing the collection of options for the given parameter.
+     * @return A List of {@link ParameterValue} objects representing the
+     * collection of options for the given parameter.
      */
     public static List<ParameterValue> getOptionsData(final PluginParameter<MultiChoiceParameterValue> parameter) {
         return parameter.getMultiChoiceValue().getOptionsData();
     }
 
     /**
-     * Set the collection of options for the given parameter from a list of Strings.
+     * Set the collection of options for the given parameter from a list of
+     * Strings.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @param options A List of Strings to set as the options for the given parameter.
+     * @param options A List of Strings to set as the options for the given
+     * parameter.
      */
     public static void setOptions(final PluginParameter<MultiChoiceParameterValue> parameter, final List<String> options) {
         final MultiChoiceParameterValue mc = parameter.getMultiChoiceValue() == null
@@ -119,10 +129,12 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
     }
 
     /**
-     * Set the collection of options for the given parameter from a list of {@link ParameterValue} objects.
+     * Set the collection of options for the given parameter from a list of
+     * {@link ParameterValue} objects.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @param options A List of {@link ParameterValue} objects to set as the options for the given parameter.
+     * @param options A List of {@link ParameterValue} objects to set as the
+     * options for the given parameter.
      */
     public static void setOptionsData(final PluginParameter<MultiChoiceParameterValue> parameter, final List<? extends ParameterValue> options) {
         final MultiChoiceParameterValue mc = parameter.getMultiChoiceValue() == null
@@ -132,31 +144,36 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
     }
 
     /**
-     * Get the collection of selected values for the given parameter as a list of Strings.
+     * Get the collection of selected values for the given parameter as a list
+     * of Strings.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @return A List of Strings representing the collection of selected values for the given parameter.
+     * @return A List of Strings representing the collection of selected values
+     * for the given parameter.
      */
     public static List<String> getChoices(final PluginParameter<MultiChoiceParameterValue> parameter) {
         return parameter.getMultiChoiceValue().getChoices();
     }
 
     /**
-     * Get the collection of selected values for the given parameter as a list of {@link ParameterValue}.
+     * Get the collection of selected values for the given parameter as a list
+     * of {@link ParameterValue}.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @return A List of {@link ParameterValue} objects representing the collection of selected values for the given
-     * parameter.
+     * @return A List of {@link ParameterValue} objects representing the
+     * collection of selected values for the given parameter.
      */
     public static List<? extends ParameterValue> getChoicesData(final PluginParameter<MultiChoiceParameterValue> parameter) {
         return parameter.getMultiChoiceValue().getChoicesData();
     }
 
     /**
-     * Set the list of selected values for the given parameter from a list of Strings
+     * Set the list of selected values for the given parameter from a list of
+     * Strings
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @param choices A List of Strings objects to set as the selected values for the given parameter.
+     * @param choices A List of Strings objects to set as the selected values
+     * for the given parameter.
      */
     public static void setChoices(final PluginParameter<MultiChoiceParameterValue> parameter, final List<String> choices) {
         final MultiChoiceParameterValue mc = parameter.getMultiChoiceValue() == null
@@ -166,10 +183,12 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
     }
 
     /**
-     * Set the list of selected values for the given parameter from a list of {@link ParameterValue} objects.
+     * Set the list of selected values for the given parameter from a list of
+     * {@link ParameterValue} objects.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @param choices A List of {@link ParameterValue} objects to set as the selected values for the given parameter.
+     * @param choices A List of {@link ParameterValue} objects to set as the
+     * selected values for the given parameter.
      */
     public static void setChoicesData(final PluginParameter<MultiChoiceParameterValue> parameter, final List<? extends ParameterValue> choices) {
         final MultiChoiceParameterValue mc = parameter.getMultiChoiceValue() == null
@@ -179,11 +198,14 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
     }
 
     /**
-     * Set both the collection of options and list of selected values for the given parameter from lists of Strings.
+     * Set both the collection of options and list of selected values for the
+     * given parameter from lists of Strings.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @param options A List of Strings to set as the options for the given parameter.
-     * @param choices A List of Strings objects to set as the selected values for the given parameter.
+     * @param options A List of Strings to set as the options for the given
+     * parameter.
+     * @param choices A List of Strings objects to set as the selected values
+     * for the given parameter.
      */
     public static void setState(final PluginParameter<MultiChoiceParameterValue> parameter, final List<String> options, final List<String> choices) {
         MultiChoiceParameterValue mc = parameter.getMultiChoiceValue() == null
@@ -196,17 +218,20 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
     /**
      * Constructs a new instance of this type.
      * <p>
-     * Note: This constructor should not be called directly; it is public for the purposes of lookup (which may be
-     * removed for types in the future). To buildId parameters from the type, the static method {@link #build buildId()}
-     * should be used, or the singleton {@link #INSTANCE INSTANCE}.
+     * Note: This constructor should not be called directly; it is public for
+     * the purposes of lookup (which may be removed for types in the future). To
+     * buildId parameters from the type, the static method
+     * {@link #build buildId()} should be used, or the singleton
+     * {@link #INSTANCE INSTANCE}.
      */
     public MultiChoiceParameterType() {
         super(ID);
     }
 
     /**
-     * An implementation of {@link ParameterValue} corresponding to this type. It holds a collection of options and a
-     * list of values representing the current selection from these options.
+     * An implementation of {@link ParameterValue} corresponding to this type.
+     * It holds a collection of options and a list of values representing the
+     * current selection from these options.
      */
     public static class MultiChoiceParameterValue extends ParameterValue {
 
@@ -215,8 +240,8 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
         private final Class<? extends ParameterValue> innerClass;
 
         /**
-         * Constructs a new MultiChoiceParameterValue where the collection of options are {@link StringParameterValue}
-         * objects.
+         * Constructs a new MultiChoiceParameterValue where the collection of
+         * options are {@link StringParameterValue} objects.
          */
         public MultiChoiceParameterValue() {
             options = new ArrayList<>();
@@ -225,10 +250,11 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
         }
 
         /**
-         * Constructs a new MultiChoiceParameterValue where the collection of options are instances of the given
-         * {@link ParameterValue} class.
+         * Constructs a new MultiChoiceParameterValue where the collection of
+         * options are instances of the given {@link ParameterValue} class.
          *
-         * @param innerClass The {@link ParameterValue} class to type the collection of options.
+         * @param innerClass The {@link ParameterValue} class to type the
+         * collection of options.
          */
         public MultiChoiceParameterValue(final Class<? extends ParameterValue> innerClass) {
             options = new ArrayList<>();
@@ -237,9 +263,11 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
         }
 
         /**
-         * Constructs a new MultiChoiceParameterValue from an existing MultiChoiceParametrValue.
+         * Constructs a new MultiChoiceParameterValue from an existing
+         * MultiChoiceParametrValue.
          * <p>
-         * Note that this is not a deep copy of the {@link ParameterValue} objects forming the collection of options.
+         * Note that this is not a deep copy of the {@link ParameterValue}
+         * objects forming the collection of options.
          *
          * @param mc The {@link MultiChoiceParameterValue} to copy.
          */
@@ -250,7 +278,8 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
         }
 
         /**
-         * Get the type of {@link ParameterValue} objects backing the collection of options.
+         * Get the type of {@link ParameterValue} objects backing the collection
+         * of options.
          *
          * @return A class object which extends {@link ParameterValue}.
          */
@@ -275,7 +304,8 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
         /**
          * Set the collection of options from a list of Strings.
          *
-         * @param options A list of Strings to set the collection of options from.
+         * @param options A list of Strings to set the collection of options
+         * from.
          */
         public void setOptions(final List<String> options) {
             this.options.clear();
@@ -288,16 +318,19 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
         /**
          * Get the collection of options as a list of {@link ParameterValue}.
          *
-         * @return A list of {@link ParameterValue} objects representing the options.
+         * @return A list of {@link ParameterValue} objects representing the
+         * options.
          */
         public List<ParameterValue> getOptionsData() {
             return Collections.unmodifiableList(options);
         }
 
         /**
-         * Set the collection of options from a list of {@link ParameterValue} objects.
+         * Set the collection of options from a list of {@link ParameterValue}
+         * objects.
          *
-         * @param options A list of {@link ParameterValue} objects to form the collection of options.
+         * @param options A list of {@link ParameterValue} objects to form the
+         * collection of options.
          */
         public void setOptionsData(final List<? extends ParameterValue> options) {
             this.options.clear();
@@ -337,16 +370,19 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
         /**
          * Get the currently selected values.
          *
-         * @return A list of {@link ParameterValue} objects representing the currently selected values.
+         * @return A list of {@link ParameterValue} objects representing the
+         * currently selected values.
          */
         public List<ParameterValue> getChoicesData() {
             return Collections.unmodifiableList(choices);
         }
 
         /**
-         * Set the currently selected values from a list of {@link ParameterValue} objects.
+         * Set the currently selected values from a list of
+         * {@link ParameterValue} objects.
          *
-         * @param choices A list of {@link ParameterValue} objects to set the selected values from.
+         * @param choices A list of {@link ParameterValue} objects to set the
+         * selected values from.
          */
         public void setChoicesData(final List<? extends ParameterValue> choices) {
             this.choices.clear();

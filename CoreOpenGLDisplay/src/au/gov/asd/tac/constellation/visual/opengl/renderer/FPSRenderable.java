@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.FpsBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.io.IOException;
@@ -173,7 +174,7 @@ public class FPSRenderable implements GLRenderable {
             fpsMatrix.multiply(translationMatrix, srMatrix);
 
             // disable depth so the fps counter is drawn on top
-            gl.glDisable(GL3.GL_DEPTH_TEST);
+            gl.glDisable(GL.GL_DEPTH_TEST);
             gl.glDepthMask(false);
 
             // draw the fps counter
@@ -185,10 +186,10 @@ public class FPSRenderable implements GLRenderable {
             fpsBatcher.setProjectionScale(pyScale);
             fpsBatcher.updateColors(ConstellationColor.YELLOW).run(gl);
             fpsBatcher.updateIcons(fpsDigits).run(gl);
-            fpsBatcher.drawBatch(gl, CAMERA, fpsMatrix, pMatrix);
+            fpsBatcher.drawBatch(gl, CAMERA, fpsMatrix, pMatrix, false);
 
             // re-enable depth
-            gl.glEnable(GL3.GL_DEPTH_TEST);
+            gl.glEnable(GL.GL_DEPTH_TEST);
             gl.glDepthMask(true);
         }
     }

@@ -52,7 +52,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 900),
+    @ActionReference(path = "Menu/Views", position = 1000),
     @ActionReference(path = "Shortcuts", name = "CS-P")
 })
 @TopComponent.OpenActionRegistration(

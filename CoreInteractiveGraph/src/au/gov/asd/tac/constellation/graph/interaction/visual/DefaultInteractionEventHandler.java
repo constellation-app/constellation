@@ -29,11 +29,13 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteractio
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateTransactionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateVertexPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.select.FreeformSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.PointSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.CreationMode;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAction;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
+import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformModel;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
@@ -41,8 +43,10 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
@@ -83,30 +87,39 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.openide.util.Lookup;
 
 /**
- * The default implementation of {@link InteractionEventHandler} for CONSTELLATION, corresponding to the standard mouse
- * and keyboard scheme for interacting with the graph.
+ * The default implementation of {@link InteractionEventHandler} for
+ * CONSTELLATION, corresponding to the standard mouse and keyboard scheme for
+ * interacting with the graph.
  * <p>
- * Briefly, this InteractionEventHandler maps the following gestures to functions:
+ * Briefly, this InteractionEventHandler maps the following gestures to
+ * functions:
  * <ul>
- * <li> Moving the mouse while no buttons are pressed will perform hit testing and update the cursor if it moves from
- * the background to an element (or vice versa).
+ * <li> Moving the mouse while no buttons are pressed will perform hit testing
+ * and update the cursor if it moves from the background to an element (or vice
+ * versa).
  * </li><li> Left clicking an element selects that element
  * </li><li> Left clicking and dragging performs box selection
  * </li><li> Middle clicking a node sets it as the centre of rotation
- * </li><li> Middle clicking and dragging rotates the graph about the X and Y axes.
+ * </li><li> Middle clicking and dragging rotates the graph about the X and Y
+ * axes.
  * </li><li> Right clicking brings up a context menu
- * </li><li> Right clicking and dragging an element drags that element, along with any other selected elements
+ * </li><li> Right clicking and dragging an element drags that element, along
+ * with any other selected elements
  * </li><li> Right clicking and dragging the background pans the graph.
  * </li><li> Double left clicking on the background deselects everything.
  * </li><li> Scrolling the mouse wheel zooms in/out of the graph.
- * </li><li> Holding shift while selecting appends to selection (applies to single element or box selections)
- * </li><li> Holding control while selecting toggle-appends to selection (applies to single element or box selections)
+ * </li><li> Holding shift while selecting appends to selection (applies to
+ * single element or box selections)
+ * </li><li> Holding control while selecting toggle-appends to selection
+ * (applies to single element or box selections)
  * </ul>
- * In addition, if in 'creation mode', the following functions will happen instead of selection:
+ * In addition, if in 'creation mode', the following functions will happen
+ * instead of selection:
  * <ul>
- * <li> Moving the mouse while no buttons are pressed will update the new line model if a transaction is being created.
- * </li><li> Left clicking a node starts creating a transaction from that node, or finishes a transaction on that node
- * if one is already being created
+ * <li> Moving the mouse while no buttons are pressed will update the new line
+ * model if a transaction is being created.
+ * </li><li> Left clicking a node starts creating a transaction from that node,
+ * or finishes a transaction on that node if one is already being created
  * </li><li> Left clicking on the background creates a new node.
  * </ul>
  *
@@ -137,34 +150,43 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     // The connection to the visual annotator that this handler uses
     private VisualAnnotator visualAnnotator;
 
+    private final SelectionFreeformModel freeformModel = new SelectionFreeformModel();
+
     private boolean announceNextFlush = false;
     private boolean handleEvents;
 
     private static final Logger LOGGER = Logger.getLogger(DefaultInteractionEventHandler.class.getName());
 
     /**
-     * A Functional interface that describes how a single mouse or keyboard gesture should be processed once received
-     * this event handler from the EDT.
+     * A Functional interface that describes how a single mouse or keyboard
+     * gesture should be processed once received this event handler from the
+     * EDT.
      */
     @FunctionalInterface
     private static interface GestureHandler {
 
         /**
-         * Process a gesture, manipulating the graph and scheduling {@link VisualOperation VisualOperations} as
-         * appropriate. This method is called by the event handler's main loop; it should never be invoked elsewhere.
+         * Process a gesture, manipulating the graph and scheduling
+         * {@link VisualOperation VisualOperations} as appropriate. This method
+         * is called by the event handler's main loop; it should never be
+         * invoked elsewhere.
          * <p>
-         * Note that these handlers should not do anything with {@link DefaultInteractionEventHandler#graph graph} or
-         * {@link DefaultInteractionEventHandler#interactionGraph interactionGraph}, as the supplied GarphWriteMethods
-         * should stay valid for the duration. {@link VisualOperation VisualOperations} that depend on a flush occurring
-         * should be queued to {@link DefaultInteractionEventHandler#operationQueue operationQueue}. After each event
-         * has been handled, if this queue is non-empty,
-         * {@link DefaultInteractionEventHandler#interactionGraph interactionGraph} will be flushed, all operations on
-         * this queue submitted to the {@link VisualManager} and the queue cleared.
+         * Note that these handlers should not do anything with
+         * {@link DefaultInteractionEventHandler#graph graph} or
+         * {@link DefaultInteractionEventHandler#interactionGraph interactionGraph},
+         * as the supplied GarphWriteMethods should stay valid for the duration.
+         * {@link VisualOperation VisualOperations} that depend on a flush
+         * occurring should be queued to
+         * {@link DefaultInteractionEventHandler#operationQueue operationQueue}.
+         * After each event has been handled, if this queue is non-empty,
+         * {@link DefaultInteractionEventHandler#interactionGraph interactionGraph}
+         * will be flushed, all operations on this queue submitted to the
+         * {@link VisualManager} and the queue cleared.
          *
-         * @param graph Write access to the graph, corresponding to the lock on which gestures are currently being
-         * processed.
-         * @return The minimum amount of time that the event handler should hold the lock on the graph waiting for more
-         * events.
+         * @param graph Write access to the graph, corresponding to the lock on
+         * which gestures are currently being processed.
+         * @return The minimum amount of time that the event handler should hold
+         * the lock on the graph waiting for more events.
          */
         long processEvent(final GraphWriteMethods graph);
     }
@@ -275,15 +297,19 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * Create a new DefaultInteractionEventHandler for the specified {@link Graph}, utilising the specified
-     * {@link VisualManager}, {@link VisualInteraction} and {@link VisualAnnotator}.
+     * Create a new DefaultInteractionEventHandler for the specified
+     * {@link Graph}, utilising the specified
+     * {@link VisualManager}, {@link VisualInteraction} and
+     * {@link VisualAnnotator}.
      *
      * @param graph The {@link Graph} to interact with.
-     * @param manager The {@link VisualManager} to use for queueing visual operations and updates
-     * @param visualInteraction The {@link VisualInteraction} to facilitate operations that convert between screen
-     * coordinates and graph coordinates.
-     * @param visualAnnotator The {@link VisualAnnotator} to use for changing the properties of annotations and other
-     * visualisations ancillary to the graph such as drawing new lines, the selection box, and hit testing.
+     * @param manager The {@link VisualManager} to use for queueing visual
+     * operations and updates
+     * @param visualInteraction The {@link VisualInteraction} to facilitate
+     * operations that convert between screen coordinates and graph coordinates.
+     * @param visualAnnotator The {@link VisualAnnotator} to use for changing
+     * the properties of annotations and other visualisations ancillary to the
+     * graph such as drawing new lines, the selection box, and hit testing.
      */
     public DefaultInteractionEventHandler(final Graph graph, final VisualManager manager, final VisualInteraction visualInteraction, final VisualAnnotator visualAnnotator) {
         this.manager = manager;
@@ -311,11 +337,13 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * Respond to a key press event on the graph. This will respond to keys that interact directly with the graph's
-     * visuals, such as W,A,S,D to pan. Most key presses in CONSTELLATION, for example Ctrl+A, will be picked up by the
-     * netbeans framework and cause plugins to be executed.
+     * Respond to a key press event on the graph. This will respond to keys that
+     * interact directly with the graph's visuals, such as W,A,S,D to pan. Most
+     * key presses in CONSTELLATION, for example Ctrl+A, will be picked up by
+     * the netbeans framework and cause plugins to be executed.
      * <p>
-     * This is called continually whenever a key is held down (at the key repeat rate of the operating system).
+     * This is called continually whenever a key is held down (at the key repeat
+     * rate of the operating system).
      *
      * @param event The KeyEvent related to the key press.
      */
@@ -372,8 +400,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     /**
      * Mouse pressed.
      * <p>
-     * Note: if you right-click on an element, move the mouse to another part of the element (ignoring the pop-up menu),
-     * and right-press, you don't get a mousePressed event.
+     * Note: if you right-click on an element, move the mouse to another part of
+     * the element (ignoring the pop-up menu), and right-press, you don't get a
+     * mousePressed event.
      *
      * @param event Mouse event.
      */
@@ -418,6 +447,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             break;
                         case SELECTING:
                             updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), point));
+                            break;
+                        case FREEFORM_SELECTING:
+                            freeformModel.addPoint(point);
+                            updateSelectionFreeformModel(freeformModel);
                             break;
                         default:
                             break;
@@ -474,7 +507,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 } else if (SwingUtilities.isRightMouseButton(event) && !eventState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
                     eventState.setCurrentAction(SceneAction.DRAG_NODES);
                 } else if (SwingUtilities.isLeftMouseButton(event)) {
-                    if (wg == null || !VisualGraphUtilities.getIsDrawingMode(wg)) {
+                    if ((wg == null || !VisualGraphUtilities.getIsDrawingMode(wg)) && event.isAltDown()) {
+                        eventState.setCurrentAction(SceneAction.FREEFORM_SELECTING);
+                    } else if (wg == null || !VisualGraphUtilities.getIsDrawingMode(wg)) {
                         eventState.setCurrentAction(SceneAction.SELECTING);
                     } else {
                         eventState.setCurrentAction(SceneAction.CREATING);
@@ -516,6 +551,17 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             if (eventState.isMouseDragged()) {
                                 performBoxSelection(wg, point, eventState.getPoint(EventState.PRESSED_POINT), event.isShiftDown(), event.isControlDown());
                                 clearSelectionBoxModel();
+                            } else {
+                                // If the mouse has clicked on an element (and neither pan nor control are pressed),
+                                // or has double-clicked on the background, clear the selection.
+                                final boolean clearSelection = !event.isControlDown() && !event.isShiftDown() && (!eventState.getCurrentHitType().equals(HitType.NO_ELEMENT) || event.getClickCount() == 2);
+                                performPointSelection(event.isControlDown(), clearSelection, eventState.getCurrentHitType().elementType, eventState.getCurrentHitId());
+                            }
+                            break;
+                        case FREEFORM_SELECTING:
+                            if (eventState.isMouseDragged()) {
+                                performFreeformSelection(wg, event.isShiftDown(), event.isControlDown());
+                                clearSelectionFreeformModel();
                             } else {
                                 // If the mouse has clicked on an element (and neither pan nor control are pressed),
                                 // or has double-clicked on the background, clear the selection.
@@ -664,12 +710,15 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * For mouse movements when eventState has no current button - we do a hit test, and, in the case of creating a
-     * transaction, update the new line model.
+     * For mouse movements when eventState has no current button - we do a hit
+     * test, and, in the case of creating a transaction, update the new line
+     * model.
      * <p>
-     * When we are creating a transaction, we wait on the result of the hit test before updating the new line model.
+     * When we are creating a transaction, we wait on the result of the hit test
+     * before updating the new line model.
      *
-     * @param rg Read access to the graph, corresponding to the lock on which gestures are currently being processed.
+     * @param rg Read access to the graph, corresponding to the lock on which
+     * gestures are currently being processed.
      * @param point
      */
     private void updateHitTestAndNewLine(final GraphReadMethods rg, final Point point) {
@@ -684,13 +733,15 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * For mouse movements when event state has a current button registered - if the camera has changed we update it,
-     * and, in the case of creating a transaction, update the new line model.
+     * For mouse movements when event state has a current button registered - if
+     * the camera has changed we update it, and, in the case of creating a
+     * transaction, update the new line model.
      * <p>
-     * When we are creating a transaction, we update the camera and the new line model together as one
-     * {@link VisualOperation}.
+     * When we are creating a transaction, we update the camera and the new line
+     * model together as one {@link VisualOperation}.
      *
-     * @param wg Write access to the graph, corresponding to the lock on which gestures are currently being processed.
+     * @param wg Write access to the graph, corresponding to the lock on which
+     * gestures are currently being processed.
      * @param point
      * @param camera
      * @param cameraChange
@@ -710,7 +761,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * This describes the different manners in which a hit test request can be made.
+     * This describes the different manners in which a hit test request can be
+     * made.
      *
      */
     private enum HitTestMode {
@@ -720,35 +772,40 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
          */
         REQUEST_ONLY,
         /**
-         * Make the request and wait for the result on this event handler's main thread and then set this handler's
-         * EventState to the result.
+         * Make the request and wait for the result on this event handler's main
+         * thread and then set this handler's EventState to the result.
          */
         HANDLE_SYNCHRONOUSLY,
         /**
-         * Make the request and wait for the result on a new thread, to be used in conjunction with a Consumer that will
-         * handle the resulting EventState.
+         * Make the request and wait for the result on a new thread, to be used
+         * in conjunction with a Consumer that will handle the resulting
+         * EventState.
          */
         HANDLE_ASYNCHRONOUSLY;
     }
 
     /**
-     * Orders a hit test via a {@link VisualOperation}, storing the result {@link EventState} when the mode handles
-     * results.
+     * Orders a hit test via a {@link VisualOperation}, storing the result
+     * {@link EventState} when the mode handles results.
      *
      * @param point The {@link Point} to hit test in screen coordinates.
-     * @param mode The {@link HitTestMode} indicating whether or not to handle results and the synchronicity.
+     * @param mode The {@link HitTestMode} indicating whether or not to handle
+     * results and the synchronicity.
      */
     private void orderHitTest(final Point point, final HitTestMode mode) {
         orderHitTest(point, mode, e -> eventState = e);
     }
 
     /**
-     * Orders a hit test via a {@link VisualOperation}, using the supplied consumer to handler the result event state
-     * and optionally waits on the result.
+     * Orders a hit test via a {@link VisualOperation}, using the supplied
+     * consumer to handler the result event state and optionally waits on the
+     * result.
      *
      * @param point The {@link Point} to hit test in screen coordinates.
-     * @param mode The {@link HitTestMode} indicating whether or not to handle results and the synchronicity.
-     * @param resultConsumer The consumer to handle the {@link EventState} resulting from the hit test.
+     * @param mode The {@link HitTestMode} indicating whether or not to handle
+     * results and the synchronicity.
+     * @param resultConsumer The consumer to handle the {@link EventState}
+     * resulting from the hit test.
      */
     private void orderHitTest(final Point point, final HitTestMode mode, final Consumer<EventState> resultConsumer) {
         final BlockingQueue<HitState> hitTestQueue = new ArrayBlockingQueue<>(1);
@@ -778,9 +835,11 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * Set whether hit testing is enabled on the {@link VisualProcessor} via a {@link VisualOperation}
+     * Set whether hit testing is enabled on the {@link VisualProcessor} via a
+     * {@link VisualOperation}
      *
-     * @param enabled Whether to enable hit testing on the {@link VisualProcessor}.
+     * @param enabled Whether to enable hit testing on the
+     * {@link VisualProcessor}.
      */
     private void setHitTestingEnabled(final boolean enabled) {
         manager.addOperation(visualAnnotator.setHitTestingEnabled(enabled));
@@ -803,6 +862,23 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
+     * Schedule a {@link VisualOperation} to clear the selection freeform model
+     */
+    private void clearSelectionFreeformModel() {
+        freeformModel.resetModel();
+        manager.addOperation(visualAnnotator.setSelectionFreeformModel(freeformModel));
+    }
+
+    /**
+     * Schedule a {@link VisualOperation} to update the selection freeform model
+     *
+     * @param model The model to update to.
+     */
+    private void updateSelectionFreeformModel(final SelectionFreeformModel model) {
+        manager.addOperation(visualAnnotator.setSelectionFreeformModel(model));
+    }
+
+    /**
      * Schedule a {@link VisualOperation} to clear the new line model
      */
     private void clearNewLineModel(final Camera camera) {
@@ -810,27 +886,35 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * Schedule a {@link VisualOperation} to change the new line model, along with the camera if necessary.
+     * Schedule a {@link VisualOperation} to change the new line model, along
+     * with the camera if necessary.
      *
-     * @param rg Read access to the graph, corresponding to the lock on which gestures are currently being processed.
+     * @param rg Read access to the graph, corresponding to the lock on which
+     * gestures are currently being processed.
      * @param endPoint The updated end point for the new line
-     * @param camera The camera (which may or may not be updated) that this newline corresponds to
-     * @param cameraChange Whether or not to also schedule a camera change operation.
+     * @param camera The camera (which may or may not be updated) that this
+     * newline corresponds to
+     * @param cameraChange Whether or not to also schedule a camera change
+     * operation.
      */
     private void scheduleNewLineChangeOperation(final GraphReadMethods rg, final Point endPoint, final Camera camera, final boolean cameraChange) {
         scheduleNewLineChangeOperation(rg, endPoint, camera, cameraChange, eventState);
     }
 
     /**
-     * Schedule a {@link VisualOperation} to change the new line model, along with the camera if necessary, using an
-     * alternate EventState for current hit testing information.
+     * Schedule a {@link VisualOperation} to change the new line model, along
+     * with the camera if necessary, using an alternate EventState for current
+     * hit testing information.
      *
-     * @param rg Read access to the graph, corresponding to the lock on which gestures are currently being processed.
+     * @param rg Read access to the graph, corresponding to the lock on which
+     * gestures are currently being processed.
      * @param endPoint The updated end point for the new line
-     * @param camera The camera (which may or may not be updated) that this newline corresponds to
-     * @param cameraChange Whether or not to also schedule a camera change operation.
-     * @param newLineHitTestState The EventState giving the most recent information about hit testing with relation to
-     * the new line.
+     * @param camera The camera (which may or may not be updated) that this
+     * newline corresponds to
+     * @param cameraChange Whether or not to also schedule a camera change
+     * operation.
+     * @param newLineHitTestState The EventState giving the most recent
+     * information about hit testing with relation to the new line.
      */
     private void scheduleNewLineChangeOperation(final GraphReadMethods rg, final Point endPoint, final Camera camera, final boolean cameraChange, final EventState newLineHitTestState) {
         final NewLineModel updatedModel;
@@ -850,7 +934,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * Flag in the event state that a new vertex is in the process of being created.
+     * Flag in the event state that a new vertex is in the process of being
+     * created.
      */
     private void beginCreateVertex() {
         if (!eventState.getCurrentCreationMode().equals(CreationMode.NONE)) {
@@ -861,7 +946,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * Flag in the event state that a new transaction is in the process of being created.
+     * Flag in the event state that a new transaction is in the process of being
+     * created.
      */
     private void beginCreateTransaction() {
         switch (eventState.getCurrentCreationMode()) {
@@ -881,7 +967,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     /**
      * Creates a vertex on the graph at a specified point.
      * <p>
-     * The vertex will be created via a plugin which will run later (after the event handler gives up its current lock).
+     * The vertex will be created via a plugin which will run later (after the
+     * event handler gives up its current lock).
      *
      * @param camera The current camera
      * @param createAt The point at which the vertex should be created.
@@ -900,15 +987,17 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     /**
      * Creates a transaction on the graph between the specified vertices.
      * <p>
-     * The vertex will be created via a plugin which will synchronously, holding up the event handler until it is
-     * finished. The reason for this is that otherwise the new transaction will not be visible until the event handler
-     * gives up its current lock (which if we are creating multiple transactions with the shift/control key down, could
-     * be indefinitely).
+     * The vertex will be created via a plugin which will synchronously, holding
+     * up the event handler until it is finished. The reason for this is that
+     * otherwise the new transaction will not be visible until the event handler
+     * gives up its current lock (which if we are creating multiple transactions
+     * with the shift/control key down, could be indefinitely).
      *
      * @param fromVertex The graph id of the source vertex
      * @param toVertex The graph id of the destination vertex
      * @param directed Whether or not the transaction should be directed.
-     * @param wg Write access to the graph, corresponding to the lock on which gestures are currently being processed.
+     * @param wg Write access to the graph, corresponding to the lock on which
+     * gestures are currently being processed.
      */
     private void createTransaction(final GraphWriteMethods wg, final int fromVertex, final int toVertex, final boolean directed) {
         Plugin plugin = PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_TRANSACTION);
@@ -926,8 +1015,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
-     * Gather all the selected nodes identifiers. Add the selected node if appropriate If a transaction was selected,
-     * then also add its two nodes.
+     * Gather all the selected nodes identifiers. Add the selected node if
+     * appropriate If a transaction was selected, then also add its two nodes.
      *
      * @return array of node IDs
      */
@@ -1005,19 +1094,22 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     /**
      * Performs a selection based on a given start and end point.
      *
-     * If the start and end point are equal, a point selection is performed based on the hit tester.
+     * If the start and end point are equal, a point selection is performed
+     * based on the hit tester.
      *
-     * If the start and end point differ, a box selection is performed with the two points representing diagonally
-     * opposite corners of the box.
+     * If the start and end point differ, a box selection is performed with the
+     * two points representing diagonally opposite corners of the box.
      *
-     * In the latter case, the 2d box is actually converted to a 3d frustrum in order to make the correct selection on
-     * the 3 dimensional graph.
+     * In the latter case, the 2d box is actually converted to a 3d frustrum in
+     * order to make the correct selection on the 3 dimensional graph.
      *
      * @param selectTo the point where selection ends
      * @param selectFrom the point where selection begins.
-     * @param appendSelection whether or not the selection will be appended to the current selection
-     * @param toggleSelection whether or not the selection will toggle the current selection. Note that if
-     * appendSelection is true, this parameter has no effect.
+     * @param appendSelection whether or not the selection will be appended to
+     * the current selection
+     * @param toggleSelection whether or not the selection will toggle the
+     * current selection. Note that if appendSelection is true, this parameter
+     * has no effect.
      */
     private void performBoxSelection(final GraphReadMethods rg, final Point selectTo, final Point selectFrom, final boolean appendSelection, final boolean toggleSelection) {
 
@@ -1047,6 +1139,26 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         PluginExecution.withPlugin(plugin).executeLater(graph);
     }
 
+    /**
+     * Performs a selection based on a given polygon in the freeformModel.
+     *
+     * @param appendSelection whether or not the selection will be appended to
+     * the current selection
+     * @param toggleSelection whether or not the selection will toggle the
+     * current selection. Note that if appendSelection is true, this parameter
+     * has no effect.
+     */
+    private void performFreeformSelection(final GraphReadMethods rg, final boolean appendSelection, final boolean toggleSelection) {
+
+        final float[] boxCameraCoordinates = visualInteraction.windowBoxToCameraBox(freeformModel.getLeftMost(), freeformModel.getRightMost(), freeformModel.getTopMost(), freeformModel.getBottomMost());
+
+        freeformModel.setWindowBoxToCameraBox(boxCameraCoordinates);
+        final Float[] transformedVertices = freeformModel.getTransformedVertices();
+
+        final Plugin plugin = new FreeformSelectionPlugin(appendSelection, toggleSelection, VisualGraphUtilities.getCamera(rg), boxCameraCoordinates, transformedVertices, freeformModel.getNumPoints());
+        PluginExecution.withPlugin(plugin).executeLater(graph);
+    }
+
     private void showContextMenu(final GraphReadMethods rg, final Camera camera, final Point screenLocation, final GraphElementType elementType, final int clickedId) {
         final JPopupMenu popup = new JPopupMenu();
         final Collection<? extends ContextMenuProvider> popups = Lookup.getDefault().lookupAll(ContextMenuProvider.class);
@@ -1069,12 +1181,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             popup.add(new AbstractAction(item) {
                                 @Override
                                 public void actionPerformed(final ActionEvent event) {
-                                    PluginExecution.withPlugin(new SimplePlugin(CONTEXT_MENU_TEXT + item) {
-                                        @Override
-                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
-                                        }
-                                    }).executeLater(null);
+                                    PluginExecution.withPlugin(new SelectGraphItem(pmp, item, elementType, clickedId, graphLocation)).executeLater(null);
                                 }
                             });
                         } else {
@@ -1082,12 +1189,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             popup.add(new AbstractAction(item, icon) {
                                 @Override
                                 public void actionPerformed(final ActionEvent event) {
-                                    PluginExecution.withPlugin(new SimplePlugin(CONTEXT_MENU_TEXT + item) {
-                                        @Override
-                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
-                                        }
-                                    }).executeLater(null);
+                                    PluginExecution.withPlugin(new SelectGraphItem(pmp, item, elementType, clickedId, graphLocation)).executeLater(null);
                                 }
                             });
                         }
@@ -1120,12 +1222,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             ((JMenu) currentMenu).add(new AbstractAction(item) {
                                 @Override
                                 public void actionPerformed(final ActionEvent event) {
-                                    PluginExecution.withPlugin(new SimplePlugin(CONTEXT_MENU_TEXT + item) {
-                                        @Override
-                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
-                                        }
-                                    }).executeLater(null);
+                                    PluginExecution.withPlugin(new SelectGraphItem(pmp, item, elementType, clickedId, graphLocation)).executeLater(null);
                                 }
                             });
                         } else {
@@ -1133,12 +1230,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             ((JMenu) currentMenu).add(new AbstractAction(item, icon) {
                                 @Override
                                 public void actionPerformed(final ActionEvent event) {
-                                    PluginExecution.withPlugin(new SimplePlugin(CONTEXT_MENU_TEXT + item) {
-                                        @Override
-                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
-                                        }
-                                    }).executeLater(null);
+                                    PluginExecution.withPlugin(new SelectGraphItem(pmp, item, elementType, clickedId, graphLocation)).executeLater(null);
                                 }
                             });
                         }
@@ -1155,5 +1247,36 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         final float dpiScalingFactor = this.visualInteraction.getDPIScalingFactor();
         pointToScale.x *= dpiScalingFactor;
         pointToScale.y *= dpiScalingFactor;
+    }
+
+    /**
+     * Plugin to select graph item.
+     */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    private class SelectGraphItem extends SimplePlugin {
+
+        private final ContextMenuProvider pmp;
+        private final String item;
+        private final GraphElementType elementType;
+        private final int clickedId;
+        private final Vector3f graphLocation;
+
+        public SelectGraphItem(final ContextMenuProvider pmp, final String item, final GraphElementType elementType, final int clickedId, final Vector3f graphLocation) {
+            this.pmp = pmp;
+            this.item = item;
+            this.elementType = elementType;
+            this.clickedId = clickedId;
+            this.graphLocation = graphLocation;
+        }
+
+        @Override
+        public String getName() {
+            return CONTEXT_MENU_TEXT + item;
+        }
+
+        @Override
+        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
+        }
     }
 }

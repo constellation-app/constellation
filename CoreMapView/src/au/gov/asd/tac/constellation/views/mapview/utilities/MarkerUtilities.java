@@ -44,12 +44,17 @@ public class MarkerUtilities {
     private static final int A_MASK = 255 << 24;
 
     /**
-     * Generate an integer representing a color for use in Processing from ARGB values.
+     * Generate an integer representing a color for use in Processing from ARGB
+     * values.
      *
-     * @param alpha an integer between 0 and 255 representing the alpha component of the color.
-     * @param red an integer between 0 and 255 representing the red component of the color.
-     * @param green an integer between 0 and 255 representing the green component of the color.
-     * @param blue an integer between 0 and 255 representing the blue component of the color.
+     * @param alpha an integer between 0 and 255 representing the alpha
+     * component of the color.
+     * @param red an integer between 0 and 255 representing the red component of
+     * the color.
+     * @param green an integer between 0 and 255 representing the green
+     * component of the color.
+     * @param blue an integer between 0 and 255 representing the blue component
+     * of the color.
      * @return an integer representing a color for use in Processing.
      */
     public static int color(final int alpha, final int red, final int green, final int blue) {
@@ -57,7 +62,8 @@ public class MarkerUtilities {
     }
 
     /**
-     * Generate an integer representing a color for use in Processing from a (@link ColorValue} object.
+     * Generate an integer representing a color for use in Processing from a
+     * (@link ColorValue} object.
      *
      * @param colorValue a {@link ConstellationColor} object
      * @return an integer representing a color
@@ -71,8 +77,9 @@ public class MarkerUtilities {
     }
 
     /**
-     * Generate an integer representing a color for use in Processing from a HTML string. The provided string should
-     * include the leading '#' and optionally an alpha value.
+     * Generate an integer representing a color for use in Processing from a
+     * HTML string. The provided string should include the leading '#' and
+     * optionally an alpha value.
      *
      * @param html a HTML color string
      * @return an integer representing a color
@@ -98,7 +105,8 @@ public class MarkerUtilities {
      * Generate ARGB values from a Processing color.
      *
      * @param color an integer representing a color
-     * @return an array of integers storing values for the alpha, red, green and blue components of the color
+     * @return an array of integers storing values for the alpha, red, green and
+     * blue components of the color
      */
     public static int[] argb(final int color) {
         int[] argb = new int[4];
@@ -146,11 +154,13 @@ public class MarkerUtilities {
     }
 
     /**
-     * Generate a list of vertices approximating a circle around the given centre location out to the given delta
-     * location.
+     * Generate a list of vertices approximating a circle around the given
+     * centre location out to the given delta location.
      *
-     * @param centre a {@link Location} object representing the centre of the circle
-     * @param delta a {@link Location} object representing an point on the edge of the circle
+     * @param centre a {@link Location} object representing the centre of the
+     * circle
+     * @param delta a {@link Location} object representing an point on the edge
+     * of the circle
      * @return a list of {@link Location} objects approximating the circle.
      */
     public static List<Location> generateCircle(final Location centre, final Location delta) {

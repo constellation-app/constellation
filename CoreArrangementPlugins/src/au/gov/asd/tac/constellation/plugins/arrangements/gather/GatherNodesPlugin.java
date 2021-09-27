@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
@@ -43,6 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("GatherNodesPlugin=Gather Selected Nodes")
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public final class GatherNodesPlugin extends SimpleEditPlugin {
 
     public static final String VXID_PARAMETER_ID = PluginParameter.buildId(GatherNodesPlugin.class, "vertex_id");

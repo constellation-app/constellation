@@ -24,7 +24,9 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -298,7 +300,7 @@ public final class QualityControlViewPane extends BorderPane {
                     public void updateItem(final QualityControlEvent item, final boolean empty) {
                         super.updateItem(item, empty);
                         if (item != null) {
-                            setText(item.getCategory() == QualityCategory.DEFAULT ? Bundle.MSG_NotApplicable() : String.valueOf(item.getCategory().name()));
+                            setText(String.valueOf(item.getCategory().name()));
                             setAlignment(Pos.CENTER);
                             setStyle(qualityStyle(item.getCategory()));
                         }
@@ -370,33 +372,32 @@ public final class QualityControlViewPane extends BorderPane {
      * @return a javafx style based on the given quality and alpha values.
      */
     public static String qualityStyle(final QualityCategory category, final float alpha) {
-        final String whiteText = "-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);";
         final int intensity;
         final String style;
         switch (category) {
-            case INFO:
-                intensity = 255 - (255 * QualityControlEvent.INFO_VALUE) / 100;
-                style = String.format(whiteText, intensity, intensity, alpha);
+            case MINOR:
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(90,150,255,%f);", alpha);
                 break;
-            case WARNING:
-                intensity = 255 - (255 * QualityControlEvent.WARNING_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+            case MEDIUM:
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,215,0,%f);", alpha);
+                break;
+            case MAJOR:
+                intensity = 255 - (255 * QualityControlEvent.MAJOR_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(255,%d,0,%f);", intensity, alpha);
                 break;
             case SEVERE:
                 intensity = 255 - (255 * QualityControlEvent.SEVERE_VALUE) / 100;
                 style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", intensity, intensity, alpha);
                 break;
-            case FATAL:
-                intensity = 255 - (255 * QualityControlEvent.FATAL_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,%d,%d,%f);", intensity, intensity, alpha);
+            case CRITICAL:
+                intensity = 255 - (255 * QualityControlEvent.CRITICAL_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(150,%d,%d,%f);", intensity, intensity, alpha);
                 break;
             default:
                 // DEFAULT case
-                intensity = 255 - (255 * QualityControlEvent.DEFAULT_VALUE) / 100;
-                style = String.format(whiteText, intensity, intensity, alpha);
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(0,200,0,%f);", alpha);
                 break;
         }
-
         return style;
     }
 
@@ -420,53 +421,53 @@ public final class QualityControlViewPane extends BorderPane {
         ruleLabel.setPadding(new Insets(0, 100, 10, 5));
         buttonGrid.add(ruleLabel, 0, rowCount);
 
-        final Label defaultLabel = new Label("DEFAULT");
-        defaultLabel.setPadding(new Insets(0, 10, 10, 10));
-        buttonGrid.add(defaultLabel, 1, rowCount);
+        final Label minorLabel = new Label("MINOR");
+        minorLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(minorLabel, 1, rowCount);
 
-        final Label infoLabel = new Label("INFO");
-        infoLabel.setPadding(new Insets(0, 10, 10, 10));
-        buttonGrid.add(infoLabel, 2, rowCount);
+        final Label mediumLabel = new Label("MEDIUM");
+        mediumLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(mediumLabel, 2, rowCount);
 
-        final Label warningLabel = new Label("WARNING");
-        warningLabel.setPadding(new Insets(0, 10, 10, 10));
-        buttonGrid.add(warningLabel, 3, rowCount);
+        final Label majorLabel = new Label("MAJOR");
+        majorLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(majorLabel, 3, rowCount);
 
         final Label severeLabel = new Label("SEVERE");
         severeLabel.setPadding(new Insets(0, 10, 10, 10));
         buttonGrid.add(severeLabel, 4, rowCount);
 
-        final Label fatalLabel = new Label("FATAL");
-        fatalLabel.setPadding(new Insets(0, 10, 10, 10));
-        buttonGrid.add(fatalLabel, 5, rowCount);
+        final Label criticalLabel = new Label("CRITICAL");
+        criticalLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(criticalLabel, 5, rowCount);
         rowCount++;
 
         // Setting rule names and buttons
         for (final QualityControlRule rule : Lookup.getDefault().lookupAll(QualityControlRule.class)) {
             final ToggleGroup ruleGroup = new ToggleGroup();
             final Label ruleName = new Label(rule.getName());
-            final RadioButton defaultButton = new RadioButton();
-            final RadioButton infoButton = new RadioButton();
-            final RadioButton warningButton = new RadioButton();
+            final RadioButton minorButton = new RadioButton();
+            final RadioButton mediumButton = new RadioButton();
+            final RadioButton majorButton = new RadioButton();
             final RadioButton severeButton = new RadioButton();
-            final RadioButton fatalButton = new RadioButton();
+            final RadioButton criticalButton = new RadioButton();
             final Button resetButton = new Button("Reset");
             resetButton.setOnAction(event -> {
                 switch (rule.getCategory(0)) {
-                    case DEFAULT:
-                        defaultButton.setSelected(true);
+                    case MINOR:
+                        minorButton.setSelected(true);
                         break;
-                    case INFO:
-                        infoButton.setSelected(true);
+                    case MEDIUM:
+                        mediumButton.setSelected(true);
                         break;
-                    case WARNING:
-                        warningButton.setSelected(true);
+                    case MAJOR:
+                        majorButton.setSelected(true);
                         break;
                     case SEVERE:
                         severeButton.setSelected(true);
                         break;
-                    case FATAL:
-                        fatalButton.setSelected(true);
+                    case CRITICAL:
+                        criticalButton.setSelected(true);
                         break;
                     default:
                         break;
@@ -476,20 +477,20 @@ public final class QualityControlViewPane extends BorderPane {
             getPriorities().putIfAbsent(rule, rule.getCategory(0));
             // setting the selection based on the current priority
             switch (getPriorities().get(rule)) {
-                case DEFAULT:
-                    defaultButton.setSelected(true);
+                case MINOR:
+                    minorButton.setSelected(true);
                     break;
-                case INFO:
-                    infoButton.setSelected(true);
+                case MEDIUM:
+                    mediumButton.setSelected(true);
                     break;
-                case WARNING:
-                    warningButton.setSelected(true);
+                case MAJOR:
+                    majorButton.setSelected(true);
                     break;
                 case SEVERE:
                     severeButton.setSelected(true);
                     break;
-                case FATAL:
-                    fatalButton.setSelected(true);
+                case CRITICAL:
+                    criticalButton.setSelected(true);
                     break;
                 default:
                     break;
@@ -498,41 +499,41 @@ public final class QualityControlViewPane extends BorderPane {
             toggleGroups.add(ruleGroup);
 
             GridPane.setHalignment(ruleName, HPos.LEFT);
-            GridPane.setHalignment(defaultButton, HPos.CENTER);
-            GridPane.setHalignment(infoButton, HPos.CENTER);
-            GridPane.setHalignment(warningButton, HPos.CENTER);
+            GridPane.setHalignment(minorButton, HPos.CENTER);
+            GridPane.setHalignment(mediumButton, HPos.CENTER);
+            GridPane.setHalignment(majorButton, HPos.CENTER);
             GridPane.setHalignment(severeButton, HPos.CENTER);
-            GridPane.setHalignment(fatalButton, HPos.CENTER);
+            GridPane.setHalignment(criticalButton, HPos.CENTER);
             GridPane.setHalignment(resetButton, HPos.CENTER);
 
             ruleName.setPadding(new Insets(0, 0, 5, 5));
-            defaultButton.setPadding(new Insets(0, 10, 5, 10));
-            infoButton.setPadding(new Insets(0, 10, 5, 10));
-            warningButton.setPadding(new Insets(0, 10, 5, 10));
+            minorButton.setPadding(new Insets(0, 10, 5, 10));
+            mediumButton.setPadding(new Insets(0, 10, 5, 10));
+            majorButton.setPadding(new Insets(0, 10, 5, 10));
             severeButton.setPadding(new Insets(0, 10, 5, 10));
-            fatalButton.setPadding(new Insets(0, 10, 5, 10));
+            criticalButton.setPadding(new Insets(0, 10, 5, 10));
             resetButton.setPadding(new Insets(5, 10, 5, 10));
 
-            defaultButton.setUserData(QualityCategory.DEFAULT);
-            infoButton.setUserData(QualityCategory.INFO);
-            warningButton.setUserData(QualityCategory.WARNING);
+            minorButton.setUserData(QualityCategory.MINOR);
+            mediumButton.setUserData(QualityCategory.MEDIUM);
+            majorButton.setUserData(QualityCategory.MAJOR);
             severeButton.setUserData(QualityCategory.SEVERE);
-            fatalButton.setUserData(QualityCategory.FATAL);
+            criticalButton.setUserData(QualityCategory.CRITICAL);
 
-            defaultButton.setToggleGroup(ruleGroup);
-            infoButton.setToggleGroup(ruleGroup);
-            warningButton.setToggleGroup(ruleGroup);
+            minorButton.setToggleGroup(ruleGroup);
+            mediumButton.setToggleGroup(ruleGroup);
+            majorButton.setToggleGroup(ruleGroup);
             severeButton.setToggleGroup(ruleGroup);
-            fatalButton.setToggleGroup(ruleGroup);
+            criticalButton.setToggleGroup(ruleGroup);
 
             ruleGroup.setUserData(rule);
 
             buttonGrid.add(ruleName, 0, rowCount);
-            buttonGrid.add(defaultButton, 1, rowCount);
-            buttonGrid.add(infoButton, 2, rowCount);
-            buttonGrid.add(warningButton, 3, rowCount);
+            buttonGrid.add(minorButton, 1, rowCount);
+            buttonGrid.add(mediumButton, 2, rowCount);
+            buttonGrid.add(majorButton, 3, rowCount);
             buttonGrid.add(severeButton, 4, rowCount);
-            buttonGrid.add(fatalButton, 5, rowCount);
+            buttonGrid.add(criticalButton, 5, rowCount);
             buttonGrid.add(resetButton, 6, rowCount);
 
             rowCount++;
@@ -607,7 +608,7 @@ public final class QualityControlViewPane extends BorderPane {
         for (final Pair<QualityCategory, String> rule : rules) {
             final String[] t = rule.getValue().split("§");
 
-            final String quality = rule.getKey() == QualityCategory.DEFAULT ? Bundle.MSG_NotApplicable() : "" + rule.getKey().name();
+            final String quality = rule.getKey().name();
             final String title = String.format("%s - %s", quality, t[0]);
 
             final Text content = new Text(t[1]);
@@ -691,6 +692,7 @@ public final class QualityControlViewPane extends BorderPane {
     /**
      * Delete nodes in a graph matching rows selected in QualityControlView.
      */
+    @PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE"})
     protected static class DeleteQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
@@ -723,6 +725,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Selects on the graph only nodes which have a corresponding selected
      * QualityControlEvent.
      */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     protected static class SelectQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
@@ -769,6 +772,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Selects on the graph only nodes which do not have a corresponding
      * selected QualityControlEvent.
      */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     protected static class DeselectQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
@@ -808,6 +812,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Zoom the camera of the Graph to the extents of nodes corresponding to any
      * selected QualityControlEvent.
      */
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
     private static class ZoomToQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;

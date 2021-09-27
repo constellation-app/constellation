@@ -33,7 +33,7 @@ import org.openide.util.NbBundle;
  * @author twilight_sparkle
  */
 @NbBundle.Messages("PointSelectionPlugin=Select Graph Element")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECTION"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
 public final class PointSelectionPlugin extends SimpleEditPlugin {
 
     final IntArray vertexIds;

@@ -32,7 +32,9 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -81,7 +83,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -109,6 +110,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
@@ -558,7 +560,13 @@ public class AttributeEditorPanel extends BorderPane {
         if (editorFactory == null || values == null) {
             editButton.setDisable(true);
         } else {
-            editButton.setOnMouseClicked(getEditValueHandler(attribute, editorFactory, values));
+            editButton.setOnMouseClicked(event -> getEditValueHandler(attribute, editorFactory, values));
+
+            attributeValueNode.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
+                    getEditValueHandler(attribute, editorFactory, values);
+                }
+            });
         }
 
         // If we don't do anything here, right-clicking on the Node will produce two context menus:
@@ -591,7 +599,7 @@ public class AttributeEditorPanel extends BorderPane {
         attributePane.setGraphic(gridPane);
         attributePane.setTooltip(new Tooltip(attribute.getAttributeDescription()));
 
-        attributePane.setExpanded(false);
+        attributePane.setExpanded(attribute.isKeepExpanded());
 
         attributePane.setOnDragDetected(event -> {
             final Dragboard db = attributePane.startDragAndDrop(TransferMode.COPY);
@@ -675,6 +683,10 @@ public class AttributeEditorPanel extends BorderPane {
             }
         });
         attributePane.setContent(dataAndMoreButtonBox);
+
+        //attributePane TitledPane EXPAND and COLLAPSE events
+        attributePane.expandedProperty().addListener((observable, wasExpanded, isNowExpanded)
+                -> attribute.setKeepExpanded(isNowExpanded));
     }
 
     private Button createLoadMoreButton(final VBox parent, final AttributeData attribute) {
@@ -793,25 +805,11 @@ public class AttributeEditorPanel extends BorderPane {
     private void clearHeaderTitledPanes() {
         for (final VBox box : valueTitledPaneContainers) {
             box.getChildren().clear();
-
         }
-
     }
 
     private void deleteAttributeAction(final GraphElementType elementType, final String attributeName) {
-        final SimpleEditPlugin deleteAttributePlugin = new SimpleEditPlugin() {
-
-            @Override
-            public String getName() {
-                return "Attribute Editor: Remove Attribute";
-            }
-
-            @Override
-            public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                graph.removeAttribute(graph.getAttribute(elementType, attributeName));
-            }
-        };
-        PluginExecution.withPlugin(deleteAttributePlugin).executeLater(GraphManager.getDefault().getActiveGraph());
+        PluginExecution.withPlugin(new DeleteAttributePlugin(elementType, attributeName)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
     private void createAttributeAction(final GraphElementType elementType) {
@@ -876,20 +874,18 @@ public class AttributeEditorPanel extends BorderPane {
         }
     }
 
-    private EventHandler<MouseEvent> getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
-        return e -> {
-            final Object value = values.length == 1 ? values[0] : null;
-            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attributeData.getDataType());
-            final String editType = editorFactory.getAttributeType();
-            final AttributeValueTranslator fromTranslator = interaction.fromEditTranslator(editType);
-            final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
-            final ValueValidator<?> validator = interaction.fromEditValidator(editType);
-            final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-            final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
-            final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
-            final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
-            dialog.showDialog();
-        };
+    private void getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
+        final Object value = values.length == 1 ? values[0] : null;
+        final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attributeData.getDataType());
+        final String editType = editorFactory.getAttributeType();
+        final AttributeValueTranslator fromTranslator = interaction.fromEditTranslator(editType);
+        final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
+        final ValueValidator<?> validator = interaction.fromEditValidator(editType);
+        final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
+        final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
+        final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
+        final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
+        dialog.showDialog();
     }
 
     private double getTextWidth(final String text) {
@@ -981,6 +977,14 @@ public class AttributeEditorPanel extends BorderPane {
         gridPane.add(attributeValueText, displayNodes.size(), 0);
         gridPane.getColumnConstraints().add(displayTextConstraint);
 
+        final AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
+        if (editorFactory != null && values != null) {
+            attributeValueText.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
+                    getEditValueHandler(attribute, editorFactory, values);
+                }
+            });
+        }
         return gridPane;
     }
 
@@ -1027,4 +1031,29 @@ public class AttributeEditorPanel extends BorderPane {
     private Text createAttributeTitleLabel(final String attributeTitle) {
         return new Text(attributeTitle + SeparatorConstants.COLON);
     }
+
+    /**
+     * Delete the attribute on the element type.
+     */
+    @PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE"})
+    public static class DeleteAttributePlugin extends SimpleEditPlugin {
+
+        final GraphElementType elementType;
+        final String attributeName;
+
+        public DeleteAttributePlugin(final GraphElementType elementType, final String attributeName) {
+            this.elementType = elementType;
+            this.attributeName = attributeName;
+        }
+
+        @Override
+        public String getName() {
+            return "Attribute Editor: Remove Attribute";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            graph.removeAttribute(graph.getAttribute(elementType, attributeName));
+        }
+    };
 }

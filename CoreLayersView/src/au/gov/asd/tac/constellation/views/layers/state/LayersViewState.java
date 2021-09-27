@@ -79,7 +79,8 @@ public class LayersViewState {
     }
 
     /**
-     * Add a new additional layer if the space permits. Display a message if there is no space.
+     * Add a new additional layer if the space permits. Display a message if
+     * there is no space.
      */
     public void addLayer() {
         final int count = getLayerCount();
@@ -107,8 +108,9 @@ public class LayersViewState {
     }
 
     /**
-     * Add a layer at a certain position. Will override the description of a layer if the position was taken. If the
-     * position is open, a new layer will be added with the description.
+     * Add a layer at a certain position. Will override the description of a
+     * layer if the position was taken. If the position is open, a new layer
+     * will be added with the description.
      *
      * @param layerNo the layer to add to
      * @param description the layer description

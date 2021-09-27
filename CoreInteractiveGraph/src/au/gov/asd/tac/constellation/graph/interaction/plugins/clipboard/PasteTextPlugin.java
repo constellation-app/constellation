@@ -38,8 +38,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"EDIT"})
 @Messages("PasteTextPlugin=Paste Text")
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 public class PasteTextPlugin extends SimplePlugin {
 
     public static final String TEXT_PARAMETER_ID = PluginParameter.buildId(PasteTextPlugin.class, "text");

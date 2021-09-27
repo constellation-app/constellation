@@ -93,7 +93,7 @@ public class LayersRemoveContextMenu implements ContextMenuProvider {
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
         PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(
-                Integer.parseInt(item.substring(0, 2).trim()), LayersAddContextMenu.LayerAction.REMOVE))
+                Integer.parseInt(item.substring(0, 2).trim()), LayerAction.REMOVE, true))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 }

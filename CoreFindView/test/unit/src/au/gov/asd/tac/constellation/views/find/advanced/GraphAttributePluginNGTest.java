@@ -30,19 +30,19 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test class for the Graph Attribute Plugin Class 
- * 
+ * Test class for the Graph Attribute Plugin Class
+ *
  * @author Delphinus8821
  */
 public class GraphAttributePluginNGTest {
-    
+
     private final ArrayList<Attribute> attributes = new ArrayList<>();
     private long attributeModificationCounter;
     private final GraphElementType type = GraphElementType.VERTEX;
     private int attrX, attrY;
     private int vAttrId, tAttrId;
     private StoreGraph graph;
-    
+
     public GraphAttributePluginNGTest() {
     }
 
@@ -61,7 +61,7 @@ public class GraphAttributePluginNGTest {
         attrX = VisualConcept.VertexAttribute.X.ensure(graph);
         attrY = VisualConcept.VertexAttribute.Y.ensure(graph);
         vAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        tAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);    
+        tAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
     }
 
     @AfterMethod
@@ -70,7 +70,7 @@ public class GraphAttributePluginNGTest {
 
     /**
      * Test of read method, of class GraphAttributePlugin.
-     * 
+     *
      * @throws InterruptedException
      * @throws PluginException
      * @throws Exception
@@ -85,7 +85,7 @@ public class GraphAttributePluginNGTest {
 
     /**
      * Test of getAttributes method, of class GraphAttributePlugin.
-     * 
+     *
      * @throws InterruptedException
      * @throws PluginException
      */
@@ -98,8 +98,9 @@ public class GraphAttributePluginNGTest {
     }
 
     /**
-     * Test of getAttributeModificationCounter method, of class GraphAttributePlugin.
-     * 
+     * Test of getAttributeModificationCounter method, of class
+     * GraphAttributePlugin.
+     *
      * @throws InterruptedException
      * @throws PluginException
      */
@@ -110,5 +111,5 @@ public class GraphAttributePluginNGTest {
         long result = instance.getAttributeModificationCounter();
         assertEquals(result, 4);
     }
-    
+
 }

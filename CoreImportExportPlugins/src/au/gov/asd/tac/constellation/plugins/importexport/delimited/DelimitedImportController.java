@@ -17,10 +17,13 @@ package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.importexport.ActionPane;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
@@ -51,17 +54,32 @@ public class DelimitedImportController extends ImportController {
     private final List<File> files;
     private File sampleFile;
     private ImportFileParser importFileParser;
+    private boolean filesIncludeHeaders;
+
+    protected ActionPane actionPane;
 
     public DelimitedImportController() {
         super();
         files = new ArrayList<>();
         importFileParser = ImportFileParser.DEFAULT_PARSER;
         schemaInitialised = true;
+        filesIncludeHeaders = true;
     }
 
     public void setImportPane(final DelimitedImportPane importPane) {
         this.importPane = importPane;
         super.setImportPane(importPane);
+    }
+
+    public void setfilesIncludeHeaders(final boolean filesIncludeHeaders) {
+        if (this.filesIncludeHeaders != filesIncludeHeaders) {
+            this.filesIncludeHeaders = filesIncludeHeaders;
+            updateSampleData();
+        }
+    }
+
+    public boolean isFilesIncludeHeadersEnabled() {
+        return filesIncludeHeaders;
     }
 
     public boolean hasFiles() {
@@ -84,12 +102,19 @@ public class DelimitedImportController extends ImportController {
             this.sampleFile = sampleFile;
         }
 
+        if (sampleFile == null && CollectionUtils.isEmpty(files)) {
+            clearFilters();
+        }
         updateSampleData();
     }
 
+    public void clearFilters() {
+        configurationPane.clearFilters();
+    }
+
     @Override
-    public List<File> processImport() throws PluginException {
-        final List<ImportDefinition> definitions = configurationPane.createDefinitions();
+    public void processImport() throws PluginException {
+        final List<ImportDefinition> definitions = configurationPane.createDefinitions(isFilesIncludeHeadersEnabled());
         final Graph importGraph = currentDestination.getGraph();
         final boolean schema = schemaInitialised;
         final List<File> importFiles = new ArrayList<>(files);
@@ -121,6 +146,9 @@ public class DelimitedImportController extends ImportController {
                                 .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
                                 .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
                                 .set(ImportDelimitedPlugin.PARSER_PARAMETER_IDS_PARAMETER_ID, currentParameters)
+                                .set(ImportDelimitedPlugin.FILES_INCLUDE_HEADERS_PARAMETER_ID, filesIncludeHeaders)
+                                .followedBy(ArrangementPluginRegistry.GRID_COMPOSITE)
+                                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                                 .executeWriteLater(importGraph);
                     }
                 }
@@ -134,9 +162,11 @@ public class DelimitedImportController extends ImportController {
                     .set(ImportDelimitedPlugin.PARSER_PARAMETER_ID, parser)
                     .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
                     .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
+                    .set(ImportDelimitedPlugin.FILES_INCLUDE_HEADERS_PARAMETER_ID, filesIncludeHeaders)
+                    .followedBy(ArrangementPluginRegistry.GRID_COMPOSITE)
+                    .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .executeWriteLater(importGraph);
         }
-        return files;
     }
 
     @Override
@@ -150,7 +180,13 @@ public class DelimitedImportController extends ImportController {
                         PREVIEW_ROW_LIMIT);
                 final String[] columns = currentData.isEmpty() ? new String[0] : (String[]) currentData.get(0);
                 currentColumns = new String[columns.length + 1];
-                System.arraycopy(columns, 0, currentColumns, 1, columns.length);
+                if (!isFilesIncludeHeadersEnabled()) {
+                    for (int i = 1; i < columns.length + 1; i++) {
+                        currentColumns[i] = "Col" + i;
+                    }
+                } else {
+                    System.arraycopy(columns, 0, currentColumns, 1, columns.length);
+                }
                 currentColumns[0] = "Row";
             } catch (final FileNotFoundException ex) {
                 final String warningMsg = "The following file could not be found "
@@ -172,7 +208,7 @@ public class DelimitedImportController extends ImportController {
         }
 
         if (configurationPane != null) {
-            if (!currentData.isEmpty()) {
+            if (!currentData.isEmpty() && isFilesIncludeHeadersEnabled()) {
                 currentData.remove(0); //Remove the first row with column headers
             }
             configurationPane.setSampleData(currentColumns, currentData);
@@ -198,5 +234,17 @@ public class DelimitedImportController extends ImportController {
 
     public ImportFileParser getImportFileParser() {
         return importFileParser;
+    }
+
+    // expands or shrinks the import pane based on if there is a file present
+    // within the imported files list
+    void openConfigPane(final boolean b) {
+        importPane.expandPane(b);
+    }
+
+    // enables or disables the import button based on if there is a file present
+    // within the imported files list
+    void disableButton(final boolean b) {
+        importPane.disableButton(b);
     }
 }

@@ -19,15 +19,12 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,8 +37,9 @@ import javafx.stage.Window;
 import org.openide.util.NbPreferences;
 
 /**
- * This pane holds all parts for importing a delimited file. An import controller handles the importing of files The
- * source and configuration panes handle the input and output of the selected data into a graph.
+ * This pane holds all parts for importing a delimited file. An import
+ * controller handles the importing of files The source and configuration panes
+ * handle the input and output of the selected data into a graph.
  *
  * @author aldebaran30701
  */
@@ -55,12 +53,12 @@ public class ImportPane extends BorderPane {
             ConstellationColor.BLUEBERRY.getJavaColor());
 
     protected final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
-    protected final Menu optionsMenu;
-    protected final MenuItem loadMenuItem;
-    protected final MenuItem saveMenuItem;
     protected final CheckBox showSchemaAttributesCheckBox;
-    protected final MenuItem showSchemaAttributesItem;
+    protected final Button loadButton;
+    protected final Button saveButton;
     protected final Button helpButton;
+    protected final TitledPane titledConfigurationPane;
+    protected final ActionPane actionPane;
 
     protected ImportController importController;
     protected ImportTopComponent importTopComponent;
@@ -68,6 +66,11 @@ public class ImportPane extends BorderPane {
     protected SourcePane sourcePane;
     protected EasyGridPane gridPane;
     protected BorderPane root;
+
+    public static final String SAVE_TEMPLATE_LOGO = "resources/ImportExportSaveTemplate.png";
+    private final ImageView saveTemplateImage = new ImageView(new Image(ImportTopComponent.class.getResourceAsStream(SAVE_TEMPLATE_LOGO)));
+    public static final String LOAD_TEMPLATE_LOGO = "resources/ImportExportLoadTemplate.png";
+    private final ImageView loadTemplateImage = new ImageView(new Image(ImportTopComponent.class.getResourceAsStream(LOAD_TEMPLATE_LOGO)));
 
     public ImportPane(final ImportTopComponent importTopComponent, final ImportController controller,
             final ConfigurationPane configurationPane, final SourcePane sourcePane) {
@@ -78,15 +81,16 @@ public class ImportPane extends BorderPane {
         root = new BorderPane();
 
         // titled source pane
-        final TitledPane titledSourcePane = new TitledPane("Source", sourcePane);
+        final TitledPane titledSourcePane = new TitledPane("Source and Destination", sourcePane);
         titledSourcePane.setCollapsible(true);
 
-        // Options menu
-        optionsMenu = new Menu("Options");
-        loadMenuItem = new MenuItem("Load...");
+        loadTemplateImage.setFitHeight(15);
+        loadTemplateImage.setFitWidth(15);
+        saveTemplateImage.setFitHeight(15);
+        saveTemplateImage.setFitWidth(15);
 
-        // save menu item
-        saveMenuItem = new MenuItem("Save...");
+        loadButton = new Button("Load Template", loadTemplateImage);
+        saveButton = new Button("Save Template", saveTemplateImage);
 
         // the menu item gets called when the checkbox value changes so work around it by using a flag
         final boolean[] userClickedTheCheckboxFirst = new boolean[1];
@@ -114,34 +118,16 @@ public class ImportPane extends BorderPane {
             showSchemaAttributesCheckBox.setSelected(newPreference);
         });
 
-        // show schema attributes menu item
-        showSchemaAttributesItem = new MenuItem("Show all schema attributes", showSchemaAttributesCheckBox);
-        showSchemaAttributesItem.setOnAction((ActionEvent event) -> {
-            // ignore if the checkbox was clicked
-            if (!userClickedTheCheckboxFirst[0]) {
-                final boolean newPreference = !importExportPrefs.getBoolean(
-                        ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
-                        ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
-                importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, newPreference);
-                importController.setShowAllSchemaAttributes(newPreference);
-                importController.setClearManuallyAdded(false);
-                importController.setDestination(sourcePane.getDestination());
-                final int saveResultsItemIndex = optionsMenu.getItems().indexOf(showSchemaAttributesItem);
-                ((CheckBox) optionsMenu.getItems().get(saveResultsItemIndex).getGraphic()).setSelected(newPreference);
-            }
-            userClickedTheCheckboxFirst[0] = false;
-        });
-
         // setting up menu bar
         final AnchorPane menuToolbar = new AnchorPane();
-        final MenuBar menuBar = new MenuBar();
-        AnchorPane.setTopAnchor(menuBar, 0.0);
-        AnchorPane.setLeftAnchor(menuBar, 0.0);
-        menuBar.getMenus().add(optionsMenu);
+        final GridPane menuGrid = new GridPane();
+        menuGrid.add(loadButton, 0, 0);
+        menuGrid.add(saveButton, 1, 0);
+        menuGrid.add(showSchemaAttributesCheckBox, 2, 0);
+        menuGrid.add(new Label("Show all schema attributes"), 3, 0);
+        menuGrid.setHgap(2);
 
-        // hide the menu bar background now that its anchored to the left
-        menuBar.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
-        menuToolbar.getChildren().add(menuBar);
+        menuToolbar.getChildren().add(menuGrid);
 
         // setting up help button
         helpButton = new Button("", new ImageView(HELP_IMAGE));
@@ -153,10 +139,11 @@ public class ImportPane extends BorderPane {
         menuToolbar.getChildren().add(helpButton);
 
         // titled configuration pane
-        final TitledPane titledConfigurationPane = new TitledPane("Configuration", configurationPane);
+        titledConfigurationPane = new TitledPane("Configuration", configurationPane);
         titledConfigurationPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         titledConfigurationPane.setMinSize(0, 0);
-        titledConfigurationPane.setCollapsible(false);
+        titledConfigurationPane.setCollapsible(true);
+        titledConfigurationPane.setExpanded(false);
 
         // gridpane for configuration pane
         gridPane = new EasyGridPane();
@@ -168,7 +155,7 @@ public class ImportPane extends BorderPane {
         gridPane.addRowConstraint(true, VPos.BOTTOM, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
 
         // actionpane for holding import and cancel buttons
-        final ActionPane actionPane = new ActionPane(importController);
+        actionPane = new ActionPane(importController);
         actionPane.setMinSize(0, ACTIONPANE_MIN_HEIGHT);
         actionPane.prefWidthProperty().bind(this.widthProperty());
         actionPane.setPadding(ACTIONPANE_PADDING);
@@ -198,5 +185,13 @@ public class ImportPane extends BorderPane {
 
     public Window getParentWindow() {
         return this.getScene().getWindow();
+    }
+
+    public void expandPane(final boolean isExpanded) {
+        titledConfigurationPane.setExpanded(isExpanded);
+    }
+
+    public void disableButton(final boolean isEnabled) {
+        actionPane.disableButton(isEnabled);
     }
 }

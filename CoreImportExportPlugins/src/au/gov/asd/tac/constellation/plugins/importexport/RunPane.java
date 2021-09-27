@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -45,7 +46,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -55,7 +55,6 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -63,6 +62,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 
 /**
  * A RunPane displays the UI necessary to allow the user to drag and drop
@@ -76,14 +76,15 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final int SCROLLPANE_HEIGHT = 450;
     private static final int SCROLLPANE_VIEW_WIDTH = 400;
     private static final int SCROLLPANE_VIEW_HEIGHT = 900;
-    private static final int SAMPLEVIEW_HEIGHT = 450;
+    private static final int SAMPLEVIEW_HEIGHT = 250;
     private static final int SAMPLEVIEW_MIN_HEIGHT = 130;
     private static final int ATTRIBUTEPANE_PREF_WIDTH = 300;
     private static final int ATTRIBUTEPANE_MIN_WIDTH = 100;
     private static final Insets ATTIRUBTEPANE_PADDING = new Insets(5);
     private static final int ATTRIBUTE_GAP = 5;
-    private static final int ATTRIBUTEFILTER_PREFHEIGHT = 50;
     private static final int TABLECOLUMN_PREFWIDTH = 50;
+    private static final String FILTER_STYLE = "-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;";
+    private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;";
 
     protected final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
@@ -100,9 +101,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     protected RowFilter rowFilter;
     private String filter = "";
 
-    private final SplitPane attributeFilterPane = new SplitPane();
     private final TextField attributeFilterTextField = new TextField();
-    private String attributeFilter = "";
     private final EasyGridPane attributePane;
     private static final double ATTRIBUTE_PADDING_HEIGHT = 19.75;
 
@@ -155,9 +154,17 @@ public final class RunPane extends BorderPane implements KeyListener {
         this.importController = importController;
 
         if (rowFilter == null) {
-            new Thread(() -> {
-                rowFilter = new RowFilter();
-            }, ROW_FILTER_INITIALISER).start();
+            try {
+                final CountDownLatch latch = new CountDownLatch(1);
+                new Thread(() -> {
+                    rowFilter = new RowFilter();
+                    latch.countDown();
+                }, ROW_FILTER_INITIALISER).start();
+                latch.await();
+            } catch (final InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+            }
         }
 
         setMaxHeight(Double.MAX_VALUE);
@@ -166,23 +173,22 @@ public final class RunPane extends BorderPane implements KeyListener {
         final VBox configBox = new VBox();
         VBox.setVgrow(configBox, Priority.ALWAYS);
 
-        final ScrollPane configScroll = new ScrollPane();
-        configScroll.setMaxWidth(Double.MAX_VALUE);
-        configScroll.setPrefHeight(SCROLLPANE_HEIGHT);
-        configScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        configScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        setCenter(configBox);
+        final ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(configBox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        setCenter(scrollPane);
 
         filterField = new TextField();
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
-        filterField.setPromptText("Start typing to search, e.g.:first_name==\"NICK\"");
-        filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;");
+        filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\"");
+        filterField.setStyle(FILTER_STYLE);
         filterField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (setFilter(newValue)) {
-                filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;");
+                filterField.setStyle(FILTER_STYLE);
             } else {
-                filterField.setStyle("-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;");
+                filterField.setStyle(FILTER_STYLE_ALERT);
             }
         });
 
@@ -233,28 +239,12 @@ public final class RunPane extends BorderPane implements KeyListener {
                 USE_COMPUTED_SIZE, -1);
         attributePane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, ATTRIBUTEPANE_MIN_WIDTH,
                 USE_COMPUTED_SIZE, -1);
-        attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
-
-        attributePane.setOnKeyPressed(event -> {
-            final KeyCode c = event.getCode();
-            if (c == KeyCode.DELETE || c == KeyCode.BACK_SPACE) {
-                attributeFilter = "";
-                attributeFilterPane.setVisible(false);
-            } else if (c.isLetterKey()) {
-                attributeFilter += c.getChar();
-                attributeFilterTextField.setText(attributeFilter);
-                attributeFilterPane.setVisible(true);
-            } else {
-                // Default case added per Sonar - java:S126
-            }
-            importController.setAttributeFilter(attributeFilter);
-            importController.setDestination(null);
-        });
+        attributePane.addRow(0, sourceVertexScrollPane, transactionScrollPane, destinationVertexScrollPane);
 
         // A scroll pane to hold the attribute boxes
         final ScrollPane attributeScrollPane = new ScrollPane();
         attributeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         attributeScrollPane.setMaxWidth(Double.MAX_VALUE);
         attributeScrollPane.setContent(attributePane);
         attributeScrollPane.setPrefViewportWidth(SCROLLPANE_VIEW_WIDTH);
@@ -267,14 +257,20 @@ public final class RunPane extends BorderPane implements KeyListener {
         VBox.setVgrow(titledAttributePane, Priority.ALWAYS);
         titledAttributePane.setMinSize(0, 0);
 
-        final Label filterLabel = new Label("Attribute Filter:");
-        attributeFilterPane.getItems().addAll(filterLabel, attributeFilterTextField);
-        VBox.setVgrow(attributeFilterPane, Priority.ALWAYS);
-        attributeFilterTextField.setEditable(false);
-        attributeFilterPane.setVisible(false);
-        attributeFilterPane.setPrefHeight(ATTRIBUTEFILTER_PREFHEIGHT);
+        attributeFilterTextField.setFocusTraversable(false);
+        attributeFilterTextField.setMinHeight(USE_PREF_SIZE);
+        attributeFilterTextField.setPromptText("Start typing to search attributes");
+        attributeFilterTextField.setStyle(FILTER_STYLE);
+        attributeFilterTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            importController.setAttributeFilter(attributeFilterTextField.getText());
+            importController.setDestination(null);
+        });
 
-        configBox.getChildren().addAll(attributeFilterPane, titledAttributePane);
+        HBox.setHgrow(attributeFilterTextField, Priority.ALWAYS);
+        final HBox attributeFilterBox = new HBox(new Label("Attribute Filter: "), attributeFilterTextField);
+        attributeFilterBox.setAlignment(Pos.CENTER_LEFT);
+
+        configBox.getChildren().addAll(attributeFilterBox, titledAttributePane);
         configBox.onKeyPressedProperty().bind(attributePane.onKeyPressedProperty());
 
         columnRectangle.setStyle("-fx-fill: rgba(200, 200, 200, 0.3);");
@@ -456,6 +452,11 @@ public final class RunPane extends BorderPane implements KeyListener {
         setFilter(filter);
     }
 
+    public void clearFilters() {
+        filterField.setText("");
+        attributeFilterTextField.clear();
+    }
+
     public void deleteAttribute(final Attribute attribute) {
         if (attribute.getElementType() == GraphElementType.VERTEX) {
             sourceVertexAttributeList.deleteAttribute(attribute);
@@ -497,7 +498,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public ImportDefinition createDefinition() {
+    public ImportDefinition createDefinition(final int firstRow) {
 
         RowFilter rf = rowFilter;
         if (StringUtils.isBlank(filter)) {
@@ -506,7 +507,7 @@ public final class RunPane extends BorderPane implements KeyListener {
             rf.setColumns(currentColumnLabels);
         }
 
-        final ImportDefinition definition = new ImportDefinition(1, rf);
+        final ImportDefinition definition = new ImportDefinition(firstRow, rf);
 
         for (final TableColumn<TableRow, ?> column : sampleDataView.getColumns()) {
             final ImportTableColumn importTableColumn = (ImportTableColumn) column;

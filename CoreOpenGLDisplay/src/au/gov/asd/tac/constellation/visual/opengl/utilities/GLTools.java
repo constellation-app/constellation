@@ -22,7 +22,10 @@ import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
@@ -72,12 +75,12 @@ public final class GLTools {
      * Get the OpenGL version.
      *
      * @param gl the current OpenGL context.
-     * @param version An int[2] to receive the version: version[0] contains GL_MAJOR_VERSION, version[1] contains
-     * GL_MINOR_VERSION.
+     * @param version An int[2] to receive the version: version[0] contains
+     * GL_MAJOR_VERSION, version[1] contains GL_MINOR_VERSION.
      */
     public static void getOpenGLVersion(final GL3 gl, int[] version) {
-        gl.glGetIntegerv(GL3.GL_MAJOR_VERSION, version, 0);
-        gl.glGetIntegerv(GL3.GL_MINOR_VERSION, version, 1);
+        gl.glGetIntegerv(GL2ES3.GL_MAJOR_VERSION, version, 0);
+        gl.glGetIntegerv(GL2ES3.GL_MINOR_VERSION, version, 1);
     }
 
     /**
@@ -140,7 +143,7 @@ public final class GLTools {
 
     public static String getShaderLog(final GL3 gl, final int shader) {
         final int[] maxLength = new int[1];
-        gl.glGetShaderiv(shader, GL3.GL_INFO_LOG_LENGTH, maxLength, 0);
+        gl.glGetShaderiv(shader, GL2ES2.GL_INFO_LOG_LENGTH, maxLength, 0);
         if (maxLength[0] == 0) {
             return "";
         }
@@ -155,7 +158,7 @@ public final class GLTools {
 
     public static String getProgramLog(final GL3 gl, final int shader) {
         final int[] maxLength = new int[1];
-        gl.glGetProgramiv(shader, GL3.GL_INFO_LOG_LENGTH, maxLength, 0);
+        gl.glGetProgramiv(shader, GL2ES2.GL_INFO_LOG_LENGTH, maxLength, 0);
         if (maxLength[0] == 0) {
             return "";
         }
@@ -170,9 +173,9 @@ public final class GLTools {
 
     public static int loadShaderSourceWithAttributes(final GL3 gl, final String label, final String vertexSrc, final String geometrySrc, final String fragmentSrc, final Object... args) {
         // Temporary shader objects.
-        final int vertexShader = gl.glCreateShader(GL3.GL_VERTEX_SHADER);
-        final int fragmentShader = gl.glCreateShader(GL3.GL_FRAGMENT_SHADER);
-        final int geometryShader = geometrySrc != null ? gl.glCreateShader(GL3.GL_GEOMETRY_SHADER) : -1;
+        final int vertexShader = gl.glCreateShader(GL2ES2.GL_VERTEX_SHADER);
+        final int fragmentShader = gl.glCreateShader(GL2ES2.GL_FRAGMENT_SHADER);
+        final int geometryShader = geometrySrc != null ? gl.glCreateShader(GL3ES3.GL_GEOMETRY_SHADER) : -1;
 
         final int[] testVal = new int[1];
 
@@ -194,8 +197,8 @@ public final class GLTools {
         }
 
         // Check for compile errors.
-        gl.glGetShaderiv(vertexShader, GL3.GL_COMPILE_STATUS, testVal, 0);
-        if (testVal[0] == GL3.GL_FALSE) {
+        gl.glGetShaderiv(vertexShader, GL2ES2.GL_COMPILE_STATUS, testVal, 0);
+        if (testVal[0] == GL.GL_FALSE) {
             final String log = getShaderLog(gl, vertexShader);
             gl.glDeleteShader(vertexShader);
             gl.glDeleteShader(fragmentShader);
@@ -205,8 +208,8 @@ public final class GLTools {
             throw new RenderException(String.format("Invalid vertex shader '%s':%n%n%s", label, log));
         }
 
-        gl.glGetShaderiv(fragmentShader, GL3.GL_COMPILE_STATUS, testVal, 0);
-        if (testVal[0] == GL3.GL_FALSE) {
+        gl.glGetShaderiv(fragmentShader, GL2ES2.GL_COMPILE_STATUS, testVal, 0);
+        if (testVal[0] == GL.GL_FALSE) {
             final String log = getShaderLog(gl, fragmentShader);
             gl.glDeleteShader(vertexShader);
             gl.glDeleteShader(fragmentShader);
@@ -217,8 +220,8 @@ public final class GLTools {
         }
 
         if (geometryShader != -1) {
-            gl.glGetShaderiv(geometryShader, GL3.GL_COMPILE_STATUS, testVal, 0);
-            if (testVal[0] == GL3.GL_FALSE) {
+            gl.glGetShaderiv(geometryShader, GL2ES2.GL_COMPILE_STATUS, testVal, 0);
+            if (testVal[0] == GL.GL_FALSE) {
                 final String log = getShaderLog(gl, geometryShader);
                 gl.glDeleteShader(vertexShader);
                 gl.glDeleteShader(fragmentShader);
@@ -257,8 +260,8 @@ public final class GLTools {
         }
 
         // Check for link errors.
-        gl.glGetProgramiv(progid, GL3.GL_LINK_STATUS, testVal, 0);
-        if (testVal[0] == GL3.GL_FALSE) {
+        gl.glGetProgramiv(progid, GL2ES2.GL_LINK_STATUS, testVal, 0);
+        if (testVal[0] == GL.GL_FALSE) {
             final String log = getProgramLog(gl, progid);
             gl.glDeleteProgram(progid);
             throw new RenderException(String.format("Invalid program link '%s':%n%n%s", label, log));
@@ -490,11 +493,11 @@ public final class GLTools {
         final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, null);
         final Texture tex = TextureIO.newTexture(data);
 
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_S, wrapMode);
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_T, wrapMode);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, wrapMode);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, wrapMode);
 
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MIN_FILTER, minFilter);
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MAG_FILTER, magFilter);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, minFilter);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, magFilter);
 
         return tex;
     }
@@ -502,16 +505,18 @@ public final class GLTools {
     /**
      * Load a BufferedImage array into a texture array.
      * <p>
-     * Each BufferedImage must be of type BufferedImage.TYPE_4BYTE_ABGR. The images will be loaded at 0,0 at each level
-     * of the texture array.
+     * Each BufferedImage must be of type BufferedImage.TYPE_4BYTE_ABGR. The
+     * images will be loaded at 0,0 at each level of the texture array.
      * <p>
-     * It appears that the images must have a row length that is a multiple of four. This is probably due to the
-     * particular format we're using, and could probably be worked around, but the simple fix is to check your row
+     * It appears that the images must have a row length that is a multiple of
+     * four. This is probably due to the particular format we're using, and
+     * could probably be worked around, but the simple fix is to check your row
      * length.
      *
      * @param gl the current OpenGL context.
      * @param textureName The name of the texture to bind to with BindTexture().
-     * @param images A List of BufferedImages of type BufferedImage.TYPE_4BYTE_ABGR.
+     * @param images A List of BufferedImages of type
+     * BufferedImage.TYPE_4BYTE_ABGR.
      * @param maxWidth The maximum width of the images.
      * @param maxHeight The maximum height of the images.
      * @param minFilter Texture selection with TEXTURE_MIN_FILTER.
@@ -519,15 +524,15 @@ public final class GLTools {
      * @param wrapMode texture wrap mode with TEXTURE_WRAP_S and TEXTURE_WRAP_T.
      */
     public static void loadTextures(final GL3 gl, final int textureName, final List<BufferedImage> images, final int maxWidth, final int maxHeight, final int minFilter, final int magFilter, final int wrapMode) {
-        gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, textureName);
+        gl.glBindTexture(GL2ES3.GL_TEXTURE_2D_ARRAY, textureName);
 
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_S, wrapMode);
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_T, wrapMode);
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_MIN_FILTER, minFilter);
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_MAG_FILTER, magFilter);
+        gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_WRAP_S, wrapMode);
+        gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_WRAP_T, wrapMode);
+        gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_MIN_FILTER, minFilter);
+        gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_MAG_FILTER, magFilter);
 
         // Call glTexImage3D() to create the buffer here: we've assumed the internalformat and format.
-        gl.glTexImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, GL.GL_RGBA, maxWidth, maxHeight, images.size(), 0, GL.GL_RGBA, GL3.GL_UNSIGNED_BYTE, null);
+        gl.glTexImage3D(GL2ES3.GL_TEXTURE_2D_ARRAY, 0, GL.GL_RGBA, maxWidth, maxHeight, images.size(), 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null);
 
         int i = 0;
         for (BufferedImage image : images) {
@@ -542,7 +547,7 @@ public final class GLTools {
                 final int xoffset = 0;
                 final int yoffset = 0;
                 final int zoffset = i;
-                gl.glTexSubImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL3.GL_UNSIGNED_BYTE, data.getBuffer());
+                gl.glTexSubImage3D(GL2ES3.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL.GL_UNSIGNED_BYTE, data.getBuffer());
                 data.destroy();
             } catch (final RuntimeException ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
@@ -555,19 +560,23 @@ public final class GLTools {
     /**
      * Load an array of icon textures.
      * <p>
-     * We assume that the textures being loaded are icons, and therefore are roughly the same size (with a maximum of
-     * (width,height).
+     * We assume that the textures being loaded are icons, and therefore are
+     * roughly the same size (with a maximum of (width,height).
      * <p>
-     * The array is limited to GL_MAX_ARRAY_TEXTURE_LAYERS layers. This can be fairly low (512 on low-end systems), so
-     * icons are loaded into an 8x8 icon matrix in each layer, thus giving a maximum of 512x8x8=32768 icons. (This
-     * assumes that GL_MAX_3D_TEXTURE_SIZE is big enough to take that many pixels. With the current icon size of
-     * 256x256, then GL_MAX_3D_TEXTURE_SIZE must be at least 2048.)
+     * The array is limited to GL_MAX_ARRAY_TEXTURE_LAYERS layers. This can be
+     * fairly low (512 on low-end systems), so icons are loaded into an 8x8 icon
+     * matrix in each layer, thus giving a maximum of 512x8x8=32768 icons. (This
+     * assumes that GL_MAX_3D_TEXTURE_SIZE is big enough to take that many
+     * pixels. With the current icon size of 256x256, then
+     * GL_MAX_3D_TEXTURE_SIZE must be at least 2048.)
      * <p>
-     * Icons that are smaller than (width,height) are offset so they are centred, so the shader can just draw the icons
-     * without worrying about where in the texture they are.
+     * Icons that are smaller than (width,height) are offset so they are
+     * centred, so the shader can just draw the icons without worrying about
+     * where in the texture they are.
      * <p>
-     * It appears that the images must have a row length that is a multiple of four. This is probably due to the
-     * particular format we're using, and could probably be worked around, but the simple fix is to check your row
+     * It appears that the images must have a row length that is a multiple of
+     * four. This is probably due to the particular format we're using, and
+     * could probably be worked around, but the simple fix is to check your row
      * length.
      *
      * @param glCurrent the current OpenGL context.
@@ -579,7 +588,7 @@ public final class GLTools {
      */
     public static int loadSharedIconTextures(final GL3 glCurrent, final List<ConstellationIcon> icons, final int width, final int height) {
         final int[] v = new int[1];
-        glCurrent.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
+        glCurrent.glGetIntegerv(GL2ES3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
         final int maxIcons = v[0] * 64;
         if (icons.size() > maxIcons) {
             System.out.printf("****\n**** Warning: nIcons %d > GL_MAX_ARRAY_TEXTURE_LAYERS %d\n****\n", icons.size(), maxIcons);
@@ -598,12 +607,12 @@ public final class GLTools {
         final int[] textureName = new int[1];
         try {
             textureName[0] = SharedDrawable.getIconTextureName();
-            gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, textureName[0]);
-            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
-            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
-            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
-            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
-            gl.glTexImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, GL.GL_RGBA, width * 8, height * 8, (nIcons + 63) / 64, 0, GL.GL_RGBA, GL3.GL_UNSIGNED_BYTE, null);
+            gl.glBindTexture(GL2ES3.GL_TEXTURE_2D_ARRAY, textureName[0]);
+            gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+            gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+            gl.glTexImage3D(GL2ES3.GL_TEXTURE_2D_ARRAY, 0, GL.GL_RGBA, width * 8, height * 8, (nIcons + 63) / 64, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null);
 
             final Iterator<ConstellationIcon> iconIterator = icons.iterator();
             for (int i = 0; i < nIcons; i++) {
@@ -625,7 +634,7 @@ public final class GLTools {
                         final int xoffset = (width - data.getWidth()) / 2 + (width * (i & 7));
                         final int yoffset = (height - data.getHeight()) / 2 + (height * ((i >>> 3) & 7));
                         final int zoffset = i >>> 6;
-                        gl.glTexSubImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL3.GL_UNSIGNED_BYTE, data.getBuffer());
+                        gl.glTexSubImage3D(GL2ES3.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL.GL_UNSIGNED_BYTE, data.getBuffer());
                         data.destroy();
                     }
                 } catch (final RuntimeException ex) {
@@ -665,14 +674,17 @@ public final class GLTools {
     /**
      * Singleton holder of list of used icons.
      * <p>
-     * As new icon names are seen in the graph, they are added to this data structure, which maintains a mapping between
-     * an icon name and its index.
+     * As new icon names are seen in the graph, they are added to this data
+     * structure, which maintains a mapping between an icon name and its index.
      * <p>
-     * Note: a LinkedHashMap is used here to maintain the insertion order. Because the texture array that uses this is
-     * shared between multiple drawables, and some icons must be at predefined indexes (for instance "highlighted" must
-     * be at index 0, "unknown" at index 1), the order of the icons must not change: a drawable that uses an icon at
-     * index 17 (for example) can't have that icon changing due to a different drawable being created. Therefore,
-     * whenever new icons are added, they are always appended.
+     * Note: a LinkedHashMap is used here to maintain the insertion order.
+     * Because the texture array that uses this is shared between multiple
+     * drawables, and some icons must be at predefined indexes (for instance
+     * "highlighted" must be at index 0, "unknown" at index 1), the order of the
+     * icons must not change: a drawable that uses an icon at index 17 (for
+     * example) can't have that icon changing due to a different drawable being
+     * created. Therefore, whenever new icons are added, they are always
+     * appended.
      */
     public static final class LoadedIconHelper {
 
@@ -702,9 +714,10 @@ public final class GLTools {
         /**
          * Add an icon label to the index map and return the index of that icon.
          * <p>
-         * If the label already exists, return the existing index. Null labels and empty labels (ie "") return the index
-         * of the transparent icon. Therefore, a valid icon index (&lt;=0 &amp;&amp; &gt;=MAX_ICON_INDEX) will always be
-         * returned.
+         * If the label already exists, return the existing index. Null labels
+         * and empty labels (ie "") return the index of the transparent icon.
+         * Therefore, a valid icon index (&lt;=0 &amp;&amp; &gt;=MAX_ICON_INDEX)
+         * will always be returned.
          *
          * @param label The index of an icon.
          *
@@ -754,8 +767,8 @@ public final class GLTools {
     /**
      * Load the icon textures into a texture array.
      * <p>
-     * This texture array is shared amongst all of the OpenGL drawables, so once an icon has been added to the list of
-     * icons, its index must not change.
+     * This texture array is shared amongst all of the OpenGL drawables, so once
+     * an icon has been added to the list of icons, its index must not change.
      *
      * @param glCurrent the current OpenGL context.
      * @param width the width of each icon.
@@ -801,7 +814,8 @@ public final class GLTools {
     /**
      * Obtain error information.
      * <p>
-     * This is a low-level alternative to using a debug GL context. See the OpenGL specification 3.3 Core section 2.5.
+     * This is a low-level alternative to using a debug GL context. See the
+     * OpenGL specification 3.3 Core section 2.5.
      *
      * @param gl the current OpenGL context.
      * @param msg the message that will be printed out if an error has occurred.
@@ -809,24 +823,24 @@ public final class GLTools {
     public static void checkError(final GL3 gl, final String msg) {
         while (true) {
             final int err = gl.glGetError();
-            if (err == GL3.GL_NO_ERROR || msg == null) {
+            if (err == GL.GL_NO_ERROR || msg == null) {
                 return;
             }
             String errtext;
             switch (err) {
-                case GL3.GL_INVALID_ENUM:
+                case GL.GL_INVALID_ENUM:
                     errtext = "invalid enum";
                     break;
-                case GL3.GL_INVALID_VALUE:
+                case GL.GL_INVALID_VALUE:
                     errtext = "invalid value";
                     break;
-                case GL3.GL_INVALID_OPERATION:
+                case GL.GL_INVALID_OPERATION:
                     errtext = "invalid operation";
                     break;
-                case GL3.GL_OUT_OF_MEMORY:
+                case GL.GL_OUT_OF_MEMORY:
                     errtext = "out of memory";
                     break;
-                case GL3.GL_INVALID_FRAMEBUFFER_OPERATION:
+                case GL.GL_INVALID_FRAMEBUFFER_OPERATION:
                     errtext = "invalid framebuffer operation";
                     break;
                 default:
@@ -843,18 +857,19 @@ public final class GLTools {
      * See the OpenGL specification 3.3 Core section 4.4.4.
      *
      * @param gl the current OpenGL context.
-     * @param msg msg the message that will be printed out if an error has occurred.
+     * @param msg msg the message that will be printed out if an error has
+     * occurred.
      */
     public static void checkFramebufferStatus(final GL3 gl, final String msg) {
-        int fboStatus = gl.glCheckFramebufferStatus(GL3.GL_DRAW_FRAMEBUFFER);
-        if (fboStatus == GL3.GL_FRAMEBUFFER_COMPLETE) {
+        int fboStatus = gl.glCheckFramebufferStatus(GL.GL_DRAW_FRAMEBUFFER);
+        if (fboStatus == GL.GL_FRAMEBUFFER_COMPLETE) {
             return;
         }
 
         String errtext = "";
-        if (fboStatus == GL3.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
+        if (fboStatus == GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
             errtext = "framebuffer incomplete missing attachment";
-        } else if (fboStatus == GL3.GL_FRAMEBUFFER_UNSUPPORTED) {
+        } else if (fboStatus == GL.GL_FRAMEBUFFER_UNSUPPORTED) {
             errtext = "framebuffer unsupported";
         } else {
             // Do nothing
@@ -865,13 +880,16 @@ public final class GLTools {
     /**
      * Windows-DPI-Scaling
      *
-     * JOGL version 2.3.2 on Windows doesn't correctly support DPI scaling.setSurfaceScale() is not overridden in
-     * WindowsJAWTWindow so it is not possible to scale the the canvas and mouse events at this level. It should be
-     * noted that it is overridden in MacOSXJAWTWindow. Where manual scaling is required the caller will need to scale
-     * each GL viewport and ensure hit tests take that size into account.
+     * JOGL version 2.3.2 on Windows doesn't correctly support DPI
+     * scaling.setSurfaceScale() is not overridden in WindowsJAWTWindow so it is
+     * not possible to scale the the canvas and mouse events at this level. It
+     * should be noted that it is overridden in MacOSXJAWTWindow. Where manual
+     * scaling is required the caller will need to scale each GL viewport and
+     * ensure hit tests take that size into account.
      *
-     * If JOGL is ever fixed or another solution is found, either change this function to return false or look for any
-     * code that calls it and remove it.
+     * If JOGL is ever fixed or another solution is found, either change this
+     * function to return false or look for any code that calls it and remove
+     * it.
      *
      * @return
      */

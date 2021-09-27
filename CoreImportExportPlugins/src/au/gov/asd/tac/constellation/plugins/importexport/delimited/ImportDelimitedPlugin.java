@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -47,7 +48,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.F
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -56,7 +58,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -68,7 +70,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
-@NbBundle.Messages("ImportDelimitedPlugin=Import Delimited Data")
+@NbBundle.Messages("ImportDelimitedPlugin=Import From File")
 public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(ImportDelimitedPlugin.class.getName());
@@ -78,6 +80,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     public static final String DEFINITIONS_PARAMETER_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "definitions");
     public static final String SCHEMA_PARAMETER_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "schema");
     public static final String PARSER_PARAMETER_IDS_PARAMETER_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "parser_parameters");
+    public static final String FILES_INCLUDE_HEADERS_PARAMETER_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "files_Include_Headers");
 
     @Override
     public PluginParameters createParameters() {
@@ -103,7 +106,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
         final PluginParameter<BooleanParameterValue> schemaParam = BooleanParameterType.build(SCHEMA_PARAMETER_ID);
         schemaParam.setName("Complete with Schema");
-        schemaParam.setDescription("True if the graph should run the schema rules, default is True");
+        schemaParam.setDescription("True if the graph should run the schema rules");
         schemaParam.setBooleanValue(true);
         params.addParameter(schemaParam);
 
@@ -111,6 +114,12 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         parserParameters.setName("Parser Parameters");
         parserParameters.setDescription("The PluginParameters used by the parser");
         params.addParameter(parserParameters);
+
+        final PluginParameter<BooleanParameterValue> filesIncludeHeadersParam = BooleanParameterType.build(FILES_INCLUDE_HEADERS_PARAMETER_ID);
+        filesIncludeHeadersParam.setName("Files Include Headers");
+        filesIncludeHeadersParam.setDescription("True if the files include headers in the first row");
+        filesIncludeHeadersParam.setBooleanValue(true);
+        params.addParameter(filesIncludeHeadersParam);
 
         return params;
     }
@@ -129,41 +138,49 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
      */
     private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
         Platform.runLater(() -> {
-            boolean success = true;
             final StringBuilder sbHeader = new StringBuilder();
             final StringBuilder sbMessage = new StringBuilder();
+
+            final String fileFiles = (validFilenames.size() == 1) ? "file" : "files";
 
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
                 // issues for. If there were any files with issues use a warning dialog.
-                sbHeader.append(String.format("Imported %d rows of data from %d files", importedRows, validFilenames.size()));
-                sbMessage.append("The following file(s) contained data:");
-                validFilenames.forEach(filename -> {
-                    sbMessage.append("\n  ");
-                    sbMessage.append(filename);
-                });
+                sbHeader.append(String.format("Imported %d rows of data from %d " + fileFiles, importedRows, validFilenames.size()));
+                sbMessage.append("The following " + fileFiles + " contained data: ");
+
+                for (int i = 0; i < validFilenames.size(); i++) {
+                    final File f = new File(validFilenames.get(i));
+                    sbMessage.append(f.getName());
+                    if (i != validFilenames.size() - 1) {
+                        sbMessage.append(", ");
+                    }
+                }
+                final String invalidFileFiles = (invalidFilenames.size() == 1) ? "file" : "files";
                 if (invalidFilenames.size() > 0) {
                     // some invalid files were found - warning condition.
-                    success = false;
-                    sbMessage.append("\n\nThe following file(s) could not be parsed. No data was extracted:");
-                    invalidFilenames.forEach(filename -> {
-                        sbMessage.append("\n  ");
-                        sbMessage.append(filename);
-                    });
+                    sbMessage.append("\n\nThe following " + invalidFileFiles + " could not be parsed. No data was extracted: ");
+                    for (int i = 0; i < invalidFilenames.size(); i++) {
+                        final File f = new File(invalidFilenames.get(i));
+                        sbMessage.append(f.getName());
+                        if (i != invalidFilenames.size() - 1) {
+                            sbMessage.append(", ");
+                        }
+                    }
                 }
             } else {
                 // No rows were imported list all files that resulted in failures.
-                success = false;
                 sbHeader.append("No data found to import");
-                sbMessage.append("The following file(s) could not be parsed. no data was extracted:");
-                invalidFilenames.forEach(filename -> {
-                    sbMessage.append("\n  ");
-                    sbMessage.append(filename);
-                });
+                sbMessage.append("The following " + fileFiles + " could not be parsed. no data was extracted: ");
+                for (int i = 0; i < invalidFilenames.size(); i++) {
+                    final File f = new File(invalidFilenames.get(i));
+                    sbMessage.append(f.getName());
+                    if (i != invalidFilenames.size() - 1) {
+                        sbMessage.append(", ");
+                    }
+                }
             }
-            NotifyDisplayer.displayAlert("Delimited Importer", sbHeader.toString(), sbMessage.toString(),
-                    success ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
-
+            NotificationDisplayer.getDefault().notify(sbHeader.toString(), UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
         });
     }
 
@@ -174,13 +191,15 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final List<File> files = (List<File>) parameters.getParameters().get(FILES_PARAMETER_ID).getObjectValue();
         @SuppressWarnings("unchecked") //definitions will be a list of import defintions which extends from object type
         final List<ImportDefinition> definitions = (List<ImportDefinition>) parameters.getParameters().get(DEFINITIONS_PARAMETER_ID).getObjectValue();
-        final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
+        final boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
         final PluginParameters parserParameters = (PluginParameters) parameters.getParameters().get(PARSER_PARAMETER_IDS_PARAMETER_ID).getObjectValue();
+        final boolean filesIncludeHeaders = parameters.getParameters().get(FILES_INCLUDE_HEADERS_PARAMETER_ID).getBooleanValue();
         final List<Integer> newVertices = new ArrayList<>();
         boolean positionalAtrributesExist = false;
         final List<String> validFiles = new ArrayList<>();
         final List<String> invalidFiles = new ArrayList<>();
         int importRows = 0;
+        int dataSize = 0;
 
         for (final File file : files) {
             interaction.setProgress(0, 0, "Reading File: " + file.getName(), true);
@@ -188,9 +207,10 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
             try {
                 data = parser.parse(new InputSource(file), parserParameters);
-                importRows = importRows + data.size() - 1;
+                dataSize = filesIncludeHeaders ? data.size() - 1 : data.size();
+                importRows = importRows + dataSize;
                 validFiles.add(file.getPath());
-                LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1}. {2} total rows imported", new Object[]{(data.size() - 1), file.getPath(), importRows});
+                LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1}. {2} total rows imported", new Object[]{dataSize, file.getPath(), importRows});
             } catch (FileNotFoundException ex) {
                 final String errorMsg = file.getPath() + " could not be found. Ignoring file during import.";
                 LOGGER.log(Level.INFO, errorMsg);
@@ -243,6 +263,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                     .followedBy(ArrangementPluginRegistry.PENDANTS)
                     .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
+                    .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .executeNow(vlGraph.getInclusionGraph());
             vlGraph.retrieveCoords();
         }

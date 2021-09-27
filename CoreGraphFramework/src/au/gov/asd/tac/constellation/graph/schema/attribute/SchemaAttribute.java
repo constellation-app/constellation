@@ -25,9 +25,9 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 
 /**
- * A SchemaAttribute is a class for defining graph attributes which belong with one or more {@link Schema} in a
- * convenient manner. This class is built to work seamlessly with the graph framework to build the attribute it
- * describes.
+ * A SchemaAttribute is a class for defining graph attributes which belong with
+ * one or more {@link Schema} in a convenient manner. This class is built to
+ * work seamlessly with the graph framework to build the attribute it describes.
  *
  * @author cygnus_x-1
  */
@@ -70,16 +70,18 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
     /**
      * Get the {@link GraphElementType} of this SchemaAttribute.
      *
-     * @return a {@link GraphElementType} representing the type of graph element this {@link SchemaAttribute}
-     * corresponds to.
+     * @return a {@link GraphElementType} representing the type of graph element
+     * this {@link SchemaAttribute} corresponds to.
      */
     public GraphElementType getElementType() {
         return elementType;
     }
 
     /**
-     * A {@link String} representing the type of this SchemaAttribute. This value should match the return value of
-     * {@link AttributeDescription#getName} for the relevant {@link AttributeDescription} implementation.
+     * A {@link String} representing the type of this SchemaAttribute. This
+     * value should match the return value of
+     * {@link AttributeDescription#getName} for the relevant
+     * {@link AttributeDescription} implementation.
      *
      * @return a {@link String} representing the type of this SchemaAttribute.
      */
@@ -99,7 +101,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
     /**
      * A description of this SchemaAttribute.
      *
-     * @return a {@link String} representing a description for this SchemaAttribute.
+     * @return a {@link String} representing a description for this
+     * SchemaAttribute.
      */
     public String getDescription() {
         return description;
@@ -108,7 +111,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
     /**
      * An {@link Object} which holds the default value for this SchemaAttribute.
      *
-     * @return an {@link Object} representing a the default value of this SchemaAttribute.
+     * @return an {@link Object} representing a the default value of this
+     * SchemaAttribute.
      */
     public Object getDefault() {
         return defaultValue;
@@ -124,7 +128,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
     }
 
     /**
-     * Get a regular expression for validating a value assigned to this SchemaAttribute.
+     * Get a regular expression for validating a value assigned to this
+     * SchemaAttribute.
      *
      * @return A {@link String} representing a regular expression.
      */
@@ -133,67 +138,80 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
     }
 
     /**
-     * Get the format in which to display a value of this SchemaAttribute. This can be used to provide a custom format
-     * for displaying the attribute value as a {@link String}.
+     * Get the format in which to display a value of this SchemaAttribute. This
+     * can be used to provide a custom format for displaying the attribute value
+     * as a {@link String}.
      *
-     * @return A {@link String} representing the displayable format of this SchemaAttribute.
+     * @return A {@link String} representing the displayable format of this
+     * SchemaAttribute.
      */
     public String getFormat() {
         return format;
     }
 
     /**
-     * Get the {@link GraphIndexType} of this SchemaAttribute. This specifies how the attribute is indexed in terms of
-     * storage in memory (and consequently how efficiently values of this attribute can be looked up).
+     * Get the {@link GraphIndexType} of this SchemaAttribute. This specifies
+     * how the attribute is indexed in terms of storage in memory (and
+     * consequently how efficiently values of this attribute can be looked up).
      *
-     * @return a {@link GraphIndexType} representing how this SchemaAttribute is indexed.
+     * @return a {@link GraphIndexType} representing how this SchemaAttribute is
+     * indexed.
      */
     public GraphIndexType getIndexType() {
         return indexType;
     }
 
     /**
-     * Get a boolean value representing whether this SchemaAttribute supports storing multiple values or not.
+     * Get a boolean value representing whether this SchemaAttribute supports
+     * storing multiple values or not.
      *
-     * @return A boolean value representing whether this SchemaAttribute supports storing multiple values.
+     * @return A boolean value representing whether this SchemaAttribute
+     * supports storing multiple values.
      */
     public boolean isMultiValue() {
         return isMultiValue;
     }
 
     /**
-     * Get a boolean value representing whether this SchemaAttribute should be used as a label.
+     * Get a boolean value representing whether this SchemaAttribute should be
+     * used as a label.
      *
-     * @return A boolean value representing whether this SchemaAttribute should be used as a label.
+     * @return A boolean value representing whether this SchemaAttribute should
+     * be used as a label.
      */
     public boolean isLabel() {
         return isLabel;
     }
 
     /**
-     * Get a boolean value representing whether this SchemaAttribute should be used as a decorator. Obviously, this will
-     * only affect vertex attributes.
+     * Get a boolean value representing whether this SchemaAttribute should be
+     * used as a decorator. Obviously, this will only affect vertex attributes.
      *
-     * @return A boolean value representing whether this SchemaAttribute should be used as a decorator.
+     * @return A boolean value representing whether this SchemaAttribute should
+     * be used as a decorator.
      */
     public boolean isDecorator() {
         return isDecorator;
     }
 
     /**
-     * Get a boolean value representing whether this SchemaAttribute is created by default for a {@link Schema} which
-     * has registered this SchemaAttribute, or whether it is simply made available for creation.
+     * Get a boolean value representing whether this SchemaAttribute is created
+     * by default for a {@link Schema} which has registered this
+     * SchemaAttribute, or whether it is simply made available for creation.
      *
-     * @return A boolean value representing whether this SchemaAttribute is created by default.
+     * @return A boolean value representing whether this SchemaAttribute is
+     * created by default.
      */
     public boolean isCreate() {
         return create;
     }
 
     /**
-     * A convenient method of retrieving this SchemaAttribute from a {@link Graph}.
+     * A convenient method of retrieving this SchemaAttribute from a
+     * {@link Graph}.
      *
-     * @param graph The {@link GraphReadMethods} from which to retrieve this SchemaAttribute.
+     * @param graph The {@link GraphReadMethods} from which to retrieve this
+     * SchemaAttribute.
      * @return An int value representing the id of this SchemaAttribute.
      */
     public int get(final GraphReadMethods graph) {
@@ -203,18 +221,23 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
     /**
      * A convenient method for creating this SchemaAttribute on a {@link Graph}.
      * <p>
-     * If the attribute already exists on the given graph, then the id of that attribute will simply be returned.
+     * If the attribute already exists on the given graph, then the id of that
+     * attribute will simply be returned.
      * <p>
-     * If the attribute does not exist on the given graph, and the graph has no schema, then the attribute will be added
-     * to the graph and the id of that new attribute will be returned.
+     * If the attribute does not exist on the given graph, and the graph has no
+     * schema, then the attribute will be added to the graph and the id of that
+     * new attribute will be returned.
      * <p>
-     * If the attribute does not exist on the given graph, but is registered with the {@link Schema} of the graph, then
-     * the Schema will be tasked with creating the attribute and the id of that new attribute will be returned.
+     * If the attribute does not exist on the given graph, but is registered
+     * with the {@link Schema} of the graph, then the Schema will be tasked with
+     * creating the attribute and the id of that new attribute will be returned.
      * <p>
-     * If the attribute does not exist on the given graph, and is not registered with the {@link Schema} of the graph,
-     * then the attribute will be created and returned.
+     * If the attribute does not exist on the given graph, and is not registered
+     * with the {@link Schema} of the graph, then the attribute will be created
+     * and returned.
      *
-     * @param graph The {@link GraphWriteMethods} on which to create this SchemaAttribute.
+     * @param graph The {@link GraphWriteMethods} on which to create this
+     * SchemaAttribute.
      * @return An int value representing the id of this SchemaAttribute.
      */
     public int ensure(final GraphWriteMethods graph) {
@@ -224,21 +247,27 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
     /**
      * A convenient method for creating this SchemaAttribute on a {@link Graph}.
      * <p>
-     * If the attribute already exists on the given graph, then the id of that attribute will simply be returned.
+     * If the attribute already exists on the given graph, then the id of that
+     * attribute will simply be returned.
      * <p>
-     * If the attribute does not exist on the given graph, and the graph has no schema, then the attribute will be added
-     * to the graph and the id of that new attribute will be returned.
+     * If the attribute does not exist on the given graph, and the graph has no
+     * schema, then the attribute will be added to the graph and the id of that
+     * new attribute will be returned.
      * <p>
-     * If the attribute does not exist on the given graph, but is registered with the {@link Schema} of the graph, then
-     * the Schema will be tasked with creating the attribute and the id of that new attribute will be returned.
+     * If the attribute does not exist on the given graph, but is registered
+     * with the {@link Schema} of the graph, then the Schema will be tasked with
+     * creating the attribute and the id of that new attribute will be returned.
      * <p>
-     * If the attribute does not exist on the given graph, and is not registered with the {@link Schema} of the graph,
-     * then Graph.NOT_FOUND will be returned.
+     * If the attribute does not exist on the given graph, and is not registered
+     * with the {@link Schema} of the graph, then Graph.NOT_FOUND will be
+     * returned.
      *
-     * @param graph The {@link GraphWriteMethods} on which to create this SchemaAttribute.
-     * @param boundBySchema if true, and this {@link SchemaAttribute} is not registered to the {@link Schema} of the
-     * current graph, then this method will return {@link GraphConstants#NOT_FOUND}, otherwise the attribute will be
-     * created regardless
+     * @param graph The {@link GraphWriteMethods} on which to create this
+     * SchemaAttribute.
+     * @param boundBySchema if true, and this {@link SchemaAttribute} is not
+     * registered to the {@link Schema} of the current graph, then this method
+     * will return {@link GraphConstants#NOT_FOUND}, otherwise the attribute
+     * will be created regardless
      *
      * @return An int value representing the id of this SchemaAttribute.
      */
@@ -256,9 +285,10 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
     }
 
     /**
-     * Validate the given value against the regular expression of this SchemaAttribute. Returns true if the value is
-     * valid or if there is no regular expression specified, otherwise returns false indicating the given value failed
-     * validation.
+     * Validate the given value against the regular expression of this
+     * SchemaAttribute. Returns true if the value is valid or if there is no
+     * regular expression specified, otherwise returns false indicating the
+     * given value failed validation.
      *
      * @param value The value to validate against this SchemaAttribute.
      * @return true if the specified value was successfully validated.
@@ -268,7 +298,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
     }
 
     /**
-     * Compare this SchemaAttribute to an {@link Attribute} object to determine if they are equivalent.
+     * Compare this SchemaAttribute to an {@link Attribute} object to determine
+     * if they are equivalent.
      *
      * @param other the {@link Attribute} object to test for equivalence.
      * @return
@@ -424,12 +455,14 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         private boolean create = false;
 
         /**
-         * Instantiate a new SchemaAttribute builder with the specified elementType, attributeType, and name. This is
-         * the minimal information required to create a new attribute.
+         * Instantiate a new SchemaAttribute builder with the specified
+         * elementType, attributeType, and name. This is the minimal information
+         * required to create a new attribute.
          *
-         * @param elementType The {@link GraphElementType} the attribute belongs to.
-         * @param attributeType The type of data the attribute holds, this should correspond to an
-         * {@link AttributeDescription}.
+         * @param elementType The {@link GraphElementType} the attribute belongs
+         * to.
+         * @param attributeType The type of data the attribute holds, this
+         * should correspond to an {@link AttributeDescription}.
          * @param name The name of this attribute.
          */
         public Builder(final GraphElementType elementType, final String attributeType, final String name) {
@@ -450,10 +483,11 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         }
 
         /**
-         * Set a default value for this attribute. The default will be returned whenever no value is set for this
-         * SchemaAttribute.
+         * Set a default value for this attribute. The default will be returned
+         * whenever no value is set for this SchemaAttribute.
          *
-         * @param defaultValue An {@link Object} holding the default value for this SchemaAttribute.
+         * @param defaultValue An {@link Object} holding the default value for
+         * this SchemaAttribute.
          * @return The Builder object for this SchemaAttribute.
          */
         public Builder setDefaultValue(final Object defaultValue) {
@@ -464,7 +498,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         /**
          * Sets the (@link AttributeMerger} for this attribute.
          *
-         * @param attributeMergerId the (@link AttributeMerger} for this attribute.
+         * @param attributeMergerId the (@link AttributeMerger} for this
+         * attribute.
          * @return this
          */
         public Builder setAttributeMergerId(final String attributeMergerId) {
@@ -473,8 +508,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         }
 
         /**
-         * Specify a regular expression for which values for this SchemaAttribute must match in order to be considered
-         * valid.
+         * Specify a regular expression for which values for this
+         * SchemaAttribute must match in order to be considered valid.
          *
          * @param regex A {@link String} representing a regular expression.
          * @return The Builder object for this SchemaAttribute.
@@ -485,8 +520,9 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         }
 
         /**
-         * Specify a format for this SchemaAttribute. This is required for certain types of attributes (as specified by
-         * that types {@link AttributeDescription}).
+         * Specify a format for this SchemaAttribute. This is required for
+         * certain types of attributes (as specified by that types
+         * {@link AttributeDescription}).
          *
          * @param format a {@link String} representing a format.
          * @return The Builder object for this SchemaAttribute.
@@ -497,8 +533,10 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         }
 
         /**
-         * Set a {@link GraphIndexType} for this SchemaAttribute. This specifies how the attribute is indexed in terms
-         * of storage in memory (and consequently how efficiently values of this attribute can be looked up).
+         * Set a {@link GraphIndexType} for this SchemaAttribute. This specifies
+         * how the attribute is indexed in terms of storage in memory (and
+         * consequently how efficiently values of this attribute can be looked
+         * up).
          *
          * @param indexType a {@link GraphIndexType}.
          * @return The Builder object for this SchemaAttribute.
@@ -511,8 +549,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         /**
          * Specify whether this SchemaAttribute can hold multiple values.
          *
-         * @param multiValue A boolean value representing whether this SchemaAttribute is capable of holding multiple
-         * values.
+         * @param multiValue A boolean value representing whether this
+         * SchemaAttribute is capable of holding multiple values.
          * @return The Builder object for this SchemaAttribute.
          */
         public Builder setMultiValue(final boolean multiValue) {
@@ -523,7 +561,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         /**
          * Specify whether this SchemaAttribute should be used as a label.
          *
-         * @param isLabel A boolean value representing whether this SchemaAttribute should be used as a label.
+         * @param isLabel A boolean value representing whether this
+         * SchemaAttribute should be used as a label.
          * @return The Builder object for this SchemaAttribute.
          */
         public Builder setLabel(final boolean isLabel) {
@@ -532,10 +571,11 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         }
 
         /**
-         * Specify whether this SchemaAttribute should be used as a decorator. This property will only affect vertex
-         * attributes.
+         * Specify whether this SchemaAttribute should be used as a decorator.
+         * This property will only affect vertex attributes.
          *
-         * @param isDecorator A boolean value representing whether this SchemaAttribute should be used as a decorator.
+         * @param isDecorator A boolean value representing whether this
+         * SchemaAttribute should be used as a decorator.
          * @return The Builder object for this SchemaAttribute.
          */
         public Builder setDecorator(final boolean isDecorator) {
@@ -544,8 +584,10 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         }
 
         /**
-         * Specify whether this SchemaAttribute will be automatically created for any new graph using a {@link Schema}
-         * which registers this SchemaAttribute. The creation of this SchemaAttribute will be done via {@link #ensure}.
+         * Specify whether this SchemaAttribute will be automatically created
+         * for any new graph using a {@link Schema} which registers this
+         * SchemaAttribute. The creation of this SchemaAttribute will be done
+         * via {@link #ensure}.
          *
          * @return The Builder object for this SchemaAttribute.
          */
@@ -557,7 +599,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         /**
          * Finalise and create the SchemaAttribute defined by this Builder.
          *
-         * @return A new SchemaAttribute based on the configuration of this Builder object.
+         * @return A new SchemaAttribute based on the configuration of this
+         * Builder object.
          */
         public SchemaAttribute build() {
             return new SchemaAttribute(elementType, attributeType, name, description, defaultValue,

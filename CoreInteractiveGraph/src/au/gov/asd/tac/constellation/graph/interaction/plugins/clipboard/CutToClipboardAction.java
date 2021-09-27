@@ -25,6 +25,7 @@ import javax.swing.AbstractAction;
 import org.openide.util.NbBundle.Messages;
 
 /**
+ * Cut to clipboard action.
  *
  * @author algol
  */

@@ -38,6 +38,12 @@ public class Startup implements Runnable {
     // continous integration scripts use this to update the version dynamically
     private static final String VERSION = "(under development)";
 
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
+
     @Override
     public void run() {
         ConstellationSecurityManager.startSecurityLater(null);
@@ -48,12 +54,15 @@ public class Startup implements Runnable {
                 ? String.format("%s %s", BrandingUtilities.APPLICATION_NAME, environment)
                 : BrandingUtilities.APPLICATION_NAME;
 
-        // update the main window title with the version number
-        WindowManager.getDefault().invokeWhenUIReady(() -> {
-            final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-            final String title = String.format("%s - %s", name, VERSION);
-            frame.setTitle(title);
-        });
+        // We only want to run this if headless is NOT set to true
+        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            // update the main window title with the version number
+            WindowManager.getDefault().invokeWhenUIReady(() -> {
+                final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                final String title = String.format("%s - %s", name, VERSION);
+                frame.setTitle(title);
+            });
+        }
 
         FontUtilities.initialiseOutputFontPreferenceOnFirstUse();
         FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();

@@ -28,6 +28,8 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLine
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.PlanesRenderable;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxRenderable;
+import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformModel;
+import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformRenderable;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -65,12 +67,14 @@ import java.util.stream.Stream;
 public class InteractiveGLVisualProcessor extends GLVisualProcessor implements VisualInteraction, VisualAnnotator {
 
     private final long selectionBoxUpdateId = VisualChangeBuilder.generateNewId();
+    private final long selectionFreeformUpdateId = VisualChangeBuilder.generateNewId();
     private final long newLineUpdateId = VisualChangeBuilder.generateNewId();
     private final long greyscaleUpdateId = VisualChangeBuilder.generateNewId();
     private final long hitTestId = VisualChangeBuilder.generateNewId();
     private final long hitTestPointId = VisualChangeBuilder.generateNewId();
     private final HitTester hitTester;
     private final SelectionBoxRenderable selectionBoxRenderable = new SelectionBoxRenderable();
+    private final SelectionFreeformRenderable selectionFreeformRenderable = new SelectionFreeformRenderable();
     private final NewLineRenderable newLineRenderable = new NewLineRenderable(this);
     private final PlanesRenderable planesRenderable = new PlanesRenderable();
     private final TransformableGraphDisplayer graphDisplayer = new TransformableGraphDisplayer();
@@ -94,6 +98,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         setGraphDisplayer(graphDisplayer);
         addRenderable(newLineRenderable);
         addRenderable(selectionBoxRenderable);
+        addRenderable(selectionFreeformRenderable);
         addRenderable(planesRenderable);
         hitTester = new HitTester(this);
         addRenderable(hitTester);
@@ -195,10 +200,17 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     }
 
     @Override
-    public VisualOperation setSelectionBoxModel(SelectionBoxModel model) {
+    public VisualOperation setSelectionBoxModel(final SelectionBoxModel model) {
         selectionBoxRenderable.queueModel(model);
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(selectionBoxUpdateId).build());
+    }
+
+    @Override
+    public VisualOperation setSelectionFreeformModel(final SelectionFreeformModel model) {
+        selectionFreeformRenderable.queueModel(model);
+        return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
+                .withId(selectionFreeformUpdateId).build());
     }
 
     @Override

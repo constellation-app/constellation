@@ -32,17 +32,19 @@ import org.openide.util.Lookup;
 public class QualityControlEvent implements Comparable<QualityControlEvent> {
 
     public enum QualityCategory {
-        DEFAULT,
-        INFO,
-        WARNING,
+        OK,
+        MINOR,
+        MEDIUM,
+        MAJOR,
         SEVERE,
-        FATAL
+        CRITICAL
     }
-    public static final int DEFAULT_VALUE = 1;
-    public static final int INFO_VALUE = 30;
-    public static final int WARNING_VALUE = 60;
+    public static final int OK_VALUE = 0;
+    public static final int MINOR_VALUE = 1;
+    public static final int MEDIUM_VALUE = 30;
+    public static final int MAJOR_VALUE = 60;
     public static final int SEVERE_VALUE = 90;
-    public static final int FATAL_VALUE = 95;
+    public static final int CRITICAL_VALUE = 95;
 
     private int quality = 0;
     private final int vertex;
@@ -50,7 +52,7 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
     private final String type;
     private final List<QualityControlRule> rules;
     private final List<String> reasons;
-    private QualityCategory category = QualityCategory.DEFAULT;
+    private QualityCategory category = QualityCategory.OK;
 
     /**
      * Constructor for QualityControlEvent.
@@ -86,22 +88,23 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
                     category = QualityControlViewPane.getPriorities().get(rule);
 
                     switch (category) {
-                        case DEFAULT:
-                            quality = DEFAULT_VALUE;
+                        case MINOR:
+                            quality = MINOR_VALUE;
                             break;
-                        case INFO:
-                            quality = INFO_VALUE;
+                        case MEDIUM:
+                            quality = MEDIUM_VALUE;
                             break;
-                        case WARNING:
-                            quality = WARNING_VALUE;
+                        case MAJOR:
+                            quality = MAJOR_VALUE;
                             break;
                         case SEVERE:
                             quality = SEVERE_VALUE;
                             break;
-                        case FATAL:
-                            quality = FATAL_VALUE;
+                        case CRITICAL:
+                            quality = CRITICAL_VALUE;
                             break;
                         default:
+                            quality = OK_VALUE;
                             break;
                     }
                 }
@@ -118,22 +121,22 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
     public static QualityCategory getCategoryFromString(final String category) {
         if (StringUtils.isNotEmpty(category)) {
             switch (category.toLowerCase()) {
-                case "default":
-                    return QualityCategory.DEFAULT;
-                case "info":
-                    return QualityCategory.INFO;
-                case "warning":
-                    return QualityCategory.WARNING;
+                case "minor":
+                    return QualityCategory.MINOR;
+                case "medium":
+                    return QualityCategory.MEDIUM;
+                case "major":
+                    return QualityCategory.MAJOR;
                 case "severe":
                     return QualityCategory.SEVERE;
-                case "fatal":
-                    return QualityCategory.FATAL;
+                case "critical":
+                    return QualityCategory.CRITICAL;
                 default:
-                    // default to default case when not readable.
-                    return QualityCategory.DEFAULT;
+                    // default to OK case when not readable.
+                    return QualityCategory.OK;
             }
         }
-        return QualityCategory.DEFAULT;
+        return QualityCategory.OK;
     }
 
     /**

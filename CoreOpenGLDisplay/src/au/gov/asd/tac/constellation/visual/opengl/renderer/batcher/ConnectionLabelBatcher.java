@@ -70,6 +70,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
     private int shaderXyzTexture;
     private int shaderGlyphInfoTexture;
     private int shaderGlyphImageTexture;
+    private int shaderGreyscale; // anaglyphic drawing
 
     private final int floatsTarget;
     private final int intsTarget;
@@ -79,7 +80,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
 
     public ConnectionLabelBatcher() {
         // Create the batch
-        labelBatch = new Batch(GL3.GL_POINTS);
+        labelBatch = new Batch(GL.GL_POINTS);
         final ConstellationColor summaryColor = VisualGraphDefaults.DEFAULT_LABEL_COLOR;
         summaryLabelInfo.setRow(summaryColor.getRed(), summaryColor.getGreen(), summaryColor.getBlue(), VisualGraphDefaults.DEFAULT_LABEL_SIZE * LabelUtilities.NRADIUS_TO_LABEL_UNITS, 0);
         floatsTarget = labelBatch.newFloatBuffer(FLOAT_BUFFER_WIDTH, false);
@@ -135,6 +136,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
         shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
         shaderGlyphInfoTexture = gl.glGetUniformLocation(shader, "glyphInfoTexture");
         shaderGlyphImageTexture = gl.glGetUniformLocation(shader, "glyphImageTexture");
+        shaderGreyscale = gl.glGetUniformLocation(shader, "greyscale");
     }
 
     @Override
@@ -240,7 +242,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
         if (labelBatch.isDrawable()) {
             gl.glUseProgram(shader);
 
@@ -266,6 +268,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
             gl.glUniform1i(shaderBackgroundGlyphIndex, SharedDrawable.getLabelBackgroundGlyphPosition());
             gl.glUniform4fv(shaderBackgroundColor, 1, backgroundColor, 0);
             gl.glUniform4fv(shaderHighlightColor, 1, highlightColor, 0);
+            gl.glUniform1i(shaderGreyscale, greyscale ? 1 : 0);
 
             if (labelBatch.isDrawable()) {
                 gl.glUniformMatrix4fv(shaderLabelInfo, 1, false, attributeLabelInfo.a, 0);

@@ -36,8 +36,9 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 /**
- * The NewAttributeDialog provides a dialog box allowing the user to create a new attribute that does not currently
- * exist in the {@link GraphDestination}. This is typically an attribute that does not exist in a currently existing
+ * The NewAttributeDialog provides a dialog box allowing the user to create a
+ * new attribute that does not currently exist in the {@link GraphDestination}.
+ * This is typically an attribute that does not exist in a currently existing
  * graph or an attribute that does not exist in a destination schema.
  *
  * @author sirius
@@ -117,7 +118,7 @@ public class NewAttributeDialog extends Stage {
         buttonPane.setHgap(GRIDPANE_GAP);
         root.setBottom(buttonPane);
 
-        final Button okButton = new Button("Ok");
+        final Button okButton = new Button("OK");
         okButton.setOnAction((ActionEvent event) -> {
             attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(),
                     labelText.getText(), descriptionText.getText());

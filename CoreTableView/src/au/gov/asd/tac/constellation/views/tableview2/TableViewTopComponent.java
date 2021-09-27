@@ -25,14 +25,21 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.UpdateStatePlugin;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.SelectionToGraphPlugin;
+import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewConcept;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import au.gov.asd.tac.constellation.views.tableview2.tasks.TriggerDataUpdateTask;
+import au.gov.asd.tac.constellation.views.tableview2.tasks.TriggerSelectionUpdateTask;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -59,7 +66,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1400),
+    @ActionReference(path = "Menu/Views", position = 1500),
     @ActionReference(path = "Shortcuts", name = "CS-Y")
 })
 @TopComponent.OpenActionRegistration(
@@ -71,142 +78,110 @@ import org.openide.windows.TopComponent;
     "CTL_TableView2TopComponent=Table View",
     "HINT_TableView2TopComponent=Table View"
 })
-public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPane> {
+public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
-    private TableViewState currentState;
-    private final TableViewPane pane;
+    public static final Object TABLE_LOCK = new Object();
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
+
+    private final TablePane pane;
     private final Set<AttributeValueMonitor> columnAttributeMonitors;
 
-    private static final String UPDATE_DATA = "Table View: Update Data";
-    private static final String UPDATE_SELECTION = "Table View: Update Selection";
+    private TableViewState currentState;
 
     public TableViewTopComponent() {
         setName(Bundle.CTL_TableView2TopComponent());
         setToolTipText(Bundle.HINT_TableView2TopComponent());
+
         initComponents();
 
         this.currentState = null;
-        this.pane = new TableViewPane(TableViewTopComponent.this);
+        this.pane = new TablePane(this);
         this.columnAttributeMonitors = new HashSet<>();
+
+        // The table pane is initialized above is returned in the overridden
+        // method getContent() below. That is how the initContent in the super
+        // class can reference it and add the table to this pane.
         initContent();
 
+        // If the graph structure changes then update the table rows
         addStructureChangeHandler(graph -> {
+            // Only update if the table is visible
             if (!needsUpdate()) {
                 return;
             }
-            final Thread thread = new Thread(UPDATE_DATA) {
-                @Override
-                public void run() {
-                    pane.updateData(graph, currentState);
-                }
-            };
-            thread.start();
+            executorService.submit(new TriggerDataUpdateTask(pane, graph, getCurrentState()));
         });
 
+        // If graph attributes are added or removed then update the table rows,
+        // columns and selection
         addAttributeCountChangeHandler(graph -> {
             if (needsUpdate()) {
                 pane.updateTable(graph, currentState);
             }
         });
 
+        // If the selection attribute on a vertex is changed in the graph and the
+        // table is in "Selected Only" mode then update the table rows as this
+        // represents a change to the actual table data. Otherwise just update
+        // the selection. The table also needs to have its element type set to VERTEX
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
-            if (needsUpdate() && currentState != null && currentState.getElementType() == GraphElementType.VERTEX) {
+            if (needsUpdate() && currentState != null
+                    && currentState.getElementType() == GraphElementType.VERTEX) {
                 if (currentState.isSelectedOnly()) {
-                    final Thread thread = new Thread(UPDATE_DATA) {
-                        @Override
-                        public void run() {
-                            pane.updateData(graph, currentState);
-                        }
-                    };
-                    thread.start();
+                    executorService.submit(new TriggerDataUpdateTask(pane, graph, getCurrentState()));
                 } else {
-                    final Thread thread = new Thread(UPDATE_SELECTION) {
-                        @Override
-                        public void run() {
-                            pane.updateSelection(graph, currentState);
-                        }
-                    };
-                    thread.start();
+                    executorService.submit(new TriggerSelectionUpdateTask(pane, graph, getCurrentState()));
                 }
             }
         });
 
+        // If the selection attribute on a transaction is changed in the graph and the
+        // table is in "Selected Only" mode then update the table rows as this
+        // represents a change to the actual table data. Otherwise just update
+        // the selection. The table also needs to have its element type set to TRANSACTION
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
-            if (needsUpdate() && currentState != null && currentState.getElementType() == GraphElementType.TRANSACTION) {
-                final Thread thread;
+            if (needsUpdate() && currentState != null
+                    && currentState.getElementType() == GraphElementType.TRANSACTION) {
                 if (currentState.isSelectedOnly()) {
-                    thread = new Thread(UPDATE_DATA) {
-                        @Override
-                        public void run() {
-                            pane.updateData(graph, currentState);
-                        }
-                    };
-                    thread.start();
+                    executorService.submit(new TriggerDataUpdateTask(pane, graph, getCurrentState()));
                 } else {
-                    thread = new Thread(UPDATE_SELECTION) {
-                        @Override
-                        public void run() {
-                            pane.updateSelection(graph, currentState);
-                        }
-                    };
-                    thread.start();
+                    executorService.submit(new TriggerSelectionUpdateTask(pane, graph, getCurrentState()));
                 }
             }
         });
 
-        addAttributeValueChangeHandler(TableViewConcept.MetaAttribute.TABLE_VIEW_STATE, graph -> {
-            if (!needsUpdate()) {
-                return;
-            }
-            final TableViewState previousState = currentState;
-            updateState(graph);
-            final Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> columnAttributeChanges = getColumnAttributeChanges(previousState, currentState);
+        // If the table state is updated in the graph then refresh the table
+        addAttributeValueChangeHandler(TableViewConcept.MetaAttribute.TABLE_VIEW_STATE,
+                graph -> handleNewGraph(graph));
 
-            if (columnAttributeMonitors != null && !columnAttributeChanges.getFirst().isEmpty()) {
-                final Set<AttributeValueMonitor> removeMonitors = columnAttributeMonitors.stream()
-                        .filter(monitor -> columnAttributeChanges.getFirst().stream()
-                        .anyMatch(columnAttributeTuple
-                                -> columnAttributeTuple.getSecond().getElementType() == monitor.getElementType()
-                        && columnAttributeTuple.getSecond().getName().equals(monitor.getName()))
-                        ).collect(Collectors.toSet());
-
-                removeMonitors.forEach(monitor -> {
-                    removeAttributeValueChangeHandler(monitor);
-                    columnAttributeMonitors.remove(monitor);
-                });
-            }
-
-            pane.updateTable(graph, currentState);
-
-            if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
-                columnAttributeChanges.getSecond().forEach(attributeTuple -> {
-                    columnAttributeMonitors.add(addAttributeValueChangeHandler(
-                            attributeTuple.getSecond().getElementType(),
-                            attributeTuple.getSecond().getName(),
-                            g -> {
-                                final Thread dataUpdateThread = new Thread(UPDATE_DATA) {
-                                @Override
-                                public void run() {
-                                    pane.updateData(g, currentState);
-                                }
-                            };
-                                dataUpdateThread.start();
-                            }));
-                });
-            }
-        });
-
-        addIgnoredEvent(TableViewUtilities.SELECT_ON_GRAPH_PLUGIN);
+        // This is a table plugin that sends the current table selection to the
+        // graph and selects the corresponding elements. To avoid a never ending
+        // loop of events, events triggered by this plugin are ignored.
+        addIgnoredEvent(SelectionToGraphPlugin.SELECT_ON_GRAPH_PLUGIN);
     }
 
-    public void showSelected(final GraphElementType elementType, final int elementId) {
-        final TableViewState stateSnapshot = currentState;
+    /**
+     * Copy's the existing table view state and sets the new state's element
+     * type to the passed value. Also ensures the new state is in "Selected
+     * Only" mode. The graph table view state attribute is updated with the new
+     * state and then the table's selection is updated.
+     *
+     * @param elementType the element type to set to the new state
+     * @param elementId can be anything, not used
+     */
+    public Future<?> showSelected(final GraphElementType elementType, final int elementId) {
+        final TableViewState stateSnapshot = getCurrentState();
         final Future<?> stateLock;
-        if (currentState != null && currentState.getElementType() != elementType) {
-            final TableViewState newState = new TableViewState(currentState);
+
+        if (getCurrentState() != null && getCurrentState().getElementType() != elementType) {
+            final TableViewState newState = new TableViewState(getCurrentState());
             newState.setElementType(elementType);
             newState.setSelectedOnly(true);
-            stateLock = PluginExecution.withPlugin(new TableViewUtilities.UpdateStatePlugin(newState)).executeLater(currentGraph);
+
+            stateLock = PluginExecution.withPlugin(
+                    new UpdateStatePlugin(newState)
+            ).executeLater(getCurrentGraph());
         } else {
             stateLock = null;
         }
@@ -221,87 +196,112 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             }
         }
 
-        final Thread thread = new Thread(UPDATE_SELECTION) {
-            @Override
-            public void run() {
-                while (stateLock != null && currentState == stateSnapshot) {
-                    try {
-                        // TODO: remove sleep
-                        // ...but there is an async issue which needs to be
-                        // resolved first. When showSelected() is called, the
-                        // order of operations is to update the Table View
-                        // state (if required) and then to select the rows in
-                        // the table based on the current graph selection. The
-                        // issue is that the state is updated by writing a
-                        // TableViewState object to the graph and letting a
-                        // Table View listener respond to that. Unfortunately,
-                        // there is no obvious way for this operation to know
-                        // when the Table View listener has finished responding,
-                        // so for now we just wait until the currentState object
-                        // matches the state object we updated it to.
-                        Thread.sleep(10);
-                    } catch (final InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    }
+        return getExecutorService().submit(() -> {
+            while (stateLock != null && getCurrentState() == stateSnapshot) {
+                try {
+                    // TODO: remove sleep
+                    // ...but there is an async issue which needs to be
+                    // resolved first. When showSelected() is called, the
+                    // order of operations is to update the Table View
+                    // state (if required) and then to select the rows in
+                    // the table based on the current graph selection. The
+                    // issue is that the state is updated by writing a
+                    // TableViewState object to the graph and letting a
+                    // Table View listener respond to that. Unfortunately,
+                    // there is no obvious way for this operation to know
+                    // when the Table View listener has finished responding,
+                    // so for now we just wait until the currentState object
+                    // matches the state object we updated it to.
+                    Thread.sleep(10);
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                 }
-                pane.updateSelection(currentGraph, currentState);
             }
-        };
-        thread.start();
+            getTablePane().getTable().updateSelection(
+                    getCurrentGraph(),
+                    getCurrentState()
+            );
+        });
     }
 
     /**
      * Get the current table view state.
+     *
+     * @return the current table state
      */
     public TableViewState getCurrentState() {
         return currentState;
     }
 
     /**
-     * Calculates the intersection of the column attributes for old and new
-     * {@link TableViewState} objects, and returns a {@link Tuple} of the column
-     * attributes only present in the old state (that is, those removed in the
-     * transition to the new state) and the attributes only present in the new
-     * state (that is, those added in the transition to the new state).
+     * Gets the table pane.
      *
-     * @param oldState a {@link TableViewState} representing the old state
-     * @param newState a {@link TableViewState} representing the new state
-     * @return a {@link Tuple} containing the column attributes which have been
-     * removed and the column attributes which have been added in the transition
-     * from the old state to the new state
+     * @return the table pane
      */
-    private Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> getColumnAttributeChanges(final TableViewState oldState, final TableViewState newState) {
-        final Set<Tuple<String, Attribute>> removedColumnAttributes;
-        if (oldState != null && oldState.getColumnAttributes() != null) {
-            removedColumnAttributes = new HashSet<>(oldState.getColumnAttributes());
-        } else {
-            removedColumnAttributes = new HashSet<>();
-        }
-
-        final Set<Tuple<String, Attribute>> addedColumnAttributes;
-        if (newState != null && newState.getColumnAttributes() != null) {
-            addedColumnAttributes = new HashSet<>(newState.getColumnAttributes());
-        } else {
-            addedColumnAttributes = new HashSet<>();
-        }
-
-        final Set<Tuple<String, Attribute>> intersection = new HashSet<>(removedColumnAttributes);
-        intersection.retainAll(addedColumnAttributes);
-        removedColumnAttributes.removeAll(intersection);
-        addedColumnAttributes.removeAll(intersection);
-
-        return Tuple.create(removedColumnAttributes, addedColumnAttributes);
+    public TablePane getTablePane() {
+        return pane;
     }
 
     /**
-     * Update the current TableViewState for the given graph, including creating
-     * one if none exists.
+     * Gets the tables executor service for running various update tasks.
      *
-     * @param graph the state will be read from the graph using this read lock.
-     * @return the current TableViewState of the given graph.
-     * @throws InterruptedException if the operation is interrupted or canceled.
+     * @return the tables executor service
      */
-    private void updateState(final Graph graph) {
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    /**
+     * Get column attributes that were present in the old state but not in the
+     * new one.
+     *
+     * @param oldState the old table state
+     * @param newState the new table state
+     * @return a set of column attributes that are present in the old state but
+     * not the new one
+     */
+    protected Set<Tuple<String, Attribute>> getRemovedAttributes(final TableViewState oldState,
+            final TableViewState newState) {
+        return new HashSet<>(
+                CollectionUtils.subtract(
+                        oldState != null && oldState.getColumnAttributes() != null
+                        ? oldState.getColumnAttributes() : new HashSet<>(),
+                        newState != null && newState.getColumnAttributes() != null
+                        ? newState.getColumnAttributes() : new HashSet<>()
+                )
+        );
+    }
+
+    /**
+     * Get column attributes that were not present in the old state but are
+     * present in the new state.
+     *
+     * @param oldState the old table state
+     * @param newState the new table state
+     * @return a set of column attributes that were not present in the old state
+     * but are present in the new state
+     */
+    protected Set<Tuple<String, Attribute>> getAddedAttributes(final TableViewState oldState,
+            final TableViewState newState) {
+        return new HashSet<>(
+                CollectionUtils.subtract(
+                        newState != null && newState.getColumnAttributes() != null
+                        ? newState.getColumnAttributes() : new HashSet<>(),
+                        oldState != null && oldState.getColumnAttributes() != null
+                        ? oldState.getColumnAttributes() : new HashSet<>()
+                )
+        );
+    }
+
+    /**
+     * Update the current table state with the table state stored in the passed
+     * graph attributes. If a table state does not exist in the graph attribute
+     * then it will crate and new state and set it to the current state in the
+     * table.
+     *
+     * @param graph the graph that the new state will be extracted from
+     */
+    protected void updateState(final Graph graph) {
         TableViewState state = null;
         boolean newState = false;
 
@@ -323,7 +323,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 }
 
                 if (newState) {
-                    PluginExecution.withPlugin(new UpdateStatePlugin(state)).executeLater(currentGraph);
+                    PluginExecution.withPlugin(
+                            new UpdateStatePlugin(state)
+                    ).executeLater(getCurrentGraph());
                 }
             } finally {
                 readableGraph.release();
@@ -334,7 +336,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
     }
 
     @Override
-    protected TableViewPane createContent() {
+    protected TablePane createContent() {
         return pane;
     }
 
@@ -349,22 +351,44 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 
+    /**
+     * Update the current state with the new state pulled from the passed
+     * graph's attributes and update the attribute handlers so that the table is
+     * only notified for attribute changes that it cares about. Then trigger a
+     * table refresh using the new graph as its source of truth.
+     *
+     * @param graph the new graph
+     */
     @Override
     protected void handleNewGraph(final Graph graph) {
         if (!needsUpdate()) {
             return;
         }
-        final TableViewState previousState = currentState;
-        updateState(graph);
-        final Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> columnAttributeChanges = getColumnAttributeChanges(previousState, currentState);
 
-        if (columnAttributeMonitors != null && !columnAttributeChanges.getFirst().isEmpty()) {
+        // Take a copy of the current state that is associated with the current graph
+        final TableViewState previousState = currentState;
+
+        // Update the current state by pulling the table state attribute from
+        // the new graph
+        updateState(graph);
+
+        // Determine the visible column changes
+        final Set<Tuple<String, Attribute>> removedColumnAttributes
+                = getRemovedAttributes(previousState, currentState);
+        final Set<Tuple<String, Attribute>> addedColumnAttributes
+                = getAddedAttributes(previousState, currentState);
+
+        // Remove attribute handlers for columns in the table that will no longer be visible
+        // with the state associated with the new graph
+        if (columnAttributeMonitors != null && !removedColumnAttributes.isEmpty()) {
             final Set<AttributeValueMonitor> removeMonitors = columnAttributeMonitors.stream()
-                    .filter(monitor -> columnAttributeChanges.getFirst().stream()
+                    .filter(monitor -> removedColumnAttributes.stream()
                     .anyMatch(columnAttributeTuple
                             -> columnAttributeTuple.getSecond().getElementType() == monitor.getElementType()
-                    && columnAttributeTuple.getSecond().getName().equals(monitor.getName()))
-                    ).collect(Collectors.toSet());
+                    && columnAttributeTuple.getSecond().getName().equals(monitor.getName())
+                    )
+                    )
+                    .collect(Collectors.toSet());
 
             removeMonitors.forEach(monitor -> {
                 removeAttributeValueChangeHandler(monitor);
@@ -372,29 +396,34 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             });
         }
 
+        // Update the table data, columns and selection with the new graph
         pane.updateTable(graph, currentState);
 
-        if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
-            columnAttributeChanges.getSecond().forEach(attributeTuple -> {
-                columnAttributeMonitors.add(addAttributeValueChangeHandler(
-                        attributeTuple.getSecond().getElementType(),
-                        attributeTuple.getSecond().getName(),
-                        g -> {
-                            final Thread dataUpdateThread = new Thread(UPDATE_DATA) {
-                        @Override
-                        public void run() {
-                            pane.updateData(g, currentState);
-                        }
-                    };
-                            dataUpdateThread.start();
-                        }));
-            });
+        // Add attribute handlers that detect changes to the graph attributes that
+        // represent visible columns in the table. When these attributes change,
+        // the table should have its data refreshed
+        if (currentState != null && currentState.getColumnAttributes() != null
+                && !addedColumnAttributes.isEmpty()) {
+            addedColumnAttributes.forEach(attributeTuple
+                    -> columnAttributeMonitors.add(addAttributeValueChangeHandler(attributeTuple.getSecond().getElementType(),
+                            attributeTuple.getSecond().getName(),
+                            g -> executorService.submit(new TriggerDataUpdateTask(pane, g, getCurrentState()))
+                    )
+                    )
+            );
         }
     }
 
+    /**
+     * When the graph is closed change the graphs pagination to a pagination
+     * over nothing and update the table. This will essentially clear the table.
+     *
+     * @param graph the graph being closed
+     */
     @Override
     protected void handleGraphClosed(final Graph graph) {
-        pane.paginate(null);
+        getTablePane().getActiveTableReference().updatePagination(
+                getTablePane().getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(), null, getTablePane());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

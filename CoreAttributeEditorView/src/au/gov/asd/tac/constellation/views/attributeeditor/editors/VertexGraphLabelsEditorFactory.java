@@ -139,7 +139,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
             labelsScrollPane.setContent(labelPaneContent);
 
             addButton.setOnAction(e -> {
-                new LabelEntry(labels, labelEntries, attributeNames.isEmpty() ? "" : attributeNames.get(0), ConstellationColor.LIGHT_BLUE, 1);
+                new LabelEntry(labels, labelEntries, attributeNames.isEmpty() ? "" : attributeNames.get(0), ConstellationColor.WHITE, 1);
                 addButton.setDisable(labels.size() == GraphLabels.MAX_LABELS);
                 update();
             });
@@ -256,7 +256,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
                     final AttributeValueEditorFactory<ConstellationColor> editorFactory = new ColorEditorFactory();
 
                     final EditOperation setColorEditOperation = value -> {
-                        color = value == null ? ConstellationColor.LIGHT_BLUE.getJavaFXColor() : ((ConstellationColor) value).getJavaFXColor();
+                        color = value == null ? ConstellationColor.WHITE.getJavaFXColor() : ((ConstellationColor) value).getJavaFXColor();
                         colorRect.setFill(color);
                         update();
                     };

@@ -31,13 +31,13 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * cut plugin
+ * Cut to clipboard plugin.
  *
  * @author sirius
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.COPY, tags = {"EDIT"})
 @Messages("CutToClipboardPlugin=Cut to Clipboard")
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
 public final class CutToClipboardPlugin extends SimpleEditPlugin {
 
     @Override

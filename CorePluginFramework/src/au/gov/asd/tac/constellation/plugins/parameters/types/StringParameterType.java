@@ -140,9 +140,16 @@ public class StringParameterType extends PluginParameterType<StringParameterValu
         parameter.setProperty(IS_LABEL, isLabel);
     }
 
+    /**
+     *
+     * @param param
+     * @param stringValue
+     * @return null when the string is valid, will return "parameter is Empty!"
+     * when invalid
+     */
     @Override
     public String validateString(PluginParameter<StringParameterValue> param, String stringValue) {
-        if (StringUtils.isNotBlank(stringValue) && stringValue.trim().isEmpty()) {
+        if (StringUtils.isBlank(stringValue)) {
             return "Parameter is Empty!";
         }
         return null;

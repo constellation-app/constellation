@@ -29,6 +29,7 @@ import java.util.Map;
  * @author canis_majoris
  */
 public class SimilarityUtilities {
+
     private static GraphWriteMethods graph;
     private static int uniqueIdAttribute;
     private static int typeAttribute;
@@ -40,7 +41,7 @@ public class SimilarityUtilities {
         typeAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         similarityAttribute = schemaSimilarityAttribute.ensure(graph);
     }
-    
+
     /**
      * Adds similarity scores to the graph while ensuring there is only ever a
      * single similarity transactions between any pair of nodes.
@@ -50,8 +51,9 @@ public class SimilarityUtilities {
      * @param schemaSimilarityAttribute - similarity schema attribute to change
      */
     public static void addScoresToGraph(final Map<Tuple<Integer, Integer>, Float> scores) {
-        scores.forEach((pair,score) -> addScoreToGraph(pair.getFirst(), pair.getSecond(), score));
+        scores.forEach((pair, score) -> addScoreToGraph(pair.getFirst(), pair.getSecond(), score));
     }
+
     /**
      * Adds a similarity score to the graph while ensuring there is only ever a
      * single similarity transactions between any pair of nodes.
@@ -63,30 +65,30 @@ public class SimilarityUtilities {
      * @param schemaSimilarityAttribute - similarity schema attribute to change
      */
     public static void addScoreToGraph(final int vertexOne, final int vertexTwo, final float score) {
-            final int linkId = graph.getLink(vertexOne, vertexTwo);
-            if (linkId == GraphConstants.NOT_FOUND) {
-                final int transactionId = graph.addTransaction(vertexOne, vertexTwo, false);
-                graph.setStringValue(uniqueIdAttribute, transactionId, vertexOne + " == similarity == " + vertexTwo);
-                graph.setObjectValue(typeAttribute, transactionId, AnalyticConcept.TransactionType.SIMILARITY);
-                graph.setFloatValue(similarityAttribute, transactionId, score);
-            } else {
-                int similarityTransactionId = GraphConstants.NOT_FOUND;
-                for (int transactionPosition = 0; transactionPosition < graph.getLinkTransactionCount(linkId); transactionPosition++) {
-                    final int transactionId = graph.getLinkTransaction(linkId, transactionPosition);
-                    if (AnalyticConcept.TransactionType.SIMILARITY.equals(graph.getObjectValue(typeAttribute, transactionId))) {
-                        similarityTransactionId = transactionId;
-                        break;
-                    }
+        final int linkId = graph.getLink(vertexOne, vertexTwo);
+        if (linkId == GraphConstants.NOT_FOUND) {
+            final int transactionId = graph.addTransaction(vertexOne, vertexTwo, false);
+            graph.setStringValue(uniqueIdAttribute, transactionId, vertexOne + " == similarity == " + vertexTwo);
+            graph.setObjectValue(typeAttribute, transactionId, AnalyticConcept.TransactionType.SIMILARITY);
+            graph.setFloatValue(similarityAttribute, transactionId, score);
+        } else {
+            int similarityTransactionId = GraphConstants.NOT_FOUND;
+            for (int transactionPosition = 0; transactionPosition < graph.getLinkTransactionCount(linkId); transactionPosition++) {
+                final int transactionId = graph.getLinkTransaction(linkId, transactionPosition);
+                if (AnalyticConcept.TransactionType.SIMILARITY.equals(graph.getObjectValue(typeAttribute, transactionId))) {
+                    similarityTransactionId = transactionId;
+                    break;
                 }
-
-                if (similarityTransactionId == GraphConstants.NOT_FOUND) {
-                    similarityTransactionId = graph.addTransaction(vertexOne, vertexTwo, false);
-                    graph.setStringValue(uniqueIdAttribute, similarityTransactionId, vertexOne + " == similarity == " + vertexTwo);
-                    graph.setObjectValue(typeAttribute, similarityTransactionId, AnalyticConcept.TransactionType.SIMILARITY);
-                }
-
-                graph.setFloatValue(similarityAttribute, similarityTransactionId, score);
             }
+
+            if (similarityTransactionId == GraphConstants.NOT_FOUND) {
+                similarityTransactionId = graph.addTransaction(vertexOne, vertexTwo, false);
+                graph.setStringValue(uniqueIdAttribute, similarityTransactionId, vertexOne + " == similarity == " + vertexTwo);
+                graph.setObjectValue(typeAttribute, similarityTransactionId, AnalyticConcept.TransactionType.SIMILARITY);
+            }
+
+            graph.setFloatValue(similarityAttribute, similarityTransactionId, score);
+        }
     }
 
     /**

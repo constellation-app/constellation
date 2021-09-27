@@ -33,10 +33,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 /**
- * An AttributeList is a UI element that can hold all the available attributes for a given graph element. At present,
- * three of these are used to hold the source node, destination node and transaction attributes in the UI and provide a
- * place from which the user can drag these attributes onto columns. Attributes are represented with in the
- * AttributeList by {@link AttributeNode}s.
+ * An AttributeList is a UI element that can hold all the available attributes
+ * for a given graph element. At present, three of these are used to hold the
+ * source node, destination node and transaction attributes in the UI and
+ * provide a place from which the user can drag these attributes onto columns.
+ * Attributes are represented with in the AttributeList by
+ * {@link AttributeNode}s.
  *
  * @author sirius
  */
@@ -192,9 +194,11 @@ public class AttributeList extends VBox {
     }
 
     /**
-     * Create an {@code ImportDefinition} from attributes modified on the attribute list
+     * Create an {@code ImportDefinition} from attributes modified on the
+     * attribute list
      *
-     * @param importDefinition the {@link ImportDefinition} that will hold the new {@link ImportAttributeDefinition}s.
+     * @param importDefinition the {@link ImportDefinition} that will hold the
+     * new {@link ImportAttributeDefinition}s.
      */
     public void createDefinition(final ImportDefinition importDefinition) {
         attributeNodes.values().stream().filter(attributeNode -> (attributeNode.getColumn() == null)).forEachOrdered(attributeNode -> {

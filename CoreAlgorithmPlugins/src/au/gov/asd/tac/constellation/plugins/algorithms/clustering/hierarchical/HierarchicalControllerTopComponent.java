@@ -23,9 +23,10 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.FastNewman.Group;
 import au.gov.asd.tac.constellation.plugins.algorithms.paths.DijkstraServices;
@@ -38,6 +39,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 import javax.swing.ScrollPaneConstants;
@@ -400,12 +402,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }//GEN-LAST:event_returnToOptimumButtonActionPerformed
 
     private void reclusterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reclusterButtonActionPerformed
-        PluginExecution.withPlugin(new SimpleEditPlugin("Hierarchical: Recluster") {
-            @Override
-            public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                HierarchicalClusteringServices.fastNewmanWithPendantsClusteredFinal(graph, interaction, interactiveButton.isSelected());
-            }
-        }).executeLater(graph);
+        PluginExecution.withPlugin(new HierarchicalReclusterPlugin(interactiveButton.isSelected())).executeLater(graph);
     }//GEN-LAST:event_reclusterButtonActionPerformed
 
     private void interactiveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_interactiveButtonActionPerformed
@@ -419,27 +416,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }//GEN-LAST:event_colorClustersCheckBoxActionPerformed
 
     private void shortestPathsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shortestPathsButtonActionPerformed
-        PluginExecution.withPlugin(new SimpleEditPlugin("Hierarchical: Shortest Paths Between Clusters") {
-
-            @Override
-            protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                final Set<Integer> verticesToPath = new HashSet<>();
-                for (int pos = 0; pos < graph.getVertexCount(); pos++) {
-                    Group group = state.groups[pos];
-                    if (group == null) {
-                        continue;
-                    }
-                    while (group.getMergeStep() <= state.currentStep) {
-                        group = group.getParent();
-                    }
-                    verticesToPath.add(group.getVertex());
-                }
-                final ArrayList<Integer> verticesToPathList = new ArrayList<>(verticesToPath);
-                final DijkstraServices ds = new DijkstraServices(graph, verticesToPathList, false);
-                ds.queryPaths(true);
-            }
-
-        }).executeLater(graph);
+        PluginExecution.withPlugin(new HierarchicalShortestPathsPlugin(state)).executeLater(graph);
     }//GEN-LAST:event_shortestPathsButtonActionPerformed
 
     private void setColoring() {
@@ -693,6 +670,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         setGroups(false);
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     public static final class ColorClusters extends SimpleEditPlugin {
 
         private final boolean setColors;
@@ -717,6 +695,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         }
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     public static final class Update extends SimpleEditPlugin {
 
         private final HierarchicalState state;
@@ -821,6 +800,66 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Recluster using hierarchical algorithm fast newman
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    public static class HierarchicalReclusterPlugin extends SimpleEditPlugin {
+
+        final boolean interactiveButtonSelected;
+
+        public HierarchicalReclusterPlugin(final boolean interactiveButtonSelected) {
+            this.interactiveButtonSelected = interactiveButtonSelected;
+        }
+
+        @Override
+        public String getName() {
+            return "Hierarchical: Recluster";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            HierarchicalClusteringServices.fastNewmanWithPendantsClusteredFinal(graph, interaction, interactiveButtonSelected);
+        }
+
+    }
+
+    /**
+     * Finds the shortest paths between clusters
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    public static class HierarchicalShortestPathsPlugin extends SimpleEditPlugin {
+
+        final HierarchicalState state;
+
+        public HierarchicalShortestPathsPlugin(final HierarchicalState state) {
+            this.state = state;
+        }
+
+        @Override
+        public String getName() {
+            return "Hierarchical: Shortest Paths Between Clusters";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            final Set<Integer> verticesToPath = new HashSet<>();
+            for (int pos = 0; pos < graph.getVertexCount(); pos++) {
+                Group group = state.groups[pos];
+                if (group == null) {
+                    continue;
+                }
+                while (group.getMergeStep() <= state.currentStep) {
+                    group = group.getParent();
+                }
+                verticesToPath.add(group.getVertex());
+            }
+            final List<Integer> verticesToPathList = new ArrayList<>(verticesToPath);
+            final DijkstraServices ds = new DijkstraServices(graph, verticesToPathList, false);
+            ds.queryPaths(true);
         }
     }
 }

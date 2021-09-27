@@ -43,12 +43,21 @@ https://github.com/constellation-app/constellation/blob/master/CODE_OF_CONDUCT.m
 
 3.  \[and so on…\]
 
+<!--
+
+### Behaviour
+
+* Try to include measurable metrics that can be aimed for (if applicable to the issue),
+e.g. if it's a time issue then "should take 5 seconds or less to finish"
+or if it's a workflow issue "should be accomplished in 2 or less clicks".
+
+-->
+
 **Expected behaviour:** \[What you expect to happen\]
 
 **Actual behaviour:** \[What actually happens\]
 
-**Reproduces how often:** \[What percentage of the time does it
-reproduce?\]
+**Reproduces how often:** \[What percentage of the time does it reproduce?\]
 
 ### Additional Information
 

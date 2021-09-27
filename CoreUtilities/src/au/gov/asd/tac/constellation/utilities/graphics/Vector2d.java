@@ -35,6 +35,10 @@ public final class Vector2d {
         a = new double[LENGTH];
     }
 
+    public double[] getA() {
+        return a;
+    }
+
     public void set(final double x, final double y) {
         a[0] = x;
         a[1] = y;
