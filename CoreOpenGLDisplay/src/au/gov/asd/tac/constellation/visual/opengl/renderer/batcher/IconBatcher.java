@@ -66,6 +66,7 @@ public class IconBatcher implements SceneBatcher {
     private int shaderFlagsTexture;
     private int shaderHighlightColor;
     private int shaderPixelDensity;
+    private int shaderGreyscale; // anaglyphic drawing
 
     private final int colorTarget;
     private final int iconTarget;
@@ -103,6 +104,7 @@ public class IconBatcher implements SceneBatcher {
         shaderFlagsTexture = gl.glGetUniformLocation(shader, "flags");
         shaderHighlightColor = gl.glGetUniformLocation(shader, "highlightColor");
         shaderPixelDensity = gl.glGetUniformLocation(shader, "pixelDensity");
+        shaderGreyscale = gl.glGetUniformLocation(shader, "greyscale");
     }
 
     @Override
@@ -232,7 +234,7 @@ public class IconBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
         if (batch.isDrawable()) {
             gl.glUseProgram(shader);
 
@@ -252,6 +254,7 @@ public class IconBatcher implements SceneBatcher {
             gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
             gl.glUniform1i(shaderFlagsTexture, TextureUnits.VERTEX_FLAGS);
             gl.glUniformMatrix4fv(shaderHighlightColor, 1, false, highlightColorMatrix, 0);
+            gl.glUniform1i(shaderGreyscale, greyscale ? 1 : 0);
             batch.draw(gl);
         }
         drawForHitTest = false;
