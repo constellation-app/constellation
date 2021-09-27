@@ -24,7 +24,7 @@ import org.openide.util.NbPreferences;
  *
  * @author cygnus_x-1
  */
-public final class DataAccessPreferenceUtilities {
+public class DataAccessPreferenceUtilities {
     private static final Preferences PREFERENCES = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
     
     private static final String SAVE_DATA_DIR_PREF = "saveDataDir";

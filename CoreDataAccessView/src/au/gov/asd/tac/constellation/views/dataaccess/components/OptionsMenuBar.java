@@ -33,7 +33,7 @@ import javafx.scene.image.ImageView;
  *
  * @author formalhaunt
  */
-public final class OptionsMenuBar {
+public class OptionsMenuBar {
     private static final ImageView SETTINGS_ICON;
     private static final ImageView SAVE_TEMPLATE_ICON;
     private static final ImageView LOAD_TEMPLATE_ICON;
@@ -224,7 +224,8 @@ public final class OptionsMenuBar {
     }
 
     /**
-     * TODO
+     * TODO Figure out what this is
+     *
      * @return 
      */
     public CheckMenuItem getDeselectPluginsOnExecutionMenuItem() {

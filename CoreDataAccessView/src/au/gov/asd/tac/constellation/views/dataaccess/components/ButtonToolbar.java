@@ -52,7 +52,7 @@ import org.openide.util.Lookup;
  *
  * @author formalhaunt
  */
-public final class ButtonToolbar {
+public class ButtonToolbar {
     private static final String DATA_ACCESS_VIEW_TOP_COMPONENT_CLASS_NAME =
             DataAccessViewTopComponent.class.getName();
     
@@ -316,6 +316,15 @@ public final class ButtonToolbar {
     }
     
     /**
+     * The data access pane in the data access view.
+     *
+     * @return the current data access pane
+     */
+    public DataAccessPane getDataAccessPane() {
+        return dataAccessPane;
+    }
+    
+    /**
      * Add and remove plugins from the favourites section. Collects all selected
      * plugins from the current tab and asks the user through a dialog if they
      * want to add or remove the selected plugins to/from their favourites.
@@ -362,9 +371,9 @@ public final class ButtonToolbar {
             // If the users seclection was cancel, then do nothing. Otherwise add or
             // remove the selected plugins from the favourites based on the users selection
             if (option != NotifyDescriptor.CANCEL_OPTION) {
-                selectedPlugins.stream().forEach(name -> {
-                    DataAccessPreferenceUtilities.setFavourite(name, option == ADD_FAVOURITE);
-                });
+                selectedPlugins.stream().forEach(name -> 
+                    DataAccessPreferenceUtilities.setFavourite(name, option == ADD_FAVOURITE)
+                );
             }
         }
     }
@@ -376,15 +385,6 @@ public final class ButtonToolbar {
      */
     protected ObservableList<Tab> getTabs() {
         return dataAccessPane.getDataAccessTabPane().getTabPane().getTabs();
-    }
-    
-    /**
-     * The data access pane in the data access view.
-     *
-     * @return the current data access pane
-     */
-    public DataAccessPane getDataAccessPane() {
-        return dataAccessPane;
     }
     
     /**

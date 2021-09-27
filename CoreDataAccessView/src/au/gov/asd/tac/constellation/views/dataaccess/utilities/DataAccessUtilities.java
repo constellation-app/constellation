@@ -45,9 +45,7 @@ public class DataAccessUtilities {
 
         final DataAccessPane[] panes = new DataAccessPane[1];
         try {
-            SwingUtilities.invokeAndWait(() -> {
-                panes[0] = getInternalDataAccessPane();
-            });
+            SwingUtilities.invokeAndWait(() -> panes[0] = getInternalDataAccessPane());
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();

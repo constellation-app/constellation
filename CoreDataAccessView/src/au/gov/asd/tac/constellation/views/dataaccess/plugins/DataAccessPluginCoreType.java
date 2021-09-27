@@ -24,7 +24,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = DataAccessPluginType.class)
-public class DataAccessPluginCoreType extends DataAccessPluginType {
+public class DataAccessPluginCoreType implements DataAccessPluginType {
 
     public static final String FAVOURITES = "Favourites";
     public static final String IMPORT = "Import";

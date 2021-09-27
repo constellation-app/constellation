@@ -28,6 +28,7 @@ import org.openide.awt.NotificationDisplayer;
 
 /**
  * TODO
+ * 
  * @author formalhaunt
  */
 public class ShowDataAccessPluginTask implements Runnable {
@@ -42,6 +43,7 @@ public class ShowDataAccessPluginTask implements Runnable {
 
     /**
      * TODO
+     * 
      * @param pluginName 
      */
     public ShowDataAccessPluginTask(final String pluginName) {
@@ -60,9 +62,7 @@ public class ShowDataAccessPluginTask implements Runnable {
             if (tab != null) {
                 final QueryPhasePane queryPhasePane = DataAccessTabPane.getQueryPhasePane(tab);
                 
-                Platform.runLater(() -> {
-                    queryPhasePane.expandPlugin(pluginName);
-                });
+                Platform.runLater(() -> queryPhasePane.expandPlugin(pluginName));
 
                 return;
             } else {

@@ -77,9 +77,9 @@ public final class TabContextMenu {
         deactivateAllPluginsMenuItem.setOnAction((ActionEvent event) -> {
             DataAccessTabPane.getQueryPhasePane(tab).getDataAccessPanes().stream()
                     .filter(dataSourceTitledPane -> (dataSourceTitledPane.isQueryEnabled()))
-                    .forEachOrdered(dataSourceTitledPane -> {
-                        dataSourceTitledPane.validityChanged(false);
-                    });
+                    .forEachOrdered(dataSourceTitledPane -> 
+                        dataSourceTitledPane.validityChanged(false)
+                    );
             
             event.consume();
         });
@@ -198,6 +198,7 @@ public final class TabContextMenu {
 
     /**
      * TODO
+     * 
      * @return 
      */
     public MenuItem getFindPluginMenuItem() {
@@ -206,6 +207,7 @@ public final class TabContextMenu {
 
     /**
      * TODO
+     * 
      * @return 
      */
     public MenuItem getOpenAllSectionsMenuItem() {
@@ -214,6 +216,7 @@ public final class TabContextMenu {
 
     /**
      * TODO
+     * 
      * @return 
      */
     public MenuItem getCloseAllSectionsMenuItem() {

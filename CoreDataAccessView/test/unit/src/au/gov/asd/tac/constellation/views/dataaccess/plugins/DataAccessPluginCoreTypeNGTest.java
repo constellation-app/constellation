@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins;
 
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType.PositionalDataAccessPluginType;
 import java.util.List;
 import static org.testng.Assert.assertEquals;
@@ -61,15 +60,15 @@ public class DataAccessPluginCoreTypeNGTest {
         final List<PositionalDataAccessPluginType> pluginTypeList = instance.getPluginTypeList();
         assertEquals(pluginTypeList.size(), 9);
 
-        assertEquals(pluginTypeList.get(0).type, "Favourites");
-        assertEquals(pluginTypeList.get(1).type, "Import");
-        assertEquals(pluginTypeList.get(2).type, "Extend");
-        assertEquals(pluginTypeList.get(3).type, "Enrichment");
-        assertEquals(pluginTypeList.get(4).type, "Clean");
-        assertEquals(pluginTypeList.get(5).type, "Workflow");
-        assertEquals(pluginTypeList.get(6).type, "Utility");
-        assertEquals(pluginTypeList.get(7).type, "Experimental");
-        assertEquals(pluginTypeList.get(8).type, "Developer");
+        assertEquals(pluginTypeList.get(0).getType(), "Favourites");
+        assertEquals(pluginTypeList.get(1).getType(), "Import");
+        assertEquals(pluginTypeList.get(2).getType(), "Extend");
+        assertEquals(pluginTypeList.get(3).getType(), "Enrichment");
+        assertEquals(pluginTypeList.get(4).getType(), "Clean");
+        assertEquals(pluginTypeList.get(5).getType(), "Workflow");
+        assertEquals(pluginTypeList.get(6).getType(), "Utility");
+        assertEquals(pluginTypeList.get(7).getType(), "Experimental");
+        assertEquals(pluginTypeList.get(8).getType(), "Developer");
     }
 
 }

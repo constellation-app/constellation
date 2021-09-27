@@ -31,6 +31,12 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopNP
  */
 public class DataAccessPluginRegistry {
 
+    /**
+     * Private constructor to prevent external initialization.
+     */
+    private DataAccessPluginRegistry() {
+    }
+
     public static final String EXTRACT_TYPES_FROM_TEXT = ExtractTypesFromTextPlugin.class.getName();
     public static final String EXTRACT_WORDS_FROM_TEXT = ExtractWordsFromTextPlugin.class.getName();
     public static final String MERGE_NODES = MergeNodesPlugin.class.getName();

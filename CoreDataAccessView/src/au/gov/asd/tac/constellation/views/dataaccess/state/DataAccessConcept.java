@@ -48,17 +48,26 @@ public class DataAccessConcept extends SchemaConcept {
         return Collections.unmodifiableSet(parentSet);
     }
 
-    public static class MetaAttribute {
-
-        public static final SchemaAttribute DATAACCESS_STATE = new SchemaAttribute.Builder(GraphElementType.META, "dataaccess_state", "dataaccess_state")
-                .setDescription("The current state of the data access with relation to this graph")
-                .build();
-    }
-
     @Override
     public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> graphAttributes = new ArrayList<>();
         graphAttributes.add(MetaAttribute.DATAACCESS_STATE);
         return Collections.unmodifiableCollection(graphAttributes);
+    }
+    
+    public static class MetaAttribute {
+        /**
+         * Private constructor to prevent external initialization.
+         */
+        private MetaAttribute() {
+        }
+    
+        public static final SchemaAttribute DATAACCESS_STATE = new SchemaAttribute.Builder(
+                GraphElementType.META,
+                "dataaccess_state",
+                "dataaccess_state"
+        )
+                .setDescription("The current state of the data access with relation to this graph")
+                .build();
     }
 }

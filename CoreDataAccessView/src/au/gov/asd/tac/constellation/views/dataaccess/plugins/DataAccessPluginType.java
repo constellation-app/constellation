@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.openide.util.Lookup;
 
 /**
@@ -34,7 +34,7 @@ import org.openide.util.Lookup;
  *
  * @author algol
  */
-public abstract class DataAccessPluginType {
+public interface DataAccessPluginType {
 
     /**
      * The data access plugin groups defined by this class.
@@ -49,12 +49,11 @@ public abstract class DataAccessPluginType {
      * @return A List&lt;String&gt; ordered by ascending position.
      */
     public static List<String> getTypes() {
-        final List<PositionalDataAccessPluginType> ptypeList = getTypesOrderedByPosition();
-
-        final List<String> typeList = new ArrayList<>();
-        ptypeList.stream().forEach(ppp -> typeList.add(ppp.type));
-
-        return Collections.unmodifiableList(typeList);
+        return Collections.unmodifiableList(
+                getTypesOrderedByPosition().stream()
+                        .map(PositionalDataAccessPluginType::getType)
+                        .collect(Collectors.toList())
+        );
     }
 
     /**
@@ -63,12 +62,11 @@ public abstract class DataAccessPluginType {
      * @return A Map of {@link DataAccessPluginType} names to their position
      */
     public static Map<String, Integer> getTypeWithPosition() {
-        final List<PositionalDataAccessPluginType> ptypeList = getTypesOrderedByPosition();
-
-        final Map<String, Integer> typesWithPosition = new HashMap<>();
-        ptypeList.stream().forEach(plugin -> typesWithPosition.put(plugin.type, plugin.position));
-
-        return typesWithPosition;
+        return getTypesOrderedByPosition().stream()
+                .collect(Collectors.toMap(
+                        PositionalDataAccessPluginType::getType,
+                        PositionalDataAccessPluginType::getPosition
+                ));
     }
 
     /**
@@ -79,27 +77,32 @@ public abstract class DataAccessPluginType {
      * order
      */
     private static List<PositionalDataAccessPluginType> getTypesOrderedByPosition() {
-        final List<PositionalDataAccessPluginType> ptypeList = new ArrayList<>();
-        Lookup.getDefault().lookupAll(DataAccessPluginType.class).stream().forEach(type -> ptypeList.addAll(type.getPluginTypeList()));
-
-        ptypeList.sort((pt1, pt2) -> {
-            return Integer.compare(pt1.position, pt2.position);
-        });
-
-        return ptypeList;
+        return Lookup.getDefault().lookupAll(DataAccessPluginType.class).stream()
+                .map(DataAccessPluginType::getPluginTypeList)
+                .flatMap(Collection::stream)
+                .sorted((pt1, pt2) -> Integer.compare(pt1.getPosition(), pt2.getPosition()))
+                .collect(Collectors.toList());
     }
 
     /**
      * A DataAccessPluginGroup with a position.
      */
     public static class PositionalDataAccessPluginType {
+        private final String type;
+        private final int position;
 
-        public final String type;
-        public final int position;
-
-        public PositionalDataAccessPluginType(final String type, final int position) {
+        public PositionalDataAccessPluginType(final String type,
+                                              final int position) {
             this.type = type;
             this.position = position;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public int getPosition() {
+            return position;
         }
     }
 }

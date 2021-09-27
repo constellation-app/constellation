@@ -18,12 +18,10 @@ package au.gov.asd.tac.constellation.views.dataaccess.components;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType;
-import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -32,7 +30,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.GlobalParametersPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.WaitForQueriesToCompleteTask;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -59,7 +56,6 @@ import org.junit.BeforeClass;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -179,10 +175,14 @@ public class DataAccessTabPaneNGTest {
         final String graphId = "graphId";
         
         try (
-                final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class);
-                final MockedStatic<DataAccessTabPane> datPaneMockedStatic = Mockito.mockStatic(DataAccessTabPane.class);
-                final MockedStatic<CompletableFuture> futureMockedStatic = Mockito.mockStatic(CompletableFuture.class, Mockito.CALLS_REAL_METHODS);
+                final MockedStatic<GraphManager> graphManagerMockedStatic =
+                        Mockito.mockStatic(GraphManager.class);
+                final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
+                        Mockito.mockStatic(DataAccessTabPane.class);
+                final MockedStatic<CompletableFuture> futureMockedStatic =
+                        Mockito.mockStatic(CompletableFuture.class, Mockito.CALLS_REAL_METHODS);
         ) {
+            // Set up the active graph
             final GraphManager graphManager = mock(GraphManager.class);
             final Graph graph = mock(Graph.class);
             
@@ -190,18 +190,17 @@ public class DataAccessTabPaneNGTest {
             when(graphManager.getActiveGraph()).thenReturn(graph);
             when(graph.getId()).thenReturn(graphId);
             
+            // No need to actually call, storeParameterValues. We will just verify
+            // that it is called.
             doNothing().when(dataAccessTabPane).storeParameterValues();
             
+            // Set up our fake tab pane
             final TabPane tabPane = mock(TabPane.class);
             final Tab tab1 = mock(Tab.class);
             final Tab tab2 = mock(Tab.class);
             final Tab tab3 = mock(Tab.class);
             final Tab tab4 = mock(Tab.class);
             final Tab tab5 = mock(Tab.class);
-            
-            final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
-            
-            datPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(any(Tab.class))).thenReturn(queryPhasePane);
             
             doReturn(tabPane).when(dataAccessTabPane).getTabPane();
             when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(
@@ -212,6 +211,13 @@ public class DataAccessTabPaneNGTest {
                     tab5
             ));
 
+            // No need for a different query pane per tab, so just return the same
+            // one for all of them
+            final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
+            
+            datPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(any(Tab.class)))
+                    .thenReturn(queryPhasePane);
+            
             final List<Future<?>> barrier1 = List.of(CompletableFuture.completedFuture("Future 1 Complete"));
             final List<Future<?>> barrier2 = List.of(CompletableFuture.completedFuture("Future 2 Complete"));
             final List<Future<?>> barrier3 = List.of(CompletableFuture.completedFuture("Future 3 Complete"));
@@ -220,7 +226,9 @@ public class DataAccessTabPaneNGTest {
             when(queryPhasePane.runPlugins(barrier1)).thenReturn(barrier2);
             when(queryPhasePane.runPlugins(barrier2)).thenReturn(barrier3);
             
-            futureMockedStatic.when(() -> CompletableFuture.runAsync(any(Runnable.class), any(ExecutorService.class)))
+            futureMockedStatic.when(() -> CompletableFuture
+                    .runAsync(any(Runnable.class), any(ExecutorService.class))
+            )
                     .thenAnswer(iom ->{
                         WaitForQueriesToCompleteTask task = iom.getArgument(0);
                         
@@ -232,6 +240,8 @@ public class DataAccessTabPaneNGTest {
             
             dataAccessTabPane.runTabs(1, 3);
 
+            verify(dataAccessTabPane).storeParameterValues();
+            
             verify(dataAccessPane).setExecuteButtonToStop();
             verify(dataAccessTabPane).storeParameterValues();
             
@@ -241,13 +251,16 @@ public class DataAccessTabPaneNGTest {
             datPaneMockedStatic.verify(() -> DataAccessTabPane.getQueryPhasePane(tab4));
             datPaneMockedStatic.verify(() -> DataAccessTabPane.getQueryPhasePane(tab5), never());
             
+            // Verify that run plugins was called only 3 times
             verify(queryPhasePane, times(1)).runPlugins(isNull());
             verify(queryPhasePane, times(2)).runPlugins(any(List.class));
             
+            // Verify that the futures of the last run is passed into the next
             verify(queryPhasePane).runPlugins(null);
             verify(queryPhasePane).runPlugins(barrier1);
             verify(queryPhasePane).runPlugins(barrier2);
             
+            // Verify the query is running state has been set to true
             assertTrue(DataAccessPaneState.isQueriesRunning(graphId));
         }
     }
@@ -285,6 +298,7 @@ public class DataAccessTabPaneNGTest {
             DataAccessPaneState.setCurrentGraphId("graphId");
             DataAccessPaneState.updateExecuteButtonIsGo(true);
 
+            // Set up our fake button tool bar
             final ButtonToolbar buttonToolbar = mock(ButtonToolbar.class);
             final Button executeButton = mock(Button.class);
 
@@ -292,6 +306,7 @@ public class DataAccessTabPaneNGTest {
             when(buttonToolbar.getExecuteButton()).thenReturn(executeButton);
             when(executeButton.isDisabled()).thenReturn(false);
 
+            // Set up our fake tab pane
             final TabPane tabPane = mock(TabPane.class);
             final Tab tab1 = mock(Tab.class);
 
@@ -301,11 +316,13 @@ public class DataAccessTabPaneNGTest {
             ));
 
             try (
-                    final MockedStatic<DataAccessTabPane> datPaneMockedStatic = Mockito.mockStatic(DataAccessTabPane.class);
+                    final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
+                            Mockito.mockStatic(DataAccessTabPane.class);
             ) {
                 setupTabStubs(datPaneMockedStatic, tab1, true, true, true);
 
-                doNothing().when(dataAccessTabPane).updateTabMenu(any(Tab.class), anyBoolean(), anyBoolean());
+                doNothing().when(dataAccessTabPane)
+                        .updateTabMenu(any(Tab.class), anyBoolean(), anyBoolean());
 
                 // All tabs are valid. So should be true
                 assertTrue(dataAccessTabPane.updateTabMenus());
@@ -322,13 +339,13 @@ public class DataAccessTabPaneNGTest {
             final Tab tab1 = mock(Tab.class);
             final ScrollPane scrollPane = mock(ScrollPane.class);
             final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
-            final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
-            final PluginParameters pluginParameters = mock(PluginParameters.class);
+           
 
             final PluginParameter pluginParameter1 = mock(PluginParameter.class);
             final PluginParameter pluginParameter2 = mock(PluginParameter.class);
             final PluginParameter pluginParameter3 = mock(PluginParameter.class);
 
+            // Set up our fake tab pane
             doReturn(tabPane).when(dataAccessTabPane).getTabPane();
             when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(
                     tab1
@@ -336,6 +353,10 @@ public class DataAccessTabPaneNGTest {
             when(tab1.getContent()).thenReturn(scrollPane);
             when(scrollPane.getContent()).thenReturn(queryPhasePane);
 
+            // Set up the global parameters
+            final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
+            final PluginParameters pluginParameters = mock(PluginParameters.class);
+            
             when(queryPhasePane.getGlobalParametersPane()).thenReturn(globalParametersPane);
             when(globalParametersPane.getParams()).thenReturn(pluginParameters);
             when(pluginParameters.getParameters()).thenReturn(Map.of(
@@ -345,17 +366,20 @@ public class DataAccessTabPaneNGTest {
 
             ));
 
+            // Parameters for plugins 1 and 2 will be dropped because they have no value.
             when(pluginParameter1.getStringValue()).thenReturn(null);
             when(pluginParameter2.getStringValue()).thenReturn(" ");
             when(pluginParameter3.getStringValue()).thenReturn("PluginParam3 String Value");
 
             try (
-                    final MockedStatic<RecentParameterValues> recentParamValsMockedStatic = Mockito.mockStatic(RecentParameterValues.class);
+                    final MockedStatic<RecentParameterValues> recentParamValsMockedStatic =
+                            Mockito.mockStatic(RecentParameterValues.class);
             ) {
                 dataAccessTabPane.storeParameterValues();
 
-                recentParamValsMockedStatic.verify(() -> 
-                        RecentParameterValues.storeRecentValue("plugin3", "PluginParam3 String Value"));
+                // Verify that only plugin 3 parameter was set in the store
+                recentParamValsMockedStatic.verify(() -> RecentParameterValues
+                        .storeRecentValue("plugin3", "PluginParam3 String Value"));
             }
         });
     }
@@ -367,9 +391,9 @@ public class DataAccessTabPaneNGTest {
             final Tab tab1 = mock(Tab.class);
             final ScrollPane scrollPane = mock(ScrollPane.class);
             final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
-            final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
-            final PluginParameters globalPluginParameters = mock(PluginParameters.class);
             
+            
+            // Set up our fake tab pane
             doReturn(tabPane).when(dataAccessTabPane).getTabPane();
             when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(
                     tab1
@@ -378,10 +402,14 @@ public class DataAccessTabPaneNGTest {
             when(scrollPane.getContent()).thenReturn(queryPhasePane);
             
             // This just needs to be set up to prevent null pointers
+            final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
+            final PluginParameters globalPluginParameters = mock(PluginParameters.class);
+            
             when(queryPhasePane.getGlobalParametersPane()).thenReturn(globalParametersPane);
             when(globalParametersPane.getParams()).thenReturn(globalPluginParameters);
             when(globalPluginParameters.getParameters()).thenReturn(Map.of());
             
+            // Add three data source title panes to the query source pane
             final DataSourceTitledPane dataSourceTitledPane1 = mock(DataSourceTitledPane.class);
             final DataSourceTitledPane dataSourceTitledPane2 = mock(DataSourceTitledPane.class);
             final DataSourceTitledPane dataSourceTitledPane3 = mock(DataSourceTitledPane.class);
@@ -393,12 +421,18 @@ public class DataAccessTabPaneNGTest {
             
             when(queryPhasePane.getDataAccessPanes()).thenReturn(dataSourceTitledPanes);
             
+            // Stub out the data source title pane's plugin parameters
+            
+            // Pane 1 has no parameters so it will be dropped
+            when(dataSourceTitledPane1.getParameters()).thenReturn(null);
+            
             final PluginParameters pane2PluginParameters = mock(PluginParameters.class);
             final PluginParameters pane3PluginParameters = mock(PluginParameters.class);
             
-            when(dataSourceTitledPane1.getParameters()).thenReturn(null);
             when(dataSourceTitledPane2.getParameters()).thenReturn(pane2PluginParameters);
             when(dataSourceTitledPane3.getParameters()).thenReturn(pane3PluginParameters);
+            
+            // Stub out the individual parameters 
             
             final PluginParameter pluginParameter1 = mock(PluginParameter.class);
             final PluginParameter pluginParameter2 = mock(PluginParameter.class);
@@ -413,8 +447,10 @@ public class DataAccessTabPaneNGTest {
                     "plugin3", pluginParameter3
             ));
             
+            // Plugin 1 parameter will have no value and so will be ignored
             when(pluginParameter1.getObjectValue()).thenReturn(null);
             
+            // Plugin 2 parameter will be a local date param type and handled differently
             when(pluginParameter2.getType()).thenReturn(LocalDateParameterType.INSTANCE);
             when(pluginParameter2.getObjectValue()).thenReturn("PluginParam2 Object Value");
             when(pluginParameter2.getStringValue()).thenReturn("PluginParam2 String Value");
@@ -422,12 +458,16 @@ public class DataAccessTabPaneNGTest {
             when(pluginParameter3.getObjectValue()).thenReturn("PluginParam3 Object Value");
             
             try (
-                    final MockedStatic<RecentParameterValues> recentParamValsMockedStatic = Mockito.mockStatic(RecentParameterValues.class);
+                    final MockedStatic<RecentParameterValues> recentParamValsMockedStatic =
+                            Mockito.mockStatic(RecentParameterValues.class);
             ) {
                 dataAccessTabPane.storeParameterValues();
             
-                recentParamValsMockedStatic.verify(() -> RecentParameterValues.storeRecentValue("plugin2", "PluginParam2 String Value"));
-                recentParamValsMockedStatic.verify(() -> RecentParameterValues.storeRecentValue("plugin3", "PluginParam3 Object Value"));
+                // Verify that parameters for plugins 2 and 3 were set to the store correctly
+                recentParamValsMockedStatic.verify(() -> RecentParameterValues
+                        .storeRecentValue("plugin2", "PluginParam2 String Value"));
+                recentParamValsMockedStatic.verify(() -> RecentParameterValues
+                        .storeRecentValue("plugin3", "PluginParam3 Object Value"));
             }
         });
     }
@@ -438,9 +478,11 @@ public class DataAccessTabPaneNGTest {
         final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
         
         try (
-                    final MockedStatic<DataAccessTabPane> datPaneMockedStatic = Mockito.mockStatic(DataAccessTabPane.class);
+                    final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
+                            Mockito.mockStatic(DataAccessTabPane.class);
             ) {
-            datPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(tab)).thenReturn(queryPhasePane);
+            datPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(tab))
+                    .thenReturn(queryPhasePane);
             
             dataAccessTabPane.updateTabMenu(tab, true, true);
             
@@ -463,7 +505,8 @@ public class DataAccessTabPaneNGTest {
             ));
 
             try (
-                    final MockedStatic<DataAccessTabPane> datPaneMockedStatic = Mockito.mockStatic(DataAccessTabPane.class);
+                    final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
+                            Mockito.mockStatic(DataAccessTabPane.class);
             ) {
                 setupTabStubs(datPaneMockedStatic, tab1, true, true, true);
                 setupTabStubs(datPaneMockedStatic, tab2, true, true, true);
@@ -487,7 +530,8 @@ public class DataAccessTabPaneNGTest {
             ));
 
             try (
-                    final MockedStatic<DataAccessTabPane> datPaneMockedStatic = Mockito.mockStatic(DataAccessTabPane.class);
+                    final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
+                            Mockito.mockStatic(DataAccessTabPane.class);
             ) {
                 setupTabStubs(datPaneMockedStatic, tab1, true, true, true);
                 setupTabStubs(datPaneMockedStatic, tab2, false, true, true);
@@ -518,11 +562,14 @@ public class DataAccessTabPaneNGTest {
             final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
 
             try (
-                        final MockedStatic<DataAccessTabPane> datPaneMockedStatic = Mockito.mockStatic(DataAccessTabPane.class, Mockito.CALLS_REAL_METHODS);
+                        final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
+                                Mockito.mockStatic(DataAccessTabPane.class, Mockito.CALLS_REAL_METHODS);
                 ) {
-                datPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(tab)).thenReturn(queryPhasePane);
+                datPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(tab))
+                        .thenReturn(queryPhasePane);
 
-                when(queryPhasePane.getDataAccessPanes()).thenReturn(List.of(dataSourceTitledPane1, dataSourceTitledPane2));
+                when(queryPhasePane.getDataAccessPanes())
+                        .thenReturn(List.of(dataSourceTitledPane1, dataSourceTitledPane2));
                 when(dataSourceTitledPane1.isQueryEnabled()).thenReturn(false);
                 when(dataSourceTitledPane2.isQueryEnabled()).thenReturn(true);
 
@@ -555,6 +602,8 @@ public class DataAccessTabPaneNGTest {
         final ZonedDateTime before = ZonedDateTime.of(2020, 1, 1, 1, 0, 0, 0, ZoneOffset.UTC);
         final ZonedDateTime after = ZonedDateTime.of(2021, 1, 1, 1, 0, 0, 0, ZoneOffset.UTC);
 
+        // A tab's date range is valid if the to part of the range is after the from part.
+        
         when(globalPluginParameters.getDateTimeRangeValue("CoreGlobalParameters.datetime_range"))
                 .thenReturn(new DateTimeRange(before, after));
         assertTrue(DataAccessTabPane.validateTabTimeRange(tab));
@@ -577,6 +626,16 @@ public class DataAccessTabPaneNGTest {
         assertSame(dataAccessTabPane.getQueryPhasePaneOfCurrentTab(), queryPhasePane);
     }
     
+    /**
+     * Validates that if one enabled plugin on a tab has an error in one of its
+     * parameters then the whole tab is deemed invalid. The method takes two
+     * errors that are added to plugin parameters. The errors can be null,
+     * indicating that there is no error present.
+     *
+     * @param error1 the error for plugin parameter 1, or null if no error
+     * @param error2 the error for plugin parameter 2, or null if no error
+     * @param expected true if the tab was determined to be valid, false otherwise
+     */
     public void validateTabEnabledPlugins(final String error1,
                                           final String error2,
                                           final boolean expected) {
@@ -602,14 +661,23 @@ public class DataAccessTabPaneNGTest {
                 datPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(tab))
                         .thenReturn(queryPhasePane);
 
+                // Set up out fake query pane that exists within a tab
                 when(queryPhasePane.getDataAccessPanes()).thenReturn(
-                        List.of(dataSourceTitledPane1, dataSourceTitledPane2)
+                        List.of(
+                                dataSourceTitledPane1,
+                                dataSourceTitledPane2,
+                                dataSourceTitledPane3,
+                                dataSourceTitledPane4
+                        )
                 );
+                
+                // Pane 1 is disabled so it will be ignored during the check
                 when(dataSourceTitledPane1.isQueryEnabled()).thenReturn(false);
                 when(dataSourceTitledPane2.isQueryEnabled()).thenReturn(true);
                 when(dataSourceTitledPane3.isQueryEnabled()).thenReturn(true);
                 when(dataSourceTitledPane4.isQueryEnabled()).thenReturn(true);
 
+                // Pane 2 has no parameters so it will be ignored during the check
                 when(dataSourceTitledPane2.getParameters()).thenReturn(null);
                 when(dataSourceTitledPane3.getParameters()).thenReturn(pane3PluginParameters);
                 when(dataSourceTitledPane4.getParameters()).thenReturn(pane4PluginParameters);
@@ -621,6 +689,7 @@ public class DataAccessTabPaneNGTest {
                         "plugin2", pluginParameter2
                 ));
                 
+                // Set the passed error values to the plugin parameters
                 when(pluginParameter1.getError()).thenReturn(error1);
                 when(pluginParameter2.getError()).thenReturn(error2);
                 
@@ -629,12 +698,28 @@ public class DataAccessTabPaneNGTest {
         });
     }
     
+    /**
+     * Mocks a tab pane with two tabs. The parameters allow the control of which
+     * tabs are considered valid, and which are not.
+     *
+     * @param tab1HasEnabledPlugins true if tab 1 is meant to have enabled plugins,
+     *     false otherwise
+     * @param validTab1EnabledPlugins true if all of tab 1's enabled plugins are meant
+     *     to be valid, false otherwise
+     * @param tab2HasEnabledPlugins true if tab 2 is meant to have enabled plugins,
+     *     false otherwise
+     * @param validTab2EnabledPlugins true if all of tab 2's enabled plugins are meant
+     *     to be valid, false otherwise
+     * @param expectActiveAndValidPlugins true if the expectation is that both tabs will
+     *     be considered active and valid
+     */
     public void hasActiveAndValidPlugins(final boolean tab1HasEnabledPlugins,
                                          final boolean validTab1EnabledPlugins,
                                          final boolean tab2HasEnabledPlugins,
                                          final boolean validTab2EnabledPlugins,
                                          final boolean expectActiveAndValidPlugins) {
         CompletableFuture.runAsync(() -> {
+            // Set up our fake tab pane
             final TabPane tabPane = mock(TabPane.class);
             final Tab tab1 = mock(Tab.class);
             final Tab tab2 = mock(Tab.class);
@@ -646,8 +731,12 @@ public class DataAccessTabPaneNGTest {
             ));
 
             try (
-                    final MockedStatic<DataAccessTabPane> datPaneMockedStatic = Mockito.mockStatic(DataAccessTabPane.class);
+                    final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
+                            Mockito.mockStatic(DataAccessTabPane.class);
             ) {
+                // A tab is active and valid, if it has enabled plugins and non of them
+                // has errors in their parameters.
+                // All tabs must be active and valid for a result of true to be returned
                 datPaneMockedStatic.when(() -> DataAccessTabPane.tabHasEnabledPlugins(tab1))
                         .thenReturn(tab1HasEnabledPlugins);
                 datPaneMockedStatic.when(() -> DataAccessTabPane.validateTabEnabledPlugins(tab1))
@@ -663,19 +752,43 @@ public class DataAccessTabPaneNGTest {
         });
     }
     
+    /**
+     * Verifies that all the tabs are iterated through and their validation checked.
+     * Then based on this validation result the menus are updated as needed.
+     *
+     * @param isExecuteButtonIsGo true if the execute button has the "Go" state set, false otherwise
+     * @param isExecuteButtonDisabled true if the execute button is disabled, false otherwise
+     * @param expected true if in the cases where a tab has enabled plugins, it is expected that
+     *     the graph menu items will be enabled
+     */
     private void updateTabMenus(final boolean isExecuteButtonIsGo,
                                 final boolean isExecuteButtonDisabled,
                                 final boolean expected) {
+        // Set a current graph ID in the state so that other state can be associated
+        // with the "current graph"
         DataAccessPaneState.setCurrentGraphId("graphId");
-        DataAccessPaneState.updateExecuteButtonIsGo(isExecuteButtonIsGo);
         
+        
+        // Set up our fake button tool bar with an execute button
         final ButtonToolbar buttonToolbar = mock(ButtonToolbar.class);
         final Button executeButton = mock(Button.class);
         
         when(dataAccessPane.getButtonToolbar()).thenReturn(buttonToolbar);
         when(buttonToolbar.getExecuteButton()).thenReturn(executeButton);
+ 
+        // Set up the variable flags that determine what values are passed into
+        // updateTabMenu.
+        //
+        // If the tab has enabled plugins, then the plugin menu items will be enabled 
+        // If the execute button is enabled, in the "Go" state and the tab has enabled
+        // plugins, then the graph menu items will be enabled
+        //
+        // The stubs that determine if a tab has enabled plugins is setup
+        // below by the calls to setupTabStubs.
+        DataAccessPaneState.updateExecuteButtonIsGo(isExecuteButtonIsGo);
         when(executeButton.isDisabled()).thenReturn(isExecuteButtonDisabled);
         
+        // Set up our fake tab pane
         final TabPane tabPane = mock(TabPane.class);
         final Tab tab1 = mock(Tab.class);
         final Tab tab2 = mock(Tab.class);
@@ -699,8 +812,14 @@ public class DataAccessTabPaneNGTest {
         ));
         
         try (
-                final MockedStatic<DataAccessTabPane> datPaneMockedStatic = Mockito.mockStatic(DataAccessTabPane.class);
+                final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
+                        Mockito.mockStatic(DataAccessTabPane.class);
         ) {
+            // Stubs out each tab so that every combination is covered for the 3
+            // variables that determine if a tab is valid or invalid.
+            //
+            // A tab is only considered valid if it has enabled plugs, those plugins
+            // are valid and the provided date/time range is valid
             setupTabStubs(datPaneMockedStatic, tab1, true, true, true);
             setupTabStubs(datPaneMockedStatic, tab2, true, false, false);
             setupTabStubs(datPaneMockedStatic, tab3, true, false, true);
@@ -710,12 +829,16 @@ public class DataAccessTabPaneNGTest {
             setupTabStubs(datPaneMockedStatic, tab7, false, false, true);
             setupTabStubs(datPaneMockedStatic, tab8, false, false, false);
             
+            // We don't need to test updateTabMenu here so it will just be verified
+            // that it was called
             doNothing().when(dataAccessTabPane).updateTabMenu(any(Tab.class), anyBoolean(), anyBoolean());
             
             // This will always be false because every combination is tested and
             // that involves tabs that will fail validation
             assertFalse(dataAccessTabPane.updateTabMenus());
  
+            // Verify the parameters for each tab's call to updateTabMenu
+            
             verify(dataAccessTabPane).updateTabMenu(tab1, expected, true);
             verify(dataAccessTabPane).updateTabMenu(tab2, expected, true);
             verify(dataAccessTabPane).updateTabMenu(tab3, expected, true);
@@ -730,6 +853,17 @@ public class DataAccessTabPaneNGTest {
         }
     }
     
+    /**
+     * These three methods are often used in conjunction to determine the state of the
+     * tab. This is a convenience method for setting up these repetitive stubs.
+     *
+     * @param datPaneMockedStatic a static mock for {@link DataAccessTabPane}
+     * @param tab the tab that will be passed into these methods at run time for verification
+     * @param tabHasEnabledPlugins true if the tab is meant to have enabled plugins, false otherwise
+     * @param validTabEnabledPlugins true if all the tab's enabled plugins are meant to have valid
+     *     parameters, false otherwise
+     * @param validTabTimeRange true if the tabs date range is meant to be valid, false otherwise
+     */
     private void setupTabStubs(final MockedStatic<DataAccessTabPane> datPaneMockedStatic,
                                final Tab tab,
                                final boolean tabHasEnabledPlugins,
@@ -740,6 +874,19 @@ public class DataAccessTabPaneNGTest {
         datPaneMockedStatic.when(() -> DataAccessTabPane.validateTabTimeRange(tab)).thenReturn(validTabTimeRange);
     }
     
+    /**
+     * Verifies that creating a new tab adds it to the end of the existing tabs.
+     * That appropriate menus are added to the new tab and that those menus and
+     * all the button statuses are refreshed based on the initial state.
+     *
+     * @param tabHasEnabledPlugins true if the new tab will have enabled plugins, false otherwise
+     * @param isExecuteButtonIsGo true if the execute button has the "Go" state set, false otherwise
+     * @param isExecuteButtonDisabled true if the execute button is disabled, false otherwise
+     * @param expectGraphDependentMenuItemsEnabled true if after the new tab is created, the graph
+     *     dependent menu items should be enabled, false otherwise
+     * @param expectPluginDependentMenuItemsEnabled true if after the new tab is created, the plugin
+     *     dependent menu items should be enabled, false otherwise
+     */
     private void verifyNewTab(final boolean tabHasEnabledPlugins,
                               final boolean isExecuteButtonIsGo,
                               final boolean isExecuteButtonDisabled,
@@ -756,21 +903,27 @@ public class DataAccessTabPaneNGTest {
         
         final ContextMenu contextMenu = mock(ContextMenu.class);
         
+        // We don't need to test updateTabMenu here so it will just be verified
+        // that it was called
+        doNothing().when(dataAccessTabPane).updateTabMenu(any(Tab.class), anyBoolean(), anyBoolean());
+        
+        // Set up our fake tab pane
         final TabPane tabPane = mock(TabPane.class);
         final ObservableList<Tab> tabs = FXCollections.observableArrayList();
         
-        doNothing().when(dataAccessTabPane).updateTabMenu(any(Tab.class), anyBoolean(), anyBoolean());
         when(dataAccessTabPane.getTabPane()).thenReturn(tabPane);
         when(tabPane.getTabs()).thenReturn(tabs);
         
+        // Set up our fake button tool bar with an execute button
         final ButtonToolbar buttonToolbar = mock(ButtonToolbar.class);
         final Button executeButton = mock(Button.class);
         
         when(dataAccessPane.getButtonToolbar()).thenReturn(buttonToolbar);
         when(buttonToolbar.getExecuteButton()).thenReturn(executeButton);
-        when(executeButton.isDisabled()).thenReturn(isExecuteButtonDisabled);
         
         try (
+                // In order to ensure the correct behaviour is applied to the new
+                // tab we intercept its creation and return a mock.
                 final MockedConstruction<Tab> mockedTab =
                         Mockito.mockConstruction(Tab.class, (tabMock, cntxt) -> {
                             final List<Object> expectedArgs = new ArrayList<>();
@@ -780,6 +933,9 @@ public class DataAccessTabPaneNGTest {
 
                             when(tabMock.getOnClosed()).thenReturn(onCloseEventHandler);
                 });
+                
+                // When a tab is created, it is given a new context menu. We want to intercept
+                // that creation and insert our own mock
                 final MockedConstruction<TabContextMenu> mockedTabContextMenu =
                         Mockito.mockConstruction(TabContextMenu.class, (contextMenuMock, cntxt) -> {
                             final List<Object> expectedArgs = new ArrayList<>();
@@ -793,8 +949,10 @@ public class DataAccessTabPaneNGTest {
                             when(contextMenuMock.getRunMenuItem()).thenReturn(runMenuItem);
                             when(contextMenuMock.getRunFromHereMenuItem()).thenReturn(runFromHereMenuItem);
                             when(contextMenuMock.getRunToHereMenuItem()).thenReturn(runToHereMenuItem);
-                            when(contextMenuMock.getDeactivateAllPluginsMenuItem()).thenReturn(deactivateAllPluginsMenuItem);
+                            when(contextMenuMock.getDeactivateAllPluginsMenuItem())
+                                    .thenReturn(deactivateAllPluginsMenuItem);
                 });
+                
                 final MockedStatic<DataAccessPaneState> dapMockedStatic =
                         Mockito.mockStatic(DataAccessPaneState.class);
                 final MockedStatic<DataAccessTabPane> datpStateMockedStatic =
@@ -802,21 +960,33 @@ public class DataAccessTabPaneNGTest {
                 
             ) {
             
+            // Set up the variable flags that determine what values are passed into
+            // updateTabMenu.
+            //
+            // If the tab has enabled plugins, then the plugin menu items will be enabled 
+            // If the execute button is enabled, in the "Go" state and the tab has enabled
+            // plugins, then the graph menu items will be enabled
             dapMockedStatic.when(DataAccessPaneState::isExecuteButtonIsGo).thenReturn(isExecuteButtonIsGo);
-            datpStateMockedStatic.when(() -> DataAccessTabPane.tabHasEnabledPlugins(any(Tab.class))).thenReturn(tabHasEnabledPlugins);
+            datpStateMockedStatic.when(() -> DataAccessTabPane.tabHasEnabledPlugins(any(Tab.class)))
+                    .thenReturn(tabHasEnabledPlugins);
+            when(executeButton.isDisabled()).thenReturn(isExecuteButtonDisabled);
             
             dataAccessTabPane.newTab(queryPhasePane);
             
+            // Verify the tab and context menus were created
             assertEquals(mockedTab.constructed().size(), 1);
             assertEquals(mockedTabContextMenu.constructed().size(), 1);
 
+            // Verify that the context menu was created correctly
             final TabContextMenu newTabContextMenu = mockedTabContextMenu.constructed().get(0);
             
             verify(newTabContextMenu).init();
             
-            verify(queryPhasePane).addGraphDependentMenuItems(runMenuItem, runFromHereMenuItem, runToHereMenuItem);
+            verify(queryPhasePane).addGraphDependentMenuItems(runMenuItem, runFromHereMenuItem,
+                    runToHereMenuItem);
             verify(queryPhasePane).addPluginDependentMenuItems(deactivateAllPluginsMenuItem);
             
+            // Verify that the tab was created correctly
             final Tab newTab = mockedTab.constructed().get(0);
             
             verify(newTab).setContextMenu(contextMenu);
@@ -832,11 +1002,16 @@ public class DataAccessTabPaneNGTest {
             verify(newTab).setTooltip(tooltipCaptor.capture());
             assertEquals(tooltipCaptor.getValue().getText(), "Right click for more options");
 
-            verify(dataAccessTabPane).updateTabMenu(newTab, expectGraphDependentMenuItemsEnabled, expectPluginDependentMenuItemsEnabled);
-            
+            // Ensure the tab menus states were updated
+            verify(dataAccessTabPane).updateTabMenu(
+                    newTab, expectGraphDependentMenuItemsEnabled, expectPluginDependentMenuItemsEnabled);
+
+            // Verify that the tab pane has the correct tabs
             assertEquals(tabs, FXCollections.observableArrayList(newTab));
             
-            final ArgumentCaptor<EventHandler<Event>> onCloseCaptor = ArgumentCaptor.forClass(EventHandler.class);
+            // Verify the on close event for the new tab behaves as expected
+            final ArgumentCaptor<EventHandler<Event>> onCloseCaptor =
+                    ArgumentCaptor.forClass(EventHandler.class);
             verify(newTab).setOnClosed(onCloseCaptor.capture());
             
             final Event event = mock(Event.class);
