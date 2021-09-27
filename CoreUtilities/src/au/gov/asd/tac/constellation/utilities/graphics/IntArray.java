@@ -76,7 +76,7 @@ import java.util.NoSuchElementException;
  * time in the future.
  *
  */
-public final class IntArray implements Iterable<Integer> {
+public final class IntArray implements Iterable<Integer>, Cloneable {
 
     private static final long serialVersionUID = 8683452581122332189L;
     /**
@@ -174,7 +174,6 @@ public final class IntArray implements Iterable<Integer> {
         modCount++;
         int oldCapacity = elementData.length;
         if (minCapacity > oldCapacity) {
-//            int[] oldData = elementData;
             int newCapacity = (oldCapacity * 3) / 2 + 1;
             if (newCapacity < minCapacity) {
                 newCapacity = minCapacity;
@@ -412,7 +411,6 @@ public final class IntArray implements Iterable<Integer> {
         if (numMoved > 0) {
             System.arraycopy(elementData, index + 1, elementData, index, numMoved);
         }
-//        elementData[--size] = null; // Let gc do its work
         --size;
 
         return oldValue;
@@ -453,7 +451,6 @@ public final class IntArray implements Iterable<Integer> {
             System.arraycopy(elementData, index + 1, elementData, index,
                     numMoved);
         }
-//        elementData[--size] = null; // Let gc do its work
         --size;
     }
 
@@ -463,12 +460,6 @@ public final class IntArray implements Iterable<Integer> {
      */
     public void clear() {
         modCount++;
-
-//        // Let gc do its work
-//        for(int i = 0; i<size; i++)
-//        {
-//            elementData[i] = null;
-//        }
         size = 0;
     }
 
