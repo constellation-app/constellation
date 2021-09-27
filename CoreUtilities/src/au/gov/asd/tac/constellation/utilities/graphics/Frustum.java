@@ -341,17 +341,14 @@ public final class Frustum {
 
         // The Matrix
         // X Column
-//        memcpy(rotMat, vCross, sizeof(float)*3);
         rotMat.setRow(vCross, 0);
         rotMat.a[3] = 0;
 
         // Y Column
-//        memcpy(&rotMat[4], vUp, sizeof(float)*3);
         rotMat.setRow(vUp, 1);
         rotMat.a[7] = 0;
 
         // Z Column
-//        memcpy(&rotMat[8], vForward, sizeof(float)*3);
         rotMat.setRow(vForward, 2);
         rotMat.a[11] = 0;
 

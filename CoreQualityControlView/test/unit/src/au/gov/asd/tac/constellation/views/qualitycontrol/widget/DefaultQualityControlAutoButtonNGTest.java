@@ -41,14 +41,14 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class DefaultQualityControlAutoButtonNGTest {
-    
+
     private StoreGraph graph;
     private List<QualityControlEvent> events;
     private List<QualityControlRule> rules;
 
     //Dependencies (will be mocked)
     private QualityControlEvent qualityControlEvent;
-    
+
     public DefaultQualityControlAutoButtonNGTest() {
     }
 
@@ -66,7 +66,7 @@ public class DefaultQualityControlAutoButtonNGTest {
         // file cleanup that should be fixed!!!
         Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
                 .forEach(file -> file.delete());
-        
+
         FxToolkit.registerPrimaryStage();
         FxToolkit.showStage();
     }
@@ -111,8 +111,8 @@ public class DefaultQualityControlAutoButtonNGTest {
         instance.qualityControlChanged(null);
 
         final CountDownLatch latch = new CountDownLatch(1);
-        
-        Platform.runLater(() ->{
+
+        Platform.runLater(() -> {
             String resultRiskText = instance.getText();
             String resultStyleText = instance.getStyle();
             final Tooltip resultTooltipText = instance.getTooltip();
@@ -120,10 +120,10 @@ public class DefaultQualityControlAutoButtonNGTest {
             assertEquals(resultRiskText, expRiskText);
             assertEquals(resultStyleText, expStyleText);
             assertEquals(resultTooltipText, expTooltipText);
-            
+
             latch.countDown();
         });
-                
+
         latch.await();
     }
 
@@ -134,7 +134,7 @@ public class DefaultQualityControlAutoButtonNGTest {
     @Test
     public void testQualityControlChangedWithValidState() throws InterruptedException {
         System.out.println("qualityControlChanged2");
-        
+
         QualityControlState state = new QualityControlState(graph.getId(), events, rules);
 
         DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
@@ -144,10 +144,10 @@ public class DefaultQualityControlAutoButtonNGTest {
         final String expTooltipText = "Reason 1, Reason2";
 
         instance.qualityControlChanged(state);
-        
+
         final CountDownLatch latch = new CountDownLatch(1);
-        
-        Platform.runLater(() ->{
+
+        Platform.runLater(() -> {
             final String resultRiskText = instance.getText();
             final String resultStyleText = instance.getStyle();
             final Tooltip resultTooltipText = instance.getTooltip();
@@ -155,11 +155,11 @@ public class DefaultQualityControlAutoButtonNGTest {
             assertEquals(resultRiskText, expRiskText);
             assertEquals(resultStyleText, expStyleText);
             assertEquals(resultTooltipText.getText(), expTooltipText);
-            
+
             latch.countDown();
         });
-        
+
         latch.await();
-        
+
     }
 }

@@ -49,9 +49,10 @@ public interface VisualAnnotator {
     public VisualOperation setSelectionBoxModel(final SelectionBoxModel model);
 
     /**
-     * Sets the {@link SelectionFreeformModel} that should be displayed and returns a
-     * {@link VisualOperation} that can be scheduled to push the changes to the
-     * {@link VisualProcessor} with which this annotator is associated.
+     * Sets the {@link SelectionFreeformModel} that should be displayed and
+     * returns a {@link VisualOperation} that can be scheduled to push the
+     * changes to the {@link VisualProcessor} with which this annotator is
+     * associated.
      * <p>
      * The selection freeform model is typically used to indicate a currently in
      * progress freeform selection.

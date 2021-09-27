@@ -95,15 +95,15 @@ public class WhatsNewViewPane extends BorderPane {
             contentVBox.getChildren().add(showOnStartUpCheckBox);
             contentVBox.setAlignment(Pos.TOP_RIGHT);
             contentVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
-            showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal) ->
-                prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, newVal));
+            showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal)
+                    -> prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, newVal));
             showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
 
             // Create a preferenceListener in order to identify when user preference is changed
             // Keeps tutorial page and options tutorial selections in-sync when both are open
-            prefs.addPreferenceChangeListener(evt ->
-                showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, showOnStartUpCheckBox.isSelected())));
-            
+            prefs.addPreferenceChangeListener(evt
+                    -> showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, showOnStartUpCheckBox.isSelected())));
+
             final WebView whatsNewView = new WebView();
             VBox.setVgrow(whatsNewView, Priority.ALWAYS);
             whatsNewView.getEngine().getLoadWorker().stateProperty().addListener((ov, oldVal, newVal) -> {
@@ -112,7 +112,7 @@ public class WhatsNewViewPane extends BorderPane {
                     // If there's a valid href attribute, open the default browser at that URL.
                     // If there's a valid helpId attribute, open NetBeans help using the helpId.
                     // An <a> without an href doesn't get underlined, so use href="" in addition to helpId="...".
-                    final EventListener listener =  event -> {
+                    final EventListener listener = event -> {
                         final String eventType = event.getType();
                         if (eventType.equals("click")) {
                             event.preventDefault();

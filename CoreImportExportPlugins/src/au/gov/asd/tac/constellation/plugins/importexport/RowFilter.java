@@ -109,7 +109,7 @@ public class RowFilter {
     private String validHeader() {
         final int endOfHeader = script.indexOf("==");
         if (endOfHeader != -1) {
-            final String header = script.substring(0, endOfHeader);
+            final String header = script.substring(0, endOfHeader).trim();
             if (!StringUtils.isBlank(header)) {
                 for (int i = 0; i < columns.length - 1; i++) {
                     if (columns[i].equals(header)) {

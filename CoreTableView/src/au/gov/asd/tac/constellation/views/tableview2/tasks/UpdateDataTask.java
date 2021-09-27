@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
-import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import javafx.collections.FXCollections;
@@ -34,13 +34,13 @@ import org.controlsfx.control.table.TableFilter;
 public class UpdateDataTask implements Runnable {
 
     private final Table table;
-    
+
     private final List<ObservableList<String>> rows;
-    
+
     private final CountDownLatch updateDataLatch;
-    
+
     private boolean interrupted = false;
-    
+
     /**
      * Creates a new update data task.
      *
@@ -48,13 +48,13 @@ public class UpdateDataTask implements Runnable {
      * @param rows the new rows to update the table with
      */
     public UpdateDataTask(final Table table,
-                          final List<ObservableList<String>> rows) {
+            final List<ObservableList<String>> rows) {
         this.table = table;
         this.rows = rows;
-        
+
         this.updateDataLatch = new CountDownLatch(1);
     }
-    
+
     /**
      * Updates the backing row list with the new list of rows and then sets them
      * to the table. Adds the filter and then triggers a pagination update that
@@ -71,7 +71,7 @@ public class UpdateDataTask implements Runnable {
         if (isInterrupted()) {
             return;
         }
-        
+
         // remove listeners so they are not triggered during the update
         table.getSelectedProperty().removeListener(table.getTableSelectionListener());
         table.getTableView().getSelectionModel().getSelectedItems()
@@ -103,11 +103,11 @@ public class UpdateDataTask implements Runnable {
             );
             getActiveTableReference().setSortedRowList(new SortedList<>(
                     FXCollections.observableArrayList(filteredRowList)));
-            
+
             getActiveTableReference().updatePagination(getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
                     getActiveTableReference().getSortedRowList(), table.getParentComponent());
         });
-        
+
         // Trigger a pagination update so the table only shows the current page. This
         // is an expensive task so it should not be done if a new update has come in
         // and superseeded/cancelled this one.
@@ -142,10 +142,10 @@ public class UpdateDataTask implements Runnable {
     public List<ObservableList<String>> getRows() {
         return rows;
     }
-    
+
     /**
      * Convenience method for accessing the active table reference.
-     * 
+     *
      * @return the active table reference
      */
     private ActiveTableReference getActiveTableReference() {

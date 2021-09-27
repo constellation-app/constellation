@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,14 +16,15 @@
 package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 /**
- * Listens for table selection events and updates the {@link ActiveTableReference#selectedOnlySelectedRows}
- * set with the new selections. These events are only handled though if the table
+ * Listens for table selection events and updates the
+ * {@link ActiveTableReference#selectedOnlySelectedRows} set with the new
+ * selections. These events are only handled though if the table
  * <b>IS</b> in "Selected Only" mode.
  *
  * @author formalhaunt
@@ -31,7 +32,7 @@ import javafx.collections.ObservableList;
 public class SelectedOnlySelectionListener implements ListChangeListener {
 
     private final Table table;
-    
+
     /**
      * Creates a new selected only selection lister.
      *
@@ -40,19 +41,20 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
     public SelectedOnlySelectionListener(final Table table) {
         this.table = table;
     }
-    
+
     /**
-     * Updates the {@link ActiveTableReference#selectedOnlySelectedRows} set with the currently
-     * selected rows in the table. This listener does not affect the selection in the
-     * graph.
+     * Updates the {@link ActiveTableReference#selectedOnlySelectedRows} set
+     * with the currently selected rows in the table. This listener does not
+     * affect the selection in the graph.
      * <p/>
-     * The listener is only active if the current table state is not null and the
-     * table <b>IS</b> in "Selected Only" mode. Selections on the table have no effect
-     * on the graph whilst in this mode.
-     * 
+     * The listener is only active if the current table state is not null and
+     * the table <b>IS</b> in "Selected Only" mode. Selections on the table have
+     * no effect on the graph whilst in this mode.
+     *
      * @param change not used, can be null
      * @see TableSelectionListener
-     * @see ListChangeListener#onChanged(javafx.collections.ListChangeListener.Change) 
+     * @see
+     * ListChangeListener#onChanged(javafx.collections.ListChangeListener.Change)
      */
     @Override
     public void onChanged(final Change change) {
@@ -71,7 +73,7 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
             });
         }
     }
-    
+
     /**
      * Convenience method for accessing the table view top component.
      *
@@ -80,7 +82,7 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
     private TableViewTopComponent getTableViewTopComponent() {
         return table.getParentComponent().getParentComponent();
     }
-    
+
     /**
      * Convenience method for accessing the active table reference.
      *
@@ -89,5 +91,5 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
     private ActiveTableReference getActiveTableReference() {
         return table.getParentComponent().getActiveTableReference();
     }
-    
+
 }
