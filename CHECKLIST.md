@@ -16,15 +16,27 @@ submitting a pull request.
 
 - [ ] Javadoc classes and methods
 
-- [ ] All changes are unit tested
+- [ ] Unit testing changes in your PR
 
-- [ ] Update the [change log](CHANGELOG.md) as a means to notify
-    developers or important improvements or changes
+    - Unit testing changes you have made is required and should be
+    over 80% code coverage as a minimum.
+
+    - If any classes you have changed do not already have a unit tests
+    then it is **NOT** apon you to test the entire class, rather the
+    delta changes only.
+
+    - Refer to the `Core Table View` as a baseline of how tests should
+    be written.
+
+    - Use `Mockito`, `FxToolkit` and `FxRobot` as required.
+
+- [ ] Update the [change log](CHANGELOG.md) to inform developers of
+    important improvements or changes
 
     -   You must start with Added, Fixed, Improved, Moved, Removed,
         Renamed or Updated and sort them alphabetically
 
-- [ ] Update whatsnew.txt if you want to inform users about your change
+- [ ] Update `whatsnew.txt` if you want to inform users of your change
 
 - [ ] Update the help pages as required
 
@@ -47,7 +59,7 @@ submitting a pull request.
     -   Note you should not use `org.apache.log4j.Logger` because it
         won’t appear in the logs.
 
-- [ ] Use StandardCharsets.UTF\_8.name() instead of `“UTF-8”`
+- [ ] Use `StandardCharsets.UTF_8.name()` instead of `“UTF-8”`
 
 - [ ] When developing a plugin, the plugin parameters have a label and
     description.
@@ -65,7 +77,7 @@ submitting a pull request.
 - [ ] Plugin parameter constants should be built using the following
     conventions:
 
-    -   The constant should end in \_PARAMETER\_ID.
+    -   The constant should end in `_PARAMETER\_ID`.
 
     -   An example of creating a plugin parameter looks like:
 
