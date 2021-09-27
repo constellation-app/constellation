@@ -36,6 +36,7 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
@@ -197,7 +198,7 @@ public class DataAccessTabPane {
         
         List<Future<?>> barrier = null;
         for (int i = firstTab; i <= lastTab; i++) {
-            final Tab tab = tabPane.getTabs().get(i);
+            final Tab tab = getTabPane().getTabs().get(i);
             
             LOGGER.log(Level.INFO, String.format("Running tab: %s", tab.getText()));
             
@@ -227,16 +228,17 @@ public class DataAccessTabPane {
         final boolean isExecuteButtonEnabled = !getDataAccessPane().getButtonToolbar()
                 .getExecuteButton().isDisabled();
                     
-        return tabPane.getTabs().parallelStream()
+        return getTabPane().getTabs().parallelStream()
                 .map(tab -> {
                     // TODO This needs some more work to try and consolidate it
                     //      as the logic to disable/enable the execute button is
                     //      slightly different to this logic
+                    
                     final boolean hasEnabledPlugins = tabHasEnabledPlugins(tab);
                     final boolean allEnabledPluginsValid = hasEnabledPlugins
                             ? validateTabEnabledPlugins(tab) :  true;
                     final boolean hasValidTimeRange = validateTabTimeRange(tab);
-
+                    
                     updateTabMenu(
                             tab,
                             hasEnabledPlugins && isExecuteButtonIsGo && isExecuteButtonEnabled,
@@ -245,17 +247,18 @@ public class DataAccessTabPane {
                     
                     return hasEnabledPlugins && allEnabledPluginsValid && hasValidTimeRange;
                 })
-                .filter(b -> !b) // Reduce to only tabs that are invalid
-                .findAny()
-                .isEmpty(); // For the pane to be valid then all panes need to be valid;
+                // Reduce to only tabs that are invalid
+                .filter(b -> !b) 
+                // For the pane to be valid then all panes need to be valid
+                .collect(Collectors.counting()) == 0;
     }
     
     /**
      * Store current parameter values for all tabs and plug-ins in the recent
      * values repository.
      */
-    private void storeParameterValues() {
-        getTabPane().getTabs().forEach(tab -> {
+    protected void storeParameterValues() {
+        getTabPane().getTabs().parallelStream().forEach(tab -> {
             final QueryPhasePane pluginPane = getQueryPhasePane(tab);
             
             pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().parallelStream()
@@ -297,8 +300,8 @@ public class DataAccessTabPane {
      * @param enabled true if the menu items are to be enabled, false otherwise
      */
     protected void updateTabMenu(final Tab tab,
-                               final boolean graphDependentMenuItemsEnabled,
-                               final boolean pluginDependentMenuItemsEnabled) {
+                                 final boolean graphDependentMenuItemsEnabled,
+                                 final boolean pluginDependentMenuItemsEnabled) {
         final QueryPhasePane queryPhasePane = getQueryPhasePane(tab);
         queryPhasePane.enableGraphDependentMenuItems(graphDependentMenuItemsEnabled);
         queryPhasePane.enablePluginDependentMenuItems(pluginDependentMenuItemsEnabled);
@@ -309,7 +312,7 @@ public class DataAccessTabPane {
      * @return 
      */
     public boolean isTabPaneExecutable() {
-        return tabPane.getTabs().parallelStream()
+        return getTabPane().getTabs().parallelStream()
                 .map(isExecutableTab)
                 .filter(b -> !b) // Reduce to only tabs that are invalid
                 .findAny()
@@ -325,7 +328,7 @@ public class DataAccessTabPane {
      * @return true if there are active plugins and they are valid, false otherwise
      */
     public boolean hasActiveAndValidPlugins() {
-        return tabPane.getTabs().stream()
+        return getTabPane().getTabs().parallelStream()
                 .filter(tab -> tabHasEnabledPlugins(tab) && !validateTabEnabledPlugins(tab))
                 .findAny() // Find any invalid plugins
                 .isEmpty();
@@ -359,7 +362,7 @@ public class DataAccessTabPane {
                 .map(PluginParameters::getParameters)
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
-                .anyMatch(entry -> entry.getValue().getError() == null);
+                .allMatch(entry -> entry.getValue().getError() == null);
     }
     
     /**

@@ -95,5 +95,13 @@ public class WaitForQueriesToCompleteTask implements Runnable {
             }
         });
     }
+
+    public DataAccessPane getDataAccessPane() {
+        return dataAccessPane;
+    }
+
+    public String getGraphId() {
+        return graphId;
+    }
     
 }
