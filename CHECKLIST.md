@@ -14,14 +14,14 @@ submitting a pull request.
     For specifics see the [style guide](STYLE_GUIDELINES.md).
 
 - [ ] Ensure that new ***leaks*** or ***code smells*** are not
-    introduced by parsing you code using `sonar-scanner` and checking
+    introduced by parsing your code using `sonar-scanner` or checking
     via [Sonar Qube](https://sonarcloud.io)
 
 - [ ] Document code based on the [style guide](STYLE_GUIDELINES.md)
 
 - [ ] Avoid OS dependant code (e.g. Windows or Linux)
 
-- [ ] Utility methods should end with the word Utilities (i.e not Util
+- [ ] Utility classes should end with the word Utilities (i.e not Util
     or Utility)
 
 - [ ] Update the [change log](CHANGELOG.md) as a means to notify
@@ -32,9 +32,10 @@ submitting a pull request.
 
 - [ ] Update whatsnew.txt if you want to inform users about your change
 
-- [ ] Update the html help pages as required
+- [ ] Update the help pages as required
 
-- [ ] Use `java.util.logging.Logger` instead of `System.out.println` or
+- [ ] Use a class specific logger and call it `LOGGER` using
+    `java.util.logging.Logger`. Do not use `System.out.println` or
     `System.err.println`.
 
     -   Note you should not use `org.apache.log4j.Logger` because it
@@ -61,11 +62,6 @@ submitting a pull request.
 
 - [ ] Ensure new plugins have been added to the corresponding
     `*PluginRegistry`.
-
-- [ ] If you’re calling arrangement plugins from within your plugin, you
-    must add logic to check whether the freeze graph view state is
-    enabled like so:
-    `java     if (!CoreUtilities.isGraphViewFrozen()) {       PluginExecution.withPlugin(ArrangementPluginRegistry.GRID_COMPOSITE).executeNow(wg);       PluginExecution.withPlugin(CorePluginRegistry.RESET).executeNow(wg);     } else {       PluginExecution.withPlugin(CorePluginRegistry.RESET).executeNow(wg);     }`
 
 - [ ] Plugin parameter constants should be built using the following
     conventions:
