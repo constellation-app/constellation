@@ -132,7 +132,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                             final ObjectNode content = requestBody.putObject("content");
                             final ObjectNode mime = content.putObject(RestServiceUtilities.APPLICATION_JSON);
                             final ObjectNode schema = mime.putObject(SCHEMA);
-                            schema.put("type", OBJECT);
+                            schema.put("$ref", pp.getRequestBodyExampleJson());
                         } else {
                             final ObjectNode param = params.addObject();
                             param.put("name", pp.getId());
