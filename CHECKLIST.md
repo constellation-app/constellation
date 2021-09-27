@@ -19,10 +19,10 @@ submitting a pull request.
 - [ ] Unit testing changes in your PR
 
     - Unit testing changes you have made is required and should be
-    over 80% code coverage as a minimum.
+    over 80% code coverage at a minimum.
 
     - If any classes you have changed do not already have a unit tests
-    then it is **NOT** apon you to test the entire class, rather the
+    then it is **NOT** on you to test the entire class, rather the
     delta changes only.
 
     - Refer to the `Core Table View` as a baseline of how tests should
@@ -39,7 +39,7 @@ submitting a pull request.
 - [ ] Update [what's new](CoreWhatsNewView/src/au/gov/asd/tac/constellation/views/whatsnew/whatsnew.txt)
     if you want to inform users of your change
 
-- [ ] Update the help pages as required
+- [ ] Update help pages (including relevant images) as required
 
 - [ ] Ensure that new ***leaks*** or ***code smells*** are not
     introduced by parsing your code using `sonar-scanner` or checking
