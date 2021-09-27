@@ -108,52 +108,54 @@ submitting a pull request.
 
         -   GOOD:
 
-            -   To extract the foo, manipulate the bar
+            -   *To extract the foo, manipulate the bar*
 
         -   BAD:
 
-            -   The foo can be extracted by manipulating the bar
+            -   *The foo can be extracted by manipulating the bar*
 
     -   Give direct instructions (avoid *will* and *if*)
 
         -   GOOD:
 
-            -   To increase the volume, turn the dial
+            -   *To increase the volume, turn the dial*
 
-            -   Turn the dial to increase the volume
+            -   *Turn the dial to increase the volume*
 
-            -   Turning the dial increases the volume
+            -   *Turning the dial increases the volume*
 
         -   OK:
 
-            -   Turning the dial will increase the volume
+            -   *Turning the dial will increase the volume*
 
         -   BAD:
 
-            -   If you turn the dial, the volume will increase
+            -   *If you turn the dial, the volume will increase*
 
     -   Exception to rule above: Use conditional statements for warnings
         or unlikely events.
 
         -   GOOD:
 
-            -   Clicking the big red button will activate the
-                self-destruct
+            -   *Clicking the big red button will activate the
+                self-destruct*
 
-            -   If you click on the big red button, the self-destruct
-                will activate
+            -   *If you click on the big red button, the self-destruct
+                will activate*
 
         -   OK:
 
-            -   Click on the big red button to activate the self-destruct
+            -   *Click on the big red button to activate the
+                self-destruct*
 
-            -   To activate the self-destruct, click the big red button
+            -   *To activate the self-destruct, click the big red
+                button*
 
     -   **you** rather than **we**
 
         -   GOOD:
 
-            -   You should save your graph before continuing
+            -   *You should save your graph before continuing*
 
         -   BAD:
-            -   We recommend saving your graph before continuing
+            -   *We recommend saving your graph before continuing*
