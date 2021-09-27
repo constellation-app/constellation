@@ -36,7 +36,8 @@ submitting a pull request.
     -   You must start with Added, Fixed, Improved, Moved, Removed,
         Renamed or Updated and sort them alphabetically
 
-- [ ] Update `whatsnew.txt` if you want to inform users of your change
+- [ ] Update [what's new](CoreWhatsNewView/src/au/gov/asd/tac/constellation/views/whatsnew/whatsnew.txt)
+    if you want to inform users of your change
 
 - [ ] Update the help pages as required
 
