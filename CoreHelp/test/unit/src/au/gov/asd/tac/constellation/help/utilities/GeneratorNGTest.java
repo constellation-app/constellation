@@ -24,7 +24,9 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
+import org.mockito.stubbing.Answer;
 import org.openide.util.Lookup;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -59,31 +61,87 @@ public class GeneratorNGTest {
     }
 
     /**
-     * Test of run method, of class Generator. TODO: This is not complete
+     * Test of run method, of class Generator.
      */
     @Test
-    public void testRun() {
-        System.out.println("run");
-        System.out.println("TODO: This is not complete");
+    public void testRunDevelopment() {
+        System.out.println("run in development");
 
-        // Test on IDE Version
-        System.setProperty("constellation.environment", "IDE(CORE)");
+        final String previousProperty = System.getProperty("constellation.environment");
 
-        try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
-            final List<File> tocXMLFiles = new ArrayList<>();
-            final String layersTOC = "../constellation/src/au/gov/asd/tac/constellation/views/layers/docs/layers-view-toc.xml";
-            final String notesTOC = "../constellation/src/au/gov/asd/tac/constellation/views/notes/docs/notes-view-toc.xml";
+        try {
+            // Test on IDE Version
+            System.setProperty("constellation.environment", "IDE(CORE)");
 
-            tocXMLFiles.add(new File(System.getProperty("user.dir") + layersTOC));
-            tocXMLFiles.add(new File(System.getProperty("user.dir") + notesTOC));
-            generatorStaticMock.when(() -> Generator.getXMLFiles(Mockito.any())).thenReturn(tocXMLFiles);
-            generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenCallRealMethod();
+            try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
+                final List<File> tocXMLFiles = new ArrayList<>();
+                final String layersTOC = "../constellation/src/au/gov/asd/tac/constellation/views/layers/docs/layers-view-toc.xml";
+                final String notesTOC = "../constellation/src/au/gov/asd/tac/constellation/views/notes/docs/notes-view-toc.xml";
 
-            try (MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
-                final Generator generator = mock(Generator.class, Mockito.CALLS_REAL_METHODS);
-                generator.run();
-                // TODO: Above method is not calling the actual method for some reason
-                // Needs to call the method and then assert that the toc file is created at the correct location
+                tocXMLFiles.add(new File(System.getProperty("user.dir") + layersTOC));
+                tocXMLFiles.add(new File(System.getProperty("user.dir") + notesTOC));
+                generatorStaticMock.when(() -> Generator.getXMLFiles(Mockito.any())).thenReturn(tocXMLFiles);
+                generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenCallRealMethod();
+
+                try (MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
+                    tocgeneratorStaticMock.when(() -> TOCGenerator.createTOCFile(Mockito.anyString())).thenReturn(true);
+                    tocgeneratorStaticMock.when(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
+                    Generator generator = new Generator();
+                    generator.run();
+
+                    // verify that the toc file was called to be created, and that the xml mappings were to be converted
+                    tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()));
+                    tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any()));
+
+                    generatorStaticMock.verify(times(1), () -> Generator.getBaseDirectory());
+                }
+            }
+        } finally {
+            // set back to previous property
+            if (previousProperty != null) {
+                System.setProperty("constellation.environment", previousProperty);
+            }
+        }
+
+    }
+
+    /**
+     * Test of run method, of class Generator.
+     */
+    @Test
+    public void testRunProduction() {
+        System.out.println("run in production");
+
+        final String previousProperty = System.getProperty("constellation.environment");
+
+        try {
+            // Test on production Version
+            System.setProperty("constellation.environment", "PRODUCTION");
+
+            try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
+                generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenCallRealMethod();
+
+                try (MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) {
+                    try (MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
+                        tocgeneratorStaticMock.when(() -> TOCGenerator.createTOCFile(Mockito.anyString())).thenReturn(true);
+
+                        helpMapperStaticMock.when(() -> HelpMapper.updateMappings()).thenAnswer((Answer<Void>) invocation -> null);
+                        Generator generator = new Generator();
+                        generator.run();
+
+                        // verify that helpMappings was called once
+                        helpMapperStaticMock.verify(times(1), () -> HelpMapper.updateMappings());
+
+                        // verify that no method from TOCGenerator was called
+                        tocgeneratorStaticMock.verifyNoInteractions();
+
+                        generatorStaticMock.verify(times(1), () -> Generator.getBaseDirectory());
+                    }
+                }
+            }
+        } finally {
+            if (previousProperty != null) {
+                System.setProperty("constellation.environment", previousProperty);
             }
         }
     }
@@ -152,7 +210,9 @@ public class GeneratorNGTest {
             assertEquals(Generator.getBaseDirectory(), expectedBaseDir2);
         } finally {
             // clean up and reset the property
-            System.setProperty("user.dir", previousUserDir);
+            if (previousUserDir != null) {
+                System.setProperty("user.dir", previousUserDir);
+            }
         }
     }
 

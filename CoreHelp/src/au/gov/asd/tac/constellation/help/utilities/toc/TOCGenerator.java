@@ -37,18 +37,20 @@ import org.xml.sax.SAXException;
  */
 public class TOCGenerator {
 
-    private final File toc;
+    private static File toc;
     private static final Logger LOGGER = Logger.getLogger(TOCGenerator.class.getName());
     private static final String MARKDOWN_LINK_FORMAT = "[%s](%s)";
     private static final String HTML_LINK_FORMAT = "<a href=\"%s\">%s</a><br/>";
     private static final String BLANK_STRING = " ";
 
     /**
-     * Delete old TOC file and generate a new one at the specified path
+     * Creates a toc file at the given path.
      *
      * @param filePath
+     * @return
      */
-    public TOCGenerator(final String filePath) {
+    public static boolean createTOCFile(final String filePath) {
+        boolean success = true;
         if (filePath == null) {
             throw new IllegalArgumentException("Null file path used for creation of Table of Contents file");
         }
@@ -70,7 +72,10 @@ public class TOCGenerator {
 
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, "Unable to create table of contents file", ex);
+            success = false;
         }
+        return success;
+
     }
 
     /**
@@ -78,7 +83,7 @@ public class TOCGenerator {
      *
      * @param xmlFromFile File of XML mappings
      */
-    public void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode root) throws IOException {
+    public static void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode root) throws IOException {
         final FileWriter writer;
         try {
             writer = new FileWriter(toc);
