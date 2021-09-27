@@ -3,9 +3,8 @@
 The following is a list of common things that should be checked when
 submitting a pull request.
 
-- [ ] Javadoc classes and methods
 
-- [ ] All changes are unit tested
+## Common
 
 - [ ] Include screenshots and animated GIFs in your pull request
     whenever possible.
@@ -13,16 +12,11 @@ submitting a pull request.
 - [ ] Format your code using the default NetBeans formatter settings.
     For specifics see the [style guide](STYLE_GUIDELINES.md).
 
-- [ ] Ensure that new ***leaks*** or ***code smells*** are not
-    introduced by parsing your code using `sonar-scanner` or checking
-    via [Sonar Qube](https://sonarcloud.io)
-
 - [ ] Document code based on the [style guide](STYLE_GUIDELINES.md)
 
-- [ ] Avoid OS dependant code (e.g. Windows or Linux)
+- [ ] Javadoc classes and methods
 
-- [ ] Utility classes should end with the word Utilities (i.e not Util
-    or Utility)
+- [ ] All changes are unit tested
 
 - [ ] Update the [change log](CHANGELOG.md) as a means to notify
     developers or important improvements or changes
@@ -34,6 +28,18 @@ submitting a pull request.
 
 - [ ] Update the help pages as required
 
+- [ ] Ensure that new ***leaks*** or ***code smells*** are not
+    introduced by parsing your code using `sonar-scanner` or checking
+    via [Sonar Qube](https://sonarcloud.io)
+
+- [ ] Avoid OS dependant code (e.g. Windows or Linux)
+
+
+## Coding Conventions
+
+- [ ] Utility classes should end with the word Utilities (i.e not Util
+    or Utility)
+
 - [ ] Use a class specific logger and call it `LOGGER` using
     `java.util.logging.Logger`. Do not use `System.out.println` or
     `System.err.println`.
@@ -41,14 +47,7 @@ submitting a pull request.
     -   Note you should not use `org.apache.log4j.Logger` because it
         won’t appear in the logs.
 
-- [ ] Use StandardCharsets.UTF\_8.name() instead of “UTF-8”
-
-- [ ] Classes that match `*AttributeDescriptionV*`, `*IOProviderV*` or
-    `*AttributeUpdateProvider` should be saved in a sub package named
-    ***compatibility***.
-
-    -   Classes that match `*AttributeDescriptionV*` or `*IOProviderV*`
-        should be annotated with `@deprecated`.
+- [ ] Use StandardCharsets.UTF\_8.name() instead of `“UTF-8”`
 
 - [ ] When developing a plugin, the plugin parameters have a label and
     description.
@@ -80,10 +79,8 @@ submitting a pull request.
     final PluginParameter<SingleChoiceParameterValue> mergeType = SingleChoiceParameterType.build(MERGE_TYPE_PARAMETER_ID);
     ```
 
-- [ ] QUERY\_NAME\_PARAMETER and DATETIME\_RANGE\_PARAMETER are defined
-    as singletons within CoreGlobalParameters.java
-
-    -   Can be accessed by referring to them directly, for example:
+- [ ] `QUERY_NAME_PARAMETER` and `DATETIME_RANGE_PARAMETER` are defined
+    as singletons within `CoreGlobalParameters` so reference them like this:
 
     ``` java
     final PluginParameter<StringParameterValue> queryName = CoreGlobalParameters.QUERY_NAME_PARAMETER;
@@ -93,6 +90,16 @@ submitting a pull request.
     `ConstellationDialog` which makes sure your dialog remains on top
     (i.e is modal aware).
 
+- [ ] Classes that match `*AttributeDescriptionV*`, `*IOProviderV*` or
+    `*AttributeUpdateProvider` should be saved in a sub package named
+    ***compatibility***.
+
+    -   Classes that match `*AttributeDescriptionV*` or `*IOProviderV*`
+        should be annotated with `@deprecated`.
+
+
+## Documentation
+
 - [ ] When documenting use the following conventions:
 
     -   **nodes** rather than **vertices**
@@ -101,54 +108,52 @@ submitting a pull request.
 
         -   GOOD:
 
-            -   *To extract the foo, manipulate the bar*
+            -   To extract the foo, manipulate the bar
 
         -   BAD:
 
-            -   *The foo can be extracted by manipulating the bar*
+            -   The foo can be extracted by manipulating the bar
 
     -   Give direct instructions (avoid *will* and *if*)
 
         -   GOOD:
 
-            -   *To increase the volume, turn the dial*
+            -   To increase the volume, turn the dial
 
-            -   *Turn the dial to increase the volume*
+            -   Turn the dial to increase the volume
 
-            -   *Turning the dial increases the volume*
+            -   Turning the dial increases the volume
 
         -   OK:
 
-            -   *Turning the dial will increase the volume*
+            -   Turning the dial will increase the volume
 
         -   BAD:
 
-            -   *If you turn the dial, the volume will increase*
+            -   If you turn the dial, the volume will increase
 
     -   Exception to rule above: Use conditional statements for warnings
         or unlikely events.
 
         -   GOOD:
 
-            -   \*Clicking the big red button will activate the
+            -   Clicking the big red button will activate the
                 self-destruct
 
-            -   *If you click on the big red button, the self-destruct
-                will activate*
+            -   If you click on the big red button, the self-destruct
+                will activate
 
         -   OK:
 
-            -   *Click on the big red button to activate the
-                self-destruct*
+            -   Click on the big red button to activate the self-destruct
 
-            -   *To activate the self-destruct, click the big red
-                button*
+            -   To activate the self-destruct, click the big red button
 
     -   **you** rather than **we**
 
         -   GOOD:
 
-            -   *You should save your graph before continuing*
+            -   You should save your graph before continuing
 
         -   BAD:
-            -   *We recommend saving your graph before continuing*
+            -   We recommend saving your graph before continuing
