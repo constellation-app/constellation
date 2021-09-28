@@ -59,26 +59,23 @@ public class Generator implements Runnable {
      */
     @Override
     public void run() {
-
-        // TODO: Possibly check if file exists?
         baseDirectory = getBaseDirectory();
         tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
 
-        // TODO: Double check if this is necessary and also foolproof for other module suites.
         if (!"IDE(CORE)".equals(System.getProperty("constellation.environment")) || DEBUG_FLAG) {
             // Ensure that the mappings are generated for clicks on help icons within the application.
             HelpMapper.updateMappings();
             return;
         }
 
-        // Create TOCGenerator with the location of the resources file
+        // Create TOCFile with the location of the resources file
         // Create the root node for application-wide table of contents
-        final TOCGenerator tocGenerator = new TOCGenerator(baseDirectory + tocDirectory);
+        TOCGenerator.createTOCFile(baseDirectory + tocDirectory);
         final TreeNode root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
         final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
 
         try {
-            tocGenerator.convertXMLMappings(tocXMLFiles, root);
+            TOCGenerator.convertXMLMappings(tocXMLFiles, root);
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, "There was an error creating the documentation file {0} - Documentation may not be complete", baseDirectory + tocDirectory);
             Exceptions.printStackTrace(ex);
