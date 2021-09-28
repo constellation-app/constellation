@@ -23,7 +23,11 @@ import java.util.logging.Logger;
 /**
  * A text implementation of {@link PluginInteraction}
  * <p>
- * This would be useful in unit tests
+ * TODO: This class was created primarily to assist with unit testing but usaged
+ * of this should be replaced with a mock of the DefaultPluginInteraction class
+ * instead. Most of this class however can be useful for a headless version of
+ * Constellation.
+ * </p>
  *
  * @author arcturus
  */

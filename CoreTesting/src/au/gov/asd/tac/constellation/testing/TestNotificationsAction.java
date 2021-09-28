@@ -21,8 +21,12 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -32,6 +36,10 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(displayName = "#CTL_TestNotificationsAction", surviveFocusChange = true)
 @ActionReference(path = "Menu/Experimental/Developer", position = 0)
 @Messages("CTL_TestNotificationsAction=Test Notifications")
+
+/**
+ * A demo of the different notifications the applications supports
+ */
 public final class TestNotificationsAction implements ActionListener {
 
     private final GraphNode context;
@@ -42,6 +50,7 @@ public final class TestNotificationsAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
+        // plugin notifications
         final Plugin plugin = new TestNotificationsPlugin();
         final PluginParameters pp = plugin.createParameters();
 
@@ -50,5 +59,25 @@ public final class TestNotificationsAction implements ActionListener {
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
             PluginExecution.withPlugin(plugin).withParameters(pp).executeLater(context.getGraph());
         }
+
+        // NetBeans NotifyDisplayer options
+        NotifyDisplayer.display("Plain Message", NotifyDescriptor.PLAIN_MESSAGE);
+        NotifyDisplayer.display("Question Message", NotifyDescriptor.QUESTION_MESSAGE);
+        NotifyDisplayer.display("Information Message", NotifyDescriptor.INFORMATION_MESSAGE);
+        NotifyDisplayer.display("Warning Message", NotifyDescriptor.WARNING_MESSAGE);
+        NotifyDisplayer.display("Error Message", NotifyDescriptor.ERROR_MESSAGE);
+
+        // Constellation Utility options
+        Platform.runLater(() -> {
+            NotifyDisplayer.displayAlert("Display Alert", "Plain", "Plain Message", Alert.AlertType.NONE);
+            NotifyDisplayer.displayAlert("Display Alert", "Information", "Information Message", Alert.AlertType.INFORMATION);
+            NotifyDisplayer.displayAlert("Display Alert", "Warning", "Warning Message", Alert.AlertType.WARNING);
+            NotifyDisplayer.displayAlert("Display Alert", "Error", "Error Message", Alert.AlertType.ERROR);
+
+            NotifyDisplayer.displayLargeAlert("Display Large Alert", "Plain", "Plain Message", Alert.AlertType.NONE);
+            NotifyDisplayer.displayLargeAlert("Display Large Alert", "Information", "Information Message", Alert.AlertType.INFORMATION);
+            NotifyDisplayer.displayLargeAlert("Display Large Alert", "Warning", "Warning Message", Alert.AlertType.WARNING);
+            NotifyDisplayer.displayLargeAlert("Display Large Alert", "Error", "Error Message", Alert.AlertType.ERROR);
+        });
     }
 }

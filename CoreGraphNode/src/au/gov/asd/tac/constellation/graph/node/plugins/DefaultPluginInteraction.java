@@ -40,7 +40,20 @@ import org.openide.util.Cancellable;
 import org.openide.util.Exceptions;
 
 /**
- * Interface for plugins that work in an interactive mode
+ * Interface for plugins that work in an interactive mode.
+ * <p>
+ * The following is a summary:</p>
+ * <ul>
+ * <li>{@code PluginNotificationLevel.FATAL} and
+ * {@code PluginNotificationLevel.ERROR} type messages will have a dialog
+ * presented</li>
+ * <li>{@code PluginNotificationLevel.WARNING} will have a balloon notification
+ * popup</li>
+ * <li>{@code PluginNotificationLevel.INFO} will have the message shown in the
+ * applications status notification area which is to the bottom left area</li>
+ * <li>{@code PluginNotificationLevel.DEBUG} messages will be logged if the FINE
+ * log to this class in enabled</li>
+ * </ul>
  *
  * @author sirius
  */
