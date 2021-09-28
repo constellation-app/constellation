@@ -119,7 +119,6 @@ public class TOCGenerator {
         TreeNode.writeTree(root, markdownOutput, 0);
         writeText(markdownOutput, Platform.NEWLINE);
         writeText(markdownOutput, "</div>\n</div>\n</div>");
-
     }
 
     /**

@@ -117,6 +117,45 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String breakpoints = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/js/breakpoints.min.js"));
         final String appJS = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/js/app.js"));
         final String boostrapjs = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/js/bootstrap.js"));
+        final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/js/js.cookie.min.js"));
+
+
+        final String scriptTag = "<script>\n"
+                + " // when a group is shown, save it as active\n"
+                + " $(\".collapse\").on('shown.bs.collapse', function() {\n"
+                + "     var active = $(this).attr('id');\n"
+                + "     console.log(\"In shown with cookie: \" + active);"
+                + "     Cookies.set(active, \"true\");\n"
+                + " });\n"
+                + " // when a group is hidden, save it as inactive\n"
+                + " $(\".collapse\").on('hidden.bs.collapse', function(e) {\n"
+                + "     e.stopPropagation(); \n"
+                + "     var active = $(this).attr('id');\n"
+                + "     console.log(\"In hidden with cookie: \" + active);\n"
+                + "     Cookies.set(active, \"false\");\n"
+                + "     $(\"#\" + active).removeClass('show');\n"
+                + "     $(\"#\" + active).collapse(\"hide\");\n"
+                + " });\n"
+                + " \n"
+                + " $(document).ready(function() {\n"
+                + "      var allCookies = Cookies.get();\n"
+                + "      for (var cookie in allCookies) { \n"
+                + "          if (cookie != null) {\n"
+                + "              //remove default collapse settings\n"
+                + "              $(\"#\" + cookie).removeClass('show');\n"
+                + "              //show the group if the value is true \n"
+                + "              var cookieValue = Cookies.get(cookie);\n"
+                + "              if (cookieValue == (\"true\")) {\n"
+                + "                 $(\"#\" + cookie).collapse(\"show\");\n"
+                + "              } else {\n"
+                + "                 $(\"#\" + cookie).collapse(\"hide\");\n"
+                + "                 $(\"#\" + cookie + \" .collapse\").removeClass('show');\n"
+                + "              }\n"
+                + "          }\n"
+                + "      }\n"
+                + " });\n"
+                + "\n"
+                + "</script>";
 
         // Add items to StringBuilder
         html.append(css);
@@ -126,6 +165,8 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         html.append(cssBootstrap);
         html.append("\n");
         html.append(jquery);
+        html.append("\n");
+        html.append(cookiejs);
         html.append("\n");
         html.append(dropotron);
         html.append("\n");
@@ -158,6 +199,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         html.append(endDiv);
         html.append("\n");
         html.append(endDiv);
+        html.append(scriptTag);
 
         return html.toString();
     }
