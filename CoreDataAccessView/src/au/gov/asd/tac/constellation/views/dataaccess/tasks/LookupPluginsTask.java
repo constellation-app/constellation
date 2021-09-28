@@ -19,17 +19,22 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.openide.util.Lookup;
 
 /**
+ * Looks up all available data access plugins and populates a map with them
+ * grouped by plugin type.
  *
  * @author formalhaunt
  */
@@ -38,77 +43,102 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
     
     @Override
     public Map<String, List<DataAccessPlugin>> get() {
-        final Map<String, List<DataAccessPlugin>> plugins = new LinkedHashMap<>();
+        // Creates a map with the key set being every available data access plugin type.
+        final Map<String, List<DataAccessPlugin>> plugins = DataAccessPluginType.getTypes().stream()
+                .collect(Collectors.toMap(
+                        type -> type,
+                        type -> new ArrayList<>(),
+                        (type1, type2) -> new ArrayList<>(),
+                        () -> new LinkedHashMap<>()
+                ));
 
-        // Use a pre-filled LinkedHashMap to keep the types in the correct order.
-        final List<String> typeList = DataAccessPluginType.getTypes();
-        typeList.stream().forEach(type -> plugins.put(type, new ArrayList<>()));
-
-        // create the favourites category
-        if (plugins.get(DataAccessPluginCoreType.FAVOURITES) == null) {
-            plugins.put(DataAccessPluginCoreType.FAVOURITES, new ArrayList<>());
-        }
+        // Create the favourites category
+        plugins.computeIfAbsent(DataAccessPluginCoreType.FAVOURITES, key -> new ArrayList<>());
 
         // Now fetch the DataAccessPlugin instances.
-        final Map<String, DataAccessPlugin> pluginOverrides = new HashMap<>();
-        Lookup.getDefault().lookupAll(DataAccessPlugin.class).stream()
+        final Multimap<String, String> pluginNameToType = ArrayListMultimap.create();
+        final List<String> pluginOverrides = new ArrayList<>();
+        Lookup.getDefault().lookupAll(DataAccessPlugin.class).parallelStream()
+                // If plugin is disabled, ignore the plugin.
+                .filter(DataAccessPlugin::isEnabled)
+                // If a plugin type is invalid (that is, not registered as a DataAccessPluginType),
+                // and not in the users favourites, ignore the plugin.
+                .filter(plugin -> plugins.containsKey(plugin.getType())
+                        || DataAccessPreferenceUtilities.isfavourite(plugin.getName(), false))
                 .forEach(plugin -> {
-                    if (!plugin.isEnabled()) {
-                        // If plugin is disabled, ignore the plugin.
-                        LOGGER.log(Level.INFO, "Disabled data access plugin {0} ({1})",
-                                new Object[]{plugin.getName(), plugin.getType()});
-                    } else {
-                        final String type = plugin.getType();
-                        if (plugins.containsKey(type)) {
-                            // If plugin type is valid, add the plugin to the Data Access View.
-                            plugins.get(type).add(plugin);
-                            
-                            LOGGER.log(Level.INFO, "Discovered data access plugin {0} ({1})",
-                                    new Object[]{plugin.getName(), plugin.getType()});
-                            
-                            // If plugin overrides another, record which plugin should be removed
-                            // for later processing.
-                            for (final String overriddenPluginName : plugin.getOverriddenPlugins()) {
-                                pluginOverrides.put(overriddenPluginName, plugin);
-                            }
-                        } else {
-                            // If a plugin type is invalid (that is, not registered as a DataAccessPluginType),
-                            // ignore the plugin.
-                            LOGGER.log(Level.SEVERE, "Unexpected data access plugin type '{0}' for plugin {1}",
-                                    new Object[]{type, plugin.getName()});
-                        }
+                    // If the plugin is a user's favourite, add it to the favourite list
+                    if (DataAccessPreferenceUtilities.isfavourite(plugin.getName(), false)) {
+                        plugins.get(DataAccessPluginCoreType.FAVOURITES).add(plugin);
+                        logDiscoveredDataAccessPlugin(plugin, DataAccessPluginCoreType.FAVOURITES);
+                        
+                        // Register that this plugin has been added under favourites for when
+                        // overriden plugins are being dealt with
+                        pluginNameToType.put(plugin.getName(), DataAccessPluginCoreType.FAVOURITES);
+                    }
+                    
+                    // If plugin type is valid, add the plugin to the Data Access View.
+                    if (plugins.containsKey(plugin.getType())) {
+                        plugins.get(plugin.getType()).add(plugin);
+                        logDiscoveredDataAccessPlugin(plugin);
 
-                        // favourites
-                        if (DataAccessPreferenceUtilities.isfavourite(plugin.getName(), false)) {
-                            plugins.get(DataAccessPluginCoreType.FAVOURITES).add(plugin);
-                            LOGGER.log(Level.INFO, "Discovered data access plugin {0} ({1})", new Object[]{plugin.getName(), DataAccessPluginCoreType.FAVOURITES});
-                        }
+                        // If plugin overrides another, record which plugin should be removed
+                        // for later processing. Also record name to type so that it doesn't
+                        // need to loop through every type to find it
+                        pluginNameToType.put(plugin.getName(), plugin.getType());
+                        pluginOverrides.addAll(plugin.getOverriddenPlugins());
                     }
                 });
 
         // Remove any overridden plugins.
-        pluginOverrides.forEach((pluginName, overridingPlugin) -> {
-            String removeType = null;
-            DataAccessPlugin removePlugin = null;
-            for (String pluginType : plugins.keySet()) {
-                final List<DataAccessPlugin> pluginList = plugins.get(pluginType);
-                for (DataAccessPlugin plugin : pluginList) {
-                    if (plugin.getName().equals(pluginName)) {
-                        removeType = pluginType;
-                        removePlugin = plugin;
-                        break;
-                    }
-                }
-            }
-
-            if (removeType != null && removePlugin != null) {
-                plugins.get(removeType).remove(removePlugin);
-                LOGGER.log(Level.INFO, "Removed data access plugin {0} ({1}) as it is overriden by data access plugin {2} ({3})",
-                        new Object[]{removePlugin.getName(), removeType, overridingPlugin.getName(), overridingPlugin.getType()});
-            }
-        });
+        pluginOverrides.stream()
+                .forEach(pluginToRemoveName -> 
+                    // Gets all the plugin type lists it could be in basically itself
+                    // and favourites at most
+                    pluginNameToType.get(pluginToRemoveName)
+                            .forEach(pluginToRemoveType -> {
+                                // For the given plugin name and type get the list that the plugin will be in
+                                final List<DataAccessPlugin> pluginList = plugins.get(pluginToRemoveType);
+                                IntStream.range(0, pluginList.size())
+                                        .filter(index -> pluginList.get(index).getName()
+                                                .equals(pluginToRemoveName))
+                                        .findFirst()
+                                        .ifPresent(index -> {
+                                            // Remove the overriden plugin
+                                            pluginList.remove(index);
+                                            LOGGER.log(Level.INFO,
+                                                    String.format("Removed data access plugin %s (%s) as it is overriden.",
+                                                            pluginToRemoveName, pluginToRemoveType)
+                                            );
+                                        });
+                            })
+                );
         
         return plugins;
+    }
+    
+    /**
+     * Logs that a data access plugin has been discovered and added to the plugin map.
+     * The log will indicate which type the plugin has been added under, in this case
+     * it is the actual plugins type.
+     *
+     * @param plugin the plugin that is being added
+     */
+    private void logDiscoveredDataAccessPlugin(final DataAccessPlugin plugin) {
+        logDiscoveredDataAccessPlugin(plugin, plugin.getType());
+    }
+    
+    /**
+     * Logs that a data access plugin has been discovered and added to the plugin map.
+     * The log will indicate which type the plugin has been added under, in this case
+     * it is passed type value.
+     *
+     * @param plugin the plugin that is being added
+     * @param pluginType the plugin type that the plugin will be added under
+     */
+    private void logDiscoveredDataAccessPlugin(final DataAccessPlugin plugin,
+                                               final String pluginType) {
+        LOGGER.log(Level.INFO, String.format("Discovered data access plugin %s (%s)",
+                                plugin.getName(), pluginType));
     }
     
 }

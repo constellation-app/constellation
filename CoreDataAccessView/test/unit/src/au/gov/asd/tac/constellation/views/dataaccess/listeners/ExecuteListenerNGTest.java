@@ -212,12 +212,17 @@ public class ExecuteListenerNGTest {
     
     @Test
     public void handle_sunny_days() {
+        // Set the results directory
         final File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         DataAccessPreferenceUtilities.setDataAccessResultsDir(tmpDir);
+        
+        // Setting this to true ensures that active plugins are de-selected at the end
         DataAccessPreferenceUtilities.setDeselectPluginsOnExecute(true);
         
-        when(dataAccessTabPane.hasActiveAndValidPlugins()).thenReturn(true);
         
+        //when(dataAccessTabPane.hasActiveAndValidPlugins()).thenReturn(true);
+        
+        // Set up our fake tab pane
         final Tab tab1 = mock(Tab.class);
         final Tab tab2 = mock(Tab.class);
         
@@ -231,11 +236,16 @@ public class ExecuteListenerNGTest {
         dataAccessTabPaneMockedStatic.when(() -> 
                 DataAccessTabPane.getQueryPhasePane(tab2)).thenReturn(queryPhasePane2);
 
+        // Tab 1 does not have enabled plugins and tab 2 does. This is testing the deselect
+        // plugin code. The deselection should not happen on tab 1 because it has no enabled
+        // plugins
         dataAccessTabPaneMockedStatic.when(() -> 
                 DataAccessTabPane.tabHasEnabledPlugins(tab1)).thenReturn(false);
         dataAccessTabPaneMockedStatic.when(() -> 
                 DataAccessTabPane.tabHasEnabledPlugins(tab2)).thenReturn(true);
         
+        // Because tab 1 is not enabled de-selection should happen on pane 2 and 3, but
+        // not pane 1.
         final DataSourceTitledPane dataSourceTitledPane1 = mock(DataSourceTitledPane.class);
         when(queryPhasePane1.getDataAccessPanes()).thenReturn(List.of(dataSourceTitledPane1));
         
@@ -243,6 +253,8 @@ public class ExecuteListenerNGTest {
         final DataSourceTitledPane dataSourceTitledPane3 = mock(DataSourceTitledPane.class);
         when(queryPhasePane2.getDataAccessPanes()).thenReturn(List.of(dataSourceTitledPane2, dataSourceTitledPane3));
         
+        // Set up the plugin running. Tab 1 is run first which returns a future. That future
+        // is then passed in when tab 2 is run.
         final List<Future<?>> barrier1 = List.of(CompletableFuture.completedFuture("First tab run"));
         
         doReturn(barrier1).when(queryPhasePane1).runPlugins(null);
@@ -258,20 +270,28 @@ public class ExecuteListenerNGTest {
         ) {
             executeListener.handle(event);
 
+            // There was not current graph set during the test setup. So we
+            // should see one construction of the graph action to create on.
             assertEquals(graphActionMockedConstruction.constructed().size(), 1);
             
+            // Verify the execute button is changed to "Stop" and the status
+            // displayer is sent some text describing the action success
             verify(dataAccessPane).setExecuteButtonToStop();
             verify(statusDisplayer).setStatusText("Data access results will be written to " + tmpDir.getAbsolutePath());
 
-            daIOProviderMockedStatic.verify(() -> DataAccessPreferencesIoProvider.saveDataAccessState(tabPane, activeGraph));
+            // Verify the current state is saved before the plugins are run
+            daIOProviderMockedStatic.verify(() -> DataAccessPreferencesIoProvider
+                    .saveDataAccessState(tabPane, activeGraph));
 
             verify(pluginExecution).executeLater(null);
 
+            // Verify the plugins are run
             verify(queryPhasePane1).runPlugins(or(anyList(), isNull()));
             verify(queryPhasePane2).runPlugins(or(anyList(), isNull()));
             verify(queryPhasePane1).runPlugins(null);
             verify(queryPhasePane2).runPlugins(barrier1);
 
+            // Verify that the wait and clean up task is started
             assertEquals(waitForMockedConstruction.constructed().size(), 1);
             
             completableFutureMockedStatic.verify(() -> CompletableFuture
@@ -281,12 +301,14 @@ public class ExecuteListenerNGTest {
                     )
             );
             
+            // Verify that the correct plugins are de-selected
             verifyNoInteractions(dataSourceTitledPane1);
             verify(dataSourceTitledPane2).validityChanged(false);
             verify(dataSourceTitledPane3).validityChanged(false);
             
             verifyNoInteractions(event);
             
+            // Verify that the state for the current graph is that queries are running
             assertTrue(DataAccessPaneState.isQueriesRunning());
         }
     }
@@ -299,8 +321,13 @@ public class ExecuteListenerNGTest {
         Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
         prefs.put("saveDataDir", tmpDir.getAbsolutePath());
         
+        // Set this preference to false so that plugins are not de-selected at the end
+        DataAccessPreferenceUtilities.setDeselectPluginsOnExecute(false);
+        
+        // Set the current graph ID so the code doesn't try to create one
         DataAccessPaneState.setCurrentGraphId(GRAPH_ID);
         
+        // Set up our fake tab pane
         final Tab tab1 = mock(Tab.class);
         
         when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(tab1));
@@ -326,6 +353,8 @@ public class ExecuteListenerNGTest {
         ) {
             executeListener.handle(event);
             
+            // So the directory the results are meant to be written to doesn't exist,
+            // verify that the notifier is displayed.
             verify(notificationDisplayer).notify(
                     "Save raw results",
                     UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
@@ -346,17 +375,20 @@ public class ExecuteListenerNGTest {
                     )
             );
             
+            // Verify that the plugins are not de-selected
             verifyNoInteractions(dataSourceTitledPane1);
         }
     }
     
     @Test
     public void handle_no_tabs() {
+        // Execute button is in a "Go" state but there are no tabs
         DataAccessPaneState.setCurrentGraphId(GRAPH_ID);
         DataAccessPaneState.updateExecuteButtonIsGo(true);
         
         when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList());
         
+        // Add some existing running plugins for the current graph.
         final Future plugin1Future = mock(Future.class);
         final Future plugin2Future = mock(Future.class);
         
@@ -367,19 +399,23 @@ public class ExecuteListenerNGTest {
         
         executeListener.handle(event);
         
+        // Verify that all the plugins are cancelled
         verify(plugin1Future).cancel(true);
         verify(plugin2Future).cancel(true);
         
+        // Nothing is running, so make sure the execute button is now in the "Go" state
         verify(dataAccessPane).setExecuteButtonToGo();
     }
     
     @Test
     public void handle_execute_button_is_not_go() {
+        // Execute button is in a "Go" state but there are no tabs
         DataAccessPaneState.setCurrentGraphId(GRAPH_ID);
         DataAccessPaneState.updateExecuteButtonIsGo(false);
         
         when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(mock(Tab.class)));
         
+        // Add some existing running plugins for the current graph.
         final Future plugin1Future = mock(Future.class);
         final Future plugin2Future = mock(Future.class);
         
@@ -390,9 +426,11 @@ public class ExecuteListenerNGTest {
         
         executeListener.handle(event);
         
+        // Verify that all the plugins are cancelled
         verify(plugin1Future).cancel(true);
         verify(plugin2Future).cancel(true);
         
+        // Nothing is running, so make sure the execute button is now in the "Go" state
         verify(dataAccessPane).setExecuteButtonToGo();
     }
 }

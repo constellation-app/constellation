@@ -41,62 +41,97 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Tab;
+import javax.swing.Icon;
 import org.apache.commons.collections4.CollectionUtils;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.awt.StatusDisplayer;
 
 /**
+ * Creates a event handler for when the execute button is clicked.
  *
  * @author formalhaunt
  */
 public class ExecuteListener implements EventHandler<ActionEvent> {
     private static final Logger LOGGER = Logger.getLogger(ExecuteListener.class.getName());
     
+    // Directory Not Found Notifier
+    private static final Icon ERROR_ICON = UserInterfaceIconProvider.ERROR
+            .buildIcon(16, ConstellationColor.CHERRY.getJavaColor());
+    private static final String RESULTS_DIR_NOT_FOUND_TITLE = "Save raw results";
+    private static final String RESULTS_DIR_NOT_FOUND_MSG = "Results directory %s does not exist";
+    
+    // Status Message on Plugin Run
+    private static final String STATUS_MESSAGE_FORMAT = "Data access results will be written to %s";
+    
+    private static final String SAVE_STATE_PLUGIN_NAME = "Data Access View: Save State";
+    
     private final DataAccessPane dataAccessPane;
     
+    /**
+     * Creates a new execute button listener.
+     *
+     * @param dataAccessPane the data access pane that the execute button is added to
+     */
     public ExecuteListener(final DataAccessPane dataAccessPane) {
         this.dataAccessPane = dataAccessPane;
     }
     
+    /**
+     * Handles the click of the execute button in the data access view.
+     * <p/>
+     * If the execute button was in the "Go" state then it will iterate through
+     * all the tabs and run the enabled and valid plugins.
+     * <p/>
+     * If the execute button was in the "Stop" state then cancel any running plugins.
+     *
+     * @param event the event triggered by clicking the execute button
+     */
     @Override
     public void handle(final ActionEvent event) {
-        
-        // when no graph present, create new graph
+        // When no graph present, create a new one
         if (DataAccessPaneState.getCurrentGraphId() == null
                 && dataAccessPane.getDataAccessTabPane().hasActiveAndValidPlugins()) {
             
             // Create new graph
-            NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
+            final NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
             graphAction.actionPerformed(null);
             while (GraphManager.getDefault().getActiveGraph() == null) {
                 // Wait and do nothing while graph is getting made
             }
             
+            // Set the state's current graph ID to the ID of the new graph
             DataAccessPaneState.setCurrentGraphId(GraphManager.getDefault().getActiveGraph().getId());
         }
-        // run the selected queries
+        
+        // Run the selected queries
         final ObservableList<Tab> tabs = dataAccessPane.getDataAccessTabPane().getTabPane().getTabs();
         
         if (CollectionUtils.isNotEmpty(tabs) && DataAccessPaneState.isExecuteButtonIsGo()) {
+            // Change the execute button to "Stop" because it is now running
             dataAccessPane.setExecuteButtonToStop();
             
+            // Set the state for the current graph state to running queries
             DataAccessPaneState.setQueriesRunning(true);
 
+            // Check to see if an output dir exists. Non exisiting dirs do not prevent the
+            // plugins running, just triggers a notification
             final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDirEx();
             
-            if (outputDir != null && outputDir.isDirectory()) {
-                final String msg = String.format("Data access results will be written to %s", outputDir.getAbsolutePath());
-                StatusDisplayer.getDefault().setStatusText(msg);
+            if (outputDir != null) {
+                StatusDisplayer.getDefault().setStatusText(
+                        String.format(STATUS_MESSAGE_FORMAT, outputDir.getAbsolutePath())
+                );
             } else if (outputDir != null) {
-                final String msg = String.format("Results directory %s does not exist", outputDir.getAbsolutePath());
-                NotificationDisplayer.getDefault().notify("Save raw results",
-                        UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
-                        msg,
+                NotificationDisplayer.getDefault().notify(
+                        RESULTS_DIR_NOT_FOUND_TITLE,
+                        ERROR_ICON,
+                        String.format(RESULTS_DIR_NOT_FOUND_MSG, outputDir.getAbsolutePath()),
                         null
                 );
             }
 
-            PluginExecution.withPlugin(new SimplePlugin("Data Access View: Save State") {
+            // Save the current data access view state
+            PluginExecution.withPlugin(new SimplePlugin(SAVE_STATE_PLUGIN_NAME) {
                 @Override
                 protected void execute(final PluginGraphs graphs,
                                        final PluginInteraction interaction,
@@ -108,6 +143,9 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
                 }
             }).executeLater(null);
 
+            // Run the plugins from each tab. The barrier is the plugin run futures
+            // from the previous tab. When the tab is run, it has the option to
+            // wait for the previous tab to complete.
             List<Future<?>> barrier = null;
             for (final Tab tab : tabs) {
                 LOGGER.log(Level.INFO, String.format("Running tab: %s", tab.getText()));
@@ -115,33 +153,43 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
                 barrier = DataAccessTabPane.getQueryPhasePane(tab).runPlugins(barrier);
             }
 
+            // Asynchronously start the task that waits for all the plugins to complete.
+            // Once they are complete this task will perform cleanup.
             CompletableFuture.runAsync(
-                    new WaitForQueriesToCompleteTask(dataAccessPane, DataAccessPaneState.getCurrentGraphId()),
+                    new WaitForQueriesToCompleteTask(
+                            dataAccessPane,
+                            DataAccessPaneState.getCurrentGraphId()
+                    ),
                     dataAccessPane.getParentComponent().getExecutorService()
             );
             
             LOGGER.info("Plugins run.");
-        } else { // Button is a stop button
-            DataAccessPaneState.getRunningPlugins().keySet().forEach(running -> {
-                running.cancel(true);
-            });
+        } else {
+            // The execute button is in a "Stop" state. So cancel any running plugins.
+            DataAccessPaneState.getRunningPlugins().keySet().forEach(running -> running.cancel(true));
+            
+            // Nothing is running now, so change the execute button to "Go".
             dataAccessPane.setExecuteButtonToGo();
         }
         
+        // Disables all plugins in the plugin pane
         if (DataAccessPreferenceUtilities.isDeselectPluginsOnExecuteEnabled()) {
             deselectAllPlugins();
         }
     }
     
     /**
-     * 
+     * Iterate through all the tabs in the tab pane and if there are enabled plugins
+     * then disable them.
      */
     private void deselectAllPlugins() {
         dataAccessPane.getDataAccessTabPane().getTabPane().getTabs().stream()
                 .filter(tab -> DataAccessTabPane.tabHasEnabledPlugins(tab))
-                .forEachOrdered(tab -> {
+                .forEachOrdered(tab ->
                     DataAccessTabPane.getQueryPhasePane(tab).getDataAccessPanes()
-                            .forEach(updatingDataAccessPane -> updatingDataAccessPane.validityChanged(false));
-        });
+                            .forEach(updatingDataAccessPane ->
+                                    updatingDataAccessPane.validityChanged(false)
+                            )
+        );
     }
 }

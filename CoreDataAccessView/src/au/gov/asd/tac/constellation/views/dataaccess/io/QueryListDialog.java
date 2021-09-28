@@ -28,6 +28,8 @@ import javafx.scene.control.ListView;
  * @author algol
  */
 public final class QueryListDialog {
+    private static final String QUERY_NAME_DIALOG_TITLE = "Query names";
+    private static final String QUERY_NAME_DIALOG_HEADER = "Select a query to load.";
 
     /**
      * Private constructor to prevent initialization.
@@ -59,8 +61,8 @@ public final class QueryListDialog {
         });
 
         dialog.setResizable(false);
-        dialog.setTitle("Query names");
-        dialog.setHeaderText("Select a query to load.");
+        dialog.setTitle(QUERY_NAME_DIALOG_TITLE);
+        dialog.setHeaderText(QUERY_NAME_DIALOG_HEADER);
         dialog.getDialogPane().setContent(nameList);
         
         final Optional<ButtonType> option = dialog.showAndWait();
