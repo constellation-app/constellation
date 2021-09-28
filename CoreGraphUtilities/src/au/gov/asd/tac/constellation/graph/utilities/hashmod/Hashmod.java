@@ -106,7 +106,7 @@ public class Hashmod {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0] != null) {
-                    keys.put(row[0].toUpperCase(), 0);
+                    keys.put(row[0].toUpperCase(), i);
                 }
             }
         }
@@ -143,7 +143,7 @@ public class Hashmod {
     }
 
     private String getColumnOfTransaction(int transactionCol, String regex) {
-        final Pattern cardNamePattern = Pattern.compile(regex);
+        final Pattern transactionPattern = Pattern.compile(regex);
 
         final String[] headers = getCSVFileHeaders();
         if (headers != null) {
@@ -151,7 +151,7 @@ public class Hashmod {
             for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
                 if (headers[i].matches(HEADER_MATCH_STRING)) {
                     if (numTransactions == transactionCol) {
-                        Matcher matchPattern = cardNamePattern.matcher(headers[i]);
+                        Matcher matchPattern = transactionPattern.matcher(headers[i]);
                         if (matchPattern.find()) {
                             return matchPattern.group(1);
                         }
@@ -168,7 +168,16 @@ public class Hashmod {
     }
 
     public String getSecondColumnOfTransaction(int transactionCol) {
-        return getColumnOfTransaction(transactionCol, ".*?\\.\\.\\.([^\"]+)");
+        return getColumnOfTransaction(transactionCol, ".*?\\.\\.\\.([^\"]+?)(;;;.*|$)");
+    }
+
+    public String getTransactionAttribute(String attributeFromCSV) {
+        final Pattern transactionPattern = Pattern.compile("^.*;;;([^\"]+)");
+        Matcher matchPattern = transactionPattern.matcher(attributeFromCSV);
+        if (matchPattern.find()) {
+            return matchPattern.group(1);
+        }
+        return "";
     }
 
     public String getCSVHeader(final int col) {
@@ -199,6 +208,19 @@ public class Hashmod {
             }
         }
         return null;
+    }
+
+    public String getValueFromKeyAndIndex(final String key, final int value, final int index) {
+        if (CollectionUtils.isNotEmpty(data)) {
+            final String[] row = getCSVRow(index);
+            if (row[0].equalsIgnoreCase(key)) {
+
+                if (row.length > value) {
+                    return row[value];
+                }
+            }
+        }
+        return getValueFromKey(key, value);
     }
 
     public Boolean doesKeyExist(final String key) {
