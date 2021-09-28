@@ -119,9 +119,9 @@ public class ConfigurationPane extends AnchorPane {
         // Bring the new tab to the front
         tabPane.getSelectionModel().select(tab);
 
-        // Create the run pane
-        final RunPane runPane = new RunPane(importController, helpText);
-
+        // Create the run pane - store the name of the associated configuration pane tab
+        final RunPane runPane = new RunPane(importController, helpText, label.getText());
+        
         tab.setContent(runPane);
 
         return tab;
@@ -139,6 +139,11 @@ public class ConfigurationPane extends AnchorPane {
                 if (!newValue) {
                     label.setText(field.getText());
                     tab.setGraphic(label);
+                    
+                    // Ensure runPane is updated to store the updated name (corresponding to the configuration pane tab
+                    // name) which is used when generating summary details to user.
+                    final RunPane runPane = (RunPane) tab.getContent();
+                    runPane.setPaneName(label.getText());
                 }
             });
             tab.setGraphic(field);

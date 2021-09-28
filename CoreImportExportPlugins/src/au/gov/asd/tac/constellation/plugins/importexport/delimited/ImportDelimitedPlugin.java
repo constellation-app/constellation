@@ -127,46 +127,86 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
      * file imports.
      *
      * @param title Title to add to status dialog
-     * @param importedRows Number of rows successfully imported (from valid
-     * files)
-     * @param validFilenames List of filenames that were imported from
-     * @param invalidFilenames List of files that couldn't be opened/parsed. We
-     * try to limit this possibility by pre-screening files during the initial
-     * file selection.
+     * @param importedRows Number of rows successfully imported (from validFilenames)
+     * @param validFilenames List of valid filenames that were imported from
+     * @param emptyFilenames List of filenames that were requested to import that contained no data rows
+     * @param invalidFilenames List of files that couldn't be opened/parsed. We try to limit this possibility by
+     * pre-screening files during the initial file selection
+     * @param emptyRunConfigs List of run config names that were found to not have vertex of transaction mappings
+     * defined
      */
-    private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
+    private void displaySummaryAlert(final int importedObjects, final int importedRows, final List<String> validFilenames,
+                                     final List<String> emptyFilenames, final List<String> invalidFilenames,
+                                     final List<String> emptyRunConfigs) {
         Platform.runLater(() -> {
             boolean success = true;
             final StringBuilder sbHeader = new StringBuilder();
             final StringBuilder sbMessage = new StringBuilder();
 
-            if (importedRows > 0) {
-                // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
-                // issues for. If there were any files with issues use a warning dialog.
-                sbHeader.append(String.format("Imported %d rows of data from %d files", importedRows, validFilenames.size()));
+            if (importedObjects > 0) {
+                // At least 1 object was successfully imported. List all successful file imports, as well as any files
+                // that there were issues for. If there were any files with issues use a warning dialog.
+                sbHeader.append(String.format("Extracted data from %d rows in %d files", importedRows, validFilenames.size()));
                 sbMessage.append("The following file(s) contained data:");
                 validFilenames.forEach(filename -> {
-                    sbMessage.append("\n  ");
+                    sbMessage.append("\n  - ");
                     sbMessage.append(filename);
                 });
+                if (emptyFilenames.size() > 0) {
+                    // empty files were found.
+                    sbMessage.append("\n\nThe following file(s) contained no data:");
+                    emptyFilenames.forEach(filename -> {
+                        sbMessage.append("\n  - ");
+                        sbMessage.append(filename);
+                    });
+                }
                 if (invalidFilenames.size() > 0) {
-                    // some invalid files were found - warning condition.
+                    // invalid files were found.
                     success = false;
                     sbMessage.append("\n\nThe following file(s) could not be parsed. No data was extracted:");
                     invalidFilenames.forEach(filename -> {
-                        sbMessage.append("\n  ");
+                        sbMessage.append("\n  - ");
                         sbMessage.append(filename);
+                    });
+                }
+                if (emptyRunConfigs.size() > 0) {
+                    // invalid run configs were found.
+                    sbMessage.append("\n\nThe following Run configs will not generate results:");
+                    emptyRunConfigs.forEach(config -> {
+                        sbMessage.append("\n  - ");
+                        sbMessage.append(config);
                     });
                 }
             } else {
                 // No rows were imported list all files that resulted in failures.
                 success = false;
                 sbHeader.append("No data found to import");
-                sbMessage.append("The following file(s) could not be parsed. no data was extracted:");
-                invalidFilenames.forEach(filename -> {
-                    sbMessage.append("\n  ");
-                    sbMessage.append(filename);
-                });
+
+                if (emptyFilenames.size() > 0) {
+                    // empty files were found.
+                    sbMessage.append("\n\nThe following file(s) contained no data:");
+                    emptyFilenames.forEach(filename -> {
+                        sbMessage.append("\n  - ");
+                        sbMessage.append(filename);
+                    });
+                }
+                if (invalidFilenames.size() > 0) {
+                    // invalid files were found.
+                    success = false;
+                    sbMessage.append("\n\nThe following file(s) could not be parsed. No data was extracted:");
+                    invalidFilenames.forEach(filename -> {
+                        sbMessage.append("\n  - ");
+                        sbMessage.append(filename);
+                    });
+                }
+                if (emptyRunConfigs.size() > 0) {
+                    // invalid run configs were found.
+                    sbMessage.append("\n\nThe following Run configs will not generate results:");
+                    emptyRunConfigs.forEach(config -> {
+                        sbMessage.append("\n  - ");
+                        sbMessage.append(config);
+                    });
+                }
             }
             NotifyDisplayer.displayAlert("Delimited Importer", sbHeader.toString(), sbMessage.toString(),
                     success ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
@@ -187,9 +227,20 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final List<Integer> newVertices = new ArrayList<>();
         boolean positionalAtrributesExist = false;
         final List<String> validFiles = new ArrayList<>();
+        final List<String> emptyFiles = new ArrayList<>();
         final List<String> invalidFiles = new ArrayList<>();
+        final List<String> emptyRunConfigs = new ArrayList<>();
         int importRows = 0;
         int dataSize = 0;
+    
+        // Loop through import definitions looking for those that don't have either a source or destination vertex (as
+        // a minimum) defined
+        for (final ImportDefinition definition : definitions) {
+            if (definition.getDefinitions(AttributeType.SOURCE_VERTEX).isEmpty() &&
+                definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
+                emptyRunConfigs.add(definition.getDefinitionName());
+            }
+        }
 
         for (final File file : files) {
             interaction.setProgress(0, 0, "Reading File: " + file.getName(), true);
@@ -198,9 +249,14 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             try {
                 data = parser.parse(new InputSource(file), parserParameters);
                 dataSize = filesIncludeHeaders ? data.size() - 1 : data.size();
-                importRows = importRows + dataSize;
-                validFiles.add(file.getPath());
+                importRows = importRows + Integer.max(0, dataSize);
+                
                 LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1}. {2} total rows imported", new Object[]{dataSize, file.getPath(), importRows});
+                if (dataSize > 0) {
+                    validFiles.add(file.getPath().concat(" (").concat(Integer.toString(dataSize)).concat(" rows)"));
+                } else {
+                    emptyFiles.add(file.getPath());
+                }
             } catch (FileNotFoundException ex) {
                 final String errorMsg = file.getPath() + " could not be found. Ignoring file during import.";
                 LOGGER.log(Level.INFO, errorMsg);
@@ -214,12 +270,16 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             if (data != null) {
                 for (final ImportDefinition definition : definitions) {
                     if (definition.getDefinitions(AttributeType.SOURCE_VERTEX).isEmpty()) {
+                        // No source vertex definitions are set, the only option left is destination vertexes being mapped.
+                        // Process destination vertexes if defintions are defined, otherwise there is nothing to do.
                         if (!definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
                             processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, interaction, file.getName(), newVertices);
                         }
                     } else if (definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
+                        // Source defintions exist, but no destination definitions exist. Process the source definitions.
                         processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, interaction, file.getName(), newVertices);
                     } else {
+                        // Both source and destination defintions exist, process them. 
                         processTransactions(definition, graph, data, initialiseWithSchema, interaction, file.getName());
                     }
 
@@ -229,8 +289,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 }
             }
         }
-        LOGGER.log(Level.INFO, "Imported {0} rows of data. {1} files contained data. {2} files were ignored.", new Object[]{importRows, validFiles.size(), invalidFiles.size()});
-        displaySummaryAlert(importRows, validFiles, invalidFiles);
+
+        displaySummaryAlert(graph.getVertexCount() + graph.getTransactionCount(), importRows, validFiles, emptyFiles, invalidFiles, emptyRunConfigs);
 
         ConstellationLoggerHelper.importPropertyBuilder(
                 this,
