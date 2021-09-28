@@ -52,13 +52,17 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
         helpOptionsPanel.setOnlineHelpOption(prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP));
     }
 
+    protected PropertyChangeSupport getPropertyChangeSupport() {
+        return pcs;
+    }
+
     @Override
     public void applyChanges() {
         if (isValid()) {
-            pcs.firePropertyChange(OptionsPanelController.PROP_VALID, null, null);
+            getPropertyChangeSupport().firePropertyChange(OptionsPanelController.PROP_VALID, null, null);
 
             if (isChanged()) {
-                pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
+                getPropertyChangeSupport().firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
                 final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
                 final HelpOptionsPanel helpOptionsPanel = getPanel();
                 prefs.putBoolean(HelpPreferenceKeys.HELP_KEY, helpOptionsPanel.getOnlineHelpOption());
@@ -89,7 +93,7 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
         return getPanel();
     }
 
-    private HelpOptionsPanel getPanel() {
+    protected HelpOptionsPanel getPanel() {
         if (panel == null) {
             panel = new HelpOptionsPanel(this);
         }
@@ -98,17 +102,17 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("au.gov.asd.tac.constellation.help.helpOptions");
+        return new HelpCtx(getClass().getName());
     }
 
     @Override
     public void addPropertyChangeListener(final PropertyChangeListener l) {
-        pcs.addPropertyChangeListener(l);
+        getPropertyChangeSupport().addPropertyChangeListener(l);
     }
 
     @Override
     public void removePropertyChangeListener(final PropertyChangeListener l) {
-        pcs.removePropertyChangeListener(l);
+        getPropertyChangeSupport().removePropertyChangeListener(l);
     }
 
 }
