@@ -59,7 +59,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     public static void copy(final String filePath, final OutputStream out) throws IOException {
         final String sep = File.separator;
-        final InputStream pageInput = getInputStream(filePath.substring(3));
+        final InputStream pageInput = getInputStream(filePath);
         final InputStream tocInput = getInputStream(Generator.baseDirectory + sep + Generator.tocDirectory);
 
         if (pageInput == null || tocInput == null) {
@@ -118,7 +118,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String appJS = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/js/app.js"));
         final String boostrapjs = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/js/bootstrap.js"));
         final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/js/js.cookie.min.js"));
-
 
         final String scriptTag = "<script>\n"
                 + " // when a group is shown, save it as active\n"

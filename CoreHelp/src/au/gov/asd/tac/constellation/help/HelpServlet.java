@@ -105,7 +105,7 @@ public class HelpServlet extends HttpServlet {
         response.setContentType(mimeType);
 
         try {
-            ConstellationHelpDisplayer.copy(requestPath.substring(6), response.getOutputStream());
+            ConstellationHelpDisplayer.copy(requestPath.substring(9), response.getOutputStream());
         } catch (final IOException ex) {
             throw new ServletException(ex);
         }
