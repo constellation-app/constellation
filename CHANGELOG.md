@@ -2,6 +2,8 @@
 
 ## Changes in September 2021
 
+-   Update the default configuration to always show errors as a dialog message
+
 -   Updated the way exceptions are displayed to the user. Exceptions thrown in
     the `DefaultPluginEnvironment` are now presented to the user using the
     class `NotifyDescriptor.Exception`. This presents an exception dialog
@@ -9,6 +11,8 @@
 
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
+
+-   Removed the verbose printing of garbage collection by default.
 
 -   Removed unused `localized` parameter from the signature of the `locate()`
     method in `ConstellationInstalledFileLocator`.
