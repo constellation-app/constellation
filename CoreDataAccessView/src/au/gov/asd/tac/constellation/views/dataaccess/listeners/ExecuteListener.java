@@ -117,7 +117,7 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
             // plugins running, just triggers a notification
             final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDirEx();
             
-            if (outputDir != null) {
+            if (outputDir != null && outputDir.isDirectory()) {
                 StatusDisplayer.getDefault().setStatusText(
                         String.format(STATUS_MESSAGE_FORMAT, outputDir.getAbsolutePath())
                 );

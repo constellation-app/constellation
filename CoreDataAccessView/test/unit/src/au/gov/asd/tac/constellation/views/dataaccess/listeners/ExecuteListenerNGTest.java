@@ -219,8 +219,10 @@ public class ExecuteListenerNGTest {
         // Setting this to true ensures that active plugins are de-selected at the end
         DataAccessPreferenceUtilities.setDeselectPluginsOnExecute(true);
         
-        
-        //when(dataAccessTabPane.hasActiveAndValidPlugins()).thenReturn(true);
+        // We don't set the current graph ID in the state but ensure that there
+        // active and valid plugins in the tab pane so that a new graph is created
+        // on the fly
+        when(dataAccessTabPane.hasActiveAndValidPlugins()).thenReturn(true);
         
         // Set up our fake tab pane
         final Tab tab1 = mock(Tab.class);

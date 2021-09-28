@@ -94,17 +94,7 @@ public class QueryPhasePane extends VBox {
         getChildren().addAll(globalParametersPane, dataSourceList);
     }
 
-    protected VBox getDataSourceList() {
-        return dataSourceList;
-    }
-
-    protected Set<MenuItem> getGraphDependentMenuItems() {
-        return graphDependentMenuItems;
-    }
-
-    protected Set<MenuItem> getPluginDependentMenuItems() {
-        return pluginDependentMenuItems;
-    }
+    
 
     public void enableGraphDependentMenuItems(final boolean enabled) {
         for (final MenuItem menuItem : graphDependentMenuItems) {
@@ -126,19 +116,7 @@ public class QueryPhasePane extends VBox {
         pluginDependentMenuItems.addAll(Arrays.asList(menuItems));
     }
 
-    /**
-     * Get the actual data access panes. These can then be queried to see which
-     * ones are enabled and to get the parameters.
-     *
-     * @return a list of the data access panes.
-     */
-    public List<DataSourceTitledPane> getDataAccessPanes() {
-        return dataSources;
-    }
-
-    public GlobalParametersPane getGlobalParametersPane() {
-        return globalParametersPane;
-    }
+    
 
     /**
      * Expand headings
@@ -212,30 +190,31 @@ public class QueryPhasePane extends VBox {
     }
     
     /**
-     * Run the selected plug-ins in pane given query pane, optionally waiting
-     * first on a list of futures. This method does not block.
+     * Run the plugin for each data access pane in this query pane, optionally
+     * waiting first on a list of passed futures. This method will start the
+     * plugin execution and return a list of futures representing each plugins
+     * execution.
      *
-     * @param async if not null, the plug-ins will wait till all futures are
-     * complete before any run.
-     * @return
+     * @param async if not null, the plugins to be executed will wait till all the
+     *     futures in the list have been completed before running
+     * @return a list of futures representing the plugins that were executed
      */
     public List<Future<?>> runPlugins(final List<Future<?>> async) {
+        // Get the global plugin parameters for this query pane
         final Map<String, PluginParameter<?>> globalParams = getGlobalParametersPane()
                 .getParams().getParameters();
 
-        // pre query validation checking
+        // Pre-query validation checking
         for (final DataAccessPreQueryValidation check : PRE_QUERY_VALIDATION) {
             if (!check.execute(this)) {
                 return Collections.emptyList();
             }
         }
 
-        int pluginsToRun = 0;
-        for (final DataSourceTitledPane pane : getDataAccessPanes()) {
-            if (pane.isQueryEnabled()) {
-                pluginsToRun++;
-            }
-        }
+        // Determine the number of plugins that will be executed
+        int pluginsToRun = Long.valueOf(getDataAccessPanes().stream()
+                .filter(DataSourceTitledPane::isQueryEnabled)
+                .count()).intValue();
         
         LOGGER.log(Level.INFO, "\tRunning {0} plugins", pluginsToRun);
         
@@ -245,35 +224,69 @@ public class QueryPhasePane extends VBox {
         // TODO shouldn't this cancel the jobs as well??
         DataAccessPaneState.removeAllRunningPlugins();
         
-        for (final DataSourceTitledPane pane : getDataAccessPanes()) {
-            if (pane.isQueryEnabled()) {
-                final Plugin plugin = PluginRegistry.get(pane.getPlugin().getClass().getName());
-                PluginParameters parameters = pane.getParameters();
-                if (parameters != null) {
-                    parameters = parameters.copy();
-                    for (final Map.Entry<String, PluginParameter<?>> param : parameters.getParameters().entrySet()) {
-                        final String id = param.getKey();
-                        // Why were global parameters only being copied back if the plugin parameter's value was null?
-                        //                        Object value = param.getValue().getObjectValue();
-                        if (/*value == null &&*/globalParams.containsKey(id)) {
-                            param.getValue().setObjectValue(globalParams.get(id).getObjectValue());
-                        }
+        getDataAccessPanes().stream()
+                .filter(DataSourceTitledPane::isQueryEnabled)
+                .forEach(pane -> {
+                    // Copy global parameters into plugin parameters where there
+                    // is overlap
+                    PluginParameters parameters = pane.getParameters();
+                    if (parameters != null) {
+                        parameters = parameters.copy();
+                        parameters.getParameters().entrySet().stream()
+                                .filter(entry -> globalParams.containsKey(entry.getKey()))
+                                .forEach(entry -> entry.getValue().setObjectValue(
+                                        globalParams.get(entry.getKey()).getObjectValue()
+                                ));
                     }
-                }
-                
-                LOGGER.log(Level.INFO, "\t\tRunning {0}", plugin.getName());
-
-                final Future<?> pluginResult = PluginExecution.withPlugin(plugin)
+                    
+                    // Get the plugin for this pane and run it
+                    final Plugin plugin = PluginRegistry.get(pane.getPlugin().getClass().getName());
+                    
+                    LOGGER.log(Level.INFO, "\t\tRunning {0}", plugin.getName());
+                    
+                    final Future<?> pluginResult = PluginExecution.withPlugin(plugin)
                         .withParameters(parameters)
                         .waitingFor(async)
                         .synchronizingOn(synchroniser)
                         .executeLater(GraphManager.getDefault().getActiveGraph());
+                    
+                    newAsync.add(pluginResult);
                 
-                newAsync.add(pluginResult);
-                
-                DataAccessPaneState.getRunningPlugins().put(pluginResult, plugin.getName());
-            }
-        }
+                    DataAccessPaneState.addRunningPlugin(pluginResult, plugin.getName());
+                });
+        
         return newAsync;
+    }
+    
+    /**
+     * Get the actual data access panes on this query phase pane. These can then
+     * be accessed to see which ones are enabled and to get the plugin parameters.
+     *
+     * @return a list of the data access panes
+     */
+    public List<DataSourceTitledPane> getDataAccessPanes() {
+        return dataSources;
+    }
+
+    /**
+     * Get the global parameters pane on this query phase pane. From this the
+     * global plugin parameters can be accessed.
+     *
+     * @return the global parameters pane
+     */
+    public GlobalParametersPane getGlobalParametersPane() {
+        return globalParametersPane;
+    }
+    
+    protected VBox getDataSourceList() {
+        return dataSourceList;
+    }
+
+    protected Set<MenuItem> getGraphDependentMenuItems() {
+        return graphDependentMenuItems;
+    }
+
+    protected Set<MenuItem> getPluginDependentMenuItems() {
+        return pluginDependentMenuItems;
     }
 }

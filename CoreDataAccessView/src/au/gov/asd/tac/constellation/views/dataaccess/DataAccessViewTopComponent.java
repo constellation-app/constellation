@@ -33,7 +33,6 @@ import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays the Data Access View.
- * <p>
  */
 @TopComponent.Description(
         preferredID = "DataAccessViewTopComponent",
@@ -67,22 +66,25 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
     
-    private final DataAccessPane dataAccessViewPane;
+    private final DataAccessPane dataAccessPane;
 
+    /**
+     * Create a new data access view.
+     */
     public DataAccessViewTopComponent() {
         setName(Bundle.CTL_DataAccessViewTopComponent());
         setToolTipText(Bundle.HINT_DataAccessViewTopComponent());
 
         initComponents();
 
-        dataAccessViewPane = new DataAccessPane(DataAccessViewTopComponent.this);
-        dataAccessViewPane.addUIComponents();
+        dataAccessPane = new DataAccessPane(DataAccessViewTopComponent.this);
+        dataAccessPane.addUIComponents();
         
         initContent();
 
         addAttributeCountChangeHandler(graph -> {
-            if (needsUpdate() && dataAccessViewPane != null) {
-                dataAccessViewPane.update(graph);
+            if (needsUpdate() && dataAccessPane != null) {
+                dataAccessPane.update(graph);
             }
         });
 
@@ -91,22 +93,26 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     /**
      * The pane used for the data access view.
-     * <p>
-     * This gives us a parent for dialog boxes, for example.
      *
-     * @return The pane used for the data access view.
+     * @return the pane used for the data access view
      */
     public DataAccessPane getDataAccessPane() {
-        return dataAccessViewPane;
+        return dataAccessPane;
     }
     
+    /**
+     * A fixed single thread pool for execution of jobs in the data access view
+     * that need to happen in an asynchronous manner.
+     *
+     * @return a fixed single thread pool
+     */
     public ExecutorService getExecutorService() {
         return executorService;
     }
 
     @Override
     public DataAccessPane createContent() {
-        return dataAccessViewPane;
+        return dataAccessPane;
     }
 
     @Override
@@ -117,13 +123,13 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
     @Override
     public void handleComponentOpened() {
         super.handleComponentOpened();
-        QualityControlAutoVetter.getInstance().addObserver(dataAccessViewPane);
+        QualityControlAutoVetter.getInstance().addObserver(getDataAccessPane());
     }
 
     @Override
     public void handleComponentClosed() {
         super.handleComponentClosed();
-        QualityControlAutoVetter.getInstance().removeObserver(dataAccessViewPane);
+        QualityControlAutoVetter.getInstance().removeObserver(getDataAccessPane());
     }
 
     @Override
@@ -134,10 +140,10 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (needsUpdate() && dataAccessViewPane != null) {
-            dataAccessViewPane.update(graph);
+        if (needsUpdate() && getDataAccessPane() != null) {
+            getDataAccessPane().update(graph);
             Platform.runLater(() -> {
-                DataAccessPreferencesIoProvider.loadDataAccessState(dataAccessViewPane, graph);
+                DataAccessPreferencesIoProvider.loadDataAccessState(getDataAccessPane(), graph);
             });
         }
     }

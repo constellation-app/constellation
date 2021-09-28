@@ -15,20 +15,39 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -353,6 +372,119 @@ public class QueryPhasePaneNGTest {
             final HeadingPane heading = (HeadingPane) child;
 
             assertTrue(heading.isExpanded());
+        }
+    }
+    
+    @Test
+    public void testRunPlugins() {
+        // Initialize the current graph in the state.
+        DataAccessPaneState.setCurrentGraphId("GraphId");
+        
+        // Adding existing plugin to the current graph state to show that existing
+        // running plugins are removed.
+        DataAccessPaneState.addRunningPlugin(
+                CompletableFuture.completedFuture("To Be Removed"),
+                "Plugin To Be Removed"
+        );
+                
+        final QueryPhasePane instance = spy(new QueryPhasePane(new HashMap<>(), null, null));
+        
+        // Setup the graph manager
+        final GraphManager graphManager = mock(GraphManager.class);
+        final Graph graph = mock(Graph.class);
+        when(graphManager.getActiveGraph()).thenReturn(graph);
+        
+        // Setup the global parameters
+        final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
+        final PluginParameters globalPluginParameters = mock(PluginParameters.class);
+        final PluginParameter globalPluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter globalPluginParameter2 = mock(PluginParameter.class);
+        
+        doReturn(globalParametersPane).when(instance).getGlobalParametersPane();
+        when(globalParametersPane.getParams()).thenReturn(globalPluginParameters);
+        when(globalPluginParameters.getParameters()).thenReturn(Map.of(
+                "abc.parameter1", globalPluginParameter1,
+                "global.parameter1", globalPluginParameter2
+        ));
+        when(globalPluginParameter1.getObjectValue()).thenReturn("GLOBAL PARAMETER 1");
+        
+        // Setup data access panes
+        final DataSourceTitledPane dataSourceTitledPane1 = mock(DataSourceTitledPane.class);
+        final DataSourceTitledPane dataSourceTitledPane2 = mock(DataSourceTitledPane.class);
+        
+        doReturn(List.of(dataSourceTitledPane1, dataSourceTitledPane2)).when(instance)
+                .getDataAccessPanes();
+        
+        // Pane 1 is disabled so will not be run
+        when(dataSourceTitledPane1.isQueryEnabled()).thenReturn(false);
+        when(dataSourceTitledPane2.isQueryEnabled()).thenReturn(true);
+        
+        // Setup the plugin for pane 2
+        final Plugin plugin = mock(Plugin.class);
+        when(plugin.getName()).thenReturn("Plugin Name");
+        
+        when(dataSourceTitledPane2.getPlugin()).thenReturn(plugin);
+        
+        // Pane 2 has two parameters. One of them matches in name to one of
+        // the global parameters which means its value will be overriden with
+        // the global value.
+        final PluginParameters pluginParameters = mock(PluginParameters.class);
+        final PluginParameter pluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter pluginParameter2 = mock(PluginParameter.class);
+        when(pluginParameters.getParameters()).thenReturn(Map.of(
+                "abc.parameter1", pluginParameter1,
+                "abc.parameter2", pluginParameter2
+        ));
+        when(pluginParameters.copy()).thenReturn(pluginParameters);
+        when(dataSourceTitledPane2.getParameters()).thenReturn(pluginParameters);
+        
+        try (
+                final MockedStatic<PluginRegistry> pluginRegistry =
+                        Mockito.mockStatic(PluginRegistry.class);
+                final MockedStatic<PluginExecution> pluginExecutionMockedStatic =
+                        Mockito.mockStatic(PluginExecution.class);
+                final MockedStatic<GraphManager> graphManagerMockedStatic =
+                        Mockito.mockStatic(GraphManager.class);
+                final MockedConstruction<PluginSynchronizer> pluginSynchMocks =
+                        Mockito.mockConstruction(PluginSynchronizer.class, (pluginSyncMock, cnxt) -> {
+                            assertEquals(cnxt.arguments(), List.of(1));
+                        });
+        ) {
+            // Not sure why this is being done but just retuning the same plugin
+            // to save creating another mock.
+            pluginRegistry.when(() -> PluginRegistry.get(plugin.getClass().getName()))
+                    .thenReturn(plugin);
+            
+            graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
+            
+            // This is the future that will be returned when the plugin begins execution
+            final Future future = CompletableFuture.completedFuture("Plugin Complete!");
+            
+            // This is the future of a plugin that was run previously
+            final Future existingFuture = CompletableFuture.completedFuture("Previous Plugin Complete!");
+            
+            final PluginExecution pluginExecution = mock(PluginExecution.class);
+            pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(plugin))
+                    .thenReturn(pluginExecution);
+            
+            // We don't need to verify any of these again (with the exception of the plugin synchronizer)
+            // because a null pointer will happen if any of the params don't match up.
+            when(pluginExecution.withParameters(pluginParameters)).thenReturn(pluginExecution);
+            when(pluginExecution.waitingFor(List.of(existingFuture))).thenReturn(pluginExecution);
+            when(pluginExecution.synchronizingOn(any(PluginSynchronizer.class))).thenReturn(pluginExecution);
+            when(pluginExecution.executeLater(graph)).thenReturn(future);
+            
+            // Verify that the return contains the plugin future as defined above
+            assertEquals(instance.runPlugins(List.of(existingFuture)), List.of(future));
+            
+            // Verify the state's running plugin list has been updated
+            assertEquals(DataAccessPaneState.getRunningPlugins(), Map.of(future, "Plugin Name"));
+            
+            // Verify the local plugin parameter was updated with the global parameter value
+            verify(pluginParameter1).setObjectValue("GLOBAL PARAMETER 1");
+            
+            // Verify the created plugin synchronizer is passed to the plugin execution
+            verify(pluginExecution).synchronizingOn(pluginSynchMocks.constructed().get(0));
         }
     }
 
