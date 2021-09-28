@@ -72,6 +72,7 @@ public class HelpServlet extends HttpServlet {
                 if (firstIndex != -1) {
                     final int secondIndex = requestPath.indexOf(repeatedText, firstIndex + repeatedText.length());
                     if (secondIndex != -1) {
+                        // If the request path is duplicated then change it to be the last half
                         final File file = new File(Generator.baseDirectory);
                         final URL fileUrl = file.toURI().toURL();
                         String requestfrontHalfRemoved = requestPath.replace(fileUrl.toString(), ""); // remove first bit
