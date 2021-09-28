@@ -83,6 +83,7 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
             DataAccessPaneState.setQueriesRunning(true);
 
             final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDirEx();
+            
             if (outputDir != null && outputDir.isDirectory()) {
                 final String msg = String.format("Data access results will be written to %s", outputDir.getAbsolutePath());
                 StatusDisplayer.getDefault().setStatusText(msg);
@@ -93,8 +94,6 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
                         msg,
                         null
                 );
-            } else {
-                // Do nothing
             }
 
             PluginExecution.withPlugin(new SimplePlugin("Data Access View: Save State") {

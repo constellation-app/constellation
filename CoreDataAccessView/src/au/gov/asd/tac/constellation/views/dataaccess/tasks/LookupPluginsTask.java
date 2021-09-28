@@ -93,7 +93,7 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
             for (String pluginType : plugins.keySet()) {
                 final List<DataAccessPlugin> pluginList = plugins.get(pluginType);
                 for (DataAccessPlugin plugin : pluginList) {
-                    if (plugin.getClass().getName().equals(pluginName)) {
+                    if (plugin.getName().equals(pluginName)) {
                         removeType = pluginType;
                         removePlugin = plugin;
                         break;

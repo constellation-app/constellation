@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.io;
 
+import java.util.List;
 import java.util.Optional;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
@@ -44,7 +44,7 @@ public final class QueryListDialog {
      * @param queryNames the list of query names to display
      * @return the selected item or null if no item is selected or cancel is selected
      */
-    public static String getQueryName(final String[] queryNames) {
+    public static Optional<String> getQueryName(final List<String> queryNames) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
 
         final ListView<String> nameList = new ListView<>(
@@ -62,11 +62,12 @@ public final class QueryListDialog {
         dialog.setTitle("Query names");
         dialog.setHeaderText("Select a query to load.");
         dialog.getDialogPane().setContent(nameList);
+        
         final Optional<ButtonType> option = dialog.showAndWait();
         if (option.isPresent() && option.get() == ButtonType.OK) {
-            return nameList.getSelectionModel().getSelectedItem();
+            return Optional.of(nameList.getSelectionModel().getSelectedItem());
         }
 
-        return null;
+        return Optional.empty();
     }
 }
