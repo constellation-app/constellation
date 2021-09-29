@@ -113,7 +113,7 @@
                          //show the group if the value is true 
                          var cookieValue = Cookies.get(cookie);
                          if (cookieValue == ("true")) {
-                            $$("#" + cookie).collapse(\"show\");
+                            $$("#" + cookie).collapse("show");
                          } else {
                             $$("#" + cookie).collapse("hide");
                             $$("#" + cookie + " .collapse").removeClass('show');
