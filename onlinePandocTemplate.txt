@@ -24,6 +24,12 @@
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139401597-2"></script>
 
+  <script>
+    $$(function() {
+      $$("#includedContent").load("../../toc.html");
+    });
+  </script>
+
   <!-- Nav -->
   <nav id="nav">
     <ul>
@@ -81,9 +87,6 @@
   </div>
 
   <script>
-    $$(function() {
-      $$("#includedContent").load("../../toc.html");
-    });
 
     $$(document).ready(function() {
       var allCookies = Cookies.get();
