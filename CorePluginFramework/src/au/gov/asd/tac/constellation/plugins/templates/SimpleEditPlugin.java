@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -83,7 +84,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
         final Graph graph = graphs.getGraph();
         //graph no longer exists
         if (graph == null) {
-            LOGGER.warning(String.format("Null graph not allowed in a %s", SimpleEditPlugin.class.getSimpleName()));
+            LOGGER.log(Level.WARNING, "Null graph not allowed in a {0}", SimpleEditPlugin.class.getSimpleName());
             return;
         }
 

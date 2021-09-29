@@ -159,7 +159,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                         if (inControlOfProgress && !EDITING_INTERACTION.equals(interaction.getCurrentMessage())) {
                             inControlOfProgress = false;
                         }
-                    } catch (final PluginException | InterruptedException | RuntimeException e) {
+                    } catch (final Exception e) {
                         // describedEdit raised an exception, cancel the plugin and throw the exception back to the caller for generic handling.
                         cancelled = true;
                         throw e;

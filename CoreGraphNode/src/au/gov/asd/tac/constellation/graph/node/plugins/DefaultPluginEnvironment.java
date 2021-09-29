@@ -217,9 +217,11 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         } catch (final PluginException ex) {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
+            throw ex;
         } catch (final Exception ex) {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            throw ex;
         } finally {
             callingConstraints.setSilentCount(silentCount);
             callingConstraints.setAlwaysSilent(alwaysSilent);
@@ -284,9 +286,11 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         } catch (final PluginException ex) {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
+            throw ex;
         } catch (final Exception ex) {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            throw ex;
         } finally {
             callingConstraints.setSilentCount(silentCount);
             callingConstraints.setAlwaysSilent(alwaysSilent);
@@ -350,9 +354,11 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         } catch (final PluginException ex) {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
+            throw ex;
         } catch (final Exception ex) {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            throw ex;
         } finally {
             callingConstraints.setSilentCount(silentCount);
             callingConstraints.setAlwaysSilent(alwaysSilent);
