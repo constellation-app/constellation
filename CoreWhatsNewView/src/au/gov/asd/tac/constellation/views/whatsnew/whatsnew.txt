@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-29 Plugin Parameters
+<p>If you enter a value into a number parameter field that is either less than the minimum allowed or more than maximum allowed, the field turns red.</p>
+
 == 2021-09-17 Anaglyphic Display
 <p>The anaglyphic 3D display now allows different colors to be selected for left and right eyes.</p>
 
