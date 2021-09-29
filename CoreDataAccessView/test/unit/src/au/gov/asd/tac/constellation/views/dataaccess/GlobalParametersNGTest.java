@@ -64,13 +64,12 @@ public class GlobalParametersNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        lookupStaticMock.reset();
-        
         GlobalParameters.clearGlobalParameters();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        lookupStaticMock.reset();
     }
 
     @Test

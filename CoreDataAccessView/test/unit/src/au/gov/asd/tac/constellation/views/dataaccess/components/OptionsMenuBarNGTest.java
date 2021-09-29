@@ -19,6 +19,9 @@ import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoP
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -27,8 +30,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -41,7 +42,8 @@ import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -50,34 +52,33 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class OptionsMenuBarNGTest {
+    private static final Logger LOGGER = Logger.getLogger(OptionsMenuBarNGTest.class.getName());
+    
     private DataAccessPane dataAccessPane;
     
     private OptionsMenuBar optionsMenuBar;
     
-    public OptionsMenuBarNGTest() {
-    }
-
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
-
+    
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
-        
         dataAccessPane = mock(DataAccessPane.class);
         
         optionsMenuBar = spy(new OptionsMenuBar(dataAccessPane));
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        FxToolkit.hideStage();
     }
     
     @Test

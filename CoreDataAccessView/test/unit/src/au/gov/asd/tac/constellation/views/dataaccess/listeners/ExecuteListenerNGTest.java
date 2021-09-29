@@ -40,6 +40,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -77,6 +80,8 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ExecuteListenerNGTest {
+    private static final Logger LOGGER = Logger.getLogger(ExecuteListenerNGTest.class.getName());
+    
     private static final String GRAPH_ID = "graphId";
     
     private static MockedStatic<GraphManager> graphManagerMockedStatic;
@@ -120,6 +125,10 @@ public class ExecuteListenerNGTest {
         completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class, Mockito.CALLS_REAL_METHODS);
         
         graphActionMockedConstruction = Mockito.mockConstruction(NewDefaultSchemaGraphAction.class);
+        
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
@@ -133,12 +142,16 @@ public class ExecuteListenerNGTest {
         completableFutureMockedStatic.close();
         
         graphActionMockedConstruction.close();
+        
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        
         dataAccessViewTopComponent = mock(DataAccessViewTopComponent.class);
         dataAccessPane = mock(DataAccessPane.class);
         dataAccessTabPane = mock(DataAccessTabPane.class);
@@ -199,8 +212,6 @@ public class ExecuteListenerNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        FxToolkit.cleanupStages();
-        
         graphManagerMockedStatic.reset();
         dataAccessTabPaneMockedStatic.reset();
         pluginExecutionMockedStatic.reset();

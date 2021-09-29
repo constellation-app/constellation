@@ -55,9 +55,6 @@ public class WaitForQueriesToCompleteTaskNGTest {
     private DataAccessPane dataAccessPane;
     
     private WaitForQueriesToCompleteTask waitForQueriesToCompleteTask;
-    
-    public WaitForQueriesToCompleteTaskNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -75,8 +72,6 @@ public class WaitForQueriesToCompleteTaskNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        
         dataAccessPane = mock(DataAccessPane.class);
         
         waitForQueriesToCompleteTask = new WaitForQueriesToCompleteTask(dataAccessPane, GRAPH_ID);
@@ -93,8 +88,6 @@ public class WaitForQueriesToCompleteTaskNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        FxToolkit.cleanupStages();
-        
         paneStateMockedStatic.reset();
         platformMockedStatic.reset();
         notificationDisplayerMockedStatic.reset();

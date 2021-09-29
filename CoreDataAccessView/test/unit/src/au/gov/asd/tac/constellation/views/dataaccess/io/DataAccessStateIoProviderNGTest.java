@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.io;
 
-import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessStateIoProvider;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
@@ -38,9 +37,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -55,24 +51,9 @@ public class DataAccessStateIoProviderNGTest {
 
     private DataAccessStateIoProvider dataAccessStateIoProvider;
 
-    public DataAccessStateIoProviderNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @BeforeMethod
     public void setUpMethod() throws Exception {
         dataAccessStateIoProvider = new DataAccessStateIoProvider();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     @Test

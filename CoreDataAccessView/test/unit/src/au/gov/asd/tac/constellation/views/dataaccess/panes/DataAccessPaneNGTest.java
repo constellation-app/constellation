@@ -34,8 +34,6 @@ import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -50,13 +48,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -68,30 +64,12 @@ public class DataAccessPaneNGTest {
     private DataAccessViewTopComponent dataAccessViewTopComponent;
     
     private DataAccessPane dataAccessPane;
-    
-    public DataAccessPaneNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        
         dataAccessViewTopComponent = mock(DataAccessViewTopComponent.class);
         
         dataAccessPane = spy(new DataAccessPane(dataAccessViewTopComponent));
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        FxToolkit.cleanupStages();
     }
     
     @Test

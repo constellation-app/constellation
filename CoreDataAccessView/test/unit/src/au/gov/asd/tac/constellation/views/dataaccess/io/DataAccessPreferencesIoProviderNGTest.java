@@ -37,6 +37,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ScrollPane;
@@ -44,8 +47,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringSubstitutor;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
@@ -59,8 +60,8 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -68,27 +69,22 @@ import org.testng.annotations.Test;
  * @author mimosa2
  */
 public class DataAccessPreferencesIoProviderNGTest {
-
-    public DataAccessPreferencesIoProviderNGTest() {
-    }
+    private static final Logger LOGGER = Logger.getLogger(DataAccessPreferencesIoProviderNGTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        FxToolkit.hideStage();
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     /**

@@ -35,6 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
@@ -53,7 +56,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -63,6 +65,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class QueryPhasePaneNGTest {
+    private static final Logger LOGGER = Logger.getLogger(QueryPhasePaneNGTest.class.getName());
 
     private MenuItem item1;
     private MenuItem item2;
@@ -71,20 +74,22 @@ public class QueryPhasePaneNGTest {
     private Map<String, List<DataAccessPlugin>> plugins;
     private List<DataAccessPlugin> pluginList;
 
-    public QueryPhasePaneNGTest() {
-    }
-
     @BeforeClass
-    public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
-
+    
     @BeforeMethod
     public void setUpMethod() throws Exception {
         item1 = new MenuItem("test1");
@@ -94,10 +99,6 @@ public class QueryPhasePaneNGTest {
         pluginList = Arrays.asList(new TestDataAccessPlugin(), new AnotherTestDataAccessPlugin());
         plugins = new HashMap<>();
         plugins.put("test", pluginList);
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     /**

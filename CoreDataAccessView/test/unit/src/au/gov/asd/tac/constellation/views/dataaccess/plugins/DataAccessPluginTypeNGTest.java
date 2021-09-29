@@ -15,14 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins;
 
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import java.util.List;
 import java.util.Map;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -30,25 +25,6 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class DataAccessPluginTypeNGTest {
-
-    public DataAccessPluginTypeNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
 
     /**
      * Test of getTypes method, of class DataAccessPluginType.

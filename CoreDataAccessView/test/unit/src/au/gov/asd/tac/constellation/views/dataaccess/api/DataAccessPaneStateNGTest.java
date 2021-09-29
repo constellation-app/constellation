@@ -22,8 +22,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -34,7 +32,6 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -46,22 +43,10 @@ public class DataAccessPaneStateNGTest {
     private static final String CURRENT_GRAPH_ID = "currentGraphId";
     private static final String GRAPH_ID = "graphId";
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @BeforeMethod
     public void setUpMethod() throws Exception {
         // Reset the current graph status
         DataAccessPaneState.clearState();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
     
     @Test

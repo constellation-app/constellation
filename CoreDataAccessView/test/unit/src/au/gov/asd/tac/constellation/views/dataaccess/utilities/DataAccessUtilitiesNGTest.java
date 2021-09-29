@@ -33,7 +33,6 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -44,9 +43,6 @@ public class DataAccessUtilitiesNGTest {
 
     private static MockedStatic<SwingUtilities> swingUtilitiesStaticMock;
     private static MockedStatic<WindowManager> windowManagerStaticMock;
-
-    public DataAccessUtilitiesNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -60,14 +56,10 @@ public class DataAccessUtilitiesNGTest {
         windowManagerStaticMock.close();
     }
 
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-        swingUtilitiesStaticMock.reset();
-        windowManagerStaticMock.reset();
-    }
-
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        swingUtilitiesStaticMock.reset();
+        windowManagerStaticMock.reset();
     }
 
     @Test

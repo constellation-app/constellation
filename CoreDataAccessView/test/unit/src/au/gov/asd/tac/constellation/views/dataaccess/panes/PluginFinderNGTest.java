@@ -19,6 +19,9 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ModifiableObservableListBase;
 import javafx.collections.ObservableList;
@@ -42,7 +45,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -52,35 +54,34 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class PluginFinderNGTest {
+    private static final Logger LOGGER = Logger.getLogger(PluginFinderNGTest.class.getName());
 
     private final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
     private final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
 
     private PluginFinder pluginFinder;
 
-    public PluginFinderNGTest() {
-    }
-
     @BeforeClass
-    public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
-
+    
     @BeforeMethod
     public void setUpMethod() throws Exception {
         reset(dataAccessPane, queryPhasePane);
 
         pluginFinder = spy(new PluginFinder());
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     @Test

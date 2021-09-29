@@ -25,16 +25,17 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -42,27 +43,22 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessUserPreferencesNGTest {
-    
-    public DataAccessUserPreferencesNGTest() {
-    }
+    private static final Logger LOGGER = Logger.getLogger(DataAccessUserPreferencesNGTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        FxToolkit.hideStage();
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
     
     @Test

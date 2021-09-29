@@ -22,6 +22,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -32,7 +35,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -42,6 +44,7 @@ import org.testng.annotations.Test;
  * @author Auriga2
  */
 public class HeadingPaneNGTest {
+    private static final Logger LOGGER = Logger.getLogger(HeadingPaneNGTest.class.getName());
 
     private static MockedStatic<DataAccessPreferenceUtilities> dataAccessPreferenceUtilitiesMockedStatic;
     private final PluginParametersPaneListener top = mock(PluginParametersPaneListener.class);
@@ -56,17 +59,22 @@ public class HeadingPaneNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
-        
         dataAccessPreferenceUtilitiesMockedStatic = Mockito.mockStatic(DataAccessPreferenceUtilities.class);
+        
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
-        
         dataAccessPreferenceUtilitiesMockedStatic.close();
+        
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
@@ -76,10 +84,6 @@ public class HeadingPaneNGTest {
         dataAccessPreferenceUtilitiesMockedStatic.reset();
 
         headingPane = new HeadingPane(headingText, pluginsList, top, globalParamLabels);
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     /**

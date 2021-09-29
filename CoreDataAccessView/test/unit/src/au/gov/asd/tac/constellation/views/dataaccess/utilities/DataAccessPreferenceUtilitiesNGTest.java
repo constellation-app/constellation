@@ -20,16 +20,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.prefs.Preferences;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -42,25 +34,10 @@ public class DataAccessPreferenceUtilitiesNGTest {
     
     private Preferences preferences;
 
-    public DataAccessPreferenceUtilitiesNGTest() {
-    }
-
-    @BeforeClass
-    public void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @BeforeMethod
     public void setUpMethod() throws Exception {
         preferences = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
         preferences.clear();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     @Test

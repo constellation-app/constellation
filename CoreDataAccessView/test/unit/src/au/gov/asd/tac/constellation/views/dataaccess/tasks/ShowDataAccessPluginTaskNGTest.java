@@ -33,7 +33,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.awt.NotificationDisplayer;
-import org.testfx.api.FxToolkit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -56,9 +55,6 @@ public class ShowDataAccessPluginTaskNGTest {
     private NotificationDisplayer notificationDisplayer;
     
     private ShowDataAccessPluginTask showDataAccessPluginTask;
-    
-    public ShowDataAccessPluginTaskNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -78,8 +74,6 @@ public class ShowDataAccessPluginTaskNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        
         dataAccessPane = mock(DataAccessPane.class);
         
         showDataAccessPluginTask = new ShowDataAccessPluginTask(PLUGIN_NAME);
@@ -105,8 +99,6 @@ public class ShowDataAccessPluginTaskNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        FxToolkit.cleanupStages();
-        
         dataAccessUtilsMockedStatic.reset();
         dataAccessTabPaneMockedStatic.reset();
         platformMockedStatic.reset();

@@ -30,6 +30,9 @@ import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPrefere
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -41,8 +44,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
@@ -62,7 +63,8 @@ import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -71,34 +73,33 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ButtonToolbarNGTest {
+    private static final Logger LOGGER = Logger.getLogger(ButtonToolbarNGTest.class.getName());
+    
     private DataAccessPane dataAccessPane;
     
     private ButtonToolbar buttonToolbar;
-    
-    public ButtonToolbarNGTest() {
-    }
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
-
+    
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
-        
         dataAccessPane = mock(DataAccessPane.class);
         
         buttonToolbar = spy(new ButtonToolbar(dataAccessPane));
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        FxToolkit.hideStage();
     }
     
     @Test

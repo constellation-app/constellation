@@ -22,9 +22,6 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -36,24 +33,9 @@ public class DataAccessStateNGTest {
 
     private DataAccessState dataAccessState;
 
-    public DataAccessStateNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @BeforeMethod
     public void setUpMethod() throws Exception {
         dataAccessState = new DataAccessState();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     @Test

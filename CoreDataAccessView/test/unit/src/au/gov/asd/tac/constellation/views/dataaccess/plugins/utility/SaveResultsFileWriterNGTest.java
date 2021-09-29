@@ -39,9 +39,7 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import org.openide.util.HelpCtx;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -61,17 +59,6 @@ public class SaveResultsFileWriterNGTest {
     private boolean fileCreated = true;  // Was the file with requesated filename/path created (well, does it exist).
     private String constellationLoggerHelperStatus = "";  // Status string passed to exportPropertyBuilder.
     private boolean dataValid = true;  // Does the contents of the saved file match the expected contents.
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    public SaveResultsFileWriterNGTest() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {

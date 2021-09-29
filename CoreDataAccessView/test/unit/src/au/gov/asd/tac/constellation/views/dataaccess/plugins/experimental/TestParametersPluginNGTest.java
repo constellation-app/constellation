@@ -36,10 +36,6 @@ import java.time.format.DateTimeFormatter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -47,30 +43,6 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class TestParametersPluginNGTest {
-
-    public TestParametersPluginNGTest() {
-        // Intentionally left blank
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        // Intentionally left blank
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        // Intentionally left blank
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-        // Intentionally left blank
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        // Intentionally left blank
-    }
 
     /**
      * Test of getType method, of class TestParametersPlugin.

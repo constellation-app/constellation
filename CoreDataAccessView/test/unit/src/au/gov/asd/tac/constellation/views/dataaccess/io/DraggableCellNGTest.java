@@ -17,6 +17,9 @@ package au.gov.asd.tac.constellation.views.dataaccess.io;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
@@ -28,9 +31,7 @@ import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -38,27 +39,22 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class DraggableCellNGTest {
-
-    public DraggableCellNGTest() {
-    }
+    private static final Logger LOGGER = Logger.getLogger(DraggableCellNGTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     /**

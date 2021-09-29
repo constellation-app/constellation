@@ -51,8 +51,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -68,13 +66,11 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -89,21 +85,8 @@ public class DataAccessTabPaneNGTest {
     
     private DataAccessTabPane dataAccessTabPane;
     
-    public DataAccessTabPaneNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        
         dataAccessPane = mock(DataAccessPane.class);
         topComponent = mock(DataAccessViewTopComponent.class);
         
@@ -116,19 +99,16 @@ public class DataAccessTabPaneNGTest {
         
         DataAccessPaneState.clearState();
     }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        FxToolkit.cleanupStages();
-    }
     
     @Test
     public void init() {
-        assertSame(dataAccessTabPane.getDataAccessPane(), dataAccessPane);
-        assertSame(dataAccessTabPane.getPlugins(), plugins);
+        final DataAccessTabPane realDataAccessTabPane = new DataAccessTabPane(dataAccessPane, plugins);
         
-        assertNotNull(dataAccessTabPane.getTabPane());
-        assertEquals(dataAccessTabPane.getTabPane().getSide(), Side.TOP);
+        assertSame(realDataAccessTabPane.getDataAccessPane(), dataAccessPane);
+        assertSame(realDataAccessTabPane.getPlugins(), plugins);
+        
+        assertNotNull(realDataAccessTabPane.getTabPane());
+        assertEquals(realDataAccessTabPane.getTabPane().getSide(), Side.TOP);
     }
     
     @Test
