@@ -34,7 +34,7 @@
     </nav>
 
 </head>
-<body style="padding-top: 65px;">
+<body style="padding-top: 100px;">
 
     <div class="row">
        <div class="col-4 col-sm-3">
@@ -86,5 +86,40 @@
             gtag('js', new Date());
             gtag('config', 'UA-139401597-2');
         </script>
+	<script>
+             // when a group is shown, save it as active
+             $(\".collapse\").on('shown.bs.collapse', function() {
+                  var active = $(this).attr('id');
+                  console.log(\"In shown with cookie: \" + active);
+                  Cookies.set(active, \"true\");
+             });
+             // when a group is hidden, save it as inactive
+             $(\".collapse\").on('hidden.bs.collapse', function(e) {
+                  e.stopPropagation(); 
+                  var active = $(this).attr('id');
+                  console.log(\"In hidden with cookie: \" + active);
+                  Cookies.set(active, \"false\");
+                  $(\"#\" + active).removeClass('show');
+                  $(\"#\" + active).collapse(\"hide\");
+             });
+              
+             $(document).ready(function() {
+                  var allCookies = Cookies.get();
+                  for (var cookie in allCookies) { 
+                      if (cookie != null) {
+                         //remove default collapse settings
+                         $(\"#\" + cookie).removeClass('show');
+                         //show the group if the value is true 
+                         var cookieValue = Cookies.get(cookie);
+                         if (cookieValue == (\"true\")) {
+                            $(\"#\" + cookie).collapse(\"show\");
+                         } else {
+                            $(\"#\" + cookie).collapse(\"hide\");
+                            $(\"#\" + cookie + \" .collapse\").removeClass('show');
+                         }
+                      }
+                 }
+              });
+       </script>
 </body>
   

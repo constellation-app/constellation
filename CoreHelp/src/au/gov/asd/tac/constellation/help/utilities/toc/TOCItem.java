@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.help.utilities.toc;
 
+import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  *
  * Java in memory representation of a Table of contents item
@@ -43,4 +46,26 @@ public class TOCItem {
     public String toString() {
         return text + " -> " + target;
     }
+
+    /**
+     * Check whether the values for text and target are both the same
+     *
+     * @param obj
+     * @return
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        return obj != null && obj instanceof TOCItem
+                && StringUtils.equals(text, ((TOCItem) obj).getText())
+                && StringUtils.equals(target, ((TOCItem) obj).getTarget());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.target);
+        hash = 97 * hash + Objects.hashCode(this.text);
+        return hash;
+    }
+
 }

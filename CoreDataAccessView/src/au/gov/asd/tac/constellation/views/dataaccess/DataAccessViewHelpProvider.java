@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 1000)
 @NbBundle.Messages("DataAccessViewHelpProvider=Data Access View Help Provider")
 public class DataAccessViewHelpProvider extends HelpPageProvider {
 

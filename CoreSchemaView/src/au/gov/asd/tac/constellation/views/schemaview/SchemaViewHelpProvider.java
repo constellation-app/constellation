@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 2100)
 @NbBundle.Messages("SchemaViewHelpProvider=Schema View Help Provider")
 public class SchemaViewHelpProvider extends HelpPageProvider {
 
