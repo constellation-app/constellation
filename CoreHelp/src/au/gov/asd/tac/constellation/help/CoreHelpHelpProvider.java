@@ -37,7 +37,7 @@ public class CoreHelpHelpProvider extends HelpPageProvider {
         final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep + "gov" + sep
                 + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.help.helpOptions", helpModulePath + "help-options.md");
+        map.put("au.gov.asd.tac.constellation.help.preferences.HelpOptionsPanelController", helpModulePath + "help-options.md");
         return map;
     }
 
