@@ -31,6 +31,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
@@ -73,6 +74,7 @@ public class JDBCSourcePane extends SourcePane {
     private static final int GAP = 10;
     private static final String ACTION_CANCEL = "Cancel";
     private static final String TITLE_JDBC_IMPORT = "JDBC Import";
+    private static final String PROMT_TEXT_COLOUR = "-fx-prompt-text-fill: grey";
 
     private final ComboBox<JDBCConnection> dbConnectionComboBox;
 
@@ -137,9 +139,12 @@ public class JDBCSourcePane extends SourcePane {
             final EventHandler<ActionEvent> addConnectionAction
                     = (final ActionEvent event) -> addOrModifyConnection(connectionsTable, null);
 
+            final GridPane addRemModGp = new GridPane();
+            addRemModGp.setHgap(GAP);
+
             final Button openAddConnectionWindowButton = new Button("Add");
             openAddConnectionWindowButton.setOnAction(addConnectionAction);
-            connectionsPane.add(openAddConnectionWindowButton, 0, 1, 1, 1);
+            addRemModGp.add(openAddConnectionWindowButton, 0, 1, 1, 1);
 
             //Modify Connection Button
             final EventHandler<ActionEvent> editConnectionAction = (final ActionEvent event) -> {
@@ -151,8 +156,9 @@ public class JDBCSourcePane extends SourcePane {
                 }
             };
             final Button editConnectionButton = new Button("Modify");
+            editConnectionButton.setAlignment(Pos.CENTER_LEFT);
             editConnectionButton.setOnAction(editConnectionAction);
-            connectionsPane.add(editConnectionButton, 1, 1, 1, 1);
+            addRemModGp.add(editConnectionButton, 1, 1, 1, 1);
 
             final Button removeBtn = new Button("Remove");
             removeBtn.setOnAction((final ActionEvent t1) -> {
@@ -166,15 +172,16 @@ public class JDBCSourcePane extends SourcePane {
                     dbConnectionComboBox.setItems(connections);
                 }
             });
-            connectionsPane.add(removeBtn, 2, 1, 1, 1);
+            addRemModGp.add(removeBtn, 2, 1, 1, 1);
+            connectionsPane.add(addRemModGp, 0, 1, 1, 1);
 
-            final Button buttonCancel2 = new Button(ACTION_CANCEL);
-            buttonCancel2.setOnAction((final ActionEvent event) -> {
+            final Button buttonOk2 = new Button("OK");
+            buttonOk2.setOnAction((final ActionEvent event) -> {
                 event.consume();
-                final Stage stage = (Stage) buttonCancel2.getScene().getWindow();
+                final Stage stage = (Stage) buttonOk2.getScene().getWindow();
                 stage.close();
             });
-            connectionsPane.add(buttonCancel2, 3, 1, 1, 1);
+            connectionsPane.add(buttonOk2, 3, 1, 1, 1);
 
             final Tab driversTab = new Tab("Drivers");
             driversTab.setClosable(false);
@@ -308,15 +315,15 @@ public class JDBCSourcePane extends SourcePane {
 
             final Button removeBtn1 = new Button("Remove");
             removeBtn1.setOnAction(removebtnAction);
-            driversTabGridPane.add(removeBtn1, 2, 1, 1, 1);
+            driversTabGridPane.add(removeBtn1, 1, 1, 1, 1);
 
-            final Button buttonCancel = new Button(ACTION_CANCEL);
-            buttonCancel.setOnAction((final ActionEvent event) -> {
+            final Button buttonOk = new Button("OK");
+            buttonOk.setOnAction((final ActionEvent event) -> {
                 event.consume();
-                final Stage stage = (Stage) buttonCancel.getScene().getWindow();
+                final Stage stage = (Stage) buttonOk.getScene().getWindow();
                 stage.close();
             });
-            driversTabGridPane.add(buttonCancel, 3, 1, 1, 1);
+            driversTabGridPane.add(buttonOk, 3, 1, 1, 1);
 
             driversTab.setContent(driversTabGridPane);
             connectionsTab.setContent(connectionsPane);
@@ -417,11 +424,17 @@ public class JDBCSourcePane extends SourcePane {
         final Label nameLabel = new Label("Connection Name");
         gp.add(nameLabel, 0, 0, 1, 1);
         final TextField cn = new TextField(add ? "" : connection.getConnectionName());
+        cn.setPromptText("Enter a name for your connection");
+        cn.setStyle(PROMT_TEXT_COLOUR);
+        cn.setFocusTraversable(false);
         gp.add(cn, 1, 0, 2, 1);
         final Label driverLabel = new Label("Driver");
         gp.add(driverLabel, 0, 1, 1, 1);
         driversComboBox.getItems().clear();
         driversComboBox.getItems().addAll(driverManager.getDrivers());
+        if (!driverManager.getDrivers().isEmpty()) {
+            driversComboBox.getSelectionModel().select(driversComboBox.getItems().get(0));
+        }
         if (!add) {
             driversComboBox.getSelectionModel().select(connection.getDriver());
         }
@@ -429,14 +442,24 @@ public class JDBCSourcePane extends SourcePane {
         final Label connectionStringLabel = new Label("Connection String");
         gp.add(connectionStringLabel, 0, 2, 1, 1);
         final TextField connectionStringF = new TextField(add ? "" : connection.getConnectionString());
+        connectionStringF.setPromptText("Enter a URL to connect to, eg. jdbc:sqlite:C:/my_folder/database.sqlite");
+        connectionStringF.setStyle(PROMT_TEXT_COLOUR);
+        connectionStringF.setFocusTraversable(false);
         gp.add(connectionStringF, 1, 2, 2, 1);
         final Label usernameLabel = new Label("Username");
         gp.add(usernameLabel, 0, 3, 1, 1);
         final TextField username = new TextField();
+        username.setPromptText("Optional: Set a username");
+        username.setStyle(PROMT_TEXT_COLOUR);
+        username.setFocusTraversable(false);
         gp.add(username, 1, 3, 2, 1);
         final Label passwordLabel = new Label("Password");
         gp.add(passwordLabel, 0, 4, 1, 1);
         final PasswordField password = new PasswordField();
+        password.setPromptText("Optional: Set a password");
+        password.setStyle(PROMT_TEXT_COLOUR);
+        password.setFocusTraversable(false);
+
         gp.add(password, 1, 4, 2, 1);
         final Button addConnection = new Button(add ? "Add" : "Save");
         addConnection.setOnAction((final ActionEvent t2) -> {
@@ -470,8 +493,8 @@ public class JDBCSourcePane extends SourcePane {
                 stage.close();
             }
         });
-        gp.add(addConnection, 0, 5, 1, 1);
-        final Button test = new Button("Test");
+        gp.add(addConnection, 1, 5, 1, 1);
+        final Button test = new Button("Test Connection");
         test.setOnAction(t -> {
             if (!cn.getText().isBlank()
                     && driversComboBox.getValue() != null
@@ -481,7 +504,7 @@ public class JDBCSourcePane extends SourcePane {
                 NotifyDisplayer.displayAlert(TITLE_JDBC_IMPORT, "Connection Success", "", AlertType.INFORMATION);
             }
         });
-        gp.add(test, 1, 5, 1, 1);
+        gp.add(test, 0, 5, 1, 1);
 
         final Button buttonCancel = new Button(ACTION_CANCEL);
         buttonCancel.setOnAction((final ActionEvent event) -> {

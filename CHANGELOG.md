@@ -8,6 +8,9 @@
 -   Removed unused `localized` parameter from the signature of the `locate()`
     method in `ConstellationInstalledFileLocator`.
 
+-   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
+    rotation values in the wrong value positions.
+
 ## Changes in August 2021
 
 -   Added `updateTagsFiltersAvailable`, `updateSelectedTagsCombo`,

@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -61,6 +62,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 
 /**
  * A RunPane displays the UI necessary to allow the user to drag and drop
@@ -74,7 +76,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final int SCROLLPANE_HEIGHT = 450;
     private static final int SCROLLPANE_VIEW_WIDTH = 400;
     private static final int SCROLLPANE_VIEW_HEIGHT = 900;
-    private static final int SAMPLEVIEW_HEIGHT = 450;
+    private static final int SAMPLEVIEW_HEIGHT = 250;
     private static final int SAMPLEVIEW_MIN_HEIGHT = 130;
     private static final int ATTRIBUTEPANE_PREF_WIDTH = 300;
     private static final int ATTRIBUTEPANE_MIN_WIDTH = 100;
@@ -155,9 +157,17 @@ public final class RunPane extends BorderPane implements KeyListener {
         this.paneName = paneName;
 
         if (rowFilter == null) {
-            new Thread(() -> {
-                rowFilter = new RowFilter();
-            }, ROW_FILTER_INITIALISER).start();
+            try {
+                final CountDownLatch latch = new CountDownLatch(1);
+                new Thread(() -> {
+                    rowFilter = new RowFilter();
+                    latch.countDown();
+                }, ROW_FILTER_INITIALISER).start();
+                latch.await();
+            } catch (final InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+            }
         }
 
         setMaxHeight(Double.MAX_VALUE);
@@ -166,12 +176,11 @@ public final class RunPane extends BorderPane implements KeyListener {
         final VBox configBox = new VBox();
         VBox.setVgrow(configBox, Priority.ALWAYS);
 
-        final ScrollPane configScroll = new ScrollPane();
-        configScroll.setMaxWidth(Double.MAX_VALUE);
-        configScroll.setPrefHeight(SCROLLPANE_HEIGHT);
-        configScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        configScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        setCenter(configBox);
+        final ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(configBox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        setCenter(scrollPane);
 
         filterField = new TextField();
         filterField.setFocusTraversable(false);
@@ -233,12 +242,12 @@ public final class RunPane extends BorderPane implements KeyListener {
                 USE_COMPUTED_SIZE, -1);
         attributePane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, ATTRIBUTEPANE_MIN_WIDTH,
                 USE_COMPUTED_SIZE, -1);
-        attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
+        attributePane.addRow(0, sourceVertexScrollPane, transactionScrollPane, destinationVertexScrollPane);
 
         // A scroll pane to hold the attribute boxes
         final ScrollPane attributeScrollPane = new ScrollPane();
         attributeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         attributeScrollPane.setMaxWidth(Double.MAX_VALUE);
         attributeScrollPane.setContent(attributePane);
         attributeScrollPane.setPrefViewportWidth(SCROLLPANE_VIEW_WIDTH);
@@ -453,6 +462,11 @@ public final class RunPane extends BorderPane implements KeyListener {
         currentRows = newRows;
         sampleDataView.setItems(currentRows);
         setFilter(filter);
+    }
+
+    public void clearFilters() {
+        filterField.setText("");
+        attributeFilterTextField.clear();
     }
 
     public void deleteAttribute(final Attribute attribute) {

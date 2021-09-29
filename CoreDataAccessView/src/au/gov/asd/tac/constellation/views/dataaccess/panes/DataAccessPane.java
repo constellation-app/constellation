@@ -67,7 +67,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
@@ -81,9 +83,11 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -134,6 +138,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     private GraphState currentGraphState = null;
     private String graphId;
     private final Button executeButton = new Button(EXECUTE_GO);
+    private final Button executeButtonBottom = new Button(EXECUTE_GO);
 
     // search plugins
     private final TextField searchPluginTextField;
@@ -145,6 +150,17 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     private static Map<String, List<DataAccessPlugin>> plugins = null;
 
     private List<DataAccessPreQueryValidation> preQueryValidation = null;
+
+    public static final String SETTINGS_LOGO = "resources/DataAccessSettings.png";
+    private final ImageView settingsImage = new ImageView(new Image(DataAccessViewTopComponent.class.getResourceAsStream(SETTINGS_LOGO)));
+    public static final String SAVE_TEMPLATE_LOGO = "resources/DataAccessSaveTemplate.png";
+    private final ImageView saveTemplateImage = new ImageView(new Image(DataAccessViewTopComponent.class.getResourceAsStream(SAVE_TEMPLATE_LOGO)));
+    public static final String LOAD_TEMPLATE_LOGO = "resources/DataAccessLoadTemplate.png";
+    private final ImageView loadTemplateImage = new ImageView(new Image(DataAccessViewTopComponent.class.getResourceAsStream(LOAD_TEMPLATE_LOGO)));
+    public static final String SAVE_RESULTS_LOGO = "resources/DataAccessSaveResults.png";
+    private final ImageView saveResultsImage = new ImageView(new Image(DataAccessViewTopComponent.class.getResourceAsStream(SAVE_RESULTS_LOGO)));
+    public static final String UNCHECKED_LOGO = "resources/DataAccessUnchecked.png";
+    private final ImageView uncheckedImage = new ImageView(new Image(DataAccessViewTopComponent.class.getResourceAsStream(UNCHECKED_LOGO)));
 
     public DataAccessPane(DataAccessViewTopComponent topComponent) {
         this.topComponent = topComponent;
@@ -183,7 +199,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 .addListener((oldValue, newValue) -> update());
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
-        helpButton.paddingProperty().set(new Insets(0, 8, 0, 64));
+        helpButton.paddingProperty().set(new Insets(0, 8, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Data Access"));
         helpButton.setOnAction(event -> {
             new HelpCtx(DataAccessViewTopComponent.class.getName()).display();
@@ -214,6 +230,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         }
 
         executeButton.setStyle(GO_STYLE);
+        executeButtonBottom.setStyle(GO_STYLE);
         executeButton.setOnAction((ActionEvent event) -> {
             boolean pluginSelected = false;
             boolean selectedPluginsValid = true;
@@ -333,24 +350,35 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 deselectAllPlugins();
             }
         });
+        executeButtonBottom.setOnAction(executeButton.getOnAction());
+
         updateForPlugins(false);
 
-        // Options menu.
-        final Menu optionsMenu = new Menu("Options");
-        final MenuItem loadMenuItem = new MenuItem("Load...");
-        loadMenuItem.setOnAction(event -> {
+        settingsImage.setFitHeight(20);
+        settingsImage.setFitWidth(20);
+        loadTemplateImage.setFitHeight(15);
+        loadTemplateImage.setFitWidth(15);
+        saveTemplateImage.setFitHeight(15);
+        saveTemplateImage.setFitWidth(15);
+        saveResultsImage.setFitHeight(15);
+        saveResultsImage.setFitWidth(15);
+        uncheckedImage.setFitHeight(15);
+        uncheckedImage.setFitWidth(15);
+
+        final MenuItem loadTemplatesMenuItem = new MenuItem("Load Templates", loadTemplateImage);
+        loadTemplatesMenuItem.setOnAction(event -> {
             ParameterIOUtilities.loadParameters(this);
         });
 
-        final MenuItem saveMenuItem = new MenuItem("Save");
-        saveMenuItem.setOnAction(event -> {
+        final MenuItem saveTemplatesMenuItem = new MenuItem("Save Templates", saveTemplateImage);
+        saveTemplatesMenuItem.setOnAction(event -> {
             ParameterIOUtilities.saveParameters(dataAccessTabPane);
         });
 
-        final CheckMenuItem saveResultsItem = new CheckMenuItem("Save Results");
+        final CheckMenuItem saveResultsMenuItem = new CheckMenuItem("Save Results", saveResultsImage);
         final File daDir = DataAccessPreferenceKeys.getDataAccessResultsDir();
-        saveResultsItem.setSelected(daDir != null);
-        saveResultsItem.selectedProperty().addListener((ov, oldValue, newValue) -> {
+        saveResultsMenuItem.setSelected(daDir != null);
+        saveResultsMenuItem.selectedProperty().addListener((ov, oldValue, newValue) -> {
             if (newValue) {
                 final DirectoryChooser dc = new DirectoryChooser();
                 dc.setTitle("Folder to save data access results to");
@@ -363,14 +391,14 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 if (dir != null) {
                     DataAccessPreferenceKeys.setDataAccessResultsDir(dir);
                 } else {
-                    saveResultsItem.setSelected(false);
+                    saveResultsMenuItem.setSelected(false);
                 }
             } else {
                 DataAccessPreferenceKeys.setDataAccessResultsDir(null);
             }
         });
 
-        final CheckMenuItem deselectPluginsOnExecution = new CheckMenuItem("Deselect Plugins On Go");
+        final CheckMenuItem deselectPluginsOnExecution = new CheckMenuItem("Deselect On Go", uncheckedImage);
         deselectPluginsOnExecution.setSelected(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled());
         deselectPluginsOnExecution.setOnAction(event -> {
             DataAccessPreferenceKeys.setDeselectPluginsOnExecute(deselectPluginsOnExecution.isSelected());
@@ -389,10 +417,14 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             manageFavourites();
         });
 
-        optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem, deselectPluginsOnExecution);
+        // Options menu.
+        final Menu optionsMenu = new Menu("Workflow Options", settingsImage);
+        optionsMenu.getItems().addAll(loadTemplatesMenuItem, saveTemplatesMenuItem, saveResultsMenuItem, deselectPluginsOnExecution);
+
         final MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
-        menuBar.setMinHeight(32);
+        menuBar.setMinHeight(36);
+        menuBar.setPadding(new Insets(4));
 
         final VBox vbox = new VBox(menuBar, searchPluginTextField, dataAccessTabPane);
         VBox.setVgrow(dataAccessTabPane, Priority.ALWAYS);
@@ -402,23 +434,60 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         AnchorPane.setRightAnchor(vbox, 0.0);
         getChildren().add(vbox);
 
-        final HBox options = new HBox();
-        options.setSpacing(10.0);
-        options.getChildren().addAll(helpButton, addButton, favouriteButton);
+        final GridPane options = new GridPane();
+        options.setPadding(new Insets(4));
+        options.setHgap(4);
+        options.setVgap(4);
+        final HBox helpAddFavHBox = new HBox(helpButton, addButton, favouriteButton);
+        helpAddFavHBox.setSpacing(4);
+        final HBox rabRegionExectueHBox = new HBox();
+        rabRegionExectueHBox.setSpacing(4);
+
+        final HBox goBottomHBox = new HBox();
+        goBottomHBox.setAlignment(Pos.TOP_RIGHT);
+        goBottomHBox.setPadding(new Insets(10));
+        vbox.getChildren().add(goBottomHBox);
 
         final QualityControlAutoButton rab = Lookup.getDefault().lookup(QualityControlAutoButton.class);
+        final QualityControlAutoButton rabBottom = rab.copy();
+
         if (rab != null) {
-            options.getChildren().add(rab);
+            rabRegionExectueHBox.getChildren().add(rab);
+            goBottomHBox.getChildren().add(rabBottom);
         }
 
         // add some padding between the Go button and the previous button to avoid accidental clicking
         final Region region = new Region();
         region.setMinSize(20, 0);
-        options.getChildren().add(region);
-        options.getChildren().add(executeButton);
+        final Region regionBottom = new Region();
+        regionBottom.setMinSize(27, 0);
+
+        rabRegionExectueHBox.getChildren().addAll(region, executeButton);
+        goBottomHBox.getChildren().addAll(regionBottom, executeButtonBottom);
+
+        options.add(helpAddFavHBox, 0, 0);
+        options.add(rabRegionExectueHBox, 1, 0);
         AnchorPane.setTopAnchor(options, 5.0);
         AnchorPane.setRightAnchor(options, 5.0);
         getChildren().add(options);
+
+        widthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() <= 460) {
+                options.getChildren().remove(helpAddFavHBox);
+                options.getChildren().remove(rabRegionExectueHBox);
+                options.add(rabRegionExectueHBox, 0, 0);
+                options.add(helpAddFavHBox, 0, 1);
+                options.setHalignment(helpAddFavHBox, HPos.LEFT);
+                menuBar.setMinHeight(60);
+            } else {
+                options.getChildren().remove(helpAddFavHBox);
+                options.getChildren().remove(rabRegionExectueHBox);
+                options.add(helpAddFavHBox, 0, 0);
+                options.add(rabRegionExectueHBox, 1, 0);
+                options.setHalignment(helpAddFavHBox, HPos.CENTER);
+                menuBar.setMinHeight(36);
+            }
+        });
     }
 
     /**
@@ -478,7 +547,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
                     // Now fetch the DataAccessPlugin instances.
                     final Map<String, DataAccessPlugin> pluginOverrides = new HashMap<>();
-                    Lookup.getDefault().lookupAll(DataAccessPlugin.class).stream().forEach(plugin -> {
+                    Lookup.getDefault().lookupAll(DataAccessPlugin.class
+                    ).stream().forEach(plugin -> {
                         if (!plugin.isEnabled()) {
                             // If plugin is disabled, ignore the plugin.
                             LOGGER.log(Level.INFO, "Disabled data access plugin {0} ({1})", new Object[]{plugin.getName(), plugin.getType()});
@@ -503,7 +573,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                                 LOGGER.log(Level.INFO, "Discovered data access plugin {0} ({1})", new Object[]{plugin.getName(), DataAccessPluginCoreType.FAVOURITES});
                             }
                         }
-                    });
+                    }
+                    );
 
                     // Remove any overridden plugins.
                     pluginOverrides.forEach((pluginName, overridingPlugin) -> {
@@ -826,6 +897,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         // Otherwise, disable if there is no selected plugin, an invalid time range, or the selected plugins contain invalid parameter values.
         final boolean disable = !queryIsRunning && (!pluginSelected || !validTimeRange || !selectedPluginsValid);
         executeButton.setDisable(disable);
+        executeButtonBottom.setDisable(disable);
     }
 
     /**
@@ -916,6 +988,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         Platform.runLater(() -> {
             executeButton.setText(EXECUTE_GO);
             executeButton.setStyle(GO_STYLE);
+            executeButtonBottom.setText(EXECUTE_GO);
+            executeButtonBottom.setStyle(GO_STYLE);
         });
     }
 
@@ -929,6 +1003,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         Platform.runLater(() -> {
             executeButton.setText(EXECUTE_STOP);
             executeButton.setStyle(STOP_STYLE);
+            executeButtonBottom.setText(EXECUTE_STOP);
+            executeButtonBottom.setStyle(STOP_STYLE);
         });
     }
 
@@ -942,6 +1018,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         Platform.runLater(() -> {
             executeButton.setText("Continue");
             executeButton.setStyle(CONTINUE_STYLE);
+            executeButtonBottom.setText("Continue");
+            executeButtonBottom.setStyle(CONTINUE_STYLE);
         });
     }
 
@@ -1056,12 +1134,18 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 executeButton.setDisable(!canRun);
                 executeButton.setText(EXECUTE_GO);
                 executeButton.setStyle(GO_STYLE);
+                executeButtonBottom.setDisable(!canRun);
+                executeButtonBottom.setText(EXECUTE_GO);
+                executeButtonBottom.setStyle(GO_STYLE);
             });
         } else {
             Platform.runLater(() -> {
                 executeButton.setDisable(!canRun);
                 executeButton.setText(EXECUTE_CALCULATING);
                 executeButton.setStyle(CALCULATING_STYLE);
+                executeButtonBottom.setDisable(!canRun);
+                executeButtonBottom.setText(EXECUTE_CALCULATING);
+                executeButtonBottom.setStyle(CALCULATING_STYLE);
             });
         }
     }

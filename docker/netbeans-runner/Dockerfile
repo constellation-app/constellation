@@ -16,6 +16,7 @@ RUN apt-get -y update \
     libx11-dev \
     fontconfig \
     ttf-dejavu \
+    libpangoft2-1.0-0 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

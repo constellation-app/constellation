@@ -1,6 +1,55 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-17 Anaglyphic Display
+<p>The anaglyphic 3D display now allows different colors to be selected for left and right eyes.</p>
+
+== 2021-09-17 Data Access View
+<p>The Quality Control widget and Go button have also been added to the bottom
+of the view to improve the UX workflow as you select plugins from the top going
+downwards.</p>
+
+== 2021-09-17 Histogram sort by Labels (Numbers)
+<p>Histogram view now has an option to sort labels by numeric value on top of the existing string value</p>
+
+== 2021-09-17 Attribute Editor Improvement
+<p>Clicking on the attribute field now brings up the interface to edit the value. The Edit button is now redundant and will be removed later.</p>
+<p>Value can be selected by dragging the mouse over the required part of the string.</p>
+
+== 2021-09-17 Anaglyphic Display
+<p>The graph can be displayed in anaglyphic 3D. This requires glasses with colored lenses, currently hard-coded to be left eye green, right eye magenta.</p>
+
+== 2021-09-15 Quick Start Guide
+<p>The Quick Start Guide on the Whats New Page has been removed. You can now discover that information via the Getting Started link on the Welcome Page which now links
+to the Getting Started help page.</p>
+
+== 2021-09-13 node_labels_bottom/top and transaction_labels changed
+<p>The above three graph attributes have been changed to node_bottom/top_labels_colours and transaction_labels_colours.</p>
+<p>The attributes now also show the colours for example: Label: (White), Identifier: (#9980e6)</p>
+
+== 2021-09-10 Histogram View
+<p>Options selected for the Category and Property are now associated with the chosen Graph Element; Node, Transaction, Edge, or Link, and will not reset to defaults when switching between Graph Element options.</p>
+
+== 2021-09-06 Import From File
+<p>Updated the UI to clear the Attribute Filter and the table filters in the Configuration Run tabs, when all the source files are removed.</p>
+
+== 2021-09-06 Import From File
+<p>Updated the UI to only enable and expand sections once a file is added</p>
+
+== 2021-09-08 Notes View UI Improvements
+<p>New features:</p>
+<ul>
+<li>Replaced edit pop up with direct note editable text fields</li>
+<li>Right click note to add and remove selected graph elements</li>
+<li>Delete note confirmation pop up</li>
+</ul>
+
+== 2021-09-06 Freeform Selection
+<p>You can now draw a freeform selection shape by holding down Alt whilst selecting.</p>
+
+== 2021-09-06 Reset graph view after importing
+<p>When data is imported with the Import from File or the Import from Database, the graph view is now reset to the full view to display everything that has been imported.</p>
+
 == 2021-08-23 Moved Notes View to Views menu
 <p>The Notes View can now be found in the Views menu instead of in the Experimental > Views menu.</p>
 

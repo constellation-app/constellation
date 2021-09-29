@@ -158,11 +158,11 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     }
 
     void writeProperties(java.util.Properties p) {
-        // Method required for @ConvertAsProperties, intentionally left blank
+        // Method required for @ConvertAsProperties, intentionally left blank.
     }
 
     void readProperties(java.util.Properties p) {
-        // Method required for @ConvertAsProperties, intentionally left blank
+        // Method required for @ConvertAsProperties, intentionally left blank.
     }
 
     @Override
@@ -244,7 +244,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                             currentHistogramState = new HistogramState();
                         }
 
-                        // Ensure that the HistogramState is compatible with the current graph
+                        // Ensure that the HistogramState is compatible with the current graph.
                         currentHistogramState.validate(rg);
 
                         if (currentHistogramState != oldHistogramState) {
@@ -321,7 +321,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    private void reset(GraphReadMethods graph) {
+    private void reset(final GraphReadMethods graph) {
 
         if (graph == null) {
             currentHistogramState = null;
@@ -337,13 +337,13 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         } else {
             currentHistogramState = graph.getObjectValue(histogramStateAttribute, 0);
 
-            // The histogram state attribute may have been created but not populated yet
+            // The histogram state attribute may have been created but not populated yet.
             if (currentHistogramState == null) {
                 currentHistogramState = new HistogramState();
             }
         }
 
-        // Ensure that the HistogramState is compatible with the current graph
+        // Ensure that the HistogramState is compatible with the current graph.
         currentHistogramState.validate(graph);
 
         AttributeType binType = currentHistogramState.getAttributeType();
@@ -379,7 +379,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                     } else if ("color".equals(binnedAttributeRecord.getAttributeType())) {
                         binIconMode = BinIconMode.COLOR;
                     } else {
-                        // Do nothing
+                        // Do nothing.
                     }
 
                     currentBinnedModificationCount = graph.getValueModificationCounter(binnedAttribute);
@@ -394,7 +394,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         display.setBinCollection(currentBinCollection, binIconMode);
     }
 
-    public void setHistogramViewOptions(GraphElementType elementType, AttributeType attributeType, String attribute) {
+    public void setHistogramViewOptions(final GraphElementType elementType, final AttributeType attributeType, final String attribute) {
         if (currentGraph != null) {
             if (elementType == null) {
                 throw new NullPointerException("Null element type");
@@ -410,23 +410,23 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    public void setGraphElementType(GraphElementType elementType) {
+    public void setGraphElementType(final GraphElementType elementType) {
         if (currentGraph != null) {
             if (elementType == null) {
                 throw new NullPointerException("Null element type");
             }
+
+            // If the current state is null or the elementType selected is not the one already selected.
             if (currentHistogramState == null || elementType != currentHistogramState.getElementType()) {
                 HistogramState newHistogramState = new HistogramState(currentHistogramState);
                 newHistogramState.setElementType(elementType);
-                newHistogramState.setAttributeType(AttributeType.ATTRIBUTE);
-                newHistogramState.setAttribute("");
-                newHistogramState.setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
+                newHistogramState.setElementState();
                 PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
             }
         }
     }
 
-    public void setAttributeType(AttributeType attributeType) {
+    public void setAttributeType(final AttributeType attributeType) {
         if (currentGraph != null && (currentHistogramState == null || attributeType != currentHistogramState.getAttributeType())) {
             HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setAttributeType(attributeType);
@@ -436,7 +436,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    public void setAttribute(String attribute) {
+    public void setAttribute(final String attribute) {
         if (currentGraph != null && (currentHistogramState == null || (attribute == null ? currentHistogramState.getAttribute() != null : !attribute.equals(currentHistogramState.getAttribute())))) {
             HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setAttribute(attribute);
@@ -445,7 +445,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    void setBinComparator(BinComparator binComparator) {
+    void setBinComparator(final BinComparator binComparator) {
         if (currentGraph != null) {
             if (binComparator == null) {
                 throw new NullPointerException("Null bin comparator");
@@ -458,7 +458,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    void setBinFormatter(BinFormatter binFormatter, PluginParameters parameters) {
+    void setBinFormatter(final BinFormatter binFormatter, final PluginParameters parameters) {
         if (currentGraph != null) {
             if (binFormatter == null) {
                 throw new NullPointerException("Null bin formatter");
@@ -472,7 +472,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    void setBinSelectionMode(BinSelectionMode binSelectionMode) {
+    void setBinSelectionMode(final BinSelectionMode binSelectionMode) {
         if (currentGraph != null) {
             if (binSelectionMode == null) {
                 throw new NullPointerException("Null bin selection mode");
@@ -553,12 +553,12 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
     @Override
     public void graphOpened(Graph graph) {
-        // Required for GraphManagerListener, intentionally left blank
+        // Required for GraphManagerListener, intentionally left blank.
     }
 
     @Override
     public void graphClosed(Graph graph) {
-        // Required for GraphManagerListener, intentionally left blank
+        // Required for GraphManagerListener, intentionally left blank.
     }
 
     /**
@@ -569,7 +569,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
         private final HistogramState state;
 
-        public HistogramStateUpdaterPlugin(HistogramState state) {
+        public HistogramStateUpdaterPlugin(final HistogramState state) {
             this.state = state;
         }
 
@@ -777,5 +777,4 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
             SwingUtilities.invokeLater(display::repaint);
         }
     }
-
 }

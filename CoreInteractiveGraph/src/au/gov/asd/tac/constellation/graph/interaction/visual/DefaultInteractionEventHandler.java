@@ -29,11 +29,13 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteractio
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateTransactionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateVertexPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.select.FreeformSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.PointSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.CreationMode;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAction;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
+import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformModel;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
@@ -147,6 +149,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     private VisualInteraction visualInteraction;
     // The connection to the visual annotator that this handler uses
     private VisualAnnotator visualAnnotator;
+
+    private final SelectionFreeformModel freeformModel = new SelectionFreeformModel();
 
     private boolean announceNextFlush = false;
     private boolean handleEvents;
@@ -444,6 +448,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         case SELECTING:
                             updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), point));
                             break;
+                        case FREEFORM_SELECTING:
+                            freeformModel.addPoint(point);
+                            updateSelectionFreeformModel(freeformModel);
+                            break;
                         default:
                             break;
                     }
@@ -499,7 +507,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 } else if (SwingUtilities.isRightMouseButton(event) && !eventState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
                     eventState.setCurrentAction(SceneAction.DRAG_NODES);
                 } else if (SwingUtilities.isLeftMouseButton(event)) {
-                    if (wg == null || !VisualGraphUtilities.getIsDrawingMode(wg)) {
+                    if ((wg == null || !VisualGraphUtilities.getIsDrawingMode(wg)) && event.isAltDown()) {
+                        eventState.setCurrentAction(SceneAction.FREEFORM_SELECTING);
+                    } else if (wg == null || !VisualGraphUtilities.getIsDrawingMode(wg)) {
                         eventState.setCurrentAction(SceneAction.SELECTING);
                     } else {
                         eventState.setCurrentAction(SceneAction.CREATING);
@@ -541,6 +551,17 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             if (eventState.isMouseDragged()) {
                                 performBoxSelection(wg, point, eventState.getPoint(EventState.PRESSED_POINT), event.isShiftDown(), event.isControlDown());
                                 clearSelectionBoxModel();
+                            } else {
+                                // If the mouse has clicked on an element (and neither pan nor control are pressed),
+                                // or has double-clicked on the background, clear the selection.
+                                final boolean clearSelection = !event.isControlDown() && !event.isShiftDown() && (!eventState.getCurrentHitType().equals(HitType.NO_ELEMENT) || event.getClickCount() == 2);
+                                performPointSelection(event.isControlDown(), clearSelection, eventState.getCurrentHitType().elementType, eventState.getCurrentHitId());
+                            }
+                            break;
+                        case FREEFORM_SELECTING:
+                            if (eventState.isMouseDragged()) {
+                                performFreeformSelection(wg, event.isShiftDown(), event.isControlDown());
+                                clearSelectionFreeformModel();
                             } else {
                                 // If the mouse has clicked on an element (and neither pan nor control are pressed),
                                 // or has double-clicked on the background, clear the selection.
@@ -841,6 +862,23 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     /**
+     * Schedule a {@link VisualOperation} to clear the selection freeform model
+     */
+    private void clearSelectionFreeformModel() {
+        freeformModel.resetModel();
+        manager.addOperation(visualAnnotator.setSelectionFreeformModel(freeformModel));
+    }
+
+    /**
+     * Schedule a {@link VisualOperation} to update the selection freeform model
+     *
+     * @param model The model to update to.
+     */
+    private void updateSelectionFreeformModel(final SelectionFreeformModel model) {
+        manager.addOperation(visualAnnotator.setSelectionFreeformModel(model));
+    }
+
+    /**
      * Schedule a {@link VisualOperation} to clear the new line model
      */
     private void clearNewLineModel(final Camera camera) {
@@ -1098,6 +1136,26 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         final float[] boxCameraCoordinates = visualInteraction.windowBoxToCameraBox(selectFrom.x, bottomRight.x, selectFrom.y, bottomRight.y);
 
         Plugin plugin = new BoxSelectionPlugin(appendSelection, toggleSelection, VisualGraphUtilities.getCamera(rg), boxCameraCoordinates);
+        PluginExecution.withPlugin(plugin).executeLater(graph);
+    }
+
+    /**
+     * Performs a selection based on a given polygon in the freeformModel.
+     *
+     * @param appendSelection whether or not the selection will be appended to
+     * the current selection
+     * @param toggleSelection whether or not the selection will toggle the
+     * current selection. Note that if appendSelection is true, this parameter
+     * has no effect.
+     */
+    private void performFreeformSelection(final GraphReadMethods rg, final boolean appendSelection, final boolean toggleSelection) {
+
+        final float[] boxCameraCoordinates = visualInteraction.windowBoxToCameraBox(freeformModel.getLeftMost(), freeformModel.getRightMost(), freeformModel.getTopMost(), freeformModel.getBottomMost());
+
+        freeformModel.setWindowBoxToCameraBox(boxCameraCoordinates);
+        final Float[] transformedVertices = freeformModel.getTransformedVertices();
+
+        final Plugin plugin = new FreeformSelectionPlugin(appendSelection, toggleSelection, VisualGraphUtilities.getCamera(rg), boxCameraCoordinates, transformedVertices, freeformModel.getNumPoints());
         PluginExecution.withPlugin(plugin).executeLater(graph);
     }
 

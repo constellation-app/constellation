@@ -39,6 +39,7 @@ public class ActionPane extends BorderPane {
     private static final String SUCCESS_ICON_PATH = "au/gov/asd/tac/constellation/plugins/importexport/delimited/resources/success.jpg";
     private static final Insets PADDING = new Insets(5, 5, 35, 5);
     private static final int HBOX_SPACING = 5;
+    private final Button importButton;
 
     private final ImportController importController;
 
@@ -50,7 +51,8 @@ public class ActionPane extends BorderPane {
         runBox.setPadding(PADDING);
         setRight(runBox);
 
-        final Button importButton = new Button("Import");
+        importButton = new Button("Import");
+        importButton.setDisable(true);
         importButton.setOnAction((ActionEvent t) -> {
             try {
                 importController.processImport();
@@ -76,5 +78,10 @@ public class ActionPane extends BorderPane {
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.showAndWait();
+    }
+
+    // sets the enabled state of the import button
+    public void disableButton(final boolean isEnabled) {
+        importButton.setDisable(isEnabled);
     }
 }

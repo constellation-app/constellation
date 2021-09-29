@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * A Data Access state object used to hold the state of the Data Access View per
@@ -47,6 +49,30 @@ public class DataAccessState {
 
     public List<Map<String, String>> getState() {
         return state;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final DataAccessState rhs = (DataAccessState) o;
+
+        return new EqualsBuilder()
+                .append(getState(), rhs.getState())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(getState())
+                .toHashCode();
     }
 
     @Override
