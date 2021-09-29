@@ -52,6 +52,7 @@ import org.openide.util.Exceptions;
  * @author algol
  */
 public class ParameterIOUtilities {
+
     private static final String DATA_ACCESS_DIR = "DataAccessView";
 
     /**
@@ -133,12 +134,12 @@ public class ParameterIOUtilities {
     }
 
     /**
-     * Saves the global and plugin parameters from the passed tabs that belong to
-     * the {@link DataAccessPane}. The parameters will be saved to a JSON file as
-     * an array with each element representing one tab.
+     * Saves the global and plugin parameters from the passed tabs that belong
+     * to the {@link DataAccessPane}. The parameters will be saved to a JSON
+     * file as an array with each element representing one tab.
      *
      * @param tabs the tabs to extract the global and plugin parameters from
-     * @see JsonIO#saveJsonPreferences(Optional, ObjectMapper, Object) 
+     * @see JsonIO#saveJsonPreferences(Optional, ObjectMapper, Object)
      */
     public static void saveParameters(final TabPane tabs) {
         final List<DataAccessUserPreferences> dataAccessUserPreferenceses = new ArrayList<>();
@@ -173,20 +174,22 @@ public class ParameterIOUtilities {
     }
 
     /**
-     * Loads global and plugin parameters from a JSON file into the passed {@link DataAccessPane}.
-     * If the JSON is loaded then all existing tabs will be removed and then new tabs added
-     * for each entry in the loaded JSON array.
-     * 
+     * Loads global and plugin parameters from a JSON file into the passed
+     * {@link DataAccessPane}. If the JSON is loaded then all existing tabs will
+     * be removed and then new tabs added for each entry in the loaded JSON
+     * array.
+     *
      * @param dataAccessPane the pane to load the JSON parameter file into
-     * @see JsonIO#loadJsonPreferences(Optional, TypeReference) 
+     * @see JsonIO#loadJsonPreferences(Optional, TypeReference)
      */
     public static void loadParameters(final DataAccessPane dataAccessPane) {
         final List<DataAccessUserPreferences> loadedParameters = JsonIO
                 .loadJsonPreferences(
                         Optional.of(DATA_ACCESS_DIR),
-                        new TypeReference<List<DataAccessUserPreferences>>() {}
+                        new TypeReference<List<DataAccessUserPreferences>>() {
+                }
                 );
-        
+
         if (loadedParameters != null) {
             dataAccessPane.removeTabs();
 
@@ -205,24 +208,21 @@ public class ParameterIOUtilities {
 
                 // Groups all the parameters in to the plugin groups. Common parameters
                 // are based on the plugin name that is before the first '.' in the key values
-                final Map<String, Map<String, String>> ppmap = loadedParameter.toPerPluginParamMap();
-
                 pluginPane.getDataAccessPanes().stream()
                         // Plugins are disabled by defult. Only load and enable from
                         // the JSON if the JSON contains data for this plugin and it's
                         // enabled.
-                        .filter(pane -> loadedParameter.getPluginParameters().containsKey(getEnabledPluginKey(pane)) 
-                                && Boolean.valueOf(loadedParameter.getPluginParameters().get(getEnabledPluginKey(pane))))
+                        .filter(pane -> loadedParameter.getPluginParameters().containsKey(getEnabledPluginKey(pane))
+                        && Boolean.valueOf(loadedParameter.getPluginParameters().get(getEnabledPluginKey(pane))))
                         .forEach(pane -> pane.setParameterValues(
-                                ppmap.get(pane.getPlugin().getClass().getSimpleName())
-                        ));
+                        loadedParameter.getPluginParameters()));
             });
         }
     }
-    
+
     /**
-     * Generates the JSON 'enabled' property name for the plugin associated to the
-     * passed {@link DataSourceTitledPane}.
+     * Generates the JSON 'enabled' property name for the plugin associated to
+     * the passed {@link DataSourceTitledPane}.
      *
      * @param pane the pane that contains the plugin
      * @return the generated property name
