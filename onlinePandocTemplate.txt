@@ -1,27 +1,27 @@
 <head>
     <base href="/constellation-app.github.io/documentation/constellation/">
 
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/app.css" />
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css" />
+    <noscript>
+        <link rel="stylesheet" href="../../assets/css/noscript.css" />
+    </noscript>
+
      <!-- Scripts -->
-	<link rel="stylesheet" href="../../assets/css/app.css" />
-        <noscript><link rel="stylesheet" href="../../assets/css/noscript.css" /></noscript>
-	<link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css" />
-        <script src="../../assets/js/jquery.min.js"></script>
-	<script src="../../assets/js/js.cookie.min.js"></script>
-        <script src="../../assets/js/jquery.dropotron.min.js"></script>
-        <script src="../../assets/js/jquery.scrolly.min.js"></script>
-        <script src="../../assets/js/jquery.scrollex.min.js"></script>
-        <script src="../../assets/js/browser.min.js"></script>
-        <script src="../../assets/js/breakpoints.min.js"></script>
-        <script src="../../assets/js/app.js"></script>
-	<script src="../../assets/bootstrap/js/bootstrap.js"></script>
+    <script src="../../assets/js/jquery.min.js" />
+    <script src="../../assets/js/js.cookie.min.js" />
+    <script src="../../assets/js/jquery.dropotron.min.js" />
+    <script src="../../assets/js/jquery.scrolly.min.js" />
+    <script src="../../assets/js/jquery.scrollex.min.js" />
+    <script src="../../assets/js/browser.min.js" />
+    <script src="../../assets/js/breakpoints.min.js" />
+    <script src="../../assets/js/app.js" />
+    <script src="../../assets/bootstrap/js/bootstrap.js" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139401597-2" />
 
- <script> 
-        $$(function(){
-          $$("#includedContent").load("../../toc.html"); 
-        });
-    </script> 
-
-<!-- Nav -->
+    <!-- Nav -->
     <nav id="nav">
         <ul>
             <li><a href="../../index.html">Home</a></li>
@@ -77,55 +77,48 @@
             </div>
         </div>
 
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139401597-2"></script>
         <script>
+            $$(function(){
+                $$("#includedContent").load("../../toc.html"); 
+            });
             window.dataLayer = window.dataLayer || [];
             function gtag() {
                 dataLayer.push(arguments);
             }
             gtag('js', new Date());
             gtag('config', 'UA-139401597-2');
-        </script>
-	<script>
+        
             $$(document).ready(function() {
-                if (typeof jQuery != 'undefined') {
-                    alert(jQuery.fn.jquery); 
-                }
-                
-                $$(".collapse").on('shown.bs.collapse', function(e) {
-                     e.stopPropagation();
-                     var active = $$(this).attr('id');
-                     Cookies.set(active, "true");
-                     $$("#" + active).addClass('show');
-                });
-                
-                $$(".collapse").on('hidden.bs.collapse', function(e) {
-                     e.stopPropagation(); 
-                     var active = $$(this).attr('id');
-                     Cookies.set(active, "false");
-                     $$("#" + active).removeClass('show');
-                     $$("#" + active).collapse("hide");
-                });
-             });
-              
-             $$(document).ready(function() {
-                  var allCookies = Cookies.get();
-                  for (var cookie in allCookies) { 
-                      if (cookie != null) {
-                         //remove default collapse settings
-                         $$("#" + cookie).removeClass('show');
-                         //show the group if the value is true 
-                         var cookieValue = Cookies.get(cookie);
-                         if (cookieValue == ("true")) {
-                            $$("#" + cookie).collapse("show");
-                         } else {
-                            $$("#" + cookie).collapse("hide");
+                var allCookies = Cookies.get();
+                for (var cookie in allCookies) { 
+                    if (cookie != null) {
+                        $$("#" + cookie).removeClass('show');
+                        var cookieValue = Cookies.get(cookie);
+                        if (cookieValue == ("true")) {
+                            $$("#" + cookie).collapse('show');
+                        } else {
+                            $$("#" + cookie).collapse('hide');
                             $$("#" + cookie + " .collapse").removeClass('show');
-                         }
-                      }
-                 }
-              });
-       </script>
+                        }
+                    }
+                }
+            });
+
+            $$(".collapse").on('shown.bs.collapse', function(e) {
+                console.log('shown');
+                e.stopPropagation();
+                var active = $$(this).attr('id');
+                Cookies.set(active, "true");
+                $$("#" + active).addClass('show');
+            });
+            $$(".collapse").on('hidden.bs.collapse', function(e) {
+                console.log('collapsed');
+                e.stopPropagation(); 
+                var active = $$(this).attr('id');
+                Cookies.set(active, "false");
+                $$("#" + active).removeClass('show');
+                $$("#" + active).collapse('hide');
+            });
+        </script>
 </body>
   
