@@ -2,6 +2,12 @@
 
 ## Changes in September 2021
 
+-   Within Core Import Export, added `definitionName` parameter to
+    `ImportDefinition` constructor and paneName parameter to `RunPane`
+    constructor. Updated `displaySummaryAlert` within `ImportDelimitedPlugin`
+    class to taker additional parameters. The combination of these changes
+    allows a more meaningful summary dialog post delimited file import.
+
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
     

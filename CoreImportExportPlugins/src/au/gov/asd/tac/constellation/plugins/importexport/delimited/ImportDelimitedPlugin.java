@@ -148,65 +148,51 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 // At least 1 object was successfully imported. List all successful file imports, as well as any files
                 // that there were issues for. If there were any files with issues use a warning dialog.
                 sbHeader.append(String.format("Extracted data from %d rows in %d files", importedRows, validFilenames.size()));
-                sbMessage.append("The following file(s) contained data:");
-                validFilenames.forEach(filename -> {
-                    sbMessage.append("\n  - ");
-                    sbMessage.append(filename);
-                });
-                if (emptyFilenames.size() > 0) {
-                    // empty files were found.
-                    sbMessage.append("\n\nThe following file(s) contained no data:");
-                    emptyFilenames.forEach(filename -> {
-                        sbMessage.append("\n  - ");
-                        sbMessage.append(filename);
-                    });
+                sbMessage.append("Files with data: ");
+                for (int i = 0; i < validFilenames.size(); i++) {
+                    if (i > 0) {
+                        sbMessage.append(", ");
+                    }
+                    sbMessage.append(validFilenames.get(i));
                 }
-                if (invalidFilenames.size() > 0) {
-                    // invalid files were found.
-                    success = false;
-                    sbMessage.append("\n\nThe following file(s) could not be parsed. No data was extracted:");
-                    invalidFilenames.forEach(filename -> {
-                        sbMessage.append("\n  - ");
-                        sbMessage.append(filename);
-                    });
-                }
-                if (emptyRunConfigs.size() > 0) {
-                    // invalid run configs were found.
-                    sbMessage.append("\n\nThe following Run configs will not generate results:");
-                    emptyRunConfigs.forEach(config -> {
-                        sbMessage.append("\n  - ");
-                        sbMessage.append(config);
-                    });
-                }
+                sbMessage.append(".");
             } else {
                 // No rows were imported list all files that resulted in failures.
-                sbHeader.append("No data found to import");
+                sbHeader.append("No data found.");
+            }
 
-                if (emptyFilenames.size() > 0) {
-                    // empty files were found.
-                    sbMessage.append("\n\nThe following file(s) contained no data:");
-                    emptyFilenames.forEach(filename -> {
-                        sbMessage.append("\n  - ");
-                        sbMessage.append(filename);
-                    });
+            if (!emptyFilenames.isEmpty()) {
+                // empty files were found.
+                sbMessage.append(" Files without data: ");
+                for (int i = 0; i < emptyFilenames.size(); i++) {
+                    if (i > 0) {
+                        sbMessage.append(", ");
+                    }
+                    sbMessage.append(emptyFilenames.get(i));
                 }
-                if (invalidFilenames.size() > 0) {
-                    // invalid files were found.
-                    success = false;
-                    sbMessage.append("\n\nThe following file(s) could not be parsed. No data was extracted:");
-                    invalidFilenames.forEach(filename -> {
-                        sbMessage.append("\n  - ");
-                        sbMessage.append(filename);
-                    });
+                sbMessage.append(".");
+            }
+            if (!invalidFilenames.isEmpty()) {
+                // invalid files were found.
+                sbMessage.append(" Invalid files: ");
+                for (int i = 0; i < invalidFilenames.size(); i++) {
+                    if (i > 0) {
+                        sbMessage.append(", ");
+                    }
+                    sbMessage.append(invalidFilenames.get(i));
                 }
-                if (emptyRunConfigs.size() > 0) {
-                    // invalid run configs were found.
-                    sbMessage.append("\n\nThe following Run configs will not generate results:");
-                    emptyRunConfigs.forEach(config -> {
-                        sbMessage.append("\n  - ");
-                        sbMessage.append(config);
-                    });
+                sbMessage.append(".");
+            }
+            if (!emptyRunConfigs.isEmpty()) {
+                // invalid run configs were found.
+                sbMessage.append(" Empty Run configs: ");
+                for (int i = 0; i < emptyRunConfigs.size(); i++) {
+                    if (i > 0) {
+                        sbMessage.append(", ");
+                    }
+                    sbMessage.append(emptyRunConfigs.get(i));
                 }
+                sbMessage.append(".");
             }
             NotificationDisplayer.getDefault().notify(sbHeader.toString(), UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
         });
@@ -251,18 +237,22 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 
                 LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1}. {2} total rows imported", new Object[]{dataSize, file.getPath(), importRows});
                 if (dataSize > 0) {
-                    validFiles.add(file.getPath().concat(" (").concat(Integer.toString(dataSize)).concat(" rows)"));
+                    if (validFiles.isEmpty()) {
+                        validFiles.add(file.getName().concat(" (").concat(Integer.toString(dataSize)).concat(" rows)"));
+                    } else {
+                        validFiles.add(file.getName().concat(" (").concat(Integer.toString(dataSize)).concat(")"));
+                    }
                 } else {
-                    emptyFiles.add(file.getPath());
+                    emptyFiles.add(file.getName());
                 }
             } catch (FileNotFoundException ex) {
                 final String errorMsg = file.getPath() + " could not be found. Ignoring file during import.";
                 LOGGER.log(Level.INFO, errorMsg);
-                invalidFiles.add(file.getPath());
+                invalidFiles.add(file.getName());
             } catch (IOException ex) {
                 final String errorMsg = file.getPath() + " could not be parsed. Removing file during import.";
                 LOGGER.log(Level.INFO, errorMsg);
-                invalidFiles.add(file.getPath());
+                invalidFiles.add(file.getName());
             }
 
             if (data != null) {
