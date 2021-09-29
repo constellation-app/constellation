@@ -31,8 +31,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.prefs.Preferences;
 import org.apache.commons.io.IOUtils;
 import org.mockito.MockedStatic;
@@ -458,11 +462,39 @@ public class ConstellationHelpDisplayerNGTest {
      * Test of browse method, of class ConstellationHelpDisplayer.
      */
     @Test
-    public void testBrowse() {
+    public void testBrowse() throws IOException, InterruptedException, ExecutionException, URISyntaxException {
         System.out.println("browse");
-//        URI uri = null;
-//        Future expResult = null;
-//        Future result = ConstellationHelpDisplayer.browse(uri);
+
+        CompletableFuture fut = CompletableFuture.runAsync(() -> {
+            try {
+                URI uri = new URI("file/c:/users/filename.txt");
+
+                try (MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
+                    final Desktop mockDesktop = mock(Desktop.class);
+                    doNothing().when(mockDesktop).browse(Mockito.eq(uri));
+                    desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
+
+                    Future<?> result = ConstellationHelpDisplayer.browse(uri);
+                    result.get();
+
+                    // verify mock interactions
+                    desktopStaticMock.verify(() -> Desktop.getDesktop(), times(1));
+                    verify(mockDesktop, times(1)).browse(Mockito.eq(uri));
+
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                } catch (ExecutionException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            } catch (URISyntaxException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        });
+
+        fut.get();
+
     }
 
 }
