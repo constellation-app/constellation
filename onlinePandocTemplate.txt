@@ -88,20 +88,25 @@
             gtag('config', 'UA-139401597-2');
         </script>
 	<script>
-             // when a group is shown, save it as active
-             $$(".collapse").on('shown.bs.collapse', function(e) {
-                  e.stopPropagation();
-                  var active = $$(this).attr('id');
-                  Cookies.set(active, "true");
-                  $$("#" + active).addClass('show');
-             });
-             // when a group is hidden, save it as inactive
-             $$(".collapse").on('hidden.bs.collapse', function(e) {
-                  e.stopPropagation(); 
-                  var active = $$(this).attr('id');
-                  Cookies.set(active, "false");
-                  $$("#" + active).removeClass('show');
-                  $$("#" + active).collapse("hide");
+            $$(document).ready(function() {
+                if (typeof jQuery != 'undefined') {
+                    alert(jQuery.fn.jquery); 
+                }
+                
+                $$(".collapse").on('shown.bs.collapse', function(e) {
+                     e.stopPropagation();
+                     var active = $$(this).attr('id');
+                     Cookies.set(active, "true");
+                     $$("#" + active).addClass('show');
+                });
+                
+                $$(".collapse").on('hidden.bs.collapse', function(e) {
+                     e.stopPropagation(); 
+                     var active = $$(this).attr('id');
+                     Cookies.set(active, "false");
+                     $$("#" + active).removeClass('show');
+                     $$("#" + active).collapse("hide");
+                });
              });
               
              $$(document).ready(function() {
