@@ -89,19 +89,19 @@
         </script>
 	<script>
              // when a group is shown, save it as active
-             $$(\".collapse\").on('shown.bs.collapse', function(e) {
+             $$(".collapse").on('shown.bs.collapse', function(e) {
                   e.stopPropagation();
                   var active = $$(this).attr('id');
-                  Cookies.set(active, \"true\");
-                  $$(\"#\" + active).addClass('show');
+                  Cookies.set(active, "true");
+                  $$("#" + active).addClass('show');
              });
              // when a group is hidden, save it as inactive
-             $$(\".collapse\").on('hidden.bs.collapse', function(e) {
+             $$(".collapse").on('hidden.bs.collapse', function(e) {
                   e.stopPropagation(); 
                   var active = $$(this).attr('id');
-                  Cookies.set(active, \"false\");
-                  $$(\"#\" + active).removeClass('show');
-                  $$(\"#\" + active).collapse(\"hide\");
+                  Cookies.set(active, "false");
+                  $$("#" + active).removeClass('show');
+                  $$("#" + active).collapse("hide");
              });
               
              $$(document).ready(function() {
@@ -109,14 +109,14 @@
                   for (var cookie in allCookies) { 
                       if (cookie != null) {
                          //remove default collapse settings
-                         $$(\"#\" + cookie).removeClass('show');
+                         $$("#" + cookie).removeClass('show');
                          //show the group if the value is true 
                          var cookieValue = Cookies.get(cookie);
-                         if (cookieValue == (\"true\")) {
-                            $$(\"#\" + cookie).collapse(\"show\");
+                         if (cookieValue == ("true")) {
+                            $$("#" + cookie).collapse(\"show\");
                          } else {
-                            $$(\"#\" + cookie).collapse(\"hide\");
-                            $$(\"#\" + cookie + \" .collapse\").removeClass('show');
+                            $$("#" + cookie).collapse("hide");
+                            $$("#" + cookie + " .collapse").removeClass('show');
                          }
                       }
                  }
