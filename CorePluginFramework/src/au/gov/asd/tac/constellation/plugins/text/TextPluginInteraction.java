@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.text;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -57,13 +58,13 @@ public class TextPluginInteraction implements PluginInteraction {
     @Override
     public void setProgress(int currentStep, int totalSteps, String message, boolean cancellable) throws InterruptedException {
         currentMessage = message;
-        LOGGER.info(String.format("currentStep=%d totalSteps=%d message=%s", currentStep, totalSteps, message));
+        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
     }
 
     @Override
     public void notify(PluginNotificationLevel level, String message) {
         currentMessage = message;
-        LOGGER.info(String.format("level=%s message=%s", level, message));
+        LOGGER.log(Level.INFO, "level={0} message={1}", new Object[]{level, message});
     }
 
     @Override
@@ -74,11 +75,6 @@ public class TextPluginInteraction implements PluginInteraction {
     @Override
     public boolean prompt(String promptName, PluginParameters parameters) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void notifyException(PluginNotificationLevel level, Exception exception) {
-        LOGGER.info(String.format("level=%s exception=%s", level, exception));
     }
 
 }

@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-09-28 Error Handling
+<p>Fatal errors and exceptions will now be presented as a dialog box in the executable version.</p>
+<p>Previously only a small red icon on the bottom right of the application was shown when an exception occurred.</p>
+
 == 2021-09-17 Anaglyphic Display
 The anaglyphic 3D display now allows different colors to be selected for left and right eyes.
 
@@ -83,10 +87,6 @@ to the Getting Started help page.</p>
 == 2021-07-15 Notes View Selection
 <p>User Notes now have the option to include nodes and transactions on the graph that are selected when the note is created. If no elements are selected, the note will be applied to the whole graph.</p>
 <p>To view what graph elements are applied to the note, a right click context menu has been added to user notes with the option to select on graph which will highlight the relevant nodes and transactions, or the whole graph.</p>
-
-== 2021-07-07 Exception Handling
-<p>Fatal errors and exceptions will now be presented as a dialog box in the executable version.</p>
-<p>Previously only a small red icon on the bottom right of the application was shown when an exception occurred.</p>
 
 == 2021-06-04 Select All Plugin
 <p>The Select All Plugin in the Data Access View now selects everything on the graph including transactions.</p>

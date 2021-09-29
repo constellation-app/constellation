@@ -137,14 +137,14 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 }
             } catch (final InterruptedException ex) {
                 auditPluginError(plugin, ex);
-                reportException(interaction, currentReport, PluginNotificationLevel.INFO, ex);
+                reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
                 Thread.currentThread().interrupt();
             } catch (final PluginException ex) {
                 auditPluginError(plugin, ex);
-                reportException(interaction, currentReport, ex.getNotificationLevel(), ex);
-            } catch (final RuntimeException ex) {
+                reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
+            } catch (final Exception ex) {
                 auditPluginError(plugin, ex);
-                reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+                reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
             } finally {
                 if (currentReport != null) {
                     currentReport.stop();
@@ -212,11 +212,14 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             }
         } catch (final InterruptedException ex) {
             auditPluginError(plugin, ex);
-            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
             Thread.currentThread().interrupt();
-        } catch (final PluginException | RuntimeException ex) {
+        } catch (final PluginException ex) {
             auditPluginError(plugin, ex);
-            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
+        } catch (final Exception ex) {
+            auditPluginError(plugin, ex);
+            reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
         } finally {
             callingConstraints.setSilentCount(silentCount);
             callingConstraints.setAlwaysSilent(alwaysSilent);
@@ -262,6 +265,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             }
             callingConstraints.setCurrentReport(currentReport);
         }
+
         final PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, null);
         final PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
 
@@ -275,11 +279,14 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             plugin.run(graph, interaction, parameters);
         } catch (final InterruptedException ex) {
             auditPluginError(plugin, ex);
-            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
             Thread.currentThread().interrupt();
-        } catch (final PluginException | RuntimeException ex) {
+        } catch (final PluginException ex) {
             auditPluginError(plugin, ex);
-            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
+        } catch (final Exception ex) {
+            auditPluginError(plugin, ex);
+            reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
         } finally {
             callingConstraints.setSilentCount(silentCount);
             callingConstraints.setAlwaysSilent(alwaysSilent);
@@ -338,11 +345,14 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             plugin.run(graph, interaction, parameters);
         } catch (final InterruptedException ex) {
             auditPluginError(plugin, ex);
-            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
             Thread.currentThread().interrupt();
-        } catch (final PluginException | RuntimeException ex) {
+        } catch (final PluginException ex) {
             auditPluginError(plugin, ex);
-            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
+        } catch (final Exception ex) {
+            auditPluginError(plugin, ex);
+            reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
         } finally {
             callingConstraints.setSilentCount(silentCount);
             callingConstraints.setAlwaysSilent(alwaysSilent);
@@ -371,20 +381,46 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     }
 
     /**
-     * Reports the Exception to the user via the PluginInteraction and sets the
-     * current report to its error state.
+     * Set the current report to its error state and log the {@code Exception}
      *
      * @param interaction the PluginInteraction object to report to
      * @param currentReport the current report
      * @param level the level of the exception
      * @param ex the exception
-     * @param message the message to notify the user with
      */
-    private void reportException(final PluginInteraction interaction, final PluginReport currentReport,
+    private void reportException(final String title, final PluginInteraction interaction,
+            final PluginReport currentReport,
             final PluginNotificationLevel level, final Exception ex) {
-        interaction.notifyException(level, ex);
         if (currentReport != null) {
             currentReport.setError(ex);
+        }
+
+        if (ex instanceof InterruptedException) {
+            final String message = "Plugin cancelled: " + title;
+            interaction.notify(PluginNotificationLevel.INFO, message);
+            LOGGER.log(Level.INFO, message, ex);
+        } else if (ex instanceof PluginException) {
+            interaction.notify(level, ex.getLocalizedMessage());
+            LOGGER.log(Level.INFO, "Plugin exception caught in " + title, ex);
+        } else {
+            final String message = "Unexpected exception caught in " + title;
+            switch (level) {
+                case FATAL:
+                case ERROR:
+                    LOGGER.log(Level.SEVERE, message, ex);
+                    break;
+                case WARNING:
+                    LOGGER.log(Level.WARNING, message, ex);
+                    break;
+                case INFO:
+                    LOGGER.log(Level.INFO, message, ex);
+                    break;
+                case DEBUG:
+                    LOGGER.log(Level.FINE, message, ex);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

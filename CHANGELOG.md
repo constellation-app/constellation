@@ -2,7 +2,7 @@
 
 ## Changes in September 2021
 
--   Update the default configuration to always show errors as a dialog message
+-   Update the default configuration to always show errors as a dialog message.
 
 -   Updated the way exceptions are displayed to the user. Exceptions thrown in
     the `DefaultPluginEnvironment` are now presented to the user using the

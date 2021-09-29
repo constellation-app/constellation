@@ -22,12 +22,7 @@ import au.gov.asd.tac.constellation.plugins.AbstractPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.openide.util.NbBundle;
 
 /**
  * A plugin template for plugins requiring complete control over how they read
@@ -44,14 +39,7 @@ import org.openide.util.NbBundle;
  *
  * @author sirius
  */
-@NbBundle.Messages({
-    "# {0} - graph",
-    "# {1} - name",
-    "MSG_Execute_Failed=Action failed: {0}; {1}"
-})
 public abstract class SimplePlugin extends AbstractPlugin {
-
-    private static final Logger LOGGER = Logger.getLogger(SimplePlugin.class.getName());
 
     private static final String WAITING_INTERACTION = "Waiting...";
     private static final String FINISHED_INTERACTION = "Finished";
@@ -73,31 +61,14 @@ public abstract class SimplePlugin extends AbstractPlugin {
         }
 
         try {
-
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+
             try {
                 execute(graphs, interaction, parameters);
-            } catch (final InterruptedException e) {
-                // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
-                interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graphs.getGraph() + SeparatorConstants.SEMICOLON + " " + getName());
-                throw e;
-            } catch (final PluginException e) {
-                // Logging the PluginException and throwing the exception back to the caller for generic handling.
-                final String msg0 = String.format("PluginException caught in %s.run()", SimplePlugin.class.getName());
-                final String msg = Bundle.MSG_Execute_Failed(graph, getName());
-                LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
-                throw e;
-            } catch (final RuntimeException e) {
-                // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
-                final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimplePlugin.class.getName());
-                final String msg = Bundle.MSG_Execute_Failed(graph, getName());
-                interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
-                throw e;
             } finally {
                 interaction.setProgress(2, 1, FINISHED_INTERACTION, true);
             }
-
         } finally {
             if (graph != null) {
                 interaction.setBusy(graph.getId(), false);
@@ -110,32 +81,16 @@ public abstract class SimplePlugin extends AbstractPlugin {
 
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
-        try {
 
+        try {
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+
             try {
                 read(graph, interaction, parameters);
-            } catch (final InterruptedException e) {
-                // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
-                interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graph + SeparatorConstants.SEMICOLON + " " + getName());
-                throw e;
-            } catch (final PluginException e) {
-                // Logging the PluginException and throwing the exception back to the caller for generic handling.
-                final String msg0 = String.format("PluginException caught in %s.run()", SimplePlugin.class.getName());
-                final String msg = Bundle.MSG_Execute_Failed(graph, getName());
-                LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
-                throw e;
-            } catch (final RuntimeException e) {
-                // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
-                final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimplePlugin.class.getName());
-                final String msg = Bundle.MSG_Execute_Failed(graph, getName());
-                interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
-                throw e;
             } finally {
                 interaction.setProgress(2, 1, FINISHED_INTERACTION, true);
             }
-
         } finally {
             interaction.setBusy(graph.getId(), false);
         }
@@ -146,32 +101,16 @@ public abstract class SimplePlugin extends AbstractPlugin {
 
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
-        try {
 
+        try {
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+
             try {
                 edit(graph, interaction, parameters);
-            } catch (final InterruptedException e) {
-                // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
-                interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graph + SeparatorConstants.SEMICOLON + " " + getName());
-                throw e;
-            } catch (final PluginException e) {
-                // Logging the PluginException and throwing the exception back to the caller for generic handling.
-                final String msg0 = String.format("PluginException caught in %s.run()", SimplePlugin.class.getName());
-                final String msg = Bundle.MSG_Execute_Failed(graph, getName());
-                LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
-                throw e;
-            } catch (final RuntimeException e) {
-                // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
-                final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimplePlugin.class.getName());
-                final String msg = Bundle.MSG_Execute_Failed(graph, getName());
-                interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
-                throw e;
             } finally {
                 interaction.setProgress(2, 1, FINISHED_INTERACTION, true);
             }
-
         } finally {
             interaction.setBusy(graph.getId(), false);
         }

@@ -43,7 +43,7 @@ public final class RuntimeExceptionPluginAction implements ActionListener {
 
     private final GraphNode context;
 
-    public RuntimeExceptionPluginAction(GraphNode context) {
+    public RuntimeExceptionPluginAction(final GraphNode context) {
         this.context = context;
     }
 

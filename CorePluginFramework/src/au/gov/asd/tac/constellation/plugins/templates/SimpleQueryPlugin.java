@@ -24,12 +24,7 @@ import au.gov.asd.tac.constellation.plugins.AbstractPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.openide.util.NbBundle.Messages;
 
 /**
  * A plugin template for a plugin that naturally works within a read-query-write
@@ -62,14 +57,7 @@ import org.openide.util.NbBundle.Messages;
  *
  * @author sirius
  */
-@Messages({
-    "# {0} - graph",
-    "# {1} - name",
-    "MSG_Query_Failed=Action failed: {0}; {1}"
-})
 public abstract class SimpleQueryPlugin extends AbstractPlugin {
-
-    private static final Logger LOGGER = Logger.getLogger(SimpleQueryPlugin.class.getName());
 
     private static final String READING_INTERACTION = "Reading...";
     private static final String QUERYING_INTERACTION = "Querying...";
@@ -118,17 +106,17 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
         try {
-
             // Make the progress bar appear nondeterminent
+
             try {
                 boolean cancelled = false;
-
                 Object description = null;
-
                 final ReadableGraph readableGraph = graph.getReadableGraph();
+
                 try {
                     interaction.setProgress(0, 0, READING_INTERACTION, true);
                     read(readableGraph, interaction, parameters);
+
                     if (!READING_INTERACTION.equals(interaction.getCurrentMessage())) {
                         inControlOfProgress = false;
                     }
@@ -147,7 +135,9 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                 if (inControlOfProgress) {
                     interaction.setProgress(0, 0, QUERYING_INTERACTION, true);
                 }
+
                 query(interaction, parameters);
+
                 if (inControlOfProgress && !QUERYING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
@@ -155,7 +145,9 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                 if (inControlOfProgress) {
                     interaction.setProgress(0, 0, "Waiting to Edit Graph...", true);
                 }
+
                 WritableGraph writableGraph = graph.getWritableGraph(getName(), isSignificant(), this);
+
                 try {
                     if (inControlOfProgress) {
                         interaction.setProgress(0, 0, EDITING_INTERACTION, true);
@@ -163,6 +155,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
 
                     try {
                         description = describedEdit(writableGraph, interaction, parameters);
+
                         if (inControlOfProgress && !EDITING_INTERACTION.equals(interaction.getCurrentMessage())) {
                             inControlOfProgress = false;
                         }
@@ -171,7 +164,6 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                         cancelled = true;
                         throw e;
                     }
-
                 } finally {
                     if (cancelled) {
                         writableGraph.rollBack();
@@ -179,26 +171,9 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                         writableGraph.commit(description);
                     }
                 }
-            } catch (final InterruptedException e) {
-                // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
-                interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graph + SeparatorConstants.COLON + " " + getName());
-                throw e;
-            } catch (final PluginException e) {
-                // Logging the PluginException and throwing the exception back to the caller for generic handling.
-                final String msg0 = String.format("PluginException caught in %s.run()", SimpleQueryPlugin.class.getName());
-                final String msg = Bundle.MSG_Query_Failed(graph, getName());
-                LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
-                throw e;
-            } catch (final RuntimeException e) {
-                // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
-                final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimpleQueryPlugin.class.getName());
-                final String msg = Bundle.MSG_Query_Failed(graph, getName());
-                interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
-                throw e;
             } finally {
                 interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), false);
             }
-
         } finally {
             interaction.setBusy(graph.getId(), false);
         }
@@ -222,6 +197,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
             try {
                 interaction.setProgress(0, 0, READING_INTERACTION, true);
                 read(graph, interaction, parameters);
+
                 if (!READING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
@@ -229,7 +205,9 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                 if (inControlOfProgress) {
                     interaction.setProgress(0, 0, QUERYING_INTERACTION, true);
                 }
+
                 query(interaction, parameters);
+
                 if (inControlOfProgress && !QUERYING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
@@ -237,31 +215,15 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                 if (inControlOfProgress) {
                     interaction.setProgress(0, 0, EDITING_INTERACTION, true);
                 }
+
                 edit(graph, interaction, parameters);
+
                 if (inControlOfProgress && !EDITING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
-
-            } catch (final InterruptedException e) {
-                // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
-                interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graph + SeparatorConstants.COLON + " " + getName());
-                throw e;
-            } catch (final PluginException e) {
-                // Logging the PluginException and throwing the exception back to the caller for generic handling.
-                final String msg0 = String.format("PluginException caught in %s.run()", SimpleQueryPlugin.class.getName());
-                final String msg = Bundle.MSG_Query_Failed(graph, getName());
-                LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
-                throw e;
-            } catch (final RuntimeException e) {
-                // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
-                final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimpleQueryPlugin.class.getName());
-                final String msg = Bundle.MSG_Query_Failed(graph, getName());
-                interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
-                throw e;
             } finally {
                 interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
             }
-
         } finally {
             interaction.setBusy(graph.getId(), false);
         }

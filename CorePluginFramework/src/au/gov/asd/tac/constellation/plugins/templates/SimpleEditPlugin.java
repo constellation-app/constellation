@@ -23,12 +23,8 @@ import au.gov.asd.tac.constellation.plugins.AbstractPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.NbBundle.Messages;
 
 /**
  * A plugin template for plugins that edit the graph is a single efficient
@@ -45,11 +41,6 @@ import org.openide.util.NbBundle.Messages;
  *
  * @author sirius
  */
-@Messages({
-    "# {0} - graph",
-    "# {1} - name",
-    "MSG_Edit_Failed=Action failed: {0}; {1}"
-})
 public abstract class SimpleEditPlugin extends AbstractPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SimpleEditPlugin.class.getName());
@@ -95,47 +86,30 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
             LOGGER.warning(String.format("Null graph not allowed in a %s", SimpleEditPlugin.class.getSimpleName()));
             return;
         }
+
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
         try {
-
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+
             try {
                 boolean cancelled = false;
-
                 Object description = null;
-
                 WritableGraph writableGraph = graph.getWritableGraph(getName(), isSignificant(), this);
-                try {
 
+                try {
                     interaction.setProgress(0, 0, "Editing...", true);
+
                     try {
                         description = describedEdit(writableGraph, interaction, parameters);
                         if (!"Editing...".equals(interaction.getCurrentMessage())) {
                             inControlOfProgress = false;
                         }
-                    } catch (final InterruptedException e) {
-                        // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
-                        interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graphs.getGraph() + SeparatorConstants.COLON + " " + getName());
+                    } catch (final Exception ex) {
                         cancelled = true;
-                        throw e;
-                    } catch (final PluginException e) {
-                        // Logging the PluginException and throwing the exception back to the caller for generic handling.
-                        final String msg0 = String.format("PluginException caught in %s.run()", SimpleEditPlugin.class.getName());
-                        final String msg = Bundle.MSG_Edit_Failed(graph, getName());
-                        LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
-                        cancelled = true;
-                        throw e;
-                    } catch (final RuntimeException e) {
-                        // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
-                        final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimpleEditPlugin.class.getName());
-                        final String msg = Bundle.MSG_Edit_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
-                        cancelled = true;
-                        throw e;
+                        throw ex;
                     }
-
                 } finally {
                     if (cancelled) {
                         writableGraph.rollBack();
@@ -164,35 +138,19 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
 
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
-        try {
 
+        try {
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+
             try {
                 edit(graph, interaction, parameters);
                 if (!WAITING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
-            } catch (final InterruptedException e) {
-                // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
-                interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graph + SeparatorConstants.COLON + " " + getName());
-                throw e;
-            } catch (final PluginException e) {
-                // Logging the PluginException and throwing the exception back to the caller for generic handling.
-                final String msg0 = String.format("PluginException caught in %s.run()", SimpleEditPlugin.class.getName());
-                final String msg = Bundle.MSG_Edit_Failed(graph, getName());
-                LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
-                throw e;
-            } catch (final RuntimeException e) {
-                // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
-                final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimpleEditPlugin.class.getName());
-                final String msg = Bundle.MSG_Edit_Failed(graph, getName());
-                interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
-                throw e;
             } finally {
                 interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
             }
-
         } finally {
             interaction.setBusy(graph.getId(), false);
         }

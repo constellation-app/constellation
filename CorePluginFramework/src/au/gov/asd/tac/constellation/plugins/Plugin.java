@@ -125,10 +125,8 @@ public interface Plugin {
      * unexpectedly ceased for any reason.
      * @throws PluginException if an anticipated exception occurs during plugin
      * execution.
-     * @throws RuntimeException if an unexpected error occurs during the plugin
-     * execution.
      */
-    public void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException;
+    public void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException;
 
     /**
      * Called to run the plugin.
@@ -146,10 +144,8 @@ public interface Plugin {
      * unexpectedly ceased for any reason.
      * @throws PluginException if an anticipated exception occurs during plugin
      * execution.
-     * @throws RuntimeException if an unexpected error occurs during the plugin
-     * execution.
      */
-    public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException;
+    public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException;
 
     /**
      * Called to run the plugin.
@@ -167,10 +163,8 @@ public interface Plugin {
      * unexpectedly ceased for any reason.
      * @throws PluginException if an anticipated exception occurs during plugin
      * execution.
-     * @throws RuntimeException if an unexpected error occurs during the plugin
-     * execution.
      */
-    public void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException;
+    public void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException;
 
     /**
      * Get the HelpCtx associated with this plugin.

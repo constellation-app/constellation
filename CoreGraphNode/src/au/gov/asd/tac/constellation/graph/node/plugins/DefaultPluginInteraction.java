@@ -67,7 +67,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     private String currentMessage;
     private Timer timer = null;
 
-    private static final String STRING_STRING_FORMAT = "%s: %s";
+    private static final String STRING_STRING_FORMAT = "{0}: {1}";
 
     public DefaultPluginInteraction(final PluginManager pluginManager, final PluginReport pluginReport) {
         this.pluginManager = pluginManager;
@@ -107,7 +107,8 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             final String graphName = graphNode.getName();
             if (graphName != null) {
                 result.append(graphName);
-                result.append(SeparatorConstants.SEMICOLON + " ");
+                result.append(SeparatorConstants.COLON);
+                result.append(" ");
             }
         }
 
@@ -186,7 +187,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             case FATAL:
                 SwingUtilities.invokeLater(() -> {
                     final NotifyDescriptor ndf = new NotifyDescriptor(
-                            "Fatal error:\n" + message,
+                            "Fatal Error:\n" + message,
                             title,
                             DEFAULT_OPTION,
                             NotifyDescriptor.ERROR_MESSAGE,
@@ -195,7 +196,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     );
                     DialogDisplayer.getDefault().notify(ndf);
                 });
-                LOGGER.severe(String.format(STRING_STRING_FORMAT, title, message));
+                LOGGER.log(Level.SEVERE, STRING_STRING_FORMAT, new Object[]{title, message});
                 break;
 
             case ERROR:
@@ -210,7 +211,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     );
                     DialogDisplayer.getDefault().notify(nde);
                 });
-                LOGGER.severe(String.format(STRING_STRING_FORMAT, title, message));
+                LOGGER.log(Level.SEVERE, STRING_STRING_FORMAT, new Object[]{title, message});
                 break;
 
             case WARNING:
@@ -219,42 +220,19 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         message,
                         null
                 );
-                LOGGER.warning(String.format(STRING_STRING_FORMAT, title, message));
+                LOGGER.log(Level.WARNING, STRING_STRING_FORMAT, new Object[]{title, message});
                 break;
 
             case INFO:
-                final Message statusMessage = StatusDisplayer.getDefault().setStatusText(String.format(STRING_STRING_FORMAT, title, message), 10);
+                final Message statusMessage = StatusDisplayer.getDefault().setStatusText(title + ": " + message, 10);
                 statusMessage.clear(5000);
-                LOGGER.info(String.format(STRING_STRING_FORMAT, title, message));
+                LOGGER.log(Level.INFO, STRING_STRING_FORMAT, new Object[]{title, message});
                 break;
 
             case DEBUG:
-                LOGGER.fine(String.format(STRING_STRING_FORMAT, title, message));
+                LOGGER.log(Level.FINE, STRING_STRING_FORMAT, new Object[]{title, message});
                 break;
-            default:
-                break;
-        }
-    }
 
-    @Override
-    public void notifyException(PluginNotificationLevel level, Exception exception) {
-        final String title = pluginManager.getPlugin().getName();
-        switch (level) {
-            case FATAL:
-                LOGGER.log(Level.SEVERE, title, exception);
-                break;
-            case ERROR:
-                LOGGER.log(Level.SEVERE, title, exception);
-                break;
-            case WARNING:
-                LOGGER.log(Level.WARNING, title, exception);
-                break;
-            case INFO:
-                LOGGER.log(Level.INFO, title, exception);
-                break;
-            case DEBUG:
-                LOGGER.log(Level.FINE, title, exception);
-                break;
             default:
                 break;
         }

@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class RuntimeExceptionPlugin extends SimpleReadPlugin {
 
     @Override
-    protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
         throw new RuntimeException();
     }
 }
