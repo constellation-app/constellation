@@ -87,14 +87,13 @@ public class WhatsNewViewPane extends BorderPane {
 
             final VBox contentVBox = new VBox();
             whatsNewViewPane.setCenter(contentVBox);
-            contentVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
 
             // Create a checkbox to change users preference regarding showing the Whats New Page on startup
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
             final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
             contentVBox.getChildren().add(showOnStartUpCheckBox);
             contentVBox.setAlignment(Pos.TOP_RIGHT);
-            contentVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
+            contentVBox.paddingProperty().set(new Insets(5, 150, 5, 150));
             showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal)
                     -> prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, newVal));
             showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
