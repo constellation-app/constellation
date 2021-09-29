@@ -52,7 +52,7 @@ public abstract class SimplePlugin extends AbstractPlugin {
     }
 
     @Override
-    public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         final Graph graph = graphs.getGraph();
         // Make the graph appear busy
@@ -77,7 +77,7 @@ public abstract class SimplePlugin extends AbstractPlugin {
     }
 
     @Override
-    public void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    public void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
@@ -97,7 +97,7 @@ public abstract class SimplePlugin extends AbstractPlugin {
     }
 
     @Override
-    public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
@@ -127,7 +127,7 @@ public abstract class SimplePlugin extends AbstractPlugin {
      * @throws InterruptedException if the operation is canceled.
      * @throws PluginException if an anticipated error occurs during plugin.
      */
-    protected abstract void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException;
+    protected abstract void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException;
 
     /**
      * Developers can also override this method if they wish to support running
@@ -142,7 +142,7 @@ public abstract class SimplePlugin extends AbstractPlugin {
      * @throws PluginException if an anticipated error occurs during plugin.
      * execution.
      */
-    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         throw new UnsupportedOperationException("Read mode is not supported by this plugin");
     }
 
@@ -159,7 +159,7 @@ public abstract class SimplePlugin extends AbstractPlugin {
      * @throws PluginException if an anticipated error occurs during plugin.
      * execution.
      */
-    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         throw new UnsupportedOperationException("Edit mode is not supported by this plugin");
     }
 }

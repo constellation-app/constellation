@@ -42,6 +42,18 @@ import org.openide.util.NbBundle.Messages;
  */
 public final class TestNotificationsAction implements ActionListener {
 
+    private static final String ERROR = "Error";
+    private static final String WARNING = "Warning";
+    private static final String INFORMATION = "Information";
+    private static final String PLAIN = "Plain";
+    private static final String DISPLAY_LARGE_ALERT = "Display Large Alert";
+    private static final String DISPLAY_ALERT = "Display Alert";
+    private static final String ERROR_MESSAGE = "Error Message";
+    private static final String WARNING_MESSAGE = "Warning Message";
+    private static final String INFORMATION_MESSAGE = "Information Message";
+    private static final String QUESTION_MESSAGE = "Question Message";
+    private static final String PLAIN_MESSAGE = "Plain Message";
+
     private final GraphNode context;
 
     public TestNotificationsAction(final GraphNode context) {
@@ -61,23 +73,23 @@ public final class TestNotificationsAction implements ActionListener {
         }
 
         // NetBeans NotifyDisplayer options
-        NotifyDisplayer.display("Plain Message", NotifyDescriptor.PLAIN_MESSAGE);
-        NotifyDisplayer.display("Question Message", NotifyDescriptor.QUESTION_MESSAGE);
-        NotifyDisplayer.display("Information Message", NotifyDescriptor.INFORMATION_MESSAGE);
-        NotifyDisplayer.display("Warning Message", NotifyDescriptor.WARNING_MESSAGE);
-        NotifyDisplayer.display("Error Message", NotifyDescriptor.ERROR_MESSAGE);
+        NotifyDisplayer.display(PLAIN_MESSAGE, NotifyDescriptor.PLAIN_MESSAGE);
+        NotifyDisplayer.display(QUESTION_MESSAGE, NotifyDescriptor.QUESTION_MESSAGE);
+        NotifyDisplayer.display(INFORMATION_MESSAGE, NotifyDescriptor.INFORMATION_MESSAGE);
+        NotifyDisplayer.display(WARNING_MESSAGE, NotifyDescriptor.WARNING_MESSAGE);
+        NotifyDisplayer.display(ERROR_MESSAGE, NotifyDescriptor.ERROR_MESSAGE);
 
         // Constellation Utility options
         Platform.runLater(() -> {
-            NotifyDisplayer.displayAlert("Display Alert", "Plain", "Plain Message", Alert.AlertType.NONE);
-            NotifyDisplayer.displayAlert("Display Alert", "Information", "Information Message", Alert.AlertType.INFORMATION);
-            NotifyDisplayer.displayAlert("Display Alert", "Warning", "Warning Message", Alert.AlertType.WARNING);
-            NotifyDisplayer.displayAlert("Display Alert", "Error", "Error Message", Alert.AlertType.ERROR);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR);
 
-            NotifyDisplayer.displayLargeAlert("Display Large Alert", "Plain", "Plain Message", Alert.AlertType.NONE);
-            NotifyDisplayer.displayLargeAlert("Display Large Alert", "Information", "Information Message", Alert.AlertType.INFORMATION);
-            NotifyDisplayer.displayLargeAlert("Display Large Alert", "Warning", "Warning Message", Alert.AlertType.WARNING);
-            NotifyDisplayer.displayLargeAlert("Display Large Alert", "Error", "Error Message", Alert.AlertType.ERROR);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR);
         });
     }
 }

@@ -92,7 +92,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
     }
 
     @Override
-    public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         boolean inControlOfProgress = true;
 
@@ -180,12 +180,12 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
     }
 
     @Override
-    public final void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    public final void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         throw new UnsupportedOperationException("Read mode is not supported by this plugin");
     }
 
     @Override
-    public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         boolean inControlOfProgress = true;
 
@@ -248,7 +248,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
      * @throws PluginException if an anticipated error occurs during plugin
      * execution.
      */
-    protected Object describedEdit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    protected Object describedEdit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         edit(graph, interaction, parameters);
         return null;
     }
@@ -268,7 +268,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
      * @throws PluginException if an anticipated error occurs during plugin
      * execution.
      */
-    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
     }
 
     /**
@@ -285,7 +285,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
      * @throws PluginException if an anticipated error occurs during plugin
      * execution.
      */
-    protected void query(final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    protected void query(final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
     }
 
     /**
@@ -302,6 +302,6 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
      * @throws PluginException if an anticipated error occurs during plugin
      * execution.
      */
-    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
     }
 }

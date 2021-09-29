@@ -128,12 +128,12 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     }
 
     @Override
-    public final void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    public final void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         throw new UnsupportedOperationException("Read mode is not supported by this plugin");
     }
 
     @Override
-    public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         boolean inControlOfProgress = true;
 
@@ -176,10 +176,8 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
      * @throws InterruptedException if the plugin execution is canceled.
      * @throws PluginException if an anticipated error occurs during plugin
      * execution.
-     * @throws RuntimeException if an unexpected error occurs during the plugin
-     * execution.
      */
-    protected Object describedEdit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
+    protected Object describedEdit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         edit(graph, interaction, parameters);
         return getName();
     }
@@ -196,8 +194,6 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
      * @throws InterruptedException if the plugin execution is canceled.
      * @throws PluginException if an anticipated error occurs during plugin
      * execution.
-     * @throws RuntimeException if an unexpected error occurs during the plugin
-     * execution.
      */
-    protected abstract void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException;
+    protected abstract void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException;
 }

@@ -387,14 +387,16 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     }
 
     /**
-     * Set the current report to its error state and log the {@code Exception}
+     * Report the exception to the user using the {@code notify} method, set the
+     * current report to its error state and log the {@code Exception}
      *
+     * @param pluginName the name of the {@code Plugin} being executed
      * @param interaction the PluginInteraction object to report to
      * @param currentReport the current report
      * @param level the level of the exception
      * @param ex the exception
      */
-    private void reportException(final String title, final PluginInteraction interaction,
+    private void reportException(final String pluginName, final PluginInteraction interaction,
             final PluginReport currentReport,
             final PluginNotificationLevel level, final Exception ex) {
         if (currentReport != null) {
@@ -402,14 +404,14 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         }
 
         if (ex instanceof InterruptedException) {
-            final String message = "Plugin cancelled: " + title;
+            final String message = String.format("Plugin cancelled: %s", pluginName);
             interaction.notify(PluginNotificationLevel.INFO, message);
             LOGGER.log(Level.INFO, message, ex);
         } else if (ex instanceof PluginException) {
             interaction.notify(level, ex.getLocalizedMessage());
-            LOGGER.log(Level.INFO, "Plugin exception caught in " + title, ex);
+            LOGGER.log(Level.INFO, String.format("Plugin exception caught in %s", pluginName), ex);
         } else {
-            final String message = "Unexpected exception caught in " + title;
+            final String message = String.format("Unexpected exception caught in %s", pluginName);
             switch (level) {
                 case FATAL:
                 case ERROR:
