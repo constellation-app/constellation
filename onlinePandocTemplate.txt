@@ -88,34 +88,34 @@
         </script>
 	<script>
              // when a group is shown, save it as active
-             $(\".collapse\").on('shown.bs.collapse', function() {
-                  var active = $(this).attr('id');
-                  console.log(\"In shown with cookie: \" + active);
+             $$(\".collapse\").on('shown.bs.collapse', function(e) {
+                  e.stopPropagation();
+                  var active = $$(this).attr('id');
                   Cookies.set(active, \"true\");
+                  $$(\"#\" + active).addClass('show');
              });
              // when a group is hidden, save it as inactive
-             $(\".collapse\").on('hidden.bs.collapse', function(e) {
+             $$(\".collapse\").on('hidden.bs.collapse', function(e) {
                   e.stopPropagation(); 
-                  var active = $(this).attr('id');
-                  console.log(\"In hidden with cookie: \" + active);
+                  var active = $$(this).attr('id');
                   Cookies.set(active, \"false\");
-                  $(\"#\" + active).removeClass('show');
-                  $(\"#\" + active).collapse(\"hide\");
+                  $$(\"#\" + active).removeClass('show');
+                  $$(\"#\" + active).collapse(\"hide\");
              });
               
-             $(document).ready(function() {
+             $$(document).ready(function() {
                   var allCookies = Cookies.get();
                   for (var cookie in allCookies) { 
                       if (cookie != null) {
                          //remove default collapse settings
-                         $(\"#\" + cookie).removeClass('show');
+                         $$(\"#\" + cookie).removeClass('show');
                          //show the group if the value is true 
                          var cookieValue = Cookies.get(cookie);
                          if (cookieValue == (\"true\")) {
-                            $(\"#\" + cookie).collapse(\"show\");
+                            $$(\"#\" + cookie).collapse(\"show\");
                          } else {
-                            $(\"#\" + cookie).collapse(\"hide\");
-                            $(\"#\" + cookie + \" .collapse\").removeClass('show');
+                            $$(\"#\" + cookie).collapse(\"hide\");
+                            $$(\"#\" + cookie + \" .collapse\").removeClass('show');
                          }
                       }
                  }
