@@ -1,5 +1,5 @@
 <head>
-    <base href="/constellation-app.github.io/documentation/constellation/">
+    <base href="/constellation-app.github.io/help/constellation/">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="../../assets/css/app.css" />
@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="../../assets/css/noscript.css" />
     </noscript>
 
-     <!-- Scripts -->
+    <!-- Scripts -->
     <script src="../../assets/js/jquery.min.js" />
     <script src="../../assets/js/js.cookie.min.js" />
     <script src="../../assets/js/jquery.dropotron.min.js" />
