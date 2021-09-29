@@ -94,7 +94,6 @@ public final class TabContextMenu {
             Platform.runLater(() -> {
                 final PluginFinder pluginFinder = new PluginFinder();
                 pluginFinder.find(
-                        dataAccessTabPane.getDataAccessPane(),
                         DataAccessTabPane.getQueryPhasePane(tab)
                 );
             });

@@ -87,13 +87,27 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     private volatile boolean parametersCreated;
     private volatile String paramFailureMsg;
 
-    // Have the parameters been loaded yet?
-    // This is always accessed on the FX thread, so no need for synchronisation.
+    /**
+     * Flag indicating if the parameters have been loaded. This will always be accessed
+     * on the FX thread, so no need for synchronization.
+     */
     private boolean isLoaded;
 
-    private static final Image HELP_ICON = UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor());
+    private static final Image HELP_ICON = UserInterfaceIconProvider.HELP
+            .buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor());
 
-    public DataSourceTitledPane(final DataAccessPlugin plugin, final ImageView dataSourceIcon, final PluginParametersPaneListener top, final Set<String> globalParamLabels) {
+    /**
+     * Creates a new titled pane for the give plugin.
+     *
+     * @param plugin the plugin to be associated with the pane
+     * @param dataSourceIcon an icon representing the data source
+     * @param top
+     * @param globalParamLabels a list of all the global parameter names 
+     */
+    public DataSourceTitledPane(final DataAccessPlugin plugin,
+                                final ImageView dataSourceIcon,
+                                final PluginParametersPaneListener top,
+                                final Set<String> globalParamLabels) {
         this.plugin = plugin;
         this.top = top;
         this.globalParamLabels = globalParamLabels;
@@ -112,29 +126,87 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
         setPadding(Insets.EMPTY);
         setTooltip(new Tooltip(plugin.getDescription()));
     }
+    
+    @Override
+    public void validityChanged(boolean isEnabled) {
+        isEnabled = parametersCreated && isEnabled;
+        enabled.setSelected(isEnabled);
+        if (enabled.isSelected()) {
+            while (getStyleClass().contains(MATCHED_STYLE)) {
+                getStyleClass().remove(MATCHED_STYLE);
+            }
+            getStyleClass().add(SELECTED_STYLE);
+        } else {
+            while (getStyleClass().contains(SELECTED_STYLE)) {
+                getStyleClass().remove(SELECTED_STYLE);
+            }
+        }
+        top.hierarchicalUpdate();
+    }
+    
+    @Override
+    public void hierarchicalUpdate() {
+        top.hierarchicalUpdate();
+    }
+    
+    public boolean isQueryEnabled() {
+        return parametersCreated && enabled.isSelected();
+    }
+
+    public PluginParameters getParameters() {
+        return parametersCreated ? dataSourceParameters : null;
+    }
+
+    /**
+     * Get the data access plugin associated to this pane.
+     *
+     * @return the data access plugin
+     */
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
+    /**
+     * Recreate and enable the pane with the provided parameter values.
+     *
+     * @param perPluginParamMap the new parameter values
+     */
+    public void setParameterValues(final Map<String, String> perPluginParamMap) {
+        createParameters(true, perPluginParamMap);
+    }
+
+    /**
+     * Access to the parameter creator executor service. Primarily used for
+     * testing purposes.
+     *
+     * @return the static executor service that should be used when creating
+     * parameters
+     */
+    public ExecutorService getParamCreator() {
+        return PARAM_CREATOR;
+    }
 
     /**
      * Create the plugin's parameters in a background thread to avoid stalling
      * the Data Access view.
-     * <p>
+     * <p/>
      * Some plugins may take some time to create their parameters. Even worse,
      * once the parameters have been created, the equivalent JavaFX scenes can
      * take even longer. (At one point it was taking six seconds just to call
      * "container.setScene(new Scene(dataAccessViewPane))".) This synchronous
      * parameter create and display slows down the entire Data Access view
      * construction.
-     * <p>
+     * <p/>
      * Therefore, we let each plugin create its parameters asynchronously in a
      * background thread. We remember the expanded state of each plugin pane,
-     * and only buildId the PluginParametersPane when it needs to be displayed,
+     * and only build the PluginParametersPane when it needs to be displayed,
      * either immediately (if the pane was already expanded) or on user request.
      * This way, the cost of building the panes is only paid when it is seen.
      * For a Data Access view with only a few plugin panes expanded, this makes
      * the startup time much quicker.
      *
-     * @param isExpanded Should the TitledPane be expanded immediately?
-     * @param perPluginParamMap Parameter values that will override the
-     * defaults.
+     * @param isExpanded true if the TitledPane should be expanded immediately, false otherwise
+     * @param perPluginParamMap plugin parameter values that will override the defaults
      */
     private void createParameters(final boolean isExpanded, final Map<String, String> perPluginParamMap) {
         setExpanded(false);
@@ -208,9 +280,10 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     }
 
     /**
-     * Display the
+     * Build the pane if it should be in an expanded state, otherwise build it
+     * with a dummy label in the content as a placeholder.
      *
-     * @param isExpanded
+     * @param isExpanded true if the TitledPane should be expanded immediately, false otherwise
      */
     private void displayParameters(final boolean isExpanded) {
         assert Platform.isFxApplicationThread();
@@ -235,13 +308,14 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
             if (hasNonGlobalParameters(dataSourceParameters)) {
                 if (isExpanded) {
                     isLoaded = true;
-                    final PluginParametersPane parametersPane = PluginParametersPane.buildPane(dataSourceParameters, this, globalParamLabels);
+                    final PluginParametersPane parametersPane = PluginParametersPane
+                            .buildPane(dataSourceParameters, this, globalParamLabels);
                     setContent(parametersPane);
                     setExpanded(true);
                 } else {
-                    // We need some content, any content, otherwise the first time the user attempts to expand the pane,
-                    // the TitledPane will say to itself "I have no content, therefore I won't bother to expand".
-                    //                    setContent(new Label("Waiting..."));
+                    // We need some content, any content, otherwise the first time the
+                    // user attempts to expand the pane, the TitledPane will say to itself
+                    // "I have no content, therefore I won't bother to expand".
                     setContent(DUMMY_LABEL);
                 }
 
@@ -283,12 +357,17 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
         }
     }
 
+    /**
+     * Creates the title bar for this pane. The title bar will contain a check
+     * box to enable/disable this pane's plugin. It will also supply a help button.
+     *
+     * @return the title bar for this pane
+     */
     private Pane createTitleBar() {
         final HBox box = new HBox(enabled, label);
         final HelpCtx helpCtx = plugin.getHelpCtx();
         if (helpCtx != null) {
-            final ImageView helpView = new ImageView(HELP_ICON);
-            final Button helpButton = new Button("", helpView);
+            final Button helpButton = new Button("", new ImageView(HELP_ICON));
             helpButton.paddingProperty().set(HELP_INSETS);
             helpButton.setTooltip(new Tooltip(String.format("Display help for %s", plugin.getName())));
             helpButton.setOnAction(event -> {
@@ -305,6 +384,15 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
         return box;
     }
 
+    /**
+     * Determines if the passed {@link PluginParameters} contain any parameters that are
+     * not in the global parameters. If the passed {@link PluginParameters} is
+     * null or has no parameters, false is returned.
+     *
+     * @param pp the plugin parameters to verify
+     * @return true if there are parameters present other than those present in
+     *     the global parameters, false otherwise
+     */
     private boolean hasNonGlobalParameters(final PluginParameters pp) {
         if (pp == null || pp.getParameters() == null) {
             return false;
@@ -314,59 +402,5 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
         paramNames.removeAll(globalParamLabels);
 
         return !paramNames.isEmpty();
-    }
-
-    public boolean isQueryEnabled() {
-        return parametersCreated && enabled.isSelected();
-    }
-
-    public PluginParameters getParameters() {
-        return parametersCreated ? dataSourceParameters : null;
-    }
-
-    public Plugin getPlugin() {
-        return plugin;
-    }
-
-    @Override
-    public void validityChanged(boolean isEnabled) {
-        isEnabled = parametersCreated && isEnabled;
-        enabled.setSelected(isEnabled);
-        if (enabled.isSelected()) {
-            while (getStyleClass().contains(MATCHED_STYLE)) {
-                getStyleClass().remove(MATCHED_STYLE);
-            }
-            getStyleClass().add(SELECTED_STYLE);
-        } else {
-            while (getStyleClass().contains(SELECTED_STYLE)) {
-                getStyleClass().remove(SELECTED_STYLE);
-            }
-        }
-        top.hierarchicalUpdate();
-    }
-
-    /**
-     * Recreate and enable the pane with the provided parameter values.
-     *
-     * @param perPluginParamMap the parameter values.
-     */
-    public void setParameterValues(final Map<String, String> perPluginParamMap) {
-        createParameters(true, perPluginParamMap);
-    }
-
-    @Override
-    public void hierarchicalUpdate() {
-        top.hierarchicalUpdate();
-    }
-
-    /**
-     * Access to the parameter creator executor service. Primarily used for
-     * testing purposes.
-     *
-     * @return the static executor service that should be used when creating
-     * parameters
-     */
-    public ExecutorService getParamCreator() {
-        return PARAM_CREATOR;
     }
 }

@@ -269,22 +269,32 @@ public class DataAccessPaneState {
     }
     
     /**
-     * Gets the flag that indicates if the execute button should be enabled for
-     * the current graph.
+     * Gets the execute buttons "Go" state for the current graph.
+     * <p/>
+     * The "Go" state essentially means that the button has the text "Go" and
+     * is enabled.
+     * <p/>
+     * When it is in this state, it means 
+     * <ul>
+     * <li>There are currently no queries running</li>
+     * <li>There are enabled and valid plugins to run</li>
+     * </ul>
      *
-     * @return true if the execute button should be enabled, false otherwise
+     * @return true if the execute button for the current graph is in the "Go"
+     *     state, false otherwise
      */
     public static synchronized boolean isExecuteButtonIsGo() {
         return isExecuteButtonIsGo(currentGraphId);
     }
     
     /**
-     * Gets the flag that indicates if the execute button should be enabled for
-     * the passed graph.
+     * Gets the execute buttons "Go" state for the passed graph.
      *
      * @param graphId the ID of the graph that the execute button status is being
      *     checked for
-     * @return true if the execute button should be enabled, false otherwise
+     * @return true if the execute button for the current graph is in the "Go"
+     *     state, false otherwise
+     * @see #isExecuteButtonIsGo() 
      */
     public static synchronized boolean isExecuteButtonIsGo(final String graphId) {
         return graphId != null && DATA_ACCESS_PANE_STATES
@@ -293,19 +303,22 @@ public class DataAccessPaneState {
     }
     
     /**
-     * TODO
+     * Updates the execute buttons "Go" state for the current graph.
      * 
-     * @param isGo 
+     * @param isGo true if the execute button is in the "Go" state
+     * @see #isExecuteButtonIsGo() 
      */
     public static synchronized void updateExecuteButtonIsGo(final boolean isGo) {
         updateExecuteButtonIsGo(currentGraphId, isGo);
     }
     
     /**
-     * TODO
+     * Updates the execute buttons "Go" state for the passed graph.
      * 
-     * @param graphId
-     * @param isGo 
+     * @param graphId the ID of the graph that the execute button status is being
+     *     updated for
+     * @param isGo true if the execute button is in the "Go" state, false otherwise
+     * @see #isExecuteButtonIsGo() 
      */
     public static synchronized void updateExecuteButtonIsGo(final String graphId,
                                                             final boolean isGo) {

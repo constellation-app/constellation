@@ -19,18 +19,22 @@ import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.ShowDataAccessPluginTask;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.quicksearch.SearchProvider;
 import org.netbeans.spi.quicksearch.SearchRequest;
 import org.netbeans.spi.quicksearch.SearchResponse;
 
 /**
- * Data Access Search Provider
+ * Netbeans {@link SearchProvider} that backs the plugin search filter in the
+ * Data Access view.
  *
  * @author algol
  */
@@ -40,12 +44,13 @@ public class DataAccessSearchProvider implements SearchProvider {
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
         final String text;
-        if (request != null && request.getText() != null) {
+        if (request != null && StringUtils.isNotBlank(request.getText())) {
             text = request.getText().toLowerCase();
         } else {
             return;
         }
 
+        // Get all the available data access plugins
         final Map<String, List<DataAccessPlugin>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
@@ -57,16 +62,15 @@ public class DataAccessSearchProvider implements SearchProvider {
                     + "Data Access View failed to load.");
         }
         
-        final List<String> pluginNames = new ArrayList<>();
-        plugins.values().stream().forEach(dapl -> {
-            for (final DataAccessPlugin dap : dapl) {
-                if (dap.getName().toLowerCase().contains(text)) {
-                    pluginNames.add(dap.getName());
-                }
-            }
-        });
-
-        Collections.sort(pluginNames, (a, b) -> a.compareToIgnoreCase(b));
+        // Find all matching plugin names
+        final List<String> pluginNames = plugins.values().stream()
+                // Flatten everything to a single stream of plugins
+                .flatMap(Collection::stream)
+                // Filter out plugins whose name do NOT contain the filter text
+                .filter(plugin -> plugin.getName().toLowerCase().contains(text))
+                .map(DataAccessPlugin::getName)
+                .sorted((a, b) -> a.compareToIgnoreCase(b))
+                .collect(Collectors.toList());
 
         for (final String name : pluginNames) {
             if (!response.addResult(new ShowDataAccessPluginTask(name), name)) {

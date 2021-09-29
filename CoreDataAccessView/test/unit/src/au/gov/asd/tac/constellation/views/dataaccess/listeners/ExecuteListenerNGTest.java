@@ -34,6 +34,8 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.WaitForQueriesToCompleteTask;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
+import java.awt.Desktop;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -89,7 +91,7 @@ public class ExecuteListenerNGTest {
     private static MockedStatic<PluginExecution> pluginExecutionMockedStatic;
     private static MockedStatic<NotificationDisplayer> notificationDisplayerMockedStatic;
     private static MockedStatic<StatusDisplayer> statusDisplayerMockedStatic;
-    private static MockedStatic<DataAccessPreferencesIoProvider> daIOProviderMockedStatic;
+    private static MockedStatic<DataAccessUtilities> utilitiesMockedStatic;
     private static MockedStatic<CompletableFuture> completableFutureMockedStatic;
     
     private static MockedConstruction<NewDefaultSchemaGraphAction> graphActionMockedConstruction;
@@ -121,7 +123,7 @@ public class ExecuteListenerNGTest {
         pluginExecutionMockedStatic = Mockito.mockStatic(PluginExecution.class);
         notificationDisplayerMockedStatic = Mockito.mockStatic(NotificationDisplayer.class);
         statusDisplayerMockedStatic = Mockito.mockStatic(StatusDisplayer.class);
-        daIOProviderMockedStatic = Mockito.mockStatic(DataAccessPreferencesIoProvider.class);
+        utilitiesMockedStatic = Mockito.mockStatic(DataAccessUtilities.class);
         completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class, Mockito.CALLS_REAL_METHODS);
         
         graphActionMockedConstruction = Mockito.mockConstruction(NewDefaultSchemaGraphAction.class);
@@ -138,7 +140,7 @@ public class ExecuteListenerNGTest {
         pluginExecutionMockedStatic.close();
         notificationDisplayerMockedStatic.close();
         statusDisplayerMockedStatic.close();
-        daIOProviderMockedStatic.close();
+        utilitiesMockedStatic.close();
         completableFutureMockedStatic.close();
         
         graphActionMockedConstruction.close();
@@ -209,7 +211,7 @@ public class ExecuteListenerNGTest {
         
         DataAccessPaneState.clearState();
     }
-
+    
     @AfterMethod
     public void tearDownMethod() throws Exception {
         graphManagerMockedStatic.reset();
@@ -217,7 +219,7 @@ public class ExecuteListenerNGTest {
         pluginExecutionMockedStatic.reset();
         notificationDisplayerMockedStatic.reset();
         statusDisplayerMockedStatic.reset();
-        daIOProviderMockedStatic.reset();
+        utilitiesMockedStatic.reset();
         completableFutureMockedStatic.reset();
     }
     
@@ -293,7 +295,7 @@ public class ExecuteListenerNGTest {
             verify(statusDisplayer).setStatusText("Data access results will be written to " + tmpDir.getAbsolutePath());
 
             // Verify the current state is saved before the plugins are run
-            daIOProviderMockedStatic.verify(() -> DataAccessPreferencesIoProvider
+            utilitiesMockedStatic.verify(() -> DataAccessUtilities
                     .saveDataAccessState(tabPane, activeGraph));
 
             verify(pluginExecution).executeLater(null);

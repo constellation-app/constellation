@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -143,7 +144,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         if (needsUpdate() && getDataAccessPane() != null) {
             getDataAccessPane().update(graph);
             Platform.runLater(() -> {
-                DataAccessPreferencesIoProvider.loadDataAccessState(getDataAccessPane(), graph);
+                DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph);
             });
         }
     }

@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import java.util.List;
 import javafx.application.Platform;
@@ -111,8 +112,8 @@ public class DataAccessViewTopComponentNGTest {
         try (
                 final MockedStatic<Platform> platformMockedStatic =
                         Mockito.mockStatic(Platform.class);
-                final MockedStatic<DataAccessPreferencesIoProvider> dapIOProvMockedStatic =
-                        Mockito.mockStatic(DataAccessPreferencesIoProvider.class);
+                final MockedStatic<DataAccessUtilities> utilitiesMockedStatic =
+                        Mockito.mockStatic(DataAccessUtilities.class);
         ) {
             platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
                     .thenAnswer((iom) -> {
@@ -127,7 +128,7 @@ public class DataAccessViewTopComponentNGTest {
 
             verify(dataAccessPane).update(graph);
 
-            dapIOProvMockedStatic.verify(() -> DataAccessPreferencesIoProvider
+            utilitiesMockedStatic.verify(() -> DataAccessUtilities
                     .loadDataAccessState(dataAccessPane, graph));
         }
     }

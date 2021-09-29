@@ -204,7 +204,7 @@ public class TabContextMenuNGTest {
                         
                         // Verify the plugin finder was created and used as expected
                         assertEquals(mockedPluginFinders.constructed().size(), 1);
-                        verify(mockedPluginFinders.constructed().get(0)).find(dataAccessPane, queryPhasePane);
+                        verify(mockedPluginFinders.constructed().get(0)).find(queryPhasePane);
                         
                         return null;
                     });

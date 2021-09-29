@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoP
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.WaitForQueriesToCompleteTask;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -136,7 +137,7 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
                 protected void execute(final PluginGraphs graphs,
                                        final PluginInteraction interaction,
                                        final PluginParameters parameters) throws InterruptedException, PluginException {
-                    DataAccessPreferencesIoProvider.saveDataAccessState(
+                    DataAccessUtilities.saveDataAccessState(
                             dataAccessPane.getDataAccessTabPane().getTabPane(),
                             GraphManager.getDefault().getActiveGraph()
                     );

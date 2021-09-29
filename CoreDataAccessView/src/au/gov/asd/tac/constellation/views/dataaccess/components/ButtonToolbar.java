@@ -201,12 +201,12 @@ public class ButtonToolbar {
     
     /**
      * Change the execute buttons state, changing the text, style and ensuring it
-     * is disabled.
+     * enablement state remains unchanged.
      *
      * @param state the new state to set the execute button to
      */
     public void changeExecuteButtonState(final ExecuteButtonState state) {
-        changeExecuteButtonState(state, true);
+        changeExecuteButtonState(state, getExecuteButton().isDisable());
     }
     
     /**

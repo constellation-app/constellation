@@ -229,17 +229,19 @@ public class ButtonToolbarNGTest {
         final Button executeButton = mock(Button.class);
         doReturn(executeButton).when(buttonToolbar).getExecuteButton();
         
+        when(executeButton.isDisable()).thenReturn(false);
+        
         buttonToolbar.changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.STOP);
         
         WaitForAsyncUtils.waitForFxEvents();
         
         verify(executeButton).setText("Stop");
         verify(executeButton).setStyle("-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
-        verify(executeButton).setDisable(true);
+        verify(executeButton).setDisable(false);
     }
     
     @Test
-    public void changeExecuteButtonState_withDisableFlage() {
+    public void changeExecuteButtonState_withDisableFlag() {
         final Button executeButton = mock(Button.class);
         doReturn(executeButton).when(buttonToolbar).getExecuteButton();
         

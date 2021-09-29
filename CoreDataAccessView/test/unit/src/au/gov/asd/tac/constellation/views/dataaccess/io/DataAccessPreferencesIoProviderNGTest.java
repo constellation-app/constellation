@@ -15,13 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.io;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
-import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessUserPreferences;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -41,7 +38,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -59,7 +55,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -87,55 +82,6 @@ public class DataAccessPreferencesIoProviderNGTest {
         }
     }
 
-    /**
-     * Test of saveDataAccessState method, of class DataAccessPreferencesIoUtilities.
-     */
-    @Test
-    public void testsaveDataAccessState() throws Exception {
-        System.out.println("testsaveDataAccessState");
-
-        // mock Tab
-        final Tab tab = mock(Tab.class);
-
-        ObservableList<Tab> observableArrayList
-                = FXCollections.observableArrayList(tab);
-
-        // mock TabPane
-        final TabPane tabPane = mock(TabPane.class);
-        when(tabPane.getTabs()).thenReturn(observableArrayList);
-
-        final ScrollPane scrollPane = mock(ScrollPane.class);
-        final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
-        final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
-        final PluginParameters pluginParameters = mock(PluginParameters.class);
-        final PluginParameter pluginParameter = mock(PluginParameter.class);
-
-        when(tab.getContent()).thenReturn(scrollPane);
-        when(scrollPane.getContent()).thenReturn(queryPhasePane);
-        when(queryPhasePane.getGlobalParametersPane()).thenReturn(globalParametersPane);
-        when(globalParametersPane.getParams()).thenReturn(pluginParameters);
-        when(pluginParameter.getStringValue()).thenReturn("something");
-
-        final String someKey = "someKey";
-        final Map<String, PluginParameter<?>> map = Map.of(someKey, pluginParameter);
-        when(pluginParameters.getParameters()).thenReturn(map);
-
-        // mock graph
-        final Graph graph = mock(Graph.class);
-        final WritableGraph wGraph = mock(WritableGraph.class);
-        when(graph.getWritableGraph("Update Data Access State", true)).thenReturn(wGraph);
-
-        DataAccessPreferencesIoProvider.saveDataAccessState(tabPane, graph);
-
-        final DataAccessState expectedTab = new DataAccessState();
-        expectedTab.newTab();
-        expectedTab.add("someKey", "something");
-
-        assertEquals(expectedTab.getState().size(), 1);
-        verify(wGraph).setObjectValue(0, 0, expectedTab);
-
-    }
-    
     @Test
     public void saveParameters_query_present() {
         final Map<String, String> tab1GlobalParams = Map.of(

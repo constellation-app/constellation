@@ -250,7 +250,7 @@ public class DataAccessTabPane {
         final boolean isExecuteButtonEnabled = !getDataAccessPane().getButtonToolbar()
                 .getExecuteButton().isDisabled();
                     
-        return getTabPane().getTabs().parallelStream()
+        return getTabPane().getTabs().stream()
                 .map(tab -> {
                     // TODO This needs some more work to try and consolidate it
                     //      as the logic to disable/enable the execute button is
@@ -286,7 +286,7 @@ public class DataAccessTabPane {
      * @return true if all tabs are valid and executable, false otherwise
      */
     public boolean isTabPaneExecutable() {
-        return getTabPane().getTabs().parallelStream()
+        return getTabPane().getTabs().stream()
                 .map(isExecutableTab)
                 .filter(b -> !b) // Reduce to only tabs that are invalid
                 .findAny()
@@ -302,12 +302,13 @@ public class DataAccessTabPane {
      * @return true if there are active plugins and they are valid, false otherwise
      */
     public boolean hasActiveAndValidPlugins() {
-        return getTabPane().getTabs().parallelStream()
-                .filter(tab -> tabHasEnabledPlugins(tab) && !validateTabEnabledPlugins(tab))
-                // Find any invalid plugins or tabs with no enabled plugins
-                .findAny()
-                // If there are none then all tabs have enabled plugins and are valid
-                .isEmpty();
+        final List<Tab> tabsWithEnabledPlugins = getTabPane().getTabs().stream()
+                .filter(tab -> tabHasEnabledPlugins(tab))
+                .collect(Collectors.toList());
+                
+        return tabsWithEnabledPlugins.isEmpty() ? false 
+                : tabsWithEnabledPlugins.stream()
+                        .allMatch(tab -> validateTabEnabledPlugins(tab));
     }
     
     /**
@@ -373,7 +374,7 @@ public class DataAccessTabPane {
             final QueryPhasePane pluginPane = getQueryPhasePane(tab);
             
             // Store global parameters
-            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().parallelStream()
+            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream()
                     .filter(param ->
                             param.getValue().getStringValue() != null
                                     && !param.getValue().getStringValue().isEmpty()
@@ -383,7 +384,7 @@ public class DataAccessTabPane {
                     ));
             
             // Store data access plugin parameters
-            pluginPane.getDataAccessPanes().parallelStream()
+            pluginPane.getDataAccessPanes().stream()
                     .map(DataSourceTitledPane::getParameters)
                     .filter(Objects::nonNull)
                     .map(PluginParameters::getParameters)
@@ -446,7 +447,7 @@ public class DataAccessTabPane {
      * @return true if the tab has any enabled plugins, false otherwise
      */
     public static boolean tabHasEnabledPlugins(final Tab tab) {
-        return getQueryPhasePane(tab).getDataAccessPanes().parallelStream()
+        return getQueryPhasePane(tab).getDataAccessPanes().stream()
                 .filter(DataSourceTitledPane::isQueryEnabled)
                 .findAny()
                 .isPresent();
@@ -460,14 +461,14 @@ public class DataAccessTabPane {
      * @return true if the tab's enabled plug-ins have valid parameters, false otherwise
      */
     public static boolean validateTabEnabledPlugins(final Tab tab) {
-        return !getQueryPhasePane(tab).getDataAccessPanes().parallelStream()
+        return getQueryPhasePane(tab).getDataAccessPanes().stream()
                 .filter(DataSourceTitledPane::isQueryEnabled)
                 .map(DataSourceTitledPane::getParameters)
                 .filter(Objects::nonNull)
                 .map(PluginParameters::getParameters)
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
-                .anyMatch(entry -> entry.getValue().getError() == null);
+                .allMatch(entry -> entry.getValue().getError() == null);
     }
     
     /**
