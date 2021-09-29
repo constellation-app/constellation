@@ -59,46 +59,37 @@ public class HelpServlet extends HttpServlet {
     );
     private static boolean wasRedirect = false;
 
+    protected boolean getWasRedirect() {
+        return wasRedirect;
+    }
+
+    protected void setWasRedirect(final boolean wasRedirect) {
+        this.wasRedirect = wasRedirect;
+    }
+
+    /**
+     * Attempt to send the request to be displayed by the ConstellationHelpDisplayer or redirect the request if the path given is incorrect
+     *
+     * @param request
+     * @param response
+     * @throws ServletException
+     */
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         final String requestPath = request.getRequestURI();
         final String referer = request.getHeader("referer");
 
         LOGGER.log(Level.INFO, "GET {0}", requestPath);
-        try {
-            if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js") || requestPath.contains(".ico"))) {
-                final String repeatedText = "src/au/gov/asd";
-                final int firstIndex = requestPath.indexOf(repeatedText);
-                if (firstIndex != -1) {
-                    final int secondIndex = requestPath.indexOf(repeatedText, firstIndex + repeatedText.length());
-                    if (secondIndex != -1) {
-                        // If the request path is duplicated then change it to be the last half
-                        final File file = new File(Generator.baseDirectory);
-                        final URL fileUrl = file.toURI().toURL();
-                        String requestfrontHalfRemoved = requestPath.replace(fileUrl.toString(), ""); // remove first bit
-                        String refererfrontHalfRemoved = referer.replace(fileUrl.toString(), ""); // remove first bit
-                        refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove filename.md
-                        refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove up one level
-                        refererfrontHalfRemoved = refererfrontHalfRemoved.replace("http://localhost:" + ConstellationHelpDisplayer.currentPort, "");
+        final URL fileUrl = redirectPath(requestPath, referer);
 
-                        requestfrontHalfRemoved = requestfrontHalfRemoved.replaceFirst(refererfrontHalfRemoved, "");
-
-                        String redirectURL = Generator.baseDirectory + requestfrontHalfRemoved;
-                        final File file2 = new File(redirectURL);
-                        final URL fileUrl2 = file2.toURI().toURL();
-                        response.sendRedirect("/" + fileUrl2.toString());
-                        wasRedirect = true;
-                        return;
-                    }
-                }
-            } else if (wasRedirect) {
-                wasRedirect = false;
+        if (fileUrl != null) {
+            try {
+                response.sendRedirect("/" + fileUrl.toString());
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
             }
-
-        } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
-            LOGGER.log(Level.WARNING, "Redirect Failed!", ex);
         }
+
         final int extIx = requestPath.lastIndexOf('.');
         final String ext = extIx > -1 ? requestPath.substring(extIx) : "";
         final String mimeType = MIME_TYPES.containsKey(ext) ? MIME_TYPES.get(ext) : "application/octet-stream";
@@ -109,5 +100,48 @@ public class HelpServlet extends HttpServlet {
         } catch (final IOException ex) {
             throw new ServletException(ex);
         }
+    }
+
+    /**
+     * If the requestPath is duplicated or not correct then update it after removing the additional parts from the path
+     *
+     * @param requestPath
+     * @param referer
+     * @return new file path
+     */
+    protected URL redirectPath(final String requestPath, final String referer) {
+        try {
+            if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js")
+                    || requestPath.contains(".ico"))) {
+                final String repeatedText = "src/au/gov/asd";
+                final int firstIndex = requestPath.indexOf(repeatedText);
+                if (firstIndex != -1) {
+                    final int secondIndex = requestPath.indexOf(repeatedText, firstIndex + repeatedText.length());
+                    if (secondIndex != -1) {
+                        // If the request path is duplicated then change it to be the last half
+                        final File file = new File(Generator.getBaseDirectory());
+                        final URL fileUrl = file.toURI().toURL();
+                        String requestfrontHalfRemoved = requestPath.replace(fileUrl.toString(), ""); // remove first bit
+                        String refererfrontHalfRemoved = referer.replace(fileUrl.toString(), ""); // remove first bit
+                        refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove filename.md
+                        refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove up one level
+                        refererfrontHalfRemoved = refererfrontHalfRemoved.replace("http://localhost:" + ConstellationHelpDisplayer.currentPort, "");
+                        requestfrontHalfRemoved = requestfrontHalfRemoved.replaceFirst(refererfrontHalfRemoved, "");
+
+                        String redirectURL = Generator.getBaseDirectory() + requestfrontHalfRemoved;
+                        final File file2 = new File(redirectURL);
+                        final URL fileUrl2 = file2.toURI().toURL();
+                        wasRedirect = true;
+                        return fileUrl2;
+                    }
+                }
+            } else if (wasRedirect) {
+                wasRedirect = false;
+            }
+        } catch (final IOException ex) {
+            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.WARNING, "Redirect Failed!", ex);
+        }
+        return null;
     }
 }

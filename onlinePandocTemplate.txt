@@ -6,6 +6,7 @@
         <noscript><link rel="stylesheet" href="../../assets/css/noscript.css" /></noscript>
 	<link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css" />
         <script src="../../assets/js/jquery.min.js"></script>
+	<script src="../../assets/js/js.cookie.min.js"></script>
         <script src="../../assets/js/jquery.dropotron.min.js"></script>
         <script src="../../assets/js/jquery.scrolly.min.js"></script>
         <script src="../../assets/js/jquery.scrollex.min.js"></script>
