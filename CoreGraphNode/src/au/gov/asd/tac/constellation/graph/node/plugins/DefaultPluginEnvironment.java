@@ -38,7 +38,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -75,11 +74,11 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     if (future != null) {
                         try {
                             future.get();
-                        } catch (InterruptedException ex) {
-                            Exceptions.printStackTrace(ex);
+                        } catch (final InterruptedException ex) {
+                            LOGGER.log(Level.SEVERE, "Thread was interrupted");
                             Thread.currentThread().interrupt();
-                        } catch (ExecutionException ex) {
-                            Exceptions.printStackTrace(ex);
+                        } catch (final ExecutionException ex) {
+                            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                         }
                     }
                 }
@@ -97,7 +96,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
             try {
                 ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
             }
 
             PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);
@@ -135,21 +134,38 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                         }
                     }
                 }
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.INFO, "{0} was cancelled", plugin.getName());
                 auditPluginError(plugin, ex);
                 interaction.notify(PluginNotificationLevel.INFO, "Plugin Cancelled: " + plugin.getName());
                 Thread.currentThread().interrupt();
                 if (currentReport != null) {
                     currentReport.setError(ex);
                 }
-            } catch (PluginException ex) {
+            } catch (final PluginException ex) {
+                final Level logLevel;
+                switch (ex.getNotificationLevel()) {
+                    case WARNING:
+                        logLevel = Level.WARNING;
+                        break;
+                    case INFO:
+                        logLevel = Level.INFO;
+                        break;
+                    case DEBUG:
+                        logLevel = Level.FINE;
+                        break;
+                    default:
+                        //FATAL or ERROR
+                        logLevel = Level.SEVERE;
+                        break;
+                }
+                LOGGER.log(logLevel, ex.getLocalizedMessage());
                 auditPluginError(plugin, ex);
                 interaction.notify(ex.getNotificationLevel(), ex.getMessage());
-                ex.printStackTrace();
                 if (currentReport != null) {
                     currentReport.setError(ex);
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 auditPluginError(plugin, ex);
                 final String msg = String.format("Unexpected non-plugin exception caught in %s.executePluginLater();%n", DefaultPluginEnvironment.class.getName());
                 LOGGER.log(Level.WARNING, msg, ex);
@@ -165,7 +181,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
                 try {
                     ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                 }
             }
 
@@ -201,7 +217,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
         }
 
         try {
@@ -219,7 +235,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 plugin.run(graphs, interaction, parameters);
 
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             auditPluginError(plugin, ex);
             if (currentReport != null) {
                 currentReport.setError(ex);
@@ -237,7 +253,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
             }
         }
 
@@ -272,7 +288,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
         }
 
         try {
@@ -280,7 +296,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             final PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
 
             plugin.run(graph, interaction, parameters);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             auditPluginError(plugin, ex);
             if (currentReport != null) {
                 currentReport.setError(ex);
@@ -298,7 +314,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
             }
 
         }
@@ -333,7 +349,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
         }
 
         try {
@@ -342,7 +358,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
             plugin.run(graph, interaction, parameters);
 
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             auditPluginError(plugin, ex);
             if (currentReport != null) {
                 currentReport.setError(ex);
@@ -360,7 +376,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
             }
         }
         return null;
@@ -369,7 +385,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     private void auditPluginError(Plugin plugin, Throwable error) {
         try {
             ConstellationLogger.getDefault().pluginError(plugin, error);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
         }
     }
 }

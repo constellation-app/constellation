@@ -43,7 +43,8 @@ import java.io.ObjectInputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -54,6 +55,8 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @ServiceProvider(service = GraphDropper.class, position = 1)
 public class TypeDropper implements GraphDropper {
+    
+    private static final Logger LOGGER = Logger.getLogger(TypeDropper.class.getName());
 
     private static final String INDICATOR = SchemaVertexType.class.getSimpleName() + "=";
 
@@ -63,8 +66,8 @@ public class TypeDropper implements GraphDropper {
         DataFlavor vx = null;
         try {
             vx = new DataFlavor(VertexTypeNodeProvider.MIMETYPE);
-        } catch (ClassNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ClassNotFoundException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         VX_DATA_FLAVOR = vx;
@@ -98,7 +101,7 @@ public class TypeDropper implements GraphDropper {
                     };
                 }
             } catch (final UnsupportedFlavorException | IOException | ClassNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
         return null;

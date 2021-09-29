@@ -46,6 +46,8 @@ import java.util.logging.Logger;
  * @author algol
  */
 public class AxesRenderable implements GLRenderable {
+    
+    private static final Logger LOGGER = Logger.getLogger(AxesRenderable.class.getName());
 
     private static final float LEN = 0.5f;
     private static final float HEAD = 0.05f;
@@ -94,7 +96,7 @@ public class AxesRenderable implements GLRenderable {
             axesGp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruLine.gs");
             axesFp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
         } catch (IOException ex) {
-            Logger.getLogger(AxesRenderable.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         topRightCorner = new Vector3f();

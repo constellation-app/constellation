@@ -25,8 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import org.openide.util.Exceptions;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -37,6 +38,8 @@ import processing.core.PImage;
  * @author cygnus_x-1
  */
 public class ConstellationPointMarker extends ConstellationAbstractMarker {
+    
+    private static final Logger LOGGER = Logger.getLogger(ConstellationPointMarker.class.getName());
 
     // image file path
     private static final String TEMPLATE_IMAGE_PATH = "marker-template-icon.png";
@@ -81,8 +84,8 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
 
             POINT_X_OFFSET = TEMPLATE_IMAGE.width / 2F;
             POINT_Y_OFFSET = TEMPLATE_IMAGE.height;
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

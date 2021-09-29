@@ -31,11 +31,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.graph.file.nebula.NewNebulaAction")
@@ -43,6 +44,8 @@ import org.openide.util.NbBundle.Messages;
 @ActionReference(path = "Menu/Experimental/Tools", position = 0)
 @Messages("CTL_NewNebulaAction=New Nebula")
 public final class NewNebulaAction implements ActionListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(NewNebulaAction.class.getName());
 
     public static final String NEBULA_FILE_PARAMETER_ID = PluginParameter.buildId(NewNebulaAction.class, "nebula_file");
     public static final String COLOR_PARAMETER_ID = PluginParameter.buildId(NewNebulaAction.class, "color");
@@ -83,7 +86,7 @@ public final class NewNebulaAction implements ActionListener {
                         NebulaDataObject.addRecent(f);
                     }
                 } catch (final IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
         }

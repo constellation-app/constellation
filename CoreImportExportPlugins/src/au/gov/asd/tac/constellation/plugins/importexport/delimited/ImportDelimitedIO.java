@@ -51,7 +51,6 @@ import javafx.stage.Window;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -311,7 +310,7 @@ public final class ImportDelimitedIO {
                 DialogDisplayer.getDefault().notify(nd);
             }
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

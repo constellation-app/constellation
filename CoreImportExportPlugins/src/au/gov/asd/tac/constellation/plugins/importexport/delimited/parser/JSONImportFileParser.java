@@ -28,8 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.stage.FileChooser;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -53,6 +54,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ImportFileParser.class)
 public class JSONImportFileParser extends ImportFileParser {
+    
+    private static final Logger LOGGER = Logger.getLogger(JSONImportFileParser.class.getName());
 
     private static final String WARN_PARSING_PREFIX
             = "Extracting data from JSON file failed.\n";
@@ -424,16 +427,16 @@ public class JSONImportFileParser extends ImportFileParser {
                 throw new IOException(WARN_NO_VALID_LIST);
             }
             return results;
-        } catch (JsonParseException ex) {
+        } catch (final JsonParseException ex) {
             // Catch case whre invalid JSON file has been supplied gracefully
             throw new IOException(WARN_INVALID_JSON);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             // Catch case whre invalid file contenthas been supplied gracefully
-            throw (ex);
-        } catch (Exception ex) {
+            throw ex;
+        } catch (final Exception ex) {
             // Unexpected exceptions
-            Exceptions.printStackTrace(ex);
-            throw (ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            throw ex;
         }
     }
 

@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.modules.ModuleInfo;
 import org.openide.modules.Modules;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.Lookup.Result;
 import org.openide.util.NbBundle;
@@ -83,7 +82,7 @@ public class PluginRegistry {
                         mi != null ? mi.getCodeName() : "unknown"
                 );
                 LOGGER.info(msg);
-            } catch (MissingResourceException ex) {
+            } catch (final MissingResourceException ex) {
                 final String msg = String.format("Plugin class %s has no description: add a class name bundle.", plugin.getSimpleName());
                 LOGGER.severe(msg);
                 NotificationDisplayer.getDefault().notify("Plugin registration",
@@ -126,7 +125,7 @@ public class PluginRegistry {
             } catch (final IllegalAccessException | IllegalArgumentException
                     | InstantiationException | NoSuchMethodException
                     | SecurityException | InvocationTargetException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         });
     }

@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.Dimension;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
@@ -26,7 +28,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 
 /**
@@ -38,6 +39,8 @@ import org.openide.util.HelpCtx;
  * @author algol
  */
 public class PluginParametersSwingDialog {
+    
+    private static final Logger LOGGER = Logger.getLogger(PluginParametersSwingDialog.class.getName());
 
     public static final String OK = "OK";
     public static final String CANCEL = "Cancel";
@@ -135,8 +138,8 @@ public class PluginParametersSwingDialog {
 
         try {
             latch.await();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             Thread.currentThread().interrupt();
         }
     }

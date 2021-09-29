@@ -51,6 +51,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.FINEST;
 import java.util.logging.Logger;
@@ -78,7 +79,6 @@ import org.openide.nodes.Node;
 import org.openide.nodes.NodeOperation;
 import org.openide.text.NbDocument;
 import org.openide.util.ContextAwareAction;
-import org.openide.util.Exceptions;
 import org.openide.util.Mutex;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -201,8 +201,8 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         final StyledDocument doc;
         try {
             doc = editorCookie.openDocument();
-        } catch (IOException ex) {
-            String msg = NbBundle.getMessage(
+        } catch (final IOException ex) {
+            final String msg = NbBundle.getMessage(
                     DefaultOpenFileImpl.class,
                     "MSG_cannotOpenWillClose");                     //NOI18N
             ErrorManager.getDefault().notify(
@@ -350,11 +350,11 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
             public void run() {
                 try {
                     EventQueue.invokeAndWait(SetCursorTask.this);
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
                     Thread.currentThread().interrupt();
-                } catch (InvocationTargetException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InvocationTargetException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
                 if (!SetCursorTask.this.success) {
                     if (remainingTries.decrementAndGet() != 0) {
@@ -416,11 +416,11 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
 
         try {
             return NbDocument.findLineOffset(doc, line);
-        } catch (IndexOutOfBoundsException ex) {
+        } catch (final IndexOutOfBoundsException ex) {
             /* probably line number out of bounds */
 
-            Element lineRootElement = NbDocument.findLineRootElement(doc);
-            int lineCount = lineRootElement.getElementCount();
+            final Element lineRootElement = NbDocument.findLineRootElement(doc);
+            final int lineCount = lineRootElement.getElementCount();
             if (line >= lineCount) {
                 return NbDocument.findLineOffset(doc, lineCount - 1);
             } else {
@@ -531,7 +531,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         final DataObject dataObject;
         try {
             dataObject = DataObject.find(fileObject);
-        } catch (DataObjectNotFoundException ex) {
+        } catch (final DataObjectNotFoundException ex) {
             ErrorManager.getDefault().notify(ex);
             return false;
         }

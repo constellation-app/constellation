@@ -2,6 +2,8 @@
 
 ## Changes in September 2021
 
+-   Renamed `PreferenceUtilites` to `PreferenceUtilities` to fix the typo.
+
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
     

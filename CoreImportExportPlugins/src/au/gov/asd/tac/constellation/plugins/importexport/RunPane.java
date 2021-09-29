@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -62,7 +64,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 
 /**
  * A RunPane displays the UI necessary to allow the user to drag and drop
@@ -72,6 +73,8 @@ import org.openide.util.Exceptions;
  * @author sirius
  */
 public final class RunPane extends BorderPane implements KeyListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(RunPane.class.getName());
 
     private static final int SCROLLPANE_HEIGHT = 450;
     private static final int SCROLLPANE_VIEW_WIDTH = 400;
@@ -162,7 +165,7 @@ public final class RunPane extends BorderPane implements KeyListener {
                 }, ROW_FILTER_INITIALISER).start();
                 latch.await();
             } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
                 Thread.currentThread().interrupt();
             }
         }

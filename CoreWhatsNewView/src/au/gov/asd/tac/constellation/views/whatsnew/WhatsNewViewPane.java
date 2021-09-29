@@ -31,6 +31,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
@@ -42,7 +44,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
@@ -59,6 +60,8 @@ import org.w3c.dom.events.EventTarget;
  * @author aldebaran30701
  */
 public class WhatsNewViewPane extends BorderPane {
+    
+    private static final Logger LOGGER = Logger.getLogger(WhatsNewViewPane.class.getName());
 
     private final BorderPane whatsNewViewPane;
 
@@ -144,7 +147,7 @@ public class WhatsNewViewPane extends BorderPane {
             try {
                 whatsNewView.getEngine().loadContent(getWhatsNew());
             } catch (final ParseException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
             contentVBox.getChildren().add(whatsNewView);
 
