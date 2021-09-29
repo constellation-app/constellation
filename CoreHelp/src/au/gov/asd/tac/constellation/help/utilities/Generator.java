@@ -82,6 +82,11 @@ public class Generator implements Runnable {
         }
     }
 
+    public static String getTOCDirectory() {
+        tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
+        return tocDirectory;
+    }
+
     protected static List<File> getXMLFiles(final String baseDirectory) {
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
@@ -93,18 +98,21 @@ public class Generator implements Runnable {
         return tocXMLFiles;
     }
 
-    protected static String getBaseDirectory() {
-        final String sep = File.separator;
-        // Get the current directory and make the file within the base project directory.
-        final String userDir = System.getProperty("user.dir");
-        String[] splitUserDir = userDir.split(Pattern.quote(sep));
-        while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
+    public static String getBaseDirectory() {
+        if (baseDirectory.equals("")) {
+            final String sep = File.separator;
+            // Get the current directory and make the file within the base project directory.
+            final String userDir = System.getProperty("user.dir");
+            String[] splitUserDir = userDir.split(Pattern.quote(sep));
+            while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
+                splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
+            }
+            // split once more
             splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
-        }
-        // split once more
-        splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
 
-        return String.join(sep, splitUserDir) + sep;
+            baseDirectory = String.join(sep, splitUserDir) + sep;
+        }
+        return baseDirectory;
     }
 
 }

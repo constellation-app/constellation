@@ -60,7 +60,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     public static void copy(final String filePath, final OutputStream out) throws IOException {
         final String sep = File.separator;
         final InputStream pageInput = getInputStream(filePath);
-        final InputStream tocInput = getInputStream(Generator.baseDirectory + sep + Generator.tocDirectory);
+        final InputStream tocInput = getInputStream(Generator.getBaseDirectory() + sep + Generator.getTOCDirectory());
 
         if (pageInput == null || tocInput == null) {
             // files could not be found, don't progress.
@@ -76,12 +76,12 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         out.write(generateHTMLOutput(sep, tocInput, pageInput).getBytes());
     }
 
-    private static InputStream getInputStream(final String filePath) throws FileNotFoundException {
+    protected static InputStream getInputStream(final String filePath) throws FileNotFoundException {
         final Path path = Paths.get(filePath);
         return new FileInputStream(path.toString());
     }
 
-    private static String getFileURLString(final String fileSeparator, final String baseDirectory, final String relativePath) throws MalformedURLException {
+    protected static String getFileURLString(final String fileSeparator, final String baseDirectory, final String relativePath) throws MalformedURLException {
         final File file = new File(baseDirectory + fileSeparator + relativePath);
         final URL url = file.toURI().toURL();
         return url.toString();
@@ -97,7 +97,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      * @throws MalformedURLException
      * @throws IOException
      */
-    private static String generateHTMLOutput(final String separator, final InputStream tocInput, final InputStream pageInput) throws MalformedURLException, IOException {
+    protected static String generateHTMLOutput(final String separator, final InputStream tocInput, final InputStream pageInput) throws MalformedURLException, IOException {
         final StringBuilder html = new StringBuilder();
 
         // HTML elements
@@ -225,7 +225,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             if (isOnline) {
                 url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink;
             } else {
-                final File file = new File(Generator.baseDirectory + sep + helpLink);
+                final File file = new File(Generator.getBaseDirectory() + sep + helpLink);
                 final URL fileUrl = file.toURI().toURL();
                 currentPort = HelpWebServer.start();
                 url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
