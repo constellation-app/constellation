@@ -173,7 +173,7 @@ public class Hashmod {
 
     public String getTransactionAttribute(String attributeFromCSV) {
         final Pattern transactionPattern = Pattern.compile("^.*;;;([^\"]+)");
-        Matcher matchPattern = transactionPattern.matcher(attributeFromCSV);
+        final Matcher matchPattern = transactionPattern.matcher(attributeFromCSV);
         if (matchPattern.find()) {
             return matchPattern.group(1);
         }
