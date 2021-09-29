@@ -49,6 +49,12 @@ public class DataAccessPreferencesIoProvider {
     private static final String DATA_ACCESS_DIR = "DataAccessView";
 
     /**
+     * Private constructor to prevent external initialization.
+     */
+    private DataAccessPreferencesIoProvider() {
+    }
+    
+    /**
      * Saves the global and plugin parameters from the passed tabs that belong to
      * the {@link DataAccessPane}. The parameters will be saved to a JSON file as
      * an array with each element representing one tab.
@@ -113,11 +119,11 @@ public class DataAccessPreferencesIoProvider {
                 // otherwise ignore it
                 pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream()
                         .filter(param -> loadedParameter.getGlobalParameters().containsKey(param.getKey()))
-                        .forEach(param -> {
+                        .forEach(param -> 
                             param.getValue().setStringValue(
                                     loadedParameter.getGlobalParameters().get(param.getKey())
-                            );
-                        });
+                            )
+                        );
 
                 // Groups all the parameters in to the plugin groups. Common parameters
                 // are based on the plugin name that is before the first '.' in the key values

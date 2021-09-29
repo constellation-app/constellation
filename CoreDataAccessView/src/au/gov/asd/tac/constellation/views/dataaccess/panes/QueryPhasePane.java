@@ -104,9 +104,9 @@ public class QueryPhasePane extends VBox {
      * @param enabled true if all graph dependent menu item should be enabled, false otherwise
      */
     public void enableGraphDependentMenuItems(final boolean enabled) {
-        graphDependentMenuItems.forEach(menuItem -> {
-            menuItem.setDisable(!enabled);
-        });
+        graphDependentMenuItems.forEach(menuItem -> 
+            menuItem.setDisable(!enabled)
+        );
     }
 
     /**
@@ -125,9 +125,9 @@ public class QueryPhasePane extends VBox {
      * @param enabled true if all plugin dependent menu item should be enabled, false otherwise
      */
     public void enablePluginDependentMenuItems(final boolean enabled) {
-        pluginDependentMenuItems.forEach(menuItem -> {
-            menuItem.setDisable(!enabled);
-        });
+        pluginDependentMenuItems.forEach(menuItem -> 
+            menuItem.setDisable(!enabled)
+        );
     }
 
     /**
@@ -153,9 +153,7 @@ public class QueryPhasePane extends VBox {
             final HeadingPane headingPage = (HeadingPane) child;
             headingPage.setExpanded(expand);
             if (expandchildren) {
-                headingPage.getDataSources().forEach(tp -> {
-                    tp.setExpanded(expand);
-                });
+                headingPage.getDataSources().forEach(titledPane -> titledPane.setExpanded(expand));
             }
         });
     }

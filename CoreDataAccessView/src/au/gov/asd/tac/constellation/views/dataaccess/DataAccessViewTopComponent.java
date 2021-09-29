@@ -143,9 +143,9 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
     protected void handleNewGraph(final Graph graph) {
         if (needsUpdate() && getDataAccessPane() != null) {
             getDataAccessPane().update(graph);
-            Platform.runLater(() -> {
-                DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph);
-            });
+            Platform.runLater(() -> 
+                DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph)
+            );
         }
     }
 

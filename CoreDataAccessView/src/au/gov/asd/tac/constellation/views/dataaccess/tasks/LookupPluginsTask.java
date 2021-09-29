@@ -49,7 +49,7 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
                         type -> type,
                         type -> new ArrayList<>(),
                         (type1, type2) -> new ArrayList<>(),
-                        () -> new LinkedHashMap<>()
+                        LinkedHashMap::new
                 ));
 
         // Create the favourites category

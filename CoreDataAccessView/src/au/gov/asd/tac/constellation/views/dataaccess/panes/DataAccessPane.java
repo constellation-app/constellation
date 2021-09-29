@@ -86,10 +86,18 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         final Map<String, List<DataAccessPlugin>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
-        } catch (ExecutionException | InterruptedException ex) {
+        } catch (ExecutionException ex) {
             LOGGER.log(Level.SEVERE, "Failed to load data access plugins", ex);
-            throw new RuntimeException("Failed to load data access plugins. "
-                    + "Data Access View failed to load.");
+            
+            throw new IllegalStateException("Failed to load data access plugins. "
+                    + "Data Access View cannot be created.");
+        } catch (InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Failed to load data access plugins", ex);
+            
+            Thread.currentThread().interrupt();
+            
+            throw new IllegalStateException("Failed to load data access plugins. "
+                    + "Data Access View cannot be created.");
         }
         
         this.dataAccessTabPane = new DataAccessTabPane(this, plugins);

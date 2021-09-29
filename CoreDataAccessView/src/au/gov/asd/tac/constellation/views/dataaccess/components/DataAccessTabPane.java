@@ -306,8 +306,8 @@ public class DataAccessTabPane {
                 .filter(tab -> tabHasEnabledPlugins(tab))
                 .collect(Collectors.toList());
                 
-        return tabsWithEnabledPlugins.isEmpty() ? false 
-                : tabsWithEnabledPlugins.stream()
+        return !tabsWithEnabledPlugins.isEmpty()
+                && tabsWithEnabledPlugins.stream()
                         .allMatch(tab -> validateTabEnabledPlugins(tab));
     }
     

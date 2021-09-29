@@ -18,9 +18,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.ShowDataAccessPluginTask;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -54,12 +52,18 @@ public class DataAccessSearchProvider implements SearchProvider {
         final Map<String, List<DataAccessPlugin>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
-        } catch (ExecutionException | InterruptedException ex) {
-            // Technically this shouldn't happen as in order for this block to be
-            // entered the plugins would have need to be successfully loaded
+        } catch (ExecutionException ex) {
             LOGGER.log(Level.SEVERE, "Failed to load data access plugins", ex);
-            throw new RuntimeException("Failed to load data access plugins. "
-                    + "Data Access View failed to load.");
+            
+            throw new IllegalStateException("Failed to load data access plugins. "
+                    + "Data Access View cannot be created.");
+        } catch (InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Failed to load data access plugins", ex);
+            
+            Thread.currentThread().interrupt();
+            
+            throw new IllegalStateException("Failed to load data access plugins. "
+                    + "Data Access View cannot be created.");
         }
         
         // Find all matching plugin names

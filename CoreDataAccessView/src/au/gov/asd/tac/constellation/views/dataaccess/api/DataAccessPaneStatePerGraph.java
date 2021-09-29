@@ -31,7 +31,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public final class DataAccessPaneStatePerGraph {
     private boolean queriesRunning = false;
     private boolean executeButtonIsGo = true;
-    private Map<Future, String> runningPlugins = new HashMap<>();
+    private Map<Future<?>, String> runningPlugins = new HashMap<>();
 
     /**
      * Gets the flag indicating if there are any queries running for the graph.
@@ -78,7 +78,7 @@ public final class DataAccessPaneStatePerGraph {
      * @return a map containing references to all the running plugins on the
      *     graph
      */
-    public Map<Future, String> getRunningPlugins() {
+    public Map<Future<?>, String> getRunningPlugins() {
         return runningPlugins;
     }
 
@@ -89,7 +89,7 @@ public final class DataAccessPaneStatePerGraph {
      * @param runningPlugins a map containing references to all the running
      *     plugins on the graph
      */
-    public void setRunningPlugins(final Map<Future, String> runningPlugins) {
+    public void setRunningPlugins(final Map<Future<?>, String> runningPlugins) {
         this.runningPlugins = runningPlugins;
     }
     
