@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.help;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,7 +33,13 @@ public abstract class HelpPageProvider {
      * @return Map of the file names vs md file names
      */
     public Map<String, String> getHelpMap() {
-        return null;
+        final Map<String, String> map = new HashMap<>();
+        final String sep = File.separator;
+        final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
+
+        map.put("au.gov.asd.tac.constellation.help.preferences.HelpOptionsPanelController", helpModulePath + "help-options.md");
+        return map;
     }
 
     /**
@@ -40,6 +48,10 @@ public abstract class HelpPageProvider {
      * @return List of help resources
      */
     public String getHelpTOC() {
-        return null;
+        final String sep = File.separator;
+        final String helpModulePath = "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep + "help-toc.xml";
+
+        return helpModulePath;
     }
 }

@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 2000)
 @NbBundle.Messages("ScatterPlotHelpProvider=Scatter Plot Help Provider")
 public class ScatterPlotHelpProvider extends HelpPageProvider {
 

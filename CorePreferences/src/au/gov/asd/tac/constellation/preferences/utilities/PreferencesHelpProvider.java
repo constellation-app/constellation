@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 2800)
 @NbBundle.Messages("PreferencesHelpProvider=Preference Help Provider")
 public class PreferencesHelpProvider extends HelpPageProvider {
 

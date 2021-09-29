@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = HelpPageProvider.class)
+@ServiceProvider(service = HelpPageProvider.class, position = 2700)
 @NbBundle.Messages("ImportExportPluginsHelpProvider=Import Export Plugins Help Provider")
 public class ImportExportPluginsHelpProvider extends HelpPageProvider {
 
