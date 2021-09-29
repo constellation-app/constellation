@@ -135,8 +135,8 @@ public final class HashmodAction implements ActionListener {
                     }
                 }
 
-                if (createTransactions && !hashmod.getTransactionAttribute(nextAttr).equalsIgnoreCase("")) {
-                    String transactionAttributeName = hashmod.getTransactionAttribute(nextAttr);
+                if (createTransactions && StringUtils.isNotBlank(hashmod.getTransactionAttribute(nextAttr))) {
+                    final String transactionAttributeName = hashmod.getTransactionAttribute(nextAttr);
                     final int newTransactionAttribute = wg.addAttribute(GraphElementType.TRANSACTION, newAttributeType, transactionAttributeName, transactionAttributeName, "", null);
                     if (newTransactionAttribute != Graph.NOT_FOUND) {
                         transactionAttributeValues[transAttrCount] = newTransactionAttribute;
@@ -196,7 +196,7 @@ public final class HashmodAction implements ActionListener {
         if (createVertices) {
             numberSuccessful = 0;
             for (final Entry<String, Integer> entry : keys.entrySet()) {
-                int newVertexId = wg.addVertex();
+                final int newVertexId = wg.addVertex();
 
                 for (i = 0; i < attrCount; i++) {
                     wg.setStringValue(attributeValues[i], newVertexId, hashmod.getValueFromKeyAndIndex(entry.getKey(), csvValues[i], entry.getValue()));
@@ -248,11 +248,10 @@ public final class HashmodAction implements ActionListener {
 
                             String attr2Value = wg.getObjectValue(transaction2Attribute, vx2Id);
                             if (attr1Value.equals(attr2Value) && vxId != vx2Id) {
-                                int newTransactionId = wg.addTransaction(vxId, vx2Id, false);
-
+                                final int newTransactionId = wg.addTransaction(vxId, vx2Id, false);
 
                                 for (i = 0; i < transAttrCount; i++) {
-                                    String theVal = wg.getStringValue(fromNodeValues [i], vxId);
+                                    final String theVal = wg.getStringValue(fromNodeValues [i], vxId);
                                     wg.setStringValue(transactionAttributeValues[i], newTransactionId, theVal);
                                 }
 
