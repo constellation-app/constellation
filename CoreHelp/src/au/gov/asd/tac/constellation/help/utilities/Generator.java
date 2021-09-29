@@ -99,19 +99,17 @@ public class Generator implements Runnable {
     }
 
     public static String getBaseDirectory() {
-        if (baseDirectory.equals("")) {
-            final String sep = File.separator;
-            // Get the current directory and make the file within the base project directory.
-            final String userDir = System.getProperty("user.dir");
-            String[] splitUserDir = userDir.split(Pattern.quote(sep));
-            while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
-                splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
-            }
-            // split once more
+        final String sep = File.separator;
+        // Get the current directory and make the file within the base project directory.
+        final String userDir = System.getProperty("user.dir");
+        String[] splitUserDir = userDir.split(Pattern.quote(sep));
+        while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
             splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
-
-            baseDirectory = String.join(sep, splitUserDir) + sep;
         }
+        // split once more
+        splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
+
+        baseDirectory = String.join(sep, splitUserDir) + sep;
         return baseDirectory;
     }
 
