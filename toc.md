@@ -174,7 +174,7 @@
     <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\developer-preferences.md">Developer</a><br/>
     <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\graph-preferences.md">Graph</a><br/>
     <a href="..\constellation\CoreOpenGLDisplay\src\au\gov\asd\tac\constellation\visual\opengl\docs\label-fonts-preferences.md">Label Fonts</a><br/>
-    <a href="..\constellation\CoreHelp\src\au\gov\asd\tac\constellation\help\docs\help-options.md">Online Help</a><br/>
+    Online Help
     <a href="..\constellation\CoreSecurity\src\au\gov\asd\tac\constellation\security\docs\proxy-preferences.md">Proxy</a><br/>
 </a> </div> </div> </div>
 </div>

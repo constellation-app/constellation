@@ -198,6 +198,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         html.append(endDiv);
         html.append("\n");
         html.append(endDiv);
+        html.append("\n");
         html.append(scriptTag);
 
         return html.toString();
