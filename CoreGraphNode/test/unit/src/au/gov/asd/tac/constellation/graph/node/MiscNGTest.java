@@ -90,7 +90,7 @@ public class MiscNGTest {
         } catch (PluginException ex) {
             Assert.fail("There shouldn't be a plugin exception.");
         } catch (RuntimeException ex) {
-            final boolean containsIllegalArgumentException = ex.getLocalizedMessage().contains("IllegalArgumentException: Attempt to create transaction to destination vertex that does not exist");
+            final boolean containsIllegalArgumentException = ex.getLocalizedMessage().contains("Attempt to create transaction to destination vertex that does not exist");
             Assert.assertTrue(containsIllegalArgumentException);
         }
     }
