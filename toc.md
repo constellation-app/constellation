@@ -32,7 +32,7 @@
       <a href="..\constellation\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\docs\induced-subgraph.md">Induced Subgraph</a><br/>
       <a href="..\constellation\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\docs\hop-out.md">Hop Out</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Tools" aria-expanded="false" aria-controls="Tools">Tools</button></h2></div>
-<div id="Tools" class="collapse" aria-labelledby="Tools" data-parent="#Tools"> <div class="card-body">      <a href="..\constellation\CoreFunctionality\src\au\gov\asd\tac\constellation\functionality\docs\compare-graph.md">Compare Graph</a><br/>
+<div id="Tools" class="collapse" aria-labelledby="Tools" data-parent="#Tools"> <div class="card-body">      <a href="..\constellation\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\docs\compare-graph.md">Compare Graph</a><br/>
       <a href="..\constellation\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\docs\merge-nodes.md">Merge Nodes</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Visualisation" aria-expanded="false" aria-controls="Visualisation">Visualisation</button></h2></div>
 <div id="Visualisation" class="collapse" aria-labelledby="Visualisation" data-parent="#Visualisation"> <div class="card-body">      <a href="..\constellation\CoreUtilities\src\au\gov\asd\tac\constellation\utilities\docs\decorators.md">Decorators</a><br/>
@@ -174,7 +174,7 @@
     <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\developer-preferences.md">Developer</a><br/>
     <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\graph-preferences.md">Graph</a><br/>
     <a href="..\constellation\CoreOpenGLDisplay\src\au\gov\asd\tac\constellation\visual\opengl\docs\label-fonts-preferences.md">Label Fonts</a><br/>
-    Online Help
+    <a href="..\constellation\CoreHelp\src\au\gov\asd\tac\constellation\help\docs\help-options.md">Online Help</a><br/>
     <a href="..\constellation\CoreSecurity\src\au\gov\asd\tac\constellation\security\docs\proxy-preferences.md">Proxy</a><br/>
 </a> </div> </div> </div>
 </div>

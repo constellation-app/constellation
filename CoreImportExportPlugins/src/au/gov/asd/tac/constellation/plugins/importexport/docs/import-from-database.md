@@ -85,7 +85,7 @@ right click on the DateTime attribute and select the format from the
 drop down list or enter your own.
 
 If you want to create your own attributes then you can by clicking on
-![Add Attribute Icon](resources/plus_black.png) and selecting a type and
+<img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_black.png" alt="Add Attribute Icon"/> and selecting a type and
 entering a label.
 
 ## Directed and Undirected Transactions
