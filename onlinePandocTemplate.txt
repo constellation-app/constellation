@@ -25,7 +25,7 @@
 
   <script>
     $$(function() {
-      $$("#includedContent").load("../../toc.html");
+      $$("#includedContent").load("../toc.html");
     });
   </script>
 
