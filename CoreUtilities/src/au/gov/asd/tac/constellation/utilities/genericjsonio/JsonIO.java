@@ -50,21 +50,22 @@ import org.openide.util.NbPreferences;
  * @author serpens24
  */
 public class JsonIO {
+
     private static final Logger LOGGER = Logger.getLogger(JsonIO.class.getName());
-    
+
     private static final String FILE_EXT = ".json";
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.systemDefault());
-    
+
     private static final String PREFERENCE_FILE_EXISTS_ALERT_TITLE = "Preference File Exists";
     private static final String PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT
             = "'%s' already exists. Do you want to overwrite it?";
-    
+
     private static final String PREFERENCE_FILE_SAVED_MSG_FORMAT
             = "Preference saved to %s.";
-    
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    
+
     /**
      * Private constructor to hide implicit public one.
      */
@@ -85,7 +86,7 @@ public class JsonIO {
      * <p/>
      * This is MOST useful when a dedicated directory exists for similar 'type'
      * configuration files, like the example below:
-     * 
+     *
      * <pre><code>
      * user-dir
      *   +-- tableconfigs
@@ -96,52 +97,55 @@ public class JsonIO {
      *   +--- vertex_configb.json
      *   +--- vertex_configc.json
      * </code></pre>
-     * 
+     *
      * The above structure could have been constructed with multiple calls to
-     * {@link #saveJsonPreferences(String, ObjectMapper, ArrayNode, String)} all using
-     * 'tableconfigs' as the value for {@code saveDir}, three using 'transaction_'
-     * for {@code filePrefix} and the other three using 'vertex_'.
+     * {@link #saveJsonPreferences(String, ObjectMapper, ArrayNode, String)} all
+     * using 'tableconfigs' as the value for {@code saveDir}, three using
+     * 'transaction_' for {@code filePrefix} and the other three using
+     * 'vertex_'.
      * <p/>
-     * This functionality is integrated with {@link #loadJsonPreferences(String, String)}
-     * such that if a {@code filePrefix} is supplied in the
+     * This functionality is integrated with
+     * {@link #loadJsonPreferences(String, String)} such that if a
+     * {@code filePrefix} is supplied in the
      * {@link #loadJsonPreferences(String, String)} call then only files that
-     * contain the prefix are offered to the user to load. Hence, it allows a form
-     * of configuration file filtering.
+     * contain the prefix are offered to the user to load. Hence, it allows a
+     * form of configuration file filtering.
      *
      * @param saveDir directory name within the users directory to save the
-     *     preference file to or empty if it is to be save at the top level
+     * preference file to or empty if it is to be save at the top level
      * @param mapper configured object mapper to write serialize the root node
-     * @param rootNode the root object representing the preferences to be written
-     * @param filePrefix prefix to be pre-pended to the file name the user provides
-     *     or empty if no prefix to be provided
+     * @param rootNode the root object representing the preferences to be
+     * written
+     * @param filePrefix prefix to be pre-pended to the file name the user
+     * provides or empty if no prefix to be provided
      *
      */
     public static void saveJsonPreferences(final Optional<String> saveDir,
-                                           final Optional<String> filePrefix,
-                                           final Object rootNode,
-                                           final ObjectMapper mapper) {
+            final Optional<String> filePrefix,
+            final Object rootNode,
+            final ObjectMapper mapper) {
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
-        
+
         // If the preference directory cannot be accessed then return
         if (!preferenceDirectory.isDirectory()) {
             NotifyDisplayer.display(
                     String.format("Can't create preference directory '%s'.", preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
-            
+
             return;
         }
 
         // Ask the user to provide a file name
         final Optional<String> userInput = JsonIODialog.getPreferenceFileName();
-        
+
         // Cancel was pressed. So stop the save.
         if (userInput.isEmpty()) {
             return;
         }
 
         // If the user hit ok but provided an empty string, then generate one
-        final String fileName = StringUtils.isBlank(userInput.get()) 
+        final String fileName = StringUtils.isBlank(userInput.get())
                 ? String.format(
                         "%s at %s",
                         System.getProperty("user.name"),
@@ -156,7 +160,7 @@ public class JsonIO {
                 preferenceDirectory,
                 FilenameEncoder.encode(prefixedFileName + FILE_EXT)
         );
-        
+
         boolean go = true;
 
         // If the file exist, ask the user if they want to overwrite
@@ -167,7 +171,7 @@ public class JsonIO {
                     PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT,
                     prefixedFileName
             ));
-            
+
             final Optional<ButtonType> option = alert.showAndWait();
             go = option.isPresent() && option.get() == ButtonType.OK;
         }
@@ -177,9 +181,9 @@ public class JsonIO {
                 // Configure JSON mapper settings
                 mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
                 mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-                
+
                 mapper.writeValue(preferenceFile, rootNode);
-                
+
                 StatusDisplayer.getDefault().setStatusText(
                         String.format(
                                 PREFERENCE_FILE_SAVED_MSG_FORMAT,
@@ -200,45 +204,48 @@ public class JsonIO {
      * of the users configuration directory.
      *
      * @param saveDir directory name within the users directory to save the
-     *     configuration file to or empty if it is to be save at the top level
+     * configuration file to or empty if it is to be save at the top level
      * @param mapper configured object mapper to write serialize the root node
-     * @param rootNode the root object representing the preferences to be written
-     * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional) 
+     * @param rootNode the root object representing the preferences to be
+     * written
+     * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
     public static void saveJsonPreferences(final Optional<String> saveDir,
-                                           final Object rootNode,
-                                           final ObjectMapper mapper) {
+            final Object rootNode,
+            final ObjectMapper mapper) {
         saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper);
     }
-    
+
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory.
      *
      * @param saveDir directory name within the users directory to save the
-     *     configuration file to or empty if it is to be save at the top level
-     * @param rootNode the root object representing the preferences to be written
-     * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional) 
+     * configuration file to or empty if it is to be save at the top level
+     * @param rootNode the root object representing the preferences to be
+     * written
+     * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
     public static void saveJsonPreferences(final Optional<String> saveDir,
-                                           final Object rootNode) {
+            final Object rootNode) {
         saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER);
     }
-    
+
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory.
      *
      * @param saveDir directory name within the users directory to save the
-     *     configuration file to or empty if it is to be save at the top level
-     * @param filePrefix prefix to be pre-pended to the file name the user provides
-     *     or empty if no prefix to be provided
-     * @param rootNode the root object representing the preferences to be written
-     * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional) 
+     * configuration file to or empty if it is to be save at the top level
+     * @param filePrefix prefix to be pre-pended to the file name the user
+     * provides or empty if no prefix to be provided
+     * @param rootNode the root object representing the preferences to be
+     * written
+     * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
     public static void saveJsonPreferences(final Optional<String> saveDir,
-                                           final Optional<String> filePrefix,
-                                           final Object rootNode) {
+            final Optional<String> filePrefix,
+            final Object rootNode) {
         saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER);
     }
 
@@ -248,17 +255,19 @@ public class JsonIO {
      * value are available to the user to load.
      *
      * @param loadDir directory name within the users directory to load the
-     *     preference file from or empty if it is to be loaded at the top level
-     * @param filePrefix prefix that is expected to be pre-pended to the file name
-     *     of the preference file being loaded or empty if no prefix filter is required
-     * @return the processed JSON of the selected preference file or null if nothing
-     *     is selected
-     * @see #loadJsonPreferences(Optional, Optional, Function) 
-     * @deprecated use {@link #loadJsonPreferences(Optional, Optional, Class)} instead
+     * preference file from or empty if it is to be loaded at the top level
+     * @param filePrefix prefix that is expected to be pre-pended to the file
+     * name of the preference file being loaded or empty if no prefix filter is
+     * required
+     * @return the processed JSON of the selected preference file or null if
+     * nothing is selected
+     * @see #loadJsonPreferences(Optional, Optional, Function)
+     * @deprecated use {@link #loadJsonPreferences(Optional, Optional, Class)}
+     * instead
      */
     @Deprecated(since = "2.4")
     public static JsonNode loadJsonPreferences(final Optional<String> loadDir,
-                                               final Optional<String> filePrefix) {
+            final Optional<String> filePrefix) {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
             try {
                 return OBJECT_MAPPER.readTree(file);
@@ -275,16 +284,16 @@ public class JsonIO {
             return null;
         });
     }
-    
+
     /**
      * Allow user to select a preference file to load from the supplied
      * directory.
      *
      * @param loadDir directory name within the users directory to load the
-     *     preference file from or empty if it is to be loaded at the top level
-     * @return the processed JSON of the selected preference file or null if nothing
-     *     is selected
-     * @see #loadJsonPreferences(Optional, Optional, Function) 
+     * preference file from or empty if it is to be loaded at the top level
+     * @return the processed JSON of the selected preference file or null if
+     * nothing is selected
+     * @see #loadJsonPreferences(Optional, Optional, Function)
      * @deprecated use {@link #loadJsonPreferences(Optional, Class)} instead
      */
     @Deprecated(since = "2.4")
@@ -299,19 +308,20 @@ public class JsonIO {
      *
      * @param <T> the class that the JSON file to be loaded will be in
      * @param loadDir directory name within the users directory to load the
-     *     preference file from or empty if it is to be loaded at the top level
-     * @param filePrefix prefix that is expected to be pre-pended to the file name
-     *     of the preference file being loaded or empty if no prefix filter is required
-     * @param expectedFormat the type representing the JSON in the file to
-     *     be loaded
+     * preference file from or empty if it is to be loaded at the top level
+     * @param filePrefix prefix that is expected to be pre-pended to the file
+     * name of the preference file being loaded or empty if no prefix filter is
+     * required
+     * @param expectedFormat the type representing the JSON in the file to be
+     * loaded
      * @param objectMapper the object mapper to perform the de-serialization
      * @return the de-serialized JSON in the requested format
-     * @see #loadJsonPreferences(Optional, Optional, Function) 
+     * @see #loadJsonPreferences(Optional, Optional, Function)
      */
     public static <T> T loadJsonPreferences(final Optional<String> loadDir,
-                                            final Optional<String> filePrefix,
-                                            final TypeReference<T> expectedFormat,
-                                            final ObjectMapper objectMapper) {
+            final Optional<String> filePrefix,
+            final TypeReference<T> expectedFormat,
+            final ObjectMapper objectMapper) {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
             try {
                 return objectMapper.readValue(file, expectedFormat);
@@ -328,24 +338,24 @@ public class JsonIO {
             return null;
         });
     }
-    
+
     /**
      * Allow user to select a preference file to load from the supplied
      * directory.
      *
      * @param <T> the class that the JSON file to be loaded will be in
      * @param loadDir directory name within the users directory to load the
-     *     preference file from or empty if it is to be loaded at the top level
-     * @param expectedFormat the type representing the JSON in the file to
-     *     be loaded
+     * preference file from or empty if it is to be loaded at the top level
+     * @param expectedFormat the type representing the JSON in the file to be
+     * loaded
      * @return the de-serialized JSON in the requested format
-     * @see #loadJsonPreferences(Optional, Optional, Function) 
+     * @see #loadJsonPreferences(Optional, Optional, Function)
      */
     public static <T> T loadJsonPreferences(final Optional<String> loadDir,
-                                            final TypeReference<T> expectedFormat) {
+            final TypeReference<T> expectedFormat) {
         return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat, OBJECT_MAPPER);
     }
-    
+
     /**
      * Allow user to select a preference file to load from the supplied
      * directory. If filePrefix was provided, then only files prefixed with this
@@ -353,32 +363,34 @@ public class JsonIO {
      *
      * @param <T> the class that the JSON file to be loaded will be in
      * @param loadDir directory name within the users directory to load the
-     *     preference file from or empty if it is to be loaded at the top level
-     * @param filePrefix prefix that is expected to be pre-pended to the file name
-     *     of the preference file being loaded or empty if no prefix filter is required
-     * @param expectedFormat the type representing the JSON in the file to
-     *     be loaded
+     * preference file from or empty if it is to be loaded at the top level
+     * @param filePrefix prefix that is expected to be pre-pended to the file
+     * name of the preference file being loaded or empty if no prefix filter is
+     * required
+     * @param expectedFormat the type representing the JSON in the file to be
+     * loaded
      * @return the de-serialized JSON in the requested format
-     * @see #loadJsonPreferences(Optional, Optional, Function) 
+     * @see #loadJsonPreferences(Optional, Optional, Function)
      */
     public static <T> T loadJsonPreferences(final Optional<String> loadDir,
-                                            final Optional<String> filePrefix,
-                                            final TypeReference<T> expectedFormat) {
+            final Optional<String> filePrefix,
+            final TypeReference<T> expectedFormat) {
         return loadJsonPreferences(loadDir, filePrefix, expectedFormat, OBJECT_MAPPER);
     }
-    
+
     /**
      * Deletes the selected JSON file from disk.
      *
      * @param filename name of file to delete
      * @param loadDir directory name within the users directory to remove the
-     *     preference file from or empty if it is to be removed at the top level
-     * @param filePrefix prefix that is expected to be pre-pended to the file name
-     *     of the preference file being deleted or empty if no prefix filter is required
+     * preference file from or empty if it is to be removed at the top level
+     * @param filePrefix prefix that is expected to be pre-pended to the file
+     * name of the preference file being deleted or empty if no prefix filter is
+     * required
      */
     public static void deleteJsonPreference(final String filename,
-                                            final Optional<String> loadDir,
-                                            final Optional<String> filePrefix) {
+            final Optional<String> loadDir,
+            final Optional<String> filePrefix) {
         final File preferenceDirectory = getPrefereceFileDirectory(loadDir);
 
         if (filename != null) {
@@ -387,7 +399,7 @@ public class JsonIO {
                     preferenceDirectory,
                     FilenameEncoder.encode(filePrefix.orElse("").concat(filename)) + FILE_EXT
             );
-            
+
             // Attempt to delete
             try {
                 Files.deleteIfExists(fileToDelete.toPath());
@@ -399,33 +411,34 @@ public class JsonIO {
             }
         }
     }
-    
+
     /**
      * Allow user to select a preference file to load from the supplied
      * directory. If filePrefix was provided, then only files prefixed with this
      * value are available to the user to load.
      *
      * @param loadDir directory name within the users directory to load the
-     *     preference file from or empty if it is to be loaded at the top level
-     * @param filePrefix prefix that is expected to be pre-pended to the file name
-     *     of the preference file being loaded or empty if no prefix filter is required
-     * @param deserializationFunction a function that take the file to be loaded and
-     *     de-serializes the JSON in the required class
-     * @return the processed JSON of the selected preference file or null if nothing
-     *     is selected
+     * preference file from or empty if it is to be loaded at the top level
+     * @param filePrefix prefix that is expected to be pre-pended to the file
+     * name of the preference file being loaded or empty if no prefix filter is
+     * required
+     * @param deserializationFunction a function that take the file to be loaded
+     * and de-serializes the JSON in the required class
+     * @return the processed JSON of the selected preference file or null if
+     * nothing is selected
      */
     protected static <T> T loadJsonPreferences(final Optional<String> loadDir,
-                                               final Optional<String> filePrefix,
-                                               final Function<File, T> deserializationFunction) {
+            final Optional<String> filePrefix,
+            final Function<File, T> deserializationFunction) {
         final File preferenceDirectory = getPrefereceFileDirectory(loadDir);
-        
+
         // List the files in the supplied directory that have the required file extension
         // and if filePrefix was supplied, start with the provided prefix.
         final String[] names;
         if (preferenceDirectory.isDirectory()) {
-            names = preferenceDirectory.list((File dir, String name) -> 
-                name.toLowerCase().endsWith(FILE_EXT)
-                        && (filePrefix.isEmpty() || name.toLowerCase().startsWith(filePrefix.get()))
+            names = preferenceDirectory.list((File dir, String name)
+                    -> name.toLowerCase().endsWith(FILE_EXT)
+                    && (filePrefix.isEmpty() || name.toLowerCase().startsWith(filePrefix.get()))
             );
         } else {
             // Nothing to select from - return an empty array
@@ -443,11 +456,11 @@ public class JsonIO {
                 loadDir,
                 filePrefix
         );
-        
+
         // Re-add the prefix and suffix, then serialize the preferences to the file
         if (selectedFileName.isPresent()) {
             final String prefixedFilename = filePrefix.orElse("")
-                        .concat(selectedFileName.get());
+                    .concat(selectedFileName.get());
             return deserializationFunction.apply(
                     new File(
                             preferenceDirectory,
@@ -457,27 +470,27 @@ public class JsonIO {
         }
         return null;
     }
-    
+
     /**
      * Gets the preference file directory and appends the passed sub directory
-     * path to it. If the complete directory path is not present, it will attempt
-     * to create it.
+     * path to it. If the complete directory path is not present, it will
+     * attempt to create it.
      *
-     * @param subDirectory the directory path to append to the system preferences
-     *     directory path
+     * @param subDirectory the directory path to append to the system
+     * preferences directory path
      * @return a file with the passed sub directory appended to the system
-     *     preferences directory path
+     * preferences directory path
      */
     protected static File getPrefereceFileDirectory(final Optional<String> subDirectory) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-        
+
         final File preferenceDirectory = new File(userDir, subDirectory.orElse(""));
-        
+
         if (!preferenceDirectory.exists()) {
             preferenceDirectory.mkdir();
         }
-        
+
         return preferenceDirectory;
     }
 }

@@ -18,3 +18,5 @@ jobs:
           If you have a question about using Constellation then please have a read of our [Quick Start Guide](https://github.com/constellation-app/constellation/raw/master/docs/Constellation_Quick_Start_Guide.pdf).
           
           If you are a developer then it is advised to go through the [Developer Training Guide](https://github.com/constellation-app/constellation-training). Note that we have recently migrated to NetBeans 11 however the examples in the training guide still reference NetBeans 8.2. We are working on a new version so just bear that in mind.
+          
+          PS: I'm just an automated script, not a human being.

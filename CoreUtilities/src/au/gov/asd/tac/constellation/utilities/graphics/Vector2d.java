@@ -34,7 +34,7 @@ public final class Vector2d {
     public Vector2d() {
         a = new double[LENGTH];
     }
-    
+
     public double[] getA() {
         return a;
     }

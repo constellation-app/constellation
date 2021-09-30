@@ -58,7 +58,7 @@ public class GraphicsCardUtilities {
         loadGraphicsCardInfo();
         return error;
     }
-    
+
     public static void clear() {
         loaded = false;
         graphicsCard = null;

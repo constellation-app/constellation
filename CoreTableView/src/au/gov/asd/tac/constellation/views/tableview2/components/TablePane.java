@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.views.tableview2.components;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
+import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -34,26 +34,28 @@ import javafx.scene.layout.BorderPane;
  * @author antares
  */
 public final class TablePane extends BorderPane {
+
     /**
      * Runs the passed runnable in the current thread but only if the current
-     * thread in <b>NOT</b> interrupted. If the thread is interrupted then nothing
-     * is done.
+     * thread in <b>NOT</b> interrupted. If the thread is interrupted then
+     * nothing is done.
      */
     private static final Consumer<Runnable> CHECK_INTERRUPT_AND_RUN = runnable -> {
         if (!Thread.currentThread().isInterrupted()) {
             runnable.run();
         }
     };
-    
+
     /**
-     * Runs the list of runnables in order on the current thread. Should the thread become
-     * interrupted at some point all runnables after that point will not be run.
+     * Runs the list of runnables in order on the current thread. Should the
+     * thread become interrupted at some point all runnables after that point
+     * will not be run.
      */
-    private static final Consumer<List<Runnable>> CHECK_INTERRUPT_AND_RUN_EACH = runnables ->
-        runnables.forEach(CHECK_INTERRUPT_AND_RUN);
-    
+    private static final Consumer<List<Runnable>> CHECK_INTERRUPT_AND_RUN_EACH = runnables
+            -> runnables.forEach(CHECK_INTERRUPT_AND_RUN);
+
     private final TableViewTopComponent parentComponent;
-    
+
     private final Table table;
     private final TableToolbar tableToolbar;
     private final ProgressBar progressBar;
@@ -69,7 +71,7 @@ public final class TablePane extends BorderPane {
      */
     public TablePane(final TableViewTopComponent parentComponent) {
         this.parentComponent = parentComponent;
-        
+
         // Because the page factory doesn't start getting used until this
         // constructor is complete, it gets passed a reference to 'this' with
         // the assumption everything will be intiailized once its called which
@@ -77,29 +79,30 @@ public final class TablePane extends BorderPane {
         // at the end of this constructor.
         // #dodgycode
         activeTableReference = new ActiveTableReference(new TableViewPageFactory(this));
-        
+
         progressBar = new ProgressBar();
-        
+
         // Create table UI component
         table = new Table(this);
-        
+
         activeTableReference.getSortedRowList().comparatorProperty()
                 .bind(table.getTableView().comparatorProperty());
-        
+
         // Setup the UI components
         this.tableToolbar = new TableToolbar(this);
         this.tableToolbar.init();
-        
+
         setLeft(tableToolbar.getToolbar());
-        
+
         // Initiate table update and initialisation
         activeTableReference.updatePagination(activeTableReference.getUserTablePreferences().getMaxRowsPerPage(), this);
     }
 
     /**
-     * Update the whole table using the graph. This method will submit a task to the
-     * executor service and return but there is also a check for an existing update
-     * which could cause a race condition if two threads access this method simultaneously.
+     * Update the whole table using the graph. This method will submit a task to
+     * the executor service and return but there is also a check for an existing
+     * update which could cause a race condition if two threads access this
+     * method simultaneously.
      *
      * @param graph the graph to retrieve data from
      * @param state the current table view state
@@ -111,7 +114,7 @@ public final class TablePane extends BorderPane {
 
         future = getParentComponent().getExecutorService().submit(() -> {
             CHECK_INTERRUPT_AND_RUN.accept(() -> getTableToolbar().updateToolbar(state));
-            
+
             if (graph != null) {
                 // Executed in order and interruption status checked between each step
                 CHECK_INTERRUPT_AND_RUN_EACH.accept(List.of(
@@ -138,8 +141,8 @@ public final class TablePane extends BorderPane {
     }
 
     /**
-     * Gets a {@link BorderPane} that represents a progress bar that is activated
-     * during long running updates like table row refreshes.
+     * Gets a {@link BorderPane} that represents a progress bar that is
+     * activated during long running updates like table row refreshes.
      *
      * @return the table progress bar
      */
@@ -149,7 +152,8 @@ public final class TablePane extends BorderPane {
 
     /**
      * Gets the table reference for this instance. The table reference provides
-     * access to the current pagination, table preferences, current table rows etc.
+     * access to the current pagination, table preferences, current table rows
+     * etc.
      *
      * @return the current table reference
      */
@@ -158,9 +162,9 @@ public final class TablePane extends BorderPane {
     }
 
     /**
-     * A future representing the future status of the table based on the
-     * latest call to {@link #updateTable(Graph, TableViewState)}. If the table has
-     * not yet been updated, then it will return null.
+     * A future representing the future status of the table based on the latest
+     * call to {@link #updateTable(Graph, TableViewState)}. If the table has not
+     * yet been updated, then it will return null.
      *
      * @return the current future or null if the table has not been updated
      */

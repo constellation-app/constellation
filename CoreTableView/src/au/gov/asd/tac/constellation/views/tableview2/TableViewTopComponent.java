@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2;
 
-import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -26,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.SelectionToGraphPlugin;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewConcept;
@@ -81,28 +81,27 @@ import org.openide.windows.TopComponent;
 public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     public static final Object TABLE_LOCK = new Object();
-    
+
     private final ExecutorService executorService = Executors.newFixedThreadPool(5);
-    
+
     private final TablePane pane;
     private final Set<AttributeValueMonitor> columnAttributeMonitors;
 
     private TableViewState currentState;
-    
+
     public TableViewTopComponent() {
         setName(Bundle.CTL_TableView2TopComponent());
         setToolTipText(Bundle.HINT_TableView2TopComponent());
-        
+
         initComponents();
 
         this.currentState = null;
         this.pane = new TablePane(this);
         this.columnAttributeMonitors = new HashSet<>();
-        
+
         // The table pane is initialized above is returned in the overridden
         // method getContent() below. That is how the initContent in the super
         // class can reference it and add the table to this pane.
-        
         initContent();
 
         // If the graph structure changes then update the table rows
@@ -142,7 +141,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
         // represents a change to the actual table data. Otherwise just update
         // the selection. The table also needs to have its element type set to TRANSACTION
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
-            if (needsUpdate() && currentState != null 
+            if (needsUpdate() && currentState != null
                     && currentState.getElementType() == GraphElementType.TRANSACTION) {
                 if (currentState.isSelectedOnly()) {
                     executorService.submit(new TriggerDataUpdateTask(pane, graph, getCurrentState()));
@@ -164,22 +163,22 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     /**
      * Copy's the existing table view state and sets the new state's element
-     * type to the passed value. Also ensures the new state is in "Selected Only"
-     * mode. The graph table view state attribute is updated with the new state
-     * and then the table's selection is updated.
-     * 
+     * type to the passed value. Also ensures the new state is in "Selected
+     * Only" mode. The graph table view state attribute is updated with the new
+     * state and then the table's selection is updated.
+     *
      * @param elementType the element type to set to the new state
      * @param elementId can be anything, not used
      */
     public Future<?> showSelected(final GraphElementType elementType, final int elementId) {
         final TableViewState stateSnapshot = getCurrentState();
         final Future<?> stateLock;
-        
+
         if (getCurrentState() != null && getCurrentState().getElementType() != elementType) {
             final TableViewState newState = new TableViewState(getCurrentState());
             newState.setElementType(elementType);
             newState.setSelectedOnly(true);
-            
+
             stateLock = PluginExecution.withPlugin(
                     new UpdateStatePlugin(newState)
             ).executeLater(getCurrentGraph());
@@ -227,13 +226,13 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     /**
      * Get the current table view state.
-     * 
+     *
      * @return the current table state
      */
     public TableViewState getCurrentState() {
         return currentState;
     }
-    
+
     /**
      * Gets the table pane.
      *
@@ -242,7 +241,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     public TablePane getTablePane() {
         return pane;
     }
-    
+
     /**
      * Gets the tables executor service for running various update tasks.
      *
@@ -251,7 +250,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     public ExecutorService getExecutorService() {
         return executorService;
     }
-    
+
     /**
      * Get column attributes that were present in the old state but not in the
      * new one.
@@ -259,37 +258,37 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
      * @param oldState the old table state
      * @param newState the new table state
      * @return a set of column attributes that are present in the old state but
-     *     not the new one
+     * not the new one
      */
     protected Set<Tuple<String, Attribute>> getRemovedAttributes(final TableViewState oldState,
-                                                                 final TableViewState newState) {      
+            final TableViewState newState) {
         return new HashSet<>(
                 CollectionUtils.subtract(
                         oldState != null && oldState.getColumnAttributes() != null
-                                ? oldState.getColumnAttributes() : new HashSet<>(),
+                        ? oldState.getColumnAttributes() : new HashSet<>(),
                         newState != null && newState.getColumnAttributes() != null
-                                ? newState.getColumnAttributes() : new HashSet<>()
+                        ? newState.getColumnAttributes() : new HashSet<>()
                 )
         );
     }
-    
+
     /**
-     * Get column attributes that were not present in the old state but are present
-     * in the new state.
+     * Get column attributes that were not present in the old state but are
+     * present in the new state.
      *
      * @param oldState the old table state
      * @param newState the new table state
      * @return a set of column attributes that were not present in the old state
-     *     but are present in the new state
+     * but are present in the new state
      */
     protected Set<Tuple<String, Attribute>> getAddedAttributes(final TableViewState oldState,
-                                                               final TableViewState newState) {
+            final TableViewState newState) {
         return new HashSet<>(
                 CollectionUtils.subtract(
                         newState != null && newState.getColumnAttributes() != null
-                                ? newState.getColumnAttributes() : new HashSet<>(),
+                        ? newState.getColumnAttributes() : new HashSet<>(),
                         oldState != null && oldState.getColumnAttributes() != null
-                                ? oldState.getColumnAttributes() : new HashSet<>()
+                        ? oldState.getColumnAttributes() : new HashSet<>()
                 )
         );
     }
@@ -297,9 +296,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     /**
      * Update the current table state with the table state stored in the passed
      * graph attributes. If a table state does not exist in the graph attribute
-     * then it will crate and new state and set it to the current state in
-     * the table.
-     * 
+     * then it will crate and new state and set it to the current state in the
+     * table.
+     *
      * @param graph the graph that the new state will be extracted from
      */
     protected void updateState(final Graph graph) {
@@ -353,11 +352,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * Update the current state with the new state pulled from the passed graph's
-     * attributes and update the attribute handlers so that the table is only
-     * notified for attribute changes that it cares about. Then trigger a table
-     * refresh using the new graph as its source of truth.
-     * 
+     * Update the current state with the new state pulled from the passed
+     * graph's attributes and update the attribute handlers so that the table is
+     * only notified for attribute changes that it cares about. Then trigger a
+     * table refresh using the new graph as its source of truth.
+     *
      * @param graph the new graph
      */
     @Override
@@ -365,14 +364,14 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
         if (!needsUpdate()) {
             return;
         }
-        
+
         // Take a copy of the current state that is associated with the current graph
         final TableViewState previousState = currentState;
-        
+
         // Update the current state by pulling the table state attribute from
         // the new graph
         updateState(graph);
-        
+
         // Determine the visible column changes
         final Set<Tuple<String, Attribute>> removedColumnAttributes
                 = getRemovedAttributes(previousState, currentState);
@@ -384,10 +383,10 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
         if (columnAttributeMonitors != null && !removedColumnAttributes.isEmpty()) {
             final Set<AttributeValueMonitor> removeMonitors = columnAttributeMonitors.stream()
                     .filter(monitor -> removedColumnAttributes.stream()
-                            .anyMatch(columnAttributeTuple -> 
-                                    columnAttributeTuple.getSecond().getElementType() == monitor.getElementType()
-                                            && columnAttributeTuple.getSecond().getName().equals(monitor.getName())
-                            )
+                    .anyMatch(columnAttributeTuple
+                            -> columnAttributeTuple.getSecond().getElementType() == monitor.getElementType()
+                    && columnAttributeTuple.getSecond().getName().equals(monitor.getName())
+                    )
                     )
                     .collect(Collectors.toSet());
 
@@ -403,21 +402,21 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
         // Add attribute handlers that detect changes to the graph attributes that
         // represent visible columns in the table. When these attributes change,
         // the table should have its data refreshed
-        if (currentState != null && currentState.getColumnAttributes() != null 
+        if (currentState != null && currentState.getColumnAttributes() != null
                 && !addedColumnAttributes.isEmpty()) {
-            addedColumnAttributes.forEach(attributeTuple ->
-                columnAttributeMonitors.add(addAttributeValueChangeHandler(attributeTuple.getSecond().getElementType(),
-                                attributeTuple.getSecond().getName(),
-                                g -> executorService.submit(new TriggerDataUpdateTask(pane, g, getCurrentState()))
-                        )
-                )
+            addedColumnAttributes.forEach(attributeTuple
+                    -> columnAttributeMonitors.add(addAttributeValueChangeHandler(attributeTuple.getSecond().getElementType(),
+                            attributeTuple.getSecond().getName(),
+                            g -> executorService.submit(new TriggerDataUpdateTask(pane, g, getCurrentState()))
+                    )
+                    )
             );
         }
     }
 
     /**
-     * When the graph is closed change the graphs pagination to a pagination over
-     * nothing and update the table. This will essentially clear the table.
+     * When the graph is closed change the graphs pagination to a pagination
+     * over nothing and update the table. This will essentially clear the table.
      *
      * @param graph the graph being closed
      */

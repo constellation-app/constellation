@@ -67,6 +67,7 @@ public class LineBatcher implements SceneBatcher {
     private int lineShaderAlpha;
     private int lineShaderHighlightColor;
     private int lineShaderDirectionMotion;
+    private int lineShaderGreyscale; // anaglyphic drawing
 
     private int lineLineShaderMVMatrix;
     private int lineLineShaderPMatrix;
@@ -78,6 +79,7 @@ public class LineBatcher implements SceneBatcher {
     private int lineLineShaderAlpha;
     private int lineLineShaderHighlightColor;
     private int lineLineShaderDirectionMotion;
+    private int lineLineShaderGreyscale; // anaglyphic drawing
 
     private final int colorTarget;
     private final int connectionInfoTarget;
@@ -115,6 +117,7 @@ public class LineBatcher implements SceneBatcher {
         lineShaderAlpha = gl.glGetUniformLocation(lineShader, "alpha");
         lineShaderHighlightColor = gl.glGetUniformLocation(lineShader, "highlightColor");
         lineShaderDirectionMotion = gl.glGetUniformLocation(lineShader, "directionMotion");
+        lineShaderGreyscale = gl.glGetUniformLocation(lineShader, "greyscale");
 
         lineLineShaderMVMatrix = gl.glGetUniformLocation(lineLineShader, "mvMatrix");
         lineLineShaderPMatrix = gl.glGetUniformLocation(lineLineShader, "pMatrix");
@@ -126,6 +129,7 @@ public class LineBatcher implements SceneBatcher {
         lineLineShaderAlpha = gl.glGetUniformLocation(lineLineShader, "alpha");
         lineLineShaderHighlightColor = gl.glGetUniformLocation(lineLineShader, "highlightColor");
         lineLineShaderDirectionMotion = gl.glGetUniformLocation(lineLineShader, "directionMotion");
+        lineLineShaderGreyscale = gl.glGetUniformLocation(lineLineShader, "greyscale");
     }
 
     @Override
@@ -309,7 +313,7 @@ public class LineBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
 
         if (batch.isDrawable()) {
             // Uniform variables
@@ -329,6 +333,7 @@ public class LineBatcher implements SceneBatcher {
             gl.glUniform1i(lineShaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1f(lineShaderAlpha, opacity);
             gl.glUniform4fv(lineShaderHighlightColor, 1, highlightColor, 0);
+            gl.glUniform1i(lineShaderGreyscale, greyscale ? 1 : 0);
             batch.draw(gl);
 
             gl.glUseProgram(lineLineShader);
@@ -347,6 +352,7 @@ public class LineBatcher implements SceneBatcher {
             gl.glUniform1i(lineLineShaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1f(lineLineShaderAlpha, opacity);
             gl.glUniform4fv(lineLineShaderHighlightColor, 1, highlightColor, 0);
+            gl.glUniform1i(lineLineShaderGreyscale, greyscale ? 1 : 0);
             batch.draw(gl);
         }
         drawForHitTest = false;

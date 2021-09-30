@@ -188,15 +188,19 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         refreshListeners();
-        Collection<? extends SaveAsCapable> inst = lkpInfo.allInstances();
+        final Collection<? extends SaveAsCapable> inst = lkpInfo.allInstances();
         if (!inst.isEmpty()) {
-            SaveAsCapable saveAs = inst.iterator().next();
-            File newFile = getNewFileName();
+            final SaveAsCapable saveAs = inst.iterator().next();
+            final File newFile = getNewFileName();
 
             if (newFile != null) {
                 try {
                     saveAs.saveAs(FileUtil.toFileObject(newFile.getParentFile()), newFile.getName());
-                    RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName());
+
+                    // take a screenshot in a separate thread in parrallel
+                    new Thread(() -> {
+                        RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName());
+                    }, "Take Graph Screenshot").start();
                 } catch (IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(

@@ -56,9 +56,9 @@ public class TableViewUtilities {
      * @return a String of comma-separated values representing the table.
      */
     public static String getTableData(final TableView<ObservableList<String>> table,
-                                      final Pagination pagination,
-                                      final boolean includeHeader,
-                                      final boolean selectedOnly) {
+            final Pagination pagination,
+            final boolean includeHeader,
+            final boolean selectedOnly) {
         final List<Integer> visibleIndices = table.getVisibleLeafColumns().stream()
                 .map(column -> table.getColumns().indexOf(column))
                 .collect(Collectors.toList());
@@ -114,7 +114,7 @@ public class TableViewUtilities {
     public static void copyToClipboard(final String text) {
         final ClipboardContent content = new ClipboardContent();
         content.putString(text);
-        
+
         Clipboard.getSystemClipboard().setContent(content);
     }
 
@@ -127,9 +127,9 @@ public class TableViewUtilities {
      * @param graph the graph to copy to.
      */
     public static void copySelectionToGraph(final TableView<ObservableList<String>> table,
-                                            final Map<ObservableList<String>, Integer> index,
-                                            final GraphElementType elementType,
-                                            final Graph graph) {
+            final Map<ObservableList<String>, Integer> index,
+            final GraphElementType elementType,
+            final Graph graph) {
         PluginExecution.withPlugin(
                 new SelectionToGraphPlugin(
                         table,
@@ -138,7 +138,7 @@ public class TableViewUtilities {
                 )
         ).executeLater(graph);
     }
-    
+
     /**
      * Based on the tables current element type (vertex or transaction) get all
      * selected elements of that type in the graph and return their element IDs.
@@ -148,7 +148,7 @@ public class TableViewUtilities {
      * @return the IDs of the selected elements
      */
     public static List<Integer> getSelectedIds(final Graph graph,
-                                           final TableViewState state) {
+            final TableViewState state) {
         final List<Integer> selectedIds = new ArrayList<>();
         final ReadableGraph readableGraph = graph.getReadableGraph();
         try {
