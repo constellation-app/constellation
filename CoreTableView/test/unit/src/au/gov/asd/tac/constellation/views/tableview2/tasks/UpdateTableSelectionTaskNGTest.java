@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class UpdateTableSelectionTaskNGTest {
-    
+
     public UpdateTableSelectionTaskNGTest() {
     }
 
@@ -57,25 +57,25 @@ public class UpdateTableSelectionTaskNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     @Test
     public void updateSelectionTask() {
         final TablePane tablePane = mock(TablePane.class);
         final Graph graph = mock(Graph.class);
         final TableViewState tableViewState = new TableViewState();
-        
+
         final Table table = mock(Table.class);
-        
+
         final ProgressBar progressBar = mock(ProgressBar.class);
-        
+
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getProgressBar()).thenReturn(progressBar);
-        
+
         final TriggerSelectionUpdateTask updateTableSelectionTask
                 = new TriggerSelectionUpdateTask(tablePane, graph, tableViewState);
-        
+
         updateTableSelectionTask.run();
-        
+
         verify(table).updateSelection(graph, tableViewState);
     }
 }

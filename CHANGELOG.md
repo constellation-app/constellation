@@ -2,6 +2,11 @@
 
 ## Changes in September 2021
 
+-   Added a preference to choose between viewing the help documentation offline,
+    or online. 
+
+-   Removed JavaHelp and replaced it with the new help system.
+
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
     

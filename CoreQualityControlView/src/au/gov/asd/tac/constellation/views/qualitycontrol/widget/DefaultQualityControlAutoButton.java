@@ -98,4 +98,10 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
             setTooltip(tooltipText != null ? new Tooltip(tooltipText) : null);
         });
     }
+
+    @Override
+    public DefaultQualityControlAutoButton copy() {
+        return new DefaultQualityControlAutoButton();
+    }
+
 }

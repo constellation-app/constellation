@@ -139,6 +139,7 @@ public class StringParameterType extends PluginParameterType<StringParameterValu
     public static void setIsLabel(final PluginParameter<?> parameter, final boolean isLabel) {
         parameter.setProperty(IS_LABEL, isLabel);
     }
+
     /**
      *
      * @param param

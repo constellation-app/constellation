@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,23 +17,23 @@ package au.gov.asd.tac.constellation.utilities.camera;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.Test;
 
 /**
  * @author groombridge34a
  */
 public class CameraNGTest {
-    
+
     private static final Vector3f ZERO_VECTOR = new Vector3f(0F, 0F, 0F);
-    
-    private static final Vector3f MIN_EXTREME = new Vector3f(Float.MAX_VALUE, 
+
+    private static final Vector3f MIN_EXTREME = new Vector3f(Float.MAX_VALUE,
             Float.MAX_VALUE, Float.MAX_VALUE);
-    private static final Vector3f MAX_EXTREME = new Vector3f(-Float.MAX_VALUE, 
+    private static final Vector3f MAX_EXTREME = new Vector3f(-Float.MAX_VALUE,
             -Float.MAX_VALUE, -Float.MAX_VALUE);
-    
+
     // helper to assert a Camera object with no other initialise
     private void assertNewCamera(final Camera c) {
         assertEquals(c.lookAtEye.toString(), new Vector3f(0F, 0F, 10F).toString());
@@ -46,22 +46,22 @@ public class CameraNGTest {
         assertEquals(c.lookAtPreviousRotation.toString(), ZERO_VECTOR.toString());
         assertEquals(c.getVisibilityLow(), 0F);
         assertEquals(c.getVisibilityHigh(), 1F);
-        
+
         final BoundingBox bb = c.boundingBox;
         assertEquals(bb.getMin().toString(), MIN_EXTREME.toString());
         assertEquals(bb.getMax().toString(), MAX_EXTREME.toString());
         assertEquals(bb.getMin2().toString(), MIN_EXTREME.toString());
         assertEquals(bb.getMax2().toString(), MAX_EXTREME.toString());
         assertTrue(bb.isEmpty());
-        
+
         final Frame objectFrame = c.getObjectFrame();
         assertEquals(objectFrame.getOrigin().toString(), ZERO_VECTOR.toString());
-        assertEquals(objectFrame.getUpVector().toString(), 
+        assertEquals(objectFrame.getUpVector().toString(),
                 new Vector3f(0F, 1F, 0F).toString());
-        assertEquals(objectFrame.getForwardVector().toString(), 
+        assertEquals(objectFrame.getForwardVector().toString(),
                 new Vector3f(0F, 0F, 1F).toString());
     }
-    
+
     /**
      * Can create a Camera.
      */
@@ -69,7 +69,7 @@ public class CameraNGTest {
     public void testConstructor() {
         assertNewCamera(new Camera());
     }
-    
+
     /**
      * Copy constructor creates a basic Camera if the object passed in is null.
      */
@@ -77,7 +77,7 @@ public class CameraNGTest {
     public void testCopyConstructorNull() {
         assertNewCamera(new Camera(null));
     }
-    
+
     private static final Vector3f V1 = new Vector3f(1.1F, 1.2F, 1.3F);
     private static final Vector3f V2 = new Vector3f(2.1F, 2.2F, 2.3F);
     private static final Vector3f V3 = new Vector3f(3.1F, 3.2F, 3.3F);
@@ -93,7 +93,7 @@ public class CameraNGTest {
     private static final Vector3f V13 = new Vector3f(13.1F, 13.2F, 13.3F);
     private static final Vector3f V14 = new Vector3f(14.1F, 14.2F, 14.3F);
     private static final Vector3f V15 = new Vector3f(15.1F, 15.2F, 15.3F);
-    
+
     // helper to assert a Camera object with no other initialise
     private void assertCamerasEqual(final Camera c1, final Camera c2) {
         assertEquals(c1.lookAtEye.toString(), c2.lookAtEye.toString());
@@ -106,7 +106,7 @@ public class CameraNGTest {
         assertEquals(c1.lookAtPreviousRotation.toString(), c2.lookAtPreviousRotation.toString());
         assertEquals(c1.getVisibilityLow(), c2.getVisibilityLow());
         assertEquals(c1.getVisibilityHigh(), c2.getVisibilityHigh());
-        
+
         final BoundingBox bb1 = c1.boundingBox;
         final BoundingBox bb2 = c2.boundingBox;
         assertEquals(bb1.getMin().toString(), bb2.getMin().toString());
@@ -114,17 +114,17 @@ public class CameraNGTest {
         assertEquals(bb1.getMin2().toString(), bb2.getMin2().toString());
         assertEquals(bb1.getMax2().toString(), bb2.getMax2().toString());
         assertEquals(bb1.isEmpty(), bb2.isEmpty());
-        
+
         final Frame of1 = c1.getObjectFrame();
         final Frame of2 = c2.getObjectFrame();
-        assertEquals(of1.getOrigin().toString(), 
+        assertEquals(of1.getOrigin().toString(),
                 of2.getOrigin().toString());
-        assertEquals(of1.getUpVector().toString(), 
+        assertEquals(of1.getUpVector().toString(),
                 of2.getUpVector().toString());
-        assertEquals(of1.getForwardVector().toString(), 
+        assertEquals(of1.getForwardVector().toString(),
                 of2.getForwardVector().toString());
     }
-    
+
     /**
      * Can create a Camera from another Camera
      */
@@ -144,17 +144,17 @@ public class CameraNGTest {
         c.setVisibilityHigh(998F);
         c.setMixRatio(654);
         c.setObjectFrame(new Frame(V13, V14, V15));
-        
+
         // Assert a Camera with all fields set can be copied
         final Camera c2 = new Camera(c);
         assertCamerasEqual(c, c2);
-        
+
         // Assert a Camera without a Frame can be copied
         c.setObjectFrame(null);
         final Camera c3 = new Camera(c);
         assertNull(c3.getObjectFrame());
     }
-    
+
     /**
      * Can calculate a mix from the mix ratio.
      */
@@ -164,7 +164,7 @@ public class CameraNGTest {
         c.setMixRatio(18);
         assertEquals(c.getMix(), 0.9F);
     }
-    
+
     /**
      * Can generate a String representation of a Camera.
      */
@@ -178,5 +178,5 @@ public class CameraNGTest {
                 + "centre: 3f[2.100000,2.200000,2.300000]; "
                 + "up: 3f[3.100000,3.200000,3.300000]]");
     }
-    
+
 }

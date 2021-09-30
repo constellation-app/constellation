@@ -57,6 +57,7 @@ public class LoopBatcher implements SceneBatcher {
     private int shaderMorphMix;
     private int shaderXyzTexture;
     private int shaderImagesTexture;
+    private int shaderGreyscale; // anaglyphic drawing
 
     private final int colorTarget;
     private final int loopInfoTarget;
@@ -92,6 +93,7 @@ public class LoopBatcher implements SceneBatcher {
         shaderMorphMix = gl.glGetUniformLocation(shader, "morphMix");
         shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
         shaderImagesTexture = gl.glGetUniformLocation(shader, "images");
+        shaderGreyscale = gl.glGetUniformLocation(shader, "greyscale");
     }
 
     @Override
@@ -185,7 +187,7 @@ public class LoopBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
 
         if (batch.isDrawable()) {
             gl.glUseProgram(shader);
@@ -204,6 +206,7 @@ public class LoopBatcher implements SceneBatcher {
             gl.glUniform1f(shaderMorphMix, camera.getMix());
             gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
+            gl.glUniform1i(shaderGreyscale, greyscale ? 1 : 0);
             batch.draw(gl);
         }
     }

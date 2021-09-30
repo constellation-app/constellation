@@ -147,28 +147,38 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
                 // issues for. If there were any files with issues use a warning dialog.
                 sbHeader.append(String.format("Imported %d rows of data from %d " + fileFiles, importedRows, validFilenames.size()));
-                sbMessage.append("The following " + fileFiles + " contained data:");
-                validFilenames.forEach(filename -> {
-                    sbMessage.append("\n  ");
-                    sbMessage.append(filename);
-                });
-                final String invalidFileFiles = (validFilenames.size() == 1) ? "file" : "files";
+                sbMessage.append("The following " + fileFiles + " contained data: ");
+
+                for (int i = 0; i < validFilenames.size(); i++) {
+                    final File f = new File(validFilenames.get(i));
+                    sbMessage.append(f.getName());
+                    if (i != validFilenames.size() - 1) {
+                        sbMessage.append(", ");
+                    }
+                }
+                final String invalidFileFiles = (invalidFilenames.size() == 1) ? "file" : "files";
                 if (invalidFilenames.size() > 0) {
                     // some invalid files were found - warning condition.
-                    sbMessage.append("\n\nThe following " + invalidFileFiles + " could not be parsed. No data was extracted:");
-                    invalidFilenames.forEach(filename -> {
-                        sbMessage.append("\n  ");
-                        sbMessage.append(filename);
-                    });
+                    sbMessage.append("\n\nThe following " + invalidFileFiles + " could not be parsed. No data was extracted: ");
+                    for (int i = 0; i < invalidFilenames.size(); i++) {
+                        final File f = new File(invalidFilenames.get(i));
+                        sbMessage.append(f.getName());
+                        if (i != invalidFilenames.size() - 1) {
+                            sbMessage.append(", ");
+                        }
+                    }
                 }
             } else {
                 // No rows were imported list all files that resulted in failures.
                 sbHeader.append("No data found to import");
-                sbMessage.append("The following " + fileFiles + " could not be parsed. no data was extracted:");
-                invalidFilenames.forEach(filename -> {
-                    sbMessage.append("\n  ");
-                    sbMessage.append(filename);
-                });
+                sbMessage.append("The following " + fileFiles + " could not be parsed. no data was extracted: ");
+                for (int i = 0; i < invalidFilenames.size(); i++) {
+                    final File f = new File(invalidFilenames.get(i));
+                    sbMessage.append(f.getName());
+                    if (i != invalidFilenames.size() - 1) {
+                        sbMessage.append(", ");
+                    }
+                }
             }
             NotificationDisplayer.getDefault().notify(sbHeader.toString(), UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
         });

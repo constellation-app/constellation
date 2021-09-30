@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,25 +28,26 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * POJO representing the table user preferences that can be persisted to disk
- * as a JSON file.
+ * POJO representing the table user preferences that can be persisted to disk as
+ * a JSON file.
  *
  * @author formalhaunt
  */
 public final class UserTablePreferences {
+
     public static final int DEFAULT_MAX_ROWS_PER_PAGE = 500;
-    
+
     @JsonProperty(value = "PageSize")
     private int maxRowsPerPage = DEFAULT_MAX_ROWS_PER_PAGE;
-    
+
     @JsonProperty("ColumnOrder")
     private List<String> columnOrder = new ArrayList<>();
-    
+
     @JsonProperty("SortByColumn")
     @JsonDeserialize(using = ColumnSortOrderDeserializer.class)
     private Pair<String, TableColumn.SortType> sortByColumn
             = ImmutablePair.of("", TableColumn.SortType.ASCENDING);
-    
+
     public synchronized int getMaxRowsPerPage() {
         return maxRowsPerPage;
     }
@@ -70,9 +71,10 @@ public final class UserTablePreferences {
     public synchronized void setSortByColumn(final Pair<String, TableColumn.SortType> sortByColumn) {
         this.sortByColumn = sortByColumn;
     }
-    
+
     /**
-     * Gets just the sort column in a thread safe way, or null if no sort is set.
+     * Gets just the sort column in a thread safe way, or null if no sort is
+     * set.
      *
      * @return the sort column or null if no sort is set
      */
@@ -83,9 +85,10 @@ public final class UserTablePreferences {
         }
         return null;
     }
-    
+
     /**
-     * Gets just the sort direction in a thread safe way, or null if no sort is set.
+     * Gets just the sort direction in a thread safe way, or null if no sort is
+     * set.
      *
      * @return the sort direction or null if no sort is set
      */
@@ -96,7 +99,7 @@ public final class UserTablePreferences {
         }
         return null;
     }
-    
+
     /**
      * Thread safe update of the max rows per page. Performs a check to see if
      * the new value is different to the current one and if it is performs the
@@ -113,7 +116,7 @@ public final class UserTablePreferences {
         }
         return false;
     }
-    
+
     @Override
     public synchronized boolean equals(final Object o) {
         if (this == o) {

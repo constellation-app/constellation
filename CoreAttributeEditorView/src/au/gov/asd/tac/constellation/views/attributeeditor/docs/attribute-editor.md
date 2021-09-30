@@ -57,7 +57,7 @@ Attribute Editor:
 ## Editing An Attribute
 
 To edit an attribute, select the nodes and transactions you want to edit
-and then click on the <img src="../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorEdit.png alt="Edit
+and then click on the attribute value or on the <img src="../constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/docs/resources/AttributeEditorEdit.png" alt="Edit
 Icon" />
 button. This will bring up a dialog box to change the value. Once you
 have finished changing the value, press "OK" to apply the change. If
