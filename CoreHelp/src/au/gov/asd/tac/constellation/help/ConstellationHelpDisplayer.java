@@ -224,7 +224,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         try {
             final String url;
             if (isOnline) {
-                url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink;
+                url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink.replace(".md", ".html");
             } else {
                 final File file = new File(Generator.getBaseDirectory() + sep + helpLink);
                 final URL fileUrl = file.toURI().toURL();
