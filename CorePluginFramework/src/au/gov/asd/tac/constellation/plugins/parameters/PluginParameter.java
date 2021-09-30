@@ -74,6 +74,7 @@ public class PluginParameter<V extends ParameterValue> {
     private String helpID;
     private boolean isSuppressed = false;
     private String requestBodyExample;
+    private boolean isRequired = false;
 
     private final List<ParameterChange> suppressedEvents = new ArrayList<>();
 
@@ -828,6 +829,7 @@ public class PluginParameter<V extends ParameterValue> {
     public final String getRequestBodyExampleJson() {
         return requestBodyExample;
     }
+
     /**
      * Set the swagger Request Body Example value.
      *
@@ -837,5 +839,25 @@ public class PluginParameter<V extends ParameterValue> {
         if (!Objects.equals(requestBodyExample, this.requestBodyExample)) {
             this.requestBodyExample = requestBodyExample;
         }
+    }
+
+    /**
+     * Is the parameter required? Required parameters are marked as required in
+     * swagger.
+     *
+     * @return True if the parameter is required, false otherwise.
+     */
+    public boolean isRequired() {
+        return isRequired;
+    }
+
+    /**
+     * Set whether the parameter is required. Required parameters are marked as
+     * required in swagger.
+     *
+     * @param isRequired A boolean indicating whether the parameter is required.
+     */
+    public void setRequired(boolean isRequired) {
+        this.isRequired = isRequired;
     }
 }
