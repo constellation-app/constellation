@@ -97,6 +97,8 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
             } catch (final Exception ex) {
+                //unexpected exception
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
 
             PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);

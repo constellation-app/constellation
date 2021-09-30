@@ -65,6 +65,8 @@ public class QueryServices {
     private Graph graph;
     private boolean[] results;
     private List<FindResult> findResults = new ArrayList<>();
+    
+    private static final String THREAD_INTERRUPTED = "Thread was interrupted";
 
     /**
      * Constructs a new <code>QueryServices</code>.
@@ -122,7 +124,7 @@ public class QueryServices {
                     try {
                         barrier.await();
                     } catch (final InterruptedException ex) {
-                        LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
+                        LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                         Thread.currentThread().interrupt();
                     } catch (final BrokenBarrierException ex) {
                         LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -192,7 +194,7 @@ public class QueryServices {
                 try {
                     barrier.await();
                 } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                     Thread.currentThread().interrupt();
                 } catch (final BrokenBarrierException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -465,7 +467,7 @@ public class QueryServices {
                 try {
                     barrier.await();
                 } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, "Thread was interrupted");
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED);
                     Thread.currentThread().interrupt();
                 } catch (final BrokenBarrierException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());

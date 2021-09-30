@@ -64,6 +64,7 @@ public class NumberInputPane<T> extends Pane {
     private static final int BASE_WIDTH = 35;
 
     private static final String INVALID_ID = "invalid";
+    private static final String INVALID_VALUE = "Invalid value";
 
     public NumberInputPane(final PluginParameter<?> parameter) {
         final NumberParameterValue pv = (NumberParameterValue) parameter.getParameterValue();
@@ -135,7 +136,7 @@ public class NumberInputPane<T> extends Pane {
             parameter.fireChangeEvent(ParameterChange.VALUE);
         });
 
-        parameter.addListener((pluginParameter, change) -> {
+        parameter.addListener((pluginParameter, change) ->
             Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
@@ -148,7 +149,7 @@ public class NumberInputPane<T> extends Pane {
                                         if ((min != null && currentIntegerValue < min.intValue()) 
                                                 || (max != null && currentIntegerValue > max.intValue())) {
                                             field.setId(INVALID_ID);
-                                            parameter.setError("Invalid value");
+                                            parameter.setError(INVALID_VALUE);
                                         }
                                         // this won't succeed if we entered the if block before this but it will
                                         // add some helpful logging to indicate the problem in that instance
@@ -159,7 +160,7 @@ public class NumberInputPane<T> extends Pane {
                                         if ((min != null && currentFloatValue < min.doubleValue())
                                                 || (max != null && currentFloatValue > max.doubleValue())) {
                                             field.setId(INVALID_ID);
-                                            parameter.setError("Invalid value");
+                                            parameter.setError(INVALID_VALUE);
                                         }
                                         // this won't succeed if we entered the if block before this but it will
                                         // add some helpful logging to indicate the problem in that instance
@@ -170,11 +171,11 @@ public class NumberInputPane<T> extends Pane {
                                 }
                             } catch (final NumberFormatException ex) {
                                 field.setId(INVALID_ID);
-                                parameter.setError("Invalid value");
+                                parameter.setError(INVALID_VALUE);
                             }
                         } else if (currentTextValue != null && currentTextValue.isEmpty()) {
                             field.setId(INVALID_ID);
-                            parameter.setError("Invalid value");
+                            parameter.setError(INVALID_VALUE);
                         } else {
                             // Do nothing
                         }
@@ -192,8 +193,8 @@ public class NumberInputPane<T> extends Pane {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            })
+        );
         getChildren().add(field);
     }
 }

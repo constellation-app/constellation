@@ -87,6 +87,8 @@ public class DijkstraServices {
     private final boolean followDirection;
 
     private static final Logger LOGGER = Logger.getLogger(DijkstraServices.class.getName());
+    
+    private static final String THREAD_INTERRUPTED = "Thread was interrupted";
 
     /**
      * Constructor.
@@ -131,7 +133,7 @@ public class DijkstraServices {
                 try {
                     distanceBarrier.await();
                 } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                     Thread.currentThread().interrupt();
                 } catch (final BrokenBarrierException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -165,7 +167,7 @@ public class DijkstraServices {
                 try {
                     pathBarrier.await();
                 } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                     Thread.currentThread().interrupt();
                 } catch (final BrokenBarrierException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -335,14 +337,14 @@ public class DijkstraServices {
                         break;
                 }
             } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
+                LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                 Thread.currentThread().interrupt();
             } finally {
                 // This thread is now done, so wait for all others to finish:
                 try {
                     barrier.await();
                 } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, "Thread was interrupted");
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED);
                     Thread.currentThread().interrupt();
                 } catch (final BrokenBarrierException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());

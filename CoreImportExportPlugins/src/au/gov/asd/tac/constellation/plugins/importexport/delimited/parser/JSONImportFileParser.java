@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser;
 import org.openide.util.lookup.ServiceProvider;
@@ -435,7 +434,6 @@ public class JSONImportFileParser extends ImportFileParser {
             throw ex;
         } catch (final Exception ex) {
             // Unexpected exceptions
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             throw ex;
         }
     }
