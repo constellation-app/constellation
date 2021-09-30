@@ -204,6 +204,12 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         return html.toString();
     }
 
+    /**
+     * Display the help page for the following HelpCtx
+     *
+     * @param helpCtx
+     * @return
+     */
     @Override
     public boolean display(final HelpCtx helpCtx) {
         final String sep = File.separator;

@@ -32,7 +32,6 @@ import org.openide.util.NbBundle;
  */
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.help.HelpPagesAction")
 @ActionRegistration(displayName = "#CTL_HelpPagesAction")
-// ,iconBase = "au/gov/asd/tac/constellation/help/resources/help_pages.png")
 @ActionReferences({
     @ActionReference(path = "Menu/Help", position = 2)
 })

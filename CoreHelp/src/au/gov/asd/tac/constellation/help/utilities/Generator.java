@@ -46,10 +46,6 @@ public class Generator implements Runnable {
     public static final String TOC_FILE_NAME = "toc.md";
     public static final String ROOT_NODE_NAME = "Constellation Documentation";
 
-    // TODO: Remove this flag and all occurrences when in prod/dev.
-    // Toggled to allow switching between dev and release versions
-    private static final boolean DEBUG_FLAG = false;
-
     public Generator() {
         // Intentionally left blank
     }
@@ -62,7 +58,7 @@ public class Generator implements Runnable {
         baseDirectory = getBaseDirectory();
         tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
 
-        if (!"IDE(CORE)".equals(System.getProperty("constellation.environment")) || DEBUG_FLAG) {
+        if (!"IDE(CORE)".equals(System.getProperty("constellation.environment"))) {
             // Ensure that the mappings are generated for clicks on help icons within the application.
             HelpMapper.updateMappings();
             return;
@@ -82,11 +78,22 @@ public class Generator implements Runnable {
         }
     }
 
+    /**
+     * get the directory that the table of contents is saved to
+     *
+     * @return a String path for the file location
+     */
     public static String getTOCDirectory() {
         tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
         return tocDirectory;
     }
 
+    /**
+     * get a list of the xml files using a lookup
+     *
+     * @param baseDirectory
+     * @return
+     */
     protected static List<File> getXMLFiles(final String baseDirectory) {
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
@@ -98,6 +105,11 @@ public class Generator implements Runnable {
         return tocXMLFiles;
     }
 
+    /**
+     * Get the base directory of the current project
+     *
+     * @return
+     */
     public static String getBaseDirectory() {
         final String sep = File.separator;
         // Get the current directory and make the file within the base project directory.

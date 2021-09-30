@@ -75,6 +75,15 @@ public class TreeNode<T> {
         return parent;
     }
 
+    /**
+     * Print the tree to the stringbuilder and return the builder.
+     *
+     * @param <T>
+     * @param node
+     * @param appender
+     * @param builder
+     * @return
+     */
     public static <T> StringBuilder printTree(final TreeNode<T> node, final String appender, final StringBuilder builder) {
         builder.append(appender);
         builder.append(node.getData());

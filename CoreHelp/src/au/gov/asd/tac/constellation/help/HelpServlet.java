@@ -68,7 +68,9 @@ public class HelpServlet extends HttpServlet {
     }
 
     /**
-     * Attempt to send the request to be displayed by the ConstellationHelpDisplayer or redirect the request if the path given is incorrect
+     * Attempt to send the request to be displayed by the
+     * ConstellationHelpDisplayer or redirect the request if the path given is
+     * incorrect
      *
      * @param request
      * @param response
@@ -103,7 +105,8 @@ public class HelpServlet extends HttpServlet {
     }
 
     /**
-     * If the requestPath is duplicated or not correct then update it after removing the additional parts from the path
+     * If the requestPath is duplicated or not correct then update it after
+     * removing the additional parts from the path
      *
      * @param requestPath
      * @param referer

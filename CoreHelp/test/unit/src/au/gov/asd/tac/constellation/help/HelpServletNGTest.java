@@ -42,8 +42,6 @@ import org.testng.annotations.Test;
  */
 public class HelpServletNGTest {
 
-   
-
     public HelpServletNGTest() {
     }
 
@@ -65,6 +63,7 @@ public class HelpServletNGTest {
 
     /**
      * Test of doGet method, of class HelpServlet
+     *
      * @throws Exception
      */
     @Test
@@ -85,12 +84,12 @@ public class HelpServletNGTest {
             helpDisplayerStaticMock.verify(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.anyObject()), times(1));
             verify(requestMock, times(1)).getRequestURI();
             verify(requestMock, times(1)).getHeader(Mockito.anyString());
-       }
+        }
     }
-                
 
     /**
      * Test of doGet method, of class HelpServlet, where a redirect is required
+     *
      * @throws Exception
      */
     @Test
@@ -106,7 +105,7 @@ public class HelpServletNGTest {
             doNothing().when(responseMock1).sendRedirect(Mockito.eq("/file:/C:/Projects/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/"
                     + "views/analyticview/docs/question-best-connects-network.md"));
             when(requestMock1.getHeader("referer")).thenReturn("/file:/C:/Projects/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/"
-               + "analyticview/docs/analytic-view.md");
+                    + "analyticview/docs/analytic-view.md");
 
             HelpServlet instance = new HelpServlet();
             instance.doGet(requestMock1, responseMock1);
@@ -132,8 +131,8 @@ public class HelpServletNGTest {
     }
 
     /**
-     * Test of redirectPath method, of class HelpServlet.
-     * Test case where no redirect is required
+     * Test of redirectPath method, of class HelpServlet. Test case where no
+     * redirect is required
      */
     @Test
     public void testRedirectPathNoRedirect() {
@@ -147,44 +146,43 @@ public class HelpServletNGTest {
     }
 
     /**
-     * Test of redirectPath method, of class HelpServlet
-     * Test case where a redirect is required
+     * Test of redirectPath method, of class HelpServlet Test case where a
+     * redirect is required
      */
     @Test
     public void testRedirectPathRedirect() {
-        String referer = "http://localhost:1517/file:/C:/Projects/constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/"
+        String referer = "http://localhost:1517/file:/constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/"
                 + "attributeeditor/docs/attribute-editor.md";
-        String requestPath = "/file:/C:/Projects/constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/"
+        String requestPath = "/file:/constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/"
                 + "constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-view.md";
         HelpServlet instance = new HelpServlet();
         ConstellationHelpDisplayer.currentPort = 1517;
         final URL fileUrl = instance.redirectPath(requestPath, referer);
-        assertEquals(fileUrl.toString(), "file:/C:/Projects/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/"
-                + "docs/analytic-view.md");
-        assertTrue(instance.getWasRedirect());
-    }
-
-        /**
-     * Test of redirectPath method, of class HelpServlet
-     * Test case where a redirect is required within the same module
-     */
-    @Test
-    public void testRedirectPathRedirectWithinSameModule() {
-        String referer = "http://localhost:1517/file:/C:/Projects/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/"
-                + "analyticview/docs/analytic-view.md";
-        String requestPath = "/file:/C:/Projects/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/"
-                + "constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/question-best-connects-network.md";
-        HelpServlet instance = new HelpServlet();
-        ConstellationHelpDisplayer.currentPort = 1517;
-        final URL fileUrl = instance.redirectPath(requestPath, referer);
-        assertEquals(fileUrl.toString(), "file:/C:/Projects/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/"
-                + "docs/question-best-connects-network.md");
+        assertTrue(fileUrl.toString().contains("constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-view.md"));
         assertTrue(instance.getWasRedirect());
     }
 
     /**
-     * Test of redirectPath method, of class HelpServlet
-     * Test of when null parameters are entered, should not be redirected
+     * Test of redirectPath method, of class HelpServlet Test case where a
+     * redirect is required within the same module
+     */
+    @Test
+    public void testRedirectPathRedirectWithinSameModule() {
+        String referer = "http://localhost:1517/file:/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/"
+                + "analyticview/docs/analytic-view.md";
+        String requestPath = "/file:/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/"
+                + "constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/question-best-connects-network.md";
+        HelpServlet instance = new HelpServlet();
+        ConstellationHelpDisplayer.currentPort = 1517;
+        final URL fileUrl = instance.redirectPath(requestPath, referer);
+        assertTrue(fileUrl.toString().contains("constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/"
+                + "docs/question-best-connects-network.md"));
+        assertTrue(instance.getWasRedirect());
+    }
+
+    /**
+     * Test of redirectPath method, of class HelpServlet Test of when null
+     * parameters are entered, should not be redirected
      */
     @Test
     public void testRedirectPathNull() {
