@@ -2,6 +2,10 @@
 
 ## Changes in September 2021
 
+-   Added `netbeans.exception.report.min.level=900` and
+    `netbeans.exception.alert.min.level=900` with both set to `900` to make
+    sure all error above the `WARNING` threshold will present a dialog box.
+
 -   Update the default configuration to always show errors as a dialog message.
 
 -   Updated the way exceptions are displayed to the user. Exceptions thrown in

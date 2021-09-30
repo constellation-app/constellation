@@ -1,0 +1,440 @@
+/*
+ * Copyright 2010-2021 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.graph.node.plugins;
+
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+/**
+ * Default Plugin Environment Test
+ *
+ * @author arcturus
+ */
+public class DefaultPluginEnvironmentNGTest {
+
+    public DefaultPluginEnvironmentNGTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+//        FxToolkit.registerPrimaryStage();
+//        FxToolkit.showStage();
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+//        FxToolkit.hideStage();
+    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+    }
+
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+    }
+
+    /**
+     * Test of executePluginLater method, of class DefaultPluginEnvironment.
+     */
+    @Test
+    public void testExecutePluginLaterWithNullAsync() throws ExecutionException, InterruptedException {
+        System.out.println("executePluginLater");
+        Graph graph = mock(Graph.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+        PluginSynchronizer synchronizer = mock(PluginSynchronizer.class);
+        List<Future<?>> async = null;
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        Object expResult = null;
+        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Object result = future.get();
+        assertEquals(result, expResult);
+    }
+
+    @Test
+    public void testExecutePluginLaterWithAsyncThrowsInterruptedException() throws ExecutionException, InterruptedException {
+        System.out.println("executePluginLater");
+        Graph graph = mock(Graph.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+        PluginSynchronizer synchronizer = mock(PluginSynchronizer.class);
+
+        Future<Object> mockedFuture = mock(Future.class);
+        List<Future<?>> async = Arrays.asList(mockedFuture);
+        when(mockedFuture.get()).thenThrow(InterruptedException.class);
+
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        Object expResult = null;
+        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Object result = future.get();
+        assertEquals(result, expResult);
+    }
+
+    @Test
+    public void testExecutePluginLaterWithAsyncThrowsExecutionException() throws ExecutionException, InterruptedException {
+        System.out.println("executePluginLater");
+        Graph graph = mock(Graph.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+        PluginSynchronizer synchronizer = mock(PluginSynchronizer.class);
+
+        Future<Object> mockedFuture = mock(Future.class);
+        List<Future<?>> async = Arrays.asList(mockedFuture);
+        when(mockedFuture.get()).thenThrow(ExecutionException.class);
+
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        Object expResult = null;
+        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Object result = future.get();
+        assertEquals(result, expResult);
+    }
+
+//    // TODO: get this to work
+//    @Test
+//    public void testExecutePluginLaterWithInteraction() throws ExecutionException, InterruptedException, PluginException {
+//        System.out.println("executePluginLater");
+//        Graph graph = mock(Graph.class);
+//        Plugin plugin = mock(Plugin.class);
+//        PluginParameters parameters = mock(PluginParameters.class);
+//        boolean interactive = true;
+//        PluginSynchronizer synchronizer = mock(PluginSynchronizer.class);
+//        List<Future<?>> async = null;
+//        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+//        Object expResult = null;
+//
+//        Platform.runLater(() -> {
+//            Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+//            Object result;
+//            try {
+//                result = future.get();
+//                assertEquals(result, expResult);
+//            } catch (InterruptedException ex) {
+//                Exceptions.printStackTrace(ex);
+//            } catch (ExecutionException ex) {
+//                Exceptions.printStackTrace(ex);
+//            }
+//        });
+//    }
+//  @Test(expectedExceptions = InterruptedException.class)
+    @Test
+    public void testExecutePluginLaterThrowsInterruptedException() throws ExecutionException, InterruptedException, PluginException {
+        System.out.println("executePluginLater");
+        Graph graph = mock(Graph.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+        PluginSynchronizer synchronizer = mock(PluginSynchronizer.class);
+        List<Future<?>> async = null;
+        InterruptedException interruptedException = mock(InterruptedException.class);
+
+        doThrow(interruptedException)
+                .when(plugin)
+                .run(any(PluginGraphs.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        boolean expResult = true;
+        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+
+        boolean result = false;
+        try {
+            future.get();
+        } catch (InterruptedException ex) {
+            result = true;
+        }
+        assertEquals(result, expResult);
+    }
+
+    @Test
+    public void testExecutePluginLaterThrowsPluginException() throws ExecutionException, InterruptedException, PluginException {
+        System.out.println("executePluginLater");
+        Graph graph = mock(Graph.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+        PluginSynchronizer synchronizer = mock(PluginSynchronizer.class);
+        List<Future<?>> async = null;
+        PluginException pluginException = mock(PluginException.class);
+
+        doThrow(pluginException)
+                .when(plugin)
+                .run(any(PluginGraphs.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        when(pluginException.getNotificationLevel()).thenReturn(PluginNotificationLevel.FATAL);
+
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        Object expResult = null;
+        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Object result = future.get();
+        assertEquals(result, expResult);
+    }
+
+    @Test
+    public void testExecutePluginLaterThrowsRuntimeException() throws ExecutionException, InterruptedException, PluginException {
+        System.out.println("executePluginLater");
+        Graph graph = mock(Graph.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+        PluginSynchronizer synchronizer = mock(PluginSynchronizer.class);
+        List<Future<?>> async = null;
+        RuntimeException runtimeException = mock(RuntimeException.class);
+
+        doThrow(runtimeException)
+                .when(plugin)
+                .run(any(PluginGraphs.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        Object expResult = null;
+        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Object result = future.get();
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of executePluginNow method, of class DefaultPluginEnvironment.
+     */
+    @Test
+    public void testExecutePluginNow() throws Exception {
+        System.out.println("executePluginNow");
+        Graph graph = mock(Graph.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        Object expResult = null;
+        Object result = instance.executePluginNow(graph, plugin, parameters, interactive);
+        assertEquals(result, expResult);
+    }
+
+    @Test
+    public void testExecutePluginNowWithNullGraph() throws Exception {
+        System.out.println("executePluginNow");
+        Graph graph = null;
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        Object expResult = null;
+        Object result = instance.executePluginNow(graph, plugin, parameters, interactive);
+        assertEquals(result, expResult);
+    }
+
+    @Test(expectedExceptions = PluginException.class)
+    public void testExecutePluginNowThrowsPluginException() throws Exception {
+        System.out.println("executePluginNow");
+        Graph graph = mock(Graph.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginException pluginException = mock(PluginException.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+
+        doThrow(pluginException)
+                .when(plugin)
+                .run(any(PluginGraphs.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        when(pluginException.getNotificationLevel()).thenReturn(PluginNotificationLevel.FATAL);
+
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        instance.executePluginNow(graph, plugin, parameters, interactive);
+    }
+
+    @Test(expectedExceptions = RuntimeException.class)
+    public void testExecutePluginNowThrowsRuntimeException() throws Exception {
+        System.out.println("executePluginNow");
+        Graph graph = mock(Graph.class);
+        Plugin plugin = mock(Plugin.class);
+        RuntimeException runtimeException = mock(RuntimeException.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+
+        doThrow(runtimeException)
+                .when(plugin)
+                .run(any(PluginGraphs.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        instance.executePluginNow(graph, plugin, parameters, interactive);
+    }
+
+    /**
+     * Test of executeEditPluginNow method, of class DefaultPluginEnvironment.
+     */
+    @Test
+    public void testExecuteEditPluginNow() throws Exception {
+        System.out.println("executeEditPluginNow");
+        GraphWriteMethods graph = mock(GraphWriteMethods.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        Object expResult = null;
+        Object result = instance.executeEditPluginNow(graph, plugin, parameters, interactive);
+        assertEquals(result, expResult);
+    }
+
+    @Test
+    public void testExecuteEditPluginNowThrowsInterruptedException() throws Exception {
+        System.out.println("executeEditPluginNow");
+        GraphWriteMethods graph = mock(GraphWriteMethods.class);
+        Plugin plugin = mock(Plugin.class);
+        InterruptedException interruptedException = mock(InterruptedException.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+
+        doThrow(interruptedException)
+                .when(plugin)
+                .run(any(GraphWriteMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+
+        Object expResult = null;
+        Object result = instance.executeEditPluginNow(graph, plugin, parameters, interactive);
+        assertEquals(result, expResult);
+    }
+
+    @Test(expectedExceptions = PluginException.class)
+    public void testExecuteEditPluginNowThrowsPluginException() throws Exception {
+        System.out.println("executeEditPluginNow");
+        GraphWriteMethods graph = mock(GraphWriteMethods.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginException pluginException = mock(PluginException.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+
+        doThrow(pluginException)
+                .when(plugin)
+                .run(any(GraphWriteMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        when(pluginException.getNotificationLevel()).thenReturn(PluginNotificationLevel.FATAL);
+
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        instance.executeEditPluginNow(graph, plugin, parameters, interactive);
+    }
+
+    @Test(expectedExceptions = RuntimeException.class)
+    public void testExecuteEditPluginNowThrowsRuntimeException() throws Exception {
+        System.out.println("executeEditPluginNow");
+        GraphWriteMethods graph = mock(GraphWriteMethods.class);
+        Plugin plugin = mock(Plugin.class);
+        RuntimeException runtimeException = mock(RuntimeException.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+
+        doThrow(runtimeException)
+                .when(plugin)
+                .run(any(GraphWriteMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        instance.executeEditPluginNow(graph, plugin, parameters, interactive);
+    }
+
+    /**
+     * Test of executeReadPluginNow method, of class DefaultPluginEnvironment.
+     */
+    @Test
+    public void testExecuteReadPluginNow() throws Exception {
+        System.out.println("executeReadPluginNow");
+        GraphReadMethods graph = mock(GraphReadMethods.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        boolean interactive = false;
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+        Object expResult = null;
+        Object result = instance.executeReadPluginNow(graph, plugin, parameters, interactive);
+        assertEquals(result, expResult);
+    }
+
+    @Test
+    public void testExecuteReadPluginNowThrowsInterruptedException() throws Exception {
+        System.out.println("executeReadPluginNow");
+        GraphReadMethods graph = mock(GraphReadMethods.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        InterruptedException interruptedException = mock(InterruptedException.class);
+        boolean interactive = false;
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+
+        doThrow(interruptedException)
+                .when(plugin)
+                .run(any(GraphReadMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        Object expResult = null;
+        Object result = instance.executeReadPluginNow(graph, plugin, parameters, interactive);
+        assertEquals(result, expResult);
+    }
+
+    @Test(expectedExceptions = PluginException.class)
+    public void testExecuteReadPluginNowThrowsPluginException() throws Exception {
+        System.out.println("executeReadPluginNow");
+        GraphReadMethods graph = mock(GraphReadMethods.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        PluginException pluginException = mock(PluginException.class);
+        boolean interactive = false;
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+
+        doThrow(pluginException)
+                .when(plugin)
+                .run(any(GraphReadMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        when(pluginException.getNotificationLevel()).thenReturn(PluginNotificationLevel.FATAL);
+
+        instance.executeReadPluginNow(graph, plugin, parameters, interactive);
+    }
+
+    @Test(expectedExceptions = RuntimeException.class)
+    public void testExecuteReadPluginNowThrowsRuntimeException() throws Exception {
+        System.out.println("executeReadPluginNow");
+        GraphReadMethods graph = mock(GraphReadMethods.class);
+        Plugin plugin = mock(Plugin.class);
+        PluginParameters parameters = mock(PluginParameters.class);
+        RuntimeException runtimeException = mock(RuntimeException.class);
+        boolean interactive = false;
+        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
+
+        doThrow(runtimeException)
+                .when(plugin)
+                .run(any(GraphReadMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
+
+        instance.executeReadPluginNow(graph, plugin, parameters, interactive);
+    }
+
+}

@@ -57,10 +57,12 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     private static final String GRAPH_NULL_WARNING_MESSAGE = "{0} plugin was executed on a graph which was null";
 
     @Override
-    public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer) {
+    public Future<?> executePluginLater(final Graph graph, final Plugin plugin,
+            final PluginParameters parameters, final boolean interactive,
+            final List<Future<?>> async, final PluginSynchronizer synchronizer) {
 
         if (graph == null) {
-            LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
+            LOGGER.log(Level.INFO, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
 
         return pluginExecutor.submit(() -> {
@@ -164,7 +166,9 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     }
 
     @Override
-    public Object executePluginNow(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
+    public Object executePluginNow(final Graph graph, final Plugin plugin,
+            final PluginParameters parameters, final boolean interactive)
+            throws InterruptedException, PluginException {
 
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
@@ -243,7 +247,9 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     }
 
     @Override
-    public Object executeEditPluginNow(final GraphWriteMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
+    public Object executeEditPluginNow(final GraphWriteMethods graph,
+            final Plugin plugin, final PluginParameters parameters,
+            final boolean interactive) throws InterruptedException, PluginException {
 
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
@@ -312,7 +318,9 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     }
 
     @Override
-    public Object executeReadPluginNow(final GraphReadMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
+    public Object executeReadPluginNow(final GraphReadMethods graph,
+            final Plugin plugin, final PluginParameters parameters,
+            final boolean interactive) throws InterruptedException, PluginException {
 
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
@@ -396,8 +404,8 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
      * @param level the level of the exception
      * @param ex the exception
      */
-    private void reportException(final String pluginName, final PluginInteraction interaction,
-            final PluginReport currentReport,
+    private void reportException(final String pluginName,
+            final PluginInteraction interaction, final PluginReport currentReport,
             final PluginNotificationLevel level, final Exception ex) {
         if (currentReport != null) {
             currentReport.setError(ex);
