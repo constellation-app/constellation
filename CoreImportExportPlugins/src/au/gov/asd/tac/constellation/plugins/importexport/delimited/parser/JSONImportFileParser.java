@@ -427,7 +427,7 @@ public class JSONImportFileParser extends ImportFileParser {
             // Catch case whre invalid JSON file has been supplied gracefully
             throw new IOException(WARN_INVALID_JSON);
         } catch (final Exception ex) {
-            // Catch case whre invalid file contenthas been supplied gracefully (IOException)
+            // Catch case whre invalid file content has been supplied gracefully (IOException)
             // along with any unexpected exceptions
             throw ex;
         }
