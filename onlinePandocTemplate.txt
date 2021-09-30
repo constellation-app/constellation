@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <head>
-  <base href="/constellation-app.github.io/documentation/constellation/">
+  <base href="/constellation-app.github.io/help/constellation/">
 
 
   <!-- Stylesheets -->
