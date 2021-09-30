@@ -209,7 +209,8 @@ public class DataAccessTabPane {
      * @param lastTab the last tab to be run
      */
     public void runTabs(final int firstTab, final int lastTab) {
-        getDataAccessPane().setExecuteButtonToStop();
+        // Change execute button to stop but do not disable
+        getDataAccessPane().setExecuteButtonToStop(false);
         
         // Need to take a copy for when it changes while this thread is still running
         final String activeGraphId = GraphManager.getDefault().getActiveGraph().getId();
@@ -242,37 +243,21 @@ public class DataAccessTabPane {
      * <p/>
      * Graph menu items will be enabled if the tab has enabled plugins and the
      * execute button is fully enabled.
-     * 
-     * @return 
      */
-    public boolean updateTabMenus() {
+    public void updateTabMenus() {
         final boolean isExecuteButtonIsGo = DataAccessPaneState.isExecuteButtonIsGo();
         final boolean isExecuteButtonEnabled = !getDataAccessPane().getButtonToolbar()
                 .getExecuteButton().isDisabled();
                     
-        return getTabPane().getTabs().stream()
-                .map(tab -> {
-                    // TODO This needs some more work to try and consolidate it
-                    //      as the logic to disable/enable the execute button is
-                    //      slightly different to this logic
-                    
+        getTabPane().getTabs().forEach(tab -> {
                     final boolean hasEnabledPlugins = tabHasEnabledPlugins(tab);
-                    final boolean allEnabledPluginsValid = !hasEnabledPlugins
-                            || (hasEnabledPlugins && validateTabEnabledPlugins(tab));
-                    final boolean hasValidTimeRange = validateTabTimeRange(tab);
                     
                     updateTabMenu(
                             tab,
                             hasEnabledPlugins && isExecuteButtonIsGo && isExecuteButtonEnabled,
                             hasEnabledPlugins
                     );
-                    
-                    return hasEnabledPlugins && allEnabledPluginsValid && hasValidTimeRange;
-                })
-                // Reduce to only tabs that are invalid
-                .filter(b -> !b) 
-                // For the pane to be valid then all panes need to be valid
-                .collect(Collectors.counting()) == 0;
+        });
     }
     
     /**

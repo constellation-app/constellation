@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.KeyboardFocusManager;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
 import org.openide.filesystems.FileChooserBuilder;
@@ -42,8 +45,8 @@ public class ExportFileChooser {
      * file chooser dialog
      */
     public ExportFileChooser(final String fileChooserTitle,
-            final String expectedFileExtension,
-            final String fileChooserDescription) {
+                             final String expectedFileExtension,
+                             final String fileChooserDescription) {
         this.expectedFileExtension = expectedFileExtension;
 
         fileChooser = new FileChooserBuilder(fileChooserTitle)

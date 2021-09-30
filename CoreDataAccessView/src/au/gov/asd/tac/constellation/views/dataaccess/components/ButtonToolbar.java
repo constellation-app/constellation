@@ -330,6 +330,7 @@ public class ButtonToolbar {
      * want to add or remove the selected plugins to/from their favourites.
      */
     protected void manageFavourites() {
+        System.out.println("FX Thread: " + Platform.isFxApplicationThread());
         // Get a list of the selected plugins
         final List<String> selectedPlugins = new ArrayList<>();
         getDataAccessPane().getDataAccessTabPane().getQueryPhasePaneOfCurrentTab()

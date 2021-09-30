@@ -25,8 +25,11 @@ import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.components.OptionsMenuBar;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
@@ -35,6 +38,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -48,11 +52,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -61,10 +68,28 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessPaneNGTest {
+    private static final Logger LOGGER = Logger.getLogger(DataAccessPaneNGTest.class.getName());
+    
     private DataAccessViewTopComponent dataAccessViewTopComponent;
     
     private DataAccessPane dataAccessPane;
 
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
+    }
+    
     @BeforeMethod
     public void setUpMethod() throws Exception {
         dataAccessViewTopComponent = mock(DataAccessViewTopComponent.class);
@@ -295,13 +320,16 @@ public class DataAccessPaneNGTest {
     @Test
     public void update_pass_graph_id() {
         clearInvocations(dataAccessPane);
-        verifyUpdateWithGraphId("graphId", true, () -> verify(dataAccessPane).setExecuteButtonToStop());
+        verifyUpdateWithGraphId("graphId", true, true,
+                disable -> verify(dataAccessPane).setExecuteButtonToStop(disable));
         
         clearInvocations(dataAccessPane);
-        verifyUpdateWithGraphId(null, true, () -> verify(dataAccessPane).setExecuteButtonToGo());
+        verifyUpdateWithGraphId(null, true, true,
+                disable -> verify(dataAccessPane).setExecuteButtonToGo(disable));
         
         clearInvocations(dataAccessPane);
-        verifyUpdateWithGraphId("graphId", false, () -> verify(dataAccessPane).setExecuteButtonToGo());
+        verifyUpdateWithGraphId("graphId", true, false,
+                disable -> verify(dataAccessPane).setExecuteButtonToGo(disable));
     }
     
     @Test
@@ -329,10 +357,10 @@ public class DataAccessPaneNGTest {
         
         when(dataAccessPane.getButtonToolbar()).thenReturn(buttonToolbar);
         
-        dataAccessPane.setExecuteButtonToGo();
+        dataAccessPane.setExecuteButtonToGo(false);
         
         assertTrue(DataAccessPaneState.isExecuteButtonIsGo());
-        verify(buttonToolbar).changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.GO);
+        verify(buttonToolbar).changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.GO, false);
     }
     
     @Test
@@ -343,10 +371,10 @@ public class DataAccessPaneNGTest {
         
         when(dataAccessPane.getButtonToolbar()).thenReturn(buttonToolbar);
         
-        dataAccessPane.setExecuteButtonToStop();
+        dataAccessPane.setExecuteButtonToStop(false);
         
         assertFalse(DataAccessPaneState.isExecuteButtonIsGo());
-        verify(buttonToolbar).changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.STOP);
+        verify(buttonToolbar).changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.STOP, false);
     }
     
     @Test
@@ -357,10 +385,10 @@ public class DataAccessPaneNGTest {
         
         when(dataAccessPane.getButtonToolbar()).thenReturn(buttonToolbar);
         
-        dataAccessPane.setExecuteButtonToContinue();
+        dataAccessPane.setExecuteButtonToContinue(false);
         
         assertFalse(DataAccessPaneState.isExecuteButtonIsGo());
-        verify(buttonToolbar).changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.CONTINUE);
+        verify(buttonToolbar).changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.CONTINUE, false);
     }
     
     @Test
@@ -400,37 +428,33 @@ public class DataAccessPaneNGTest {
         DataAccessPaneState.setCurrentGraphId("graphId");
         DataAccessPaneState.setQueriesRunning(queryIsRunning);
         
-        final ButtonToolbar buttonToolbar = mock(ButtonToolbar.class);
-        final Button button = mock(Button.class);
-        
-        when(dataAccessPane.getButtonToolbar()).thenReturn(buttonToolbar);
-        when(buttonToolbar.getExecuteButton()).thenReturn(button);
-        
-        dataAccessPane.updateExecuteButtonEnablement(canExecuteTabPane);
-        
-        verify(button).setDisable(expected);
+        assertEquals(dataAccessPane.determineExecuteButtonDisableState(canExecuteTabPane), expected);
     }
     
     /**
      * Verifies the graph ID is set and the correct execute button setting is made.
      *
      * @param graphId the graph ID
+     * @param tabPaneValid 
      * @param queriesRunning true if the queries are running, false otherwise
      * @param verification a function with verifications to make after the code is run
      */
     private void verifyUpdateWithGraphId(final String graphId,
+                                         final boolean disableExecuteButton,
                                          final boolean queriesRunning,
-                                         final Runnable verification) {
+                                         final Consumer<Boolean> verification) {
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
-        when(dataAccessTabPane.updateTabMenus()).thenReturn(true);
+        when(dataAccessPane.determineExecuteButtonDisableState(anyBoolean()))
+                .thenReturn(disableExecuteButton);
+        when(dataAccessTabPane.isTabPaneExecutable()).thenReturn(true);
         
         DataAccessPaneState.setQueriesRunning(graphId, queriesRunning);
         dataAccessPane.update(graphId);
         
-        verification.run();
+        verification.accept(disableExecuteButton);
         
-        verify(dataAccessPane).updateExecuteButtonEnablement(true);
+        verify(dataAccessTabPane).updateTabMenus();
     }
 }

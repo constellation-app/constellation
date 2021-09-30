@@ -224,9 +224,11 @@ public class OptionsMenuBar {
     }
 
     /**
-     * TODO Figure out what this is
+     * Gets a checkbox menu item that when selected will cause all selected plugins
+     * in the data access view to be de-selected once the execute button has been
+     * clicked and the plugins completed.
      *
-     * @return 
+     * @return the de-select plugins on execution menu item
      */
     public CheckMenuItem getDeselectPluginsOnExecutionMenuItem() {
         return deselectPluginsOnExecutionMenuItem;

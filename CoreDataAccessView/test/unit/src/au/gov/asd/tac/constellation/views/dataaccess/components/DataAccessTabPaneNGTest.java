@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -249,7 +248,7 @@ public class DataAccessTabPaneNGTest {
 
             verify(dataAccessTabPane).storeParameterValues();
             
-            verify(dataAccessPane).setExecuteButtonToStop();
+            verify(dataAccessPane).setExecuteButtonToStop(false);
             verify(dataAccessTabPane).storeParameterValues();
             
             datPaneMockedStatic.verify(() -> DataAccessTabPane.getQueryPhasePane(tab1), never());
@@ -285,53 +284,15 @@ public class DataAccessTabPaneNGTest {
     }
     
     @Test
-    public void updateTabMenus_test_different_logic_paths() {
-        // Second param to updateTabMenu will only be true if the execute button
-        // "isGo" and is NOT disabled. And only for the cases where a tab has enabled plugins
-        updateTabMenus(true, false, true);
-        
-        // All other combinations result in the second parameter being false.
-        updateTabMenus(true, true, false);
-        updateTabMenus(false, true, false);
-        updateTabMenus(false, false, false);
-    }
-    
-    @Test
-    public void updateTabMenus_all_valid() {
-        DataAccessPaneState.setCurrentGraphId("graphId");
-        DataAccessPaneState.updateExecuteButtonIsGo(true);
-
-        // Set up our fake button tool bar
-        final ButtonToolbar buttonToolbar = mock(ButtonToolbar.class);
-        final Button executeButton = mock(Button.class);
-
-        when(dataAccessPane.getButtonToolbar()).thenReturn(buttonToolbar);
-        when(buttonToolbar.getExecuteButton()).thenReturn(executeButton);
-        when(executeButton.isDisabled()).thenReturn(false);
-
-        // Set up our fake tab pane
-        final TabPane tabPane = mock(TabPane.class);
-        final Tab tab1 = mock(Tab.class);
-
-        doReturn(tabPane).when(dataAccessTabPane).getTabPane();
-        when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(
-                tab1
-        ));
-
-        try (
-                final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
-                        Mockito.mockStatic(DataAccessTabPane.class);
-        ) {
-            setupTabStubs(datPaneMockedStatic, tab1, true, true, true);
-
-            doNothing().when(dataAccessTabPane)
-                    .updateTabMenu(any(Tab.class), anyBoolean(), anyBoolean());
-
-            // All tabs are valid. So should be true
-            assertTrue(dataAccessTabPane.updateTabMenus());
-
-            verify(dataAccessTabPane).updateTabMenu(tab1, true, true);
-        }
+    public void updateTabMenus() {
+        updateTabMenus(true, true, true, false, true);
+        updateTabMenus(true, false, false, false, false);
+        updateTabMenus(true, false, true, true, true);
+        updateTabMenus(true, true, false, false, false);
+        updateTabMenus(false, true, true, false, true);
+        updateTabMenus(false, false, true, false, true);
+        updateTabMenus(false, true, false, false, false);
+        updateTabMenus(false, false, false, false, false);
     }
     
     @Test
@@ -490,51 +451,17 @@ public class DataAccessTabPaneNGTest {
     }
     
     @Test
-    public void isTabPaneExecutable_true() throws InterruptedException, ExecutionException {
-        final TabPane tabPane = mock(TabPane.class);
-        final Tab tab1 = mock(Tab.class);
-        final Tab tab2 = mock(Tab.class);
-
-        doReturn(tabPane).when(dataAccessTabPane).getTabPane();
-        when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(
-                tab1,
-                tab2
-        ));
-
-        try (
-                final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
-                        Mockito.mockStatic(DataAccessTabPane.class);
-        ) {
-            setupTabStubs(datPaneMockedStatic, tab1, true, true, true);
-            setupTabStubs(datPaneMockedStatic, tab2, true, true, true);
-
-            assertTrue(dataAccessTabPane.isTabPaneExecutable());
-        }
+    public void isTabPaneExecutable() {
+        isTabPaneExecutable(true, true, true, true);
+        isTabPaneExecutable(true, false, false, false);
+        isTabPaneExecutable(true, true, false, false);
+        isTabPaneExecutable(true, false, true, false);
+        isTabPaneExecutable(false, true, true, false);
+        isTabPaneExecutable(false, false, true, false);
+        isTabPaneExecutable(false, true, false, false);
+        isTabPaneExecutable(false, false, false, false);
     }
-    
-    @Test
-    public void isTabPaneExecutable_false() {
-        final TabPane tabPane = mock(TabPane.class);
-        final Tab tab1 = mock(Tab.class);
-        final Tab tab2 = mock(Tab.class);
 
-        doReturn(tabPane).when(dataAccessTabPane).getTabPane();
-        when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(
-                tab1,
-                tab2
-        ));
-
-        try (
-                final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
-                        Mockito.mockStatic(DataAccessTabPane.class);
-        ) {
-            setupTabStubs(datPaneMockedStatic, tab1, true, true, true);
-            setupTabStubs(datPaneMockedStatic, tab2, false, true, true);
-
-            assertFalse(dataAccessTabPane.isTabPaneExecutable());
-        }
-    }
-    
     @Test
     public void hasActiveAndValidPlugins() {
         hasActiveAndValidPlugins(true, true, true, true, true);
@@ -628,9 +555,9 @@ public class DataAccessTabPaneNGTest {
      * @param error2 the error for plugin parameter 2, or null if no error
      * @param expected true if the tab was determined to be valid, false otherwise
      */
-    public void validateTabEnabledPlugins(final String error1,
-                                          final String error2,
-                                          final boolean expected) {
+    private void validateTabEnabledPlugins(final String error1,
+                                           final String error2,
+                                           final boolean expected) {
         final DataSourceTitledPane dataSourceTitledPane1 = mock(DataSourceTitledPane.class);
         final DataSourceTitledPane dataSourceTitledPane2 = mock(DataSourceTitledPane.class);
         final DataSourceTitledPane dataSourceTitledPane3 = mock(DataSourceTitledPane.class);
@@ -703,11 +630,11 @@ public class DataAccessTabPaneNGTest {
      * @param expectActiveAndValidPlugins true if the expectation is that both tabs will
      *     be considered active and valid
      */
-    public void hasActiveAndValidPlugins(final boolean tab1HasEnabledPlugins,
-                                         final boolean validTab1EnabledPlugins,
-                                         final boolean tab2HasEnabledPlugins,
-                                         final boolean validTab2EnabledPlugins,
-                                         final boolean expectActiveAndValidPlugins) {
+    private void hasActiveAndValidPlugins(final boolean tab1HasEnabledPlugins,
+                                          final boolean validTab1EnabledPlugins,
+                                          final boolean tab2HasEnabledPlugins,
+                                          final boolean validTab2EnabledPlugins,
+                                          final boolean expectActiveAndValidPlugins) {
         // Set up our fake tab pane
         final TabPane tabPane = mock(TabPane.class);
         final Tab tab1 = mock(Tab.class);
@@ -744,6 +671,38 @@ public class DataAccessTabPaneNGTest {
     }
     
     /**
+     * 
+     * @param tabHasEnabledPlugins
+     * @param validTabEnabledPlugins
+     * @param validTabTimeRange
+     * @param expected 
+     */
+    private void isTabPaneExecutable(final boolean tabHasEnabledPlugins,
+                                    final boolean validTabEnabledPlugins,
+                                    final boolean validTabTimeRange,
+                                    final boolean expected) {
+        final TabPane tabPane = mock(TabPane.class);
+        final Tab tab1 = mock(Tab.class);
+        final Tab tab2 = mock(Tab.class);
+
+        doReturn(tabPane).when(dataAccessTabPane).getTabPane();
+        when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(
+                tab1,
+                tab2
+        ));
+
+        try (
+                final MockedStatic<DataAccessTabPane> datPaneMockedStatic =
+                        Mockito.mockStatic(DataAccessTabPane.class);
+        ) {
+            setupTabStubs(datPaneMockedStatic, tab1, true, true, true);
+            setupTabStubs(datPaneMockedStatic, tab2, tabHasEnabledPlugins, validTabEnabledPlugins, validTabTimeRange);
+
+            assertEquals(dataAccessTabPane.isTabPaneExecutable(), expected);
+        }
+    }
+    
+    /**
      * Verifies that all the tabs are iterated through and their validation checked.
      * Then based on this validation result the menus are updated as needed.
      *
@@ -754,7 +713,9 @@ public class DataAccessTabPaneNGTest {
      */
     private void updateTabMenus(final boolean isExecuteButtonIsGo,
                                 final boolean isExecuteButtonDisabled,
-                                final boolean expected) {
+                                final boolean hasEnabledPlugins,
+                                final boolean expectedGraphDepMenuEnablement,
+                                final boolean expectedPluginDepMenuEnablement) {
         // Set a current graph ID in the state so that other state can be associated
         // with the "current graph"
         DataAccessPaneState.setCurrentGraphId("graphId");
@@ -782,24 +743,10 @@ public class DataAccessTabPaneNGTest {
         // Set up our fake tab pane
         final TabPane tabPane = mock(TabPane.class);
         final Tab tab1 = mock(Tab.class);
-        final Tab tab2 = mock(Tab.class);
-        final Tab tab3 = mock(Tab.class);
-        final Tab tab4 = mock(Tab.class);
-        final Tab tab5 = mock(Tab.class);
-        final Tab tab6 = mock(Tab.class);
-        final Tab tab7 = mock(Tab.class);
-        final Tab tab8 = mock(Tab.class);
 
         doReturn(tabPane).when(dataAccessTabPane).getTabPane();
         when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(
-                tab1,
-                tab2,
-                tab3,
-                tab4,
-                tab5,
-                tab6,
-                tab7,
-                tab8
+                tab1
         ));
         
         try (
@@ -811,14 +758,8 @@ public class DataAccessTabPaneNGTest {
             //
             // A tab is only considered valid if it has enabled plugs, those plugins
             // are valid and the provided date/time range is valid
-            setupTabStubs(datPaneMockedStatic, tab1, true, true, true);
-            setupTabStubs(datPaneMockedStatic, tab2, true, false, false);
-            setupTabStubs(datPaneMockedStatic, tab3, true, false, true);
-            setupTabStubs(datPaneMockedStatic, tab4, true, true, false);
-            setupTabStubs(datPaneMockedStatic, tab5, false, false, true);
-            setupTabStubs(datPaneMockedStatic, tab6, false, true, false);
-            setupTabStubs(datPaneMockedStatic, tab7, false, false, true);
-            setupTabStubs(datPaneMockedStatic, tab8, false, false, false);
+            datPaneMockedStatic.when(() -> DataAccessTabPane.tabHasEnabledPlugins(tab1))
+                    .thenReturn(hasEnabledPlugins);
             
             // We don't need to test updateTabMenu here so it will just be verified
             // that it was called
@@ -826,21 +767,15 @@ public class DataAccessTabPaneNGTest {
             
             // This will always be false because every combination is tested and
             // that involves tabs that will fail validation
-            assertFalse(dataAccessTabPane.updateTabMenus());
+            dataAccessTabPane.updateTabMenus();
  
             // Verify the parameters for each tab's call to updateTabMenu
             
-            verify(dataAccessTabPane).updateTabMenu(tab1, expected, true);
-            verify(dataAccessTabPane).updateTabMenu(tab2, expected, true);
-            verify(dataAccessTabPane).updateTabMenu(tab3, expected, true);
-            verify(dataAccessTabPane).updateTabMenu(tab4, expected, true);
-            
-            // The following will always have false in the first param as
-            // hasEnabledPlugins has been set to false for them
-            verify(dataAccessTabPane).updateTabMenu(tab5, false, false);
-            verify(dataAccessTabPane).updateTabMenu(tab6, false, false);
-            verify(dataAccessTabPane).updateTabMenu(tab7, false, false);
-            verify(dataAccessTabPane).updateTabMenu(tab8, false, false);
+            verify(dataAccessTabPane).updateTabMenu(
+                    tab1,
+                    expectedGraphDepMenuEnablement,
+                    expectedPluginDepMenuEnablement
+            );
         }
     }
     

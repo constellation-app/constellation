@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.components;
 
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
+import javafx.application.Platform;
 import org.openide.filesystems.FileChooserBuilder;
 
 /**
@@ -36,6 +37,7 @@ public class DataAccessResultsDirChooser {
      */
     public DataAccessResultsDirChooser() {
         fileChooser = new FileChooserBuilder(FILE_CHOOSER_GROUP)
+                .setDefaultWorkingDirectory(new File(System.getProperty("user.dir")))
                 .setTitle(TITLE)
                 .setDirectoriesOnly(true);
     }
@@ -47,7 +49,11 @@ public class DataAccessResultsDirChooser {
      * @return the selected directory or null if the user selects cancel
      */
     public File openAndSaveToPreferences() {
+        System.out.println("OPENING FILE CHOOSER " + Platform.isFxApplicationThread());
+        
         final File selectedDir = getFileChooser().showSaveDialog();
+        
+        System.out.println("FILE CHOOSER CLOSED: " + Platform.isFxApplicationThread());
         
         DataAccessPreferenceUtilities.setDataAccessResultsDir(selectedDir);
         

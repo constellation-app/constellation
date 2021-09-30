@@ -213,17 +213,25 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     public final void update(final String newGraphId) {
         DataAccessPaneState.setCurrentGraphId(newGraphId);
         
+        // Validates the tab pane and determines if the execute button should
+        // be enabled or disabled
+        final boolean disable = determineExecuteButtonDisableState(
+                getDataAccessTabPane().isTabPaneExecutable()
+        );
+        
+        // Determine the text that should be applied to the execute button
         if (DataAccessPaneState.getCurrentGraphId() == null) {
-            setExecuteButtonToGo();
+            setExecuteButtonToGo(disable);
         } else {
             if (DataAccessPaneState.isQueriesRunning()) {
-                setExecuteButtonToStop();
+                setExecuteButtonToStop(disable);
             } else {
-                setExecuteButtonToGo();
+                setExecuteButtonToGo(disable);
             }
         }
 
-        updateExecuteButtonEnablement(getDataAccessTabPane().updateTabMenus());
+        // Update the tab menus now that the state above has been updated
+        getDataAccessTabPane().updateTabMenus();
     }
     
     /**
@@ -278,33 +286,39 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      * Set executeButton to function as "Go". Updates the current graph
      * state for the executeButtonIsGo property to true, then changes the text
      * and style of the execute button.
+     * 
+     * @param disable true if the execute button should be disabled, false otherwise
      */
-    public void setExecuteButtonToGo() {
+    public void setExecuteButtonToGo(final boolean disable) {
         DataAccessPaneState.updateExecuteButtonIsGo(true);
 
-        getButtonToolbar().changeExecuteButtonState(ExecuteButtonState.GO);
+        getButtonToolbar().changeExecuteButtonState(ExecuteButtonState.GO, disable);
     }
 
     /**
      * Set executeButton to function as "Stop". Updates the current graph
      * state for the executeButtonIsGo property to false, then changes the text
      * and style of the execute button.
+     * 
+     * @param disable true if the execute button should be disabled, false otherwise
      */
-    public void setExecuteButtonToStop() {
+    public void setExecuteButtonToStop(final boolean disable) {
         DataAccessPaneState.updateExecuteButtonIsGo(false);
         
-        getButtonToolbar().changeExecuteButtonState(ExecuteButtonState.STOP);
+        getButtonToolbar().changeExecuteButtonState(ExecuteButtonState.STOP, disable);
     }
 
     /**
-     * Set executeButton to function as "Continue". Updates the current graph
+     * Set executeButton to function as "Continue".Updates the current graph
      * state for the executeButtonIsGo property to false, then changes the text
      * and style of the execute button.
+     *
+     * @param disable true if the execute button should be disabled, false otherwise
      */
-    public void setExecuteButtonToContinue() {
+    public void setExecuteButtonToContinue(final boolean disable) {
         DataAccessPaneState.updateExecuteButtonIsGo(false);
         
-        getButtonToolbar().changeExecuteButtonState(ExecuteButtonState.CONTINUE);
+        getButtonToolbar().changeExecuteButtonState(ExecuteButtonState.CONTINUE, disable);
     }
     
     /**
@@ -338,21 +352,24 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     /**
-     * Enable or disable executeButton (not the tab contextual menus) based on
-     * whether any plug-ins are selected. This should <b>not</b> be called if
-     * plug-ins are running. In that case, the executeButton (actually the stop
-     * button) must remain enabled.
+     * Determines if the execute button should be enabled or disabled. It should
+     * only be disabled if there are currently no queries running and the tab
+     * pane can be executed.
+     * <p/>
+     * If plugins are running the executeButton (actually the stop button) must
+     * remain enabled.
      *
      * @param canExecuteTabPane true if the tab pane has enabled and valid plugins
-     *     to run, false otherwise
+     *     to run on every tab, false otherwise
+     * @return true if the execute button should be disabled, false otherwise
      */
-    protected void updateExecuteButtonEnablement(final boolean canExecuteTabPane) {
+    protected boolean determineExecuteButtonDisableState(final boolean canExecuteTabPane) {
         final boolean queryIsRunning = DataAccessPaneState.isQueriesRunning();
 
-        // The button cannot be disabled if a query is running.
-        // Otherwise, disable if there is no selected plugin, an invalid time range,
+        // The button cannot be disabled if a query is running or if one tab
+        // in the pane has no selected plugin, an invalid time range,
         // or the selected plugins contain invalid parameter values.
-        final boolean disable = !queryIsRunning && !canExecuteTabPane;
-        getButtonToolbar().getExecuteButton().setDisable(disable);
+        System.out.println(!queryIsRunning + " && " + !canExecuteTabPane);
+        return !queryIsRunning && !canExecuteTabPane;
     }
 }

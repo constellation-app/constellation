@@ -291,7 +291,7 @@ public class ExecuteListenerNGTest {
             
             // Verify the execute button is changed to "Stop" and the status
             // displayer is sent some text describing the action success
-            verify(dataAccessPane).setExecuteButtonToStop();
+            verify(dataAccessPane).setExecuteButtonToStop(false);
             verify(statusDisplayer).setStatusText("Data access results will be written to " + tmpDir.getAbsolutePath());
 
             // Verify the current state is saved before the plugins are run
@@ -419,7 +419,7 @@ public class ExecuteListenerNGTest {
         verify(plugin2Future).cancel(true);
         
         // Nothing is running, so make sure the execute button is now in the "Go" state
-        verify(dataAccessPane).setExecuteButtonToGo();
+        verify(dataAccessPane).setExecuteButtonToGo(false);
     }
     
     @Test
@@ -446,6 +446,6 @@ public class ExecuteListenerNGTest {
         verify(plugin2Future).cancel(true);
         
         // Nothing is running, so make sure the execute button is now in the "Go" state
-        verify(dataAccessPane).setExecuteButtonToGo();
+        verify(dataAccessPane).setExecuteButtonToGo(false);
     }
 }

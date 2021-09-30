@@ -108,8 +108,8 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
         final ObservableList<Tab> tabs = dataAccessPane.getDataAccessTabPane().getTabPane().getTabs();
         
         if (CollectionUtils.isNotEmpty(tabs) && DataAccessPaneState.isExecuteButtonIsGo()) {
-            // Change the execute button to "Stop" because it is now running
-            dataAccessPane.setExecuteButtonToStop();
+            // Change the execute button to "Stop" and do not disable because it is now running
+            dataAccessPane.setExecuteButtonToStop(false);
             
             // Set the state for the current graph state to running queries
             DataAccessPaneState.setQueriesRunning(true);
@@ -170,7 +170,7 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
             DataAccessPaneState.getRunningPlugins().keySet().forEach(running -> running.cancel(true));
             
             // Nothing is running now, so change the execute button to "Go".
-            dataAccessPane.setExecuteButtonToGo();
+            dataAccessPane.setExecuteButtonToGo(false);
         }
         
         // Disables all plugins in the plugin pane
