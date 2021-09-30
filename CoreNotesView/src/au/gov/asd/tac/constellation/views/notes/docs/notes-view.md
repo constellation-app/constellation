@@ -14,7 +14,7 @@
 <td>Open Notes View</td>
 <td>Ctrl + Shift + A</td>
 <td>Views -&gt; Notes View</td>
-<td style="text-align: center;"><img src="../constellatin/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/docs/resources/notes-view.png" alt="Notes View Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/docs/resources/notes-view.png" alt="Notes View Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -27,7 +27,7 @@ plugins have been run.
 
 <div style="text-align: center">
 
-<img src="../constellatin/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/docs/resources/NotesView.png" alt="Notes
+<img src="../constellation/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/docs/resources/NotesView.png" alt="Notes
 View" />
 
 </div>

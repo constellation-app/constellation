@@ -41,7 +41,6 @@ public class FunctionalityHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.functionality.about", functionalityModulePath + "about-constellation.md");
         map.put("au.gov.asd.tac.constellation.functionality.gettingstarted", functionalityModulePath + "getting-started.md");
         map.put("au.gov.asd.tac.constellation.functionality.graphwindow", functionalityModulePath + "the-graph-window.md");
-        map.put("au.gov.asd.tac.constellation.functionality.compare", functionalityModulePath + "compare-graph.md");
         return map;
     }
 
