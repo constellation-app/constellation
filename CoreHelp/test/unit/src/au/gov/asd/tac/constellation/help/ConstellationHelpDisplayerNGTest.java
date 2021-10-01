@@ -245,18 +245,18 @@ public class ConstellationHelpDisplayerNGTest {
 //        }
 //    }
 //
-//    @Test
-//    public void testGetFileURLString() throws MalformedURLException {
-//        System.out.println("testGetFileURLString");
-//        final String sep = File.separator;
-//        final String base = "c://users/default/";
-//        final String rel = "filename.ext";
-//        final String expected = "file:/c:/users/default/filename.ext";
-//
-//        final String actual = ConstellationHelpDisplayer.getFileURLString(sep, base, rel);
-//        assertEquals(actual, expected);
-//
-//    }
+    @Test
+    public void testGetFileURLString() throws MalformedURLException {
+        System.out.println("testGetFileURLString");
+        final String sep = File.separator;
+        final String base = "c://users/default/";
+        final String rel = "filename.ext";
+        final String expected = "file:/c:/users/default/filename.ext";
+
+        final String actual = ConstellationHelpDisplayer.getFileURLString(sep, base, rel);
+        assertEquals(actual, expected);
+
+    }
 
     /**
      * Test of display method, of class ConstellationHelpDisplayer.
