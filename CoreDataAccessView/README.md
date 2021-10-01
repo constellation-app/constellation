@@ -44,9 +44,9 @@ states.
 
 ## Tabs
 
-# Each tab consists of a `QueryPhasePane`.
-# A `QueryPhasePane` has a group of `HeadingPane`'s.
-# Each `HeadingPane` represents one type of data access plugins. Within each pane is a collapsible list of
-  all available data access plugins belonging to that panes particular type.
-# Within the collapsible parts of the `HeadingPane` is a `DataSourceTitledPane`.
-# A `DataSourceTitledPane` is the pane that represents the specific plugin.
+1. Each tab consists of a `QueryPhasePane`.
+2. A `QueryPhasePane` has a group of `HeadingPane`'s.
+3. Each `HeadingPane` represents one type of data access plugin. Within each pane is a collapsible list of
+  all available data access plugins belonging to that `HeadingPane`'s particular type.
+4. Within the collapsible parts of the `HeadingPane` is a `DataSourceTitledPane`.
+5. A `DataSourceTitledPane` is the pane that represents the specific plugin.
