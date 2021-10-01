@@ -191,120 +191,120 @@ public class TOCGeneratorNGTest {
 //        TOCGenerator.convertXMLMappings(xmlsFromFile, root);
 //    }
 //
-//    /**
-//     * Test of convertXMLMappings method, of class TOCGenerator.
-//     */
-//    @Test
-//    public void testConvertXMLMappings_3args() {
-//        System.out.println("convertXMLMappings");
-//
-//        final String fileContents = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
-//                + "<toc version=\"2.0\">\n"
-//                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
-//                + "        <tocitem text=\"Layers View\" mergetype=\"javax.help.SortMerge\">\n"
-//                + "            <tocitem text=\"Layers View\" target=\"au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent\" />\n"
-//                + "        </tocitem>\n"
-//                + "    </tocitem>\n"
-//                + "</toc>\n"
-//                + "";
-//        final String fileContents2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
-//                + "<toc version=\"2.0\">\n"
-//                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
-//                + "        <tocitem text=\"Notes View\" mergetype=\"javax.help.SortMerge\">\n"
-//                + "            <tocitem text=\"Notes View\" target=\"au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent\" />\n"
-//                + "        </tocitem>\n"
-//                + "    </tocitem>\n"
-//                + "</toc>\n"
-//                + "";
-//
-//        File tempFile = null;
-//        File tempFile2 = null;
-//        File tempFileTOC = null;
-//
-//        try {
-//            try {
-//                tempFile = File.createTempFile("testfile", ".xml");
-//                tempFile2 = File.createTempFile("testfile2", ".xml");
-//                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
-//
-//            } catch (IOException ex) {
-//                Exceptions.printStackTrace(ex);
-//            }
-//
-//            // try with resources
-//            try (final FileWriter fw = new FileWriter(tempFile)) {
-//                fw.append(fileContents);
-//            }
-//            // try with resources
-//            try (final FileWriter fw = new FileWriter(tempFile2)) {
-//                fw.append(fileContents2);
-//            }
-//
-//            final List<File> xmlsFromFile = new ArrayList<>();
-//            xmlsFromFile.add(tempFile);
-//            xmlsFromFile.add(tempFile2);
-//
-//            final TreeNode root = new TreeNode(new TOCItem("root", ""));
-//
-//            // try with resources
-//            try (final FileWriter fw = new FileWriter(tempFileTOC)) {
-//                TOCGenerator.convertXMLMappings(xmlsFromFile, fw, root);
-//            }
-//            assertEquals(root.getChildren().size(), 1);
-//
-//            final TreeNode child1 = (TreeNode) root.getChildren().get(0); // Views
-//            final TreeNode child11a = (TreeNode) child1.getChildren().get(0); // Layers View
-//            final TreeNode child111a = (TreeNode) child11a.getChildren().get(0); // Layers View link
-//            final TreeNode child11b = (TreeNode) child1.getChildren().get(1); // Notes View
-//            final TreeNode child111b = (TreeNode) child11b.getChildren().get(0); // Notes View link
-//
-//            assertEquals(child11a.getChildren().size(), 1);
-//            assertEquals(child11b.getChildren().size(), 1);
-//            assertEquals(child111a.getChildren().size(), 0);
-//            assertEquals(child111b.getChildren().size(), 0);
-//
-//            final TreeNode expectedChild1 = new TreeNode(new TOCItem("Views", ""));
-//            final TreeNode expectedChild11a = new TreeNode(new TOCItem("Layers View", ""));
-//            final TreeNode expectedChild111a = new TreeNode(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
-//            final TreeNode expectedChild11b = new TreeNode(new TOCItem("Notes View", ""));
-//            final TreeNode expectedChild111b = new TreeNode(new TOCItem("Notes View", "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent"));
-//
-//            assertEquals(child1, expectedChild1);
-//            assertEquals(child11a, expectedChild11a);
-//            assertEquals(child111a, expectedChild111a);
-//            assertEquals(child11b, expectedChild11b);
-//            assertEquals(child111b, expectedChild111b);
-//
-//            assertNotNull(tempFileTOC);
-//            assertTrue(tempFileTOC.exists());
-//
-//            BufferedReader reader = new BufferedReader(new FileReader(tempFileTOC));
-//
-//            assertEquals(reader.readLine(), String.format("<div class=\"%s\">", "container"));
-//            assertEquals(reader.readLine(), String.format("<div id=\"%s\">", "accordion"));
-//
-//            // ensure following lines are not empty - if they are, this means that the
-//            // files did not get parsed correctly and therefore did not write into the file.
-//            assertNotNull(reader.readLine());
-//            assertNotNull(reader.readLine());
-//
-//        } catch (final IOException ex) {
-//            Exceptions.printStackTrace(ex);
-//        } finally {
-//            // Cleanup
-//            if (tempFile != null && tempFile.exists()) {
-//                tempFile.delete();
-//            }
-//            if (tempFile2 != null && tempFile2.exists()) {
-//                tempFile2.delete();
-//            }
-//            if (tempFileTOC != null && tempFileTOC.exists()) {
-//                tempFileTOC.delete();
-//            }
-//        }
-//    }
+    /**
+     * Test of convertXMLMappings method, of class TOCGenerator.
+     */
+    @Test
+    public void testConvertXMLMappings_3args() {
+        System.out.println("convertXMLMappings");
+
+        final String fileContents = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
+                + "<toc version=\"2.0\">\n"
+                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
+                + "        <tocitem text=\"Layers View\" mergetype=\"javax.help.SortMerge\">\n"
+                + "            <tocitem text=\"Layers View\" target=\"au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent\" />\n"
+                + "        </tocitem>\n"
+                + "    </tocitem>\n"
+                + "</toc>\n"
+                + "";
+        final String fileContents2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
+                + "<toc version=\"2.0\">\n"
+                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
+                + "        <tocitem text=\"Notes View\" mergetype=\"javax.help.SortMerge\">\n"
+                + "            <tocitem text=\"Notes View\" target=\"au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent\" />\n"
+                + "        </tocitem>\n"
+                + "    </tocitem>\n"
+                + "</toc>\n"
+                + "";
+
+        File tempFile = null;
+        File tempFile2 = null;
+        File tempFileTOC = null;
+
+        try {
+            try {
+                tempFile = File.createTempFile("testfile", ".xml");
+                tempFile2 = File.createTempFile("testfile2", ".xml");
+                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
+
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+
+            // try with resources
+            try (final FileWriter fw = new FileWriter(tempFile)) {
+                fw.append(fileContents);
+            }
+            // try with resources
+            try (final FileWriter fw = new FileWriter(tempFile2)) {
+                fw.append(fileContents2);
+            }
+
+            final List<File> xmlsFromFile = new ArrayList<>();
+            xmlsFromFile.add(tempFile);
+            xmlsFromFile.add(tempFile2);
+
+            final TreeNode root = new TreeNode(new TOCItem("root", ""));
+
+            // try with resources
+            try (final FileWriter fw = new FileWriter(tempFileTOC)) {
+                TOCGenerator.convertXMLMappings(xmlsFromFile, fw, root);
+            }
+            assertEquals(root.getChildren().size(), 1);
+
+            final TreeNode child1 = (TreeNode) root.getChildren().get(0); // Views
+            final TreeNode child11a = (TreeNode) child1.getChildren().get(0); // Layers View
+            final TreeNode child111a = (TreeNode) child11a.getChildren().get(0); // Layers View link
+            final TreeNode child11b = (TreeNode) child1.getChildren().get(1); // Notes View
+            final TreeNode child111b = (TreeNode) child11b.getChildren().get(0); // Notes View link
+
+            assertEquals(child11a.getChildren().size(), 1);
+            assertEquals(child11b.getChildren().size(), 1);
+            assertEquals(child111a.getChildren().size(), 0);
+            assertEquals(child111b.getChildren().size(), 0);
+
+            final TreeNode expectedChild1 = new TreeNode(new TOCItem("Views", ""));
+            final TreeNode expectedChild11a = new TreeNode(new TOCItem("Layers View", ""));
+            final TreeNode expectedChild111a = new TreeNode(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
+            final TreeNode expectedChild11b = new TreeNode(new TOCItem("Notes View", ""));
+            final TreeNode expectedChild111b = new TreeNode(new TOCItem("Notes View", "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent"));
+
+            assertEquals(child1, expectedChild1);
+            assertEquals(child11a, expectedChild11a);
+            assertEquals(child111a, expectedChild111a);
+            assertEquals(child11b, expectedChild11b);
+            assertEquals(child111b, expectedChild111b);
+
+            assertNotNull(tempFileTOC);
+            assertTrue(tempFileTOC.exists());
+
+            BufferedReader reader = new BufferedReader(new FileReader(tempFileTOC));
+
+            assertEquals(reader.readLine(), String.format("<div class=\"%s\">", "container"));
+            assertEquals(reader.readLine(), String.format("<div id=\"%s\">", "accordion"));
+
+            // ensure following lines are not empty - if they are, this means that the
+            // files did not get parsed correctly and therefore did not write into the file.
+            assertNotNull(reader.readLine());
+            assertNotNull(reader.readLine());
+
+        } catch (final IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            // Cleanup
+            if (tempFile != null && tempFile.exists()) {
+                tempFile.delete();
+            }
+            if (tempFile2 != null && tempFile2.exists()) {
+                tempFile2.delete();
+            }
+            if (tempFileTOC != null && tempFileTOC.exists()) {
+                tempFileTOC.delete();
+            }
+        }
+    }
 
     /**
      * Test of generateLink method, of class TOCGenerator.
