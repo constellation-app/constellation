@@ -1,62 +1,62 @@
-///*
-// * Copyright 2010-2021 Australian Signals Directorate
-// *
-// * Licensed under the Apache License, Version 2.0 (the "License");
-// * you may not use this file except in compliance with the License.
-// * You may obtain a copy of the License at
-// *
-// *     http://www.apache.org/licenses/LICENSE-2.0
-// *
-// * Unless required by applicable law or agreed to in writing, software
-// * distributed under the License is distributed on an "AS IS" BASIS,
-// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// * See the License for the specific language governing permissions and
-// * limitations under the License.
-// */
-//package au.gov.asd.tac.constellation.help.utilities.toc;
-//
-//import java.io.BufferedReader;
-//import java.io.File;
-//import java.io.FileReader;
-//import java.io.FileWriter;
-//import java.io.IOException;
-//import java.util.ArrayList;
-//import java.util.List;
-//import org.openide.util.Exceptions;
-//import static org.testng.Assert.assertEquals;
-//import static org.testng.Assert.assertFalse;
-//import static org.testng.Assert.assertNotNull;
-//import static org.testng.Assert.assertTrue;
-//import org.testng.annotations.AfterClass;
-//import org.testng.annotations.AfterMethod;
-//import org.testng.annotations.BeforeClass;
-//import org.testng.annotations.BeforeMethod;
-//import org.testng.annotations.Test;
-//
-///**
-// *
-// * @author aldebaran30701
-// */
-//public class TOCGeneratorNGTest {
-//
-//    public TOCGeneratorNGTest() {
-//    }
-//
-//    @BeforeClass
-//    public static void setUpClass() throws Exception {
-//    }
-//
-//    @AfterClass
-//    public static void tearDownClass() throws Exception {
-//    }
-//
-//    @BeforeMethod
-//    public void setUpMethod() throws Exception {
-//    }
-//
-//    @AfterMethod
-//    public void tearDownMethod() throws Exception {
-//    }
+/*
+ * Copyright 2010-2021 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.help.utilities.toc;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.openide.util.Exceptions;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+/**
+ *
+ * @author aldebaran30701
+ */
+public class TOCGeneratorNGTest {
+
+    public TOCGeneratorNGTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+    }
+
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+    }
 //
 //    @Test
 //    public void testCreateTOCFile() {
@@ -305,214 +305,214 @@
 //            }
 //        }
 //    }
-//
-//    /**
-//     * Test of generateLink method, of class TOCGenerator.
-//     */
-//    @Test
-//    public void testGenerateLink() {
-//        System.out.println("generateLink");
-//
-//        final String title = "click here";
-//        final String url = "www.link.com/to/follow.aspx";
-//        final String expResult = String.format("[%s](%s)", title, url);
-//        final String result = TOCGenerator.generateLink(title, url);
-//        assertEquals(result, expResult);
-//
-//        final String title1 = null;
-//        final String url1 = null;
-//        final String expResult1 = String.format("[%s](%s)", title1, url1);
-//        final String result1 = TOCGenerator.generateLink(title1, url1);
-//        assertEquals(result1, expResult1);
-//    }
-//
-//    /**
-//     * Test of generateHTMLLink method, of class TOCGenerator.
-//     */
-//    @Test
-//    public void testGenerateHTMLLink() {
-//        System.out.println("generateHTMLLink");
-//
-//        final String title = "click here";
-//        final String url = "www.link.com/to/follow.aspx";
-//        final String expResult = String.format("<a href=\"%s\">%s</a><br/>", url, title);
-//        final String result = TOCGenerator.generateHTMLLink(title, url);
-//        assertEquals(result, expResult);
-//
-//        final String title1 = null;
-//        final String url1 = null;
-//        final String expResult1 = String.format("<a href=\"%s\">%s</a><br/>", url1, title1);
-//        final String result1 = TOCGenerator.generateHTMLLink(title1, url1);
-//        assertEquals(result1, expResult1);
-//    }
-//
-//    /**
-//     * Test of writeAccordionItem method, of class TOCGenerator. TODO: This test
-//     * method is not implemented as the implementation of the method is not
-//     * finalised.
-//     */
-//    @Test
-//    public void testWriteAccordionItem() {
-//        System.out.println("writeAccordionItem");
-//        System.out.println("TODO: This test method is not implemented as the "
-//                + "implementation of the method is not finalised");
-//    }
-//
-//    /**
-//     * Test of writeText method, of class TOCGenerator.
-//     */
-//    @Test
-//    public void testWriteText() {
-//        System.out.println("writeText");
-//        File tempFile = null;
-//        try {
-//            tempFile = File.createTempFile("testfile", ".xml");
-//
-//            // contents of file
-//            final String text = "This should be written into the file.\n";
-//            final String text2 = "this is the second line\n";
-//            final String text3 = "</> this will be the final line </>";
-//            final List<String> fileContents = new ArrayList<>();
-//
-//            fileContents.add(text);
-//            fileContents.add(text2);
-//            fileContents.add(text3);
-//
-//            // try with resources
-//            try (final FileWriter fw = new FileWriter(tempFile)) {
-//                fileContents.forEach(str -> {
-//                    TOCGenerator.writeText(fw, str);
-//                });
-//            }
-//
-//            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
-//            String line;
-//
-//            int linecount = 0;
-//            while ((line = reader.readLine()) != null) {
-//                assertEquals(line, fileContents.get(linecount++).replace("\n", ""));
-//            }
-//        } catch (IOException ex) {
-//            Exceptions.printStackTrace(ex);
-//        } finally {
-//            // Cleanup
-//            if (tempFile != null && tempFile.exists()) {
-//                tempFile.delete();
-//            }
-//        }
-//    }
-//
-//    @Test(expectedExceptions = IOException.class)
-//    public void testWriteTextFail() throws IOException {
-//        System.out.println("testWriteText Fail");
-//
-//        File tempFile = new File("invalid/path");
-//        // try with resources
-//        try (final FileWriter fw = new FileWriter(tempFile)) {
-//            TOCGenerator.writeText(fw, "text");
-//        }
-//    }
-//
-//    /**
-//     * Test of writeItem method, of class TOCGenerator.
-//     */
-//    @Test
-//    public void testWriteItem() {
-//        System.out.println("writeItem");
-//        File tempFile = null;
-//        try {
-//            tempFile = File.createTempFile("testfile", ".xml");
-//
-//            // contents of file
-//            final String text = "This should be written into the file.\n";
-//            final String text2 = "this is the second line\n";
-//            final String text3 = "</> this will be the final line </>";
-//            final List<String> fileContents = new ArrayList<>();
-//
-//            fileContents.add(text);
-//            fileContents.add(text2);
-//            fileContents.add(text3);
-//
-//            // try with resources
-//            try (final FileWriter fw = new FileWriter(tempFile)) {
-//                fileContents.forEach(str -> {
-//                    TOCGenerator.writeItem(fw, str, 0);
-//                });
-//            }
-//
-//            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
-//            String line;
-//
-//            int linecount = 0;
-//            while ((line = reader.readLine()) != null) {
-//                assertEquals(line, "" + fileContents.get(linecount++).replace("\n", ""));
-//            }
-//        } catch (IOException ex) {
-//            Exceptions.printStackTrace(ex);
-//        } finally {
-//            // Cleanup
-//            if (tempFile != null && tempFile.exists()) {
-//                tempFile.delete();
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Test of writeItem method, of class TOCGenerator.
-//     */
-//    @Test
-//    public void testWriteItemMultipleIndents() {
-//        System.out.println("writeItem");
-//        File tempFile = null;
-//        try {
-//            tempFile = File.createTempFile("testfile", ".xml");
-//
-//            // contents of file
-//            final String text = "This should be written into the file.\n";
-//            final String text2 = "this is the second line\n";
-//            final String text3 = "</> this will be the final line </>";
-//            final List<String> fileContents = new ArrayList<>();
-//
-//            fileContents.add(text);
-//            fileContents.add(text2);
-//            fileContents.add(text3);
-//
-//            // try with resources
-//            try (final FileWriter fw = new FileWriter(tempFile)) {
-//                fileContents.forEach(str -> {
-//                    TOCGenerator.writeItem(fw, str, 2);
-//                });
-//            }
-//
-//            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
-//            String line;
-//
-//            int linecount = 0;
-//            while ((line = reader.readLine()) != null) {
-//                assertEquals(line, "    " + fileContents.get(linecount++).replace("\n", ""));
-//            }
-//        } catch (IOException ex) {
-//            Exceptions.printStackTrace(ex);
-//        } finally {
-//            // Cleanup
-//            if (tempFile != null && tempFile.exists()) {
-//                tempFile.delete();
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Test of writeItem method, of class TOCGenerator.
-//     */
-//    @Test(expectedExceptions = IOException.class)
-//    public void testWriteItemFail() throws IOException {
-//        System.out.println("testWriteItem Fail");
-//
-//        File tempFile = new File("invalid/path");
-//        // try with resources
-//        try (final FileWriter fw = new FileWriter(tempFile)) {
-//            TOCGenerator.writeItem(fw, "text", 0);
-//        }
-//    }
-//
-//}
+
+    /**
+     * Test of generateLink method, of class TOCGenerator.
+     */
+    @Test
+    public void testGenerateLink() {
+        System.out.println("generateLink");
+
+        final String title = "click here";
+        final String url = "www.link.com/to/follow.aspx";
+        final String expResult = String.format("[%s](%s)", title, url);
+        final String result = TOCGenerator.generateLink(title, url);
+        assertEquals(result, expResult);
+
+        final String title1 = null;
+        final String url1 = null;
+        final String expResult1 = String.format("[%s](%s)", title1, url1);
+        final String result1 = TOCGenerator.generateLink(title1, url1);
+        assertEquals(result1, expResult1);
+    }
+
+    /**
+     * Test of generateHTMLLink method, of class TOCGenerator.
+     */
+    @Test
+    public void testGenerateHTMLLink() {
+        System.out.println("generateHTMLLink");
+
+        final String title = "click here";
+        final String url = "www.link.com/to/follow.aspx";
+        final String expResult = String.format("<a href=\"%s\">%s</a><br/>", url, title);
+        final String result = TOCGenerator.generateHTMLLink(title, url);
+        assertEquals(result, expResult);
+
+        final String title1 = null;
+        final String url1 = null;
+        final String expResult1 = String.format("<a href=\"%s\">%s</a><br/>", url1, title1);
+        final String result1 = TOCGenerator.generateHTMLLink(title1, url1);
+        assertEquals(result1, expResult1);
+    }
+
+    /**
+     * Test of writeAccordionItem method, of class TOCGenerator. TODO: This test
+     * method is not implemented as the implementation of the method is not
+     * finalised.
+     */
+    @Test
+    public void testWriteAccordionItem() {
+        System.out.println("writeAccordionItem");
+        System.out.println("TODO: This test method is not implemented as the "
+                + "implementation of the method is not finalised");
+    }
+
+    /**
+     * Test of writeText method, of class TOCGenerator.
+     */
+    @Test
+    public void testWriteText() {
+        System.out.println("writeText");
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile("testfile", ".xml");
+
+            // contents of file
+            final String text = "This should be written into the file.\n";
+            final String text2 = "this is the second line\n";
+            final String text3 = "</> this will be the final line </>";
+            final List<String> fileContents = new ArrayList<>();
+
+            fileContents.add(text);
+            fileContents.add(text2);
+            fileContents.add(text3);
+
+            // try with resources
+            try (final FileWriter fw = new FileWriter(tempFile)) {
+                fileContents.forEach(str -> {
+                    TOCGenerator.writeText(fw, str);
+                });
+            }
+
+            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
+            String line;
+
+            int linecount = 0;
+            while ((line = reader.readLine()) != null) {
+                assertEquals(line, fileContents.get(linecount++).replace("\n", ""));
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            // Cleanup
+            if (tempFile != null && tempFile.exists()) {
+                tempFile.delete();
+            }
+        }
+    }
+
+    @Test(expectedExceptions = IOException.class)
+    public void testWriteTextFail() throws IOException {
+        System.out.println("testWriteText Fail");
+
+        File tempFile = new File("invalid/path");
+        // try with resources
+        try (final FileWriter fw = new FileWriter(tempFile)) {
+            TOCGenerator.writeText(fw, "text");
+        }
+    }
+
+    /**
+     * Test of writeItem method, of class TOCGenerator.
+     */
+    @Test
+    public void testWriteItem() {
+        System.out.println("writeItem");
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile("testfile", ".xml");
+
+            // contents of file
+            final String text = "This should be written into the file.\n";
+            final String text2 = "this is the second line\n";
+            final String text3 = "</> this will be the final line </>";
+            final List<String> fileContents = new ArrayList<>();
+
+            fileContents.add(text);
+            fileContents.add(text2);
+            fileContents.add(text3);
+
+            // try with resources
+            try (final FileWriter fw = new FileWriter(tempFile)) {
+                fileContents.forEach(str -> {
+                    TOCGenerator.writeItem(fw, str, 0);
+                });
+            }
+
+            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
+            String line;
+
+            int linecount = 0;
+            while ((line = reader.readLine()) != null) {
+                assertEquals(line, "" + fileContents.get(linecount++).replace("\n", ""));
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            // Cleanup
+            if (tempFile != null && tempFile.exists()) {
+                tempFile.delete();
+            }
+        }
+    }
+
+    /**
+     * Test of writeItem method, of class TOCGenerator.
+     */
+    @Test
+    public void testWriteItemMultipleIndents() {
+        System.out.println("writeItem");
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile("testfile", ".xml");
+
+            // contents of file
+            final String text = "This should be written into the file.\n";
+            final String text2 = "this is the second line\n";
+            final String text3 = "</> this will be the final line </>";
+            final List<String> fileContents = new ArrayList<>();
+
+            fileContents.add(text);
+            fileContents.add(text2);
+            fileContents.add(text3);
+
+            // try with resources
+            try (final FileWriter fw = new FileWriter(tempFile)) {
+                fileContents.forEach(str -> {
+                    TOCGenerator.writeItem(fw, str, 2);
+                });
+            }
+
+            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
+            String line;
+
+            int linecount = 0;
+            while ((line = reader.readLine()) != null) {
+                assertEquals(line, "    " + fileContents.get(linecount++).replace("\n", ""));
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            // Cleanup
+            if (tempFile != null && tempFile.exists()) {
+                tempFile.delete();
+            }
+        }
+    }
+
+    /**
+     * Test of writeItem method, of class TOCGenerator.
+     */
+    @Test(expectedExceptions = IOException.class)
+    public void testWriteItemFail() throws IOException {
+        System.out.println("testWriteItem Fail");
+
+        File tempFile = new File("invalid/path");
+        // try with resources
+        try (final FileWriter fw = new FileWriter(tempFile)) {
+            TOCGenerator.writeItem(fw, "text", 0);
+        }
+    }
+
+}
