@@ -12,8 +12,6 @@ the menu via "Tools → Clustering → K-Truss". Note that it is disabled
 for a graph unless the K-Truss plugin has previously been run on that
 graph.
 
-  
-
 ## K-Trusses Explained
 
 For some whole number k, bigger than or equal to 3, a k-Truss is a graph
@@ -27,19 +25,14 @@ particular level of interconnectivity - the higher the value of k is,
 the greater the interconnection between nodes. Note that a k-truss is
 also a j-truss for all values of j which are smaller than k.
 
-  
-
 # Using the Visibility Panel
 
 The K-Truss Visibility panel contains a number of features for
 visualising k-trusses and the relationships between them. The simplest
 and most useful feature is the visibility slider.
 
-  
-
 ## Visibility Slider
 
-  
 *Select the value of k for which to display nodes and transactions in
 k-trusses*
 
@@ -57,11 +50,8 @@ slider from 5 to 6 will not change the display. You should gradually
 move the slider to higher values in bold, so as to focus on smaller and
 more highly connected parts of the graph.
 
-  
-
 ## Excluded Elements Options
 
-  
 *Select whether to dim or hide nodes and transactions which are not
 displayed (excluded) by the visibility slider*
 
@@ -72,11 +62,8 @@ use dimming to get an idea of where k-trusses fit in to the graph as a
 whole. Hiding is more useful when you want to only look at the k-trusses
 for some value of k.
 
-  
-
 ## Select K-Trusses
 
-  
 *Select nodes and transactions on the graph which are in k-trusses,
 where k is the current value of the visibility slider*
 
@@ -86,11 +73,8 @@ this selection as you would any other selection. You might find it
 useful to open the selection in another graph (Ctrl+U) for closer
 analysis of the k-trusses.
 
-  
-
 ## Color Nested K-Trusses
 
-  
 *Color nodes and transactions based on the largest value of k for which
 they are in a k-truss*
 
@@ -103,11 +87,8 @@ to return to your original coloring. You should use this feature if you
 want to see how more highly connected parts of your graph are nested
 inside less highly connected parts.
 
-  
-
 ## Nested K-Trusses Display Panel
 
-  
 *Display rectangles which represent the connected components of the
 k-trusses*
 
@@ -122,11 +103,8 @@ number and size of the rectangles decreases. You can use this panel to
 visualise how the k-trusses nest inside each other, as well as their
 relative sizes. Clicking the up arrow button will hide the panel again.
 
-  
-
 ## Show All Components
 
-  
 *Shows connected components of the entire graph as well as of the
 k-trusses*
 
@@ -138,5 +116,3 @@ number of nodes in the graph, rather than the total number of nodes in
 some k-truss. You should only use this option if a large proportion of
 the nodes in your graph are in k-trusses. Note that this button is
 disabled when the nested trusses display panel is hidden.
-
-  
