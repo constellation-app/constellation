@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("UtilitiesHelpProvider=Utilities Help Provider")
 public class UtilitiesHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String utilitiesModulePath = ".." + sep + "constellation" + sep + "CoreUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "utilities" + sep + "docs" + sep;
+        final String utilitiesModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "utilities" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.utilities.icons", utilitiesModulePath + "icons.md");
         map.put("au.gov.asd.tac.constellation.utilities.decorators", utilitiesModulePath + "decorators.md");
@@ -49,8 +51,8 @@ public class UtilitiesHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String utilitiesPath;
-        utilitiesPath = "constellation" + sep + "CoreUtilities" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "utilities" + sep + "docs" + sep + "utilities-toc.xml";
+        utilitiesPath = CODEBASE_NAME + sep + "CoreUtilities" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "utilities" + sep + "docs" + sep + "utilities-toc.xml";
         return utilitiesPath;
     }
 }

@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("AttributeEditorHelpProvider=Attribute Editor Help Provider")
 public class AttributeEditorHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String attributeModulePath = ".." + sep + "constellation" + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep;
+        final String attributeModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorPanel", attributeModulePath + "attribute-editor.md");
         return map;
@@ -46,8 +48,8 @@ public class AttributeEditorHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String attributeEditorViewPath;
-        attributeEditorViewPath = "constellation" + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + "constellation" + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep + "attributeeditor-toc.xml";
+        attributeEditorViewPath = CODEBASE_NAME + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep + "attributeeditor-toc.xml";
 
 
         return attributeEditorViewPath;

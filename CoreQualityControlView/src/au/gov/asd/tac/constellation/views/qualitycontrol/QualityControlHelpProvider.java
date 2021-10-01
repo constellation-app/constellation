@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("QualityControlHelpProvider=Quality Control Help Provider")
 public class QualityControlHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String qualityModulePath = ".." + sep + "constellation" + sep + "CoreQualityControlView" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "qualitycontrol" + sep + "docs" + sep;
+        final String qualityModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreQualityControlView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "qualitycontrol" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewTopComponent", qualityModulePath + "quality-control-view.md");
         return map;
@@ -46,8 +48,8 @@ public class QualityControlHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String qualityControlPath;
-        qualityControlPath = "constellation" + sep + "CoreQualityControlView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + "constellation" + sep + "views" + sep + "qualitycontrol" + sep + "docs" + sep + "qualitycontrol-toc.xml";
+        qualityControlPath = CODEBASE_NAME + sep + "CoreQualityControlView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "qualitycontrol" + sep + "docs" + sep + "qualitycontrol-toc.xml";
         return qualityControlPath;
     }
 }

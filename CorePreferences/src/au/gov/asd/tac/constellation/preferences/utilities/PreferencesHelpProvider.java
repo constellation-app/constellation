@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("PreferencesHelpProvider=Preference Help Provider")
 public class PreferencesHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String preferencesModulePath = ".." + sep + "constellation" + sep + "CorePreferences" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + "constellation" + sep + "preferences" + sep + "docs" + sep;
+        final String preferencesModulePath = ".." + sep + CODEBASE_NAME + sep + "CorePreferences" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "preferences" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.preferences.application", preferencesModulePath + "application-preferences.md");
         map.put("au.gov.asd.tac.constellation.preferences.applicationfont", preferencesModulePath + "application-font-preferences.md");
@@ -49,8 +51,8 @@ public class PreferencesHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String preferencesPath;
-        preferencesPath = "constellation" + sep + "CorePreferences" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "preferences" + sep + "docs" + sep + "preferences-toc.xml";
+        preferencesPath = CODEBASE_NAME + sep + "CorePreferences" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "preferences" + sep + "docs" + sep + "preferences-toc.xml";
         return preferencesPath;
     }
 }

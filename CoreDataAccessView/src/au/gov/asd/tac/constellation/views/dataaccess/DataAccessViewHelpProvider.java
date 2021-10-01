@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("DataAccessViewHelpProvider=Data Access View Help Provider")
 public class DataAccessViewHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String dataModulePath = ".." + sep + "constellation" + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "views" + sep + "dataaccess" + sep + "docs" + sep;
+        final String dataModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "dataaccess" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters", dataModulePath + "datetime-range.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIO", dataModulePath + "data-access-options.md");
@@ -58,8 +60,8 @@ public class DataAccessViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String dataViewPath;
-        dataViewPath = "constellation" + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + "constellation" + sep + "views" + sep + "dataaccess" + sep + "docs" + sep + "dataaccess-toc.xml";
+        dataViewPath = CODEBASE_NAME + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "dataaccess" + sep + "docs" + sep + "dataaccess-toc.xml";
         return dataViewPath;
     }
 }

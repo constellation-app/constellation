@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("ImportExportPluginsHelpProvider=Import Export Plugins Help Provider")
 public class ImportExportPluginsHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String importExportModulePath = ".." + sep + "constellation" + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "importexport" + sep + "docs" + sep;
+        final String importExportModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "importexport" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane", importExportModulePath + "import-from-file.md");
         map.put("au.gov.asd.tac.constellation.plugins.importexport.export", importExportModulePath + "export-from-constellation.md");
@@ -48,8 +50,8 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String importExportPath;
-        importExportPath = "constellation" + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + "constellation" + sep + "plugins" + sep + "importexport" + sep + "docs" + sep + "importexport-toc.xml";
+        importExportPath = CODEBASE_NAME + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + CODEBASE_NAME + sep + "plugins" + sep + "importexport" + sep + "docs" + sep + "importexport-toc.xml";
         return importExportPath;
     }
 }

@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("VisualGraphHelpProvider=Visual Graph Help Provider")
 public class VisualGraphHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String visualModulePath = ".." + sep + "constellation" + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "visual" + sep + "docs" + sep;
+        final String visualModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "visual" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.visual.inducedSubgraph", visualModulePath + "induced-subgraph.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.hopOut", visualModulePath + "hop-out.md");
@@ -53,8 +55,8 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String visualPath;
-        visualPath = "constellation" + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + "constellation" + sep + "graph" + sep + "visual" + sep + "docs" + sep + "visualgraph-toc.xml";
+        visualPath = CODEBASE_NAME + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "graph" + sep + "visual" + sep + "docs" + sep + "visualgraph-toc.xml";
         return visualPath;
     }
 }

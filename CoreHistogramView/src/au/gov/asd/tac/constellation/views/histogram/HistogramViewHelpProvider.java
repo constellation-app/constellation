@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("HistogramViewHelpProvider=Histogram View Help Provider")
 public class HistogramViewHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String histogramModulePath = ".." + sep + "constellation" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "histogram" + sep + "docs" + sep;
+        final String histogramModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "histogram" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.histogram", histogramModulePath + "histogram-view.md");
         return map;
@@ -46,8 +48,8 @@ public class HistogramViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String histogramViewPath;
-        histogramViewPath = "constellation" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + "constellation" + sep + "views" + sep + "histogram" + sep + "docs" + sep + "histogram-toc.xml";
+        histogramViewPath = CODEBASE_NAME + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + CODEBASE_NAME + sep + "views" + sep + "histogram" + sep + "docs" + sep + "histogram-toc.xml";
         return histogramViewPath;
     }
 }

@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("MapViewHelpProvider=Map View Help Provider")
 public class MapViewHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String mapModulePath = ".." + sep + "constellation" + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "views" + sep + "mapview" + sep + "docs" + sep;
+        final String mapModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "mapview" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.mapview.MapViewTopComponent", mapModulePath + "map-view.md");
         map.put("au.gov.asd.tac.constellation.views.mapview.layers.DayNightLayer", mapModulePath + "mapview-layers-day-night.md");
@@ -53,8 +55,8 @@ public class MapViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String mapViewPath;
-        mapViewPath = "constellation" + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + "constellation" + sep + "views" + sep + "mapview" + sep + "docs" + sep + "mapview-toc.xml";
+        mapViewPath = CODEBASE_NAME + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "mapview" + sep + "docs" + sep + "mapview-toc.xml";
         return mapViewPath;
     }
 }

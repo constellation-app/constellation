@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("NamedSelectionHelpProvider=Named Selection Help Provider")
 public class NamedSelectionHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String namedModulePath = ".." + sep + "constellation" + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "namedselection" + sep + "docs" + sep;
+        final String namedModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "namedselection" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.namedselection", namedModulePath + "named-selections-view.md");
         return map;
@@ -46,8 +48,8 @@ public class NamedSelectionHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String namedViewPath;
-        namedViewPath = "constellation" + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + "constellation" + sep + "views" + sep + "namedselection" + sep + "docs" + sep + "namedselection-toc.xml";
+        namedViewPath = CODEBASE_NAME + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + CODEBASE_NAME + sep + "views" + sep + "namedselection" + sep + "docs" + sep + "namedselection-toc.xml";
         return namedViewPath;
     }
 }

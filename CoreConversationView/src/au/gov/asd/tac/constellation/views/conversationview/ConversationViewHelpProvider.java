@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("ConversationViewHelpProvider=Conversation View Help Provider")
 public class ConversationViewHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String conversationModulePath = ".." + sep + "constellation" + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "conversationview" + sep + "docs" + sep;
+        final String conversationModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "conversationview" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.conversationview.ConversationBox", conversationModulePath + "conversation-view.md");
         return map;
@@ -46,8 +48,8 @@ public class ConversationViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String conversationViewPath;
-        conversationViewPath = "constellation" + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + "constellation" + sep + "views" + sep + "conversationview" + sep + "docs" + sep + "conversationview-toc.xml";
+        conversationViewPath = CODEBASE_NAME + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "conversationview" + sep + "docs" + sep + "conversationview-toc.xml";
         return conversationViewPath;
     }
 }

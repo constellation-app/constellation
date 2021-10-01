@@ -30,13 +30,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 2100)
 @NbBundle.Messages("SchemaViewHelpProvider=Schema View Help Provider")
 public class SchemaViewHelpProvider extends HelpPageProvider {
+    private static final String CODEBASE_NAME = "constellation";
 
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String schemaModulePath = ".." + sep + "constellation" + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "views" + sep + "schemaview" + sep + "docs" + sep;
+        final String schemaModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "schemaview" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.schemaview.SchemaViewTopComponent", schemaModulePath + "schema-view.md");
         return map;
@@ -46,8 +47,8 @@ public class SchemaViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String schemaViewPath;
-        schemaViewPath = "constellation" + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + "constellation" + sep + "views" + sep + "schemaview" + sep + "docs" + sep + "schemaview-toc.xml";
+        schemaViewPath = CODEBASE_NAME + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "schemaview" + sep + "docs" + sep + "schemaview-toc.xml";
         return schemaViewPath;
     }
 }

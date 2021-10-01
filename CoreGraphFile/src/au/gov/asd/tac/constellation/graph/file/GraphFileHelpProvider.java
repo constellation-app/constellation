@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("GraphFileHelpProvider=Graph File Help Provider")
 public class GraphFileHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String graphFileModulePath = ".." + sep + "constellation" + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep;
+        final String graphFileModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "file" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.file.autosave", graphFileModulePath + "autosave.md");
         map.put("au.gov.asd.tac.constellation.graph.file.openGraph", graphFileModulePath + "open-graph.md");
@@ -50,8 +52,8 @@ public class GraphFileHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String graphFilePath;
-        graphFilePath = "constellation" + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep + "file-toc.xml";
+        graphFilePath = CODEBASE_NAME + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "graph" + sep + "file" + sep + "docs" + sep + "file-toc.xml";
         return graphFilePath;
     }
 }

@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("OpenGLHelpProvider=Open GL Help Provider")
 public class OpenGLHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String openGLModulePath = ".." + sep + "constellation" + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + "constellation" + sep + "visual" + sep + "opengl" + sep + "docs" + sep;
+        final String openGLModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "visual" + sep + "opengl" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.visual.opengl.labelfonts", openGLModulePath + "label-fonts-preferences.md");
         return map;
@@ -45,8 +47,8 @@ public class OpenGLHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        final String openGLPath = "constellation" + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + "constellation" + sep + "visual" + sep + "opengl" + sep + "docs" + sep + "opengl-toc.xml";
+        final String openGLPath = CODEBASE_NAME + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + CODEBASE_NAME + sep + "visual" + sep + "opengl" + sep + "docs" + sep + "opengl-toc.xml";
         return openGLPath;
     }
 }

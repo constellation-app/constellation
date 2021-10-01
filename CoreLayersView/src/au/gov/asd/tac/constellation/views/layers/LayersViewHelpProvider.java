@@ -29,12 +29,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("LayersViewHelpProvider=Layers View Help Provider")
 public class LayersViewHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String layersModulePath = ".." + sep + "constellation" + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "docs" + sep;
+        final String layersModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "layers" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent", layersModulePath + "layers-view.md");
         return map;
@@ -43,8 +45,8 @@ public class LayersViewHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        final String layersViewPath = "constellation" + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-toc.xml";
+        final String layersViewPath = CODEBASE_NAME + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-toc.xml";
 
         return layersViewPath;
     }

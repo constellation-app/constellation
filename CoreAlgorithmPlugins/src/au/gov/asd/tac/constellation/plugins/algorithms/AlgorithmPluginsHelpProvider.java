@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("AlgorithmPluginsHelpProvider=Algorithm Plugins Help Provider")
 public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String algorithmModulePath = ".." + sep + "constellation" + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep;
+        final String algorithmModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispers", algorithmModulePath + "chinese-whispers.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss", algorithmModulePath + "k-truss.md");
@@ -48,8 +50,8 @@ public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String algorithmPath;
-        algorithmPath = "constellation" + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + "constellation" + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep + "algorithms-toc.xml";
+        algorithmPath = CODEBASE_NAME + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep + "algorithms-toc.xml";
 
         return algorithmPath;
     }

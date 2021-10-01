@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("ScriptingViewHelpProvider=Scripting View Help Provider")
 public class ScriptingViewHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String scriptingModulePath = ".." + sep + "constellation" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "scripting" + sep + "docs" + sep;
+        final String scriptingModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "scripting" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.scripting", scriptingModulePath + "scripting-view.md");
         return map;
@@ -46,8 +48,8 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String scriptingViewPath;
-        scriptingViewPath = "constellation" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + "constellation" + sep + "views" + sep + "scripting" + sep + "docs" + sep + "scripting-toc.xml";
+        scriptingViewPath = CODEBASE_NAME + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "scripting" + sep + "docs" + sep + "scripting-toc.xml";
         return scriptingViewPath;
     }
 }

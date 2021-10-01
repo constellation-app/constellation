@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("SecurityHelpProvider=Security Help Provider")
 public class SecurityHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String securityModulePath = ".." + sep + "constellation" + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + "constellation" + sep + "security" + sep + "docs" + sep;
+        final String securityModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "security" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.security.proxies", securityModulePath + "proxy-preferences.md");
         return map;
@@ -46,8 +48,8 @@ public class SecurityHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String securityPath;
-        securityPath = "constellation" + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "security" + sep + "docs" + sep + "security-toc.xml";
+        securityPath = CODEBASE_NAME + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "security" + sep + "docs" + sep + "security-toc.xml";
         return securityPath;
     }
 }

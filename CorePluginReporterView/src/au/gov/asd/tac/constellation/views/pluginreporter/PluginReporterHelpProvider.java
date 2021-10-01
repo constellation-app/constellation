@@ -31,12 +31,14 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("PluginReporterHelpProvider=Plugin Reporter Help Provider")
 public class PluginReporterHelpProvider extends HelpPageProvider {
 
+    private static final String CODEBASE_NAME = "constellation";
+
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String pluginModulePath = ".." + sep + "constellation" + sep + "CorePluginReporterView" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "pluginreporter" + sep + "docs" + sep;
+        final String pluginModulePath = ".." + sep + CODEBASE_NAME + sep + "CorePluginReporterView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "pluginreporter" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.pluginreporter.panes", pluginModulePath + "plugin-reporter-view.md");
         return map;
@@ -46,8 +48,8 @@ public class PluginReporterHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String pluginReporterPath;
-        pluginReporterPath = "constellation" + sep + "CorePluginReporterView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + "constellation" + sep + "views" + sep + "pluginreporter" + sep + "docs" + sep + "pluginreporter-toc.xml";
+        pluginReporterPath = CODEBASE_NAME + sep + "CorePluginReporterView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + CODEBASE_NAME + sep + "views" + sep + "pluginreporter" + sep + "docs" + sep + "pluginreporter-toc.xml";
         return pluginReporterPath;
     }
 }

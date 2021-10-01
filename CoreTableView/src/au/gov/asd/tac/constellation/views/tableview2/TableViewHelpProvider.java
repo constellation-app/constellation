@@ -30,14 +30,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 2300)
 @NbBundle.Messages("TableViewHelpProvider=Table View Help Provider")
 public class TableViewHelpProvider extends HelpPageProvider {
-
+    private static final String CODEBASE_NAME = "constellation";
 
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String tableModulePath = ".." + sep + "constellation" + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "tableview2" + sep + "docs" + sep;
+        final String tableModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "tableview2" + sep + "docs" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent", tableModulePath + "table-view.md");
         return map;
@@ -46,8 +46,8 @@ public class TableViewHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        final String tableViewPath = "constellation" + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + "constellation" + sep + "views" + sep + "tableview2" + sep + "docs" + sep + "tableview-toc.xml";
+        final String tableViewPath = CODEBASE_NAME + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "tableview2" + sep + "docs" + sep + "tableview-toc.xml";
 
         return tableViewPath;
     }
