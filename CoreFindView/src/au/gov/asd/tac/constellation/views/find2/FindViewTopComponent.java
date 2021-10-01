@@ -24,10 +24,9 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 /**
- * Table View Top Component.
+ * Find View Top Component.
  *
- * @author elnath
- * @author cygnus_x-1
+ * @author Atlas139mkm
  */
 @TopComponent.Description(
         preferredID = "FindViewTopComponent2",
@@ -42,7 +41,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.find2.FindTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 2000)
+    @ActionReference(path = "Menu/Views", position = 3000)
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_FindView2Action",
@@ -57,7 +56,7 @@ import org.openide.windows.TopComponent;
 public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane> {
 
     private final FindViewPane pane;
-    private final FindViewPaneController paneController;
+    private final FindViewController findViewController;
 
     public FindViewTopComponent() {
         setName(Bundle.CTL_FindViewTopComponent2());
@@ -65,7 +64,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
 
         initComponents();
         this.pane = new FindViewPane(this);
-        this.paneController = new FindViewPaneController(this, pane);
+        findViewController = FindViewController.getDefault().init(this);
 
         initContent();
     }

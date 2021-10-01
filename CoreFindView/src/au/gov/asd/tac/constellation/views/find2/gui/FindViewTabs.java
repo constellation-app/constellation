@@ -21,52 +21,73 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
 /**
+ * This class manages the tabs within the find view. It handles the change of
+ * content when a users switches tabs.
  *
  * @author Atlas139mkm
  */
-public class FindViewTabs {
+public class FindViewTabs extends TabPane {
 
-    private final FindViewPane pane;
+    private final FindViewPane parentComponent;
 
-    private final TabPane tabPane;
+//    private final TabPane tabPane;
+    private final BasicFindTab basicFindTab;
+    private final ReplaceTab replaceTab;
+    private final Tab advancedFindTab;
 
-    private final BasicFindTab basicFindTab = new BasicFindTab(this);
-    private final ReplaceTab replaceTab = new ReplaceTab(this);
-    private final Tab advancedFindTab = new Tab("Advanced Find");
-
-    public FindViewTabs(FindViewPane pane) {
-        this.pane = pane;
-
-        tabPane = new TabPane();
+    public FindViewTabs(FindViewPane parentComponent) {
+        this.parentComponent = parentComponent;
+        basicFindTab = new BasicFindTab(this);
+        replaceTab = new ReplaceTab(this);
+        advancedFindTab = new Tab("Advanced Find");
         setTabContent();
 
-        tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+        getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
             public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
                 if (newTab.equals(basicFindTab)) {
-                    pane.setBottom(pane.getBasicFindButtons());
+                    basicFindTab.updateButtons();
                 } else if (newTab.equals(replaceTab)) {
-                    pane.setBottom(pane.getReplaceButtons());
+                    replaceTab.updateButtons();
                 } else {
-                    pane.setBottom(pane.getAdvancedFindButtons());
+
                 }
             }
         }
         );
     }
 
-    public void setTabContent() {
+    /**
+     * Adds the tabs into the tabPane and sets some tab specific attributes.
+     */
+    private void setTabContent() {
         basicFindTab.setClosable(false);
         replaceTab.setClosable(false);
         advancedFindTab.setClosable(false);
 
-        tabPane.getTabs().add(basicFindTab);
-        tabPane.getTabs().add(replaceTab);
-        tabPane.getTabs().add(advancedFindTab);
+        getTabs().add(basicFindTab);
+        getTabs().add(replaceTab);
+        getTabs().add(advancedFindTab);
+
+        switch (getSelectionModel().getSelectedIndex()) {
+            case 0:
+                basicFindTab.updateButtons();
+                break;
+            case 1:
+                replaceTab.updateButtons();
+                break;
+            case 2:
+                break;
+        }
+
     }
 
     public TabPane getFindViewTabs() {
-        return tabPane;
+        return this;
+    }
+
+    public FindViewPane getParentComponent() {
+        return parentComponent;
     }
 
 }

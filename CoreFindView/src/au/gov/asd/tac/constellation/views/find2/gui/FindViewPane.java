@@ -19,6 +19,9 @@ import au.gov.asd.tac.constellation.views.find2.FindViewTopComponent;
 import javafx.scene.layout.BorderPane;
 
 /**
+ * This class is the overarching BorderPane for the find view. It contains the
+ * tab pane and the various button layouts specific to each tab. It is the main
+ * UI object that is connected to the Top Component.
  *
  * @author Atlas139mkm
  */
@@ -27,34 +30,11 @@ public class FindViewPane extends BorderPane {
     private final FindViewTopComponent parentComponent;
 
     private final FindViewTabs findViewTabs;
-    private final BottomButtonsPane basicFindButtons;
-    private final BottomButtonsPane replaceButtons;
-    private final BottomButtonsPane advancedFindButtons;
 
     public FindViewPane(final FindViewTopComponent parentComponent) {
         this.parentComponent = parentComponent;
-
         this.findViewTabs = new FindViewTabs(this);
         setCenter(findViewTabs.getFindViewTabs());
 
-        this.basicFindButtons = new BasicFindBottomButtons(this);
-        this.replaceButtons = new ReplaceBottomButtons(this);
-        this.advancedFindButtons = new BottomButtonsPane(this);
-
-        setBottom(basicFindButtons);
-
     }
-
-    public BottomButtonsPane getBasicFindButtons() {
-        return basicFindButtons;
-    }
-
-    public BottomButtonsPane getReplaceButtons() {
-        return replaceButtons;
-    }
-
-    public BottomButtonsPane getAdvancedFindButtons() {
-        return advancedFindButtons;
-    }
-
 }

@@ -15,19 +15,31 @@
  */
 package au.gov.asd.tac.constellation.views.find2.gui;
 
+import au.gov.asd.tac.constellation.graph.Attribute;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.views.find2.FindViewController;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.controlsfx.control.CheckComboBox;
 
 /**
  * This class contains all the UI elements for the Basic find Tab
@@ -43,19 +55,26 @@ public class BasicFindTab extends Tab {
     private final GridPane textGrid = new GridPane();
     private final GridPane settingsGrid = new GridPane();
     private final GridPane addRemoveSelectionGrid = new GridPane();
+    private final HBox buttonsHBox = new HBox();
 
     private final Label findLabel = new Label("Find:");
     private final TextField findTextField = new TextField();
 
     private final Label lookForLabel = new Label("Look For:");
-    private final ChoiceBox lookForChoiceBox = new ChoiceBox();
+    private final String[] elementTypes = {GraphElementType.VERTEX.getShortLabel(), GraphElementType.TRANSACTION.getShortLabel(), GraphElementType.EDGE.getShortLabel(), GraphElementType.LINK.getShortLabel()};
+    private final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<String>(FXCollections.observableArrayList(elementTypes));
 
     private final Label inAttributesLabel = new Label("In Attributes:");
-    private final VBox inAttributesContainer = new VBox(inAttributesLabel);
+    final CheckComboBox<String> inAttributesMenu = new CheckComboBox<String>();
+    private ArrayList<Attribute> attributes = new ArrayList<>();
+    private ArrayList<Attribute> selectedNodeAttributes = new ArrayList<>();
+    private ArrayList<Attribute> selectedTransAttributes = new ArrayList<>();
+    private ArrayList<Attribute> selectedEdgeAttributes = new ArrayList<>();
+    private ArrayList<Attribute> selectedLinkAttributes = new ArrayList<>();
 
-    private final Menu inAttributesMenu = new Menu();
+    final long attributeModificationCounter = -1;
+
     // need to add menu items
-
     private final GridPane preferencesGrid = new GridPane();
     private final ToggleGroup textStyleTB = new ToggleGroup();
     private final RadioButton standardRadioBtn = new RadioButton("Standard Text");
@@ -67,21 +86,38 @@ public class BasicFindTab extends Tab {
     private final CheckBox addToCurrent = new CheckBox("Add to Current Selection");
     private final CheckBox removeFromCurrent = new CheckBox("Remove from Current Selection");
 
+    private final Button findNextButton = new Button("Find Prev");
+    private final Button findPrevButton = new Button("Find Next");
+    private final Button findAllButton = new Button("Find All");
+
     private final int LABEL_WIDTH = 90;
+    private final int DROP_DOWN_WIDTH = 120;
+
+    private static final Logger LOGGER = Logger.getLogger(BasicFindTab.class.getName());
 
     public BasicFindTab(FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;
         this.setText("Basic Find");
-
         setGridContent();
         this.setContent(layers);
+//        FindViewPaneController.getDefault().find("hello");
 
+        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
+                saveSelected(GraphElementType.getValue(oldElement));
+                inAttributesMenu.getCheckModel().clearChecks();
+                populateAttributes(GraphElementType.getValue(newElement));
+                updateSelectedAttributes(getMatchingAttributeList(GraphElementType.getValue(newElement)));
+
+            }
+        });
     }
 
     /**
      * Sets all the UI elements to the basic find Tab
      */
-    public void setGridContent() {
+    private void setGridContent() {
         ColumnConstraints neverGrow = new ColumnConstraints();
         neverGrow.setHgrow(Priority.NEVER);
         ColumnConstraints alwaysGrow = new ColumnConstraints();
@@ -101,21 +137,24 @@ public class BasicFindTab extends Tab {
         settingsGrid.setVgap(5);
 
         lookForLabel.setMinWidth(LABEL_WIDTH - settingsGrid.getHgap());
-        lookForChoiceBox.minWidth(LABEL_WIDTH);
+        lookForChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
+        lookForChoiceBox.getSelectionModel().select(GraphElementType.VERTEX.getShortLabel());
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 1, 0);
 
         inAttributesLabel.setMinWidth(LABEL_WIDTH - settingsGrid.getHgap());
-        inAttributesContainer.minWidth(LABEL_WIDTH);
+
         settingsGrid.add(inAttributesLabel, 0, 1);
-        settingsGrid.add(inAttributesContainer, 1, 1);
+        settingsGrid.add(inAttributesMenu, 1, 1);
+
+        inAttributesMenu.setMaxWidth(DROP_DOWN_WIDTH);
+        populateAttributes(GraphElementType.VERTEX);
 
         standardRadioBtn.setToggleGroup(textStyleTB);
         regExBtn.setToggleGroup(textStyleTB);
         toggleVBox.getChildren().addAll(standardRadioBtn, regExBtn);
         toggleVBox.setSpacing(5);
         preferencesGrid.add(toggleVBox, 0, 0, 1, 2);
-
         preferencesGrid.add(ignoreCaseCB, 1, 0);
         preferencesGrid.add(exactMatchCB, 1, 1);
         preferencesGrid.add(addToCurrent, 2, 0);
@@ -125,8 +164,13 @@ public class BasicFindTab extends Tab {
 
         settingsGrid.add(preferencesGrid, 2, 0, 2, 2);
 
-//        addRemoveSelectionGrid.add(addToCurrent, 0, 0);
-//        addRemoveSelectionGrid.add(removeFromCurrent, 1, 0);
+        buttonsHBox.setAlignment(Pos.CENTER_LEFT);
+        buttonsHBox.setPadding(new Insets(5, 10, 5, 10));
+        buttonsHBox.setSpacing(5);
+        buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton);
+
+        parentComponent.getParentComponent().setBottom(buttonsHBox);
+
         layers.getChildren().addAll(textGrid, settingsGrid, addRemoveSelectionGrid);
 
     }
@@ -141,4 +185,122 @@ public class BasicFindTab extends Tab {
         return textGrid;
     }
 
+    public HBox getButtonsHBox() {
+        return buttonsHBox;
+    }
+
+    public FindViewTabs getParentComponent() {
+        return parentComponent;
+    }
+
+    public void updateButtons() {
+        buttonsHBox.getChildren().clear();
+        buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton);
+        parentComponent.getParentComponent().setBottom(buttonsHBox);
+    }
+
+    private void findButtonFunctionality() {
+        FindViewController.getDefault();
+    }
+
+    /**
+     * Populates the inAttributeMenu with all relevant String attributes based
+     * on the type of graph element selected in the lookForChoiceBox
+     *
+     * @param type
+     */
+    public void populateAttributes(GraphElementType type) {
+        FindViewController.getDefault().populateAttributes(type, attributes, attributeModificationCounter, inAttributesMenu);
+    }
+
+    /**
+     * updates the check box menu with the items present within the selected
+     * attributes list
+     *
+     * @param selectedAttributes
+     */
+    public void updateSelectedAttributes(ArrayList<Attribute> selectedAttributes) {
+        for (int i = 0; i < selectedAttributes.size(); i++) {
+            if (checkSelectedContains(selectedAttributes.get(i), attributes)) {
+                inAttributesMenu.getCheckModel().check(selectedAttributes.get(i).getName());
+                LOGGER.log(Level.SEVERE, selectedAttributes.get(i).getName() + "CHCKED IN THE LIST");
+
+            }
+        }
+    }
+
+    /**
+     * Gets the selected elements list for the matching type
+     *
+     * @param type
+     * @return
+     */
+    public ArrayList<Attribute> getMatchingAttributeList(GraphElementType type) {
+        if (type.equals(GraphElementType.VERTEX)) {
+            return selectedNodeAttributes;
+        } else if (type.equals(GraphElementType.TRANSACTION)) {
+            return selectedTransAttributes;
+        } else if (type.equals(GraphElementType.EDGE)) {
+            return selectedEdgeAttributes;
+        } else {
+            return selectedLinkAttributes;
+        }
+    }
+
+    /**
+     * retrieves the selected list of the matching type, clears it, then re adds
+     * all selected elements to that list
+     *
+     * @param type
+     */
+    public void saveSelected(GraphElementType type) {
+        ArrayList<Attribute> selectedAttributes = getMatchingAttributeList(type);
+        selectedAttributes.clear();
+
+        for (Attribute a : attributes) {
+            if (a.getAttributeType().equals("string")) {
+                if (inAttributesMenu.getCheckModel().isChecked(a.getName())) {
+                    selectedAttributes.add(a);
+                    LOGGER.log(Level.SEVERE, a.getName() + "SAVED IN SELECTED ATTRIBUTES");
+
+                }
+
+            }
+        }
+
+    }
+
+    /**
+     * Checks if a attribute is present within a list of attributes, based on
+     * the attributes name
+     *
+     * @param attribute
+     * @param selectedAttributes
+     * @return
+     */
+    private boolean checkSelectedContains(Attribute attribute, ArrayList<Attribute> selectedAttributes) {
+        for (Attribute sa : selectedAttributes) {
+            if (attribute.getName().equals(sa.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
+
+//    private BasicFindReplaceParameters buildBasicFindReplaceParameters() {
+//
+//        final List<String> selectedAttributes = new ArrayList<String>();
+//        for (int i = 0; i < inAttributesMenu.getItems().size(); i++) {
+//            selectedAttributes.add(inAttributesMenu.getItems().get(i).getText());
+//        }
+//
+//        final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText().trim(), "",
+//                GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()), selectedAttributes, standardRadioBtn.isSelected(),
+//                regExBtn.isSelected(), ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), addToCurrent.isSelected(), removeFromCurrent.isSelected());
+//
+//        return parameters;
+//
+//    }
+

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.find2.gui;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
@@ -28,19 +29,32 @@ public class ReplaceTab extends BasicFindTab {
     private final Label replaceLabel = new Label("Replace With:");
     private final TextField replaceTextField = new TextField();
 
+    private final Button replaceNextButton = new Button("Replace Next");
+    private final Button replaceAllButton = new Button("Replace All");
+
     public ReplaceTab(FindViewTabs parentComponent) {
         super(parentComponent);
+        this.setText("Replace");
         setReplaceGridContent();
-        this.setText("Basic Find");
 
     }
 
     /**
      * Adds the UI changes for the replace tab
      */
-    public void setReplaceGridContent() {
-        super.getTextGrid().add(replaceLabel, 0, 1);
-        super.getTextGrid().add(replaceTextField, 1, 1);
+    private void setReplaceGridContent() {
+        getTextGrid().add(replaceLabel, 0, 1);
+        getTextGrid().add(replaceTextField, 1, 1);
+
+        getButtonsHBox().getChildren().clear();
+        getButtonsHBox().getChildren().addAll(replaceNextButton, replaceAllButton);
+
+    }
+
+    public void updateButtons() {
+        getButtonsHBox().getChildren().clear();
+        getButtonsHBox().getChildren().addAll(replaceNextButton, replaceAllButton);
+        getParentComponent().getParentComponent().setBottom(getButtonsHBox());
 
     }
 
