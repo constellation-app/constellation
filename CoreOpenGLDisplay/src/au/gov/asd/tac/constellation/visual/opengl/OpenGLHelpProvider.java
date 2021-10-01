@@ -33,7 +33,7 @@ public class OpenGLHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
         final String openGLModulePath = ".." + sep + "constellation" + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep
                 + "asd" + sep + "tac" + sep + "constellation" + sep + "visual" + sep + "opengl" + sep + "docs" + sep;

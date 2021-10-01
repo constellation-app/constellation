@@ -33,7 +33,7 @@ public class QualityControlHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
         final String qualityModulePath = ".." + sep + "constellation" + sep + "CoreQualityControlView" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "qualitycontrol" + sep + "docs" + sep;

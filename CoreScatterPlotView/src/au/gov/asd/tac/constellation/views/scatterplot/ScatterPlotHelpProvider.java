@@ -33,7 +33,7 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
         final String scatterModulePath = ".." + sep + "constellation" + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep
                 + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "scatterplot" + sep + "docs" + sep;

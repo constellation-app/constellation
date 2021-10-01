@@ -33,7 +33,7 @@ public class AttributeEditorHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
         final String attributeModulePath = ".." + sep + "constellation" + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep;

@@ -33,7 +33,7 @@ public class SchemaViewHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
         final String schemaModulePath = ".." + sep + "constellation" + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
                 + sep + "tac" + sep + "constellation" + sep + "views" + sep + "schemaview" + sep + "docs" + sep;

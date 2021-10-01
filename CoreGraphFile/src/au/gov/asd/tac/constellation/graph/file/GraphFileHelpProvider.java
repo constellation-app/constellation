@@ -33,7 +33,7 @@ public class GraphFileHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
         final String graphFileModulePath = ".." + sep + "constellation" + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
                 + sep + "tac" + sep + "constellation" + sep + "graph" + sep + "file" + sep + "docs" + sep;

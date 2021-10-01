@@ -33,7 +33,7 @@ public class NamedSelectionHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
         final String namedModulePath = ".." + sep + "constellation" + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "namedselection" + sep + "docs" + sep;

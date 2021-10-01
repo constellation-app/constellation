@@ -33,7 +33,7 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
         final String importExportModulePath = ".." + sep + "constellation" + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "plugins" + sep + "importexport" + sep + "docs" + sep;

@@ -33,7 +33,7 @@ public class TimelineViewHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
         final String timelineModulePath = ".." + sep + "constellation" + sep + "CoreTimelineView" + sep + "src" + sep + "au" + sep + "gov" + sep
                 + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "timeline" + sep + "docs" + sep;
