@@ -61,7 +61,7 @@ public class HelpWebServer {
                 // Gather the servlets and add them to the server.
                 Lookup.getDefault().lookupAll(HttpServlet.class).forEach(servlet -> {
                     if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
-                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
+                        for (final String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
                             Logger.getGlobal().info(String.format("urlpattern %s %s", servlet, urlPattern));
                             context.addServlet(new ServletHolder(servlet), urlPattern);
                         }

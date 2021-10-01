@@ -85,14 +85,9 @@ public class TOCGenerator {
      */
     public static void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode root) throws IOException {
         final FileWriter writer;
-        try {
-            writer = new FileWriter(toc);
-            convertXMLMappings(xmlsFromFile, writer, root);
-            writer.close();
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to write mappings to file - Help documentation may not be complete.");
-            throw ex;
-        }
+        writer = new FileWriter(toc);
+        convertXMLMappings(xmlsFromFile, writer, root);
+        writer.close();
     }
 
     /**

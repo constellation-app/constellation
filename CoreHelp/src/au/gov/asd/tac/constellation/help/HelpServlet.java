@@ -87,8 +87,8 @@ public class HelpServlet extends HttpServlet {
         if (fileUrl != null) {
             try {
                 response.sendRedirect("/" + fileUrl.toString());
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.WARNING, ex, () -> "Failed to send redirect while navigating to {0}" + fileUrl.toString());
             }
         }
 
@@ -131,7 +131,7 @@ public class HelpServlet extends HttpServlet {
                         refererfrontHalfRemoved = refererfrontHalfRemoved.replace("http://localhost:" + ConstellationHelpDisplayer.currentPort, "");
                         requestfrontHalfRemoved = requestfrontHalfRemoved.replaceFirst(refererfrontHalfRemoved, "");
 
-                        String redirectURL = Generator.getBaseDirectory() + requestfrontHalfRemoved;
+                        final String redirectURL = Generator.getBaseDirectory() + requestfrontHalfRemoved;
                         final File file2 = new File(redirectURL);
                         final URL fileUrl2 = file2.toURI().toURL();
                         wasRedirect = true;
@@ -142,8 +142,7 @@ public class HelpServlet extends HttpServlet {
                 wasRedirect = false;
             }
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
-            LOGGER.log(Level.WARNING, "Redirect Failed!", ex);
+            LOGGER.log(Level.WARNING, "Redirect Failed! Could not navigate to: " + requestPath, ex);
         }
         return null;
     }

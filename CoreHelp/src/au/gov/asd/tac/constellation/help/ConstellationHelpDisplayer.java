@@ -45,8 +45,9 @@ import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
- * @author algol, Delphinus8821, aldebaran30701
+ * @author algol
+ * @author Delphinus8821
+ * @author aldebaran30701
  */
 @ServiceProvider(service = HelpCtx.Displayer.class, position = 9999)
 public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
@@ -249,8 +250,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                     + "Browsing was not supported. Tried to navigate to: {0}", uri);
 
         } catch (final MalformedURLException | URISyntaxException ex) {
-            LOGGER.log(Level.WARNING, "Help Documentation URL/URI was invalid - Tried to display help for: {0}", helpId);
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.WARNING, ex, () -> "Help Documentation URL/URI was invalid - Tried to display help for: " + helpId);
         }
         return false;
     }

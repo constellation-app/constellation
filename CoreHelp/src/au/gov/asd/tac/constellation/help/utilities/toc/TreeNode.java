@@ -67,7 +67,7 @@ public class TreeNode<T> {
         return data;
     }
 
-    private void setParent(TreeNode<T> parent) {
+    private void setParent(final TreeNode<T> parent) {
         this.parent = parent;
     }
 
@@ -123,12 +123,12 @@ public class TreeNode<T> {
         final TreeNode parentNode = node.getParent();
         final TOCItem parent = parentNode == null ? null : (TOCItem) (node.getParent().getData());
 
-        if ("".equals(item.getTarget()) || item.getTarget() == null) {
+        if (StringUtils.isBlank(item.getTarget())) {
             // when no target, its a normal heading.
             TOCGenerator.writeAccordionItem(writer, item.getText(), item.getText());
         } else {
             final String helpLink = cachedHelpMappings.get(item.getTarget());
-            if ("".equals(helpLink) || helpLink == null) {
+            if (StringUtils.isBlank(helpLink)) {
                 TOCGenerator.writeItem(writer, item.getText(), indent);
             } else {
                 TOCGenerator.writeItem(writer, TOCGenerator.generateHTMLLink(item.getText(), helpLink), indent);

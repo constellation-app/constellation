@@ -73,8 +73,8 @@ public class Generator implements Runnable {
         try {
             TOCGenerator.convertXMLMappings(tocXMLFiles, root);
         } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, "There was an error creating the documentation file {0} - Documentation may not be complete", baseDirectory + tocDirectory);
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
+                    + "- Documentation may not be complete", baseDirectory + tocDirectory), ex);
         }
     }
 
