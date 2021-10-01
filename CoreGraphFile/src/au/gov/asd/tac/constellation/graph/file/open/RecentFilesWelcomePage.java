@@ -66,7 +66,8 @@ public class RecentFilesWelcomePage {
             }
         }
         if (index != -1) {
-            final String path = files.get(index).getPath();
+            // the recent file action has path separated by '/' rather than '\' so mimicing that
+            final String path = files.get(index).getPath().replace('\\', '/');
 
             final FileObject fo = RecentFiles.convertPath2File(path);
             OpenFile.open(fo, -1);
