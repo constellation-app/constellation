@@ -146,36 +146,36 @@ public class TOCGeneratorNGTest {
 //        }
 //
 //    }
-//
-//    /**
-//     * Test of convertXMLMappings method, of class TOCGenerator.
-//     */
-//    @Test
-//    public void testConvertXMLMappings_List_TreeNode() {
-//        System.out.println("convertXMLMappings");
-//        List<File> xmlsFromFile = new ArrayList<>();
-//
-//        final TreeNode root = new TreeNode(new TOCItem("root", ""));
-//        File tempFileTOC = null;
-//        try {
-//            try {
-//                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
-//                TOCGenerator.createTOCFile(tempFileTOC.getPath());
-//                assertFalse(tempFileTOC.length() != 0);
-//                TOCGenerator.convertXMLMappings(xmlsFromFile, root);
-//
-//                // Assert file is not empty, meaning a TOC file has been created
-//                assertTrue(tempFileTOC.length() != 0);
-//
-//            } catch (final IOException ex) {
-//                Exceptions.printStackTrace(ex);
-//            }
-//        } finally {
-//            if (tempFileTOC != null && tempFileTOC.exists()) {
-//                tempFileTOC.delete();
-//            }
-//        }
-//    }
+
+    /**
+     * Test of convertXMLMappings method, of class TOCGenerator.
+     */
+    @Test
+    public void testConvertXMLMappings_List_TreeNode() {
+        System.out.println("convertXMLMappings");
+        List<File> xmlsFromFile = new ArrayList<>();
+
+        final TreeNode root = new TreeNode(new TOCItem("root", ""));
+        File tempFileTOC = null;
+        try {
+            try {
+                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
+                TOCGenerator.createTOCFile(tempFileTOC.getPath());
+                assertFalse(tempFileTOC.length() != 0);
+                TOCGenerator.convertXMLMappings(xmlsFromFile, root);
+
+                // Assert file is not empty, meaning a TOC file has been created
+                assertTrue(tempFileTOC.length() != 0);
+
+            } catch (final IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        } finally {
+            if (tempFileTOC != null && tempFileTOC.exists()) {
+                tempFileTOC.delete();
+            }
+        }
+    }
 
     /**
      * Test of convertXMLMappings method, of class TOCGenerator.
