@@ -36,7 +36,6 @@
 //import org.testng.annotations.Test;
 //
 ///**
-// *
 // * @author aldebaran30701
 // */
 //public class GeneratorNGTest {
