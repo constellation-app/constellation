@@ -68,6 +68,7 @@ public class SetGraph extends RestService {
         final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
         graphIdParam.setDescription("The id of a graph to make active.");
+        graphIdParam.setRequired(true);
         parameters.addParameter(graphIdParam);
 
         return parameters;

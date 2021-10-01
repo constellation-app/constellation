@@ -99,7 +99,7 @@ public class AddRecordStore extends RestService {
 
         final PluginParameter<StringParameterValue> graphidParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphidParam.setName("Graph id");
-        graphidParam.setDescription("The id of the graph to add the recordstore to.");
+        graphidParam.setDescription("The id of the graph to add the recordstore to. (Default is the active graph)");
         parameters.addParameter(graphidParam);
 
         final PluginParameter<BooleanParameterValue> completeParam = BooleanParameterType.build(COMPLETE_PARAMETER_ID);

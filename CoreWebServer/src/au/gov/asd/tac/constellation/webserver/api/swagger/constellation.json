@@ -105,6 +105,30 @@
                         ]
                     ]                    
                 }
+            },
+            "setGraphAttributesExample" : {
+                "type": "array", 
+                "items": {
+                    "$ref":"#/components/examples/addRecordStoreExampleObject"
+                },  
+                "example":{                    
+                    "columns": [
+                        "blaze_size",   
+                        "highlight_color",   
+                        "draw_directed_transactions",    
+                        "custom_attribute_1", 
+                        "custom_attribute_2"
+                    ],
+                    "data":[ 
+                        [
+                            0.5,
+                            "Carrot",
+                            true,
+                            "custom value 1",
+                            "custom value 2"
+                        ]
+                    ]                    
+                }
             }
         }
     }
