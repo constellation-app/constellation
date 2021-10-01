@@ -176,21 +176,21 @@ public class TOCGeneratorNGTest {
 //            }
 //        }
 //    }
-//
-//    /**
-//     * Test of convertXMLMappings method, of class TOCGenerator.
-//     *
-//     * @throws java.io.IOException
-//     */
-//    @Test(expectedExceptions = IOException.class)
-//    public void testConvertXMLMappings_List_TreeNodeFail() throws IOException {
-//        System.out.println("convertXMLMappingsFail");
-//        List<File> xmlsFromFile = new ArrayList<>();
-//        final TreeNode root = new TreeNode(new TOCItem("root", ""));
-//        TOCGenerator.createTOCFile("incorrect/path/to/toc");
-//        TOCGenerator.convertXMLMappings(xmlsFromFile, root);
-//    }
-//
+
+    /**
+     * Test of convertXMLMappings method, of class TOCGenerator.
+     *
+     * @throws java.io.IOException
+     */
+    @Test(expectedExceptions = IOException.class)
+    public void testConvertXMLMappings_List_TreeNodeFail() throws IOException {
+        System.out.println("convertXMLMappingsFail");
+        List<File> xmlsFromFile = new ArrayList<>();
+        final TreeNode root = new TreeNode(new TOCItem("root", ""));
+        TOCGenerator.createTOCFile("incorrect/path/to/toc");
+        TOCGenerator.convertXMLMappings(xmlsFromFile, root);
+    }
+
     /**
      * Test of convertXMLMappings method, of class TOCGenerator.
      */
