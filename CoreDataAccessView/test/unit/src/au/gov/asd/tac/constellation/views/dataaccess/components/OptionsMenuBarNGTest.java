@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoP
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
+import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -210,18 +212,23 @@ public class OptionsMenuBarNGTest {
     }
     
     @Test
-    public void saveResultsListener() {
+    public void saveResultsListener() throws InterruptedException, ExecutionException {
         final CheckMenuItem menuItem = mock(CheckMenuItem.class);
         
         when(optionsMenuBar.getSaveResultsItem()).thenReturn(menuItem);
         
         OptionsMenuBar.SaveResultsListener listener = optionsMenuBar.new SaveResultsListener();
         
-        // Value Chnaged is FALSE
+        // Value Changed is FALSE
         
-        try (final MockedStatic<DataAccessPreferenceUtilities> prefUtilsMockedStatic =
-                Mockito.mockStatic(DataAccessPreferenceUtilities.class)) {
+        try (
+                final MockedStatic<DataAccessPreferenceUtilities> prefUtilsMockedStatic =
+                        Mockito.mockStatic(DataAccessPreferenceUtilities.class);
+            ) {
             listener.changed(null, null, false);
+            
+            // Wait for any work to complete
+            listener.getLastChange().get();
             
             prefUtilsMockedStatic.verify(() -> DataAccessPreferenceUtilities.setDataAccessResultsDir(null));
         }
@@ -246,13 +253,17 @@ public class OptionsMenuBarNGTest {
     private void verifySaveResultsListenerValueChangedTrue(final OptionsMenuBar.SaveResultsListener listener,
                                                            final CheckMenuItem menuItem,
                                                            final File userSelection,
-                                                           final boolean setSelectedExecuted) {
+                                                           final boolean setSelectedExecuted) throws InterruptedException, ExecutionException {
         try (MockedConstruction<DataAccessResultsDirChooser> mockedChooser = Mockito.mockConstruction(
                 DataAccessResultsDirChooser.class,
                 (chooserMock, cntxt) -> {
                     when(chooserMock.openAndSaveToPreferences()).thenReturn(userSelection);
                 })) {
             listener.changed(null, null, true);
+            
+            // Wait for any work to complete
+            listener.getLastChange().get();
+            WaitForAsyncUtils.waitForFxEvents();
             
             assertTrue(!mockedChooser.constructed().isEmpty());
             verify(mockedChooser.constructed().get(0)).openAndSaveToPreferences();

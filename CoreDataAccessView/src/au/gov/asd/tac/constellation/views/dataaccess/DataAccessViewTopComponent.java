@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
@@ -78,9 +77,13 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
         initComponents();
 
-        dataAccessPane = new DataAccessPane(DataAccessViewTopComponent.this);
+        dataAccessPane = new DataAccessPane(this);
         dataAccessPane.addUIComponents();
         
+        // The data access pane that is initialized above is returned in the
+        // overridden method getContent() below. That is how the initContent()
+        // in the super class can reference it and add the data accees view to
+        // this pane.
         initContent();
 
         addAttributeCountChangeHandler(graph -> {

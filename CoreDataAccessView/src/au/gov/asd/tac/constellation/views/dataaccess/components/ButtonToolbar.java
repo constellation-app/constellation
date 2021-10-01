@@ -26,14 +26,19 @@ import au.gov.asd.tac.constellation.views.dataaccess.listeners.ExecuteListener;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
+import java.awt.EventQueue;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.Tooltip;
@@ -43,6 +48,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
@@ -330,7 +336,8 @@ public class ButtonToolbar {
      * want to add or remove the selected plugins to/from their favourites.
      */
     protected void manageFavourites() {
-        System.out.println("FX Thread: " + Platform.isFxApplicationThread());
+        NotifyDisplayer.displayAlert(GO_STYLE, EXECUTE_GO, GO_STYLE, Alert.AlertType.ERROR);
+        
         // Get a list of the selected plugins
         final List<String> selectedPlugins = new ArrayList<>();
         getDataAccessPane().getDataAccessTabPane().getQueryPhasePaneOfCurrentTab()
@@ -367,15 +374,16 @@ public class ButtonToolbar {
                     NotifyDescriptor.OK_OPTION
             );
             
-            final Object option = DialogDisplayer.getDefault().notify(nde);
-
-            // If the users seclection was cancel, then do nothing. Otherwise add or
-            // remove the selected plugins from the favourites based on the users selection
-            if (option != NotifyDescriptor.CANCEL_OPTION) {
-                selectedPlugins.stream().forEach(name -> 
-                    DataAccessPreferenceUtilities.setFavourite(name, option == ADD_FAVOURITE)
-                );
-            }
+            NotifyDisplayer.displayAndWait(nde)
+                    .thenAccept(option -> {
+                        // If the users seclection was cancel, then do nothing. Otherwise add or
+                        // remove the selected plugins from the favourites based on the users selection
+                        if (option != NotifyDescriptor.CANCEL_OPTION) {
+                            selectedPlugins.stream().forEach(name -> 
+                                DataAccessPreferenceUtilities.setFavourite(name, option == ADD_FAVOURITE)
+                            );
+                        }
+                    });
         }
     }
     

@@ -369,7 +369,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         // The button cannot be disabled if a query is running or if one tab
         // in the pane has no selected plugin, an invalid time range,
         // or the selected plugins contain invalid parameter values.
-        System.out.println(!queryIsRunning + " && " + !canExecuteTabPane);
         return !queryIsRunning && !canExecuteTabPane;
     }
 }

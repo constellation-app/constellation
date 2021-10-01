@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPrefere
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -383,35 +384,31 @@ public class ButtonToolbarNGTest {
         when(plugin.getName()).thenReturn(pluginTitle);
         
         try (
-                final MockedStatic<DialogDisplayer> dialogDisplayerMockedStatic =
-                        Mockito.mockStatic(DialogDisplayer.class);
+                final MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic =
+                        Mockito.mockStatic(NotifyDisplayer.class);
                 final MockedStatic<DataAccessPreferenceUtilities> prefUtilsMockedStatic =
                         Mockito.mockStatic(DataAccessPreferenceUtilities.class);
         ) {
-            final DialogDisplayer dialogDisplayer = mock(DialogDisplayer.class);
-            dialogDisplayerMockedStatic.when(DialogDisplayer::getDefault).thenReturn(dialogDisplayer);
+            notifyDisplayerMockedStatic.when(() -> NotifyDisplayer.displayAndWait(any(NotifyDescriptor.class)))
+                    .thenAnswer(iom -> {
+                        final NotifyDescriptor descriptor = iom.getArgument(0);
+                        
+                        final String expectedMessage = "Add or remove plugins from your favourites category.\n\n"
+                            + "The following plugins were selected:\n"
+                            + pluginTitle + "\n"
+                            + "\nNote that you need to restart before changes take effect.";
             
-            when(dialogDisplayer.notify(any(NotifyDescriptor.class))).thenReturn(selectedOption);
+                        assertEquals(descriptor.getMessage(), expectedMessage);
+                        assertEquals(descriptor.getTitle(), "Manage Favourites");
+                        assertEquals(descriptor.getOptionType(), NotifyDescriptor.DEFAULT_OPTION);
+                        assertEquals(descriptor.getMessageType(), NotifyDescriptor.QUESTION_MESSAGE);
+                        assertEquals(descriptor.getOptions(), new Object[]{"Add", "Remove", NotifyDescriptor.CANCEL_OPTION});
+                        assertEquals(descriptor.getValue(), NotifyDescriptor.OK_OPTION);
+                        
+                        return CompletableFuture.completedFuture(selectedOption);
+                    });
             
             buttonToolbar.manageFavourites();
-            
-            final ArgumentCaptor<NotifyDescriptor> captor = ArgumentCaptor.forClass(NotifyDescriptor.class);
-            verify(dialogDisplayer).notify(captor.capture());
-            
-            final String expectedMessage = "Add or remove plugins from your favourites category.\n\n"
-                    + "The following plugins were selected:\n"
-                    + pluginTitle + "\n"
-                    + "\nNote that you need to restart before changes take effect.";
-            
-            System.out.println(expectedMessage);
-            System.out.println(captor.getValue().getMessage());
-            
-            assertEquals(captor.getValue().getMessage(), expectedMessage);
-            assertEquals(captor.getValue().getTitle(), "Manage Favourites");
-            assertEquals(captor.getValue().getOptionType(), NotifyDescriptor.DEFAULT_OPTION);
-            assertEquals(captor.getValue().getMessageType(), NotifyDescriptor.QUESTION_MESSAGE);
-            assertEquals(captor.getValue().getOptions(), new Object[]{"Add", "Remove", NotifyDescriptor.CANCEL_OPTION});
-            assertEquals(captor.getValue().getValue(), NotifyDescriptor.OK_OPTION);
             
             if (preferenceUtilsVerification != null) {
                 prefUtilsMockedStatic.verify(preferenceUtilsVerification);

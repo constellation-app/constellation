@@ -17,6 +17,12 @@ package au.gov.asd.tac.constellation.views.dataaccess.components;
 
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javax.swing.SwingUtilities;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
@@ -24,8 +30,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileChooserBuilder;
+import org.testfx.api.FxToolkit;
+import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -33,7 +44,23 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessResultsDirChooserNGTest {
+    private static final Logger LOGGER = Logger.getLogger(DataAccessResultsDirChooserNGTest.class.getName());
     
+    @BeforeClass
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
+    }
+
+    @AfterClass
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
+    }
     
     @Test
     public void init() {
@@ -54,6 +81,31 @@ public class DataAccessResultsDirChooserNGTest {
                 prefUtilsMockedStatic.verify(() -> DataAccessPreferenceUtilities
                         .setDataAccessResultsDir(expectedSelectedDir));
         }
+    }
+    
+    @Test
+    public void open_called_on_fx_ui_thread() {
+        Platform.runLater(() -> {
+            try {
+                new DataAccessResultsDirChooser().openAndSaveToPreferences();
+                fail("Should have thrown an illegal state exception");
+            } catch (IllegalStateException ex) {
+                // Do Nothing
+            }
+        });
         
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+    
+    @Test
+    public void open_called_on_awt_ui_thread() throws InterruptedException, InvocationTargetException {
+        SwingUtilities.invokeAndWait(() -> {
+            try {
+                new DataAccessResultsDirChooser().openAndSaveToPreferences();
+                fail("Should have thrown an illegal state exception");
+            } catch (IllegalStateException ex) {
+                // Do Nothing
+            }
+        });
     }
 }

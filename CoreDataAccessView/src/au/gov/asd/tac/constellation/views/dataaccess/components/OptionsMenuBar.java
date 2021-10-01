@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.views.dataaccess.components;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
+import java.util.concurrent.CompletableFuture;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -239,6 +241,7 @@ public class OptionsMenuBar {
      * for changes in the selection.
      */
     protected class SaveResultsListener implements ChangeListener<Boolean> {
+        private CompletableFuture<Void> lastChange = CompletableFuture.completedFuture(null);
         
         /**
          * If the save result menu checkbox becomes selected then present the user
@@ -258,14 +261,27 @@ public class OptionsMenuBar {
                             final Boolean newValue) {
             if (newValue) {
                 final DataAccessResultsDirChooser dirChooser = new DataAccessResultsDirChooser();
-                
-                if(dirChooser.openAndSaveToPreferences() == null) {
-                    getSaveResultsItem().setSelected(false);
-                }
+
+                lastChange = CompletableFuture.supplyAsync(() -> dirChooser.openAndSaveToPreferences())
+                        .thenAccept(selectedItem -> {
+                            if (selectedItem == null) {
+                                Platform.runLater(() -> getSaveResultsItem().setSelected(false));
+                            }
+                        });
             } else {
+                lastChange = CompletableFuture.completedFuture(null);
                 DataAccessPreferenceUtilities.setDataAccessResultsDir(null);
             }
         }
         
+        /**
+         * This is primarily present for testing purposes to ensure all work
+         * in the changed method is complete before verifying functionality.
+         *
+         * @return the future work to be completed by the lister after its last call
+         */
+        public CompletableFuture getLastChange() {
+            return lastChange;
+        }
     }
 }

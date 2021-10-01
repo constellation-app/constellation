@@ -663,9 +663,6 @@ public class DataAccessTabPaneNGTest {
             datPaneMockedStatic.when(() -> DataAccessTabPane.validateTabEnabledPlugins(same(tab2)))
                     .thenReturn(validTab2EnabledPlugins);
 
-            System.out.println(DataAccessTabPane.tabHasEnabledPlugins(tab1) + " " + DataAccessTabPane.validateTabEnabledPlugins(tab1));
-            System.out.println(DataAccessTabPane.tabHasEnabledPlugins(tab2) + " " + DataAccessTabPane.validateTabEnabledPlugins(tab2));
-            
             assertEquals(dataAccessTabPane.hasActiveAndValidPlugins(), expectActiveAndValidPlugins);
         }
     }
