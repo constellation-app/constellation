@@ -29,7 +29,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
@@ -72,6 +74,10 @@ public class BasicFindTab extends Tab {
     private ArrayList<Attribute> selectedEdgeAttributes = new ArrayList<>();
     private ArrayList<Attribute> selectedLinkAttributes = new ArrayList<>();
 
+    final ContextMenu contextMenu = new ContextMenu();
+    final MenuItem selectAllMenuItem = new MenuItem("Select All");
+    final MenuItem deselectAllMenuItem = new MenuItem("Deselect All");
+
     final long attributeModificationCounter = -1;
 
     // need to add menu items
@@ -112,6 +118,17 @@ public class BasicFindTab extends Tab {
 
             }
         });
+
+        selectAllMenuItem.setOnAction(event -> {
+            inAttributesMenu.getCheckModel().checkAll();
+        });
+        deselectAllMenuItem.setOnAction(event -> {
+            inAttributesMenu.getCheckModel().clearChecks();
+        });
+
+        inAttributesMenu.setOnContextMenuRequested(event -> {
+            contextMenu.show(inAttributesMenu, event.getScreenX(), event.getScreenY());
+        });
     }
 
     /**
@@ -149,6 +166,8 @@ public class BasicFindTab extends Tab {
 
         inAttributesMenu.setMaxWidth(DROP_DOWN_WIDTH);
         populateAttributes(GraphElementType.VERTEX);
+
+        contextMenu.getItems().addAll(selectAllMenuItem, deselectAllMenuItem);
 
         standardRadioBtn.setToggleGroup(textStyleTB);
         regExBtn.setToggleGroup(textStyleTB);
@@ -264,7 +283,6 @@ public class BasicFindTab extends Tab {
                     LOGGER.log(Level.SEVERE, a.getName() + "SAVED IN SELECTED ATTRIBUTES");
 
                 }
-
             }
         }
 
