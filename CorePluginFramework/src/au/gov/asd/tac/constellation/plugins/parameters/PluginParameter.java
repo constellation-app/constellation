@@ -73,6 +73,7 @@ public class PluginParameter<V extends ParameterValue> {
     private boolean enabled = true;
     private String helpID;
     private boolean isSuppressed = false;
+    private String requestBodyExample;
 
     private final List<ParameterChange> suppressedEvents = new ArrayList<>();
 
@@ -820,4 +821,21 @@ public class PluginParameter<V extends ParameterValue> {
         return pluginClass.getSimpleName() + SeparatorConstants.PERIOD + parameter;
     }
 
+    /**
+     * Get the swagger Request Body Example value.
+     *    
+     */
+    public final String getRequestBodyExampleJson() {
+        return requestBodyExample;
+    }
+    /**
+     * Set the swagger Request Body Example value.
+     *
+     * @param requestBodyExample The Request Body Example in Json format.
+     */
+    public final void setRequestBodyExampleJson(final String requestBodyExample) {
+        if (!Objects.equals(requestBodyExample, this.requestBodyExample)) {
+            this.requestBodyExample = requestBodyExample;
+        }
+    }
 }

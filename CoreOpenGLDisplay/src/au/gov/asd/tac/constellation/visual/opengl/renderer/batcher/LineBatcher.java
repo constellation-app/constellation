@@ -55,7 +55,6 @@ public class LineBatcher implements SceneBatcher {
     private int lineLineShader;
 
     private boolean drawForHitTest = false;
-    private boolean greyscale = false; // anaglyphic drawing
 
     // Uniform locations.
     private int lineShaderMVMatrix;
@@ -298,10 +297,6 @@ public class LineBatcher implements SceneBatcher {
         this.drawForHitTest = true;
     }
 
-    public void setNextDrawIsGreyscale() {
-        greyscale = true;
-    }
-
     private float opacity;
     private float motion;
     private float[] highlightColor;
@@ -318,7 +313,7 @@ public class LineBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
 
         if (batch.isDrawable()) {
             // Uniform variables
@@ -357,10 +352,9 @@ public class LineBatcher implements SceneBatcher {
             gl.glUniform1i(lineLineShaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1f(lineLineShaderAlpha, opacity);
             gl.glUniform4fv(lineLineShaderHighlightColor, 1, highlightColor, 0);
-            gl.glUniform1i(lineShaderGreyscale, greyscale ? 1 : 0);
+            gl.glUniform1i(lineLineShaderGreyscale, greyscale ? 1 : 0);
             batch.draw(gl);
         }
         drawForHitTest = false;
-        greyscale = false;
     }
 }

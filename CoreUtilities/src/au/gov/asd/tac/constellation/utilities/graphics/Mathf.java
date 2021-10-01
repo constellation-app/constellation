@@ -47,45 +47,6 @@ public final class Mathf {
         return x * INV_PI_DIV_180;
     }
 
-//    /**
-//     * Hours to degrees.
-//     *
-//     * @param x
-//     * @return
-//     */
-//    public static double m3dHrToDeg(double x)
-//    {
-//        return (x*(1.0/15.0));
-//    }
-//    /**
-//     * Hours to radians.
-//     *
-//     * @param x
-//     * @return
-//     */
-//    public static double m3dHrToRad(double x)
-//    {
-//        return degToRad(m3dHrToDeg(x));
-//    }
-//    /**
-//     * Degrees to hours.
-//     *
-//     * @param x
-//     * @return
-//     */
-//    public static double m3dDegToHr(double x)
-//    {
-//        return x*15.0;
-//    }
-//    /**
-//     * Radians to hours.
-//     * @param x
-//     * @return
-//     */
-//    public static double m3dRadToHr(double x)
-//    {
-//        return m3dDegToHr(radToDeg(x));
-//    }
     /**
      * Returns the smallest power of two greater than or equal to the argument.
      * <p>
@@ -106,28 +67,6 @@ public final class Mathf {
         return pow2;
     }
 
-//// Inject Rotation (3x3) into a full 4x4 matrix...
-////    void m3dInjectRotationMatrix44(M3DMatrix44f dst, final M3DMatrix33f src)
-//    void m3dInjectRotationMatrix44(float[] dst, final float[] src)
-//    {
-////        memcpy(dst, src, sizeof(float)*4);
-////        memcpy(dst+4, src+4, sizeof(float)*4);
-////        memcpy(dst+8, src+8, sizeof(float)*4);
-//        System.arraycopy(src, 0, dst, 0, 4);
-//        System.arraycopy(src, 4, dst, 4, 4);
-//        System.arraycopy(src, 8, dst, 8, 4);
-//    }
-//// Ditto above for doubles
-////    void m3dInjectRotationMatrix44(M3DMatrix44d dst, final M3DMatrix33d src)
-//    void m3dInjectRotationMatrix44(double[] dst, final double[] src)
-//    {
-////        memcpy(dst, src, sizeof(double)*4);
-////        memcpy(dst+4, src+4, sizeof(double)*4);
-////        memcpy(dst+8, src+8, sizeof(double)*4);
-//        System.arraycopy(src, 0, dst, 0, 4);
-//        System.arraycopy(src, 4, dst, 4, 4);
-//        System.arraycopy(src, 8, dst, 8, 4);
-//    }
     /**
      * Return the square of the distance between two points.
      * <p>
@@ -233,45 +172,6 @@ public final class Mathf {
         return dRet;
     }
 
-//    /**
-//     * Faster (and one shortcut) replacements for gluProject. Get Window
-//     * coordinates, discard Z.
-//     *
-//     * @param vPointOut
-//     * @param mModelView
-//     * @param mProjection
-//     * @param iViewPort
-//     * @param vPointIn
-//     */
-//    public static void projectXYZ(Vector2f vPointOut, Matrix44f mModelView, Matrix44f mProjection, int[] iViewPort, Vector3f vPointIn) {
-//        Vector4f vBack = new Vector4f();
-//        Vector4f vForth = new Vector4f();
-////	memcpy(vBack, vPointIn, sizeof(float)*3);
-//        System.arraycopy(vPointIn.a, 0, vBack.a, 0, 3);
-//        vBack.a[3] = 1.0f;
-////        transformVector(vForth, vBack, mModelView);
-////        transformVector(vBack, vForth, mProjection);
-//        vForth.transform(vBack, mModelView);
-//        vBack.transform(vForth, mProjection);
-//        if (!closeEnough(vBack.a[3], 0.0f, 0.000001f)) {
-//            float div = 1.0f / vBack.a[3];
-//            vBack.a[0] *= div;
-//            vBack.a[1] *= div;
-//            //vBack[2] *= div;
-//        }
-//        vPointOut.a[0] = (float) (iViewPort[0]) + (1.0f + (float) (vBack.a[0])) * (float) (iViewPort[2]) / 2.0f;
-//        vPointOut.a[1] = (float) (iViewPort[1]) + (1.0f + (float) (vBack.a[1])) * (float) (iViewPort[3]) / 2.0f;
-//        // This was put in for Grand Tour... I think it's right.
-//        // .... please report any bugs
-//        if (iViewPort[0] != 0) // Cast to float is expensive... avoid if posssible
-//        {
-//            vPointOut.a[0] -= (float) iViewPort[0];
-//        }
-//        if (iViewPort[1] != 0) {
-//            vPointOut.a[1] -= (float) iViewPort[1];
-//        }
-//    }
-//
     /**
      * This function does a three dimensional Catmull-Rom "spline" interpolation
      * between p1 and p2.
@@ -349,13 +249,10 @@ public final class Mathf {
         dv3v1.scale(dc2c1b);
 
         Vector3f.subtract(vTangent, dv2v1, dv3v1);
-//        vTangent.subtract(dv2v1, dv3v1);
         vTangent.scale(M);  // This potentially changes the direction of the vector
         vTangent.normalize();
 
         Vector3f B = new Vector3f();
-//        crossProduct(B, N, vTangent);
-//        crossProduct(vTangent, B, N);
         B.crossProduct(N, vTangent);
         vTangent.crossProduct(B, N);
         vTangent.normalize();
