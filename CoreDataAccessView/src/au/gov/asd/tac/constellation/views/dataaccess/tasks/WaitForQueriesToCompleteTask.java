@@ -90,6 +90,7 @@ public class WaitForQueriesToCompleteTask implements Runnable {
         
         Platform.runLater(() -> {
             DataAccessPaneState.setQueriesRunning(graphId, false);
+            DataAccessPaneState.removeAllRunningPlugins(graphId);
             if (graphId.equals(DataAccessPaneState.getCurrentGraphId())) {
                 dataAccessPane.update();
             }

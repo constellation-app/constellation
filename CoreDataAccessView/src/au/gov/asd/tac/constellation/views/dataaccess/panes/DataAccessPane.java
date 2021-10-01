@@ -120,8 +120,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             contextMenuEvent.consume();
         });
 
-        // TODO This is going to do a bit more than it used to but only
-        //      enabling/diabling the graph dependent menu items 
+        // Refresh all the status of menu items, execute buttons etc.
+        // based on the current state of the data access view
         update();
     }
 

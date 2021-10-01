@@ -262,7 +262,7 @@ public class OptionsMenuBar {
             if (newValue) {
                 final DataAccessResultsDirChooser dirChooser = new DataAccessResultsDirChooser();
 
-                lastChange = CompletableFuture.supplyAsync(() -> dirChooser.openAndSaveToPreferences())
+                lastChange = CompletableFuture.supplyAsync(dirChooser::openAndSaveToPreferences)
                         .thenAccept(selectedItem -> {
                             if (selectedItem == null) {
                                 Platform.runLater(() -> getSaveResultsItem().setSelected(false));

@@ -196,27 +196,33 @@ public final class TabContextMenu {
     }
 
     /**
-     * TODO
+     * Gets the menu item that will open a dialog listing all the available
+     * plugins for the associated tab. The user can then use that dialog to
+     * search for and select a plugin to reduce to (collapse all other plugins)
+     * on the tab.
      * 
-     * @return 
+     * @return the find plugin menu item
+     * @see PluginFinder
      */
     public MenuItem getFindPluginMenuItem() {
         return findPluginMenuItem;
     }
 
     /**
-     * TODO
+     * Gets the menu item that when clicked will expand all the plugin sections
+     * on the associated tab.
      * 
-     * @return 
+     * @return the open all sections menu item
      */
     public MenuItem getOpenAllSectionsMenuItem() {
         return openAllSectionsMenuItem;
     }
 
     /**
-     * TODO
+     * Gets the menu item that when clicked will collapse all the plugin sections
+     * on the associated tab.
      * 
-     * @return 
+     * @return the close all sections menu item
      */
     public MenuItem getCloseAllSectionsMenuItem() {
         return closeAllSectionsMenuItem;

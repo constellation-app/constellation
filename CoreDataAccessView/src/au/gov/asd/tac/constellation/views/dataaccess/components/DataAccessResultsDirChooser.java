@@ -100,6 +100,16 @@ public class DataAccessResultsDirChooser {
     class ShowDialog implements Runnable {
         private File selectedDir;
         
+        /**
+         * Creates a new show dialog task.
+         */
+        public ShowDialog() {
+            selectedDir = null;
+        }
+        
+        /**
+         * Opens the save file dialog and waits for a user response.
+         */
         @Override
         public void run() {
             selectedDir = getFileChooser().showSaveDialog();

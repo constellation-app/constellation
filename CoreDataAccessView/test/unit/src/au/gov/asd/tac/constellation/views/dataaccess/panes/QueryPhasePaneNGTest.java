@@ -380,13 +380,6 @@ public class QueryPhasePaneNGTest {
     public void testRunPlugins() {
         // Initialize the current graph in the state.
         DataAccessPaneState.setCurrentGraphId("GraphId");
-        
-        // Adding existing plugin to the current graph state to show that existing
-        // running plugins are removed.
-        DataAccessPaneState.addRunningPlugin(
-                CompletableFuture.completedFuture("To Be Removed"),
-                "Plugin To Be Removed"
-        );
                 
         final QueryPhasePane instance = spy(new QueryPhasePane(new HashMap<>(), null, null));
         

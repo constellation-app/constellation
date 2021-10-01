@@ -31,8 +31,8 @@ import org.netbeans.spi.quicksearch.SearchRequest;
 import org.netbeans.spi.quicksearch.SearchResponse;
 
 /**
- * Netbeans {@link SearchProvider} that backs the plugin search filter in the
- * Data Access view.
+ * Netbeans {@link SearchProvider} that backs the querying of data access plugins
+ * in the quick search box.
  *
  * @author algol
  */

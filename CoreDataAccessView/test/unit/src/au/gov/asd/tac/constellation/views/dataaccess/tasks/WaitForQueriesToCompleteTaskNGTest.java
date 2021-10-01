@@ -107,6 +107,7 @@ public class WaitForQueriesToCompleteTaskNGTest {
         waitForQueriesToCompleteTask.run();
 
         paneStateMockedStatic.verify(() -> DataAccessPaneState.setQueriesRunning(GRAPH_ID, false));
+        paneStateMockedStatic.verify(() -> DataAccessPaneState.removeAllRunningPlugins(GRAPH_ID));
         verify(dataAccessPane).update();
     }
     
@@ -124,6 +125,7 @@ public class WaitForQueriesToCompleteTaskNGTest {
         waitForQueriesToCompleteTask.run();
 
         paneStateMockedStatic.verify(() -> DataAccessPaneState.setQueriesRunning(GRAPH_ID, false));
+        paneStateMockedStatic.verify(() -> DataAccessPaneState.removeAllRunningPlugins(GRAPH_ID));
         verify(dataAccessPane, never()).update();
     }
     
@@ -155,6 +157,7 @@ public class WaitForQueriesToCompleteTaskNGTest {
         );
         
         paneStateMockedStatic.verify(() -> DataAccessPaneState.setQueriesRunning(GRAPH_ID, false));
+        paneStateMockedStatic.verify(() -> DataAccessPaneState.removeAllRunningPlugins(GRAPH_ID));
         verify(dataAccessPane).update();
     }
 }

@@ -250,13 +250,13 @@ public class DataAccessTabPane {
                 .getExecuteButtonTop().isDisabled();
                     
         getTabPane().getTabs().forEach(tab -> {
-                    final boolean hasEnabledPlugins = tabHasEnabledPlugins(tab);
+            final boolean hasEnabledPlugins = tabHasEnabledPlugins(tab);
                     
-                    updateTabMenu(
-                            tab,
-                            hasEnabledPlugins && isExecuteButtonIsGo && isExecuteButtonEnabled,
-                            hasEnabledPlugins
-                    );
+            updateTabMenu(
+                    tab,
+                    hasEnabledPlugins && isExecuteButtonIsGo && isExecuteButtonEnabled,
+                    hasEnabledPlugins
+            );
         });
     }
     

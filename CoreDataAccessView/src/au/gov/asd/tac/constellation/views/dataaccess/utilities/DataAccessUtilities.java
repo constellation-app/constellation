@@ -22,12 +22,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
-import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessConcept;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javax.swing.SwingUtilities;
@@ -41,6 +39,13 @@ import org.openide.windows.WindowManager;
  */
 public class DataAccessUtilities {
 
+    /**
+     * Private constructor to prevent external initialization.
+     */
+    private DataAccessUtilities() {
+        
+    }
+    
     /**
      * A convenience method for getting the Pane used by the Data Access view.
      * <p>
@@ -70,7 +75,7 @@ public class DataAccessUtilities {
 
     /**
      * Load the data access graph state and update the data access view.
-     * <p>
+     * <p/>
      * Currently only looking at string parameter types and only shows the first
      * step if it exists.
      *

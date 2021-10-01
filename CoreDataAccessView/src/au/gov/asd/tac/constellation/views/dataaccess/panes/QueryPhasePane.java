@@ -201,7 +201,7 @@ public class QueryPhasePane extends VBox {
      * @param text the text to search for across plugin names
      */
     public void showMatchingPlugins(final String text) {
-        if (StringUtils.isNotBlank(text)) {
+        if (text != null) {
             final String textLowerCased = text.toLowerCase();
             
             for (final Node node : dataSourceList.getChildrenUnmodifiable()) {
@@ -210,7 +210,8 @@ public class QueryPhasePane extends VBox {
                 
                 for (final DataSourceTitledPane titledPane : headingPane.getDataSources()) {
                     titledPane.getStyleClass().remove(DataSourceTitledPane.MATCHED_STYLE);
-                    if (titledPane.getPlugin().getName().toLowerCase().contains(textLowerCased)) {
+                    if (StringUtils.isNotBlank(text) 
+                            && titledPane.getPlugin().getName().toLowerCase().contains(textLowerCased)) {
                         titledPane.getStyleClass().add(DataSourceTitledPane.MATCHED_STYLE);
                         shouldExpand = true;
                     }
@@ -254,9 +255,6 @@ public class QueryPhasePane extends VBox {
         
         final PluginSynchronizer synchroniser = new PluginSynchronizer(pluginsToRun);
         final List<Future<?>> newAsync = new ArrayList<>(pluginsToRun);
-        
-        // TODO shouldn't this cancel the jobs as well??
-        DataAccessPaneState.removeAllRunningPlugins();
         
         getDataAccessPanes().stream()
                 .filter(DataSourceTitledPane::isQueryEnabled)
