@@ -185,7 +185,7 @@ public class DataAccessTabPane {
         final boolean hasEnabledPlugins = tabHasEnabledPlugins(newTab);
         final boolean isExecuteButtonIsGo = DataAccessPaneState.isExecuteButtonIsGo();
         final boolean isExecuteButtonEnabled = !getDataAccessPane().getButtonToolbar()
-                .getExecuteButton().isDisabled();
+                .getExecuteButtonTop().isDisabled();
         
         updateTabMenu(
                 newTab,
@@ -247,7 +247,7 @@ public class DataAccessTabPane {
     public void updateTabMenus() {
         final boolean isExecuteButtonIsGo = DataAccessPaneState.isExecuteButtonIsGo();
         final boolean isExecuteButtonEnabled = !getDataAccessPane().getButtonToolbar()
-                .getExecuteButton().isDisabled();
+                .getExecuteButtonTop().isDisabled();
                     
         getTabPane().getTabs().forEach(tab -> {
                     final boolean hasEnabledPlugins = tabHasEnabledPlugins(tab);

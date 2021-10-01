@@ -723,7 +723,7 @@ public class DataAccessTabPaneNGTest {
         final Button executeButton = mock(Button.class);
         
         when(dataAccessPane.getButtonToolbar()).thenReturn(buttonToolbar);
-        when(buttonToolbar.getExecuteButton()).thenReturn(executeButton);
+        when(buttonToolbar.getExecuteButtonTop()).thenReturn(executeButton);
  
         // Set up the variable flags that determine what values are passed into
         // updateTabMenu.
@@ -842,7 +842,7 @@ public class DataAccessTabPaneNGTest {
         final Button executeButton = mock(Button.class);
         
         when(dataAccessPane.getButtonToolbar()).thenReturn(buttonToolbar);
-        when(buttonToolbar.getExecuteButton()).thenReturn(executeButton);
+        when(buttonToolbar.getExecuteButtonTop()).thenReturn(executeButton);
         
         try (
                 // In order to ensure the correct behaviour is applied to the new

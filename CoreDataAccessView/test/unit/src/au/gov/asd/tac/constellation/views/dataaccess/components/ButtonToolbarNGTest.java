@@ -34,6 +34,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -45,7 +46,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
-import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.MockedStatic.Verification;
@@ -54,15 +54,16 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -105,6 +106,18 @@ public class ButtonToolbarNGTest {
     
     @Test
     public void init() {
+        final QualityControlAutoButton qualityControlAutoButtonCopy = new QualityControlAutoButton() {
+            @Override
+            protected void update(QualityControlState state) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public QualityControlAutoButton copy() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
+        
         final QualityControlAutoButton qualityControlAutoButton = new QualityControlAutoButton() {
             @Override
             protected void update(QualityControlState state) {
@@ -113,7 +126,7 @@ public class ButtonToolbarNGTest {
 
             @Override
             public QualityControlAutoButton copy() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                return qualityControlAutoButtonCopy;
             }
         };
         
@@ -172,14 +185,24 @@ public class ButtonToolbarNGTest {
         // Execute Button
         
         verifyButton(
-                buttonToolbar.getExecuteButton(),
+                buttonToolbar.getExecuteButtonTop(),
                 "Go",
                 "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;",
                 null,
                 null
         );
         
-        assertTrue(buttonToolbar.getExecuteButton().getOnAction() instanceof ExecuteListener);
+        verifyButton(
+                buttonToolbar.getExecuteButtonBottom(),
+                "Go",
+                "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;",
+                null,
+                null
+        );
+        
+        assertTrue(buttonToolbar.getExecuteButtonTop().getOnAction() instanceof ExecuteListener);
+        assertTrue(buttonToolbar.getExecuteButtonBottom().getOnAction() instanceof ExecuteListener);
+        assertSame(buttonToolbar.getExecuteButtonTop().getOnAction(), buttonToolbar.getExecuteButtonBottom().getOnAction());
         
         // Help, Add and Favourite HBox
         
@@ -193,20 +216,36 @@ public class ButtonToolbarNGTest {
         );
         assertEquals(buttonToolbar.getHelpAddFavHBox().getSpacing(), 4.0);
         
-        // Rab Region Execute HBox
+        // Rab Region Execute HBox Top
         
-        assertEquals(
-                buttonToolbar.getRabRegionExectueHBox().getChildren().get(0),
+        assertSame(
+                buttonToolbar.getRabRegionExectueHBoxTop().getChildren().get(0),
                 qualityControlAutoButton
         );
         
-        final Region spacer = (Region) buttonToolbar.getRabRegionExectueHBox().getChildren().get(1);
-        assertEquals(spacer.getMinWidth(), 20.0);
-        assertEquals(spacer.getMinHeight(), 0.0);
+        final Region topSpacer = (Region) buttonToolbar.getRabRegionExectueHBoxTop().getChildren().get(1);
+        assertEquals(topSpacer.getMinWidth(), 20.0);
+        assertEquals(topSpacer.getMinHeight(), 0.0);
         
         assertEquals(
-                buttonToolbar.getRabRegionExectueHBox().getChildren().get(2),
-                buttonToolbar.getExecuteButton()
+                buttonToolbar.getRabRegionExectueHBoxTop().getChildren().get(2),
+                buttonToolbar.getExecuteButtonTop()
+        );
+        
+        // Rab Region Execute HBox Bottom
+        
+        assertSame(
+                buttonToolbar.getRabRegionExectueHBoxBottom().getChildren().get(0),
+                qualityControlAutoButtonCopy
+        );
+        
+        final Region bottomSpacer = (Region) buttonToolbar.getRabRegionExectueHBoxBottom().getChildren().get(1);
+        assertEquals(bottomSpacer.getMinWidth(), 27.0);
+        assertEquals(bottomSpacer.getMinHeight(), 0.0);
+        
+        assertEquals(
+                buttonToolbar.getRabRegionExectueHBoxBottom().getChildren().get(2),
+                buttonToolbar.getExecuteButtonBottom()
         );
         
         // Options Toolbar
@@ -220,7 +259,7 @@ public class ButtonToolbarNGTest {
                 buttonToolbar.getOptionsToolbar().getChildren(),
                 FXCollections.observableArrayList(
                         buttonToolbar.getHelpAddFavHBox(),
-                        buttonToolbar.getRabRegionExectueHBox()
+                        buttonToolbar.getRabRegionExectueHBoxTop()
                 )
         );
     }
@@ -228,7 +267,8 @@ public class ButtonToolbarNGTest {
     @Test
     public void changeExecuteButtonState_withoutDisableFlag() {
         final Button executeButton = mock(Button.class);
-        doReturn(executeButton).when(buttonToolbar).getExecuteButton();
+        doReturn(executeButton).when(buttonToolbar).getExecuteButtonTop();
+        doReturn(executeButton).when(buttonToolbar).getExecuteButtonBottom();
         
         when(executeButton.isDisable()).thenReturn(false);
         
@@ -236,23 +276,24 @@ public class ButtonToolbarNGTest {
         
         WaitForAsyncUtils.waitForFxEvents();
         
-        verify(executeButton).setText("Stop");
-        verify(executeButton).setStyle("-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
-        verify(executeButton).setDisable(false);
+        verify(executeButton, times(2)).setText("Stop");
+        verify(executeButton, times(2)).setStyle("-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
+        verify(executeButton, times(2)).setDisable(false);
     }
     
     @Test
     public void changeExecuteButtonState_withDisableFlag() {
         final Button executeButton = mock(Button.class);
-        doReturn(executeButton).when(buttonToolbar).getExecuteButton();
+        doReturn(executeButton).when(buttonToolbar).getExecuteButtonTop();
+        doReturn(executeButton).when(buttonToolbar).getExecuteButtonBottom();
         
         buttonToolbar.changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.STOP, false);
         
         WaitForAsyncUtils.waitForFxEvents();
         
-        verify(executeButton).setText("Stop");
-        verify(executeButton).setStyle("-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
-        verify(executeButton).setDisable(false);
+        verify(executeButton, times(2)).setText("Stop");
+        verify(executeButton, times(2)).setStyle("-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
+        verify(executeButton, times(2)).setDisable(false);
     }
     
     @Test
@@ -264,7 +305,7 @@ public class ButtonToolbarNGTest {
         assertEquals(
                 buttonToolbar.getOptionsToolbar().getChildren(),
                 FXCollections.observableArrayList(
-                        buttonToolbar.getRabRegionExectueHBox(),
+                        buttonToolbar.getRabRegionExectueHBoxTop(),
                         buttonToolbar.getHelpAddFavHBox()
                 )
         );
@@ -280,7 +321,7 @@ public class ButtonToolbarNGTest {
                 buttonToolbar.getOptionsToolbar().getChildren(),
                 FXCollections.observableArrayList(
                         buttonToolbar.getHelpAddFavHBox(),
-                        buttonToolbar.getRabRegionExectueHBox()
+                        buttonToolbar.getRabRegionExectueHBoxTop()
                 )
         );
         

@@ -26,19 +26,15 @@ import au.gov.asd.tac.constellation.views.dataaccess.listeners.ExecuteListener;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
-import java.awt.EventQueue;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.Tooltip;
@@ -46,9 +42,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
@@ -104,12 +98,14 @@ public class ButtonToolbar {
     private Button addButton;
     private Button favouriteButton;
     
-    private Button executeButton;
+    private Button executeButtonTop;
+    private Button executeButtonBottom;
     
     private GridPane optionsToolbar;
     
     private HBox helpAddFavHBox;
-    private HBox rabRegionExectueHBox;
+    private HBox rabRegionExectueHBoxTop;
+    private HBox rabRegionExectueHBoxBottom;
     
     /**
      * Creates a new data access view button toolbar.
@@ -174,9 +170,15 @@ public class ButtonToolbar {
         // Execute Button
         ////////////////////
         
-        executeButton = new Button(EXECUTE_GO);
-        executeButton.setStyle(GO_STYLE);
-        executeButton.setOnAction(new ExecuteListener(dataAccessPane));
+        final ExecuteListener executeButtonListener = new ExecuteListener(dataAccessPane);
+        
+        executeButtonTop = new Button(EXECUTE_GO);
+        executeButtonTop.setStyle(GO_STYLE);
+        executeButtonTop.setOnAction(executeButtonListener);
+        
+        executeButtonBottom = new Button(EXECUTE_GO);
+        executeButtonBottom.setStyle(GO_STYLE);
+        executeButtonBottom.setOnAction(executeButtonListener);
         
         ////////////////////
         // Button Container
@@ -185,24 +187,35 @@ public class ButtonToolbar {
         helpAddFavHBox = new HBox(helpButton, addButton, favouriteButton);
         helpAddFavHBox.setSpacing(4);
         
-        rabRegionExectueHBox = new HBox();
-        rabRegionExectueHBox.setSpacing(4);
-
+        rabRegionExectueHBoxTop = new HBox();
+        rabRegionExectueHBoxTop.setSpacing(4);
+        
+        rabRegionExectueHBoxBottom = new HBox();
+        rabRegionExectueHBoxBottom.setAlignment(Pos.TOP_RIGHT);
+        rabRegionExectueHBoxBottom.setPadding(new Insets(10));
+        
         Optional.ofNullable(Lookup.getDefault().lookup(QualityControlAutoButton.class))
-                .ifPresent(button -> rabRegionExectueHBox.getChildren().add(button));
+                .ifPresent(button -> {
+                    rabRegionExectueHBoxTop.getChildren().add(button);
+                    rabRegionExectueHBoxBottom.getChildren().add(button.copy());
+                });
 
         // add some padding between the Go button and the previous button to avoid accidental clicking
-        final Region region = new Region();
-        region.setMinSize(20, 0);
+        final Region regionTop = new Region();
+        regionTop.setMinSize(20, 0);
         
-        rabRegionExectueHBox.getChildren().addAll(region, executeButton);
+        final Region regionBottom = new Region();
+        regionBottom.setMinSize(27, 0);
+        
+        rabRegionExectueHBoxTop.getChildren().addAll(regionTop, executeButtonTop);
+        rabRegionExectueHBoxBottom.getChildren().addAll(regionBottom, executeButtonBottom);
         
         optionsToolbar = new GridPane();
         optionsToolbar.setPadding(new Insets(4));
         optionsToolbar.setHgap(4);
         optionsToolbar.setVgap(4);
         optionsToolbar.add(helpAddFavHBox, 0, 0);
-        optionsToolbar.add(rabRegionExectueHBox, 1, 0);
+        optionsToolbar.add(rabRegionExectueHBoxTop, 1, 0);
     }
     
     /**
@@ -212,7 +225,7 @@ public class ButtonToolbar {
      * @param state the new state to set the execute button to
      */
     public void changeExecuteButtonState(final ExecuteButtonState state) {
-        changeExecuteButtonState(state, getExecuteButton().isDisable());
+        changeExecuteButtonState(state, getExecuteButtonTop().isDisable());
     }
     
     /**
@@ -225,9 +238,13 @@ public class ButtonToolbar {
     public void changeExecuteButtonState(final ExecuteButtonState state,
                                          final boolean disable) {
         Platform.runLater(() -> {
-            getExecuteButton().setText(state.getText());
-            getExecuteButton().setStyle(state.getStyle());
-            getExecuteButton().setDisable(disable);
+            getExecuteButtonTop().setText(state.getText());
+            getExecuteButtonTop().setStyle(state.getStyle());
+            getExecuteButtonTop().setDisable(disable);
+            
+            getExecuteButtonBottom().setText(state.getText());
+            getExecuteButtonBottom().setStyle(state.getStyle());
+            getExecuteButtonBottom().setDisable(disable);
         });
     }
 
@@ -236,9 +253,9 @@ public class ButtonToolbar {
      */
     public void handleShrinkingPane() {
         getOptionsToolbar().getChildren().remove(getHelpAddFavHBox());
-        getOptionsToolbar().getChildren().remove(getRabRegionExectueHBox());
+        getOptionsToolbar().getChildren().remove(getRabRegionExectueHBoxTop());
 
-        getOptionsToolbar().add(getRabRegionExectueHBox(), 0, 0);
+        getOptionsToolbar().add(getRabRegionExectueHBoxTop(), 0, 0);
         getOptionsToolbar().add(getHelpAddFavHBox(), 0, 1);
 
         GridPane.setHalignment(getHelpAddFavHBox(), HPos.LEFT);
@@ -249,10 +266,10 @@ public class ButtonToolbar {
      */
     public void handleGrowingPane() {
         getOptionsToolbar().getChildren().remove(getHelpAddFavHBox());
-        getOptionsToolbar().getChildren().remove(getRabRegionExectueHBox());
+        getOptionsToolbar().getChildren().remove(getRabRegionExectueHBoxTop());
 
         getOptionsToolbar().add(getHelpAddFavHBox(), 0, 0);
-        getOptionsToolbar().add(getRabRegionExectueHBox(), 1, 0);
+        getOptionsToolbar().add(getRabRegionExectueHBoxTop(), 1, 0);
 
         GridPane.setHalignment(getHelpAddFavHBox(), HPos.CENTER);
     }
@@ -286,16 +303,28 @@ public class ButtonToolbar {
     }
 
     /**
-     * 
-     * @return 
+     * Gets the execute button at the top of the data access view which when clicked
+     * will run all the selected plugins.
+     *
+     * @return the top execute button
      */
-    public Button getExecuteButton() {
-        return executeButton;
+    public Button getExecuteButtonTop() {
+        return executeButtonTop;
+    }
+    
+    /**
+     * Gets the execute button at the bottom of the data access view which when clicked
+     * will run all the selected plugins.
+     *
+     * @return the bottom execute button
+     */
+    public Button getExecuteButtonBottom() {
+        return executeButtonBottom;
     }
 
     /**
      * The options toolbar contains the {@link #getHelpAddFavHBox()} and
-     * {@link #getRabRegionExectueHBox()}, displayed in a 1 x 2 grid.
+     * {@link #getRabRegionExectueHBoxTop()}, displayed in a 1 x 2 grid.
      *
      * @return the options toolbar
      */
@@ -313,12 +342,21 @@ public class ButtonToolbar {
     }
 
     /**
-     * A horizontal box containing the execute button.
+     * A horizontal box containing the top execute button.
      *
-     * @return the execute button in a horizontal box
+     * @return the top execute button in a horizontal box
      */
-    public HBox getRabRegionExectueHBox() {
-        return rabRegionExectueHBox;
+    public HBox getRabRegionExectueHBoxTop() {
+        return rabRegionExectueHBoxTop;
+    }
+    
+    /**
+     * A horizontal box containing the bottom execute button.
+     *
+     * @return the bottom execute button in a horizontal box
+     */
+    public HBox getRabRegionExectueHBoxBottom() {
+        return rabRegionExectueHBoxBottom;
     }
     
     /**
@@ -336,8 +374,6 @@ public class ButtonToolbar {
      * want to add or remove the selected plugins to/from their favourites.
      */
     protected void manageFavourites() {
-        NotifyDisplayer.displayAlert(GO_STYLE, EXECUTE_GO, GO_STYLE, Alert.AlertType.ERROR);
-        
         // Get a list of the selected plugins
         final List<String> selectedPlugins = new ArrayList<>();
         getDataAccessPane().getDataAccessTabPane().getQueryPhasePaneOfCurrentTab()

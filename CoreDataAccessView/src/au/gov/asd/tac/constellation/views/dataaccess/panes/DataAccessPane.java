@@ -132,7 +132,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         final VBox vbox = new VBox(
                 getOptionsMenuBar().getMenuBar(),
                 getSearchPluginTextField(),
-                getDataAccessTabPane().getTabPane()
+                getDataAccessTabPane().getTabPane(),
+                getButtonToolbar().getRabRegionExectueHBoxBottom()
         );
         VBox.setVgrow(getDataAccessTabPane().getTabPane(), Priority.ALWAYS);
         

@@ -170,11 +170,12 @@ public class DataAccessPaneNGTest {
         
         final VBox vbox = (VBox) dataAccessPane.getChildren().get(0);
         
-        assertEquals(vbox.getChildren().size(), 3);
+        assertEquals(vbox.getChildren().size(), 4);
         
         assertSame(vbox.getChildren().get(0), dataAccessPane.getOptionsMenuBar().getMenuBar());
         assertSame(vbox.getChildren().get(1), dataAccessPane.getSearchPluginTextField());
         assertSame(vbox.getChildren().get(2), dataAccessPane.getDataAccessTabPane().getTabPane());
+        assertSame(vbox.getChildren().get(3), dataAccessPane.getButtonToolbar().getRabRegionExectueHBoxBottom());
         
         assertEquals(AnchorPane.getTopAnchor(vbox), 0.0);
         assertEquals(AnchorPane.getBottomAnchor(vbox), 0.0);
