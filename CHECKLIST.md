@@ -12,18 +12,18 @@ submitting a pull request.
 - [ ] Format your code using the default NetBeans formatter settings.
     For specifics see the [style guide](STYLE_GUIDELINES.md).
 
-- [ ] Document code based on the [style guide](STYLE_GUIDELINES.md)
+- [ ] Document code based on the [style guide](STYLE_GUIDELINES.md).
 
-- [ ] Javadoc classes and methods
+- [ ] Javadoc classes and methods for any you introduce or modify.
 
-- [ ] Unit testing changes in your PR
+- [ ] Unit testing changes in your PR.
 
     - Unit testing changes you have made is required and should be
     over 80% code coverage at a minimum.
 
-    - If any classes you have changed do not already have a unit tests
+    - If any classes you have changed do not already have a unit test
     then it is **NOT** on you to test the entire class, rather the
-    delta changes only.
+    changes you have made.
 
     - Refer to the `Core Table View` as a baseline of how tests should
     be written.
@@ -31,27 +31,30 @@ submitting a pull request.
     - Use `Mockito`, `FxToolkit` and `FxRobot` as required.
 
 - [ ] Update the [change log](CHANGELOG.md) to inform developers of
-    important improvements or changes
+    important improvements or changes.
 
     -   You must start with Added, Fixed, Improved, Moved, Removed,
-        Renamed or Updated and sort them alphabetically
+        Renamed or Updated and sort them alphabetically.
 
 - [ ] Update [what's new](CoreWhatsNewView/src/au/gov/asd/tac/constellation/views/whatsnew/whatsnew.txt)
-    if you want to inform users of your change
+    if you want to inform users of your change.
 
-- [ ] Update help pages (including relevant images) as required
+- [ ] Update help pages (including relevant images) as required.
 
 - [ ] Ensure that new ***leaks*** or ***code smells*** are not
     introduced by parsing your code using `sonar-scanner` or checking
-    via [Sonar Qube](https://sonarcloud.io)
+    via [Sonar Qube](https://sonarcloud.io).
 
-- [ ] Avoid OS dependant code (e.g. Windows or Linux)
+    -   For any false positives or smells you decide not to resolve please
+        clearly outline why not.
+
+- [ ] Avoid OS dependant code (e.g. Windows or Linux).
 
 
 ## Coding Conventions
 
 - [ ] Utility classes should end with the word Utilities (i.e not Util
-    or Utility)
+    or Utility).
 
 - [ ] Use a class specific logger and call it `LOGGER` using
     `java.util.logging.Logger`. Do not use `System.out.println` or
@@ -60,7 +63,7 @@ submitting a pull request.
     -   Note you should not use `org.apache.log4j.Logger` because it
         won’t appear in the logs.
 
-- [ ] Use `StandardCharsets.UTF_8.name()` instead of `“UTF-8”`
+- [ ] Use `StandardCharsets.UTF_8.name()` instead of `“UTF-8”`.
 
 - [ ] When developing a plugin, the plugin parameters have a label and
     description.
