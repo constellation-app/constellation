@@ -20,7 +20,10 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javax.swing.SwingUtilities;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,6 +35,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileChooserBuilder;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import org.testng.annotations.AfterClass;
@@ -45,6 +49,8 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class FileChooserNGTest {
+    private static final Logger LOGGER = Logger.getLogger(FileChooserNGTest.class.getName());
+    
     private static MockedStatic<SwingUtilities> swingUtilsMockedStatic;
     private static MockedStatic<Platform> platformMockedStatic;
     private static MockedStatic<EventQueue> eventQueueMockedStatic;
@@ -54,6 +60,10 @@ public class FileChooserNGTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
+        
         swingUtilsMockedStatic = Mockito.mockStatic(SwingUtilities.class);
         platformMockedStatic = Mockito.mockStatic(Platform.class);
         eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class);
@@ -66,6 +76,12 @@ public class FileChooserNGTest {
         platformMockedStatic.close();
         eventQueueMockedStatic.close();
         completableFutureMockedStatic.close();
+        
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
