@@ -57,35 +57,35 @@ public class TOCGeneratorNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-//
-//    @Test
-//    public void testCreateTOCFile() {
-//        System.out.println("createTOCFile");
-//
-//        File tempFileTOC = null;
-//        String validPath = "";
-//        try {
-//            try {
-//                // Create a temp file to grab a valid path on the filesystem
-//                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
-//                validPath = tempFileTOC.getAbsolutePath();
-//
-//            } catch (final IOException ex) {
-//                Exceptions.printStackTrace(ex);
-//            }
-//        } finally {
-//            if (tempFileTOC != null && tempFileTOC.exists()) {
-//                tempFileTOC.delete();
-//            }
-//        }
-//        // make a POJO at the path, check if a real file exists. There shouldn't be.
-//        final File tempFileAtValidPath = new File(validPath);
-//        assertFalse(tempFileAtValidPath.exists());
-//
-//        // run the method, assert that it returns true for success, and that there is now a file at that location.
-//        assertTrue(TOCGenerator.createTOCFile(validPath));
-//        assertTrue(tempFileAtValidPath.exists());
-//    }
+
+    @Test
+    public void testCreateTOCFile() {
+        System.out.println("createTOCFile");
+
+        File tempFileTOC = null;
+        String validPath = "";
+        try {
+            try {
+                // Create a temp file to grab a valid path on the filesystem
+                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
+                validPath = tempFileTOC.getAbsolutePath();
+
+            } catch (final IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        } finally {
+            if (tempFileTOC != null && tempFileTOC.exists()) {
+                tempFileTOC.delete();
+            }
+        }
+        // make a POJO at the path, check if a real file exists. There shouldn't be.
+        final File tempFileAtValidPath = new File(validPath);
+        assertFalse(tempFileAtValidPath.exists());
+
+        // run the method, assert that it returns true for success, and that there is now a file at that location.
+        assertTrue(TOCGenerator.createTOCFile(validPath));
+        assertTrue(tempFileAtValidPath.exists());
+    }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testCreateTOCFileFail() {
