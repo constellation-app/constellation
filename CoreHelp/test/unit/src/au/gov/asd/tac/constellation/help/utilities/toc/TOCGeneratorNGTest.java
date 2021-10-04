@@ -93,13 +93,13 @@ public class TOCGeneratorNGTest {
 //        final String invalidPath = null;
 //        TOCGenerator.createTOCFile(invalidPath);
 //    }
-//
-//    @Test(expectedExceptions = IllegalArgumentException.class)
-//    public void testCreateTOCFileFail2() {
-//        System.out.println("createTOCFileFail");
-//        final String invalidPath = "-=invali.d/p%67a,th/does?nt/e(xist].m\\d";
-//        TOCGenerator.createTOCFile(invalidPath);
-//    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testCreateTOCFileFail2() {
+        System.out.println("createTOCFileFail");
+        final String invalidPath = "-=invali.d/p%67a,th/does?nt/e(xist].m\\d";
+        TOCGenerator.createTOCFile(invalidPath);
+    }
 
     @Test
     public void testCreateTOCFileExists() {
