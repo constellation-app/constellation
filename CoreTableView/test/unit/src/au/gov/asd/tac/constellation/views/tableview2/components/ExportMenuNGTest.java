@@ -29,6 +29,8 @@ import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToCsvFilePlug
 import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToExcelFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -44,6 +46,7 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javax.swing.JFileChooser;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -56,10 +59,10 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileChooserBuilder;
 import org.testfx.api.FxToolkit;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -200,6 +203,38 @@ public class ExportMenuNGTest {
             verify(actionEvent).consume();
         }
 
+    }
+    
+    @Test
+    public void exportFileChooser() throws IOException {
+        final String fileChooserTitle = "File Chooser Title";
+        final String expectedFileExtension = ".json";
+        final String fileChooserDescription = "File Filter Description";
+        
+        ExportMenuItemActionHandler handler = exportMenu.new ExportMenuItemActionHandler(fileChooserTitle, expectedFileExtension, fileChooserDescription, null);
+        
+        final JFileChooser fileChooser = handler.getExportFileChooser().createFileChooser();
+        
+        assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
+        assertEquals(fileChooser.getChoosableFileFilters().length, 2);
+        
+        assertEquals(fileChooser.getChoosableFileFilters()[0].getDescription(), "All Files");
+        
+        assertEquals(fileChooser.getChoosableFileFilters()[1].getDescription(), fileChooserDescription);
+        
+        // File does not end with correct extension
+        final File tmpFileInvalid = File.createTempFile("test", ".random");
+        assertEquals(fileChooser.getChoosableFileFilters()[1].accept(tmpFileInvalid), false);
+        
+        // File does not exist
+        assertEquals(fileChooser.getChoosableFileFilters()[1].accept(new File("/tmp/test" + expectedFileExtension)), false);
+        
+        // File is valid. Exists and ends with correct extension
+        final File tmpFileValid = File.createTempFile("test", expectedFileExtension);
+        assertEquals(fileChooser.getChoosableFileFilters()[1].accept(tmpFileValid), true);
+        
+        Files.deleteIfExists(tmpFileInvalid.toPath());
+        Files.deleteIfExists(tmpFileValid.toPath());
     }
 
     /**
