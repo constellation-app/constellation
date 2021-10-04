@@ -146,7 +146,7 @@ public class GeneratorNGTest {
     }
 
     /**
-     * Test of run method, of class Generator. TODO: Failing CI
+     * Test of run method, of class Generator.
      */
     @Test
     public void testGetXMLFiles() {
@@ -157,14 +157,13 @@ public class GeneratorNGTest {
 
             final HelpPageProvider layersProvider = mock(HelpPageProvider.class);
             final HelpPageProvider notesProvider = mock(HelpPageProvider.class);
+            String sep = File.separator;
 
-            final String baseDirectory = "c://baseDir/";
-            final String layersTOC = "../constellation/src/au/gov/asd/tac/constellation/views/layers/docs/layers-view-toc.xml";
-            final String notesTOC = "../constellation/src/au/gov/asd/tac/constellation/views/notes/docs/notes-view-toc.xml";
-
-            final String baseDirectoryExpected = "c:\\baseDir\\";
-            final String layersTOCExpected = "..\\constellation\\src\\au\\gov\\asd\\tac\\constellation\\views\\layers\\docs\\layers-view-toc.xml";
-            final String notesTOCExpected = "..\\constellation\\src\\au\\gov\\asd\\tac\\constellation\\views\\notes\\docs\\notes-view-toc.xml";
+            final String baseDirectory = "c:" + sep + "baseDir" + sep;
+            final String layersTOC = ".." + sep + "constellation" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                    + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-view-toc.xml";
+            final String notesTOC = ".." + sep + "constellation" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                    + "tac" + sep + "constellation" + sep + "views" + sep + "notes" + sep + "docs" + sep + "notes-view-toc.xml";
 
             when(layersProvider.getHelpTOC())
                     .thenReturn(layersTOC);
@@ -182,10 +181,10 @@ public class GeneratorNGTest {
 
             System.out.println("toxcmlfiles size is: " + tocXMLFiles.size());
             assertEquals(tocXMLFiles.size(), 2);
-            System.out.println("expected1: " + baseDirectoryExpected + layersTOCExpected + " actual: " + tocXMLFiles.get(0).getPath());
-            assertEquals(tocXMLFiles.get(0).getPath(), baseDirectoryExpected + layersTOCExpected);
-            System.out.println("expected2: " + baseDirectoryExpected + notesTOCExpected + " actual: " + tocXMLFiles.get(1).getPath());
-            assertEquals(tocXMLFiles.get(1).getPath(), baseDirectoryExpected + notesTOCExpected);
+            System.out.println("expected1: " + baseDirectory + layersTOC + " actual: " + tocXMLFiles.get(0).getPath());
+            assertEquals(tocXMLFiles.get(0).getPath(), baseDirectory + layersTOC);
+            System.out.println("expected2: " + baseDirectory + notesTOC + " actual: " + tocXMLFiles.get(1).getPath());
+            assertEquals(tocXMLFiles.get(1).getPath(), baseDirectory + notesTOC);
         }
     }
 
