@@ -33,6 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -52,13 +53,13 @@ public class DefaultPluginEnvironmentNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        FxToolkit.registerPrimaryStage();
-//        FxToolkit.showStage();
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.showStage();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-//        FxToolkit.hideStage();
+        FxToolkit.hideStage();
     }
 
     @BeforeMethod

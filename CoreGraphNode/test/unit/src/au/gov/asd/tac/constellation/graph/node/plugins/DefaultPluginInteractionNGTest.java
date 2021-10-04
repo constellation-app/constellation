@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import org.openide.windows.TopComponent;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 import org.testng.annotations.AfterClass;
@@ -57,10 +58,13 @@ public class DefaultPluginInteractionNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.showStage();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        FxToolkit.hideStage();
     }
 
     @BeforeMethod
