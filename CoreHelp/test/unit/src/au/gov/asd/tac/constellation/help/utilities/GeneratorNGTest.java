@@ -188,33 +188,36 @@ public class GeneratorNGTest {
         }
     }
 
-//    /**
-//     * Test of getBaseDirectory method, of class Generator. TODO: Failing CI
-//     */
-//    @Test
-//    public void testGetBaseDirectory() {
-//        System.out.println("testGetBaseDirectory");
-//
-//        final String previousUserDir = System.getProperty("user.dir");
-//
-//        final String userDir = "C:\\Users\\Username\\Constellation\\constellation\\CoreHelp";
-//        final String expectedBaseDir = "C:\\Users\\Username\\Constellation\\";
-//
-//        final String userDir2 = "C:\\Users\\Username\\Constellation\\constellation\\CoreHelp\\src\\au\\gov\\asd\\tac\\";
-//        final String expectedBaseDir2 = "C:\\Users\\Username\\Constellation\\";
-//
-//        try {
-//            System.setProperty("user.dir", userDir);
-//            assertEquals(Generator.getBaseDirectory(), expectedBaseDir);
-//
-//            System.setProperty("user.dir", userDir2);
-//            assertEquals(Generator.getBaseDirectory(), expectedBaseDir2);
-//        } finally {
-//            // clean up and reset the property
-//            if (previousUserDir != null) {
-//                System.setProperty("user.dir", previousUserDir);
-//            }
-//        }
-//    }
+    /**
+     * Test of getBaseDirectory method, of class Generator. TODO: Failing CI
+     */
+    @Test
+    public void testGetBaseDirectory() {
+        System.out.println("testGetBaseDirectory");
+
+        String sep = File.separator;
+
+        final String previousUserDir = System.getProperty("user.dir");
+
+        final String userDir = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp";
+        final String expectedBaseDir = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation";
+
+        final String userDir2 = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp"
+                + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac";
+        final String expectedBaseDir2 = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation";
+
+        try {
+            System.setProperty("user.dir", userDir);
+            assertEquals(Generator.getBaseDirectory(), expectedBaseDir);
+
+            System.setProperty("user.dir", userDir2);
+            assertEquals(Generator.getBaseDirectory(), expectedBaseDir2);
+        } finally {
+            // clean up and reset the property
+            if (previousUserDir != null) {
+                System.setProperty("user.dir", previousUserDir);
+            }
+        }
+    }
 
 }
