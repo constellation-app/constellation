@@ -94,14 +94,6 @@ public class TOCGeneratorNGTest {
         TOCGenerator.createTOCFile(invalidPath);
     }
 
-    // Failed test
-//    @Test(expectedExceptions = IllegalArgumentException.class)
-//    public void testCreateTOCFileFail2() {
-//        System.out.println("createTOCFileFail");
-//        final String invalidPath = "-=invali.d/p%67a,th/does?nt/e(xist].m\\d";
-//        TOCGenerator.createTOCFile(invalidPath);
-//    }
-
     @Test
     public void testCreateTOCFileExists() {
         System.out.println("createTOCFile");
