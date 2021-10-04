@@ -5,8 +5,13 @@
 <p>Fatal errors and exceptions will now be presented as a dialog box in the executable version.</p>
 <p>Previously only a small red icon on the bottom right of the application was shown when an exception occurred.</p>
 
+== 2021-09-28 Hashmod Improvements
+<p>Significant speed up in ingesting CSV files with a header line in as separate vertices and you can now specify
+(via a header field with format 'COLUMN1...COLUMN2;;;COLUMN3') that any transactions that hashmod creates via
+matching COLUMN1 and COLUMN2 values will also gain the COLUMN3 attribute from one of the vertices it connects.</p>
+
 == 2021-09-17 Anaglyphic Display
-The anaglyphic 3D display now allows different colors to be selected for left and right eyes.
+<p>The anaglyphic 3D display now allows different colors to be selected for left and right eyes.</p>
 
 == 2021-09-17 Data Access View
 <p>The Quality Control widget and Go button have also been added to the bottom
