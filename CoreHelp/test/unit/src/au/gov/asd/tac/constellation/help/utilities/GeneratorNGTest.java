@@ -144,48 +144,51 @@ public class GeneratorNGTest {
             }
         }
     }
-//
-//    /**
-//     * Test of run method, of class Generator. TODO: Failing CI
-//     */
-//    @Test
-//    public void testGetXMLFiles() {
-//        System.out.println("testGetXMLFiles");
-//
-//        try (MockedStatic<Lookup> lookupStaticMock = Mockito.mockStatic(Lookup.class)) {
-//            final Lookup lookup = mock(Lookup.class);
-//
-//            final HelpPageProvider layersProvider = mock(HelpPageProvider.class);
-//            final HelpPageProvider notesProvider = mock(HelpPageProvider.class);
-//
-//            final String baseDirectory = "c://baseDir/";
-//            final String layersTOC = "../constellation/src/au/gov/asd/tac/constellation/views/layers/docs/layers-view-toc.xml";
-//            final String notesTOC = "../constellation/src/au/gov/asd/tac/constellation/views/notes/docs/notes-view-toc.xml";
-//
-//            final String baseDirectoryExpected = "c:\\baseDir\\";
-//            final String layersTOCExpected = "..\\constellation\\src\\au\\gov\\asd\\tac\\constellation\\views\\layers\\docs\\layers-view-toc.xml";
-//            final String notesTOCExpected = "..\\constellation\\src\\au\\gov\\asd\\tac\\constellation\\views\\notes\\docs\\notes-view-toc.xml";
-//
-//            when(layersProvider.getHelpTOC())
-//                    .thenReturn(layersTOC);
-//            when(notesProvider.getHelpTOC())
-//                    .thenReturn(notesTOC);
-//
-//            lookupStaticMock.when(Lookup::getDefault).thenReturn(lookup);
-//            doReturn(List.of(
-//                    layersProvider,
-//                    notesProvider
-//            ))
-//                    .when(lookup).lookupAll(HelpPageProvider.class);
-//
-//            final List<File> tocXMLFiles = Generator.getXMLFiles(baseDirectory);
-//
-//            assertEquals(tocXMLFiles.size(), 2);
-//            assertEquals(tocXMLFiles.get(0).getPath(), baseDirectoryExpected + layersTOCExpected);
-//            assertEquals(tocXMLFiles.get(1).getPath(), baseDirectoryExpected + notesTOCExpected);
-//        }
-//    }
-//
+
+    /**
+     * Test of run method, of class Generator. TODO: Failing CI
+     */
+    @Test
+    public void testGetXMLFiles() {
+        System.out.println("testGetXMLFiles");
+
+        try (MockedStatic<Lookup> lookupStaticMock = Mockito.mockStatic(Lookup.class)) {
+            final Lookup lookup = mock(Lookup.class);
+
+            final HelpPageProvider layersProvider = mock(HelpPageProvider.class);
+            final HelpPageProvider notesProvider = mock(HelpPageProvider.class);
+
+            final String baseDirectory = "c://baseDir/";
+            final String layersTOC = "../constellation/src/au/gov/asd/tac/constellation/views/layers/docs/layers-view-toc.xml";
+            final String notesTOC = "../constellation/src/au/gov/asd/tac/constellation/views/notes/docs/notes-view-toc.xml";
+
+            final String baseDirectoryExpected = "c:\\baseDir\\";
+            final String layersTOCExpected = "..\\constellation\\src\\au\\gov\\asd\\tac\\constellation\\views\\layers\\docs\\layers-view-toc.xml";
+            final String notesTOCExpected = "..\\constellation\\src\\au\\gov\\asd\\tac\\constellation\\views\\notes\\docs\\notes-view-toc.xml";
+
+            when(layersProvider.getHelpTOC())
+                    .thenReturn(layersTOC);
+            when(notesProvider.getHelpTOC())
+                    .thenReturn(notesTOC);
+
+            lookupStaticMock.when(Lookup::getDefault).thenReturn(lookup);
+            doReturn(List.of(
+                    layersProvider,
+                    notesProvider
+            ))
+                    .when(lookup).lookupAll(HelpPageProvider.class);
+
+            final List<File> tocXMLFiles = Generator.getXMLFiles(baseDirectory);
+
+            System.out.println("toxcmlfiles size is: " + tocXMLFiles.size());
+            assertEquals(tocXMLFiles.size(), 2);
+            System.out.println("expected1: " + baseDirectoryExpected + layersTOCExpected + " actual: " + tocXMLFiles.get(0).getPath());
+            assertEquals(tocXMLFiles.get(0).getPath(), baseDirectoryExpected + layersTOCExpected);
+            System.out.println("expected2: " + baseDirectoryExpected + notesTOCExpected + " actual: " + tocXMLFiles.get(1).getPath());
+            assertEquals(tocXMLFiles.get(1).getPath(), baseDirectoryExpected + notesTOCExpected);
+        }
+    }
+
 //    /**
 //     * Test of getBaseDirectory method, of class Generator. TODO: Failing CI
 //     */
