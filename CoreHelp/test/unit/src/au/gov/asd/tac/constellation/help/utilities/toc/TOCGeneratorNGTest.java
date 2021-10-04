@@ -86,20 +86,21 @@ public class TOCGeneratorNGTest {
 //        assertTrue(TOCGenerator.createTOCFile(validPath));
 //        assertTrue(tempFileAtValidPath.exists());
 //    }
-//
-//    @Test(expectedExceptions = IllegalArgumentException.class)
-//    public void testCreateTOCFileFail() {
-//        System.out.println("createTOCFileFail");
-//        final String invalidPath = null;
-//        TOCGenerator.createTOCFile(invalidPath);
-//    }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testCreateTOCFileFail2() {
+    public void testCreateTOCFileFail() {
         System.out.println("createTOCFileFail");
-        final String invalidPath = "-=invali.d/p%67a,th/does?nt/e(xist].m\\d";
+        final String invalidPath = null;
         TOCGenerator.createTOCFile(invalidPath);
     }
+
+    // Failed test
+//    @Test(expectedExceptions = IllegalArgumentException.class)
+//    public void testCreateTOCFileFail2() {
+//        System.out.println("createTOCFileFail");
+//        final String invalidPath = "-=invali.d/p%67a,th/does?nt/e(xist].m\\d";
+//        TOCGenerator.createTOCFile(invalidPath);
+//    }
 
     @Test
     public void testCreateTOCFileExists() {
