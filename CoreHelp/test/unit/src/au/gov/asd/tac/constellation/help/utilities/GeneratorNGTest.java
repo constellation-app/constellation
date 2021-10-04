@@ -178,12 +178,8 @@ public class GeneratorNGTest {
                     .when(lookup).lookupAll(HelpPageProvider.class);
 
             final List<File> tocXMLFiles = Generator.getXMLFiles(baseDirectory);
-
-            System.out.println("toxcmlfiles size is: " + tocXMLFiles.size());
             assertEquals(tocXMLFiles.size(), 2);
-            System.out.println("expected1: " + baseDirectory + layersTOC + " actual: " + tocXMLFiles.get(0).getPath());
             assertEquals(tocXMLFiles.get(0).getPath(), baseDirectory + layersTOC);
-            System.out.println("expected2: " + baseDirectory + notesTOC + " actual: " + tocXMLFiles.get(1).getPath());
             assertEquals(tocXMLFiles.get(1).getPath(), baseDirectory + notesTOC);
         }
     }
@@ -200,11 +196,11 @@ public class GeneratorNGTest {
         final String previousUserDir = System.getProperty("user.dir");
 
         final String userDir = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp";
-        final String expectedBaseDir = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation";
+        final String expectedBaseDir = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation" + sep;
 
         final String userDir2 = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp"
                 + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac";
-        final String expectedBaseDir2 = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation";
+        final String expectedBaseDir2 = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation" + sep;
 
         try {
             System.setProperty("user.dir", userDir);

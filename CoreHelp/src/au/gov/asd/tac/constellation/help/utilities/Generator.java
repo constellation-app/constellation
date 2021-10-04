@@ -98,9 +98,7 @@ public class Generator implements Runnable {
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
-            System.out.println("Lookup found:" + provider.toString());
             if (StringUtils.isNotEmpty(provider.getHelpTOC())) {
-                System.out.println("was not empty.");
                 tocXMLFiles.add(new File(baseDirectory + provider.getHelpTOC()));
             }
         });
