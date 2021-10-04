@@ -100,52 +100,52 @@ public class TOCGeneratorNGTest {
 //        final String invalidPath = "-=invali.d/p%67a,th/does?nt/e(xist].m\\d";
 //        TOCGenerator.createTOCFile(invalidPath);
 //    }
-//
-//    @Test
-//    public void testCreateTOCFileExists() {
-//        System.out.println("createTOCFile");
-//
-//        File tempFileTOC = null;
-//        File tempFileAtValidPath = null;
-//        try {
-//            try {
-//                // Create a temp file to grab a valid path on the filesystem
-//                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
-//                // assert file is empty beforehand
-//                assertTrue(tempFileTOC.length() == 0);
-//
-//                // write into file, assert it has content
-//                FileWriter fw = new FileWriter(tempFileTOC);
-//                fw.write("this file now has content");
-//                fw.close();
-//                assertTrue(tempFileTOC.length() != 0);
-//
-//                final String validPath = tempFileTOC.getAbsolutePath();
-//
-//                // make a POJO at the path, check if a real file exists. There should be.
-//                tempFileAtValidPath = new File(validPath);
-//                assertTrue(tempFileAtValidPath.exists());
-//
-//                // run the method, assert that it returns true for success, and that there is now a file at that location.
-//                assertTrue(TOCGenerator.createTOCFile(validPath));
-//                assertTrue(tempFileAtValidPath.exists());
-//
-//                // assert file is empty
-//                assertTrue(tempFileTOC.length() == 0);
-//
-//            } catch (final IOException ex) {
-//                Exceptions.printStackTrace(ex);
-//            }
-//        } finally {
-//            if (tempFileTOC != null && tempFileTOC.exists()) {
-//                tempFileTOC.delete();
-//            }
-//            if (tempFileAtValidPath != null && tempFileAtValidPath.exists()) {
-//                tempFileAtValidPath.delete();
-//            }
-//        }
-//
-//    }
+
+    @Test
+    public void testCreateTOCFileExists() {
+        System.out.println("createTOCFile");
+
+        File tempFileTOC = null;
+        File tempFileAtValidPath = null;
+        try {
+            try {
+                // Create a temp file to grab a valid path on the filesystem
+                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
+                // assert file is empty beforehand
+                assertTrue(tempFileTOC.length() == 0);
+
+                // write into file, assert it has content
+                FileWriter fw = new FileWriter(tempFileTOC);
+                fw.write("this file now has content");
+                fw.close();
+                assertTrue(tempFileTOC.length() != 0);
+
+                final String validPath = tempFileTOC.getAbsolutePath();
+
+                // make a POJO at the path, check if a real file exists. There should be.
+                tempFileAtValidPath = new File(validPath);
+                assertTrue(tempFileAtValidPath.exists());
+
+                // run the method, assert that it returns true for success, and that there is now a file at that location.
+                assertTrue(TOCGenerator.createTOCFile(validPath));
+                assertTrue(tempFileAtValidPath.exists());
+
+                // assert file is empty
+                assertTrue(tempFileTOC.length() == 0);
+
+            } catch (final IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        } finally {
+            if (tempFileTOC != null && tempFileTOC.exists()) {
+                tempFileTOC.delete();
+            }
+            if (tempFileAtValidPath != null && tempFileAtValidPath.exists()) {
+                tempFileAtValidPath.delete();
+            }
+        }
+
+    }
 
     /**
      * Test of convertXMLMappings method, of class TOCGenerator.
