@@ -8,6 +8,10 @@
 -   Removed unused `localized` parameter from the signature of the `locate()`
     method in `ConstellationInstalledFileLocator`.
 
+-   Removed all the unused `*Action.java` classes from 
+    `au.gov.asd.tac.constellation.plugins.algorithms.sna`.
+
+
 -   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
     rotation values in the wrong value positions.
 
