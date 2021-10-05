@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
+import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -29,46 +31,44 @@ import org.openide.util.NbPreferences;
  */
 public class RecentFilesWelcomePage {
 
-    static final List<RecentFiles.HistoryItem> files = RecentFiles.getRecentFiles();
-    static final List<String> fileNames = new ArrayList<>();
+    private static final List<HistoryItem> files = RecentFiles.getRecentFiles();
+    private static final List<Tuple<String, String>> fileDetails = new ArrayList<>();
 
     private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
     private RecentFilesWelcomePage() {
     }
-
+    
     /**
-     * Gets the names of the files that were recently saved
+     * Gets the paths of the files that were recently saved
      *
-     * @return list of recent file names
+     * @return list of recent file paths
      */
-    public static List<String> getFileNames() {
+    public static List<Tuple<String, String>> getFileDetails() {
         RecentFiles.init();
-        for (int i = 0; i < files.size(); i++) {
-            final FileObject fo = RecentFiles.convertPath2File(files.get(i).getPath());
-            if (fo != null && !fileNames.contains(files.get(i).getFileName())) {
-                fileNames.add(files.get(i).getFileName());
+        for (final HistoryItem file : files) {
+            final FileObject fo = RecentFiles.convertPath2File(file.getPath());
+            final Tuple<String, String> fileDetail = new Tuple(file.getPath(), file.getFileName());
+            if (fo != null && !fileDetails.contains(fileDetail)) {
+                fileDetails.add(fileDetail);
             }
         }
-        return fileNames;
+        return fileDetails;
     }
 
     /**
-     * Opens the file that matches the name of the parameter
+     * Opens the file that matches the given file path
      *
-     * @param fileName
+     * @param path the file path of the file to open
      */
-    public static void openGraph(final String fileName) {
+    public static void openGraph(final String path) {
         int index = -1;
         for (int i = 0; i < files.size(); i++) {
-            if (fileName.equals(files.get(i).getFileName())) {
+            if (path.equals(files.get(i).getPath())) {
                 index = i;
             }
         }
         if (index != -1) {
-            // the recent file action has path separated by '/' rather than '\' so mimicing that
-            final String path = files.get(index).getPath().replace('\\', '/');
-
             final FileObject fo = RecentFiles.convertPath2File(path);
             OpenFile.open(fo, -1);
             saveCurrentDirectory(path);

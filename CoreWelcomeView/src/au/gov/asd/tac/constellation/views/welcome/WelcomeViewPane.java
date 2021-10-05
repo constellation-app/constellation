@@ -21,6 +21,7 @@ import static au.gov.asd.tac.constellation.graph.interaction.plugins.io.screensh
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.io.File;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -186,35 +187,36 @@ public class WelcomeViewPane extends BorderPane {
             flow.setVgap(20);
 
             //Create the buttons for the recent page
-            final List<String> fileNames = RecentFilesWelcomePage.getFileNames();
+            final List<Tuple<String, String>> fileDetails = RecentFilesWelcomePage.getFileDetails();
             for (int i = 0; i < recentGraphButtons.length; i++) {
                 recentGraphButtons[i] = new Button();
                 //if the user has recent files get the names
                 //and make them the text of the buttons
                 createRecentButtons(recentGraphButtons[i]);
-                if (i < fileNames.size()) {
-                    recentGraphButtons[i].setText(fileNames.get(i));
+                if (i < fileDetails.size()) {
+                    recentGraphButtons[i].setText(fileDetails.get(i).getSecond());
                     final Tooltip toolTip = new Tooltip(recentGraphButtons[i].getText());
                     recentGraphButtons[i].setTooltip(toolTip);
-                }
-                final String text = recentGraphButtons[i].getText();
+                    final String text = recentGraphButtons[i].getText();
 
-                final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
-                if (new File(screenshotFilename).exists()) {
-                    recentGraphButtons[i].setGraphic(buildGraphic(
-                            new Image("file:///" + screenshotFilename)
-                    ));
-                } else if (i < fileNames.size()) {
-                    recentGraphButtons[i].setGraphic(buildGraphic(
-                            new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"))
-                    ));
-                }
+                    final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
+                    if (new File(screenshotFilename).exists()) {
+                        recentGraphButtons[i].setGraphic(buildGraphic(
+                                new Image("file:///" + screenshotFilename)
+                        ));
+                    } else if (i < fileDetails.size()) {
+                        recentGraphButtons[i].setGraphic(buildGraphic(
+                                new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"))
+                        ));
+                    }
 
-                //Calls the method for the recent graphs to open
-                //on the button action
-                recentGraphButtons[i].setOnAction(e -> {
-                    RecentFilesWelcomePage.openGraph(text);
-                });
+                    //Calls the method for the recent graphs to open
+                    //on the button action
+                    final String path = fileDetails.get(i).getFirst(); 
+                    recentGraphButtons[i].setOnAction(e -> {
+                        RecentFilesWelcomePage.openGraph(path);
+                    });
+                }
                 flow.getChildren().add(recentGraphButtons[i]);
             }
             bottomHBox.getChildren().add(flow);
