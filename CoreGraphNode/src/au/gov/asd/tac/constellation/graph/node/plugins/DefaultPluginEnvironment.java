@@ -65,7 +65,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             LOGGER.log(Level.INFO, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
 
-        return pluginExecutor.submit(() -> {
+        return getPluginExecutor().submit(() -> {
             Thread.currentThread().setName(THREAD_POOL_NAME);
 
             // If a Future has been specified, don't do anything until the Future has completed.
@@ -386,6 +386,10 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         return null;
     }
 
+    protected ExecutorService getPluginExecutor() {
+        return pluginExecutor;
+    }
+    
     private void auditPluginError(final Plugin plugin, final Throwable error) {
         try {
             ConstellationLogger.getDefault().pluginError(plugin, error);
