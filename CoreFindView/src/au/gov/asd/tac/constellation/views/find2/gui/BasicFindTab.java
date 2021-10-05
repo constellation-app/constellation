@@ -57,7 +57,8 @@ public class BasicFindTab extends Tab {
     private final GridPane textGrid = new GridPane();
     private final GridPane settingsGrid = new GridPane();
     private final GridPane addRemoveSelectionGrid = new GridPane();
-    private final HBox buttonsHBox = new HBox();
+    protected final HBox buttonsHBox = new HBox();
+    protected final VBox buttonsVBox = new VBox();
 
     private final Label findLabel = new Label("Find:");
     private final TextField findTextField = new TextField();
@@ -91,6 +92,7 @@ public class BasicFindTab extends Tab {
 
     private final CheckBox addToCurrent = new CheckBox("Add to Current Selection");
     private final CheckBox removeFromCurrent = new CheckBox("Remove from Current Selection");
+    protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
 
     private final Button findNextButton = new Button("Find Prev");
     private final Button findPrevButton = new Button("Find Next");
@@ -111,7 +113,9 @@ public class BasicFindTab extends Tab {
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
-                saveSelected(GraphElementType.getValue(oldElement));
+                if (oldElement != null) {
+                    saveSelected(GraphElementType.getValue(oldElement));
+                }
                 inAttributesMenu.getCheckModel().clearChecks();
                 populateAttributes(GraphElementType.getValue(newElement));
                 updateSelectedAttributes(getMatchingAttributeList(GraphElementType.getValue(newElement)));
@@ -129,6 +133,13 @@ public class BasicFindTab extends Tab {
         inAttributesMenu.setOnContextMenuRequested(event -> {
             contextMenu.show(inAttributesMenu, event.getScreenX(), event.getScreenY());
         });
+        addToCurrent.setOnAction(action -> {
+            removeFromCurrent.setSelected(false);
+        });
+        removeFromCurrent.setOnAction(action -> {
+            addToCurrent.setSelected(false);
+        });
+
     }
 
     /**
@@ -143,6 +154,8 @@ public class BasicFindTab extends Tab {
         layers.setSpacing(5);
         textGrid.setPadding(new Insets(10, 10, 10, 10));
         settingsGrid.setPadding(new Insets(0, 10, 0, 10));
+        addRemoveSelectionGrid.setPadding(new Insets(10, 10, 10, 10));
+        preferencesGrid.setPadding(new Insets(5, 0, 5, 0));
 
         findLabel.setMinWidth(LABEL_WIDTH);
         textGrid.setVgap(5);
@@ -155,7 +168,7 @@ public class BasicFindTab extends Tab {
 
         lookForLabel.setMinWidth(LABEL_WIDTH - settingsGrid.getHgap());
         lookForChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
-        lookForChoiceBox.getSelectionModel().select(GraphElementType.VERTEX.getShortLabel());
+//        lookForChoiceBox.getSelectionModel().select(GraphElementType.VERTEX.getShortLabel());
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 1, 0);
 
@@ -165,32 +178,38 @@ public class BasicFindTab extends Tab {
         settingsGrid.add(inAttributesMenu, 1, 1);
 
         inAttributesMenu.setMaxWidth(DROP_DOWN_WIDTH);
-        populateAttributes(GraphElementType.VERTEX);
+//        populateAttributes(GraphElementType.VERTEX);
 
         contextMenu.getItems().addAll(selectAllMenuItem, deselectAllMenuItem);
 
         standardRadioBtn.setToggleGroup(textStyleTB);
         regExBtn.setToggleGroup(textStyleTB);
+        standardRadioBtn.setSelected(true);
         toggleVBox.getChildren().addAll(standardRadioBtn, regExBtn);
         toggleVBox.setSpacing(5);
         preferencesGrid.add(toggleVBox, 0, 0, 1, 2);
         preferencesGrid.add(ignoreCaseCB, 1, 0);
         preferencesGrid.add(exactMatchCB, 1, 1);
-        preferencesGrid.add(addToCurrent, 2, 0);
-        preferencesGrid.add(removeFromCurrent, 2, 1);
         preferencesGrid.setHgap(5);
         preferencesGrid.setVgap(5);
 
         settingsGrid.add(preferencesGrid, 2, 0, 2, 2);
 
+        addRemoveSelectionGrid.add(addToCurrent, 0, 0);
+        addRemoveSelectionGrid.add(removeFromCurrent, 1, 0);
+        addRemoveSelectionGrid.setHgap(5);
+        addRemoveSelectionGrid.setVgap(5);
+
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
         buttonsHBox.setPadding(new Insets(5, 10, 5, 10));
         buttonsHBox.setSpacing(5);
-        buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton);
+        buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton, searchAllGraphs);
 
-        parentComponent.getParentComponent().setBottom(buttonsHBox);
+        buttonsVBox.getChildren().addAll(addRemoveSelectionGrid, buttonsHBox);
 
-        layers.getChildren().addAll(textGrid, settingsGrid, addRemoveSelectionGrid);
+        parentComponent.getParentComponent().setBottom(buttonsVBox);
+
+        layers.getChildren().addAll(textGrid, settingsGrid);
 
     }
 
@@ -214,8 +233,8 @@ public class BasicFindTab extends Tab {
 
     public void updateButtons() {
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton);
-        parentComponent.getParentComponent().setBottom(buttonsHBox);
+        buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton, searchAllGraphs);
+        parentComponent.getParentComponent().setBottom(buttonsVBox);
     }
 
     private void findButtonFunctionality() {
@@ -303,6 +322,10 @@ public class BasicFindTab extends Tab {
             }
         }
         return false;
+    }
+
+    private void disableAll() {
+
     }
 
 }

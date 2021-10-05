@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.find2;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find2.gui.FindViewPane;
 import org.openide.awt.ActionID;
@@ -65,8 +67,10 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         initComponents();
         this.pane = new FindViewPane(this);
         findViewController = FindViewController.getDefault().init(this);
-
         initContent();
+
+        disableFindView();
+
     }
 
     @Override
@@ -77,6 +81,38 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     @Override
     protected String createStyle() {
         return "resources/find-view.css";
+    }
+
+    @Override
+    protected void handleComponentClosed() {
+        super.handleComponentClosed();
+        disableFindView();
+    }
+
+    @Override
+    protected void handleComponentOpened() {
+        super.handleComponentOpened();
+        disableFindView();
+    }
+
+    @Override
+    protected void handleGraphOpened(final Graph graph) {
+        super.handleGraphOpened(graph);
+        disableFindView();
+    }
+
+    @Override
+    protected void handleGraphClosed(final Graph graph) {
+        super.handleGraphClosed(graph);
+        disableFindView();
+    }
+
+    public void disableFindView() {
+        if (GraphManager.getDefault().getAllGraphs().isEmpty()) {
+            FindViewController.getDefault().disableFindView(pane, true);
+        } else {
+            FindViewController.getDefault().disableFindView(pane, false);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

@@ -36,5 +36,8 @@ public class FindViewPane extends BorderPane {
         this.findViewTabs = new FindViewTabs(this);
         setCenter(findViewTabs.getFindViewTabs());
 
+
     }
+
+
 }

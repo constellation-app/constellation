@@ -40,11 +40,11 @@ public class BasicFindReplaceParameters {
             List<String> attributeList, boolean standardText, boolean regEx, boolean ignoreCase,
             boolean exactMatch, boolean addToCurrent, boolean removeFromCurrent) {
 
-        this.findString = findString;
+        this.findString = findString.trim();
         if (replaceString.isEmpty()) {
             this.replaceString = null;
         } else {
-            this.replaceString = replaceString;
+            this.replaceString = replaceString.trim();
         }
         this.graphElement = graphElement;
         this.attributeList = attributeList;
@@ -57,4 +57,71 @@ public class BasicFindReplaceParameters {
 
     }
 
+    public boolean equals(BasicFindReplaceParameters object) {
+        int matches = 0;
+
+        if (this == null || object == null) {
+            return false;
+        }
+        if (findString.equals(object.getFindString())) {
+            matches++;
+        }
+        if (replaceString.equals(object.getReplaceString())) {
+            matches++;
+        }
+        if (graphElement.equals(object.getGraphElement())) {
+            matches++;
+        }
+        if (attributeList.equals(object.getAttributeList())) {
+            matches++;
+        }
+        if (standardText == object.isStandardText()) {
+            matches++;
+        }
+        if (regEx == object.isRegEx()) {
+            matches++;
+        }
+        if (ignoreCase == object.isIgnoreCase()) {
+            matches++;
+        }
+        if (exactMatch == object.isExactMatch()) {
+            matches++;
+        }
+        if (matches == 8) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getFindString() {
+        return findString;
+    }
+
+    public String getReplaceString() {
+        return replaceString;
+    }
+
+    public GraphElementType getGraphElement() {
+        return graphElement;
+    }
+
+    public List<String> getAttributeList() {
+        return attributeList;
+    }
+
+    public boolean isStandardText() {
+        return standardText;
+    }
+
+    public boolean isRegEx() {
+        return regEx;
+    }
+
+    public boolean isIgnoreCase() {
+        return ignoreCase;
+    }
+
+    public boolean isExactMatch() {
+        return exactMatch;
+    }
 }

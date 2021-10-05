@@ -52,9 +52,9 @@ public class ReplaceTab extends BasicFindTab {
     }
 
     public void updateButtons() {
-        getButtonsHBox().getChildren().clear();
-        getButtonsHBox().getChildren().addAll(replaceNextButton, replaceAllButton);
-        getParentComponent().getParentComponent().setBottom(getButtonsHBox());
+        buttonsHBox.getChildren().clear();
+        buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton, searchAllGraphs);
+        getParentComponent().getParentComponent().setBottom(buttonsVBox);
 
     }
 

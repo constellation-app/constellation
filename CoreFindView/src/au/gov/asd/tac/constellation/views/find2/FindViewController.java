@@ -21,9 +21,11 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find.advanced.GraphAttributePlugin;
+import au.gov.asd.tac.constellation.views.find2.gui.FindViewPane;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.controlsfx.control.CheckComboBox;
 import org.openide.util.Exceptions;
@@ -89,6 +91,11 @@ public class FindViewController {
                 }
             }
         }
+    }
+
+    public void disableFindView(FindViewPane pane, boolean disable) {
+        pane.setDisable(disable);
+        LOGGER.log(Level.SEVERE, "disabled find view" + disable);
     }
 
     // public because BasicFindPanel calls this on enter as well.
