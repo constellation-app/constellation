@@ -29,7 +29,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -47,19 +52,34 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class DefaultPluginEnvironmentNGTest {
+    private static final Logger LOGGER = Logger.getLogger(DefaultPluginEnvironmentNGTest.class.getName());
 
+    private static MockedConstruction<DefaultPluginInteraction> interactionMocks;
+    
     public DefaultPluginEnvironmentNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if(!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
+        
+        interactionMocks = Mockito.mockConstruction(DefaultPluginInteraction.class, (mock, cnxt) -> {
+            // Should probably have something in here checking the constructor vars
+        
+        });
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        interactionMocks.close();
+        
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
