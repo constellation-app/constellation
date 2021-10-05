@@ -254,6 +254,7 @@ public class ConstellationHelpDisplayerNGTest {
         final String expected = "file:/c:/users/default/filename.ext";
 
         final String actual = ConstellationHelpDisplayer.getFileURLString(sep, base, rel);
+        System.out.println("expected: " + expected + " actual:" + actual);
         assertEquals(actual, expected);
 
     }
