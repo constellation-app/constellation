@@ -147,7 +147,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             if (importedObjects > 0) {
                 // At least 1 object was successfully imported. List all successful file imports, as well as any files
                 // that there were issues for. If there were any files with issues use a warning dialog.
-                sbHeader.append(String.format("Extracted data from %d rows in %d files", importedRows, validFilenames.size()));
+                final String fileFiles = (validFilenames.size() == 1) ? "file" : "files";
+                sbHeader.append(String.format("Extracted data from %d rows in %d %s",
+                        importedRows, validFilenames.size(), fileFiles));
                 sbMessage.append("Files with data: ");
                 for (int i = 0; i < validFilenames.size(); i++) {
                     if (i > 0) {
