@@ -113,12 +113,11 @@ public class FileChooser {
         try {
             // Make a request to open the file chooser dialog on the UI thread
             EventQueue.invokeAndWait(showDialog);
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             LOGGER.log(Level.WARNING, "Thread displaying the file chooser was interrupted.", ex);
             Thread.currentThread().interrupt();
-        } catch (InvocationTargetException ex) {
+        } catch (final InvocationTargetException ex) {
             LOGGER.log(Level.SEVERE, "Error occured during selection in file chooser.", ex);
-            Exceptions.printStackTrace(ex);
         }
 
         return showDialog.getSelectedFile();
