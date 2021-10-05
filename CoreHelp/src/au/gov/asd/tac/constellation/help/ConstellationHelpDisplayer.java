@@ -239,9 +239,11 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
             }
 
+            System.out.println("***url is: " + url);
             final URI uri = new URI(url.replace("\\", "/"));
 
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                System.out.println("***attempting to call browse() on: " + uri.toString());
                 browse(uri);
                 return true;
             }
