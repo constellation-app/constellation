@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -152,18 +153,16 @@ public class DegreeCentralityPlugin extends SimpleEditPlugin {
 
         // choose the correct degree attribute
         final int degreeAttribute;
-        if (includeConnectionsIn && includeConnectionsOut) {
-            degreeAttribute = DEGREE_ATTRIBUTE.ensure(graph);
-        } else if (includeConnectionsIn && !includeConnectionsOut) {
+        if (includeConnectionsIn && !includeConnectionsOut) {
             degreeAttribute = IN_DEGREE_ATTRIBUTE.ensure(graph);
         } else if (!includeConnectionsIn && includeConnectionsOut) {
             degreeAttribute = OUT_DEGREE_ATTRIBUTE.ensure(graph);
         } else {
-            return;
+            degreeAttribute = DEGREE_ATTRIBUTE.ensure(graph);
         }
 
         // update the graph with degree values
-        for (final Map.Entry<Integer, Float> entry : degrees.entrySet()) {
+        for (final Entry<Integer, Float> entry : degrees.entrySet()) {
             if (normaliseByPossible) {
                 graph.setFloatValue(degreeAttribute, entry.getKey(), entry.getValue() / (vertexCount - 1));
             } else if (normaliseByAvailable && maxDegree > 0) {
