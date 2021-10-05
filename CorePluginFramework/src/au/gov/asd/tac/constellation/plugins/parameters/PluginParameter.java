@@ -857,7 +857,7 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @param isRequired A boolean indicating whether the parameter is required.
      */
-    public void setRequired(boolean isRequired) {
+    public void setRequired(final boolean isRequired) {
         this.isRequired = isRequired;
     }
 }

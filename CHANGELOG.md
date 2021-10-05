@@ -1,5 +1,11 @@
 # Constellation Changes
 
+## Changes in October 2021
+
+-   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
+    can be used to configure the required plugin parameters to mark as `*required`
+	in the swagger.
+	
 ## Changes in September 2021
 
 -   Updated `processImport` in `ImportController` to a `void` method given the
