@@ -27,11 +27,13 @@ import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
@@ -202,6 +204,10 @@ public class DefaultPluginEnvironmentNGTest {
             result = true;
         }
         assertEquals(result, expResult);
+        
+        final CountDownLatch latch = new CountDownLatch(1);
+        SwingUtilities.invokeLater(() -> latch.countDown());
+        latch.await();
     }
 
     @Test
@@ -226,6 +232,10 @@ public class DefaultPluginEnvironmentNGTest {
         Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
         assertEquals(result, expResult);
+        
+        final CountDownLatch latch = new CountDownLatch(1);
+        SwingUtilities.invokeLater(() -> latch.countDown());
+        latch.await();
     }
 
     @Test
@@ -248,6 +258,10 @@ public class DefaultPluginEnvironmentNGTest {
         Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
         assertEquals(result, expResult);
+        
+        final CountDownLatch latch = new CountDownLatch(1);
+        SwingUtilities.invokeLater(() -> latch.countDown());
+        latch.await();
     }
 
     /**
