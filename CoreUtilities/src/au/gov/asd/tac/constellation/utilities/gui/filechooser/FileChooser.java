@@ -117,7 +117,7 @@ public class FileChooser {
             LOGGER.log(Level.WARNING, "Thread displaying the file chooser was interrupted.", ex);
             Thread.currentThread().interrupt();
         } catch (final InvocationTargetException ex) {
-            LOGGER.log(Level.SEVERE, "Error occured during selection in file chooser.", ex);
+            LOGGER.log(Level.SEVERE, "Error occurred during selection in file chooser.", ex);
         }
 
         return showDialog.getSelectedFile();

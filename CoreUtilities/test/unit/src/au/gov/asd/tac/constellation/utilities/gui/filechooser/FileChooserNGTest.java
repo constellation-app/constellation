@@ -80,7 +80,7 @@ public class FileChooserNGTest {
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
         }
     }
 
