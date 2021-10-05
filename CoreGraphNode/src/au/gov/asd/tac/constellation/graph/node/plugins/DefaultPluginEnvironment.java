@@ -218,6 +218,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
             Thread.currentThread().interrupt();
+            throw ex;
         } catch (final PluginException ex) {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
@@ -289,6 +290,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
             Thread.currentThread().interrupt();
+            throw ex;
         } catch (final PluginException ex) {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
@@ -359,6 +361,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
             Thread.currentThread().interrupt();
+            throw ex;
         } catch (final PluginException ex) {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
@@ -389,7 +392,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     protected ExecutorService getPluginExecutor() {
         return pluginExecutor;
     }
-    
+
     private void auditPluginError(final Plugin plugin, final Throwable error) {
         try {
             ConstellationLogger.getDefault().pluginError(plugin, error);

@@ -29,14 +29,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
@@ -59,29 +57,30 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class DefaultPluginEnvironmentNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(DefaultPluginEnvironmentNGTest.class.getName());
 
     private static MockedConstruction<DefaultPluginInteraction> interactionMocks;
-    
+
     public DefaultPluginEnvironmentNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if(!FxToolkit.isFXApplicationThreadRunning()) {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
-        
+
         interactionMocks = Mockito.mockConstruction(DefaultPluginInteraction.class, (mock, cnxt) -> {
             // Should probably have something in here checking the constructor vars
-        
+
         });
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
         interactionMocks.close();
-        
+
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
@@ -204,10 +203,10 @@ public class DefaultPluginEnvironmentNGTest {
         when(executorService.submit(any(Callable.class))).thenAnswer(iom -> {
             final Callable callable = iom.getArgument(0);
             callable.call();
-            
+
             return CompletableFuture.completedFuture(null);
         });
-        
+
         boolean expResult = false; // TODO CHANGED. IS THIS RIGHT?
         Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
 
@@ -243,10 +242,10 @@ public class DefaultPluginEnvironmentNGTest {
         when(executorService.submit(any(Callable.class))).thenAnswer(iom -> {
             final Callable callable = iom.getArgument(0);
             callable.call();
-            
+
             return CompletableFuture.completedFuture(null);
         });
-        
+
         Object expResult = null;
         Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
@@ -274,10 +273,10 @@ public class DefaultPluginEnvironmentNGTest {
         when(executorService.submit(any(Callable.class))).thenAnswer(iom -> {
             final Callable callable = iom.getArgument(0);
             callable.call();
-            
+
             return CompletableFuture.completedFuture(null);
         });
-        
+
         Object expResult = null;
         Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
@@ -365,7 +364,7 @@ public class DefaultPluginEnvironmentNGTest {
         assertEquals(result, expResult);
     }
 
-    @Test
+    @Test(expectedExceptions = InterruptedException.class)
     public void testExecuteEditPluginNowThrowsInterruptedException() throws Exception {
         System.out.println("executeEditPluginNow");
         GraphWriteMethods graph = mock(GraphWriteMethods.class);
@@ -437,7 +436,7 @@ public class DefaultPluginEnvironmentNGTest {
         assertEquals(result, expResult);
     }
 
-    @Test
+    @Test(expectedExceptions = InterruptedException.class)
     public void testExecuteReadPluginNowThrowsInterruptedException() throws Exception {
         System.out.println("executeReadPluginNow");
         GraphReadMethods graph = mock(GraphReadMethods.class);
