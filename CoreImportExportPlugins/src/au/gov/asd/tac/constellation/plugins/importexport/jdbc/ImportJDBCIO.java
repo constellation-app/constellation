@@ -242,7 +242,7 @@ public final class ImportJDBCIO {
                         filter.setColumns(columns.toArray(new String[columns.size()]));
                     }
 
-                    final ImportDefinition impdef = new ImportDefinition(firstRow, filter);
+                    final ImportDefinition impdef = new ImportDefinition("", firstRow, filter);
 
                     final JsonNode attributesNode = definitionNode.get(ATTRIBUTES);
                     for (final AttributeType attrType : AttributeType.values()) {

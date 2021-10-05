@@ -1,8 +1,13 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
-== 2021-09-29 Plugin Parameters
+== 2021-10-06 Plugin Parameters
 <p>If you enter a value into a number parameter field that is either less than the minimum allowed or more than maximum allowed, the field turns red.</p>
+
+== 2021-09-28 Hashmod Improvements
+<p>Significant speed up in ingesting CSV files with a header line in as separate vertices and you can now specify
+(via a header field with format 'COLUMN1...COLUMN2;;;COLUMN3') that any transactions that hashmod creates via 
+matching COLUMN1 and COLUMN2 values will also gain the COLUMN3 attribute from one of the vertices it connects.</p>
 
 == 2021-09-17 Anaglyphic Display
 <p>The anaglyphic 3D display now allows different colors to be selected for left and right eyes.</p>

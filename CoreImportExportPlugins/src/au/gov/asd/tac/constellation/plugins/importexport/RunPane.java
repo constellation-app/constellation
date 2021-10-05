@@ -94,6 +94,8 @@ public final class RunPane extends BorderPane implements KeyListener {
     private final AttributeList sourceVertexAttributeList;
     private final AttributeList destinationVertexAttributeList;
     private final AttributeList transactionAttributeList;
+    private String paneName = "";
+    
     private Point2D draggingOffset;
     private AttributeNode draggingAttributeNode;
     private ImportTableColumn mouseOverColumn;
@@ -153,8 +155,9 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public RunPane(final ImportController importController, final String displayText) {
+    public RunPane(final ImportController importController, final String displayText, final String paneName) {
         this.importController = importController;
+        this.paneName = paneName;
 
         if (rowFilter == null) {
             try {
@@ -309,6 +312,15 @@ public final class RunPane extends BorderPane implements KeyListener {
         });
     }
 
+    /**
+     * Update name associated with this pane. This value is used in ImportDefinition construction to identify the
+     * source of the ImportDefinition - ultimately being used when performing import to support an import status dialog.
+     * @param paneName Value to set paneName to.
+     */
+    public void setPaneName(String paneName) {
+        this.paneName = paneName;
+    } 
+    
     public Point2D getDraggingOffset() {
         return draggingOffset;
     }
@@ -510,7 +522,7 @@ public final class RunPane extends BorderPane implements KeyListener {
             rf.setColumns(currentColumnLabels);
         }
 
-        final ImportDefinition definition = new ImportDefinition(firstRow, rf);
+        final ImportDefinition definition = new ImportDefinition(paneName, firstRow, rf);
 
         for (final TableColumn<TableRow, ?> column : sampleDataView.getColumns()) {
             final ImportTableColumn importTableColumn = (ImportTableColumn) column;
