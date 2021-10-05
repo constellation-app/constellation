@@ -14,7 +14,7 @@ ant \
 
 title "Run Core Unit Testing"
 
-ant \
+ant -verbose \
   -Dnbplatform.active.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
