@@ -256,7 +256,7 @@ public class ConstellationHelpDisplayerNGTest {
 
             final String actual = ConstellationHelpDisplayer.getFileURLString(sep, base, rel);
             System.out.println("expected: " + expected.replace("\\", "/") + " actual:" + actual);
-            assertEquals(actual, expected.replace("\\", "/"));
+            assertEquals(actual, expected.replace("\\", "/").replace("//", "/"));
         }
 
     }
