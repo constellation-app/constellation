@@ -248,14 +248,16 @@ public class ConstellationHelpDisplayerNGTest {
     @Test
     public void testGetFileURLString() throws MalformedURLException {
         System.out.println("testGetFileURLString");
-        final String sep = File.separator;
-        final String base = "c:" + sep + "users" + sep + "default" + sep;
-        final String rel = "filename.ext";
-        final String expected = "file:/c:/users/default/filename.ext";
+        for (final File file : File.listRoots()) {
+            final String sep = File.separator;
+            final String base = file.getPath() + "users" + sep + "default" + sep;
+            final String rel = "filename.ext";
+            final String expected = "file:/" + file.getPath() + "users/default/filename.ext";
 
-        final String actual = ConstellationHelpDisplayer.getFileURLString(sep, base, rel);
-        System.out.println("expected: " + expected + " actual:" + actual);
-        assertEquals(actual, expected);
+            final String actual = ConstellationHelpDisplayer.getFileURLString(sep, base, rel);
+            System.out.println("expected: " + expected.replace("\\", "/") + " actual:" + actual);
+            assertEquals(actual, expected.replace("\\", "/"));
+        }
 
     }
 
