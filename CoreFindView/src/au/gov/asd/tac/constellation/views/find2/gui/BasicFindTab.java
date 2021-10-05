@@ -135,11 +135,16 @@ public class BasicFindTab extends Tab {
         });
         addToCurrent.setOnAction(action -> {
             removeFromCurrent.setSelected(false);
+            updateSelectionFactors();
         });
         removeFromCurrent.setOnAction(action -> {
             addToCurrent.setSelected(false);
+            updateSelectionFactors();
         });
 
+        findAllButton.setOnAction(action -> {
+
+        });
     }
 
     /**
@@ -304,7 +309,6 @@ public class BasicFindTab extends Tab {
                 }
             }
         }
-
     }
 
     /**
@@ -324,8 +328,35 @@ public class BasicFindTab extends Tab {
         return false;
     }
 
-    private void disableAll() {
+    /**
+     * Reads the find text, element type, attributes selected, standard text
+     * selection, regEx selection, ignore case selection, exact match selected
+     * and search all graphs selection and passes them to the controller to
+     * create a BasicFindReplaceParameter
+     */
+    public void buildBasicFindReplaceParameters() {
 
+        final GraphElementType elementType = GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
+        final ArrayList<Attribute> attributeList = getMatchingAttributeList(elementType);
+
+        FindViewController.getDefault().getBasicParameters(findTextField.getText(), "",
+                elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
+                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), searchAllGraphs.isSelected());
+    }
+
+    /**
+     * This is called on add and remove to current selection toggles to update
+     * the variables values stored in the controller
+     */
+    public void updateSelectionFactors() {
+        FindViewController.getDefault().updateSelectionFactors(addToCurrent.isSelected(), removeFromCurrent.isSelected());
+    }
+
+    public void findAllAction() {
+        if (!findTextField.getText().isEmpty()) {
+            buildBasicFindReplaceParameters();
+            FindViewController.getDefault().findAll();
+        }
     }
 
 }

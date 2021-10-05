@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.find2;
 
+import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -28,32 +28,34 @@ public class BasicFindReplaceParameters {
     private final String findString;
     private final String replaceString;
     private final GraphElementType graphElement;
-    private List<String> attributeList = new ArrayList<String>();
+    private final ArrayList<Attribute> attributeList;
     private final boolean standardText;
     private final boolean regEx;
     private final boolean ignoreCase;
     private final boolean exactMatch;
-    private final boolean addToCurrent;
-    private final boolean removeFromCurrent;
+    private final boolean searchAllGraphs;
 
     public BasicFindReplaceParameters(String findString, String replaceString, GraphElementType graphElement,
-            List<String> attributeList, boolean standardText, boolean regEx, boolean ignoreCase,
-            boolean exactMatch, boolean addToCurrent, boolean removeFromCurrent) {
+            ArrayList<Attribute> attributeList, boolean standardText, boolean regEx, boolean ignoreCase,
+            boolean exactMatch, boolean searchAllGraphs) {
 
-        this.findString = findString.trim();
-        if (replaceString.isEmpty()) {
+        this.findString = findString;
+        if (replaceString.isEmpty() || replaceString == "") {
             this.replaceString = null;
         } else {
-            this.replaceString = replaceString.trim();
+            this.replaceString = replaceString;
         }
         this.graphElement = graphElement;
         this.attributeList = attributeList;
+
         this.standardText = standardText;
         this.regEx = regEx;
         this.ignoreCase = ignoreCase;
         this.exactMatch = exactMatch;
-        this.addToCurrent = addToCurrent;
-        this.removeFromCurrent = removeFromCurrent;
+        this.searchAllGraphs = searchAllGraphs;
+
+        trimText(findString);
+        ignoreCase(findString);
 
     }
 
@@ -87,7 +89,10 @@ public class BasicFindReplaceParameters {
         if (exactMatch == object.isExactMatch()) {
             matches++;
         }
-        if (matches == 8) {
+        if (searchAllGraphs == object.isSearchAllGraphs()) {
+            matches++;
+        }
+        if (matches == 9) {
             return true;
         }
         return false;
@@ -105,7 +110,7 @@ public class BasicFindReplaceParameters {
         return graphElement;
     }
 
-    public List<String> getAttributeList() {
+    public ArrayList<Attribute> getAttributeList() {
         return attributeList;
     }
 
@@ -124,4 +129,21 @@ public class BasicFindReplaceParameters {
     public boolean isExactMatch() {
         return exactMatch;
     }
+
+    public boolean isSearchAllGraphs() {
+        return searchAllGraphs;
+    }
+
+    private void trimText(final String text) {
+        if (!isExactMatch()) {
+            text.trim();
+        }
+    }
+
+    private void ignoreCase(final String text) {
+        if (isIgnoreCase()) {
+            text.toLowerCase();
+        }
+    }
+
 }

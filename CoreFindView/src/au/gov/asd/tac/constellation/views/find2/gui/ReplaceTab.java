@@ -36,7 +36,6 @@ public class ReplaceTab extends BasicFindTab {
         super(parentComponent);
         this.setText("Replace");
         setReplaceGridContent();
-
     }
 
     /**
@@ -48,7 +47,6 @@ public class ReplaceTab extends BasicFindTab {
 
         getButtonsHBox().getChildren().clear();
         getButtonsHBox().getChildren().addAll(replaceNextButton, replaceAllButton);
-
     }
 
     public void updateButtons() {
