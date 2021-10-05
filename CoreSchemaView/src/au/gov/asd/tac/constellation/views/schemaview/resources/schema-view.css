@@ -4,6 +4,5 @@
 }
 
 .text-field {    
-    -fx-text-inner-color: white;
     -fx-prompt-text-fill: grey;
 }
