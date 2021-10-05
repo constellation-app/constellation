@@ -69,7 +69,7 @@ public class HelpServletNGTest {
     @Test
     public void testDoGet() throws Exception {
         try (MockedStatic<ConstellationHelpDisplayer> helpDisplayerStaticMock = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
-            helpDisplayerStaticMock.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.anyObject())).thenAnswer((Answer<Void>) invocation -> null);
+            helpDisplayerStaticMock.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
 
             HttpServletRequest requestMock = mock(HttpServletRequest.class);
             HttpServletResponse responseMock = mock(HttpServletResponse.class);
@@ -81,7 +81,7 @@ public class HelpServletNGTest {
             HelpServlet instance = new HelpServlet();
             instance.doGet(requestMock, responseMock);
 
-            helpDisplayerStaticMock.verify(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.anyObject()), times(1));
+            helpDisplayerStaticMock.verify(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any()), times(1));
             verify(requestMock, times(1)).getRequestURI();
             verify(requestMock, times(1)).getHeader(Mockito.anyString());
         }
@@ -98,7 +98,7 @@ public class HelpServletNGTest {
         HttpServletResponse responseMock1 = mock(HttpServletResponse.class);
 
         try (MockedStatic<ConstellationHelpDisplayer> helpDisplayerStaticMock = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
-            helpDisplayerStaticMock.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.anyObject())).thenAnswer((Answer<Void>) invocation -> null);
+            helpDisplayerStaticMock.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
 
             when(requestMock1.getRequestURI()).thenReturn("/file:/C:/Projects/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/"
                     + "analyticview/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/question-best-connects-network.md");
@@ -111,7 +111,7 @@ public class HelpServletNGTest {
             instance.doGet(requestMock1, responseMock1);
 
             verify(responseMock1, times(1)).sendRedirect(Mockito.anyString());
-            helpDisplayerStaticMock.verify(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.anyObject()), times(1));
+            helpDisplayerStaticMock.verify(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any()), times(1));
             verify(requestMock1, times(1)).getRequestURI();
             verify(requestMock1, times(1)).getHeader(Mockito.anyString());
         }

@@ -92,7 +92,7 @@ public class GeneratorNGTest {
                     tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()));
                     tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any()));
 
-                    generatorStaticMock.verify(times(1), () -> Generator.getBaseDirectory());
+                    generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(1));
                 }
             }
         } finally {
@@ -129,12 +129,12 @@ public class GeneratorNGTest {
                         generator.run();
 
                         // verify that helpMappings was called once
-                        helpMapperStaticMock.verify(times(1), () -> HelpMapper.updateMappings());
+                        helpMapperStaticMock.verify(() -> HelpMapper.updateMappings(), times(1));
 
                         // verify that no method from TOCGenerator was called
                         tocgeneratorStaticMock.verifyNoInteractions();
 
-                        generatorStaticMock.verify(times(1), () -> Generator.getBaseDirectory());
+                        generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(1));
                     }
                 }
             }
@@ -185,7 +185,7 @@ public class GeneratorNGTest {
     }
 
     /**
-     * Test of getBaseDirectory method, of class Generator. TODO: Failing CI
+     * Test of getBaseDirectory method, of class Generator.
      */
     @Test
     public void testGetBaseDirectory() {
