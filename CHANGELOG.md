@@ -13,6 +13,13 @@
     class `NotifyDescriptor.Exception`. This presents an exception dialog
     when Constellation is ran from the executable.
 
+-   Updated Core Import Export summary text to provide more information. To
+    achieve this, added `definitionName` parameter to `ImportDefinition`
+    constructor and paneName parameter to `RunPane` constructor. Updated 
+    displaySummaryAlert` within `ImportDelimitedPlugin` class to take additional
+    parameters. The combination of these changes allows a more meaningful
+    summary dialog post delimited file import.
+
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
 
