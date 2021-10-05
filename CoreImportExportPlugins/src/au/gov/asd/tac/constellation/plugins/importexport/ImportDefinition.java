@@ -28,6 +28,9 @@ import java.util.Map;
  * @author sirius
  */
 public class ImportDefinition {
+    
+    // Allows a name to be assigned to importDefiniton, which is used by ImportDelimitedPlugin summary dialog.
+    private final String definitionName;
 
     private final int firstRow;
 
@@ -35,10 +38,10 @@ public class ImportDefinition {
 
     private final Map<AttributeType, List<ImportAttributeDefinition>> definitions = new EnumMap<>(AttributeType.class);
 
-    public ImportDefinition(final int firstRow, final RowFilter filter) {
+    public ImportDefinition(final String definitionName, final int firstRow, final RowFilter filter) {
 
+        this.definitionName = definitionName;
         this.firstRow = firstRow;
-
         this.filter = filter;
 
         definitions.put(AttributeType.SOURCE_VERTEX, new ArrayList<>());
@@ -50,6 +53,14 @@ public class ImportDefinition {
         definitions.get(attributeType).add(definition);
     }
 
+    /**
+     * Get the stored definitionName.
+     * @return Stored definitionName string.
+     */
+    public String getDefinitionName() {
+        return definitionName;
+    } 
+    
     /**
      * The first row that will be imported.
      *
