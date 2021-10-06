@@ -40,9 +40,9 @@ public class RecentFilesWelcomePage {
     }
     
     /**
-     * Gets the paths of the files that were recently saved
+     * Gets the file name and path of the files that were recently saved
      *
-     * @return list of recent file paths
+     * @return list of recent file details
      */
     public static List<Tuple<String, String>> getFileDetails() {
         RecentFiles.init();
