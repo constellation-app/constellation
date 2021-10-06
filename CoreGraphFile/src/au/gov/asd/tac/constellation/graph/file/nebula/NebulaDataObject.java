@@ -28,6 +28,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -38,7 +40,6 @@ import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectExistsException;
 import org.openide.loaders.MultiDataObject;
 import org.openide.loaders.MultiFileLoader;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 /**
@@ -120,6 +121,8 @@ import org.openide.util.NbBundle.Messages;
     )
 })
 public class NebulaDataObject extends MultiDataObject implements OpenCookie {
+    
+    private static final Logger LOGGER = Logger.getLogger(NebulaDataObject.class.getName());
 
     /**
      * Filename extension for nebula files.
@@ -145,7 +148,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
         try (final FileReader reader = new FileReader(getPrimaryFile().getPath())) {
             props.load(reader);
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         // Generate a color for the nebula marker.

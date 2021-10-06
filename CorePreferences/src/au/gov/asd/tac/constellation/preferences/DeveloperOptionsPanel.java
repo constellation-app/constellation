@@ -17,6 +17,9 @@ package au.gov.asd.tac.constellation.preferences;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JPanel;
 import org.netbeans.api.autoupdate.OperationContainer;
 import org.netbeans.api.autoupdate.OperationException;
 import org.netbeans.api.autoupdate.OperationSupport;
@@ -28,7 +31,9 @@ import org.netbeans.api.autoupdate.UpdateUnit;
  *
  * @author sirius
  */
-public class DeveloperOptionsPanel extends javax.swing.JPanel {
+public class DeveloperOptionsPanel extends JPanel {
+    
+    private static final Logger LOGGER = Logger.getLogger(DeveloperOptionsPanel.class.getName());
 
     private final DeveloperOptionsPanelController controller;
 
@@ -212,8 +217,8 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
         OperationSupport operationSupport = operationContainer.getSupport();
         try {
             operationSupport.doOperation(null);
-        } catch (OperationException ex) {
-            ex.printStackTrace();
+        } catch (final OperationException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }//GEN-LAST:event_masterResetButtonActionPerformed
 

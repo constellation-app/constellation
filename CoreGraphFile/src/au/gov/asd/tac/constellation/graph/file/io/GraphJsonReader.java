@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -429,7 +428,7 @@ public final class GraphJsonReader {
             }
 
         } catch (final Exception ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             jp.close();
         }
@@ -458,8 +457,7 @@ public final class GraphJsonReader {
             final String msg = "There was an error loading some parts of the graph. The error was " + ex.getLocalizedMessage();
             // TODO: throw a plugin exception
 //            throw new PluginException(PluginNotificationLevel.ERROR, msg);
-            LOGGER.warning(msg);
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.WARNING, msg, ex);
         }
 
         graph = new DualGraph(schemaFactory.createSchema(), storeGraph);

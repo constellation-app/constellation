@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
@@ -80,7 +82,6 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
@@ -98,6 +99,8 @@ import org.openide.util.NbPreferences;
     "MSG_NoEntries=There are no rules for this identifier."
 })
 public final class QualityControlViewPane extends BorderPane {
+    
+    private static final Logger LOGGER = Logger.getLogger(QualityControlViewPane.class.getName());
 
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static Map<QualityControlRule, QualityCategory> rulePriorities = null;
@@ -657,7 +660,7 @@ public final class QualityControlViewPane extends BorderPane {
             try {
                 PREFERENCES.flush();
             } catch (final BackingStoreException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }

@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class contains all of the logic for performing searches on a given
@@ -55,6 +56,8 @@ import org.openide.util.Exceptions;
  * @author betelgeuse
  */
 public class QueryServices {
+    
+    private static final Logger LOGGER = Logger.getLogger(QueryServices.class.getName());
 
     private static final int AVAILABLE_THREADS = Math.max(1, (Runtime.getRuntime().availableProcessors() - 1));
     private static final int MAX_THRESHOLD = 10000; // The maximum number of items to assign each thread (until we don't have enough threads anyway).
@@ -62,6 +65,8 @@ public class QueryServices {
     private Graph graph;
     private boolean[] results;
     private List<FindResult> findResults = new ArrayList<>();
+    
+    private static final String THREAD_INTERRUPTED = "Thread was interrupted";
 
     /**
      * Constructs a new <code>QueryServices</code>.
@@ -118,11 +123,11 @@ public class QueryServices {
                 } finally {
                     try {
                         barrier.await();
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
+                    } catch (final InterruptedException ex) {
+                        LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                         Thread.currentThread().interrupt();
-                    } catch (BrokenBarrierException ex) {
-                        Exceptions.printStackTrace(ex);
+                    } catch (final BrokenBarrierException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
                 }
 
@@ -188,11 +193,11 @@ public class QueryServices {
                 // Await the conclusion of all threads:
                 try {
                     barrier.await();
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                     Thread.currentThread().interrupt();
-                } catch (BrokenBarrierException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final BrokenBarrierException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
 
@@ -461,9 +466,11 @@ public class QueryServices {
                 // This thread is now done, so wait for all others to finish:
                 try {
                     barrier.await();
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED);
                     Thread.currentThread().interrupt();
-                } catch (BrokenBarrierException ex) {
+                } catch (final BrokenBarrierException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
             }
         }

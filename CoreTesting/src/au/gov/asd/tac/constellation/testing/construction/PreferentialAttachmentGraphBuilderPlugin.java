@@ -53,8 +53,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -71,6 +72,8 @@ import org.openide.util.lookup.ServiceProviders;
 @Messages("PreferentialAttachmentGraphBuilderPlugin=Preferential Attachment Graph Builder")
 @PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
 public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(PreferentialAttachmentGraphBuilderPlugin.class.getName());
 
     public static final String N_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "n");
     public static final String M_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "m");
@@ -314,7 +317,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
             }
         } catch (final PluginException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         interaction.setProgress(1, 0, "Completed successfully", true);

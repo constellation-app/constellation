@@ -2,6 +2,14 @@
 
 ## Changes in September 2021
 
+-   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
+    rotation values in the wrong value positions.
+
+-   Removed unused `localized` parameter from the signature of the `locate()`
+    method in `ConstellationInstalledFileLocator`.
+
+-   Renamed `PreferenceUtilites` to `PreferenceUtilities` to fix the typo.
+
 -   Updated Core Import Export summary text to provide more information. To
     achieve this, added `definitionName` parameter to `ImportDefinition`
     constructor and paneName parameter to `RunPane` constructor. Updated 
@@ -12,12 +20,6 @@
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
     
--   Removed unused `localized` parameter from the signature of the `locate()`
-    method in `ConstellationInstalledFileLocator`.
-
--   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
-    rotation values in the wrong value positions.
-
 ## Changes in August 2021
 
 -   Added `updateTagsFiltersAvailable`, `updateSelectedTagsCombo`,

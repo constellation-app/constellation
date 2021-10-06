@@ -37,6 +37,8 @@ import au.gov.asd.tac.constellation.views.scripting.graph.SGraph;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -44,7 +46,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.Action;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
@@ -70,6 +71,8 @@ import org.python.jsr223.PyScriptEngine;
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 @Messages("ScriptingExecutePlugin=Execute Script")
 public class ScriptingExecutePlugin extends SimplePlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(ScriptingExecutePlugin.class.getName());
 
     public static final String SCRIPT_PARAMETER_ID = PluginParameter.buildId(ScriptingExecutePlugin.class, "script_text");
     public static final String NEW_OUTPUT_PARAMETER_ID = PluginParameter.buildId(ScriptingExecutePlugin.class, "new_output");
@@ -92,8 +95,8 @@ public class ScriptingExecutePlugin extends SimplePlugin {
         if (!newOutput) {
             try {
                 io.getOut().reset();
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
         io.select();
@@ -130,7 +133,7 @@ public class ScriptingExecutePlugin extends SimplePlugin {
                     engine.eval("import sys\nsys.modules.clear()", engine.getContext());
                 }
                 engine.eval(script, engine.getContext());
-            } catch (ScriptException ex) {
+            } catch (final ScriptException ex) {
                 parameters.getParameters().get(OUTPUT_EXCEPTION_PARAMETER_ID).setObjectValue(ex);
                 ex.printStackTrace(io.getErr());
 
@@ -196,7 +199,7 @@ public class ScriptingExecutePlugin extends SimplePlugin {
             }
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 throw new IOException("Script interrupted by user");
             }
