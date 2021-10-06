@@ -1,5 +1,9 @@
 # Constellation Changes
 
+## Changes in October 2021
+
+-   Changed `DataAccessPluginType` from an abstract class to an interface.
+
 ## Changes in September 2021
 
 -   Updated `processImport` in `ImportController` to a `void` method given the

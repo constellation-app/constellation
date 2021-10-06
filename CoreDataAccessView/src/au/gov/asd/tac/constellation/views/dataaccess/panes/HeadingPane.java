@@ -92,7 +92,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
         }
 
         expandedProperty().addListener(
-                (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+                (final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue)
                         -> DataAccessPreferenceUtilities.setExpanded(headingText, newValue));
     }
 

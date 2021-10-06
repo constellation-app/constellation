@@ -63,10 +63,10 @@ public class DataAccessUtilities {
         final DataAccessPane[] panes = new DataAccessPane[1];
         try {
             SwingUtilities.invokeAndWait(() -> panes[0] = getInternalDataAccessPane());
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
-        } catch (InvocationTargetException ex) {
+        } catch (final InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
 
@@ -95,7 +95,7 @@ public class DataAccessUtilities {
                     final DataAccessState dataAccessState = readableGraph.getObjectValue(
                             dataAccessStateAttribute, 0);
                     
-                    if (dataAccessState != null && dataAccessState.getState().size() > 0) {
+                    if (dataAccessState != null && !dataAccessState.getState().isEmpty()) {
                         // TODO: support multiple tabs (not just first one in state) and not
                         //       introduce memory leaks
                         final Map<String, String> tabState = dataAccessState.getState().get(0);
@@ -157,7 +157,7 @@ public class DataAccessUtilities {
                         .DATAACCESS_STATE.ensure(wg);
                 
                 wg.setObjectValue(dataAccessStateAttribute, 0, dataAccessState);
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
                 Thread.currentThread().interrupt();
             } finally {

@@ -80,9 +80,9 @@ public class WaitForQueriesToCompleteTask implements Runnable {
                         null,
                         NotificationDisplayer.Priority.HIGH
                 );
-            } catch (CancellationException e) {
+            } catch (final CancellationException e) {
                 LOGGER.log(Level.INFO, String.format(CANCEL_ERROR_FORMAT, runningPlugin.getValue()));
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 LOGGER.log(Level.INFO, String.format(INTERRUPT_ERROR_FORMAT, runningPlugin.getValue()));
                 Thread.currentThread().interrupt();
             }

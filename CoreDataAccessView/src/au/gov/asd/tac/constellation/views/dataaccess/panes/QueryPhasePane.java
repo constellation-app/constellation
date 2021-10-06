@@ -247,7 +247,7 @@ public class QueryPhasePane extends VBox {
         }
 
         // Determine the number of plugins that will be executed
-        int pluginsToRun = Long.valueOf(getDataAccessPanes().stream()
+        final int pluginsToRun = Long.valueOf(getDataAccessPanes().stream()
                 .filter(DataSourceTitledPane::isQueryEnabled)
                 .count()).intValue();
         

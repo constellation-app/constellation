@@ -68,14 +68,13 @@ public class DataAccessResultsDirChooser {
         final ShowDialog showDialog = new ShowDialog();
         try {
             EventQueue.invokeAndWait(showDialog);
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             LOGGER.log(Level.WARNING, "Thread displaying the data access view "
                     + "results dir chooser was interrupted.", ex);
             Thread.currentThread().interrupt();
-        } catch (InvocationTargetException ex) {
+        } catch (final InvocationTargetException ex) {
             LOGGER.log(Level.SEVERE, "Error occured during selection of the data "
                     + "access view results dir.", ex);
-            Exceptions.printStackTrace(ex);
         }
         
         final File selectedDir = showDialog.getSelectedDir();

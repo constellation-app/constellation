@@ -93,13 +93,13 @@ public class DataAccessTabPane {
         tabPane = new TabPane();
         tabPane.setSide(Side.TOP);
         tabPane.getSelectionModel().selectedIndexProperty().addListener(
-                (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
+                (final ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue) ->
                         storeParameterValues()
         );
 
         // Update the button when the user adds/removes tabs.
         tabPane.getTabs().addListener(
-                (ListChangeListener.Change<? extends Tab> change) -> this.dataAccessPane.update()
+                (final ListChangeListener.Change<? extends Tab> change) -> this.dataAccessPane.update()
         );
     }
     

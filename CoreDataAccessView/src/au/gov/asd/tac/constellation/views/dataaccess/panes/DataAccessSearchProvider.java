@@ -53,13 +53,9 @@ public class DataAccessSearchProvider implements SearchProvider {
         try {
             plugins = DataAccessPaneState.getPlugins();
         } catch (ExecutionException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to load data access plugins", ex);
-            
             throw new IllegalStateException("Failed to load data access plugins. "
                     + "Data Access View cannot be created.");
-        } catch (InterruptedException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to load data access plugins", ex);
-            
+        } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             
             throw new IllegalStateException("Failed to load data access plugins. "

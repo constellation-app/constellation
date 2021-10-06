@@ -74,7 +74,7 @@ public final class TabContextMenu {
         ///////////////////////////////////////
         
         deactivateAllPluginsMenuItem = new MenuItem(DEACTIVATE_ALL_PLUGINS_TEXT);
-        deactivateAllPluginsMenuItem.setOnAction((ActionEvent event) -> {
+        deactivateAllPluginsMenuItem.setOnAction(event -> {
             DataAccessTabPane.getQueryPhasePane(tab).getDataAccessPanes().stream()
                     .filter(dataSourceTitledPane -> (dataSourceTitledPane.isQueryEnabled()))
                     .forEachOrdered(dataSourceTitledPane -> 
@@ -130,7 +130,7 @@ public final class TabContextMenu {
         ////////////////////////////////
         
         runMenuItem = new MenuItem(RUN_TEXT);
-        runMenuItem.setOnAction((ActionEvent event) -> {
+        runMenuItem.setOnAction(event -> {
             final int index = dataAccessTabPane.getTabPane().getTabs().indexOf(tab);
             dataAccessTabPane.runTabs(index, index);
             
@@ -142,7 +142,7 @@ public final class TabContextMenu {
         ////////////////////////////////
         
         runFromHereMenuItem = new MenuItem(RUN_FROM_HERE_TEXT);
-        runFromHereMenuItem.setOnAction((ActionEvent event) -> {
+        runFromHereMenuItem.setOnAction(event -> {
             final int index = dataAccessTabPane.getTabPane().getTabs().indexOf(tab);
             dataAccessTabPane.runTabs(index, dataAccessTabPane.getTabPane().getTabs().size() - 1);
             
@@ -154,7 +154,7 @@ public final class TabContextMenu {
         ////////////////////////////////
         
         runToHereMenuItem = new MenuItem(RUN_TO_HERE_TEXT);
-        runToHereMenuItem.setOnAction((ActionEvent event) -> {
+        runToHereMenuItem.setOnAction(event -> {
             final int index = dataAccessTabPane.getTabPane().getTabs().indexOf(tab);
             dataAccessTabPane.runTabs(0, index);
             
