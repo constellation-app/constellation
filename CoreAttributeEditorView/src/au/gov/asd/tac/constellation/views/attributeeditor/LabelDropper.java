@@ -45,7 +45,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -57,6 +58,8 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @ServiceProvider(service = GraphDropper.class)
 public class LabelDropper implements GraphDropper {
+    
+    private static final Logger LOGGER = Logger.getLogger(LabelDropper.class.getName());
 
     private static final String INDICATOR = "Attribute.Label=";
     private static final DataFlavor ATTRIBUTE_LABEL_FLAVOR;
@@ -66,7 +69,7 @@ public class LabelDropper implements GraphDropper {
         try {
             alf = new DataFlavor(AttributeEditorPanel.MIMETYPE);
         } catch (final ClassNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         ATTRIBUTE_LABEL_FLAVOR = alf;
@@ -99,9 +102,10 @@ public class LabelDropper implements GraphDropper {
                 }
 
             } catch (final UnsupportedFlavorException | IOException | ClassNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             } catch (final ClassCastException ex) {
                 // This exception occurs when dragging a label from Attribute Editor to graph area
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
 

@@ -56,8 +56,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -77,6 +78,8 @@ import org.openide.util.lookup.ServiceProviders;
 @Messages("SphereGraphBuilderPlugin=Sphere Graph Builder")
 @PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
 public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(SphereGraphBuilderPlugin.class.getName());
 
     public static final String N_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "n");
     public static final String T_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "t");
@@ -439,8 +442,8 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         // Do a spherical layout.
         try {
             PluginExecution.withPlugin(ArrangementPluginRegistry.SPHERE).executeNow(graph);
-        } catch (PluginException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final PluginException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         // Find out where the extremes of the new sphere are and select every 10th vertex.

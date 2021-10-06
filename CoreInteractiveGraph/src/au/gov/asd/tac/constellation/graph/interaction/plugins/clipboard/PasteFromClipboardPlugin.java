@@ -30,7 +30,8 @@ import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOw
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -46,6 +47,8 @@ import org.openide.util.lookup.ServiceProvider;
 @Messages("PasteFromClipboardPlugin=Paste from Clipboard")
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 public class PasteFromClipboardPlugin extends SimpleEditPlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(PasteFromClipboardPlugin.class.getName());
 
     @Override
     public PluginParameters createParameters() {
@@ -66,8 +69,8 @@ public class PasteFromClipboardPlugin extends SimpleEditPlugin {
                             .executeNow(wg);
                 }
             }
-        } catch (UnsupportedFlavorException | IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final UnsupportedFlavorException | IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
     }

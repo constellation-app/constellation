@@ -52,6 +52,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -77,6 +78,8 @@ import org.openide.windows.TopComponent;
  */
 @org.openide.util.lookup.ServiceProvider(service = org.openide.windows.ExternalDropHandler.class)
 public class DefaultExternalDropHandler extends ExternalDropHandler {
+    
+    private static final Logger LOGGER = Logger.getLogger(DefaultExternalDropHandler.class.getName());
 
     @Override
     public boolean canDrop(final DropTargetDragEvent e) {
@@ -182,11 +185,11 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
             } else {
                 // Do nothing
             }
-        } catch (UnsupportedFlavorException ex) {
+        } catch (final UnsupportedFlavorException ex) {
             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, ex);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             // Ignore. Can be just "Owner timed out" from sun.awt.X11.XSelection.getData.
-            Logger.getLogger(DefaultExternalDropHandler.class.getName()).log(Level.FINE, null, ex);
+            LOGGER.log(Level.FINE, null, ex);
         }
         return null;
     }
@@ -211,7 +214,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
         if (uriListDataFlavor == null) {
             try {
                 uriListDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-            } catch (ClassNotFoundException cnfE) {
+            } catch (final ClassNotFoundException cnfE) {
                 //cannot happen
                 throw new AssertionError(cnfE);
             }
@@ -232,7 +235,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
                 URI uri = new URI(s);
                 File file = new File(uri);
                 list.add(file);
-            } catch (java.net.URISyntaxException | IllegalArgumentException e) {
+            } catch (final URISyntaxException | IllegalArgumentException e) {
                 // malformed URI
             }
             // the URI is not a valid 'file:' URI

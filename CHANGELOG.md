@@ -2,19 +2,27 @@
 
 ## Changes in September 2021
 
--   Updated `processImport` in `ImportController` to a `void` method given the
-    return type `List<File>` previously defined was not being used.
-    
+-   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
+    rotation values in the wrong value positions.
+
 -   Removed unused `localized` parameter from the signature of the `locate()`
     method in `ConstellationInstalledFileLocator`.
 
 -   Removed all the unused `*Action.java` classes from 
     `au.gov.asd.tac.constellation.plugins.algorithms.sna`.
 
+-   Renamed `PreferenceUtilites` to `PreferenceUtilities` to fix the typo.
 
--   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
-    rotation values in the wrong value positions.
+-   Updated Core Import Export summary text to provide more information. To
+    achieve this, added `definitionName` parameter to `ImportDefinition`
+    constructor and paneName parameter to `RunPane` constructor. Updated 
+    displaySummaryAlert` within `ImportDelimitedPlugin` class to take additional
+    parameters. The combination of these changes allows a more meaningful
+    summary dialog post delimited file import.
 
+-   Updated `processImport` in `ImportController` to a `void` method given the
+    return type `List<File>` previously defined was not being used.
+    
 ## Changes in August 2021
 
 -   Added `updateTagsFiltersAvailable`, `updateSelectedTagsCombo`,

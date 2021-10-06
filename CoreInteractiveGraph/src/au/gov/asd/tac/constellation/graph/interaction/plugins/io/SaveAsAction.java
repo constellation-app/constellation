@@ -135,6 +135,8 @@ import org.openide.windows.WindowManager;
     "MSG_SaveAs_FileInUse_Title=Save Graph"
 })
 public class SaveAsAction extends AbstractAction implements ContextAwareAction {
+    
+    private static final Logger LOGGER = Logger.getLogger(SaveAsAction.class.getName());
 
     /**
      * Action to save document under a different file name and/or extension. The
@@ -201,12 +203,12 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                     new Thread(() -> {
                         RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName());
                     }, "Take Graph Screenshot").start();
-                } catch (IOException ioE) {
+                } catch (final IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(
                                     newFile.getName(),
                                     ioE.getLocalizedMessage()));
-                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ioE);
+                    LOGGER.log(Level.SEVERE, null, ioE);
                 }
                 isSaved = true;
             }
@@ -231,7 +233,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                     fileInUse = filename.getCanonicalPath().equalsIgnoreCase(existingFile.getCanonicalPath());
                 }
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
         }
         return fileInUse;
     }

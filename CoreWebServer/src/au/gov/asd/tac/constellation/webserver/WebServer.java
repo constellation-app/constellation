@@ -52,7 +52,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.awt.StatusDisplayer;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
@@ -271,7 +270,7 @@ public class WebServer {
 
                 complete = true;
             } catch (final IOException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             if (complete) {

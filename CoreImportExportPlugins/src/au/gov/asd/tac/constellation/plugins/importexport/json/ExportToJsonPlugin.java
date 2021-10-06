@@ -33,7 +33,8 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import java.io.File;
 import java.io.IOException;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -45,6 +46,8 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
 @NbBundle.Messages("ExportToJsonPlugin=Export to JSON")
 public class ExportToJsonPlugin extends SimpleReadPlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(ExportToJsonPlugin.class.getName());
 
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToJsonPlugin.class, "filename");
 
@@ -60,8 +63,8 @@ public class ExportToJsonPlugin extends SimpleReadPlugin {
                     new File(filename),
                     ConstellationLoggerHelper.SUCCESS
             );
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

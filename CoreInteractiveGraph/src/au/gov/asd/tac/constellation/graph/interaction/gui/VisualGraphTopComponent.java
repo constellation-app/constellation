@@ -114,6 +114,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -140,7 +142,6 @@ import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.SaveAsCapable;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -179,6 +180,8 @@ import org.openide.windows.TopComponent;
     "HINT_VisualGraphTopComponent=Visual Graph"
 })
 public final class VisualGraphTopComponent extends CloneableTopComponent implements GraphChangeListener, UndoRedo.Provider {
+    
+    private static final Logger LOGGER = Logger.getLogger(VisualGraphTopComponent.class.getName());
 
     public static final String NEW_GRAPH_NAME_PARAMETER_ID = PluginParameter.buildId(VisualGraphTopComponent.class, "graph_name");
 
@@ -272,8 +275,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                                 PluginExecution.withPlugin(new ImportRecordFile(recordStore)).executeLater(graph);
                             }
                         }
-                    } catch (UnsupportedFlavorException | IOException ex) {
-                        Exceptions.printStackTrace(ex);
+                    } catch (final UnsupportedFlavorException | IOException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                         dtde.rejectDrop();
                     }
                 } else {
@@ -670,8 +673,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     if (!savable.isSaved()) {
                         return false;
                     }
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             } else {
                 return false;
@@ -726,7 +729,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                                 s.save();
                             }
                         } catch (final IOException ex) {
-                            Exceptions.printStackTrace(ex);
+                            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                         }
                     }
                 };
@@ -778,7 +781,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                             setName(newGraphName);
                             setDisplayName(newGraphName);
                             setHtmlDisplayName(newGraphName); // this changes the text on the tab
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             throw new RuntimeException(String.format("The name %s already exists.", newGraphName), ex);
                         }
                         savable.setModified(true);
@@ -1133,7 +1136,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 }
                 SaveNotification.saved(freshGdo.getPrimaryFile().getPath());
             } catch (final Exception ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             return null;
@@ -1174,8 +1177,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     graphModificationCount = graphModificationCountBase;
                     savable.setModified(false);
                 }
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             PluginExecution.withPlugin(new WriteGraphFile(copy, freshGdo)).executeLater(null);

@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -234,6 +235,8 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
      * current selection from these options.
      */
     public static class MultiChoiceParameterValue extends ParameterValue {
+        
+        private static final Logger LOGGER = Logger.getLogger(MultiChoiceParameterValue.class.getName());
 
         private final List<ParameterValue> options;
         private final List<ParameterValue> choices;
@@ -419,7 +422,7 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
                     } catch (final IllegalAccessException | IllegalArgumentException
                             | InstantiationException | NoSuchMethodException
                             | SecurityException | InvocationTargetException ex) {
-                        Exceptions.printStackTrace(ex);
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
                 }
             }
