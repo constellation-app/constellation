@@ -89,9 +89,6 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
 
     private static final Image HELP_ICON = UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor());
 
-    private static int pluginCount = 0;
-    private static boolean preferenceLoad = false;
-
     public DataSourceTitledPane(final DataAccessPlugin plugin, final ImageView dataSourceIcon, final PluginParametersPaneListener top, final Set<String> globalParamLabels) {
         this.plugin = plugin;
         this.top = top;
@@ -105,8 +102,6 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
         enabled.setDisable(true);
 
         final boolean isExpanded = DataAccessPreferences.isExpanded(plugin.getName(), false);
-
-        resetPreferenceVariables();
 
         createParameters(isExpanded, null);
 
@@ -160,12 +155,9 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
                 }
 
                 try {
-                    // Only copy the default parameters first time within a preference PLUGINS_OBJECT
-                    if (!preferenceLoad || pluginCount == 1) {
-                        dataSourceParameters = DefaultPluginParameters.getDefaultParameters(plugin);
-                        if (dataSourceParameters != null) {
-                            dataSourceParameters = dataSourceParameters.copy();
-                        }
+                    dataSourceParameters = DefaultPluginParameters.getDefaultParameters(plugin);
+                    if (dataSourceParameters != null) {
+                        dataSourceParameters = dataSourceParameters.copy();
                     }
 
                     if (perPluginParamMap != null && dataSourceParameters != null) {
@@ -206,15 +198,9 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
                     }
 
                     displayParameters(isExpanded);
-                    resetPreferenceVariables();
                 });
             }
         });
-    }
-
-    private void resetPreferenceVariables() {
-        preferenceLoad = false;
-        pluginCount = 0;
     }
 
     /**
@@ -361,8 +347,6 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
      * @param perPluginParamMap the parameter values.
      */
     public void setParameterValues(final Map<String, String> perPluginParamMap) {
-        pluginCount++;
-        preferenceLoad = true;
         createParameters(true, perPluginParamMap);
     }
 
