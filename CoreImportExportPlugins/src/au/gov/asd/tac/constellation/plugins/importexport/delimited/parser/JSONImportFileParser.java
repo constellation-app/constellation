@@ -19,7 +19,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -386,7 +389,30 @@ public class JSONImportFileParser extends ImportFileParser {
             // is found there will be no data to import.
             selectedList = null;
             selectedListDepth = NO_LIST_LEVEL;
-            JsonNode root = mapper.readTree(in);
+            JsonNode root;
+            ArrayNode childNode = mapper.createArrayNode();
+            JsonNode node = null;
+            int counter = 0;
+            
+            // read in all JSON object from input
+            MappingIterator<JsonNode> it = mapper.readerFor(JsonNode.class)
+                    .readValues(in);
+            while (it.hasNextValue()) {
+                node = it.nextValue();
+                childNode.add(node);
+                counter++;
+            }
+            // Maps newline delimited JSON to valid JSON in the format 
+            // {"results": [<ndjson>]}
+            if (counter > 1){  // Newline Delimited JSON (ndJSON)
+                // Changes the ndJSON to valid JSON
+                ObjectMapper newJSON = new ObjectMapper();
+                ObjectNode rootNode = newJSON.createObjectNode();
+                rootNode.set("results", childNode);
+                root = rootNode;
+            } else {
+                root = node;
+            }
             lookForChildArrays(root, "", 0);
 
             if (selectedList != null) {
