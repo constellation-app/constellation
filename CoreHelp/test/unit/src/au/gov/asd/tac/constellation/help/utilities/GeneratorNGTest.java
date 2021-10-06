@@ -15,9 +15,16 @@
  */
 package au.gov.asd.tac.constellation.help.utilities;
 
+import au.gov.asd.tac.constellation.help.ConstellationHelpDisplayer;
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import au.gov.asd.tac.constellation.help.utilities.toc.TOCGenerator;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.mockito.MockedStatic;
@@ -92,7 +99,7 @@ public class GeneratorNGTest {
                     tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()));
                     tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any()));
 
-                    generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(1));
+                    generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(2));
                 }
             }
         } finally {
@@ -134,7 +141,7 @@ public class GeneratorNGTest {
                         // verify that no method from TOCGenerator was called
                         tocgeneratorStaticMock.verifyNoInteractions();
 
-                        generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(1));
+                        generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(2));
                     }
                 }
             }
@@ -185,35 +192,77 @@ public class GeneratorNGTest {
     }
 
     /**
-     * Test of getBaseDirectory method, of class Generator.
+     * Test of getBaseDirectory method, of class Generator. Tests all available
+     * file system roots, with module and class specific locations.
      */
     @Test
-    public void testGetBaseDirectory() {
+    public void testGetBaseDirectory() throws URISyntaxException, MalformedURLException {
         System.out.println("testGetBaseDirectory");
 
         String sep = File.separator;
 
-        final String previousUserDir = System.getProperty("user.dir");
+        try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
+            try (MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class, Mockito.CALLS_REAL_METHODS)) {
 
-        final String userDir = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp";
-        final String expectedBaseDir = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation" + sep;
+                // loop over all possible file roots on the file system
+                for (final File file : File.listRoots()) {
 
-        final String userDir2 = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp"
-                + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac";
-        final String expectedBaseDir2 = "C:" + sep + "Users" + sep + "Username" + sep + "Constellation" + sep;
+                    // try within base level of help module
+                    final String userDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp";
 
-        try {
-            System.setProperty("user.dir", userDir);
-            assertEquals(Generator.getBaseDirectory(), expectedBaseDir);
+                    // mock paths.get to return a path which is a mock - then return the user dir on call to toString()
+                    final Path pathUserDir = mock(Path.class);
+                    when(pathUserDir.toString()).thenReturn(userDir);
+                    pathsStaticMock.when(() -> Paths.get(Mockito.any())).thenReturn(pathUserDir);
 
-            System.setProperty("user.dir", userDir2);
-            assertEquals(Generator.getBaseDirectory(), expectedBaseDir2);
-        } finally {
-            // clean up and reset the property
-            if (previousUserDir != null) {
-                System.setProperty("user.dir", previousUserDir);
+                    // mock url and uri so when generator.getResource is returned it calls the paths mock above
+                    final URL urlUserDir = mock(URL.class);
+                    final URI urIUserDir = mock(URI.class);
+                    when(urlUserDir.toURI()).thenReturn(urIUserDir);
+                    generatorStaticMock.when(() -> Generator.getResource(Mockito.eq(Generator.class), Mockito.eq("/"))).thenReturn(urlUserDir);
+
+                    final String expectedBaseDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep;
+                    assertEquals(Generator.getBaseDirectory(), expectedBaseDir);
+
+                    // try within help module package at a deeper level
+                    final String userDir2 = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp"
+                            + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac";
+
+                    // mock paths.get to return a path which is a mock - then return the user dir on call to toString()
+                    final Path pathUserDir2 = mock(Path.class);
+                    when(pathUserDir2.toString()).thenReturn(userDir2);
+                    pathsStaticMock.when(() -> Paths.get(Mockito.any())).thenReturn(pathUserDir2);
+
+                    // mock url and uri so when generator.getResource is returned it calls the paths mock above
+                    final URL urlUserDir2 = mock(URL.class);
+                    final URI urIUserDir2 = mock(URI.class);
+                    when(urlUserDir2.toURI()).thenReturn(urIUserDir2);
+                    generatorStaticMock.when(() -> Generator.getResource(Mockito.eq(Generator.class), Mockito.eq("/"))).thenReturn(urlUserDir2);
+
+                    final String expectedBaseDir2 = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep;
+                    assertEquals(Generator.getBaseDirectory(), expectedBaseDir2);
+
+                    // try with file struct containing constellation
+                    final String userDir3 = file.getPath() + "Users" + sep + "Username" + sep + "constellation" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp"
+                            + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac";
+
+                    // mock paths.get to return a path which is a mock - then return the user dir on call to toString()
+                    final Path pathUserDir3 = mock(Path.class);
+                    when(pathUserDir3.toString()).thenReturn(userDir3);
+                    pathsStaticMock.when(() -> Paths.get(Mockito.any())).thenReturn(pathUserDir3);
+
+                    // mock url and uri so when generator.getResource is returned it calls the paths mock above
+                    final URL urlUserDir3 = mock(URL.class);
+                    final URI urIUserDir3 = mock(URI.class);
+                    when(urlUserDir3.toURI()).thenReturn(urIUserDir3);
+                    generatorStaticMock.when(() -> Generator.getResource(Mockito.eq(Generator.class), Mockito.eq("/"))).thenReturn(urlUserDir3);
+
+                    final String expectedBaseDir3 = file.getPath() + "Users" + sep + "Username" + sep + "constellation" + sep + "Constellation" + sep;
+                    assertEquals(Generator.getBaseDirectory(), expectedBaseDir3);
+                }
             }
         }
+        
     }
 
 }

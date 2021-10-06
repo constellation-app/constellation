@@ -21,6 +21,10 @@ import au.gov.asd.tac.constellation.help.utilities.toc.TOCItem;
 import au.gov.asd.tac.constellation.help.utilities.toc.TreeNode;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -111,18 +115,27 @@ public class Generator implements Runnable {
      * @return
      */
     public static String getBaseDirectory() {
-        final String sep = File.separator;
-        // Get the current directory and make the file within the base project directory.
-        final String userDir = System.getProperty("user.dir");
-        String[] splitUserDir = userDir.split(Pattern.quote(sep));
-        while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
-            splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
-        }
-        // split once more
-        splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
 
-        baseDirectory = String.join(sep, splitUserDir) + sep;
+        try {
+            final String sep = File.separator;
+            // Get the current directory and make the file within the base project directory.
+            final String userDir = Paths.get(Generator.getResource(Generator.class, "/").toURI()).toString();
+            String[] splitUserDir = userDir.split(Pattern.quote(sep));
+            while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
+                splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
+            }
+            // split once more
+            splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
+
+            baseDirectory = String.join(sep, splitUserDir) + sep;
+        } catch (final URISyntaxException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         return baseDirectory;
+    }
+
+    protected static URL getResource(final Class clazz, final String resource) {
+        return clazz.getResource(resource);
     }
 
 }
