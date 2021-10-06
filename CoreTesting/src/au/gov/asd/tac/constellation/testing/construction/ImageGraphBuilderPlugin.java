@@ -82,7 +82,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final PluginParameter<FileParameterValue> imageFileParameter = FileParameterType.build(IMAGE_FILE_PARAMETER_ID);
         imageFileParameter.setName("Image File");
         imageFileParameter.setDescription("The image file from which to build a graph");
-        FileParameterType.setFileFilters(imageFileParameter, new ExtensionFilter("Images", "png", "jpg", "gif"));
+        FileParameterType.setFileFilters(imageFileParameter, new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
         parameters.addParameter(imageFileParameter);
 
         return parameters;
@@ -153,7 +153,36 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
             final int vertexY2AttributeId = VisualConcept.VertexAttribute.Y2.get(graph);
             final int vertexZ2AttributeId = VisualConcept.VertexAttribute.Z2.get(graph);
 
+            final int pixelXAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "pixelX", "pixelX", "", null);
+            final int pixelYAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "pixelY", "pixelY", "", null);
+            final int redAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "red", "red", "", null);
+            final int greenAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "green", "green", "", null);
+            final int blueAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "blue", "blue", "", null);
+            final int alphaAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "alpha", "alpha", "", null);
+            final int diffSouthAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "diffSouth", "diffSouth", "", null);
+            final int diffNorthAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "diffNorth", "diffNorth", "", null);
+            final int diffEastAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "diffEast", "diffEast", "", null);
+            final int diffWestAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "diffWest", "diffWest", "", null);
             final int transactionWeightAttributeId = AnalyticConcept.TransactionAttribute.WEIGHT.get(graph);
+
+            boolean useVertexAttributes = false;
+            boolean useTransAttributes = false;
+            if (pixelXAttributeId != Graph.NOT_FOUND
+                    && pixelYAttributeId != Graph.NOT_FOUND
+                    && greenAttributeId != Graph.NOT_FOUND
+                    && redAttributeId != Graph.NOT_FOUND
+                    && blueAttributeId != Graph.NOT_FOUND
+                    && alphaAttributeId != Graph.NOT_FOUND
+                    && diffSouthAttributeId != Graph.NOT_FOUND
+                    && diffNorthAttributeId != Graph.NOT_FOUND
+                    && diffEastAttributeId != Graph.NOT_FOUND
+                    && diffWestAttributeId != Graph.NOT_FOUND) {
+                useVertexAttributes = true;
+            }
+
+            if (transactionWeightAttributeId != Graph.NOT_FOUND) {
+                useTransAttributes = true;
+            }
 
             int frame = 0;
             for (BufferedImage image : images) {
@@ -185,20 +214,44 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                         graph.setStringValue(vertexBackgroundIconAttributeId, vxId, "Background.Flat Square");
                         ConstellationColor color = ConstellationColor.getColorValue(r / 255f, g / 255f, b / 255f, a / 255f);
                         graph.setObjectValue(vertexColorAttributeId, vxId, color);
+
                         if (multipleFrames) {
                             graph.setFloatValue(vertexVisibilityAttributeId, vxId, vis);
                         }
 
-                        if (x > 0) {
-                            final int transactionId = graph.addTransaction(vxId, vertexIds[x - 1][y], false);
-                            ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x - 1][y]);
-                            graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
+                        if (useVertexAttributes) {
+                            graph.setFloatValue(pixelXAttributeId, vxId, x);
+                            graph.setFloatValue(pixelYAttributeId, vxId, y);
+                            graph.setFloatValue(redAttributeId, vxId, r);
+                            graph.setFloatValue(greenAttributeId, vxId, g);
+                            graph.setFloatValue(blueAttributeId, vxId, b);
+                            graph.setFloatValue(alphaAttributeId, vxId, a);
+
+                            if (x > 0 && x < w - 1 && y > 0 && y < h - 1) {
+                                final int southRGB = image.getRGB(x, y + 1);
+                                final int northRGB = image.getRGB(x, y - 1);
+                                final int eastRGB = image.getRGB(x + 1, y);
+                                final int westRGB = image.getRGB(x - 1, y);
+
+                                graph.setFloatValue(diffSouthAttributeId, vxId, calculateDifference(r, g, b, southRGB));
+                                graph.setFloatValue(diffNorthAttributeId, vxId, calculateDifference(r, g, b, northRGB));
+                                graph.setFloatValue(diffEastAttributeId, vxId, calculateDifference(r, g, b, eastRGB));
+                                graph.setFloatValue(diffWestAttributeId, vxId, calculateDifference(r, g, b, westRGB));
+                            }
                         }
 
-                        if (y > 0) {
-                            final int transactionId = graph.addTransaction(vxId, vertexIds[x][y - 1], false);
-                            ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x][y - 1]);
-                            graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
+                        if (useTransAttributes) {
+                            if (x > 0) {
+                                final int transactionId = graph.addTransaction(vxId, vertexIds[x - 1][y], false);
+                                ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x - 1][y]);
+                                graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
+                            }
+
+                            if (y > 0) {
+                                final int transactionId = graph.addTransaction(vxId, vertexIds[x][y - 1], false);
+                                ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x][y - 1]);
+                                graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
+                            }
                         }
                     }
                 }
@@ -218,6 +271,18 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         weight = (float) Math.exp(-weight);
 
         return weight;
+    }
+
+    private static float calculateDifference(final float r1, final float g1, final float b1, final int color2) {
+        final int a2 = (color2 >> 24) & 0xff;
+        final int r2 = (color2 >> 16) & 0xff;
+        final int g2 = (color2 >> 8) & 0xff;
+        final int b2 = color2 & 0xff;
+
+        float aGray = r1 + g1 + b1;
+        float bGray = r2 + g2 + b2;
+        float diff = Math.abs(aGray - bGray);
+        return diff;
     }
 
     /**
