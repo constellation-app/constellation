@@ -94,8 +94,8 @@ public class BasicFindTab extends Tab {
     private final CheckBox removeFromCurrent = new CheckBox("Remove from Current Selection");
     protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
 
-    private final Button findNextButton = new Button("Find Prev");
-    private final Button findPrevButton = new Button("Find Next");
+    private final Button findNextButton = new Button("Find Next");
+    private final Button findPrevButton = new Button("Find Prev");
     private final Button findAllButton = new Button("Find All");
 
     private final int LABEL_WIDTH = 90;
@@ -129,7 +129,6 @@ public class BasicFindTab extends Tab {
         deselectAllMenuItem.setOnAction(event -> {
             inAttributesMenu.getCheckModel().clearChecks();
         });
-
         inAttributesMenu.setOnContextMenuRequested(event -> {
             contextMenu.show(inAttributesMenu, event.getScreenX(), event.getScreenY());
         });
@@ -143,7 +142,7 @@ public class BasicFindTab extends Tab {
         });
 
         findAllButton.setOnAction(action -> {
-
+            findAllAction();
         });
     }
 
@@ -304,8 +303,6 @@ public class BasicFindTab extends Tab {
             if (a.getAttributeType().equals("string")) {
                 if (inAttributesMenu.getCheckModel().isChecked(a.getName())) {
                     selectedAttributes.add(a);
-                    LOGGER.log(Level.SEVERE, a.getName() + "SAVED IN SELECTED ATTRIBUTES");
-
                 }
             }
         }
@@ -335,9 +332,10 @@ public class BasicFindTab extends Tab {
      * create a BasicFindReplaceParameter
      */
     public void buildBasicFindReplaceParameters() {
-
         final GraphElementType elementType = GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
         final ArrayList<Attribute> attributeList = getMatchingAttributeList(elementType);
+
+        LOGGER.log(Level.SEVERE, attributeList.get(0).getName());
 
         FindViewController.getDefault().getBasicParameters(findTextField.getText(), "",
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
@@ -351,9 +349,18 @@ public class BasicFindTab extends Tab {
     public void updateSelectionFactors() {
         FindViewController.getDefault().updateSelectionFactors(addToCurrent.isSelected(), removeFromCurrent.isSelected());
     }
+//    public void readCurrentSelections(GraphElementType type){
+//        ArrayList<Attribute> selectedAttributes = getMatchingAttributeList(type);
+//
+//        selectedAttributes = getMatchingAttributeList(type);
+//
+//
+//        attributes = getMatchingAttributeList(type);
+//    }
 
     public void findAllAction() {
         if (!findTextField.getText().isEmpty()) {
+            saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
             buildBasicFindReplaceParameters();
             FindViewController.getDefault().findAll();
         }

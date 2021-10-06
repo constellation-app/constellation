@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.views.find2.gui.FindViewPane;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.controlsfx.control.CheckComboBox;
 import org.openide.util.Exceptions;
@@ -44,7 +45,7 @@ public class FindViewController {
 
     private BasicFindReplaceParameters currentBasicParameters;
     private BasicFindReplaceParameters previousBasicParameters;
-    private ArrayList<FindResultsList> resultsList;
+    private ArrayList<FindResultsList> resultsList = new ArrayList<FindResultsList>();
     private boolean addToCurrentSelection = false;
     private boolean removeFromCurrentSelection = false;
 
@@ -72,55 +73,106 @@ public class FindViewController {
     }
 
     public void populateAttributes(GraphElementType type, ArrayList<Attribute> attributes, long attributeModificationCounter, CheckComboBox<String> inAttributesMenu) {
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
 
         attributes.clear();
-        final GraphAttributePlugin attrPlugin = new GraphAttributePlugin(type, attributes, attributeModificationCounter);
-        final Future<?> future = PluginExecution.withPlugin(attrPlugin).interactively(true).executeLater(graph);
 
-        // Wait for the search to find its results:
-        try {
-            future.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        for (Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+            final GraphAttributePlugin attrPlugin = new GraphAttributePlugin(type, attributes, attributeModificationCounter);
+            final Future<?> future = PluginExecution.withPlugin(attrPlugin).interactively(true).executeLater(graph);
 
-        if (attrPlugin.getAttributeModificationCounter() != attributeModificationCounter) {
-            inAttributesMenu.getItems().clear();
+            // Wait for the search to find its results:
+            try {
+                future.get();
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException ex) {
+                Exceptions.printStackTrace(ex);
+            }
 
-            attributes = attrPlugin.getAttributes();
-            for (Attribute a : attributes) {
-                if (a.getAttributeType().equals("string")) {
-                    inAttributesMenu.getItems().add(a.getName());
+            if (attrPlugin.getAttributeModificationCounter() != attributeModificationCounter) {
+                inAttributesMenu.getItems().clear();
+
+                attributes = attrPlugin.getAttributes();
+                for (Attribute a : attributes) {
+                    if (a.getAttributeType().equals("string")) {
+                        if (!inAttributesMenu.getItems().contains(a.getName())) {
+                            inAttributesMenu.getItems().add(a.getName());
+                        }
+                    }
                 }
             }
         }
+
     }
 
     public void disableFindView(FindViewPane pane, boolean disable) {
         pane.setDisable(disable);
     }
 
+    /**
+     * Creates a BasicFindReplaceParameter based on the UI components
+     *
+     * @param findText
+     * @param replaceText
+     * @param elementType
+     * @param attributeList
+     * @param standardText
+     * @param regEx
+     * @param ignoreCase
+     * @param exactMatch
+     * @param searchAllGraphs
+     * @return the newly created BasicFindReplaceParameters
+     */
     public BasicFindReplaceParameters getBasicParameters(final String findText, final String replaceText, final GraphElementType elementType, ArrayList<Attribute> attributeList, boolean standardText, boolean regEx, boolean ignoreCase, boolean exactMatch, boolean searchAllGraphs) {
+        if (previousBasicParameters == null) {
+            previousBasicParameters = new BasicFindReplaceParameters("", "", elementType, attributeList, standardText, regEx, ignoreCase, exactMatch, searchAllGraphs);
+        }
+        previousBasicParameters = currentBasicParameters;
+
         currentBasicParameters = new BasicFindReplaceParameters(findText, replaceText, elementType, attributeList, standardText, regEx, ignoreCase, exactMatch, searchAllGraphs);
+
         return currentBasicParameters;
     }
 
+    /**
+     * updates the add to current and remove from current variables based on the
+     * UI selection
+     *
+     * @param addToCurrent
+     * @param removeFromCurrent
+     */
     public void updateSelectionFactors(final boolean addToCurrent, final boolean removeFromCurrent) {
         this.addToCurrentSelection = addToCurrent;
         this.removeFromCurrentSelection = removeFromCurrent;
     }
 
+    /**
+     * Depending on the value of isSearchAllGraphs in the
+     * currentBasicParameters, this function looks at all open graphs or just
+     * the single active graph and will
+     */
     public void findAll() {
         if (currentBasicParameters.equals(previousBasicParameters)) {
             // dont need to re run the search as its the same
         } else {
-            // The search is different, we need to re run the search
+            //A new find function is running, so clear the existing search results list
+            clearSavedValues();
+            if (currentBasicParameters.isSearchAllGraphs()) {
+                for (Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
 
+                    gatherResultsList(graph);
+                }
+
+            } else {
+                gatherResultsList(GraphManager.getDefault().getActiveGraph());
+            }
+            LOGGER.log(Level.SEVERE, "Found total " + resultsList.get(0).size() + " on graph 1");
+            LOGGER.log(Level.SEVERE, "Found total " + resultsList.get(1).size() + " on graph 2");
+
+            // The search is different, we need to re run the search
         }
+
     }
 
     /**
@@ -128,16 +180,42 @@ public class FindViewController {
      * FindResultsList
      *
      * @param graph
-     * @return
+     * @return the ArrayList Containing the lists of results
      */
     public ArrayList<FindResultsList> gatherResultsList(Graph graph) {
         FindResultsList results = new FindResultsList();
-        final ReadableGraph rg = graph.getReadableGraph();
-        final int elementCount = currentBasicParameters.getGraphElement().getElementCount(rg);
 
-        for (int i = 0; i < elementCount; i++) {
-            if (matchFindParameters(i, rg) != -1) {
-                results.add(createFindResult(currentBasicParameters.getGraphElement(), i, rg));
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            final int elementCount = currentBasicParameters.getGraphElement().getElementCount(rg);
+            LOGGER.log(Level.SEVERE, "Total Element count :" + String.valueOf(elementCount));
+
+            for (int i = 0; i < elementCount; i++) {
+                LOGGER.log(Level.SEVERE, "looking at element :" + String.valueOf(rg.getVertex(i)));
+
+                // Run the search for vertex elements
+                if (currentBasicParameters.getGraphElement() == GraphElementType.VERTEX) {
+                    if (matchFindParameters(rg.getVertex(i), rg) != -1) {
+                        results.add(createFindResult(currentBasicParameters.getGraphElement(), rg.getVertex(i), rg));
+                    }
+                }
+                // Run the search for transaction elements
+                if (currentBasicParameters.getGraphElement() == GraphElementType.TRANSACTION) {
+                    if (matchFindParameters(rg.getTransaction(i), rg) != -1) {
+                        results.add(createFindResult(currentBasicParameters.getGraphElement(), rg.getTransaction(i), rg));
+                    }
+                }
+                // Run the search for edge elements
+                if (currentBasicParameters.getGraphElement() == GraphElementType.EDGE) {
+                    if (matchFindParameters(rg.getEdge(i), rg) != -1) {
+                        results.add(createFindResult(currentBasicParameters.getGraphElement(), rg.getEdge(i), rg));
+                    }
+                }
+                // Run the search for link elements
+                if (currentBasicParameters.getGraphElement() == GraphElementType.LINK) {
+                    if (matchFindParameters(rg.getLink(i), rg) != -1) {
+                        results.add(createFindResult(currentBasicParameters.getGraphElement(), rg.getLink(i), rg));
+                    }
+                }
             }
         }
         resultsList.add(results);
@@ -155,9 +233,29 @@ public class FindViewController {
      */
     public int matchFindParameters(int graphElement, ReadableGraph rg) {
         for (Attribute a : currentBasicParameters.getAttributeList()) {
-            String value = rg.getStringValue(a.getId(), graphElement);
-            if (value.equals(currentBasicParameters.getFindString())) {
-                return a.getId();
+            LOGGER.log(Level.SEVERE, "lookin at attribute :" + a.getName());
+
+            String findValue = currentBasicParameters.getFindString();
+            String value = rg.getStringValue(rg.getAttribute(currentBasicParameters.getGraphElement(), a.getName()), graphElement);
+            if (value != null) {
+                LOGGER.log(Level.SEVERE, "elements " + a.getName() + "value = " + value);
+
+                //If ignore case is true, compare the values in lowercase
+                if (currentBasicParameters.isIgnoreCase()) {
+                    findValue.toLowerCase();
+                    value.toLowerCase();
+                }
+                //If exact match is true, compare the two valus are exactly equal
+                if (currentBasicParameters.isExactMatch()) {
+                    if (value.equals(currentBasicParameters.getFindString())) {
+                        return a.getId();
+                    }
+                    //If exact match is false, check if the value contains the findvalue
+                } else if (!currentBasicParameters.isExactMatch()) {
+                    if (value.contains(findValue)) {
+                        return a.getId();
+                    }
+                }
             }
         }
         return -1;
@@ -175,22 +273,15 @@ public class FindViewController {
         final int id = type.getElement(rg, graphElement);
         final long uid = type.getUID(rg, id);
         final FindResult fr = new FindResult(id, uid, type);
+
+        LOGGER.log(Level.SEVERE, "made a result");
         return fr;
     }
 
+    public void clearSavedValues() {
+        if (!resultsList.isEmpty()) {
+            resultsList.clear();
+        }
+    }
+
 }
-
-//    public ArrayList<FindResult> createFindList(BasicFindReplaceParameters parameters) {
-//
-//    }
-// public because BasicFindPanel calls this on enter as well.
-//    public void performBasicSearch(BasicFindRepalceParameters parameters) {
-//        final ArrayList<Attribute> selectedAttributes = .getSelectedAttributes();
-//        final String findString = basicFindPanel.getFindString();
-//        final boolean regex = basicFindPanel.getRegex();
-//        final boolean ignoreCase = basicFindPanel.getIgnorecase();
-//        final boolean matchWholeWord = basicFindPanel.getExactMatch();
-//        final BasicFindPlugin basicfindPlugin = new BasicFindPlugin(type, selectedAttributes, findString, regex, ignoreCase, matchWholeWord, chkAddToSelection.isSelected());
-//        PluginExecution.withPlugin(basicfindPlugin).executeLater(graphNode.getGraph());
-//    }
-

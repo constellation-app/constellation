@@ -41,7 +41,7 @@ public class BasicFindReplaceParameters {
 
         this.findString = findString;
         if (replaceString.isEmpty() || replaceString == "") {
-            this.replaceString = null;
+            this.replaceString = "";
         } else {
             this.replaceString = replaceString;
         }
@@ -135,9 +135,9 @@ public class BasicFindReplaceParameters {
     }
 
     private void trimText(final String text) {
-        if (!isExactMatch()) {
+        //  if (!isExactMatch()) {
             text.trim();
-        }
+        // }
     }
 
     private void ignoreCase(final String text) {
