@@ -40,7 +40,9 @@ public class RecentFilesWelcomePage {
     }
     
     /**
-     * Gets the file name and path of the files that were recently saved
+     * Gets the file details of the files that were recently saved.
+     * For each Tuple, the first part contains the file path and the second part 
+     * contains the file name
      *
      * @return list of recent file details
      */
