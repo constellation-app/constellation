@@ -287,7 +287,7 @@ public final class ImportJDBCIO {
                 DialogDisplayer.getDefault().notify(nd);
             }
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
