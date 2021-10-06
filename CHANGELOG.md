@@ -2,7 +2,7 @@
 
 ## Changes in October 2021
 
--   Added a file chooser utilitiy to core utilities. This provides a template
+-   Added a file chooser utility to core utilities. This provides a template
     for opening file choosers. It protects against common mistakes that may
     cause issues on different platforms.
 
