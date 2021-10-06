@@ -45,7 +45,6 @@ import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -69,8 +68,8 @@ public class ImageIconDropper implements GraphDropper {
         try {
             imageFlavor = new DataFlavor("image/x-java-image;class=java.awt.Image");
             imageFileFlavor = new DataFlavor("application/x-java-file-list;class=java.util.List");
-        } catch (ClassNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ClassNotFoundException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         IMAGE_FLAVOR = imageFlavor;
@@ -111,7 +110,7 @@ public class ImageIconDropper implements GraphDropper {
                     }
                 };
             }
-        } catch (UnsupportedFlavorException | IOException ex) {
+        } catch (final UnsupportedFlavorException | IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
@@ -137,7 +136,7 @@ public class ImageIconDropper implements GraphDropper {
 
             return iconName;
 
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             return null;
         }

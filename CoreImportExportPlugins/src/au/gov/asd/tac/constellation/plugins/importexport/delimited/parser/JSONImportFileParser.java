@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javafx.stage.FileChooser;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -424,16 +423,13 @@ public class JSONImportFileParser extends ImportFileParser {
                 throw new IOException(WARN_NO_VALID_LIST);
             }
             return results;
-        } catch (JsonParseException ex) {
+        } catch (final JsonParseException ex) {
             // Catch case whre invalid JSON file has been supplied gracefully
             throw new IOException(WARN_INVALID_JSON);
-        } catch (IOException ex) {
-            // Catch case whre invalid file contenthas been supplied gracefully
-            throw (ex);
-        } catch (Exception ex) {
-            // Unexpected exceptions
-            Exceptions.printStackTrace(ex);
-            throw (ex);
+        } catch (final Exception ex) {
+            // Catch case whre invalid file content has been supplied gracefully (IOException)
+            // along with any unexpected exceptions
+            throw ex;
         }
     }
 

@@ -49,6 +49,8 @@ import java.util.logging.Logger;
  * should 'snap' to the coordinates of that vertex.
  */
 public class NewLineRenderable implements GLRenderable {
+    
+    private static final Logger LOGGER = Logger.getLogger(NewLineRenderable.class.getName());
 
     // Width of the new line
     public static final int NEW_LINE_WIDTH = 2;
@@ -102,8 +104,8 @@ public class NewLineRenderable implements GLRenderable {
             newLineVp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
             newLineGp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruLine.gs");
             newLineFp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(NewLineRenderable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru new line", newLineVp, newLineGp, newLineFp,

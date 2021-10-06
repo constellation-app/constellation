@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
+import au.gov.asd.tac.constellation.utilities.camera.AnaglyphCamera;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.camera.AnaglyphCamera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
@@ -178,7 +178,7 @@ public final class GraphRenderable implements GLRenderable {
                     addTask(nodeLabelBatcher.disposeBatch());
                     try {
                         addTask(nodeLabelBatcher.createBatch(access));
-                    } catch (InterruptedException ex) {
+                    } catch (final InterruptedException ex) {
                         Thread.currentThread().interrupt();
                         LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
@@ -203,7 +203,7 @@ public final class GraphRenderable implements GLRenderable {
                     addTask(connectionLabelBatcher.disposeBatch());
                     try {
                         addTask(connectionLabelBatcher.createBatch(access));
-                    } catch (InterruptedException ex) {
+                    } catch (final InterruptedException ex) {
                         Thread.currentThread().interrupt();
                         LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
@@ -250,7 +250,7 @@ public final class GraphRenderable implements GLRenderable {
                     try {
                         // Note that updating bottom labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
                         addTask(nodeLabelBatcher.updateBottomLabels(access));
-                    } catch (InterruptedException ex) {
+                    } catch (final InterruptedException ex) {
                         Thread.currentThread().interrupt();
                         LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
@@ -275,7 +275,7 @@ public final class GraphRenderable implements GLRenderable {
                     try {
                         // Note that updating connection labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
                         addTask(connectionLabelBatcher.updateLabels(access));
-                    } catch (InterruptedException ex) {
+                    } catch (final InterruptedException ex) {
                         Thread.currentThread().interrupt();
                         LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
@@ -291,7 +291,7 @@ public final class GraphRenderable implements GLRenderable {
                     try {
                         // Note that updating top labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
                         addTask(nodeLabelBatcher.updateTopLabels(access));
-                    } catch (InterruptedException ex) {
+                    } catch (final InterruptedException ex) {
                         Thread.currentThread().interrupt();
                         LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
@@ -384,8 +384,7 @@ public final class GraphRenderable implements GLRenderable {
                     + "incompatible with CONSTELLATION.\n\n"
                     + "Please inform CONSTELLATION support, including the text of this message.\n\n"
                     + ex.getMessage();
-            Logger.getLogger(GraphRenderable.class
-                    .getName()).log(Level.SEVERE, msg, ex);
+            LOGGER.log(Level.SEVERE, msg, ex);
             final InfoTextPanel itp = new InfoTextPanel(msg);
             final NotifyDescriptor.Message nd = new NotifyDescriptor.Message(itp, NotifyDescriptor.ERROR_MESSAGE);
             nd.setTitle("Shader Error");
