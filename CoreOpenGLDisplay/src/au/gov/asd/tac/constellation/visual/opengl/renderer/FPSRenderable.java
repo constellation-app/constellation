@@ -44,6 +44,8 @@ import org.openide.util.NbPreferences;
  * @author twilight_sparkle
  */
 public class FPSRenderable implements GLRenderable {
+    
+    private static final Logger LOGGER = Logger.getLogger(FPSRenderable.class.getName());
 
     private static final int FPS_OFFSET = 50;
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
@@ -93,8 +95,7 @@ public class FPSRenderable implements GLRenderable {
                     + "incompatible with CONSTELLATION.\n\n"
                     + "Please inform CONSTELLATION support, including the text of this message.\n\n"
                     + ex.getMessage();
-            Logger.getLogger(GraphRenderable.class
-                    .getName()).log(Level.SEVERE, msg, ex);
+            LOGGER.log(Level.SEVERE, msg, ex);
             final InfoTextPanel itp = new InfoTextPanel(msg);
             final NotifyDescriptor.Message nd = new NotifyDescriptor.Message(itp,
                     NotifyDescriptor.ERROR_MESSAGE);

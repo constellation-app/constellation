@@ -203,8 +203,8 @@ public class IntegerParameterTypeNGTest {
         String id = "validate string";
         IntegerParameterType instance = new IntegerParameterType();
         PluginParameter<IntegerParameterType.IntegerParameterValue> parameter = new PluginParameter<>(new IntegerParameterValue(), INSTANCE, id);
-        instance.setMaximum(parameter, 5);
-        instance.setMinimum(parameter, 0);
+        IntegerParameterType.setMaximum(parameter, 5);
+        IntegerParameterType.setMinimum(parameter, 0);
 
         // test valid integer in min-max range
         // should return null

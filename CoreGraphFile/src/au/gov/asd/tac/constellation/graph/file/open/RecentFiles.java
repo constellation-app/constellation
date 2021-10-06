@@ -69,6 +69,8 @@ import org.openide.windows.WindowManager;
  * @author Dafe Simonek
  */
 public final class RecentFiles {
+    
+    private static final Logger LOGGER = Logger.getLogger(RecentFiles.class.getName());
 
     private static final WindowRegistryL RECENT_FILE_SAVED = new WindowRegistryL();
 
@@ -162,9 +164,8 @@ public final class RecentFiles {
         final Preferences _prefs = getPrefs();
         try {
             keys = _prefs.keys();
-        } catch (BackingStoreException ex) {
-            Logger.getLogger(RecentFiles.class.getName()).
-                    log(Level.FINE, ex.getMessage(), ex);
+        } catch (final BackingStoreException ex) {
+            LOGGER.log(Level.FINE, ex.getMessage(), ex);
             return Collections.emptyList();
         }
 
@@ -183,9 +184,8 @@ public final class RecentFiles {
                                 + Math.max(result.get(ind).id, id));
                         result.get(ind).id = Math.min(result.get(ind).id, id);
                     }
-                } catch (NumberFormatException ex) {
-                    Logger.getLogger(RecentFiles.class.getName()).
-                            log(Level.FINE, ex.getMessage(), ex);
+                } catch (final NumberFormatException ex) {
+                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
                     _prefs.remove(curKey);
                 }
             } else {

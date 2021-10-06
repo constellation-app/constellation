@@ -39,6 +39,8 @@ import java.util.logging.Logger;
  * @author algol
  */
 public class ShaderManager {
+    
+    private static final Logger LOGGER = Logger.getLogger(ShaderManager.class.getName());
 
     static class ShaderLookupEntry {
 
@@ -93,8 +95,8 @@ public class ShaderManager {
         Properties tShaderMap = null;
         try {
             tShaderMap = loadShaders();
-        } catch (IOException ex) {
-            Logger.getLogger(ShaderManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         shaderMap = tShaderMap;

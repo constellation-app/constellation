@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -43,6 +43,8 @@ import org.openide.util.NbPreferences;
  * @author sirius
  */
 public class RecentParameterValues {
+    
+    private static final Logger LOGGER = Logger.getLogger(RecentParameterValues.class.getName());
 
     private static final Map<String, List<String>> RECENT_VALUES = new HashMap<>();
     private static final List<RecentValuesListener> LISTENERS = new ArrayList<>();
@@ -134,11 +136,11 @@ public class RecentParameterValues {
                 PREFERENCES.put(RecentParameterValuesKey.RECENT_VALUES, json.toString(StandardCharsets.UTF_8.name()));
                 try {
                     PREFERENCES.flush();
-                } catch (BackingStoreException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final BackingStoreException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }
@@ -160,8 +162,8 @@ public class RecentParameterValues {
                             }
                         }
                     }
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
         }

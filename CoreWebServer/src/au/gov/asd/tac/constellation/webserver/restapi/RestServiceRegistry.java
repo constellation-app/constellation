@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -131,9 +130,8 @@ public class RestServiceRegistry {
             final Class<? extends RestService> c = servicesMap.get(key);
             try {
                 return c.getDeclaredConstructor().newInstance();
-            } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
-                LOGGER.log(Level.SEVERE, String.format("When creating REST service %s", key), ex);
-                Exceptions.printStackTrace(ex);
+            } catch (final NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
+                LOGGER.log(Level.SEVERE, String.format("Error occurred when creating REST service %s", key), ex);
             }
         }
 

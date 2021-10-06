@@ -34,6 +34,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -47,6 +49,8 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.NONE, tags = {"UTILITY"})
 @NbBundle.Messages("SendToEmailClientPlugin=Send To Email Client")
 public class SendToEmailClientPlugin extends SimplePlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(SendToEmailClientPlugin.class.getName());
 
     public static final String TO_EMAIL_PARAMETER_ID = PluginParameter.buildId(SendToEmailClientPlugin.class, "to_email");
     public static final String CC_EMAIL_PARAMETER_ID = PluginParameter.buildId(SendToEmailClientPlugin.class, "cc_email");
@@ -96,7 +100,8 @@ public class SendToEmailClientPlugin extends SimplePlugin {
 
             final URI uri = new URI(sb.toString());
             Desktop.getDesktop().mail(uri);
-        } catch (IOException | URISyntaxException ex) {
+        } catch (final IOException | URISyntaxException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             NotifyDisplayer.display("Could not send email\n" + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
         }
     }

@@ -42,8 +42,9 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.NotificationDisplayer;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -57,6 +58,8 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @ServiceProvider(service = GraphDropper.class, position = 1)
 public class JsonDropper implements GraphDropper {
+    
+    private static final Logger LOGGER = Logger.getLogger(JsonDropper.class.getName());
 
     private static final String INDICATOR = "JSON=";
 
@@ -79,7 +82,7 @@ public class JsonDropper implements GraphDropper {
                 }
 
             } catch (final UnsupportedFlavorException | IOException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 

@@ -55,7 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.IOProvider;
@@ -71,6 +72,8 @@ import org.openide.windows.OutputWriter;
 @NbBundle.Messages("CompareGraphPlugin=Compare Graph")
 @PluginInfo(pluginType = PluginType.SEARCH, tags = {"SEARCH"})
 public class CompareGraphPlugin extends SimpleReadPlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(CompareGraphPlugin.class.getName());
 
     // plugin parameters
     public static final String ORIGINAL_GRAPH_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "original_graph_name");
@@ -552,9 +555,9 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                 copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_ALL_PARAMETER_ID).setBooleanValue(true);
                 PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyParams).executeNow(rg);
                 copy = (Graph) copyParams.getParameters().get(CopyToNewGraphPlugin.NEW_GRAPH_OUTPUT_PARAMETER_ID).getObjectValue();
-            } catch (PluginException ex) {
+            } catch (final PluginException ex) {
                 copy = null;
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             if (copy == null) {

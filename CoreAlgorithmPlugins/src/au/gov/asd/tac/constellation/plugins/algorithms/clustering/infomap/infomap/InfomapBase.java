@@ -34,13 +34,16 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author algol
  */
 public abstract class InfomapBase {
+    
+    private static final Logger LOGGER = Logger.getLogger(InfomapBase.class.getName());
 
     protected static final boolean DEBUG = false;
 
@@ -1078,16 +1081,16 @@ public abstract class InfomapBase {
     private void printNetworkData(final boolean sort) {
         try {
             printNetworkData("", sort);
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final FileNotFoundException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
     private void printNetworkData(final String filename) {
         try {
             printNetworkData(filename, true);
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final FileNotFoundException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
