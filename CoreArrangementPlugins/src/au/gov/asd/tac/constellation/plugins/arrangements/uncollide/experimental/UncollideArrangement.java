@@ -29,10 +29,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.python.modules.math;
 
 public class UncollideArrangement implements Arranger {
+    
+    private static final Logger LOGGER = Logger.getLogger(UncollideArrangement.class.getName());
 
     private final Dimensions dimensions;
     private PluginInteraction interaction;
@@ -58,8 +61,8 @@ public class UncollideArrangement implements Arranger {
         if (vxCount > 0) {
             try {
                 uncollide(wg, 2000);
-            } catch (PluginException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final PluginException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
             if (maintainMean) {
                 ArrangementUtilities.moveMean(wg, oldMean);

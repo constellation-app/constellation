@@ -50,7 +50,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -122,6 +123,7 @@ public class AddRecordStore extends RestService {
         final PluginParameter<StringParameterValue> dataParam = StringParameterType.build(DATA_PARAMETER_ID);
         dataParam.setName("Data (body)");
         dataParam.setDescription("A JSON representation of the RecordStore data, in the form {\"columns\": [\"COL1\",\"COL2\",\"COL3\"], \"data\": [[r1c1, r1c2, r1c3],[r2c1,r2c2,r2c3]]. This is the same as the output of pandas.DataFrame.to_json(orient='split', date_format='iso').");
+        dataParam.setRequestBodyExampleJson("#/components/examples/addRecordStoreExample");
         parameters.addParameter(dataParam);
 
         return parameters;
@@ -211,6 +213,8 @@ public class AddRecordStore extends RestService {
 
     @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
     private static class ImportFromRestApiPlugin extends SimpleEditPlugin {
+        
+        private static final Logger LOGGER = Logger.getLogger(ImportFromRestApiPlugin.class.getName());
 
         private final RecordStore recordStore;
         private final boolean completeWithSchema;
@@ -251,7 +255,7 @@ public class AddRecordStore extends RestService {
                     PluginExecution.withPlugin(arrange).executeNow(graph);
                 }
             } catch (final PluginException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 

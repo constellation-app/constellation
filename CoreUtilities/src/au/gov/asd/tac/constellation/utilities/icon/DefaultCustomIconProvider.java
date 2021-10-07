@@ -29,12 +29,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 import org.openide.awt.NotificationDisplayer;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -78,8 +78,8 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
                             icon.setEditable(true);
                             added = true;
                         }
-                    } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
+                    } catch (final IOException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
                 }
             }
@@ -151,7 +151,7 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
                         String.format("Could not load icons from %s:%n%s", iconDirectory, ex.getMessage()),
                         null
                 );
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage(), ex);
             }
         }
     }

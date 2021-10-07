@@ -29,9 +29,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -298,6 +299,8 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
     }
 
     public static class ParameterListParameterValue extends ParameterValue {
+        
+        private static final Logger LOGGER = Logger.getLogger(ParameterListParameterValue.class.getName());
 
         private ParameterList value;
         private boolean locked = false;
@@ -463,8 +466,8 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
                 }
                 try {
                     panelCreated.await();
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     Thread.currentThread().interrupt();
                 }
             }

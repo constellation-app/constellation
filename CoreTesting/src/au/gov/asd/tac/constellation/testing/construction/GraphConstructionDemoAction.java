@@ -35,12 +35,13 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.event.ActionEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 /**
@@ -55,6 +56,8 @@ import org.openide.util.NbBundle.Messages;
 })
 @Messages("CTL_GraphConstructionDemoAction=Construction Demo")
 public final class GraphConstructionDemoAction extends AbstractAction {
+    
+    private static final Logger LOGGER = Logger.getLogger(GraphConstructionDemoAction.class.getName());
 
     private final GraphNode context;
 
@@ -72,8 +75,8 @@ public final class GraphConstructionDemoAction extends AbstractAction {
         try {
             final Graph graph = context.getGraph();
             PluginExecution.withPlugin(new GraphConstructionPlugin()).executeLater(graph);
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

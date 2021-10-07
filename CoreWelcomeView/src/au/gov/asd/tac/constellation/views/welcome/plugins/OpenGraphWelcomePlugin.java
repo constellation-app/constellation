@@ -22,13 +22,14 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -39,6 +40,8 @@ import org.openide.util.NbBundle;
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("OpenGraphWelcomePlugin=Open Graph Welcome Plugin")
 public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
+    
+    private static final Logger LOGGER = Logger.getLogger(OpenGraphWelcomePlugin.class.getName());
 
     public static final String OPEN = "resources/welcome_open_folder.png";
     final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
@@ -63,11 +66,11 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
         final StoreGraph sg = new StoreGraph();
         try {
             PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE).executeNow(sg);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             Thread.currentThread().interrupt();
-        } catch (PluginException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final PluginException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

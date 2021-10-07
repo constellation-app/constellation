@@ -102,7 +102,8 @@ public class RunPlugins extends RestService {
 
         final PluginParameter<StringParameterValue> pluginsParam = StringParameterType.build(PLUGINS_PARAMETER_ID);
         pluginsParam.setName("Plugins and arguments (body)");
-        pluginsParam.setDescription("A JSON list containing objects with 'plugin_name' and 'args' arguments.");
+        pluginsParam.setDescription("A JSON list containing objects with 'plugin_name' and 'plugin_args' arguments.");
+        pluginsParam.setRequestBodyExampleJson("#/components/examples/runPluginsExample");
         parameters.addParameter(pluginsParam);
 
         return parameters;

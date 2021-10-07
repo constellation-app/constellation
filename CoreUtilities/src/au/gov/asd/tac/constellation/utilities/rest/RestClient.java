@@ -32,8 +32,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
-import org.openide.util.Exceptions;
 
 /**
  * REST Client
@@ -41,6 +42,8 @@ import org.openide.util.Exceptions;
  * @author arcturus
  */
 public abstract class RestClient {
+    
+    private static final Logger LOGGER = Logger.getLogger(RestClient.class.getName());
 
     protected static final String HOST = "{HOST}";
 
@@ -211,8 +214,8 @@ public abstract class RestClient {
             if (Response.isCodeSuccess(responseCode)) {
                 bytes = getBody(connection, responseCode);
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -253,8 +256,8 @@ public abstract class RestClient {
             if (Response.isCodeSuccess(responseCode)) {
                 bytes = getBody(connection, responseCode);
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -294,8 +297,8 @@ public abstract class RestClient {
             if (Response.isCodeSuccess(responseCode)) {
                 this.bytes = getBody(connection, responseCode);
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             if (connection != null) {
                 connection.disconnect();

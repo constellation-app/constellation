@@ -28,11 +28,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.UndoRedo;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -44,6 +45,8 @@ import org.openide.windows.TopComponent;
  * @author algol
  */
 public class GraphNode extends AbstractNode {
+    
+    private static final Logger LOGGER = Logger.getLogger(GraphNode.class.getName());
 
     private static final Map<String, GraphNode> GRAPHS = new HashMap<>();
     private static final List<GraphManagerListener> LISTENERS = new ArrayList<>();
@@ -268,15 +271,15 @@ public class GraphNode extends AbstractNode {
 
         try {
             super.destroy();
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         for (GraphManagerListener listener : LISTENERS) {
             try {
                 listener.graphClosed(graph);
-            } catch (Exception ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final Exception ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }

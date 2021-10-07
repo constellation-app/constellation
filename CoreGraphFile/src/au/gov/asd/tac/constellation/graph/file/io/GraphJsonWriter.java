@@ -40,10 +40,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.openide.util.Cancellable;
-import org.openide.util.Exceptions;
 
 /**
  * Write a graph in JSON format.
@@ -51,6 +52,8 @@ import org.openide.util.Exceptions;
  * @author algol
  */
 public final class GraphJsonWriter implements Cancellable {
+    
+    private static final Logger LOGGER = Logger.getLogger(GraphJsonWriter.class.getName());
 
     /**
      * The current file format version.
@@ -263,8 +266,8 @@ public final class GraphJsonWriter implements Cancellable {
             }
 
             jg.writeEndArray();
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             jg.close();
 
