@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.testing.construction;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
@@ -48,8 +49,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -58,6 +57,7 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -73,8 +73,6 @@ import org.openide.util.lookup.ServiceProviders;
 @NbBundle.Messages("ImageGraphBuilderPlugin=Image Graph Builder")
 @PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
 public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
-    
-    private static final Logger LOGGER = Logger.getLogger(ImageGraphBuilderPlugin.class.getName());
 
     public static final String IMAGE_FILE_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "image_file");
 
@@ -104,7 +102,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 final ThreeTuple<List<BufferedImage>, List<Integer>, List<Integer>> loadedImageData;
                 try {
                     loadedImageData = loadImagesFromStream(imageFile);
-                } catch (final IOException ex) {
+                } catch (IOException ex) {
                     throw new PluginException(PluginNotificationLevel.ERROR, ex);
                 }
 
@@ -131,8 +129,8 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 try {
                     loadedImageData = loadImage(imageFile);
                     images.add(loadedImageData);
-                } catch (final IOException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
                 }
             }
 
@@ -156,36 +154,29 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
             final int vertexY2AttributeId = VisualConcept.VertexAttribute.Y2.get(graph);
             final int vertexZ2AttributeId = VisualConcept.VertexAttribute.Z2.get(graph);
 
-            final int pixelXAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "pixelX", "pixelX", "", null);
-            final int pixelYAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "pixelY", "pixelY", "", null);
-            final int redAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "red", "red", "", null);
-            final int greenAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "green", "green", "", null);
-            final int blueAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "blue", "blue", "", null);
-            final int alphaAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "alpha", "alpha", "", null);
-            final int diffSouthAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "diffSouth", "diffSouth", "", null);
-            final int diffNorthAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "diffNorth", "diffNorth", "", null);
-            final int diffEastAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "diffEast", "diffEast", "", null);
-            final int diffWestAttributeId = graph.addAttribute(GraphElementType.VERTEX, "float", "diffWest", "diffWest", "", null);
+            final int pixelXAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "pixelX", "pixelX", "", null);
+            final int pixelYAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "pixelY", "pixelY", "", null);
+            final int redAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "red", "red", "", null);
+            final int greenAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "green", "green", "", null);
+            final int blueAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "blue", "blue", "", null);
+            final int alphaAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "alpha", "alpha", "", null);
+            final int diffSouthAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "diffSouth", "diffSouth", "", null);
+            final int diffNorthAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "diffNorth", "diffNorth", "", null);
+            final int diffEastAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "diffEast", "diffEast", "", null);
+            final int diffWestAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "diffWest", "diffWest", "", null);
             final int transactionWeightAttributeId = AnalyticConcept.TransactionAttribute.WEIGHT.get(graph);
 
-            boolean useVertexAttributes = false;
-            boolean useTransAttributes = false;
-            if (pixelXAttributeId != Graph.NOT_FOUND
-                    && pixelYAttributeId != Graph.NOT_FOUND
-                    && greenAttributeId != Graph.NOT_FOUND
-                    && redAttributeId != Graph.NOT_FOUND
-                    && blueAttributeId != Graph.NOT_FOUND
-                    && alphaAttributeId != Graph.NOT_FOUND
-                    && diffSouthAttributeId != Graph.NOT_FOUND
-                    && diffNorthAttributeId != Graph.NOT_FOUND
-                    && diffEastAttributeId != Graph.NOT_FOUND
-                    && diffWestAttributeId != Graph.NOT_FOUND) {
-                useVertexAttributes = true;
-            }
-
-            if (transactionWeightAttributeId != Graph.NOT_FOUND) {
-                useTransAttributes = true;
-            }
+            final boolean useVertexAttributes = pixelXAttributeId != Graph.NOT_FOUND
+                && pixelYAttributeId != Graph.NOT_FOUND
+                && greenAttributeId != Graph.NOT_FOUND
+                && redAttributeId != Graph.NOT_FOUND
+                && blueAttributeId != Graph.NOT_FOUND
+                && alphaAttributeId != Graph.NOT_FOUND
+                && diffSouthAttributeId != Graph.NOT_FOUND
+                && diffNorthAttributeId != Graph.NOT_FOUND
+                && diffEastAttributeId != Graph.NOT_FOUND
+                && diffWestAttributeId != Graph.NOT_FOUND;
+            final boolean useTransAttributes = transactionWeightAttributeId != Graph.NOT_FOUND;
 
             int frame = 0;
             for (BufferedImage image : images) {
@@ -277,15 +268,11 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
     }
 
     private static float calculateDifference(final float r1, final float g1, final float b1, final int color2) {
-        final int a2 = (color2 >> 24) & 0xff;
         final int r2 = (color2 >> 16) & 0xff;
         final int g2 = (color2 >> 8) & 0xff;
         final int b2 = color2 & 0xff;
 
-        float aGray = r1 + g1 + b1;
-        float bGray = r2 + g2 + b2;
-        float diff = Math.abs(aGray - bGray);
-        return diff;
+        return Math.abs ((r1 + g1 + b1) - (r2 + g2 + b2));
     }
 
     /**
@@ -299,7 +286,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
      */
     private static BufferedImage loadImage(final File file) throws IOException {
         final ByteArrayOutputStream out;
-        try (InputStream in = new FileInputStream(file)) {
+        try ( InputStream in = new FileInputStream(file)) {
             out = new ByteArrayOutputStream();
             final byte[] buf = new byte[1024];
             while (true) {
@@ -331,7 +318,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final ArrayList<Integer> loffsets = new ArrayList<>();
         final ArrayList<Integer> toffsets = new ArrayList<>();
 
-        try (ImageInputStream imageStream = new FileImageInputStream(file)) {
+        try ( ImageInputStream imageStream = new FileImageInputStream(file)) {
             final Iterator<ImageReader> readers = ImageIO.getImageReaders(imageStream);
             ImageReader reader = null;
             while (readers.hasNext()) {
@@ -370,7 +357,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     IIOMetadataNode imgRootNode = null;
                     try {
                         imgRootNode = (IIOMetadataNode) meta.getAsTree("javax_imageio_gif_image_1.0");
-                    } catch (final IllegalArgumentException ex) {
+                    } catch (IllegalArgumentException ex) {
                         unknownMetaformat = true;
                         continue;
                     }
@@ -380,7 +367,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     final IIOMetadataNode imgDescr = (IIOMetadataNode) imgRootNode.getElementsByTagName("ImageDescriptor").item(0);
                     loffsets.add(Integer.parseInt(imgDescr.getAttribute("imageLeftPosition")));
                     toffsets.add(Integer.parseInt(imgDescr.getAttribute("imageTopPosition")));
-                } catch (final IndexOutOfBoundsException ex) {
+                } catch (IndexOutOfBoundsException ex) {
                     break;
                 }
             }
