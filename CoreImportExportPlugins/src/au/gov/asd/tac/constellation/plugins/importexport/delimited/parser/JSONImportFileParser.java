@@ -389,13 +389,13 @@ public class JSONImportFileParser extends ImportFileParser {
             // is found there will be no data to import.
             selectedList = null;
             selectedListDepth = NO_LIST_LEVEL;
-            JsonNode root;
-            ArrayNode childNode = mapper.createArrayNode();
+            final JsonNode root;
+            final ArrayNode childNode = mapper.createArrayNode();
             JsonNode node = null;
             int counter = 0;
             
             // read in all JSON object from input
-            MappingIterator<JsonNode> it = mapper.readerFor(JsonNode.class)
+            final MappingIterator<JsonNode> it = mapper.readerFor(JsonNode.class)
                     .readValues(in);
             while (it.hasNextValue()) {
                 node = it.nextValue();
@@ -406,8 +406,8 @@ public class JSONImportFileParser extends ImportFileParser {
             // {"results": [<ndjson>]}
             if (counter > 1){  // Newline Delimited JSON (ndJSON)
                 // Changes the ndJSON to valid JSON
-                ObjectMapper newJSON = new ObjectMapper();
-                ObjectNode rootNode = newJSON.createObjectNode();
+                final ObjectMapper newJSON = new ObjectMapper();
+                final ObjectNode rootNode = newJSON.createObjectNode();
                 rootNode.set("results", childNode);
                 root = rootNode;
             } else {
