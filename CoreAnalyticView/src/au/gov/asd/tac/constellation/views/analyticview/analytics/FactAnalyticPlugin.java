@@ -50,7 +50,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A basic analytic plugin which reads facts from the graph based on the
@@ -61,6 +62,8 @@ import org.openide.util.Exceptions;
  * @author cygnus_x-1
  */
 public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
+    
+    private static final Logger LOGGER = Logger.getLogger(FactAnalyticPlugin.class.getName());
 
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(ScoreAnalyticPlugin.class, "transaction_types");
 
@@ -212,7 +215,7 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
         } catch (final IllegalAccessException | IllegalArgumentException
                 | InstantiationException | NoSuchMethodException
                 | SecurityException | InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

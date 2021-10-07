@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.graph.file;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -27,7 +29,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
-import org.openide.util.Exceptions;
 
 /**
  * Memory Management Capability
@@ -35,6 +36,8 @@ import org.openide.util.Exceptions;
  * @author algol
  */
 public class GraphObjectUtilities {
+    
+    private static final Logger LOGGER = Logger.getLogger(GraphObjectUtilities.class.getName());
 
     // This is the in-memory filesystem we use to store files for DataObjects.
     private static final FileSystem FILE_SYSTEM = FileUtil.createMemoryFileSystem();
@@ -97,8 +100,8 @@ public class GraphObjectUtilities {
             fnam = String.format("%s%s", fnam, GraphDataObject.FILE_EXTENSION);
             final FileObject fo = FileUtil.createData(root, fnam);
             gdo = (GraphDataObject) DataObject.find(fo);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
         return gdo;
     }

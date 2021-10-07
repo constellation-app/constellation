@@ -32,7 +32,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -48,6 +49,8 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
 @Messages("ExportToTextPlugin=Export to Text")
 public class ExportToTextPlugin extends SimplePlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(ExportToTextPlugin.class.getName());
 
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToTextPlugin.class, "filename");
     public static final String TEXT_PARAMETER_ID = PluginParameter.buildId(ExportToTextPlugin.class, "text");
@@ -62,10 +65,9 @@ public class ExportToTextPlugin extends SimplePlugin {
             try (PrintWriter os = new PrintWriter(file, StandardCharsets.UTF_8.name())) {
                 os.append(text);
             } catch (final UnsupportedEncodingException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         } catch (final FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
     }

@@ -28,9 +28,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 
 /**
  * JSON Utilities
@@ -39,6 +40,8 @@ import org.openide.util.Exceptions;
  * @author arcturus
  */
 public class JsonUtilities {
+    
+    private static final Logger LOGGER = Logger.getLogger(JsonUtilities.class.getName());
 
     public static String getTextField(JsonNode node, String... keys) {
         return getTextField(null, node, keys);
@@ -321,7 +324,7 @@ public class JsonUtilities {
         try {
             JsonNode node = mapper.readTree(rawString);
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             // If there is a formatting issue, just return the raw JSON as it was passed in
             return rawString;
         }
@@ -353,8 +356,8 @@ public class JsonUtilities {
                 jg.flush();
                 return json.toString(StandardCharsets.UTF_8.name());
 
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 
@@ -384,8 +387,8 @@ public class JsonUtilities {
                     }
                 }
                 return map;
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
         return MapUtils.EMPTY_SORTED_MAP;

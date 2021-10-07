@@ -45,6 +45,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -52,7 +54,6 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -103,6 +104,8 @@ import org.openide.windows.TopComponent;
 })
 
 public final class FindTopComponent extends TopComponent implements GraphChangeListener, LookupListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(FindTopComponent.class.getName());
 
     private final JLabel lblNoGraph = new JLabel(Bundle.No_Active_Graph());
     private final JPanel panelNoGraph = new JPanel();
@@ -745,11 +748,11 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         // Wait for the search to find its results:
         try {
             future.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         final List<FindResult> results = queryPlugin.getResults();
@@ -863,11 +866,11 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         // Wait for the search to find its results:
         try {
             future.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         if (attributeModificationCounter != attrPlugin.getAttributeModificationCounter()) {

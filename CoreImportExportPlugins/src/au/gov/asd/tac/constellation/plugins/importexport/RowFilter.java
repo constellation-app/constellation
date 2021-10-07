@@ -111,7 +111,7 @@ public class RowFilter {
         if (endOfHeader != -1) {
             final String header = script.substring(0, endOfHeader).trim();
             if (!StringUtils.isBlank(header)) {
-                for (int i = 0; i < columns.length - 1; i++) {
+                for (int i = 0; i < columns.length; i++) {
                     if (columns[i].equals(header)) {
                         return header;
                     }
