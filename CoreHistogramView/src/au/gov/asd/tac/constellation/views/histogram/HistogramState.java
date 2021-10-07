@@ -69,7 +69,7 @@ public final class HistogramState {
             this.elementStateMap = Map.copyOf(original.elementStateMap);
             this.elementType = original.elementType;
             setElementState();
-            this.binFormatterParameters = original.binFormatterParameters == null ? null : original.binFormatterParameters.copy();
+            this.binFormatterParameters = original.binFormatterParameters != null ? original.binFormatterParameters.copy() : this.binFormatter.createParameters();
             this.binFormatter.updateParameters(this.binFormatterParameters);
             this.binComparator = original.binComparator;
             this.binSelectionMode = original.binSelectionMode;

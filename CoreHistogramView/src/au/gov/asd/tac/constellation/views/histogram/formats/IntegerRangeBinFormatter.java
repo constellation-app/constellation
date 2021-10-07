@@ -47,8 +47,17 @@ public class IntegerRangeBinFormatter extends BinFormatter {
 
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
-        int zero = parameters.getParameters().get(ZERO_PARAMETER_ID).getIntegerValue();
-        int bucketSize = parameters.getParameters().get(BUCKET_PARAMETER_ID).getIntegerValue();
+        int zero;
+        int bucketSize;
+
+        if (parameters != null) {
+            zero = parameters.getParameters().get(ZERO_PARAMETER_ID).getIntegerValue();
+            bucketSize = parameters.getParameters().get(BUCKET_PARAMETER_ID).getIntegerValue();
+        } else {
+            zero = createParameters().getParameters().get(ZERO_PARAMETER_ID).getIntegerValue();
+            bucketSize = createParameters().getParameters().get(BUCKET_PARAMETER_ID).getIntegerValue();
+        }
+
         return new IntRangeBin((IntBin) bin, zero, bucketSize);
     }
 

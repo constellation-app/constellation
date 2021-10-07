@@ -46,7 +46,14 @@ public class IntegerLogarithmicRangeBinFormatter extends BinFormatter {
 
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
-        int base = parameters.getParameters().get(BASE_PARAMETER_ID).getIntegerValue();
+        int base;
+
+        if (parameters != null) {
+            base = parameters.getParameters().get(BASE_PARAMETER_ID).getIntegerValue();
+        } else {
+            base = createParameters().getParameters().get(BASE_PARAMETER_ID).getIntegerValue();
+        }
+
         return new IntRangeBin((IntBin) bin, base);
     }
 
