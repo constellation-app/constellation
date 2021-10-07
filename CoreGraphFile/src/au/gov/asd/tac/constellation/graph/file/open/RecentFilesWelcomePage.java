@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.graph.file.open;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -32,7 +31,7 @@ import org.openide.util.NbPreferences;
 public class RecentFilesWelcomePage {
 
     private static final List<HistoryItem> files = RecentFiles.getRecentFiles();
-    private static final List<Tuple<String, String>> fileDetails = new ArrayList<>();
+    private static final List<HistoryItem> uniqueFiles = new ArrayList<>();
 
     private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
@@ -40,22 +39,19 @@ public class RecentFilesWelcomePage {
     }
     
     /**
-     * Gets the file details of the files that were recently saved.
-     * For each Tuple, the first part contains the file path and the second part 
-     * contains the file name
+     * Gets the list of unique files that were recently saved.
      *
-     * @return list of recent file details
+     * @return list of recent files
      */
-    public static List<Tuple<String, String>> getFileDetails() {
+    public static List<HistoryItem> getUniqueFiles() {
         RecentFiles.init();
         for (final HistoryItem file : files) {
             final FileObject fo = RecentFiles.convertPath2File(file.getPath());
-            final Tuple<String, String> fileDetail = new Tuple(file.getPath(), file.getFileName());
-            if (fo != null && !fileDetails.contains(fileDetail)) {
-                fileDetails.add(fileDetail);
+            if (fo != null && !uniqueFiles.contains(file)) {
+                uniqueFiles.add(file);
             }
         }
-        return fileDetails;
+        return uniqueFiles;
     }
 
     /**

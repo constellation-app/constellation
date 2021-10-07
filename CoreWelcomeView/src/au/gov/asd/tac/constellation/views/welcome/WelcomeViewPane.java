@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
+import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFilesWelcomePage;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import static au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities.IMAGE_SIZE;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.io.File;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -187,14 +187,14 @@ public class WelcomeViewPane extends BorderPane {
             flow.setVgap(20);
 
             //Create the buttons for the recent page
-            final List<Tuple<String, String>> fileDetails = RecentFilesWelcomePage.getFileDetails();
+            final List<HistoryItem> fileDetails = RecentFilesWelcomePage.getUniqueFiles();
             for (int i = 0; i < recentGraphButtons.length; i++) {
                 recentGraphButtons[i] = new Button();
                 //if the user has recent files get the names
                 //and make them the text of the buttons
                 createRecentButtons(recentGraphButtons[i]);
                 if (i < fileDetails.size()) {
-                    recentGraphButtons[i].setText(fileDetails.get(i).getSecond());
+                    recentGraphButtons[i].setText(fileDetails.get(i).getFileName());
                     final Tooltip toolTip = new Tooltip(recentGraphButtons[i].getText());
                     recentGraphButtons[i].setTooltip(toolTip);
                     final String text = recentGraphButtons[i].getText();
@@ -212,7 +212,7 @@ public class WelcomeViewPane extends BorderPane {
 
                     //Calls the method for the recent graphs to open
                     //on the button action
-                    final String path = fileDetails.get(i).getFirst(); 
+                    final String path = fileDetails.get(i).getPath(); 
                     recentGraphButtons[i].setOnAction(e -> {
                         RecentFilesWelcomePage.openGraph(path);
                     });

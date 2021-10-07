@@ -333,7 +333,7 @@ public final class RecentFiles {
      * One item of the recently closed files history. Comparable by the time
      * field, ascending from most recent to older items.
      */
-    static final class HistoryItem implements Comparable<HistoryItem> {
+    public static final class HistoryItem implements Comparable<HistoryItem> {
 
         private int id;
         private final String path;
