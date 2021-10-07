@@ -57,7 +57,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -73,6 +74,8 @@ import org.openide.util.lookup.ServiceProviders;
 @Messages("SmallWorldGraphBuilderPlugin=Small World Graph Builder")
 @PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
 public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(SmallWorldGraphBuilderPlugin.class.getName());
 
     public static final String N_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "n");
     public static final String K_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "k");
@@ -412,7 +415,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
             }
         } catch (final PluginException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         interaction.setProgress(1, 0, "Completed successfully", true);

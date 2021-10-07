@@ -47,7 +47,6 @@ import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.NotifyDescriptor;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -58,6 +57,8 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @ServiceProvider(service = GraphDropper.class)
 public class FileDropper implements GraphDropper {
+    
+    private static final Logger LOGGER = Logger.getLogger(FileDropper.class.getName());
 
     @Override
     public BiConsumer<Graph, DropInfo> drop(final DropTargetDropEvent dtde) {
@@ -76,7 +77,7 @@ public class FileDropper implements GraphDropper {
                     });
                 };
             } catch (final UnsupportedFlavorException | IOException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 
@@ -115,7 +116,7 @@ public class FileDropper implements GraphDropper {
                     rg.release();
                 }
             } catch (final IOException | GraphParseException ex) {
-                Logger.getLogger(FileDropper.class.getName()).log(Level.WARNING, String.format("Error loading file %s: %s", file.getPath(), ex.getMessage()));
+                LOGGER.log(Level.WARNING, String.format("Error loading file %s: %s", file.getPath(), ex.getMessage()));
                 NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
             }
         }

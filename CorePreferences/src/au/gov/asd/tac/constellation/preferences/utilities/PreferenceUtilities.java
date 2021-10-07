@@ -15,10 +15,11 @@
  */
 package au.gov.asd.tac.constellation.preferences.utilities;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -26,9 +27,11 @@ import org.openide.util.NbPreferences;
  *
  * @author algol
  */
-public class PreferenceUtilites {
+public class PreferenceUtilities {
+    
+    private static final Logger LOGGER = Logger.getLogger(PreferenceUtilities.class.getName());
 
-    private PreferenceUtilites() {
+    private PreferenceUtilities() {
     }
 
     /**
@@ -52,8 +55,8 @@ public class PreferenceUtilites {
 
                 return true;
             }
-        } catch (BackingStoreException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final BackingStoreException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return false;
@@ -77,8 +80,8 @@ public class PreferenceUtilites {
 
                 return true;
             }
-        } catch (BackingStoreException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final BackingStoreException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return false;

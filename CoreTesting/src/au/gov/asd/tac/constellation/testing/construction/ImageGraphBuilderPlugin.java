@@ -48,6 +48,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -56,7 +58,6 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -72,6 +73,8 @@ import org.openide.util.lookup.ServiceProviders;
 @NbBundle.Messages("ImageGraphBuilderPlugin=Image Graph Builder")
 @PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
 public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(ImageGraphBuilderPlugin.class.getName());
 
     public static final String IMAGE_FILE_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "image_file");
 
@@ -101,7 +104,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 final ThreeTuple<List<BufferedImage>, List<Integer>, List<Integer>> loadedImageData;
                 try {
                     loadedImageData = loadImagesFromStream(imageFile);
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     throw new PluginException(PluginNotificationLevel.ERROR, ex);
                 }
 
@@ -128,8 +131,8 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 try {
                     loadedImageData = loadImage(imageFile);
                     images.add(loadedImageData);
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
 
@@ -367,7 +370,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     IIOMetadataNode imgRootNode = null;
                     try {
                         imgRootNode = (IIOMetadataNode) meta.getAsTree("javax_imageio_gif_image_1.0");
-                    } catch (IllegalArgumentException ex) {
+                    } catch (final IllegalArgumentException ex) {
                         unknownMetaformat = true;
                         continue;
                     }
@@ -377,7 +380,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     final IIOMetadataNode imgDescr = (IIOMetadataNode) imgRootNode.getElementsByTagName("ImageDescriptor").item(0);
                     loffsets.add(Integer.parseInt(imgDescr.getAttribute("imageLeftPosition")));
                     toffsets.add(Integer.parseInt(imgDescr.getAttribute("imageTopPosition")));
-                } catch (IndexOutOfBoundsException ex) {
+                } catch (final IndexOutOfBoundsException ex) {
                     break;
                 }
             }

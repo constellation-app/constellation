@@ -32,7 +32,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.util.Map;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -42,6 +43,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public final class CameraIOProvider extends AbstractGraphIOProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(CameraIOProvider.class.getName());
 
     private static final String LOOK_AT_EYE = "look_at_eye";
     private static final String LOOK_AT_CENTRE = "look_at_centre";
@@ -234,8 +237,8 @@ public final class CameraIOProvider extends AbstractGraphIOProvider {
             frame.getUpVector(v);
             addVector(jg, "up", v);
             jg.writeEndObject();
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -257,8 +260,8 @@ public final class CameraIOProvider extends AbstractGraphIOProvider {
                 addVector(jg, "max2", bb.getMax2());
             }
             jg.writeEndObject();
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -277,14 +280,14 @@ public final class CameraIOProvider extends AbstractGraphIOProvider {
                 jg.writeNumber(v.getY());
                 jg.writeNumber(v.getZ());
                 jg.writeEndArray();
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         } else {
             try {
                 jg.writeNullField(label);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }

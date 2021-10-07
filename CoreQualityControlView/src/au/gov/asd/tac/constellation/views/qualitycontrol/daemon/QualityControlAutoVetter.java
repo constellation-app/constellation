@@ -29,7 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.Lookup;
 
 /**
@@ -41,6 +42,8 @@ import org.openide.util.Lookup;
  * @author algol
  */
 public final class QualityControlAutoVetter implements GraphManagerListener, GraphChangeListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(QualityControlAutoVetter.class.getName());
 
     private static QualityControlAutoVetter INSTANCE = null;
     private static final List<QualityControlAutoVetterListener> buttonListeners = new ArrayList<>();
@@ -210,11 +213,11 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
             if (stateFuture != null) {
                 stateFuture.get();
             }
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Quality Control State updater was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         // notify listeners that rules have finished
