@@ -133,6 +133,25 @@ public final class RecentFiles {
             return Collections.unmodifiableList(HISTORY);
         }
     }
+    
+    /**
+     * Gets the read-only list of unique, existing recent closed files
+     *
+     * @return list of recent files
+     */
+    public static List<HistoryItem> getUniqueRecentFiles() {
+        final List<HistoryItem> history = getRecentFiles();
+        final List<HistoryItem> uniqueFiles = new ArrayList<>();
+        for (final HistoryItem file : history) {
+            final FileObject fo = convertPath2File(file.getPath());
+            if (fo != null && !uniqueFiles.contains(file)) {
+                uniqueFiles.add(file);
+            }
+        }
+        
+        return Collections.unmodifiableList(uniqueFiles);
+    }
+    
     private static volatile boolean historyProbablyValid;
 
     /**

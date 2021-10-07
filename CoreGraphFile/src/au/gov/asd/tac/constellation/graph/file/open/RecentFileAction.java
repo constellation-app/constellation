@@ -172,7 +172,7 @@ public class RecentFileAction extends AbstractAction
      * Fills submenu with recently closed files got from RecentFiles support
      */
     private void fillSubMenu() {
-        List<HistoryItem> files = RecentFiles.getRecentFiles();
+        final List<HistoryItem> files = RecentFiles.getUniqueRecentFiles();
         for (final HistoryItem hItem : files) {
             // Attempt to create a menu item for the history item.
             // We will skip the creation if the file object corresponding to the
@@ -181,10 +181,11 @@ public class RecentFileAction extends AbstractAction
             try {
                 final FileObject fo = RecentFiles.convertPath2File(hItem.getPath());
                 if (fo != null) {
-                    JMenuItem jmi = newSubMenuItem(fo);
+                    final JMenuItem jmi = newSubMenuItem(fo);
                     menu.add(jmi);
                 }
-            } catch (DataObjectNotFoundException ex) {
+            } catch (final DataObjectNotFoundException ex) {
+                // Do nothing
             }
         }
         ensureSelected();
