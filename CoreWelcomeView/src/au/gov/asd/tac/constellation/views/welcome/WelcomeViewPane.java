@@ -15,8 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
+import au.gov.asd.tac.constellation.graph.file.open.OpenFile;
+import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
-import au.gov.asd.tac.constellation.graph.file.open.RecentFilesWelcomePage;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import static au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities.IMAGE_SIZE;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -50,6 +51,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
+import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
@@ -59,6 +61,8 @@ import org.openide.util.NbPreferences;
  * @author Delphinus8821
  */
 public class WelcomeViewPane extends BorderPane {
+    
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
     private final BorderPane pane;
 
@@ -157,19 +161,18 @@ public class WelcomeViewPane extends BorderPane {
             lowerLeftHBox.setPadding(new Insets(30, 10, 10, 20));
 
             // Create a checkbox to change users preference regarding showing the Tutorial Page on startup
-            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
             final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
             lowerLeftHBox.getChildren().add(showOnStartUpCheckBox);
 
             showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal) -> {
-                prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal);
+                PREFERENCES.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal);
             });
-            showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
+            showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
 
             // Create a preferenceListener in order to identify when user preference is changed
             // Keeps tutorial page and options tutorial selections in-sync when both are open
-            prefs.addPreferenceChangeListener(evt -> {
-                showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
+            PREFERENCES.addPreferenceChangeListener(evt -> {
+                showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
             });
 
             leftVBox.getChildren().add(lowerLeftHBox);
@@ -187,7 +190,7 @@ public class WelcomeViewPane extends BorderPane {
             flow.setVgap(20);
 
             //Create the buttons for the recent page
-            final List<HistoryItem> fileDetails = RecentFilesWelcomePage.getUniqueFiles();
+            final List<HistoryItem> fileDetails = RecentFiles.getUniqueRecentFiles();
             for (int i = 0; i < recentGraphButtons.length; i++) {
                 recentGraphButtons[i] = new Button();
                 //if the user has recent files get the names
@@ -214,7 +217,9 @@ public class WelcomeViewPane extends BorderPane {
                     //on the button action
                     final String path = fileDetails.get(i).getPath(); 
                     recentGraphButtons[i].setOnAction(e -> {
-                        RecentFilesWelcomePage.openGraph(path);
+                        final FileObject fo = RecentFiles.convertPath2File(path);
+                        OpenFile.open(fo, -1);
+                        saveCurrentDirectory(path);
                     });
                 }
                 flow.getChildren().add(recentGraphButtons[i]);
@@ -266,5 +271,19 @@ public class WelcomeViewPane extends BorderPane {
         button.setStyle("-fx-background-color: transparent;");
         button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
+    }
+    
+    /**
+     * If the remember open and save location preference is enabled, this saves the current directory as that location
+     * 
+     * @param path the new location to open from when opening or saving a graph
+     */
+    private static void saveCurrentDirectory(final String path) {
+        final String lastFileOpenAndSaveLocation = PREFERENCES.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
+        final boolean rememberOpenAndSaveLocation = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+
+        if (!lastFileOpenAndSaveLocation.equals(path) && rememberOpenAndSaveLocation) {
+            PREFERENCES.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, path);
+        }
     }
 }

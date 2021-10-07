@@ -1,5 +1,10 @@
 # Constellation Changes
 
+## Changes in October 2021
+
+-   Removed `RecentFilesWelcomePage` and moved functionality between 
+    `RecentFiles` and `WelcomeViewPane`
+
 ## Changes in September 2021
 
 -   Updated `processImport` in `ImportController` to a `void` method given the

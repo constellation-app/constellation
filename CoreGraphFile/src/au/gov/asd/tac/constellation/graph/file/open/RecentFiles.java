@@ -321,7 +321,7 @@ public final class RecentFiles {
         return f == null ? null : f.getPath();
     }
 
-    static FileObject convertPath2File(final String path) {
+    public static FileObject convertPath2File(final String path) {
         File f = new File(path);
         f = FileUtil.normalizeFile(f);
         return f == null ? null : FileUtil.toFileObject(f);
