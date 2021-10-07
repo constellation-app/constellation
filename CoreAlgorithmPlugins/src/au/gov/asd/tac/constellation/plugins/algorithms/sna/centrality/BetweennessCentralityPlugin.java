@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.Map;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -105,7 +106,7 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
 
         return parameters;
     }
-
+    
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         final boolean includeConnectionsIn = parameters.getBooleanValue(INCLUDE_CONNECTIONS_IN_PARAMETER_ID);
@@ -125,7 +126,7 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
 
         // calculate the maximum betweenness
         float maxBetweenness = 0;
-        final HashMap<BitSet, Float> maxBetweennessConnectedComponents = new HashMap<>();
+        final Map<BitSet, Float> maxBetweennessConnectedComponents = new HashMap<>();
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final float betweenness = betweennesses[vertexPosition];
@@ -140,14 +141,12 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
 
         // choose the correct betweenness attribute
         final int betweennessAttribute;
-        if (includeConnectionsIn && includeConnectionsOut) {
-            betweennessAttribute = BETWEENNESS_ATTRIBUTE.ensure(graph);
-        } else if (includeConnectionsIn && !includeConnectionsOut) {
+        if (includeConnectionsIn && !includeConnectionsOut) {
             betweennessAttribute = IN_BETWEENNESS_ATTRIBUTE.ensure(graph);
         } else if (!includeConnectionsIn && includeConnectionsOut) {
             betweennessAttribute = OUT_BETWEENNESS_ATTRIBUTE.ensure(graph);
         } else {
-            return;
+            betweennessAttribute = BETWEENNESS_ATTRIBUTE.ensure(graph);
         }
 
         // update the graph with betweenness values

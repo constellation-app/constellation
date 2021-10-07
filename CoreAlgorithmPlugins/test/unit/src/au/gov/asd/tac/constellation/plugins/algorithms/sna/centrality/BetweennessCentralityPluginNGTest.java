@@ -162,4 +162,24 @@ public class BetweennessCentralityPluginNGTest {
         assertEquals(graph.getFloatValue(vertexBetweennessAttribute, vxId3), 6f / 6f);
         assertEquals(graph.getFloatValue(vertexBetweennessAttribute, vxId4), 0f / 6f);
     }
+    
+    @Test
+    public void testNoDirectionBetweenness() throws Exception {
+        final BetweennessCentralityPlugin instance = new BetweennessCentralityPlugin();
+        final PluginParameters parameters = instance.createParameters();
+        parameters.setBooleanValue(BetweennessCentralityPlugin.INCLUDE_CONNECTIONS_IN_PARAMETER_ID, false);
+        parameters.setBooleanValue(BetweennessCentralityPlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID, false);
+        parameters.setBooleanValue(BetweennessCentralityPlugin.TREAT_UNDIRECTED_BIDIRECTIONAL, false);
+        parameters.setBooleanValue(BetweennessCentralityPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, false);
+        parameters.setBooleanValue(BetweennessCentralityPlugin.NORMALISE_POSSIBLE_PARAMETER_ID, false);
+        parameters.setBooleanValue(BetweennessCentralityPlugin.NORMALISE_CONNECTED_COMPONENTS_PARAMETER_ID, false);
+        parameters.setBooleanValue(BetweennessCentralityPlugin.SELECTED_ONLY_PARAMETER_ID, false);
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getFloatValue(vertexBetweennessAttribute, vxId0), 0F);
+        assertEquals(graph.getFloatValue(vertexBetweennessAttribute, vxId1), 0F);
+        assertEquals(graph.getFloatValue(vertexBetweennessAttribute, vxId2), 0F);
+        assertEquals(graph.getFloatValue(vertexBetweennessAttribute, vxId3), 0F);
+        assertEquals(graph.getFloatValue(vertexBetweennessAttribute, vxId4), 0F);
+    }
 }
