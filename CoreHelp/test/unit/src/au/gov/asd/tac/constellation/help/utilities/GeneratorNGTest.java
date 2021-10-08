@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.help.utilities;
 
-import au.gov.asd.tac.constellation.help.ConstellationHelpDisplayer;
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import au.gov.asd.tac.constellation.help.utilities.toc.TOCGenerator;
 import java.io.File;
@@ -88,11 +87,13 @@ public class GeneratorNGTest {
                 tocXMLFiles.add(new File(System.getProperty("user.dir") + notesTOC));
                 generatorStaticMock.when(() -> Generator.getXMLFiles(Mockito.any())).thenReturn(tocXMLFiles);
                 generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenCallRealMethod();
+                generatorStaticMock.when(() -> Generator.getResource(Mockito.eq(Generator.class))).thenCallRealMethod();
 
                 try (MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
                     tocgeneratorStaticMock.when(() -> TOCGenerator.createTOCFile(Mockito.anyString())).thenReturn(true);
                     tocgeneratorStaticMock.when(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
                     Generator generator = new Generator();
+                    System.out.println("prop : " + System.getProperty("constellation.environment"));
                     generator.run();
 
                     // verify that the toc file was called to be created, and that the xml mappings were to be converted
@@ -219,7 +220,7 @@ public class GeneratorNGTest {
                     final URL urlUserDir = mock(URL.class);
                     final URI urIUserDir = mock(URI.class);
                     when(urlUserDir.toURI()).thenReturn(urIUserDir);
-                    generatorStaticMock.when(() -> Generator.getResource(Mockito.eq(Generator.class), Mockito.eq("/"))).thenReturn(urlUserDir);
+                    generatorStaticMock.when(() -> Generator.getResource(Mockito.eq(Generator.class))).thenReturn(userDir);
 
                     final String expectedBaseDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep;
                     assertEquals(Generator.getBaseDirectory(), expectedBaseDir);
@@ -237,7 +238,7 @@ public class GeneratorNGTest {
                     final URL urlUserDir2 = mock(URL.class);
                     final URI urIUserDir2 = mock(URI.class);
                     when(urlUserDir2.toURI()).thenReturn(urIUserDir2);
-                    generatorStaticMock.when(() -> Generator.getResource(Mockito.eq(Generator.class), Mockito.eq("/"))).thenReturn(urlUserDir2);
+                    generatorStaticMock.when(() -> Generator.getResource(Mockito.eq(Generator.class))).thenReturn(userDir2);
 
                     final String expectedBaseDir2 = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep;
                     assertEquals(Generator.getBaseDirectory(), expectedBaseDir2);
@@ -255,7 +256,7 @@ public class GeneratorNGTest {
                     final URL urlUserDir3 = mock(URL.class);
                     final URI urIUserDir3 = mock(URI.class);
                     when(urlUserDir3.toURI()).thenReturn(urIUserDir3);
-                    generatorStaticMock.when(() -> Generator.getResource(Mockito.eq(Generator.class), Mockito.eq("/"))).thenReturn(urlUserDir3);
+                    generatorStaticMock.when(() -> Generator.getResource(Mockito.eq(Generator.class))).thenReturn(userDir3);
 
                     final String expectedBaseDir3 = file.getPath() + "Users" + sep + "Username" + sep + "constellation" + sep + "Constellation" + sep;
                     assertEquals(Generator.getBaseDirectory(), expectedBaseDir3);

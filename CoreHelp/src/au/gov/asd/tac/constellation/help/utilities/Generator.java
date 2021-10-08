@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.help.utilities.toc.TOCItem;
 import au.gov.asd.tac.constellation.help.utilities.toc.TreeNode;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -32,7 +34,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.windows.OnShowing;
 
@@ -62,7 +63,7 @@ public class Generator implements Runnable {
         baseDirectory = getBaseDirectory();
         tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
 
-        if (!"IDE(CORE)".equals(System.getProperty("constellation.environment"))) {
+        if (!StringUtils.contains(System.getProperty("constellation.environment"), "IDE")) {
             // Ensure that the mappings are generated for clicks on help icons within the application.
             HelpMapper.updateMappings();
             return;
@@ -102,8 +103,9 @@ public class Generator implements Runnable {
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
-            if (StringUtils.isNotEmpty(provider.getHelpTOC())) {
-                tocXMLFiles.add(new File(baseDirectory + provider.getHelpTOC()));
+            final String providerTOC = provider.getHelpTOC();
+            if (StringUtils.isNotEmpty(providerTOC)) {
+                tocXMLFiles.add(new File(baseDirectory + providerTOC));
             }
         });
         return tocXMLFiles;
@@ -115,27 +117,32 @@ public class Generator implements Runnable {
      * @return
      */
     public static String getBaseDirectory() {
-
         try {
             final String sep = File.separator;
+
             // Get the current directory and make the file within the base project directory.
-            final String userDir = Paths.get(Generator.getResource(Generator.class, "/").toURI()).toString();
+            final String userDir = getResource(Generator.class);
             String[] splitUserDir = userDir.split(Pattern.quote(sep));
-            while (!splitUserDir[splitUserDir.length - 1].contains("constellation")) {
+            while (!splitUserDir[splitUserDir.length - 1].equals("constellation")) {
                 splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
             }
             // split once more
             splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
 
             baseDirectory = String.join(sep, splitUserDir) + sep;
-        } catch (final URISyntaxException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final URISyntaxException | MalformedURLException ex) {
+            LOGGER.log(Level.SEVERE, "There was a problem retrieving the base directory for launching Offline Help.", ex);
         }
         return baseDirectory;
     }
 
-    protected static URL getResource(final Class clazz, final String resource) {
-        return clazz.getResource(resource);
+    protected static String getResource(final Class clazz) throws MalformedURLException, URISyntaxException {
+        final URL sourceLocation = Generator.class.getProtectionDomain().getCodeSource().getLocation();
+        final String pathLoc = sourceLocation.getPath();
+        final URL url = new URL(pathLoc);
+        final URI uri = url.toURI();
+        final Path path = Paths.get(uri);
+        return path != null ? path.toString() : "";
     }
 
 }
