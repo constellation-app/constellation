@@ -171,9 +171,9 @@ public class WelcomeViewPane extends BorderPane {
 
             // Create a preferenceListener in order to identify when user preference is changed
             // Keeps tutorial page and options tutorial selections in-sync when both are open
-            PREFERENCES.addPreferenceChangeListener(evt -> {
-                showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
-            });
+            PREFERENCES.addPreferenceChangeListener(evt ->
+                showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()))
+            );
 
             leftVBox.getChildren().add(lowerLeftHBox);
 
