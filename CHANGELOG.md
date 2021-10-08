@@ -20,6 +20,9 @@
 -   Removed unused `localized` parameter from the signature of the `locate()`
     method in `ConstellationInstalledFileLocator`.
 
+-   Removed all the unused `*Action.java` classes from 
+    `au.gov.asd.tac.constellation.plugins.algorithms.sna`.
+
 -   Renamed `PreferenceUtilites` to `PreferenceUtilities` to fix the typo.
 
 -   Updated Core Import Export summary text to provide more information. To

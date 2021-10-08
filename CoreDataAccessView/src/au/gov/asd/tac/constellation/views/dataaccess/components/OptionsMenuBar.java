@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
-import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoProvider;
+import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.util.concurrent.CompletableFuture;
@@ -109,7 +109,7 @@ public class OptionsMenuBar {
         
         loadMenuItem = new MenuItem(LOAD_MENU_ITEM_TEXT, LOAD_TEMPLATE_ICON);
         loadMenuItem.setOnAction(event -> {
-            DataAccessPreferencesIoProvider.loadParameters(dataAccessPane);
+            DataAccessParametersIoProvider.loadParameters(dataAccessPane);
             
             event.consume();
         });
@@ -120,7 +120,7 @@ public class OptionsMenuBar {
         
         saveMenuItem = new MenuItem(SAVE_MENU_ITEM_TEXT, SAVE_TEMPLATE_ICON);
         saveMenuItem.setOnAction(event -> {
-            DataAccessPreferencesIoProvider.saveParameters(
+            DataAccessParametersIoProvider.saveParameters(
                     dataAccessPane.getDataAccessTabPane().getTabPane()
             );
             

@@ -24,7 +24,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -116,65 +115,7 @@ public final class DataAccessUserPreferences {
     public void setPluginParameters(final Map<String, String> pluginParameters) {
         this.pluginParameters = pluginParameters;
     }
-    
-    /**
-     * Convert the contents of the {@link #pluginParameters} map to a per-plugin
-     * map. The plugin map has the following format
-     * 
-     * <pre><code>
-     *      pluginA.param1: value1
-     *      pluginA.param2: value2
-     *      pluginB.param1: value3
-     *      pluginC.param1: value4
-     * </code></pre>
-     * 
-     * The above will be converted to
-     * 
-     * <pre><code>
-     *      pluginA:
-     *           pluginA.param1: value1
-     *           pluginA.param2: value2
-     *      pluginB:
-     *           pluginB.param1: value3
-     *      pluginC:
-     *           pluginC.param1: value4
-     * </code></pre>
-     * 
-     * @return the generated per plugin parameter map
-     */
-    @JsonIgnore
-    public Map<String, Map<String, String>> toPerPluginParamMap() {
-        return getPluginParameters().entrySet().stream()
-                .map(entry -> {
-                    final String name = entry.getKey();
-                    final String value = entry.getValue();
 
-                    final int index = name.indexOf('.');
-                    if (index != -1) {
-                        final String plugin = name.substring(0, index);
-                        
-                        final Map<String, String> pluginParams = new HashMap<>();
-                        pluginParams.put(name, value);
-                        
-                        return new AbstractMap.SimpleImmutableEntry<>(plugin, pluginParams);
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (params1, params2) -> {
-                            // Don't need to worry about key clashes as they values
-                            // were originally in a map guaranteeing uniquness
-                            final Map<String, String> m = new HashMap<>();
-                            m.putAll(params1);
-                            m.putAll(params2);
-                            return m;
-                        }
-                ));
-    }
-    
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

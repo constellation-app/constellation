@@ -88,49 +88,49 @@ public class DataAccessUserPreferencesNGTest {
         
         final PluginParameterType passwordType = mock(PluginParameterType.class);
         when(passwordType.getId()).thenReturn("password");
-        
+
         final PluginParameterType stringType = mock(PluginParameterType.class);
         when(stringType.getId()).thenReturn("string");
-        
+
         // Plugin params will be in global and plugin but because it is in global
         // it should not be included in the plugin section
         final PluginParameter pluginParameter1 = mock(PluginParameter.class);
         when(pluginParameter1.getId()).thenReturn("param1");
         when(pluginParameter1.getStringValue()).thenReturn("value1");
         when(pluginParameter1.getType()).thenReturn(stringType);
-        
+
         final PluginParameter pluginParameter2 = mock(PluginParameter.class);
         when(pluginParameter2.getId()).thenReturn("param2");
         when(pluginParameter2.getStringValue()).thenReturn("value2");
         when(pluginParameter2.getType()).thenReturn(stringType);
-        
+
         final PluginParameter pluginParameter3 = mock(PluginParameter.class);
         when(pluginParameter3.getId()).thenReturn("param3");
         when(pluginParameter3.getStringValue()).thenReturn("value3");
         when(pluginParameter3.getType()).thenReturn(stringType);
-        
+
         // Param 4 is of password type and should not be added
         final PluginParameter pluginParameter4 = mock(PluginParameter.class);
         when(pluginParameter4.getId()).thenReturn("param4");
         when(pluginParameter4.getStringValue()).thenReturn("value4");
         when(pluginParameter4.getType()).thenReturn(passwordType);
-        
+
         // Set the global parameters
         final PluginParameters globalPluginParameters1 = new PluginParameters();
         globalPluginParameters1.addParameter(pluginParameter1);
         globalPluginParameters1.addParameter(pluginParameter2);
-        
+
         // Set the parameters for plugin1
         final PluginParameters plugin1Parameters = new PluginParameters();
         plugin1Parameters.addParameter(pluginParameter1);
         plugin1Parameters.addParameter(pluginParameter3);
         plugin1Parameters.addParameter(pluginParameter4);
-        
+
         when(globalParametersPane.getParams()).thenReturn(globalPluginParameters1);
         when(dataSourceTitledPane1.getParameters()).thenReturn(plugin1Parameters);
-        
+
         final DataAccessUserPreferences preferences = new DataAccessUserPreferences(tab);
-        
+
         final DataAccessUserPreferences expectedPreferences = new DataAccessUserPreferences();
         expectedPreferences.setGlobalParameters(
                 Map.of(
@@ -144,46 +144,7 @@ public class DataAccessUserPreferencesNGTest {
                         "param3", "value3"
                 )
         );
-        
+
         assertEquals(preferences, expectedPreferences);
-    }
-    
-    @Test
-    public void toPerPluginParamMap() {
-        final DataAccessUserPreferences preferences = new DataAccessUserPreferences();
-        
-        final Map<String, String> pluginParams = new HashMap<>();
-        pluginParams.put("plugin1.param1", "plugin1_param1_value");
-        pluginParams.put("plugin2.param1", "plugin2_param1_value");
-        pluginParams.put("badparam", "value");
-        pluginParams.put("plugin3.param1", null);
-        pluginParams.put("plugin1.param2", "plugin1_param2_value");
-        pluginParams.put("plugin2.param2", "plugin2_param2_value");
-        pluginParams.put("plugin2.param3", "plugin2_param3_value");
-        
-        preferences.setPluginParameters(pluginParams);
-        
-        final Map<String, Map<String, String>> perPluginParamMap = preferences.toPerPluginParamMap();
-        
-        final Map<String, String> plugin1Map = new HashMap<>();
-        plugin1Map.put("plugin1.param1", "plugin1_param1_value");
-        plugin1Map.put("plugin1.param2", "plugin1_param2_value");
-        
-        final Map<String, String> plugin2Map = new HashMap<>();
-        plugin2Map.put("plugin2.param1", "plugin2_param1_value");
-        plugin2Map.put("plugin2.param2", "plugin2_param2_value");
-        plugin2Map.put("plugin2.param3", "plugin2_param3_value");
-        
-        final Map<String, String> plugin3Map = new HashMap<>();
-        plugin3Map.put("plugin3.param1", null);
-        
-        final Map<String, Map<String, String>> expectedPerPluginParamMap = Map.of(
-                "plugin1", plugin1Map,
-                "plugin2", plugin2Map,
-                "plugin3", plugin3Map
-        
-        );
-        
-        assertEquals(perPluginParamMap, expectedPerPluginParamMap);
     }
 }

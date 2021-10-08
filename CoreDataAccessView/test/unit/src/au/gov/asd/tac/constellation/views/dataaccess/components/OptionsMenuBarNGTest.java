@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
-import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessPreferencesIoProvider;
+import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
@@ -105,13 +105,13 @@ public class OptionsMenuBarNGTest {
                 ))
         );
         
-        try (final MockedStatic<DataAccessPreferencesIoProvider> prefProviderMockedStatic =
-                Mockito.mockStatic(DataAccessPreferencesIoProvider.class)) {
+        try (final MockedStatic<DataAccessParametersIoProvider> prefProviderMockedStatic =
+                Mockito.mockStatic(DataAccessParametersIoProvider.class)) {
                 final ActionEvent actionEvent = mock(ActionEvent.class);
                 
                 optionsMenuBar.getLoadMenuItem().getOnAction().handle(actionEvent);
                 
-                prefProviderMockedStatic.verify(() -> DataAccessPreferencesIoProvider
+                prefProviderMockedStatic.verify(() -> DataAccessParametersIoProvider
                         .loadParameters(dataAccessPane));
                 verify(actionEvent).consume();
         }
@@ -126,8 +126,8 @@ public class OptionsMenuBarNGTest {
                 ))
         );
         
-        try (final MockedStatic<DataAccessPreferencesIoProvider> prefProviderMockedStatic =
-                Mockito.mockStatic(DataAccessPreferencesIoProvider.class)) {
+        try (final MockedStatic<DataAccessParametersIoProvider> prefProviderMockedStatic =
+                Mockito.mockStatic(DataAccessParametersIoProvider.class)) {
                 final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
                 final TabPane tabPane = mock(TabPane.class);
                 final ActionEvent actionEvent = mock(ActionEvent.class);
@@ -137,7 +137,7 @@ public class OptionsMenuBarNGTest {
                 
                 optionsMenuBar.getSaveMenuItem().getOnAction().handle(actionEvent);
                 
-                prefProviderMockedStatic.verify(() -> DataAccessPreferencesIoProvider
+                prefProviderMockedStatic.verify(() -> DataAccessParametersIoProvider
                         .saveParameters(tabPane));
                 verify(actionEvent).consume();
         }

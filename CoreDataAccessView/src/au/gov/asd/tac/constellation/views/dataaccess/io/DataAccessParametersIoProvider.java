@@ -26,7 +26,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -45,13 +44,13 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author algol
  */
-public class DataAccessPreferencesIoProvider {
+public class DataAccessParametersIoProvider {
     private static final String DATA_ACCESS_DIR = "DataAccessView";
 
     /**
      * Private constructor to prevent external initialization.
      */
-    private DataAccessPreferencesIoProvider() {
+    private DataAccessParametersIoProvider() {
     }
     
     /**
@@ -127,13 +126,13 @@ public class DataAccessPreferencesIoProvider {
 
                 // Groups all the parameters in to the plugin groups. Common parameters
                 // are based on the plugin name that is before the first '.' in the key values
-                final Map<String, Map<String, String>> ppmap = loadedParameter.toPerPluginParamMap();
+                //final Map<String, Map<String, String>> ppmap = loadedParameter.toPerPluginParamMap();
 
                 pluginPane.getDataAccessPanes().stream()
                         // Plugins are disabled by defult. Only load and enable from
                         // the JSON if the JSON contains data for this plugin and it's
                         // enabled.
-                        .filter(pane -> 
+                        .filter(pane ->
                                 loadedParameter.getPluginParameters().containsKey(getEnabledPluginKey(pane))
                                         && Boolean.valueOf(
                                                 loadedParameter.getPluginParameters().get(
@@ -141,7 +140,7 @@ public class DataAccessPreferencesIoProvider {
                                                 ))
                         )
                         .forEach(pane -> pane.setParameterValues(
-                                ppmap.get(pane.getPlugin().getClass().getSimpleName())
+                                loadedParameter.getPluginParameters()
                         ));
             });
         }
