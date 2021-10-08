@@ -105,6 +105,18 @@ public class HistogramControls extends JPanel {
         });
         actionsMenu.add(saveBinsToClipboardMenuItem);
 
+        final JMenuItem decreaseHeightBarMenuItem = new JMenuItem("Decrease height of each bin");
+        decreaseHeightBarMenuItem.addActionListener((final ActionEvent e) -> {
+            topComponent.modifyBinHeight(-1);
+        });
+        actionsMenu.add(decreaseHeightBarMenuItem);
+
+        final JMenuItem increaseHeightBarMenuItem = new JMenuItem("Increase height of each bin");
+        increaseHeightBarMenuItem.addActionListener((final ActionEvent e) -> {
+            topComponent.modifyBinHeight(1);
+        });
+        actionsMenu.add(increaseHeightBarMenuItem);
+
         setHistogramState(null, null);
     }
 

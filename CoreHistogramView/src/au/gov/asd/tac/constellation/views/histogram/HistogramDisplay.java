@@ -94,6 +94,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private int preferredHeight;
     private int iconPadding;
     private int barHeight;   // the vertical thickness of the bars
+    private int userSetBarHeight = -1;   // the vertical thiccness of the bars as set by the user
     private int barsWidth; // the length of the longest bar
     private int textWidth; // the width of the space allocated to text
     private float scaleFactor; // the scale factor from histogram count to bar length in pixels
@@ -293,6 +294,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                 final int[] dims = calculateHeightAndBarWidth();
                 preferredHeight = dims[0];
                 barHeight = dims[1];
+                if (userSetBarHeight != -1) {
+                    barHeight = userSetBarHeight;
+                }
 
                 iconPadding = (int) (binIconMode.getWidth() * barHeight);
 
@@ -517,6 +521,34 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         }
 
         return n;
+    }
+
+    /**
+     * Decrease height of barHeight
+     *
+     */
+    public void decreaseBarHeight() {
+        if (userSetBarHeight == -1 && barHeight > 2) {
+            userSetBarHeight = barHeight - 2;
+        } else if (userSetBarHeight > 2) {
+            userSetBarHeight -= 2;
+        }
+        barHeight = userSetBarHeight;
+        repaint();
+    }
+
+    /**
+     * Increase height of barHeight
+     *
+     */
+    public void increaseBarHeight() {
+        if (userSetBarHeight == -1) {
+            userSetBarHeight = barHeight + 2;
+        } else {
+            userSetBarHeight += 2;
+        }
+        barHeight = userSetBarHeight;
+        repaint();
     }
 
     /**
