@@ -32,7 +32,8 @@ import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult.ClusterData;
 import java.lang.reflect.InvocationTargetException;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A basic analytic plugin which reads cluster data from the graph based on the
@@ -41,6 +42,8 @@ import org.openide.util.Exceptions;
  * @author cygnus_x-1
  */
 public abstract class ClusterAnalyticPlugin extends AnalyticPlugin<ClusterResult> {
+    
+    private static final Logger LOGGER = Logger.getLogger(ClusterAnalyticPlugin.class.getName());
 
     protected ClusterResult result;
 
@@ -121,7 +124,7 @@ public abstract class ClusterAnalyticPlugin extends AnalyticPlugin<ClusterResult
         } catch (final IllegalAccessException | IllegalArgumentException
                 | InstantiationException | NoSuchMethodException
                 | SecurityException | InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Dimension;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -57,6 +59,8 @@ import javafx.stage.Window;
  * @author sirius
  */
 public class ItemsDialog<T> extends ConstellationDialog {
+    
+    private static final Logger LOGGER = Logger.getLogger(ItemsDialog.class.getName());
 
     private TableView<ItemsRow<T>> table;
     private final Button okButton;
@@ -102,7 +106,8 @@ public class ItemsDialog<T> extends ConstellationDialog {
             try {
                 List<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
                 selectRows(selectedRows);
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Thread was interrupted");
                 Thread.currentThread().interrupt();
             }
         });

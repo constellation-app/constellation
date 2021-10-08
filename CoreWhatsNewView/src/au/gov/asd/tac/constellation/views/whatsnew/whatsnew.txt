@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-10-06 Plugin Parameters
+<p>If you enter a value into a number parameter field that is either less than the minimum allowed or more than maximum allowed, the field turns red.</p>
+
 == 2021-09-30 New Online & Offline Help
 <p>The help documentation is now able to be viewed both online through the constellation-app.com website and offline through a local server.</p>
 <p>A preference has been added where you choose to view help documentation either online or offline. This can be found via 

@@ -33,7 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CyclicBarrier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.Exceptions;
 
 /**
  * This class contains all of the logic for performing shortest paths
@@ -88,6 +87,8 @@ public class DijkstraServices {
     private final boolean followDirection;
 
     private static final Logger LOGGER = Logger.getLogger(DijkstraServices.class.getName());
+    
+    private static final String THREAD_INTERRUPTED = "Thread was interrupted";
 
     /**
      * Constructor.
@@ -131,11 +132,11 @@ public class DijkstraServices {
             } finally {
                 try {
                     distanceBarrier.await();
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                     Thread.currentThread().interrupt();
-                } catch (BrokenBarrierException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final BrokenBarrierException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
         }
@@ -165,11 +166,11 @@ public class DijkstraServices {
             } finally {
                 try {
                     pathBarrier.await();
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                     Thread.currentThread().interrupt();
-                } catch (BrokenBarrierException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final BrokenBarrierException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
         }
@@ -335,16 +336,18 @@ public class DijkstraServices {
                     default:
                         break;
                 }
-            } catch (InterruptedException e) {
-                Exceptions.printStackTrace(e);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                 Thread.currentThread().interrupt();
             } finally {
                 // This thread is now done, so wait for all others to finish:
                 try {
                     barrier.await();
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED);
                     Thread.currentThread().interrupt();
-                } catch (BrokenBarrierException ex) {
+                } catch (final BrokenBarrierException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
             }
         }

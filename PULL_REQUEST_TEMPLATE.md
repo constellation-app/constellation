@@ -5,15 +5,21 @@
 * Filling out the template is required. Any pull request that does not include
 enough information to be reviewed in a timely manner may be closed at the
 maintainers' discretion.
-* Follow the check list items defined by https://github.com/constellation-app/constellation/blob/master/CONTRIBUTING.md#pull-requests
 * All new code requires unit tests to ensure they work as expected and will
 continue to work as new code is added in the future (regression testing).
-* Make sure your branch name is prefixed by `feature`, `bugfix`, `hotfix` or `release`
+* Make sure your branch name is prefixed by `feature`, `bugfix` or `release`
 * Have you read Constellation's Code of Conduct? By filing an issue, you are
 expected to comply with it, including treating everyone with respect:
 https://github.com/constellation-app/constellation/blob/master/CODE_OF_CONDUCT.md
 
 -->
+
+### Prerequisites
+
+- [ ] Reviewed the [checklist](CHECKLIST.md)
+
+- [ ] Reviewed feedback from the "Sonar Cloud" bot. Note that you have to wait
+    for the "CI / Unit Tests") to complete first.
 
 ### Description of the Change
 

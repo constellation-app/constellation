@@ -34,8 +34,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -55,6 +56,8 @@ import org.openide.util.NbPreferences;
  * @author twinkle2_little
  */
 public class AttributeReader {
+    
+    private static final Logger LOGGER = Logger.getLogger(AttributeReader.class.getName());
 
     private final Graph graph;
     private long lastAttributeModificationCount = -1;
@@ -200,8 +203,8 @@ public class AttributeReader {
         if (selectedNodethread != null) {
             try {
                 selectedNodethread.join();
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
                 Thread.currentThread().interrupt();
             }
         }

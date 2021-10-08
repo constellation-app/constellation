@@ -31,7 +31,7 @@ import au.gov.asd.tac.constellation.graph.monitor.MonitorTransitionFilter;
 import au.gov.asd.tac.constellation.graph.monitor.StructureMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.preferences.ApplicationFontPreferenceKeys;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.Collections;
 import java.util.HashMap;
@@ -92,7 +92,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
     public final void componentOpened() {
         super.componentOpened();
         LOGGER.finer("ComponentOpened");
-        preferenceMonitors.keySet().forEach(preference -> PreferenceUtilites.addPreferenceChangeListener(preference, this));
+        preferenceMonitors.keySet().forEach(preference -> PreferenceUtilities.addPreferenceChangeListener(preference, this));
         GraphManager.getDefault().addGraphManagerListener(ListeningTopComponent.this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
         handleComponentOpened();
@@ -102,7 +102,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
     public final void componentClosed() {
         super.componentClosed();
         LOGGER.finer("ComponentClosed");
-        preferenceMonitors.keySet().forEach(preference -> PreferenceUtilites.removePreferenceChangeListener(preference, this));
+        preferenceMonitors.keySet().forEach(preference -> PreferenceUtilities.removePreferenceChangeListener(preference, this));
         GraphManager.getDefault().removeGraphManagerListener(ListeningTopComponent.this);
         newActiveGraph(null);
         handleComponentClosed();

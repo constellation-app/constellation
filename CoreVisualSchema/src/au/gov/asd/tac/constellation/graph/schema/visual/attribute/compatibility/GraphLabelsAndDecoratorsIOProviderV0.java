@@ -32,7 +32,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,6 +47,8 @@ import org.openide.util.lookup.ServiceProvider;
 @Deprecated
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class GraphLabelsAndDecoratorsIOProviderV0 extends AbstractGraphIOProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(GraphLabelsAndDecoratorsIOProviderV0.class.getName());
 
     @Override
     public String getName() {
@@ -123,8 +126,8 @@ public class GraphLabelsAndDecoratorsIOProviderV0 extends AbstractGraphIOProvide
             }
             jg.writeEndArray();
 
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -133,8 +136,8 @@ public class GraphLabelsAndDecoratorsIOProviderV0 extends AbstractGraphIOProvide
         if (attr != null) {
             try {
                 jg.writeStringField(dec.toString(), attr);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }

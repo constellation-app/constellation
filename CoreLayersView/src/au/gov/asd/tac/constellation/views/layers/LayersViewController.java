@@ -44,7 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -52,6 +53,8 @@ import org.openide.util.Exceptions;
  * @author aldebaran30701
  */
 public class LayersViewController {
+    
+    private static final Logger LOGGER = Logger.getLogger(LayersViewController.class.getName());
 
     // Layers view controller instance
     private static LayersViewController instance = null;
@@ -143,10 +146,10 @@ public class LayersViewController {
         try {
             f.get();
         } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Layer Selection update was interrupted", ex);
             Thread.currentThread().interrupt();
         } catch (final ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -185,10 +188,10 @@ public class LayersViewController {
         try {
             f.get();
         } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Layers State Reader was interrupted", ex);
             Thread.currentThread().interrupt();
         } catch (final ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -228,10 +231,10 @@ public class LayersViewController {
         try {
             f.get();
         } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Layers Query update was interrupted", ex);
             Thread.currentThread().interrupt();
         } catch (final ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -261,9 +264,9 @@ public class LayersViewController {
             f.get();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Element Bitmask update was interrupted", ex);
         } catch (final ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
     }
@@ -285,9 +288,9 @@ public class LayersViewController {
             f.get();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Element bitmask shuffler was interrupted", ex);
         } catch (final ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
     }

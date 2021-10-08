@@ -54,15 +54,17 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class NumberInputPane<T> extends Pane {
 
+    private static final Logger LOGGER = Logger.getLogger(NumberInputPane.class.getName());
+    
     private final Spinner<T> field;
 
     private String currentTextValue = null;
 
     private static final int CHAR_SIZE = 8;
     private static final int BASE_WIDTH = 35;
-    private static final Logger LOGGER = Logger.getLogger(NumberInputPane.class.getName());
 
     private static final String INVALID_ID = "invalid";
+    private static final String INVALID_VALUE = "Invalid value";
 
     public NumberInputPane(final PluginParameter<?> parameter) {
         final NumberParameterValue pv = (NumberParameterValue) parameter.getParameterValue();
@@ -129,12 +131,12 @@ public class NumberInputPane<T> extends Pane {
                 field.setTooltip(null);
                 field.setId("");
             }
-
+            
             currentTextValue = newValue;
             parameter.fireChangeEvent(ParameterChange.VALUE);
         });
 
-        parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> {
+        parameter.addListener((pluginParameter, change) ->
             Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
@@ -143,21 +145,37 @@ public class NumberInputPane<T> extends Pane {
                                 parameter.setError(null);
                                 switch (parameter.getType().getId()) {
                                     case IntegerParameterType.ID:
-                                        parameter.setIntegerValue(Integer.valueOf(currentTextValue));
+                                        final int currentIntegerValue = Integer.valueOf(currentTextValue);
+                                        if ((min != null && currentIntegerValue < min.intValue()) 
+                                                || (max != null && currentIntegerValue > max.intValue())) {
+                                            field.setId(INVALID_ID);
+                                            parameter.setError(INVALID_VALUE);
+                                        }
+                                        // this won't succeed if we entered the if block before this but it will
+                                        // add some helpful logging to indicate the problem in that instance
+                                        parameter.setIntegerValue(currentIntegerValue);
                                         break;
                                     case FloatParameterType.ID:
-                                        parameter.setFloatValue(Float.valueOf(currentTextValue));
+                                        final float currentFloatValue = Float.valueOf(currentTextValue);
+                                        if ((min != null && currentFloatValue < min.doubleValue())
+                                                || (max != null && currentFloatValue > max.doubleValue())) {
+                                            field.setId(INVALID_ID);
+                                            parameter.setError(INVALID_VALUE);
+                                        }
+                                        // this won't succeed if we entered the if block before this but it will
+                                        // add some helpful logging to indicate the problem in that instance
+                                        parameter.setFloatValue(currentFloatValue);
                                         break;
                                     default:
                                         break;
                                 }
-                            } catch (NumberFormatException ex) {
+                            } catch (final NumberFormatException ex) {
                                 field.setId(INVALID_ID);
-                                parameter.setError("Invalid value");
+                                parameter.setError(INVALID_VALUE);
                             }
                         } else if (currentTextValue != null && currentTextValue.isEmpty()) {
                             field.setId(INVALID_ID);
-                            parameter.setError("Invalid value");
+                            parameter.setError(INVALID_VALUE);
                         } else {
                             // Do nothing
                         }
@@ -175,8 +193,8 @@ public class NumberInputPane<T> extends Pane {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            })
+        );
         getChildren().add(field);
     }
 }

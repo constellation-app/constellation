@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -36,6 +38,8 @@ import org.openide.util.HelpCtx;
  * @author cygnus_x-1
  */
 public class AnalyticViewPane extends BorderPane {
+    
+    private static final Logger LOGGER = Logger.getLogger(AnalyticViewPane.class.getName());
 
     private static final String RUN_START_TEXT = "Run";
     private static final String RUN_START_STYLE = "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;";
@@ -116,7 +120,8 @@ public class AnalyticViewPane extends BorderPane {
                     try {
                         AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
                         analyticResultsPane.displayResults(question);
-                    } catch (AnalyticException ex) {
+                    } catch (final AnalyticException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                         final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
                         question.addException(ex);
                         analyticResultsPane.displayResults(question);

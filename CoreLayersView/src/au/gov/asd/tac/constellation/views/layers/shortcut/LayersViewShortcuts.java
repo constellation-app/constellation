@@ -24,12 +24,13 @@ import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionP
 import java.awt.event.ActionEvent;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -54,6 +55,8 @@ import org.openide.util.NbBundle;
 })
 @NbBundle.Messages("CTL_LayersViewShortcuts=Layers View: Shortcuts")
 public class LayersViewShortcuts extends AbstractAction {
+    
+    private static final Logger LOGGER = Logger.getLogger(LayersViewShortcuts.class.getName());
 
     private void triggerLayerSelection(final int layerId) {
         BitMaskQueryCollection vxCollection = LayersViewController.getDefault().getVxQueryCollection();
@@ -78,10 +81,10 @@ public class LayersViewShortcuts extends AbstractAction {
                 future.get();
             }
         } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Layers State Writer was interrupted", ex);
             Thread.currentThread().interrupt();
         } catch (final ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         if (!LayersViewController.getDefault().getParentVisibility()) {
@@ -102,10 +105,10 @@ public class LayersViewShortcuts extends AbstractAction {
                 try {
                     deselectFuture.get();
                 } catch (final InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                    LOGGER.log(Level.SEVERE, "Deselecting All layers was interrupted", ex);
                     Thread.currentThread().interrupt();
                 } catch (final ExecutionException ex) {
-                    Exceptions.printStackTrace(ex);
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
                 LayersViewController.getDefault().updateQueriesFuture(GraphManager.getDefault().getActiveGraph());
                 break;
