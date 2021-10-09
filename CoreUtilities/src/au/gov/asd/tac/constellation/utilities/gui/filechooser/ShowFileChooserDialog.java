@@ -16,6 +16,10 @@
 package au.gov.asd.tac.constellation.utilities.gui.filechooser;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.openide.filesystems.FileChooserBuilder;
 
 /**
@@ -28,7 +32,7 @@ public class ShowFileChooserDialog implements Runnable {
     private final FileChooserBuilder fileChooserBuilder;
     private final FileChooserMode fileChooserMode;
         
-    private File selectedFile = null;
+    private File[] selectedFiles = null;
 
     /**
      * Creates a new show dialog task.
@@ -49,19 +53,29 @@ public class ShowFileChooserDialog implements Runnable {
      */
     @Override
     public void run() {
-        if (fileChooserMode == FileChooserMode.OPEN) {
-            selectedFile = fileChooserBuilder.showOpenDialog();
-        } else if (fileChooserMode == FileChooserMode.SAVE) {
-            selectedFile = fileChooserBuilder.showSaveDialog();
+        if (null != fileChooserMode) switch (fileChooserMode) {
+            case OPEN:
+                selectedFiles = new File[] { fileChooserBuilder.showOpenDialog() };
+                break;
+            case SAVE:
+                selectedFiles = new File[] { fileChooserBuilder.showSaveDialog() };
+                break;
+            case MULTI:
+                selectedFiles = fileChooserBuilder.showMultiOpenDialog();
+                break;
+            default:
+                break;
         }
     }
 
     /**
-     * Gets the selected file.
+     * Gets the selected file(s) from the dialog.
      *
-     * @return the selected file or null if the user selected cancel
+     * @return the selected file(s) or an empty optional if the user selects cancel
      */
-    public File getSelectedFile() {
-        return selectedFile;
+    public Optional<List<File>> getSelectedFiles() {
+        return Optional.ofNullable(selectedFiles == null || selectedFiles.length == 0
+                || (selectedFiles.length == 1 && selectedFiles[0] == null)
+                ? null : Arrays.stream(selectedFiles).collect(Collectors.toList()));
     }
 }
