@@ -292,7 +292,7 @@ public class ExportMenu {
                 // Use the function to create the required export plugin and
                 // then execute it
                 lastExport = FileChooser.openSaveDialog(exportFileChooser)
-                        .thenAccept(optionalFile -> {
+                        .thenAccept(optionalFile ->
                             optionalFile.ifPresent(file -> {
                                 try {
                                     PluginExecution.withPlugin(
@@ -304,8 +304,8 @@ public class ExportMenu {
                                 } catch (final PluginException ex) {
                                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                                 }
-                            });
-                        });
+                            })
+                        );
             }
             event.consume();
         }

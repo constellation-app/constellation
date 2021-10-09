@@ -53,18 +53,20 @@ public class ShowFileChooserDialog implements Runnable {
      */
     @Override
     public void run() {
-        if (null != fileChooserMode) switch (fileChooserMode) {
-            case OPEN:
-                selectedFiles = new File[] { fileChooserBuilder.showOpenDialog() };
-                break;
-            case SAVE:
-                selectedFiles = new File[] { fileChooserBuilder.showSaveDialog() };
-                break;
-            case MULTI:
-                selectedFiles = fileChooserBuilder.showMultiOpenDialog();
-                break;
-            default:
-                break;
+        if (null != fileChooserMode) {
+            switch (fileChooserMode) {
+                case OPEN:
+                    selectedFiles = new File[] { fileChooserBuilder.showOpenDialog() };
+                    break;
+                case SAVE:
+                    selectedFiles = new File[] { fileChooserBuilder.showSaveDialog() };
+                    break;
+                case MULTI:
+                    selectedFiles = fileChooserBuilder.showMultiOpenDialog();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
