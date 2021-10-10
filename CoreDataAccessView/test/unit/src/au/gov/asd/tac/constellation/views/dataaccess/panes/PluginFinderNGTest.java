@@ -16,11 +16,12 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.Plugin;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
-import javafx.collections.ModifiableObservableListBase;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.Alert;
@@ -31,6 +32,8 @@ import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -41,8 +44,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -52,35 +55,33 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class PluginFinderNGTest {
+    private static final Logger LOGGER = Logger.getLogger(PluginFinderNGTest.class.getName());
 
-    private final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
     private final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
 
     private PluginFinder pluginFinder;
 
-    public PluginFinderNGTest() {
-    }
-
     @BeforeClass
-    public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
-
+    
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        reset(dataAccessPane, queryPhasePane);
+        reset(queryPhasePane);
 
         pluginFinder = spy(new PluginFinder());
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     @Test
@@ -88,39 +89,36 @@ public class PluginFinderNGTest {
         final String pluginName1 = "plugin 1";
         final String pluginName2 = "plugin 2";
 
-        final ObservableList<String> texts = mock(ObservableList.class);
-        final ObservableMap observableMap = mock(ObservableMap.class);
         final DataSourceTitledPane tp1 = mock(DataSourceTitledPane.class);
         final DataSourceTitledPane tp2 = mock(DataSourceTitledPane.class);
+        
         final Plugin plugin = mock(Plugin.class);
-        final DialogPane dialogPane = mock(DialogPane.class);
+        
         final Alert alert = mock(Alert.class);
+        final DialogPane dialogPane = mock(DialogPane.class);
 
         when(alert.getDialogPane()).thenReturn(dialogPane);
         doReturn(alert).when(pluginFinder).createAlertDialog();
 
         when(queryPhasePane.getDataAccessPanes()).thenReturn(List.of(tp1, tp2));
+        
         when(tp1.getPlugin()).thenReturn(plugin);
         when(tp2.getPlugin()).thenReturn(plugin);
+        
         when(plugin.getName()).thenReturn(pluginName1).thenReturn(pluginName2);
 
-        try (MockedStatic<FXCollections> fxCollectionsMockStatic
-                = Mockito.mockStatic(FXCollections.class)) {
-            fxCollectionsMockStatic.when(FXCollections::observableArrayList)
-                    .thenReturn(texts);
+        pluginFinder.find(queryPhasePane);
 
-            // This is called internally within the constructor of ListView
-            fxCollectionsMockStatic.when(() -> FXCollections.observableMap(any(Map.class)))
-                    .thenReturn(observableMap);
+        final ArgumentCaptor<VBox> captor = ArgumentCaptor.forClass(VBox.class);
+        verify(dialogPane).setContent(captor.capture());
 
-            pluginFinder.find(dataAccessPane, queryPhasePane);
+        assertEquals(
+                ((ListView) captor.getValue().getChildren().get(1)).getItems(),
+                FXCollections.observableArrayList(pluginName1, pluginName2)
+        );
 
-            verify(texts).add(pluginName1);
-            verify(texts).add(pluginName2);
-
-            // TODO Figure out a way to simply trigger the event actions so that
-            //      the global property "result" is set.
-        }
+        // TODO Figure out a way to simply trigger the event actions so that
+        //      the global property "result" is set.
     }
 
     @Test
@@ -199,9 +197,10 @@ public class PluginFinderNGTest {
 
     @Test
     public void testFieldChangedListenerSingleFiltered() {
-        final ObservableList<String> texts = new ArrayObservableList<>();
-        texts.add("a substring of a string");
-        texts.add("something else");
+        final ObservableList<String> texts = FXCollections.observableArrayList(
+                "a substring of a string",
+                "something else"
+        );
 
         final ObservableList<String> observableList = mock(ObservableList.class);
         final MultipleSelectionModel<String> selectionModel = mock(MultipleSelectionModel.class);
@@ -232,10 +231,11 @@ public class PluginFinderNGTest {
 
     @Test
     public void testFieldChangedListenerMultipleFiltered() {
-        final ObservableList<String> texts = new ArrayObservableList<>();
-        texts.add("a substring of a string");
-        texts.add("something else");
-        texts.add("a different substring");
+        final ObservableList<String> texts = FXCollections.observableArrayList(
+                "a substring of a string",
+                "something else",
+                "a different substring"
+        );
 
         final ObservableList<String> observableList = mock(ObservableList.class);
         final MultipleSelectionModel<String> selectionModel = mock(MultipleSelectionModel.class);
@@ -266,10 +266,11 @@ public class PluginFinderNGTest {
 
     @Test
     public void testFieldChangedListenerNewValueEmpty() {
-        final ObservableList<String> texts = new ArrayObservableList<>();
-        texts.add("a substring of a string");
-        texts.add("something else");
-        texts.add("a different substring");
+        final ObservableList<String> texts = FXCollections.observableArrayList(
+                "a substring of a string",
+                "something else",
+                "a different substring"
+        );
 
         final ObservableList<String> observableList = mock(ObservableList.class);
         final MultipleSelectionModel<String> selectionModel = mock(MultipleSelectionModel.class);
@@ -290,35 +291,5 @@ public class PluginFinderNGTest {
 
         // TODO Figure out a way to access the global property result in order
         //      to verify its value
-    }
-
-    public class ArrayObservableList<E> extends ModifiableObservableListBase<E> {
-
-        private final List<E> delegate = new ArrayList<>();
-
-        @Override
-        public E get(int index) {
-            return delegate.get(index);
-        }
-
-        @Override
-        public int size() {
-            return delegate.size();
-        }
-
-        @Override
-        protected void doAdd(int index, E element) {
-            delegate.add(index, element);
-        }
-
-        @Override
-        protected E doSet(int index, E element) {
-            return delegate.set(index, element);
-        }
-
-        @Override
-        protected E doRemove(int index) {
-            return delegate.remove(index);
-        }
     }
 }

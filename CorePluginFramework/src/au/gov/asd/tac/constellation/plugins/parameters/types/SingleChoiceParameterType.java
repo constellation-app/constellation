@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -261,6 +262,8 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * It holds a collection of options and a current choice.
      */
     public static class SingleChoiceParameterValue extends ParameterValue {
+        
+        private static final Logger LOGGER = Logger.getLogger(SingleChoiceParameterValue.class.getName());
 
         // innerClass is the type of choice and the type of the elements of options.
         private final List<ParameterValue> options;
@@ -435,7 +438,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             } catch (final IllegalAccessException | IllegalArgumentException
                     | InstantiationException | NoSuchMethodException
                     | SecurityException | InvocationTargetException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 return ex.getMessage();
             }
         }
@@ -461,7 +464,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             } catch (final IllegalAccessException | IllegalArgumentException
                     | InstantiationException | NoSuchMethodException
                     | SecurityException | InvocationTargetException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             return false;

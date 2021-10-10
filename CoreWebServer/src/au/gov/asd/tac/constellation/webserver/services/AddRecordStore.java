@@ -50,7 +50,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -212,6 +213,8 @@ public class AddRecordStore extends RestService {
 
     @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
     private static class ImportFromRestApiPlugin extends SimpleEditPlugin {
+        
+        private static final Logger LOGGER = Logger.getLogger(ImportFromRestApiPlugin.class.getName());
 
         private final RecordStore recordStore;
         private final boolean completeWithSchema;
@@ -252,7 +255,7 @@ public class AddRecordStore extends RestService {
                     PluginExecution.withPlugin(arrange).executeNow(graph);
                 }
             } catch (final PluginException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 

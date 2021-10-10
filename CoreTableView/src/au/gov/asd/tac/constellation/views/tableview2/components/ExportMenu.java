@@ -19,10 +19,12 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToCsvFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.plugins.ExportToExcelFilePlugin;
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +34,8 @@ import javafx.geometry.Side;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
+import javax.swing.filechooser.FileFilter;
+import org.openide.filesystems.FileChooserBuilder;
 
 /**
  * Creates export menu components that can be attached to the table view for the
@@ -245,6 +249,8 @@ public class ExportMenu {
         private final String expectedFileExtension;
         private final String fileChooserDescription;
         private final Function<File, Plugin> exportPluginCreator;
+        
+        private CompletableFuture<Void> lastExport;
 
         /**
          * Creates a new export menu item action handler.
@@ -280,38 +286,61 @@ public class ExportMenu {
         @Override
         public void handle(final ActionEvent event) {
             if (tablePane.getParentComponent().getCurrentGraph() != null) {
-                final ExportFileChooser exportFileChooser = getExportFileChooser();
+                final FileChooserBuilder exportFileChooser = getExportFileChooser();
 
                 // Open the file chooser and get the user to select a file
-                final File file = exportFileChooser.openExportFileChooser();
-
                 // Use the function to create the required export plugin and
                 // then execute it
-                try {
-                    PluginExecution.withPlugin(
-                            exportPluginCreator.apply(file)
-                    ).executeNow((Graph) null);
-                } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                    Thread.currentThread().interrupt();
-                } catch (final PluginException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                }
+                lastExport = FileChooser.openSaveDialog(exportFileChooser)
+                        .thenAccept(file -> {
+                            if (file != null) {
+                                try {
+                                    PluginExecution.withPlugin(
+                                            exportPluginCreator.apply(file)
+                                    ).executeNow((Graph) null);
+                                } catch (final InterruptedException ex) {
+                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                                    Thread.currentThread().interrupt();
+                                } catch (final PluginException ex) {
+                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                                }
+                            }
+                        });
             }
             event.consume();
         }
 
         /**
+         * Gets a future that will complete when the last export has completed.
+         *
+         * @return the completable future of the last export
+         */
+        public CompletableFuture<Void> getLastExport() {
+            return lastExport;
+        }
+        
+        /**
          * Creates a new file chooser.
          *
          * @return the created file chooser
          */
-        public ExportFileChooser getExportFileChooser() {
-            return new ExportFileChooser(
-                    fileChooserTitle,
-                    expectedFileExtension,
-                    fileChooserDescription
-            );
+        public FileChooserBuilder getExportFileChooser() {
+            return new FileChooserBuilder(fileChooserTitle)
+                    .setTitle(fileChooserTitle)
+                    .setFileFilter(new FileFilter() {
+                        @Override
+                        public boolean accept(final File file) {
+                            final String name = file.getName();
+                            // if it is an actual file and it ends with the expected extension
+                            return file.isFile() && name.toLowerCase()
+                                    .endsWith(expectedFileExtension.toLowerCase());
+                        }
+
+                        @Override
+                        public String getDescription() {
+                            return fileChooserDescription;
+                        }
+                    });
         }
     }
 

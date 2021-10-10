@@ -50,7 +50,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -66,6 +67,8 @@ import org.openide.util.lookup.ServiceProviders;
 @Messages("CompleteGraphBuilderPlugin=Complete Graph Builder")
 @PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
 public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(CompleteGraphBuilderPlugin.class.getName());
 
     public static final String N_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "n");
     public static final String RANDOM_WEIGHTS_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "random_weights");
@@ -285,7 +288,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
             }
         } catch (final PluginException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         interaction.setProgress(1, 0, "Completed successfully", true);

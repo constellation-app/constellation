@@ -1,6 +1,29 @@
 # Constellation Changes
 
+## Changes in October 2021
+
+-   Added a file chooser utility to core utilities. This provides a template
+    for opening file choosers. It protects against common mistakes that may
+    cause issues on different platforms.
+
+-   Changed `DataAccessPluginType` from an abstract class to an interface.
+
 ## Changes in September 2021
+
+-   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
+    rotation values in the wrong value positions.
+
+-   Moved `DataAccessPlugin`, `DataAccessPluginCoreType`, `DataAccessPluginRegistry
+    and `DataAccessPluginType` from `au.gov.asd.tac.constellation.views.dataaccess`
+    to `au.gov.asd.tac.constellation.views.dataaccess.plugins`.
+
+-   Removed unused `localized` parameter from the signature of the `locate()`
+    method in `ConstellationInstalledFileLocator`.
+
+-   Removed all the unused `*Action.java` classes from 
+    `au.gov.asd.tac.constellation.plugins.algorithms.sna`.
+
+-   Renamed `PreferenceUtilites` to `PreferenceUtilities` to fix the typo.
 
 -   Updated Core Import Export summary text to provide more information. To
     achieve this, added `definitionName` parameter to `ImportDefinition`
@@ -12,12 +35,6 @@
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
     
--   Removed unused `localized` parameter from the signature of the `locate()`
-    method in `ConstellationInstalledFileLocator`.
-
--   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
-    rotation values in the wrong value positions.
-
 ## Changes in August 2021
 
 -   Added `updateTagsFiltersAvailable`, `updateSelectedTagsCombo`,

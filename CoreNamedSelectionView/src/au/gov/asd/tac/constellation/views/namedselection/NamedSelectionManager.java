@@ -33,11 +33,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -77,6 +78,8 @@ import org.openide.windows.WindowManager;
     "AllAllocated=All Named Selection Slots Have Been Used"
 })
 public class NamedSelectionManager implements LookupListener, GraphChangeListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(NamedSelectionManager.class.getName());
 
     private static final int NO_AVAILABLE = -1;
     private static final int CURRENT_SELECTION = NO_AVAILABLE;
@@ -675,11 +678,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Named Selection Intersection was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -710,11 +713,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Named Selection Union was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
     }
@@ -742,11 +745,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Named Selections recall was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
     }
@@ -767,11 +770,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Named Selection save was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -780,11 +783,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Named Selection custom save was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -810,11 +813,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
             final Future<?> f = PluginExecution.withPlugin(nssp).interactively(true).executeLater(graph);
             try {
                 f.get();
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Saving Named Selection state was interrupted", ex);
                 Thread.currentThread().interrupt();
-            } catch (ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 

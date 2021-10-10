@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcep
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.io.SaveGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.Map;
@@ -34,9 +34,7 @@ import java.util.Set;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
@@ -55,17 +53,6 @@ public class MergeTransactionsNGTest {
     private StoreGraph graph;
 
     private final boolean SAVE_GRAPH_FILES = false; // change this to true if you want to see the graph files
-
-    public MergeTransactionsNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
