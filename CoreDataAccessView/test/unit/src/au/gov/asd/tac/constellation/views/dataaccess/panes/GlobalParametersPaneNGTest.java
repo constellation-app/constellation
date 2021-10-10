@@ -21,6 +21,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import org.mockito.MockedStatic;
@@ -43,6 +46,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class GlobalParametersPaneNGTest {
+    private static final Logger LOGGER = Logger.getLogger(GlobalParametersPaneNGTest.class.getName());
 
     private static MockedStatic<PluginParametersPane> pluginParametersPaneMockedStatic;
     private static MockedStatic<GlobalParameters> globalParametersMockedStatic;
@@ -55,8 +59,9 @@ public class GlobalParametersPaneNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
         
         pluginParametersPaneMockedStatic = Mockito.mockStatic(PluginParametersPane.class);
         globalParametersMockedStatic = Mockito.mockStatic(GlobalParameters.class);
@@ -64,17 +69,18 @@ public class GlobalParametersPaneNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
-        
         pluginParametersPaneMockedStatic.close();
         globalParametersMockedStatic.close();
+        
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        pluginParametersPaneMockedStatic.reset();
-        globalParametersMockedStatic.reset();
-
         parameters = mock(PluginParameters.class);
 
         globalParametersMockedStatic.when(() -> GlobalParameters.getParameters(parameters)).thenReturn(parameters);
@@ -85,6 +91,8 @@ public class GlobalParametersPaneNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        pluginParametersPaneMockedStatic.reset();
+        globalParametersMockedStatic.reset();
     }
 
     @Test

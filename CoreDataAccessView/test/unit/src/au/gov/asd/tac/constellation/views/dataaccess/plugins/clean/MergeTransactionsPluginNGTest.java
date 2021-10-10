@@ -28,9 +28,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -45,17 +42,6 @@ public class MergeTransactionsPluginNGTest {
     private int vxId1, vxId2;
     private int txId1, txId2, txId3, txId4, txId5;
     private StoreGraph graph;
-
-    public MergeTransactionsPluginNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -113,10 +99,6 @@ public class MergeTransactionsPluginNGTest {
         graph.setBooleanValue(transactionSelectedAttribute, txId3, true);
         graph.setBooleanValue(transactionSelectedAttribute, txId4, true);
         graph.setBooleanValue(transactionSelectedAttribute, txId5, true);
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     /**
