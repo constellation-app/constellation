@@ -23,14 +23,44 @@ import java.util.ArrayList;
  * @author Atlas139mkm
  */
 public class FindResultsList extends ArrayList<FindResult> {
-    private int currentIndex = 0;
+
+    private int currentIndex = -1;
+    private String graphId;
 
     public FindResultsList() {
+        graphId = "";
+    }
 
+    public FindResultsList(int index) {
+        this.currentIndex = currentIndex;
     }
 
     public int getCurrentIndex() {
         return currentIndex;
+    }
+
+    public void incrementCurrentIndex() {
+        if (currentIndex == this.size() - 1) {
+            currentIndex = 0;
+        } else {
+            currentIndex++;
+        }
+    }
+
+    public void decrementCurrentIndex() {
+        if (currentIndex == 0) {
+            currentIndex = this.size() - 1;
+        } else {
+            currentIndex--;
+        }
+    }
+
+    public void setGraphId(String id) {
+        graphId = id;
+    }
+
+    public String getGraphId() {
+        return graphId;
     }
 
 }
