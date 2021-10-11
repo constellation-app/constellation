@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# remove any existing markdown files
+#find */src/ -path '*/docs/*' -name \*.md | 
+#    xargs rm
+
 # convert html to markdown
 find */src/ -path '*/docs/*' -name *.html | 
     while read x
