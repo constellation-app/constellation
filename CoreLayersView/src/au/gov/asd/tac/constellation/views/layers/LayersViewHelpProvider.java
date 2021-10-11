@@ -31,6 +31,11 @@ public class LayersViewHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
 
+    /**
+     * Provides a map of all the help files Maps the file name to the md file name
+     *
+     * @return Map of the file names vs md file names
+     */
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
@@ -42,6 +47,11 @@ public class LayersViewHelpProvider extends HelpPageProvider {
         return map;
     }
 
+    /**
+     * Provides a location as a string of the TOC xml file in the module
+     *
+     * @return List of help resources
+     */
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
