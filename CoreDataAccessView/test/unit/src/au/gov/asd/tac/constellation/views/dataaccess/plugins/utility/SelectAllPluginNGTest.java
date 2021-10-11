@@ -28,10 +28,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -48,25 +44,6 @@ public class SelectAllPluginNGTest {
     private Graph graph;
     private int selectedV, selectedT;
     private int vxId1, vxId2, txId1, txId2;
-
-    public SelectAllPluginNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
 
     /**
      * Test of edit method, of class SelectAllPlugin. No attributes added so

@@ -24,9 +24,6 @@ import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.Remove
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin.THRESHOLD_PARAMETER_ID;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -51,17 +48,6 @@ public class RemoveNodesPluginNGTest {
     private int vertexIdentifierAttribute;
     private int vertexSelectedAttribute;
 
-    public RemoveNodesPluginNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @BeforeMethod
     public void setUpMethod() throws Exception {
         graph = new StoreGraph();
@@ -75,10 +61,6 @@ public class RemoveNodesPluginNGTest {
         txId2 = graph.addTransaction(vxId2, vxId3, true);
         txId3 = graph.addTransaction(vxId3, vxId4, true);
         txId4 = graph.addTransaction(vxId4, vxId2, true);
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     /**

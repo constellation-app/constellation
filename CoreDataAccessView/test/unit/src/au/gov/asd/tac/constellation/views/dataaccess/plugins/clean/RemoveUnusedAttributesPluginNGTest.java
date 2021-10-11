@@ -24,9 +24,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -41,17 +38,6 @@ public class RemoveUnusedAttributesPluginNGTest {
     int vertexAttribute1, vertexAttribute2, vertexAttribute3;
     int transaction1, transaction2;
     int transactionAttribute1, transactionAttribute2, transactionAttribute3;
-
-    public RemoveUnusedAttributesPluginNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
 
     @BeforeMethod
     public void setUpMethod() {
@@ -68,10 +54,6 @@ public class RemoveUnusedAttributesPluginNGTest {
         transactionAttribute1 = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "test4", "test1 desc.", null, null);
         transactionAttribute2 = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "test5", "test1 desc.", null, null);
         transactionAttribute3 = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "test6", "test1 desc.", null, null);
-    }
-
-    @AfterMethod
-    public void tearDownMethod() {
     }
 
     /**

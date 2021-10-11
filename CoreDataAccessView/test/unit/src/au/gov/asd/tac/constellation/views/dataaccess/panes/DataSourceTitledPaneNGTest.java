@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -38,12 +38,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -73,9 +70,6 @@ public class DataSourceTitledPaneNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
-        
         // This prevents the runnable at the bottom of create params to run!!
         // Create params is call by the constructor which is why this needs to be
         // here.
@@ -87,8 +81,6 @@ public class DataSourceTitledPaneNGTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         platformMockedStatic.close();
-        
-        FxToolkit.hideStage();
     }
 
     @BeforeMethod
@@ -125,10 +117,6 @@ public class DataSourceTitledPaneNGTest {
                 Set.of(GLOBAL_PARAM_1, GLOBAL_PARAM_2)));
 
         when(dataSourceTitledPane.getParamCreator()).thenReturn(executorService);
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     @Test
