@@ -6,10 +6,16 @@
     for opening file choosers. It protects against common mistakes that may
     cause issues on different platforms.
 
+-   Changed `DataAccessPluginType` from an abstract class to an interface.
+
 ## Changes in September 2021
 
 -   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
     rotation values in the wrong value positions.
+
+-   Moved `DataAccessPlugin`, `DataAccessPluginCoreType`, `DataAccessPluginRegistry
+    and `DataAccessPluginType` from `au.gov.asd.tac.constellation.views.dataaccess`
+    to `au.gov.asd.tac.constellation.views.dataaccess.plugins`.
 
 -   Removed unused `localized` parameter from the signature of the `locate()`
     method in `ConstellationInstalledFileLocator`.

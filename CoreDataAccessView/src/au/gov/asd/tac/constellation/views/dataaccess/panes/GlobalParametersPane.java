@@ -23,6 +23,7 @@ import java.util.Set;
 import javafx.scene.control.TitledPane;
 
 /**
+ * A pane containing the global parameters.
  *
  * @author cygnus_x-1
  * @author ruby_crucis
