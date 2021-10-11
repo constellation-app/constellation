@@ -22,18 +22,20 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.GlobalParametersPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -41,54 +43,49 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessUserPreferencesNGTest {
-
-    public DataAccessUserPreferencesNGTest() {
-    }
+    private static final Logger LOGGER = Logger.getLogger(DataAccessUserPreferencesNGTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        FxToolkit.hideStage();
-    }
-
+    
     @Test
     public void equality() {
         EqualsVerifier.forClass(DataAccessUserPreferences.class)
                 .suppress(Warning.NONFINAL_FIELDS)
                 .verify();
     }
-
+    
     @Test
     public void initWithPane() {
         final QueryPhasePane tab = mock(QueryPhasePane.class);
-
-        final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
+        
+        final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class); 
         when(tab.getGlobalParametersPane()).thenReturn(globalParametersPane);
-
+        
         final Plugin plugin1 = mock(Plugin.class);
-
+        
         final DataSourceTitledPane dataSourceTitledPane1 = mock(DataSourceTitledPane.class);
         when(dataSourceTitledPane1.getPlugin()).thenReturn(plugin1);
         when(dataSourceTitledPane1.isQueryEnabled()).thenReturn(true);
 
         final DataSourceTitledPane dataSourceTitledPane2 = mock(DataSourceTitledPane.class);
         when(dataSourceTitledPane2.isQueryEnabled()).thenReturn(false);
-
+        
         when(tab.getDataAccessPanes()).thenReturn(List.of(dataSourceTitledPane1, dataSourceTitledPane2));
-
+        
         final PluginParameterType passwordType = mock(PluginParameterType.class);
         when(passwordType.getId()).thenReturn("password");
 
@@ -150,5 +147,4 @@ public class DataAccessUserPreferencesNGTest {
 
         assertEquals(preferences, expectedPreferences);
     }
-
 }

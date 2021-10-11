@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,33 +35,33 @@ import javafx.scene.layout.VBox;
 /**
  * Present the user with a list of plugins and allow it to select one, then
  * expand that plugin.
- * <p>
+ * <p/>
  * This saves users from having to hunt through the various sections for a
  * plugin when they don't know where it is.
  *
  * @author algol
  */
 public class PluginFinder {
-
+    private static final String PLUGIN_FINDER_TITLE = "Select a plugin";
+    private static final String PLUGIN_FINDER_HEADER = "Select a plugin";
+    
     private String result;
 
     /**
      * Build a cooperative TextArea and ListView.
-     * <p>
+     * <p/>
      * The TextArea acts as a filter on the ListView. If there is only one item
      * in the filtered list, it will be used when the user fires the OK action.
      *
-     * @param dap
      * @param queryPhasePane
      */
-    public void find(final DataAccessPane dap, final QueryPhasePane queryPhasePane) {
-        final ObservableList<String> texts = FXCollections.observableArrayList();
-
-        queryPhasePane.getDataAccessPanes().stream().forEach(tp -> {
-            texts.add(tp.getPlugin().getName());
-        });
-
-        Collections.sort(texts, (a, b) -> a.compareToIgnoreCase(b));
+    public void find(final QueryPhasePane queryPhasePane) {
+        final ObservableList<String> texts = FXCollections.observableArrayList(
+                queryPhasePane.getDataAccessPanes().stream()
+                        .map(pane -> pane.getPlugin().getName())
+                        .sorted((a, b) -> a.compareToIgnoreCase(b))
+                        .collect(Collectors.toList())
+        );
 
         final ListView<String> lv = new ListView<>();
         lv.setItems(texts);
@@ -87,8 +86,8 @@ public class PluginFinder {
 
     protected Alert createAlertDialog() {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
-        dialog.setTitle("Select a plugin");
-        dialog.setHeaderText("Select a plugin");
+        dialog.setTitle(PLUGIN_FINDER_TITLE);
+        dialog.setHeaderText(PLUGIN_FINDER_HEADER);
         dialog.setResizable(true);
 
         return dialog;
@@ -127,7 +126,6 @@ public class PluginFinder {
     }
 
     class KeyEventHandler implements EventHandler<KeyEvent> {
-
         private final Alert dialog;
         private final ListView<String> listView;
 
@@ -153,25 +151,28 @@ public class PluginFinder {
     }
 
     class TextFieldChangeListener implements ChangeListener<String> {
-
         private final ObservableList<String> texts;
         private final ListView listView;
 
         public TextFieldChangeListener(final ObservableList<String> texts,
-                final ListView listView) {
+                                       final ListView listView) {
             this.texts = texts;
             this.listView = listView;
         }
 
         @Override
         public void changed(final ObservableValue<? extends String> observable,
-                final String oldValue,
-                final String newValue) {
+                            final String oldValue,
+                            final String newValue) {
             if (!newValue.isEmpty()) {
                 final String lower = newValue.toLowerCase();
-                final List<String> ls = texts.stream().filter(a -> a.toLowerCase().contains(lower)).collect(Collectors.toList());
+                final List<String> ls = texts.stream()
+                        .filter(a -> a.toLowerCase().contains(lower))
+                        .collect(Collectors.toList());
+                
                 final ObservableList<String> filtered = FXCollections.observableArrayList(ls);
                 listView.setItems(filtered);
+                
                 if (filtered.size() == 1) {
                     listView.getSelectionModel().select(0);
                 } else {
