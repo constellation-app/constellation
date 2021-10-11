@@ -55,7 +55,8 @@ public class LayersViewHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        final String layersViewPath = CODEBASE_NAME + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+        final String layersViewPath;
+        layersViewPath = CODEBASE_NAME + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
                 + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-toc.xml";
 
         return layersViewPath;
