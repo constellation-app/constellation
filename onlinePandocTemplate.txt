@@ -3,6 +3,7 @@
 <head>
   <base href="/constellation-app.github.io/help/constellation/">
 
+
   <!-- Stylesheets -->
   <link rel="stylesheet" href="../../assets/css/app.css" />
   <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css" />
