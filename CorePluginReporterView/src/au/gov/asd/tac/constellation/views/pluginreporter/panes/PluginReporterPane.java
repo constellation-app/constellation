@@ -122,9 +122,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         Button helpButton = new Button("", helpImage);
-        helpButton.setOnAction((ActionEvent event) -> {
-            new HelpCtx(getClass().getPackage().getName()).display();
-        });
+        helpButton.setOnAction((ActionEvent event)
+                -> new HelpCtx(getClass().getPackage().getName()).display());
 
         controlToolbar.getItems().addAll(
                 filterBox,

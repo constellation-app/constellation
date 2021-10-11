@@ -59,15 +59,9 @@ public class OpenFilePlugin extends SimpleReadPlugin {
     protected JFileChooser prepareFileChooser() {
         final JFileChooser chooser = new FileChooser();
         chooser.setCurrentDirectory(getCurrentDirectory());
-        //HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
-
         return chooser;
     }
 
-//    @Override
-//    public HelpCtx getHelpCtx() {
-//        return new HelpCtx(this.getClass().getName());
-//    }
     /**
      * Displays the specified file chooser and returns a list of selected files.
      *

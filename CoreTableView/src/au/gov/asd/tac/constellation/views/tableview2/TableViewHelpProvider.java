@@ -57,7 +57,8 @@ public class TableViewHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        final String tableViewPath = CODEBASE_NAME + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+        final String tableViewPath;
+        tableViewPath = CODEBASE_NAME + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
                 + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "tableview2" + sep + "docs" + sep + "tableview-toc.xml";
 
         return tableViewPath;

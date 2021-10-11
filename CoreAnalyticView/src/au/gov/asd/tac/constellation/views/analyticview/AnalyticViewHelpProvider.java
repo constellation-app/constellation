@@ -91,7 +91,8 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        final String analyticViewPath = CODEBASE_NAME + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+        final String analyticViewPath;
+        analyticViewPath = CODEBASE_NAME + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
                 + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analyticview-toc.xml";
 
         return analyticViewPath;

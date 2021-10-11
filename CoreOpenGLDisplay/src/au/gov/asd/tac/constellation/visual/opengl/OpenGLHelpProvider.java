@@ -57,7 +57,8 @@ public class OpenGLHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        final String openGLPath = CODEBASE_NAME + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+        final String openGLPath;
+        openGLPath = CODEBASE_NAME + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
                 + "tac" + sep + CODEBASE_NAME + sep + "visual" + sep + "opengl" + sep + "docs" + sep + "opengl-toc.xml";
         return openGLPath;
     }
