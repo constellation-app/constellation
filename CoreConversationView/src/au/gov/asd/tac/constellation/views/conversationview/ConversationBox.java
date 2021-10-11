@@ -171,7 +171,7 @@ public final class ConversationBox extends StackPane {
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         final Button helpButton = new Button("", helpImage);
         helpButton.setOnAction(event -> {
-            new HelpCtx(this.getClass().getPackage().getName()).display();
+            new HelpCtx("au.gov.asd.tac.constellation.views.conversationview.ConversationBox").display();
 
         });
 

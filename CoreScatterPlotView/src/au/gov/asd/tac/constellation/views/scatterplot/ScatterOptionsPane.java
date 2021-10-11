@@ -234,7 +234,7 @@ public class ScatterOptionsPane extends BorderPane {
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         helpButton = new Button("", helpImage);
         helpButton.setOnAction(event -> {
-            new HelpCtx(this.getClass().getPackage().getName());
+            new HelpCtx(this.getClass().getPackage().getName()).display();
         });
 
         this.optionsToolBar = new ToolBar();
