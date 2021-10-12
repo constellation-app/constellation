@@ -37,6 +37,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -46,7 +48,6 @@ import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
@@ -86,6 +87,8 @@ import org.openide.windows.TopComponent;
     "MSG_RemovePerspective=Remove perspective"
 })
 public final class PerspectiveBookmarkTopComponent extends TopComponent implements GraphManagerListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(PerspectiveBookmarkTopComponent.class.getName());
 
     private PerspectiveModel perspectiveModel;
 
@@ -248,9 +251,9 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
                 f.get();
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             } catch (final ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
             updateOnGraph("Add Perspective Model");
         }

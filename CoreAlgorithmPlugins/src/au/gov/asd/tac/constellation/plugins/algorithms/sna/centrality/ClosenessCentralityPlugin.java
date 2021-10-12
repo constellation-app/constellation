@@ -163,26 +163,15 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
 
         // choose the correct closeness attribute
         final int closenessAttribute;
-        if (includeConnectionsIn && includeConnectionsOut) {
-            if (harmonic) {
-                closenessAttribute = HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph);
-            } else {
-                closenessAttribute = CLOSENESS_ATTRIBUTE.ensure(graph);
-            }
-        } else if (includeConnectionsIn && !includeConnectionsOut) {
-            if (harmonic) {
-                closenessAttribute = IN_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph);
-            } else {
-                closenessAttribute = IN_CLOSENESS_ATTRIBUTE.ensure(graph);
-            }
+        if (includeConnectionsIn && !includeConnectionsOut) {
+            closenessAttribute = harmonic ? IN_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+                    : IN_CLOSENESS_ATTRIBUTE.ensure(graph);
         } else if (!includeConnectionsIn && includeConnectionsOut) {
-            if (harmonic) {
-                closenessAttribute = OUT_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph);
-            } else {
-                closenessAttribute = OUT_CLOSENESS_ATTRIBUTE.ensure(graph);
-            }
+            closenessAttribute = harmonic ? OUT_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+                    : OUT_CLOSENESS_ATTRIBUTE.ensure(graph);
         } else {
-            return;
+            closenessAttribute = harmonic ? HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+                    : CLOSENESS_ATTRIBUTE.ensure(graph);
         }
 
         // update the graph with closeness values

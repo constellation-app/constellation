@@ -52,6 +52,8 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author algol
  */
 public class GlyphsFrame extends JFrame {
+    
+    private static final Logger LOGGER = Logger.getLogger(GlyphsFrame.class.getName());
 
     private final GlyphManagerBI glyphManager;
     private final JFrame imageFrame;
@@ -437,7 +439,7 @@ public class GlyphsFrame extends JFrame {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             //</editor-fold>
         } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(GlyphsFrame.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         /* Create and display the form */

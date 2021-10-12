@@ -19,7 +19,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javafx.stage.FileChooser;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -386,7 +388,34 @@ public class JSONImportFileParser extends ImportFileParser {
             // is found there will be no data to import.
             selectedList = null;
             selectedListDepth = NO_LIST_LEVEL;
-            JsonNode root = mapper.readTree(in);
+            final JsonNode root;
+            final ArrayNode childNode = mapper.createArrayNode();
+            JsonNode node = null;
+            int counter = 0;
+            
+            // read in all JSON object from input
+            final MappingIterator<JsonNode> it = mapper.readerFor(JsonNode.class)
+                    .readValues(in);
+            while (it.hasNextValue()) {
+                node = it.nextValue();
+                childNode.add(node);
+                counter++;
+            }
+            // Maps newline delimited JSON to valid JSON in the format 
+            // {"results": [<ndjson>]}
+            switch(counter){
+                case(0):
+                    throw new IOException(WARN_NO_VALID_LIST);
+                case(1):
+                    root = node;
+                    break;
+                default:
+                    // Changes the ndJSON to valid JSON
+                    final ObjectMapper newJSON = new ObjectMapper();
+                    final ObjectNode rootNode = newJSON.createObjectNode();
+                    rootNode.set("results", childNode);
+                    root = rootNode;                         
+            }
             lookForChildArrays(root, "", 0);
 
             if (selectedList != null) {
@@ -424,16 +453,13 @@ public class JSONImportFileParser extends ImportFileParser {
                 throw new IOException(WARN_NO_VALID_LIST);
             }
             return results;
-        } catch (JsonParseException ex) {
+        } catch (final JsonParseException ex) {
             // Catch case whre invalid JSON file has been supplied gracefully
             throw new IOException(WARN_INVALID_JSON);
-        } catch (IOException ex) {
-            // Catch case whre invalid file contenthas been supplied gracefully
-            throw (ex);
-        } catch (Exception ex) {
-            // Unexpected exceptions
-            Exceptions.printStackTrace(ex);
-            throw (ex);
+        } catch (final Exception ex) {
+            // Catch case whre invalid file content has been supplied gracefully (IOException)
+            // along with any unexpected exceptions
+            throw ex;
         }
     }
 

@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A collection of {@link AnalyticPlugin} which answer a particular question
@@ -38,6 +40,8 @@ import java.util.concurrent.Future;
  * @author cygnus_x-1
  */
 public class AnalyticQuestion<R extends AnalyticResult<?>> {
+    
+    private static final Logger LOGGER = Logger.getLogger(AnalyticQuestion.class.getName());
 
     public static final String CUSTOM_QUESTION_NAME = "Custom";
     public static final String CUSTOM_QUESTION_DESCRIPTION = "An analytic built by the user.";
@@ -121,11 +125,13 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
                 if (analyticResult != null) {
                     analyticResults.add(analyticResult);
                 }
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Analytic answering was interrupted");
                 pluginFutures.keySet().forEach(redundantFuture -> {
                     redundantFuture.cancel(true);
                 });
             } catch (final CancellationException | ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 exceptions.add(ex);
             }
         });
@@ -135,6 +141,7 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
             result = aggregator.aggregate(analyticResults);
             result.sort();
         } catch (final AnalyticException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             exceptions.add(ex);
         }
 

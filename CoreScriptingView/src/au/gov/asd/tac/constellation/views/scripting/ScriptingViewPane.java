@@ -74,7 +74,6 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -156,10 +155,10 @@ public class ScriptingViewPane extends JPanel {
                     getStartedText.append(line).append(SeparatorConstants.NEWLINE);
                 });
                 scriptEditor.setText(getStartedText.toString());
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             scriptEditor.setText("# SORRY, THERE WAS A PROBLEM LOADING THE 'GET STARTED' FILE\n");
         }
 
@@ -348,10 +347,10 @@ public class ScriptingViewPane extends JPanel {
                     setName(SCRIPTING_VIEW_THREAD_NAME);
                     f.get();
                 } catch (final InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                    LOGGER.log(Level.SEVERE, "Script Execution was interrupted", ex);
                     Thread.currentThread().interrupt();
-                } catch (ExecutionException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final ExecutionException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
 
                 final Exception ex = (Exception) parameters.getParameters()
@@ -396,7 +395,7 @@ public class ScriptingViewPane extends JPanel {
                                     final int leo = scriptEditor.getLineEndOffset(line);
                                     final int length = (leo - lso) - column;
                                     scriptParser.setError(msg, line, lso + column, length);
-                                } catch (BadLocationException ex1) {
+                                } catch (final BadLocationException ex1) {
                                     scriptParser.setError(msg, line);
                                 }
                             } else {
@@ -458,7 +457,7 @@ public class ScriptingViewPane extends JPanel {
                     });
                 }
             } catch (final IOException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 

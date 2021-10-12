@@ -85,4 +85,16 @@ public class AverageDegreeNGTest {
 
         assertEquals(graph.getFloatValue(graphAttribute, 0), 1.3333334f);
     }
+    
+    @Test
+    public void testNoDirectionAverageDegree() throws Exception {
+        final AverageDegreePlugin instance = new AverageDegreePlugin();
+        final PluginParameters parameters = instance.createParameters();
+        parameters.setBooleanValue(AverageDegreePlugin.INCLUDE_CONNECTIONS_IN_PARAMETER_ID, false);
+        parameters.setBooleanValue(AverageDegreePlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID, false);
+        parameters.setBooleanValue(AverageDegreePlugin.TREAT_UNDIRECTED_BIDIRECTIONAL, false);
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getFloatValue(graphAttribute, 0), 0 / 0F);
+    }
 }

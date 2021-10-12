@@ -34,12 +34,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author twilight_sparkle
  */
 public class CompositeUtilities {
+    
+    private static final Logger LOGGER = Logger.getLogger(CompositeUtilities.class.getName());
 
     private static void simplifyCompositeTransactions(final GraphWriteMethods graph, final int uniqueIdAttr, final int vxId) {
         for (int t = 0; t < graph.getVertexTransactionCount(vxId); t++) {
@@ -82,7 +86,8 @@ public class CompositeUtilities {
                     try {
                         graph.validateKey(GraphElementType.VERTEX, false);
                         break;
-                    } catch (DuplicateKeyException ex) {
+                    } catch (final DuplicateKeyException ex) {
+                        LOGGER.log(Level.INFO, "Duplicate Key has been found. Merging duplicate nodes");
                         GraphElementMerger merger = new PrioritySurvivingGraphElementMerger();
                         merger.mergeElement(graph, GraphElementType.VERTEX, ex.getNewId(), ex.getExistingId());
                     }
@@ -156,7 +161,8 @@ public class CompositeUtilities {
                 try {
                     graph.validateKey(GraphElementType.VERTEX, false);
                     break;
-                } catch (DuplicateKeyException ex) {
+                } catch (final DuplicateKeyException ex) {
+                    LOGGER.log(Level.INFO, "Duplicate Key has been found. Merging duplicate nodes");
                     final GraphElementMerger merger = new PrioritySurvivingGraphElementMerger();
                     merger.mergeElement(graph, GraphElementType.VERTEX, ex.getNewId(), ex.getExistingId());
                 }

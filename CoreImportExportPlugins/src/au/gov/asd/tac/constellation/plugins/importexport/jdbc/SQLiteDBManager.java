@@ -22,9 +22,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SQLiteDBManager {
+    
+    private static final Logger LOGGER = Logger.getLogger(SQLiteDBManager.class.getName());
 
     private static SQLiteDBManager __instance__ = null;
     private File sqlite;
@@ -57,11 +60,11 @@ public class SQLiteDBManager {
                     }
                 }
             } catch (final IOException | SQLException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
         } catch (final ClassNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
     }

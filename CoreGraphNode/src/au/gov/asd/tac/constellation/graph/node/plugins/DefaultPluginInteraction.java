@@ -37,7 +37,6 @@ import org.openide.awt.NotificationDisplayer;
 import org.openide.awt.StatusDisplayer;
 import org.openide.awt.StatusDisplayer.Message;
 import org.openide.util.Cancellable;
-import org.openide.util.Exceptions;
 
 /**
  * Interface for plugins that work in an interactive mode.
@@ -248,10 +247,10 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                 result[0] = (int) DialogDisplayer.getDefault().notify(descriptor);
             });
         } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
         } catch (final InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return result[0] == 0;

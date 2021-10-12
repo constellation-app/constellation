@@ -203,8 +203,8 @@ public class FloatParameterTypeNGTest {
 
         FloatParameterType instance = new FloatParameterType();
         PluginParameter<FloatParameterType.FloatParameterValue> parameter = new PluginParameter<>(new FloatParameterType.FloatParameterValue(), INSTANCE, id);
-        instance.setMaximum(parameter, 5f);
-        instance.setMinimum(parameter, 0f);
+        FloatParameterType.setMaximum(parameter, 5f);
+        FloatParameterType.setMinimum(parameter, 0f);
 
         // test valid integer in min-max range
         // should return null

@@ -26,11 +26,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Alert.AlertType;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 
 public class JDBCConnectionManager {
+    
+    private static final Logger LOGGER = Logger.getLogger(JDBCConnectionManager.class.getName());
 
     static JDBCConnectionManager connectionManager = null;
 
@@ -68,7 +71,7 @@ public class JDBCConnectionManager {
                 }
             }
         } catch (final SQLException | IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -116,6 +119,7 @@ public class JDBCConnectionManager {
                 connectionMap.put(connectionName, conn);
 
             } catch (final IOException | SQLException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 NotifyDisplayer.displayLargeAlert(ACTION_JDBC_IMPORT, "Failed to add the connection to the database.",
                         ex.getMessage(), AlertType.ERROR);
                 return false;
@@ -153,6 +157,7 @@ public class JDBCConnectionManager {
                 connectionMap.put(newconnectionName, newConnection);
 
             } catch (final IOException | SQLException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 NotifyDisplayer.displayLargeAlert(ACTION_JDBC_IMPORT, "Failed to update the connection " + newconnectionName + " in the database.",
                         ex.getMessage(), AlertType.ERROR);
                 return false;
@@ -175,6 +180,7 @@ public class JDBCConnectionManager {
                 }
             }
         } catch (final SQLException | IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             NotifyDisplayer.displayLargeAlert(ACTION_JDBC_IMPORT, "Failed to delete the connection from the database.",
                     ex.getMessage(), AlertType.ERROR);
         }

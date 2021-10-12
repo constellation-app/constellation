@@ -48,6 +48,8 @@ import java.util.logging.Logger;
  * @author algol
  */
 public final class PlanesRenderable implements GLRenderable {
+    
+    private static final Logger LOGGER = Logger.getLogger(PlanesRenderable.class.getName());
 
     public static final int BUFFER_UNUSED = -2;
     private int shader;
@@ -88,8 +90,8 @@ public final class PlanesRenderable implements GLRenderable {
             vs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.vs");
             gs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.gs");
             fs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(PlanesRenderable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         shader = GLTools.loadShaderSourceWithAttributes(gl, "Plane", vs, gs, fs,

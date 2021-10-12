@@ -21,10 +21,12 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -101,6 +103,8 @@ import org.openide.windows.TopComponent;
     "HINT_AttributeEditorTopComponent=Attribute Editor"
 })
 public final class AttributeEditorTopComponent extends JavaFxTopComponent<AttributeEditorPanel> implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider, PreferenceChangeListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(AttributeEditorTopComponent.class.getName());
 
     private static final String ATTRIBUTE_EDITOR_GRAPH_CHANGED_THREAD_NAME = "Attribute Editor Graph Changed Updater";
     private static final String ATTRIBUTE_EDITOR_PREFERENCE_CHANGED_THREAD_NAME = "Attribute Editor Preference Changed Updater";
@@ -129,7 +133,8 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
                 if (reader != null) {
                     attributePanel.updateEditorPanel(reader.refreshAttributes());
                 }
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Thread was interrupted");
                 Thread.currentThread().interrupt();
             }
         };
@@ -175,7 +180,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
 
-        PreferenceUtilites.addPreferenceChangeListener(prefs.absolutePath(), this);
+        PreferenceUtilities.addPreferenceChangeListener(prefs.absolutePath(), this);
     }
 
     @Override
@@ -184,7 +189,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         GraphManager.getDefault().removeGraphManagerListener(this);
         newActiveGraph(null);
 
-        PreferenceUtilites.removePreferenceChangeListener(prefs.absolutePath(), this);
+        PreferenceUtilities.removePreferenceChangeListener(prefs.absolutePath(), this);
     }
 
     void writeProperties(java.util.Properties p) {
