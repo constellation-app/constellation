@@ -194,4 +194,30 @@ public class HelpServletNGTest {
         assertEquals(fileUrl, null);
         assertFalse(instance.getWasRedirect());
     }
+
+    @Test
+    public void testStripLeadingPath() {
+        System.out.println("running testStripLeadingPath");
+
+        final String referer = "/file:/C:/Projects/Constellation/constellation/CoreHelp/path/to/toc.md";
+        final String expectedResult = "/Projects/Constellation/constellation/CoreHelp/path/to/toc.md";
+        final String result = HelpServlet.stripLeadingPath(referer);
+        assertEquals(result, expectedResult);
+
+        final String referer2 = "/file:/J:/Users/Username/Constellation/constellation/CoreHelp/path/to/toc.md";
+        final String expectedResult2 = "/Users/Username/Constellation/constellation/CoreHelp/path/to/toc.md";
+        final String result2 = HelpServlet.stripLeadingPath(referer2);
+        assertEquals(result2, expectedResult2);
+
+        final String referer3 = "/file:/home/username/Constellation/constellation/CoreHelp/path/to/toc.md";
+        final String expectedResult3 = "/home/username/Constellation/constellation/CoreHelp/path/to/toc.md";
+        final String result3 = HelpServlet.stripLeadingPath(referer3);
+        assertEquals(result3, expectedResult3);
+
+        final String referer4 = "file:/home/username/Constellation/constellation/CoreHelp/path/to/toc.md";
+        final String expectedResult4 = "/home/username/Constellation/constellation/CoreHelp/path/to/toc.md";
+        final String result4 = HelpServlet.stripLeadingPath(referer4);
+        assertEquals(result4, expectedResult4);
+
+    }
 }

@@ -97,7 +97,7 @@ public class HelpServlet extends HttpServlet {
         response.setContentType(mimeType);
 
         try {
-            ConstellationHelpDisplayer.copy(requestPath.substring(9), response.getOutputStream());
+            ConstellationHelpDisplayer.copy(stripLeadingPath(requestPath), response.getOutputStream());
         } catch (final IOException ex) {
             throw new ServletException(ex);
         }
@@ -144,5 +144,21 @@ public class HelpServlet extends HttpServlet {
             LOGGER.log(Level.WARNING, "Redirect Failed! Could not navigate to: " + requestPath, ex);
         }
         return null;
+    }
+
+    /**
+     * Strip off the /file:/C: /file: file: from the fullPath String.
+     *
+     * @param fullPath the fully qualified path coming in
+     * @return the stripped path without /file:/home or drive letter within it.
+     */
+    protected static String stripLeadingPath(final String fullPath) {
+        String modifiedPath = fullPath;
+
+        modifiedPath = modifiedPath.replaceAll("\\/file:\\/[a-zA-Z]:", "");
+        modifiedPath = modifiedPath.replaceAll("\\/file:", "");
+        modifiedPath = modifiedPath.replaceAll("file:", "");
+
+        return modifiedPath;
     }
 }
