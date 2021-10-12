@@ -42,6 +42,8 @@ import org.apache.commons.collections4.CollectionUtils;
  * @author algol
  */
 public class SelectionBoxRenderable implements GLRenderable {
+    
+    private static final Logger LOGGER = Logger.getLogger(SelectionBoxRenderable.class.getName());
 
     // How many vertices do we need to draw a rectangle?
     // What color is the selection rectangle?
@@ -82,8 +84,8 @@ public class SelectionBoxRenderable implements GLRenderable {
             vs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
             gs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruTriangle.gs");
             fs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(SelectionBoxRenderable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru selection", vs, gs, fs,

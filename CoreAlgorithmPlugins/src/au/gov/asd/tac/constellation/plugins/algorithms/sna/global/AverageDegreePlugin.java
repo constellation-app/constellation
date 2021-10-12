@@ -124,14 +124,12 @@ public class AverageDegreePlugin extends SimpleEditPlugin {
 
         // choose the correct degree attribute
         final int averageDegreeAttributeId;
-        if (includeConnectionsIn && includeConnectionsOut) {
-            averageDegreeAttributeId = AVERAGE_DEGREE_ATTRIBUTE.ensure(graph);
-        } else if (includeConnectionsIn && !includeConnectionsOut) {
+        if (includeConnectionsIn && !includeConnectionsOut) {
             averageDegreeAttributeId = AVERAGE_IN_DEGREE_ATTRIBUTE.ensure(graph);
         } else if (!includeConnectionsIn && includeConnectionsOut) {
             averageDegreeAttributeId = AVERAGE_OUT_DEGREE_ATTRIBUTE.ensure(graph);
         } else {
-            return;
+            averageDegreeAttributeId = AVERAGE_DEGREE_ATTRIBUTE.ensure(graph);
         }
 
         // update the graph with degree values

@@ -29,9 +29,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -45,17 +42,6 @@ public class MergeNodesByLocationNGTest {
     private int vxId1, vxId2, vxId3, vxId4, vxId5;
     private int txId1, txId2, txId3;
     private StoreGraph graph;
-
-    public MergeNodesByLocationNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -109,10 +95,6 @@ public class MergeNodesByLocationNGTest {
         graph.setBooleanValue(vertexSelectedAttribute, vxId3, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId4, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId5, true);
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     /**

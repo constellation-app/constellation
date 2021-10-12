@@ -74,6 +74,22 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.openide.filesystems</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.10.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.filesystems.nb</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.9.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.io</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -144,6 +160,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.geospatial</package>
                 <package>au.gov.asd.tac.constellation.utilities.graphics</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui</package>
+                <package>au.gov.asd.tac.constellation.utilities.gui.filechooser</package>
                 <package>au.gov.asd.tac.constellation.utilities.html</package>
                 <package>au.gov.asd.tac.constellation.utilities.https</package>
                 <package>au.gov.asd.tac.constellation.utilities.icon</package>

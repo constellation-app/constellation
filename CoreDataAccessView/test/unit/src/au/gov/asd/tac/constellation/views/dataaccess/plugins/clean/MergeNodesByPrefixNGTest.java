@@ -39,9 +39,6 @@ import java.util.Map;
 import java.util.Set;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -56,20 +53,6 @@ public class MergeNodesByPrefixNGTest {
     private StoreGraph graph;
     private int vxId1, vxId2, vxId3, vxId4, vxId5;
     private int vertexIdentifierAttribute, vertexSelectedAttribute;
-
-    public MergeNodesByPrefixNGTest() {
-        // Intentionally left blank.
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        // Intentionally left blank.
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        // Intentionally left blank.
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -101,11 +84,6 @@ public class MergeNodesByPrefixNGTest {
         graph.setBooleanValue(vertexSelectedAttribute, vxId3, false);
         graph.setBooleanValue(vertexSelectedAttribute, vxId4, false);
         graph.setBooleanValue(vertexSelectedAttribute, vxId5, false);
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        // Intentionally left blank.
     }
 
     /**

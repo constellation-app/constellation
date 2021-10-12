@@ -43,6 +43,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -57,7 +59,6 @@ import org.openide.awt.ActionReferences;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -517,6 +518,8 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
      */
     @PluginInfo(pluginType = PluginType.VIEW, tags = {"IMPORT"})
     private static class ImportPlanePlugin extends SimpleEditPlugin {
+        
+        private static final Logger LOGGER = Logger.getLogger(ImportPlanePlugin.class.getName());
 
         private final File f;
 
@@ -563,8 +566,8 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 final PlaneState state = oldState != null ? new PlaneState(oldState) : new PlaneState();
                 state.addPlane(plane);
                 wg.setObjectValue(planesAttr, 0, state);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 NotificationDisplayer.getDefault().notify("Problem importing image",
                         UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
                         ex.getMessage(),

@@ -38,6 +38,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 
@@ -76,6 +78,8 @@ import javafx.collections.ObservableList;
  * @author antares
  */
 public class Conversation {
+    
+    private static final Logger LOGGER = Logger.getLogger(Conversation.class.getName());
 
     private static final Comparator<ConversationMessage> TEMPORAL_COMPARATOR = (ConversationMessage o1, ConversationMessage o2) -> o1.getDatetime().compareTo(o2.getDatetime());
 
@@ -315,7 +319,8 @@ public class Conversation {
                 thread.start();
 
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Messages update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
@@ -362,7 +367,8 @@ public class Conversation {
                 thread.start();
 
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Message contributions update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
@@ -414,7 +420,8 @@ public class Conversation {
                 thread.start();
 
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Message datetimes update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
@@ -452,7 +459,8 @@ public class Conversation {
                 thread.start();
 
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Message senders update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
@@ -494,7 +502,8 @@ public class Conversation {
                 thread.start();
 
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Message colours update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
