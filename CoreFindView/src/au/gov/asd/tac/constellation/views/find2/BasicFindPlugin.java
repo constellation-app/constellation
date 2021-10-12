@@ -27,10 +27,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This class does the actual action of finding.
@@ -49,17 +49,20 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean addToSelection;
     private final boolean selectAll;
     private final boolean getNext;
+    private final static int STARTING_INDEX = -1;
+    private final BasicFindReplaceParameters parameters;
 
-    public BasicFindPlugin(GraphElementType elementType, ArrayList<Attribute> stringAttr, String findString, Boolean regex, boolean ignorecase, boolean matchWholeWord, boolean addToSelection, boolean selectAll, boolean getNext) {
-        this.elementType = elementType;
-        this.selectedAttributes = stringAttr;
-        this.findString = findString;
-        this.regex = regex;
-        this.ignorecase = ignorecase;
-        this.matchWholeWord = matchWholeWord;
+    public BasicFindPlugin(BasicFindReplaceParameters parameters, boolean addToSelection, boolean selectAll, boolean getNext) {
+        this.elementType = parameters.getGraphElement();
+        this.selectedAttributes = parameters.getAttributeList();
+        this.findString = parameters.getFindString();
+        this.regex = parameters.isRegEx();
+        this.ignorecase = parameters.isIgnoreCase();
+        this.matchWholeWord = parameters.isExactMatch();
         this.addToSelection = addToSelection;
         this.selectAll = selectAll;
         this.getNext = getNext;
+        this.parameters = parameters;
     }
 
     private void clearSelection(GraphWriteMethods graph) {
@@ -84,14 +87,26 @@ public class BasicFindPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+
+        //Retrieve the existing FindResultList Meta attribute
         int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         FindResultsList foundResult = null;
         foundResult = graph.getObjectValue(stateId, 0);
-        if (foundResult == null || selectAll) {
-            foundResult = new FindResultsList();
-            foundResult.setGraphId(graph.getId());
-            graph.setObjectValue(stateId, 0, foundResult);
+
+        /**
+         * If it doesn't exist or is null, create a new list with the starting
+         * index and the current find parameters. If it does exist, create a
+         * list with the correct index and the current find parameters
+         */
+        if (foundResult == null) {
+            foundResult = new FindResultsList(STARTING_INDEX, this.parameters);
+        } else {
+            foundResult = new FindResultsList(getIndex(foundResult), this.parameters);
         }
+        //Set the found result list to the current graph
+        foundResult.setGraphId(graph.getId());
+        foundResult.clear();
+        graph.setObjectValue(stateId, 0, foundResult);
 
         if (findString.isEmpty()) {
             findString = "^$";
@@ -108,54 +123,93 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
         Pattern searchPattern = Pattern.compile(searchString, caseSensitivity);
 
-        if (foundResult.size() == 0) {
-            for (Attribute a : selectedAttributes) {
-                for (int i = 0; i < elementCount; i++) {
-                    int currElement = elementType.getElement(graph, i);
-                    String value = graph.getStringValue(a.getId(), currElement);
-                    if (value != null) {
-                        Matcher match = searchPattern.matcher(value);
-                        if (matchWholeWord) {
-                            found = match.matches();
-                        } else {
-                            found = match.find();
+        /**
+         * Loop through all selected attributes, get the current element of the
+         * selected type and its value, check the value isn't null, then compare
+         * the value with the find string based on the search preferences. If
+         * that element matches the search criteria, change its selected value
+         * to true if selecting all. Otherwise create a FindResult and add that
+         * find result to the foundResults list
+         */
+        for (Attribute a : selectedAttributes) {
+            for (int i = 0; i < elementCount; i++) {
+                int currElement = elementType.getElement(graph, i);
+                String value = graph.getStringValue(a.getId(), currElement);
+                if (value != null) {
+                    Matcher match = searchPattern.matcher(value);
+                    if (matchWholeWord) {
+                        found = match.matches();
+                    } else {
+                        found = match.find();
+                    }
+                    if (found) {
+                        if (selectAll) {
+                            graph.setBooleanValue(selectedAttribute, currElement, true);
                         }
-                        if (found) {
-                            if (selectAll) {
-                                graph.setBooleanValue(selectedAttribute, currElement, true);
-                            } else {
-                                final long uid = elementType.getUID(graph, currElement);
-                                FindResult fr = new FindResult(currElement, uid, elementType);
-                                foundResult.add(fr);
-                            }
-                        }
+                        final long uid = elementType.getUID(graph, currElement);
+                        FindResult fr = new FindResult(currElement, uid, elementType);
+                        foundResult.add(fr);
                     }
                 }
-                Set<FindResult> set = new LinkedHashSet<>();
-                set.addAll(foundResult);
-                foundResult.clear();
-                foundResult.addAll(set);
             }
         }
+        /**
+         * If the user clicked find next or find previous
+         */
         if (!selectAll) {
-            if (getNext == true) {
-                foundResult.incrementCurrentIndex();
-            } else {
-                foundResult.decrementCurrentIndex();
-            }
-            int elementId = foundResult.get(foundResult.getCurrentIndex()).getID();
-            graph.setBooleanValue(selectedAttribute, elementId, true);
 
+            // Clean the find results list to only contain unique graph elements
+            List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
+            foundResult.clear();
+            foundResult.addAll(distinctValues);
+
+            /**
+             * If the list isn't empty, and the user clicked find next,
+             * increment the found lists index by 1, otherwise decrement it by
+             * 1. Set the element at the specified index to selected.
+             */
+            if (!foundResult.isEmpty()) {
+                if (getNext == true) {
+                    foundResult.incrementCurrentIndex();
+                } else {
+                    foundResult.decrementCurrentIndex();
+                }
+                int elementId = foundResult.get(foundResult.getCurrentIndex()).getID();
+                graph.setBooleanValue(selectedAttribute, elementId, true);
+            }
+        }
+        //If no results are found, set the meta attribute to null
+        if (foundResult.isEmpty()) {
+            graph.setObjectValue(stateId, 0, null);
         }
     }
 
-
-    /*
-        check if graph id == last graph id
-        if find next - go through until you find the first occourance
-        make that selected
-        if find next again - go through until you find the next occurance that is greater than the position id of the last found
+    /**
+     * Determines what index is correct for the found results list based on if
+     * the user is finding all, doing their first find, doing a different find
+     * to their previous
+     *
+     * @param foundResult the list of foundResults
+     * @return the correct current index
      */
+    private int getIndex(FindResultsList foundResult) {
+        // If selecting all elements, reset the index
+        if (selectAll) {
+            return STARTING_INDEX;
+        }
+        // If the foundresult has been created
+        if (foundResult != null) {
+            // If the query hasnt changed and there must be elements in the list
+            // get the current index
+            if (this.parameters.equals(foundResult.getSearchParameters())) {
+                return foundResult.getCurrentIndex();
+            } else {
+                return STARTING_INDEX;
+            }
+        }
+        // If all else fails reset the index
+        return STARTING_INDEX;
+    }
     @Override
     public String getName() {
         return "Find: Find and Replace";

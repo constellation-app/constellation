@@ -26,19 +26,31 @@ public class FindResultsList extends ArrayList<FindResult> {
 
     private int currentIndex = -1;
     private String graphId;
+    private BasicFindReplaceParameters searchParameters;
 
     public FindResultsList() {
         graphId = "";
     }
 
-    public FindResultsList(int index) {
-        this.currentIndex = currentIndex;
+    public FindResultsList(int index, BasicFindReplaceParameters searchParameters) {
+        this.currentIndex = index;
+        this.searchParameters = searchParameters;
     }
 
     public int getCurrentIndex() {
         return currentIndex;
     }
 
+    public void setCurrentIndex(int index) {
+        currentIndex = index;
+    }
+
+    /*
+     * -1 - next
+        0 - next
+        1 - 
+     *
+     */
     public void incrementCurrentIndex() {
         if (currentIndex == this.size() - 1) {
             currentIndex = 0;
@@ -48,7 +60,7 @@ public class FindResultsList extends ArrayList<FindResult> {
     }
 
     public void decrementCurrentIndex() {
-        if (currentIndex == 0) {
+        if (currentIndex == 0 || currentIndex == -1) {
             currentIndex = this.size() - 1;
         } else {
             currentIndex--;
@@ -61,6 +73,10 @@ public class FindResultsList extends ArrayList<FindResult> {
 
     public String getGraphId() {
         return graphId;
+    }
+
+    public BasicFindReplaceParameters getSearchParameters() {
+        return searchParameters;
     }
 
 }

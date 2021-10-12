@@ -84,6 +84,11 @@ public class FindViewController {
         }
     }
 
+//    public void resetIndex() {
+//        WritableGraph wg = GraphManager.getDefault().getActiveGraph().getWritableGraph("reseting the index", true);
+//        int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(wg);
+//    }
+
     /**
      * This loops through all the attribute lists in each open graph adding all
      * unique attributes to the UI attribute list if they are of type string
@@ -149,10 +154,7 @@ public class FindViewController {
     }
 
     public void retriveMatchingElements(boolean selectAll, boolean getNext) {
-        BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicParameters.getGraphElement(),
-                currentBasicParameters.getAttributeList(), currentBasicParameters.getFindString(),
-                currentBasicParameters.isRegEx(), currentBasicParameters.isIgnoreCase(),
-                currentBasicParameters.isExactMatch(), addToCurrentSelection, selectAll, getNext);
+        BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicParameters, addToCurrentSelection, selectAll, getNext);
         PluginExecution.withPlugin(basicfindPlugin).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
