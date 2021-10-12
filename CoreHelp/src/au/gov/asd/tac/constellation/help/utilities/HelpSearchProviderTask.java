@@ -28,6 +28,10 @@ public class HelpSearchProviderTask implements Runnable {
 
     private final String helpPageName;
 
+    public String getHelpPageName() {
+        return helpPageName;
+    }
+
     /**
      * Create a new help search provider task
      *
