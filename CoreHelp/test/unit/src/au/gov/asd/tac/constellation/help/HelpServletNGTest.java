@@ -156,7 +156,6 @@ public class HelpServletNGTest {
         String requestPath = "/file:/constellation/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/"
                 + "constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-view.md";
         HelpServlet instance = new HelpServlet();
-        ConstellationHelpDisplayer.currentPort = 1517;
         final URL fileUrl = instance.redirectPath(requestPath, referer);
         assertTrue(fileUrl.toString().contains("constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-view.md"));
         assertTrue(instance.getWasRedirect());
@@ -173,7 +172,6 @@ public class HelpServletNGTest {
         String requestPath = "/file:/constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/"
                 + "constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/question-best-connects-network.md";
         HelpServlet instance = new HelpServlet();
-        ConstellationHelpDisplayer.currentPort = 1517;
         final URL fileUrl = instance.redirectPath(requestPath, referer);
         assertTrue(fileUrl.toString().contains("constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/"
                 + "docs/question-best-connects-network.md"));

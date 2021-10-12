@@ -55,8 +55,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
 
-    protected static int currentPort = 0;
-
     public static void copy(final String filePath, final OutputStream out) throws IOException {
         final String sep = File.separator;
         final InputStream pageInput = getInputStream(filePath);
@@ -234,7 +232,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             } else {
                 final File file = new File(Generator.getBaseDirectory() + sep + helpLink);
                 final URL fileUrl = file.toURI().toURL();
-                currentPort = HelpWebServer.start();
+                final int currentPort = HelpWebServer.start();
                 url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
             }
 

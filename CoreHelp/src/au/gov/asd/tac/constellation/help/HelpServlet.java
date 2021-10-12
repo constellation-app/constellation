@@ -127,7 +127,7 @@ public class HelpServlet extends HttpServlet {
                         String refererfrontHalfRemoved = referer.replace(fileUrl.toString(), ""); // remove first bit
                         refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove filename.md
                         refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove up one level
-                        refererfrontHalfRemoved = refererfrontHalfRemoved.replace("http://localhost:" + ConstellationHelpDisplayer.currentPort, "");
+                        refererfrontHalfRemoved = refererfrontHalfRemoved.replace("http://localhost:" + HelpWebServer.getPort(), "");
                         requestfrontHalfRemoved = requestfrontHalfRemoved.replaceFirst(refererfrontHalfRemoved, "");
 
                         final String redirectURL = Generator.getBaseDirectory() + requestfrontHalfRemoved;

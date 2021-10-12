@@ -46,6 +46,10 @@ public class HelpWebServer {
         return running;
     }
 
+    public static int getPort() {
+        return port;
+    }
+
     public static synchronized int start() {
         if (!running) {
             try {

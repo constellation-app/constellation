@@ -2294,7 +2294,6 @@
                 <package>org.hsqldb.types</package>
                 <package>org.hsqldb.util</package>
                 <package>org.huldra.math</package>
-                <package>org.intellij.lang.annotations</package>
                 <package>org.jaitools</package>
                 <package>org.jaitools.imageutils</package>
                 <package>org.jaitools.imageutils.iterator</package>
@@ -2366,7 +2365,6 @@
                 <package>org.jdom2.xpath</package>
                 <package>org.jdom2.xpath.jaxen</package>
                 <package>org.jdom2.xpath.util</package>
-                <package>org.jetbrains.annotations</package>
                 <package>org.json</package>
                 <package>org.json.simple</package>
                 <package>org.json.simple.parser</package>
