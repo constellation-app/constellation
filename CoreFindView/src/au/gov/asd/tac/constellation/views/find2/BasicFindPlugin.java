@@ -28,6 +28,8 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
 /**
  * This class does the actual action of finding.
  *
- * @author twinkle2_little
+ * @author twinkle2_little, Atlas139mkm
  */
 @PluginInfo(pluginType = PluginType.SEARCH, tags = {"SEARCH"})
 public class BasicFindPlugin extends SimpleEditPlugin {
@@ -49,8 +51,10 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean addToSelection;
     private final boolean selectAll;
     private final boolean getNext;
-    private final static int STARTING_INDEX = -1;
     private final BasicFindReplaceParameters parameters;
+
+    private final static int STARTING_INDEX = -1;
+    private static final Logger LOGGER = Logger.getLogger(BasicFindPlugin.class.getName());
 
     public BasicFindPlugin(BasicFindReplaceParameters parameters, boolean addToSelection, boolean selectAll, boolean getNext) {
         this.elementType = parameters.getGraphElement();
@@ -87,7 +91,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
         //Retrieve the existing FindResultList Meta attribute
         int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         FindResultsList foundResult = null;
@@ -101,8 +104,10 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         if (foundResult == null) {
             foundResult = new FindResultsList(STARTING_INDEX, this.parameters);
         } else {
-            foundResult = new FindResultsList(getIndex(foundResult), this.parameters);
+            FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getSearchParameters());
+            foundResult = new FindResultsList(getIndex(foundResult, oldList), this.parameters);
         }
+
         //Set the found result list to the current graph
         foundResult.setGraphId(graph.getId());
         foundResult.clear();
@@ -112,13 +117,16 @@ public class BasicFindPlugin extends SimpleEditPlugin {
             findString = "^$";
             regex = true;
         }
+
         boolean found;
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
         final int elementCount = elementType.getElementCount(graph);
+
         // do this if add to selection
         if (!addToSelection) {
             clearSelection(graph);
         }
+
         String searchString = regex ? findString : Pattern.quote(findString);
         int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
         Pattern searchPattern = Pattern.compile(searchString, caseSensitivity);
@@ -134,7 +142,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         for (Attribute a : selectedAttributes) {
             for (int i = 0; i < elementCount; i++) {
                 int currElement = elementType.getElement(graph, i);
-                String value = graph.getStringValue(a.getId(), currElement);
+                String value = graph.getStringValue(graph.getAttribute(elementType, a.getName()), currElement);
                 if (value != null) {
                     Matcher match = searchPattern.matcher(value);
                     if (matchWholeWord) {
@@ -169,6 +177,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
              * 1. Set the element at the specified index to selected.
              */
             if (!foundResult.isEmpty()) {
+                LOGGER.log(Level.WARNING, "Current index: " + foundResult.getCurrentIndex());
                 if (getNext == true) {
                     foundResult.incrementCurrentIndex();
                 } else {
@@ -177,6 +186,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                 int elementId = foundResult.get(foundResult.getCurrentIndex()).getID();
                 graph.setBooleanValue(selectedAttribute, elementId, true);
             }
+            graph.setObjectValue(stateId, 0, foundResult);
+
         }
         //If no results are found, set the meta attribute to null
         if (foundResult.isEmpty()) {
@@ -192,7 +203,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
      * @param foundResult the list of foundResults
      * @return the correct current index
      */
-    private int getIndex(FindResultsList foundResult) {
+    private int getIndex(FindResultsList foundResult, FindResultsList lastFoundResult) {
         // If selecting all elements, reset the index
         if (selectAll) {
             return STARTING_INDEX;
@@ -201,7 +212,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         if (foundResult != null) {
             // If the query hasnt changed and there must be elements in the list
             // get the current index
-            if (this.parameters.equals(foundResult.getSearchParameters())) {
+            if (this.parameters.equals(lastFoundResult.getSearchParameters())) {
                 return foundResult.getCurrentIndex();
             } else {
                 return STARTING_INDEX;
@@ -210,6 +221,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         // If all else fails reset the index
         return STARTING_INDEX;
     }
+
     @Override
     public String getName() {
         return "Find: Find and Replace";

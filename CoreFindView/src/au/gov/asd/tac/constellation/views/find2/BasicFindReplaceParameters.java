@@ -35,6 +35,19 @@ public class BasicFindReplaceParameters {
     private final boolean exactMatch;
     private final boolean searchAllGraphs;
 
+    public BasicFindReplaceParameters(BasicFindReplaceParameters parameters) {
+        this.findString = parameters.findString;
+        this.replaceString = parameters.replaceString;
+        this.graphElement = parameters.graphElement;
+        this.attributeList = parameters.attributeList;
+        this.standardText = parameters.standardText;
+        this.regEx = parameters.regEx;
+        this.ignoreCase = parameters.ignoreCase;
+        this.exactMatch = parameters.exactMatch;
+        this.searchAllGraphs = parameters.searchAllGraphs;
+
+    }
+
     public BasicFindReplaceParameters(String findString, String replaceString, GraphElementType graphElement,
             ArrayList<Attribute> attributeList, boolean standardText, boolean regEx, boolean ignoreCase,
             boolean exactMatch, boolean searchAllGraphs) {
@@ -46,6 +59,7 @@ public class BasicFindReplaceParameters {
             this.replaceString = replaceString;
         }
         this.graphElement = graphElement;
+
         this.attributeList = attributeList;
 
         this.standardText = standardText;
@@ -136,7 +150,7 @@ public class BasicFindReplaceParameters {
 
     private void trimText(final String text) {
         //  if (!isExactMatch()) {
-            text.trim();
+        text.trim();
         // }
     }
 
@@ -145,5 +159,4 @@ public class BasicFindReplaceParameters {
             text.toLowerCase();
         }
     }
-
 }

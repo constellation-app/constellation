@@ -79,4 +79,8 @@ public class FindResultsList extends ArrayList<FindResult> {
         return searchParameters;
     }
 
+    public void setSearchParameters(BasicFindReplaceParameters parameters) {
+        this.searchParameters = parameters;
+    }
+
 }

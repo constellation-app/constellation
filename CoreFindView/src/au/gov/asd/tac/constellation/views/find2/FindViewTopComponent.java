@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.find2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find2.gui.FindViewPane;
 import org.openide.awt.ActionID;
@@ -119,6 +120,12 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         super.handleNewGraph(graph);
         FindViewController.getDefault().updateUI();
 
+    }
+
+    @Override
+    protected void handleGraphChange(final GraphChangeEvent event) {
+        super.handleNewGraph(GraphManager.getDefault().getActiveGraph());
+        FindViewController.getDefault().updateUI();
     }
 
     public void disableFindView() {
