@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -257,6 +258,7 @@ public class ExportMenuNGTest {
 
         final FileChooserBuilder exportFileChooser = mock(FileChooserBuilder.class);
         final File exportFile = userCancelsRequest ? null : new File("test.csv");
+        final Optional<File> optionalExportFile = Optional.ofNullable(exportFile);
 
         doReturn(exportFileChooser).when(spiedExportActionHandler).getExportFileChooser();
 
@@ -268,7 +270,7 @@ public class ExportMenuNGTest {
         ) {
 
             fileChooserMockedStatic.when(() -> FileChooser.openSaveDialog(exportFileChooser))
-                    .thenReturn(CompletableFuture.completedFuture(exportFile));
+                    .thenReturn(CompletableFuture.completedFuture(optionalExportFile));
             
             final ActionEvent actionEvent = mock(ActionEvent.class);
 
@@ -328,6 +330,7 @@ public class ExportMenuNGTest {
 
         final FileChooserBuilder exportFileChooser = mock(FileChooserBuilder.class);
         final File exportFile = userCancelsRequest ? null : new File("test.xlsx");
+        final Optional<File> optionalExportFile = Optional.ofNullable(exportFile);
 
         doReturn(exportFileChooser).when(spiedExportActionHandler).getExportFileChooser();
 
@@ -338,7 +341,7 @@ public class ExportMenuNGTest {
                         Mockito.mockStatic(FileChooser.class);
         ) {
             fileChooserMockedStatic.when(() -> FileChooser.openSaveDialog(exportFileChooser))
-                    .thenReturn(CompletableFuture.completedFuture(exportFile));
+                    .thenReturn(CompletableFuture.completedFuture(optionalExportFile));
             
             final ActionEvent actionEvent = mock(ActionEvent.class);
 
