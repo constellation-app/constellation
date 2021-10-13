@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.find2.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -109,7 +108,6 @@ public class BasicFindTab extends Tab {
         this.setText("Basic Find");
         setGridContent();
         this.setContent(layers);
-//        FindViewPaneController.getDefault().find("hello");
 
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -248,21 +246,17 @@ public class BasicFindTab extends Tab {
         parentComponent.getParentComponent().setBottom(buttonsVBox);
     }
 
-    private void findButtonFunctionality() {
-        FindViewController.getDefault();
-    }
-
     /**
      * Populates the inAttributeMenu with all relevant String attributes based
      * on the type of graph element selected in the lookForChoiceBox
      *
      * @param type
      */
-    public void populateAttributes(GraphElementType type) {
-        ArrayList<String> attributeList = FindViewController.getDefault().populateAttributes(type, attributes, attributeModificationCounter);
+    public void populateAttributes(final GraphElementType type) {
+        final ArrayList<String> attributeList = FindViewController.getDefault().populateAttributes(type, attributes, attributeModificationCounter);
         inAttributesMenu.getItems().clear();
 
-        ArrayList<Attribute> selected = getMatchingAttributeList(type);
+        final ArrayList<Attribute> selected = getMatchingAttributeList(type);
         for (String attribute : attributeList) {
             inAttributesMenu.getItems().add(attribute);
             for (int i = 0; i < selected.size() - 1; i++) {
@@ -270,7 +264,6 @@ public class BasicFindTab extends Tab {
                     inAttributesMenu.getCheckModel().check(attribute);
                 }
             }
-
         }
     }
 
@@ -284,8 +277,6 @@ public class BasicFindTab extends Tab {
         for (int i = 0; i < selectedAttributes.size(); i++) {
             if (checkSelectedContains(selectedAttributes.get(i), attributes)) {
                 inAttributesMenu.getCheckModel().check(selectedAttributes.get(i).getName());
-                LOGGER.log(Level.SEVERE, selectedAttributes.get(i).getName() + "CHCKED IN THE LIST");
-
             }
         }
     }
@@ -309,7 +300,7 @@ public class BasicFindTab extends Tab {
     }
 
     /**
-     * retrieves the selected list of the matching type, clears it, then re adds
+     * Retrieves the selected list of the matching type, clears it, then re adds
      * all selected elements to that list
      *
      * @param type
@@ -368,60 +359,28 @@ public class BasicFindTab extends Tab {
     public void updateSelectionFactors() {
         FindViewController.getDefault().updateSelectionFactors(addToCurrent.isSelected(), removeFromCurrent.isSelected());
     }
-//    public void readCurrentSelections(GraphElementType type){
-//        ArrayList<Attribute> selectedAttributes = getMatchingAttributeList(type);
-//
-//        selectedAttributes = getMatchingAttributeList(type);
-//
-//
-//        attributes = getMatchingAttributeList(type);
-//    }
 
     public void findAllAction() {
         if (!findTextField.getText().isEmpty()) {
-            //populateAttributes(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
             saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
             updateBasicFindReplaceParamters();
             FindViewController.getDefault().retriveMatchingElements(true, false);
-            // FindViewController.getDefault().populateFindResultsLists();
-            // FindViewController.getDefault().findAll();
         }
     }
 
     public void findNextAction() {
         if (!findTextField.getText().isEmpty()) {
-            //populateAttributes(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
             saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
             updateBasicFindReplaceParamters();
             FindViewController.getDefault().retriveMatchingElements(false, true);
-            //    FindViewController.getDefault().selectNextPrev(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()), true);
         }
     }
 
     public void findPrevAction() {
         if (!findTextField.getText().isEmpty()) {
-            // populateAttributes(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
             saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
             updateBasicFindReplaceParamters();
             FindViewController.getDefault().retriveMatchingElements(false, false);
-            //  FindViewController.getDefault().selectNextPrev(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()), false);
         }
     }
-
 }
-
-//    private BasicFindReplaceParameters buildBasicFindReplaceParameters() {
-//
-//        final List<String> selectedAttributes = new ArrayList<String>();
-//        for (int i = 0; i < inAttributesMenu.getItems().size(); i++) {
-//            selectedAttributes.add(inAttributesMenu.getItems().get(i).getText());
-//        }
-//
-//        final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText().trim(), "",
-//                GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()), selectedAttributes, standardRadioBtn.isSelected(),
-//                regExBtn.isSelected(), ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), addToCurrent.isSelected(), removeFromCurrent.isSelected());
-//
-//        return parameters;
-//
-//    }
-

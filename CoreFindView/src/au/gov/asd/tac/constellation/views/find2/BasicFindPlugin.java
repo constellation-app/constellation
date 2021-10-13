@@ -28,7 +28,6 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,7 +103,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         if (foundResult == null) {
             foundResult = new FindResultsList(STARTING_INDEX, this.parameters);
         } else {
-            FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getSearchParameters());
+            final FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getSearchParameters());
             foundResult = new FindResultsList(getIndex(foundResult, oldList), this.parameters);
         }
 
@@ -167,7 +166,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         if (!selectAll) {
 
             // Clean the find results list to only contain unique graph elements
-            List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
+            final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
             foundResult.clear();
             foundResult.addAll(distinctValues);
 
@@ -177,7 +176,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
              * 1. Set the element at the specified index to selected.
              */
             if (!foundResult.isEmpty()) {
-                LOGGER.log(Level.WARNING, "Current index: " + foundResult.getCurrentIndex());
                 if (getNext == true) {
                     foundResult.incrementCurrentIndex();
                 } else {

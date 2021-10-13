@@ -181,8 +181,6 @@ public class FindViewController {
             for (Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                 if (graph != null) {
                     if (currentBasicParameters.isSearchAllGraphs()) {
-
-//                        BasicFindReplaceParameters currentParameters = new BasicFindReplaceParameters(currentBasicParameters);
                         BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicParameters, addToCurrentSelection, selectAll, getNext);
                         PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
                     }
@@ -191,8 +189,6 @@ public class FindViewController {
         } else {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
             if (graph != null) {
-
-//                BasicFindReplaceParameters currentParameters = new BasicFindReplaceParameters(currentBasicParameters);
                 BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicParameters, addToCurrentSelection, selectAll, getNext);
                 PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
             }
