@@ -66,7 +66,8 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     private String currentMessage;
     private Timer timer = null;
 
-    private static final String STRING_STRING_FORMAT = "{0}: {1}";
+    private static final String LOGGING_FORMAT = "{0}: {1}";
+    private static final String STRING_FORMAT = "%s: %s";
 
     public DefaultPluginInteraction(final PluginManager pluginManager, final PluginReport pluginReport) {
         this.pluginManager = pluginManager;
@@ -195,7 +196,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     );
                     DialogDisplayer.getDefault().notify(ndf);
                 });
-                LOGGER.log(Level.SEVERE, STRING_STRING_FORMAT, new Object[]{title, message});
+                LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
             case ERROR:
@@ -210,7 +211,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     );
                     DialogDisplayer.getDefault().notify(nde);
                 });
-                LOGGER.log(Level.SEVERE, STRING_STRING_FORMAT, new Object[]{title, message});
+                LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
             case WARNING:
@@ -219,17 +220,18 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         message,
                         null
                 );
-                LOGGER.log(Level.WARNING, STRING_STRING_FORMAT, new Object[]{title, message});
+                LOGGER.log(Level.WARNING, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
             case INFO:
-                final Message statusMessage = StatusDisplayer.getDefault().setStatusText(title + ": " + message, 10);
+                final String statusText = String.format(STRING_FORMAT, title, message);
+                final Message statusMessage = StatusDisplayer.getDefault().setStatusText(statusText, 10);
                 statusMessage.clear(5000);
-                LOGGER.log(Level.INFO, STRING_STRING_FORMAT, new Object[]{title, message});
+                LOGGER.log(Level.INFO, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
             case DEBUG:
-                LOGGER.log(Level.FINE, STRING_STRING_FORMAT, new Object[]{title, message});
+                LOGGER.log(Level.FINE, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
             default:

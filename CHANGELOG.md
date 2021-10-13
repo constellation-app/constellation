@@ -6,17 +6,26 @@
     can be used to configure the required plugin parameters to mark as `*required`
 	in the swagger.
 
+-   Added `netbeans.exception.report.min.level=900` and
+    `netbeans.exception.alert.min.level=900` with both set to `900` to make
+    sure all `ERROR` and `FATAL` levels will present a dialog box.
+
 -   Added a file chooser utility to core utilities. This provides a template
     for opening file choosers. It protects against common mistakes that may
     cause issues on different platforms.
 
 -   Changed `DataAccessPluginType` from an abstract class to an interface.
 
-## Changes in September 2021
+-   Removed the verbose printing of garbage collection by default.
 
--   Added `netbeans.exception.report.min.level=900` and
-    `netbeans.exception.alert.min.level=900` with both set to `900` to make
-    sure all error above the `WARNING` threshold will present a dialog box.
+-   Update the default configuration to always show errors as a dialog message.
+
+-   Updated the way exceptions are displayed to the user. Exceptions thrown in
+    the `DefaultPluginEnvironment` are now presented to the user using the
+    class `NotifyDescriptor.Exception`. This presents an exception dialog
+    when Constellation is ran from the executable.
+
+## Changes in September 2021
 
 -   Moved `DataAccessPlugin`, `DataAccessPluginCoreType`, `DataAccessPluginRegistry
     and `DataAccessPluginType` from `au.gov.asd.tac.constellation.views.dataaccess`
@@ -26,8 +35,6 @@
     `au.gov.asd.tac.constellation.plugins.algorithms.sna`.
 
 -   Renamed `PreferenceUtilites` to `PreferenceUtilities` to fix the typo.
-
--   Removed the verbose printing of garbage collection by default.
 
 -   Removed unused `localized` parameter from the signature of the `locate()`
     method in `ConstellationInstalledFileLocator`.
@@ -41,13 +48,6 @@
 
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
-
--   Update the default configuration to always show errors as a dialog message.
-
--   Updated the way exceptions are displayed to the user. Exceptions thrown in
-    the `DefaultPluginEnvironment` are now presented to the user using the
-    class `NotifyDescriptor.Exception`. This presents an exception dialog
-    when Constellation is ran from the executable.
 
 -   Updated `setRotationMatrix` in `Matrix44d` as it was previously placing
     rotation values in the wrong value positions.
