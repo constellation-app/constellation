@@ -38,9 +38,7 @@ public class HelpWebServer {
 
     private static boolean running = false;
     private static int port = 0;
-    private static final String WEB_SERVER_THREAD_NAME = "Web Server";
-
-    protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
+    private static final String WEB_SERVER_THREAD_NAME = "Help Web Server";
 
     public static boolean isRunning() {
         return running;
