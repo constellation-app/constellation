@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess;
 
+import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType;
@@ -63,11 +64,12 @@ public class GlobalParametersNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        lookupStaticMock.reset();
+        GlobalParameters.clearGlobalParameters();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        lookupStaticMock.reset();
     }
 
     @Test

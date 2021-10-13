@@ -63,7 +63,8 @@ public class GetPluginDescription extends RestService {
 
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(PLUGIN_NAME_PARAMETER_ID);
         nameParam.setName("Plugin name");
-        nameParam.setDescription("Get the plugin description and parameters.");
+        nameParam.setDescription("Plugin name to get the description and parameters.");
+        nameParam.setRequired(true);
         parameters.addParameter(nameParam);
 
         return parameters;

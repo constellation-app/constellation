@@ -79,6 +79,7 @@ public class OpenGraph extends RestService {
         final PluginParameter<StringParameterValue> fileParam = StringParameterType.build(FILE_PARAMETER_ID);
         fileParam.setName("File path");
         fileParam.setDescription("The fully qualified path of a .star file.");
+        fileParam.setRequired(true);
         parameters.addParameter(fileParam);
 
         return parameters;

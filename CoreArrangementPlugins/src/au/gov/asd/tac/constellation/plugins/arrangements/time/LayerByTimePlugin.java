@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LayerNameAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.LayerName;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -327,7 +326,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         try {
             final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
             final PluginParameters copyParams = copyGraphPlugin.createParameters();
-            copyParams.getParameters().get(CopyToNewGraphPlugin.NEW_SCHEMA_NAME_PARAMETER_ID).setStringValue(new VisualSchemaFactory().getName());
+            copyParams.getParameters().get(CopyToNewGraphPlugin.NEW_SCHEMA_NAME_PARAMETER_ID).setStringValue(rg.getSchema().getFactory().getName());
             copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_ALL_PARAMETER_ID).setBooleanValue(true);
             copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_KEYS_PARAMETER_ID).setBooleanValue(false);
             PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyParams).executeNow(rg);
