@@ -18,7 +18,7 @@ that you can immediately start playing with:
     [here](../constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/docs/the-graph-window.md)
     to find out how navigate around the graph.
 6.  Go
-    [here](../constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/graph/docs/graph-model.md)
+    [here](../constellation/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/docs/graph-model.md)
     to learn about the graph structure.
 
 ## Importing Your Own Data

@@ -74,7 +74,6 @@ follows (In general the left button is for selecting, the middle button
 for rotating, and the right button for dragging and panning):
 
 <table class="table table-striped">
-<caption>Navigating the Graph in Selection Mode using the Mouse</caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -154,4 +153,3 @@ for rotating, and the right button for dragging and panning):
 </tbody>
 </table>
 
-Navigating the Graph in Selection Mode using the Mouse

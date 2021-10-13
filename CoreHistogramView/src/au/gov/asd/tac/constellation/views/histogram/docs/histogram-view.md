@@ -240,7 +240,8 @@ The Selection Mode will toggle the interactivity of the Histogram View.
     will change the selection on the graph to all yellow elements.
     Holding the shift key while left clicking will change red elements
     of rows to yellow. Holding the ctrl key while left clicking will
-    toggle elements of rows between red and yellow. <img src="../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Within.png" alt="Within Existing
+    toggle elements of rows between red and yellow. 
+    <img src="../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Within.png" alt="Within Existing
     Selection
     example" />
 -   *Add To Existing Selection* - Clicking rows will not change the
@@ -251,7 +252,8 @@ The Selection Mode will toggle the interactivity of the Histogram View.
     button will change the selection on the graph to all yellow
     elements. Holding the shift key while left clicking will change blue
     elements of rows to yellow. Holding the ctrl key while left clicking
-    will toggle elements of rows between blue and yellow. <img src="../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Add.png" alt="Add to
+    will toggle elements of rows between blue and yellow. 
+    <img src="../constellation/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/docs/resources/Histogram-Add.png" alt="Add to
     Existing Selection
     example" />
 

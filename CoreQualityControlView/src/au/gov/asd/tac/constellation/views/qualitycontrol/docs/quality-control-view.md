@@ -12,7 +12,7 @@
 <tbody>
 <tr class="odd">
 <td>Open Quality Control View</td>
-<td>Keyboard Shortcut: Ctrl + Shift + Q</td>
+<td>Ctrl + Shift + Q</td>
 <td>Views -&gt; Quality Control View</td>
 <td style="text-align: center;"><img src="../constellation/CoreQualityControlView/src/au/gov/asd/tac/constellation/views/qualitycontrol/docs/resources/quality-control-view.png" width="16" height="16" alt="Quality Control View Icon" /></td>
 </tr>

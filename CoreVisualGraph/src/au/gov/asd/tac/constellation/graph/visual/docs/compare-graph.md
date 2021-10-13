@@ -16,7 +16,7 @@
 <td>Run Compare Graph</td>
 <td></td>
 <td>Tools -&gt; Compare Graph</td>
-<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/CompareGraph.png" alt="Compare Graph Icon" /></td>
+<td style="text-align: center;"><img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/compareGraph_1.png" alt="Compare Graph Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -28,7 +28,7 @@ additions, deletions, and attribute value changes.
 
 <div style="text-align: center">
 
-<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/compareGraph_1.png" alt="Compare Graph
+<img src="../constellation/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/docs/resources/CompareGraph.png" alt="Compare Graph
 Dialog" />
 
 </div>
