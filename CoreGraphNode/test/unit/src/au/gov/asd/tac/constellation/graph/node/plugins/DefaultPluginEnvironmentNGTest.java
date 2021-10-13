@@ -154,7 +154,7 @@ public class DefaultPluginEnvironmentNGTest {
         assertEquals(result, expResult);
     }
 
-//    @Test(expectedExceptions = InterruptedException.class) // TODO CHANGED. IS THIS RIGHT?
+    @Test
     public void testExecutePluginLaterWithAsyncThrowsExecutionException() throws ExecutionException, InterruptedException {
         System.out.println("executePluginLater");
         Graph graph = mock(Graph.class);
@@ -177,7 +177,6 @@ public class DefaultPluginEnvironmentNGTest {
             return CompletableFuture.completedFuture(null);
         });
 
-//        DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
         Object expResult = null;
         Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
