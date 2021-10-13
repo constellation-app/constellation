@@ -22,8 +22,11 @@ import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -63,6 +66,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class UpdateDataTaskNGTest {
+    private static final Logger LOGGER = Logger.getLogger(UpdateDataTaskNGTest.class.getName());
 
     private TablePane tablePane;
     private Table table;
@@ -82,18 +86,20 @@ public class UpdateDataTaskNGTest {
 
     private UpdateDataTask updateDataTask;
 
-    public UpdateDataTaskNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

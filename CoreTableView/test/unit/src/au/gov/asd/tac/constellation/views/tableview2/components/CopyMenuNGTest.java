@@ -19,6 +19,9 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -49,6 +52,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class CopyMenuNGTest {
+    private static final Logger LOGGER = Logger.getLogger(CopyMenuNGTest.class.getName());
 
     private TablePane tablePane;
     private ActiveTableReference activeTableReference;
@@ -57,18 +61,20 @@ public class CopyMenuNGTest {
 
     private CopyMenu copyMenu;
 
-    public CopyMenuNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

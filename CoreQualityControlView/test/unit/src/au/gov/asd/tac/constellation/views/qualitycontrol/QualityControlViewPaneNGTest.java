@@ -37,6 +37,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.Lookup;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
@@ -51,6 +54,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class QualityControlViewPaneNGTest {
+    private static final Logger LOGGER = Logger.getLogger(QualityControlViewPaneNGTest.class.getName());
 
     private int vertexIdentifierAttribute;
     private int vertexTypeAttribute;
@@ -66,18 +70,20 @@ public class QualityControlViewPaneNGTest {
     private List<QualityControlRule> rules;
     private List<Integer> vertices;
 
-    public QualityControlViewPaneNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

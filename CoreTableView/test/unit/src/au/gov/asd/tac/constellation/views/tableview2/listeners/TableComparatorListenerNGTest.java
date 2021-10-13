@@ -18,6 +18,9 @@ package au.gov.asd.tac.constellation.views.tableview2.listeners;
 import au.gov.asd.tac.constellation.views.tableview2.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview2.api.UserTablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.components.TablePane;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Pagination;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -41,24 +44,27 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableComparatorListenerNGTest {
+    private static final Logger LOGGER = Logger.getLogger(TableComparatorListenerNGTest.class.getName());
 
     private TableComparatorListener tableComparatorListener;
 
     private TablePane tablePane;
     private ActiveTableReference activeTableReference;
 
-    public TableComparatorListenerNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

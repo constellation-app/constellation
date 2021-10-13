@@ -25,6 +25,9 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 import static org.mockito.ArgumentMatchers.eq;
@@ -45,6 +48,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableSelectionListenerNGTest {
+    private static final Logger LOGGER = Logger.getLogger(TableSelectionListenerNGTest.class.getName());
 
     private TableSelectionListener tableSelectionListener;
 
@@ -55,18 +59,20 @@ public class TableSelectionListenerNGTest {
     private ActiveTableReference activeTableReference;
     private Map<ObservableList<String>, Integer> rowToElementIdIndex;
 
-    public TableSelectionListenerNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

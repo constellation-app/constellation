@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
@@ -36,9 +39,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -46,28 +47,24 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class JsonIODialogNGTest {
+    private static final Logger LOGGER = Logger.getLogger(JsonIODialogNGTest.class.getName());
 
     private final FxRobot robot = new FxRobot();
 
-    public JsonIODialogNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        FxToolkit.cleanupStages();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @Test
@@ -167,8 +164,6 @@ public class JsonIODialogNGTest {
                 .lookup(".list-view")
                 .queryAs(ListView.class);
 
-        assertEquals(listView.getItems(), FXCollections.observableArrayList("myPreferenceFile"));
-
         // Cancel the dialog so it closes
         robot.clickOn(robot.from(dialog.getScene().getRoot())
                 .lookup(".button")
@@ -177,6 +172,7 @@ public class JsonIODialogNGTest {
 
         final Optional<String> result = WaitForAsyncUtils.waitFor(future);
 
+        assertEquals(listView.getItems(), FXCollections.observableArrayList("myPreferenceFile"));
         assertFalse(result.isPresent());
     }
 
