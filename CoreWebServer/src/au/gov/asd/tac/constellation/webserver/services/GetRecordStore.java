@@ -84,7 +84,7 @@ public class GetRecordStore extends RestService {
 
         final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
-        graphIdParam.setDescription("The id of a graph to get data from.");
+        graphIdParam.setDescription("The id of a graph to get data from. (Default is the active graph)");
         parameters.addParameter(graphIdParam);
 
         final PluginParameter<BooleanParameterValue> selectedParam = BooleanParameterType.build(SELECTED_PARAMETER_ID);
@@ -107,7 +107,7 @@ public class GetRecordStore extends RestService {
 
         final PluginParameter<StringParameterValue> attrsParam = StringParameterType.build(ATTRS_PARAMETER_ID);
         attrsParam.setName("Attribute list");
-        attrsParam.setDescription("Include only these comma-separated attributes in the recordstore. Use this for much greater efficiency..");
+        attrsParam.setDescription("Include only these comma-separated attributes in the recordstore. Use this for much greater efficiency. (optional)");
         parameters.addParameter(attrsParam);
 
         return parameters;
