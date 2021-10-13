@@ -53,7 +53,7 @@ public class ShowFileChooserDialog implements Runnable {
      */
     @Override
     public void run() {
-        if (null != fileChooserMode) {
+        if (fileChooserMode != null) {
             switch (fileChooserMode) {
                 case OPEN:
                     selectedFiles = new File[] { fileChooserBuilder.showOpenDialog() };
