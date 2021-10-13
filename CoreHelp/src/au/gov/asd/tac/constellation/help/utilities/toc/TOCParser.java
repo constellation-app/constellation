@@ -75,8 +75,14 @@ public class TOCParser {
                         // Get parent node in xml, and add it to that node as a child
                         final Element parentElement = (Element) eElement.getParentNode();
                         final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute("target"));
+
                         final TreeNode parentDuplicate = TreeNode.search(parentTocItem, root);
-                        if (parentDuplicate == null) {
+
+                        if (StringUtils.isEmpty(parentTocItem.getText()) && StringUtils.isEmpty(parentTocItem.getTarget())) {
+                            // this is the root node, add to root.
+                            root.addChild(current);
+                            currentParent = current;
+                        } else if (parentDuplicate == null) {
                             currentParent.addChild(current);
                             currentParent = current;
                         } else {

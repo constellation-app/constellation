@@ -122,6 +122,88 @@ public class TOCParserNGTest {
      * Test of parse method, of class TOCParser.
      */
     @Test
+    public void testParseNonNested() throws SAXException, IOException, ParserConfigurationException {
+        System.out.println("parse Non nested single file");
+
+        final String fileContents = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
+                + "<toc version=\"2.0\">\n"
+                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
+                + "        <tocitem text=\"Layers View\" mergetype=\"javax.help.SortMerge\">\n"
+                + "            <tocitem text=\"Layers View\" target=\"au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent\" />\n"
+                + "        </tocitem>\n"
+                + "    </tocitem>\n"
+                + "    <tocitem text=\"Jupyter\">\n"
+                + "        <tocitem text=\"About The Jupyter Notebook Server\" target=\"au.gov.asd.tac.constellation.utilities.jupyter\"/>\n"
+                + "        <tocitem text=\"About The Constellation REST Server\" target=\"au.gov.asd.tac.constellation.utilities.rest\"/>\n"
+                + "    </tocitem>\n"
+                + "</toc>\n"
+                + "";
+
+        File tempFile = null;
+        try {
+            try {
+                tempFile = File.createTempFile("testfile", ".xml");
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+
+            // try with resources
+            try (final FileWriter fw = new FileWriter(tempFile)) {
+                fw.append(fileContents);
+            }
+
+            final TreeNode root = new TreeNode(new TOCItem("root", ""));
+            TOCParser.parse(tempFile, root);
+
+            final TreeNode child1 = (TreeNode) root.getChildren().get(0); // Views
+            final TreeNode child11 = (TreeNode) child1.getChildren().get(0); // Layers View
+            final TreeNode child111 = (TreeNode) child11.getChildren().get(0); // Layers View (Experimental)
+            final TreeNode child2 = (TreeNode) root.getChildren().get(1); // Jupyter
+            final TreeNode child21 = (TreeNode) child2.getChildren().get(0); // About The Jupyter Notebook Server
+            final TreeNode child22 = (TreeNode) child2.getChildren().get(1); // About The Constellation REST Server
+
+            final TreeNode expectedChild1 = new TreeNode(new TOCItem("Views", ""));
+            final TreeNode expectedChild11 = new TreeNode(new TOCItem("Layers View", ""));
+            final TreeNode expectedChild111 = new TreeNode(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
+            final TreeNode expectedChild2 = new TreeNode(new TOCItem("Jupyter", "")); // Jupyter
+            final TreeNode expectedChild21 = new TreeNode(new TOCItem("About The Jupyter Notebook Server", "au.gov.asd.tac.constellation.utilities.jupyter")); // About The Jupyter Notebook Server
+            final TreeNode expectedChild22 = new TreeNode(new TOCItem("About The Constellation REST Server", "au.gov.asd.tac.constellation.utilities.rest")); // About The Constellation REST Server
+
+            // Check amount of children
+            assertEquals(root.getChildren().size(), 2);
+            assertEquals(child1.getChildren().size(), 1);
+            assertEquals(child11.getChildren().size(), 1);
+            assertEquals(child111.getChildren().size(), 0);
+
+            assertEquals(child2.getChildren().size(), 2);
+            assertEquals(child21.getChildren().size(), 0);
+            assertEquals(child22.getChildren().size(), 0);
+
+            // Check child equality
+            assertEquals(child1, expectedChild1);
+            assertEquals(child11, expectedChild11);
+            assertEquals(child111, expectedChild111);
+
+            assertEquals(child2, expectedChild2);
+            assertEquals(child21, expectedChild21);
+            assertEquals(child22, expectedChild22);
+
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            // Cleanup
+            if (tempFile != null && tempFile.exists()) {
+                tempFile.delete();
+            }
+        }
+    }
+
+
+    /**
+     * Test of parse method, of class TOCParser.
+     */
+    @Test
     public void testParseMultipleFiles() throws SAXException, IOException, ParserConfigurationException {
         System.out.println("parse multiple file");
 
