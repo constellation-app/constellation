@@ -51,7 +51,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
-import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
@@ -72,6 +71,7 @@ public class WelcomeViewPane extends BorderPane {
 
     // place holder image
     public static final String LOGO = "resources/constellation_logo.png";
+    private static final Image PLACEHOLDER_IMAGE =  new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"));
 
     private static final Button[] recentGraphButtons = new Button[10];
 
@@ -190,6 +190,7 @@ public class WelcomeViewPane extends BorderPane {
             flow.setVgap(20);
 
             //Create the buttons for the recent page
+            final String screenshotFilenameFormat = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + "%s.png";
             final List<HistoryItem> fileDetails = RecentFiles.getUniqueRecentFiles();
             for (int i = 0; i < recentGraphButtons.length; i++) {
                 recentGraphButtons[i] = new Button();
@@ -202,23 +203,20 @@ public class WelcomeViewPane extends BorderPane {
                     recentGraphButtons[i].setTooltip(toolTip);
                     final String text = recentGraphButtons[i].getText();
 
-                    final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
+                    final String screenshotFilename = String.format(screenshotFilenameFormat, text);
                     if (new File(screenshotFilename).exists()) {
                         recentGraphButtons[i].setGraphic(buildGraphic(
                                 new Image("file:///" + screenshotFilename)
                         ));
                     } else if (i < fileDetails.size()) {
-                        recentGraphButtons[i].setGraphic(buildGraphic(
-                                new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"))
-                        ));
+                        recentGraphButtons[i].setGraphic(buildGraphic(PLACEHOLDER_IMAGE));
                     }
 
                     //Calls the method for the recent graphs to open
                     //on the button action
                     final String path = fileDetails.get(i).getPath(); 
                     recentGraphButtons[i].setOnAction(e -> {
-                        final FileObject fo = RecentFiles.convertPath2File(path);
-                        OpenFile.open(fo, -1);
+                        OpenFile.open(RecentFiles.convertPath2File(path), -1);
                         saveCurrentDirectory(path);
                     });
                 }

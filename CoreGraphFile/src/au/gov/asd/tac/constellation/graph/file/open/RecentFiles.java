@@ -142,9 +142,8 @@ public final class RecentFiles {
      * @return list of recent files
      */
     public static List<HistoryItem> getUniqueRecentFiles() {
-        final List<HistoryItem> history = getRecentFiles();
         final List<HistoryItem> uniqueFiles = new ArrayList<>();
-        for (final HistoryItem file : history) {
+        for (final HistoryItem file : getRecentFiles()) {
             final FileObject fo = convertPath2File(file.getPath());
             if (fo != null && !uniqueFiles.contains(file)) {
                 uniqueFiles.add(file);
