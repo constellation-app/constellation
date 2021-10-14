@@ -130,7 +130,7 @@ public class FindViewControllerNGTest {
         System.out.println("updateBasicParameters");
         BasicFindReplaceParameters parameters = null;
         FindViewController instance = null;
-        instance.updateBasicParameters(parameters);
+        instance.updateBasicFindParameters(parameters);
         // TODO review the generated test code and remove the default call to fail.
     }
 

@@ -84,7 +84,7 @@ import org.openide.windows.TopComponent;
 )
 @ActionReferences({
     @ActionReference(path = "Menu/Edit", position = 1000, separatorBefore = 999),
-    @ActionReference(path = "Shortcuts", name = "C-F")
+    @ActionReference(path = "Shortcuts", name = "C-B")
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_FindAction",

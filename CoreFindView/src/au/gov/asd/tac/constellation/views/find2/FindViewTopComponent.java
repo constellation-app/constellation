@@ -20,11 +20,13 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find2.gui.FindViewPane;
+import java.awt.Dimension;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * Find View Top Component.
@@ -36,7 +38,7 @@ import org.openide.windows.TopComponent;
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
-        mode = "output",
+        mode = "properties",
         openAtStartup = false
 )
 @ActionID(
@@ -44,7 +46,8 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.find2.FindTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 3000)
+    @ActionReference(path = "Menu/Views", position = 3000),
+    @ActionReference(path = "Shortcuts", name = "C-F")
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_FindView2Action",
@@ -65,11 +68,14 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         setName(Bundle.CTL_FindViewTopComponent2());
         setToolTipText(Bundle.HINT_FindViewTopComponent2());
 
+        WindowManager.getDefault().setTopComponentFloating(this, true);
         initComponents();
         this.pane = new FindViewPane(this);
         findViewController = FindViewController.getDefault().init(this);
         initContent();
+        WindowManager.getDefault().setTopComponentFloating(this, true);
 
+        setInitialDimensions();
         disableFindView();
 
     }
@@ -89,7 +95,6 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         super.handleComponentClosed();
         FindViewController.getDefault().updateUI();
         disableFindView();
-
     }
 
     @Override
@@ -97,6 +102,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         super.handleComponentOpened();
         FindViewController.getDefault().updateUI();
         disableFindView();
+        focusFindTextField();
     }
 
     @Override
@@ -134,6 +140,17 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         } else {
             FindViewController.getDefault().disableFindView(pane, false);
         }
+    }
+
+    public void setInitialDimensions() {
+        WindowManager.getDefault().setTopComponentFloating(this, true);
+        this.setLocation(500, 500);
+        this.setMinimumSize(new Dimension(500, 500));
+
+    }
+
+    public void focusFindTextField() {
+        pane.getTabs().getBasicFindTab().requestTextFieldFocus();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

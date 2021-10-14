@@ -90,4 +90,8 @@ public class FindViewTabs extends TabPane {
         return parentComponent;
     }
 
+    public BasicFindTab getBasicFindTab() {
+        return basicFindTab;
+    }
+
 }

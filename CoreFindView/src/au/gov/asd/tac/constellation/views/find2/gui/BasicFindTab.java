@@ -50,30 +50,30 @@ import org.controlsfx.control.CheckComboBox;
  */
 public class BasicFindTab extends Tab {
 
-    private final FindViewTabs parentComponent;
+    protected final FindViewTabs parentComponent;
 
-    private final VBox layers = new VBox();
+    protected final VBox layers = new VBox();
 
-    private final GridPane textGrid = new GridPane();
-    private final GridPane settingsGrid = new GridPane();
-    private final GridPane addRemoveSelectionGrid = new GridPane();
+    protected final GridPane textGrid = new GridPane();
+    protected final GridPane settingsGrid = new GridPane();
+    protected final GridPane addRemoveSelectionGrid = new GridPane();
     protected final HBox buttonsHBox = new HBox();
     protected final VBox buttonsVBox = new VBox();
 
-    private final Label findLabel = new Label("Find:");
-    private final TextField findTextField = new TextField();
+    protected final Label findLabel = new Label("Find:");
+    protected final TextField findTextField = new TextField();
 
-    private final Label lookForLabel = new Label("Look For:");
-    private final String[] elementTypes = {GraphElementType.VERTEX.getShortLabel(), GraphElementType.TRANSACTION.getShortLabel(), GraphElementType.EDGE.getShortLabel(), GraphElementType.LINK.getShortLabel()};
-    private final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<String>(FXCollections.observableArrayList(elementTypes));
+    protected final Label lookForLabel = new Label("Look For:");
+    protected final String[] elementTypes = {GraphElementType.VERTEX.getShortLabel(), GraphElementType.TRANSACTION.getShortLabel(), GraphElementType.EDGE.getShortLabel(), GraphElementType.LINK.getShortLabel()};
+    protected final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<String>(FXCollections.observableArrayList(elementTypes));
 
-    private final Label inAttributesLabel = new Label("In Attributes:");
-    final CheckComboBox<String> inAttributesMenu = new CheckComboBox<String>();
-    private ArrayList<Attribute> attributes = new ArrayList<>();
-    private ArrayList<Attribute> selectedNodeAttributes = new ArrayList<>();
-    private ArrayList<Attribute> selectedTransAttributes = new ArrayList<>();
-    private ArrayList<Attribute> selectedEdgeAttributes = new ArrayList<>();
-    private ArrayList<Attribute> selectedLinkAttributes = new ArrayList<>();
+    protected final Label inAttributesLabel = new Label("In Attributes:");
+    protected final CheckComboBox<String> inAttributesMenu = new CheckComboBox<String>();
+    protected ArrayList<Attribute> attributes = new ArrayList<>();
+    protected ArrayList<Attribute> selectedNodeAttributes = new ArrayList<>();
+    protected ArrayList<Attribute> selectedTransAttributes = new ArrayList<>();
+    protected ArrayList<Attribute> selectedEdgeAttributes = new ArrayList<>();
+    protected ArrayList<Attribute> selectedLinkAttributes = new ArrayList<>();
 
     final ContextMenu contextMenu = new ContextMenu();
     final MenuItem selectAllMenuItem = new MenuItem("Select All");
@@ -82,26 +82,26 @@ public class BasicFindTab extends Tab {
     final long attributeModificationCounter = Long.MIN_VALUE;
 
     // need to add menu items
-    private final GridPane preferencesGrid = new GridPane();
-    private final ToggleGroup textStyleTB = new ToggleGroup();
-    private final RadioButton standardRadioBtn = new RadioButton("Standard Text");
-    private final RadioButton regExBtn = new RadioButton("RegEx");
-    private final VBox toggleVBox = new VBox();
-    private final CheckBox ignoreCaseCB = new CheckBox("Ignore Case");
-    private final CheckBox exactMatchCB = new CheckBox("Exact Match Only");
+    protected final GridPane preferencesGrid = new GridPane();
+    protected final ToggleGroup textStyleTB = new ToggleGroup();
+    protected final RadioButton standardRadioBtn = new RadioButton("Standard Text");
+    protected final RadioButton regExBtn = new RadioButton("RegEx");
+    protected final VBox toggleVBox = new VBox();
+    protected final CheckBox ignoreCaseCB = new CheckBox("Ignore Case");
+    protected final CheckBox exactMatchCB = new CheckBox("Exact Match Only");
 
-    private final CheckBox addToCurrent = new CheckBox("Add to Current Selection");
-    private final CheckBox removeFromCurrent = new CheckBox("Remove from Current Selection");
+    protected final CheckBox addToCurrent = new CheckBox("Add to Current Selection");
+    protected final CheckBox removeFromCurrent = new CheckBox("Remove from Current Selection");
     protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
 
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Prev");
     private final Button findAllButton = new Button("Find All");
 
-    private final int LABEL_WIDTH = 90;
-    private final int DROP_DOWN_WIDTH = 120;
+    protected final int LABEL_WIDTH = 90;
+    protected final int DROP_DOWN_WIDTH = 120;
 
-    private static final Logger LOGGER = Logger.getLogger(BasicFindTab.class.getName());
+    protected static final Logger LOGGER = Logger.getLogger(BasicFindTab.class.getName());
 
     public BasicFindTab(FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;
@@ -171,13 +171,14 @@ public class BasicFindTab extends Tab {
         textGrid.add(findLabel, 0, 0);
         textGrid.add(findTextField, 1, 0);
         textGrid.getColumnConstraints().addAll(neverGrow, alwaysGrow);
+        findTextField.requestFocus();
 
         settingsGrid.setHgap(5);
         settingsGrid.setVgap(5);
 
         lookForLabel.setMinWidth(LABEL_WIDTH - settingsGrid.getHgap());
         lookForChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
-//        lookForChoiceBox.getSelectionModel().select(GraphElementType.VERTEX.getShortLabel());
+        lookForChoiceBox.getSelectionModel().select(GraphElementType.VERTEX.getShortLabel());
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 1, 0);
 
@@ -187,7 +188,7 @@ public class BasicFindTab extends Tab {
         settingsGrid.add(inAttributesMenu, 1, 1);
 
         inAttributesMenu.setMaxWidth(DROP_DOWN_WIDTH);
-//        populateAttributes(GraphElementType.VERTEX);
+        populateAttributes(GraphElementType.VERTEX);
 
         contextMenu.getItems().addAll(selectAllMenuItem, deselectAllMenuItem);
 
@@ -220,20 +221,6 @@ public class BasicFindTab extends Tab {
 
         layers.getChildren().addAll(textGrid, settingsGrid);
 
-    }
-
-    /**
-     * This is used in the ReplaceTab class to avoid rewriting all the UI
-     * elements again when only adding a label and a textField
-     *
-     * @return the textGrid GridPane
-     */
-    public GridPane getTextGrid() {
-        return textGrid;
-    }
-
-    public HBox getButtonsHBox() {
-        return buttonsHBox;
     }
 
     public FindViewTabs getParentComponent() {
@@ -341,7 +328,7 @@ public class BasicFindTab extends Tab {
      * and search all graphs selection and passes them to the controller to
      * create a BasicFindReplaceParameter
      */
-    public void updateBasicFindReplaceParamters() {
+    public void updateBasicFindParamters() {
         final GraphElementType elementType = GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
         final ArrayList<Attribute> attributeList = new ArrayList<Attribute>(getMatchingAttributeList(elementType));
 
@@ -349,7 +336,7 @@ public class BasicFindTab extends Tab {
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
                 ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), searchAllGraphs.isSelected());
 
-        FindViewController.getDefault().updateBasicParameters(parameters);
+        FindViewController.getDefault().updateBasicFindParameters(parameters);
     }
 
     /**
@@ -363,7 +350,7 @@ public class BasicFindTab extends Tab {
     public void findAllAction() {
         if (!findTextField.getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
-            updateBasicFindReplaceParamters();
+            updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(true, false);
         }
     }
@@ -371,7 +358,7 @@ public class BasicFindTab extends Tab {
     public void findNextAction() {
         if (!findTextField.getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
-            updateBasicFindReplaceParamters();
+            updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(false, true);
         }
     }
@@ -379,8 +366,12 @@ public class BasicFindTab extends Tab {
     public void findPrevAction() {
         if (!findTextField.getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
-            updateBasicFindReplaceParamters();
+            updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(false, false);
         }
+    }
+
+    public void requestTextFieldFocus() {
+        findTextField.requestFocus();
     }
 }

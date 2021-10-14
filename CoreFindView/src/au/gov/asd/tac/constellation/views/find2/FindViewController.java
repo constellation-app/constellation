@@ -40,10 +40,11 @@ public class FindViewController {
     private static FindViewController instance = null;
     private FindViewTopComponent parentComponent;
 
-    private BasicFindReplaceParameters currentBasicParameters;
-    private BasicFindReplaceParameters previousBasicParameters;
+    private BasicFindReplaceParameters currentBasicFindParameters;
     private boolean addToCurrentSelection = false;
     private boolean removeFromCurrentSelection = false;
+
+    private BasicFindReplaceParameters currentBasicReplaceParameters;
 
     private static final Logger LOGGER = Logger.getLogger(FindViewController.class.getName());
 
@@ -74,21 +75,29 @@ public class FindViewController {
      * Updates the UI elements and controllers variables to match the UI
      */
     public void updateUI() {
-        if (currentBasicParameters != null) {
+        if (currentBasicFindParameters != null) {
             /**
              * Copies a list of the current attributes to avoid manipulating the
              * original list
              */
             ArrayList<Attribute> attributes = new ArrayList();
-            for (Attribute a : currentBasicParameters.getAttributeList()) {
+            for (Attribute a : currentBasicFindParameters.getAttributeList()) {
                 attributes.add(a);
             }
             /*
              * repopulates the attributes list incase its changed
              * updates the currentBasicParameters to match the UI
              */
-            populateAttributes(currentBasicParameters.getGraphElement(), attributes, Long.MIN_VALUE);
-            updateBasicParameters(currentBasicParameters);
+            populateAttributes(currentBasicFindParameters.getGraphElement(), attributes, Long.MIN_VALUE);
+            updateBasicReplaceParameters(currentBasicReplaceParameters);
+        }
+        if (currentBasicReplaceParameters != null) {
+            ArrayList<Attribute> attributes = new ArrayList();
+            for (Attribute a : currentBasicReplaceParameters.getAttributeList()) {
+                attributes.add(a);
+            }
+            populateAttributes(currentBasicReplaceParameters.getGraphElement(), attributes, Long.MIN_VALUE);
+            updateBasicReplaceParameters(currentBasicReplaceParameters);
         }
     }
 
@@ -147,13 +156,21 @@ public class FindViewController {
         pane.setDisable(disable);
     }
 
+    public void focusFindTextField() {
+        parentComponent.focusFindTextField();
+    }
+
     /**
      * Updates the controllers current parameters with those passed
      *
      * @param parameters
      */
-    public void updateBasicParameters(BasicFindReplaceParameters parameters) {
-        currentBasicParameters = parameters;
+    public void updateBasicFindParameters(BasicFindReplaceParameters parameters) {
+        currentBasicFindParameters = parameters;
+    }
+
+    public void updateBasicReplaceParameters(BasicFindReplaceParameters parameters) {
+        currentBasicReplaceParameters = parameters;
     }
 
     /**
@@ -177,11 +194,11 @@ public class FindViewController {
      * @param getNext true if finding the next element, false if the previous
      */
     public void retriveMatchingElements(boolean selectAll, boolean getNext) {
-        if (currentBasicParameters.isSearchAllGraphs()) {
+        if (currentBasicFindParameters.isSearchAllGraphs()) {
             for (Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                 if (graph != null) {
-                    if (currentBasicParameters.isSearchAllGraphs()) {
-                        BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicParameters, addToCurrentSelection, selectAll, getNext);
+                    if (currentBasicFindParameters.isSearchAllGraphs()) {
+                        BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection, selectAll, getNext);
                         PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
                     }
                 }
@@ -189,14 +206,37 @@ public class FindViewController {
         } else {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
             if (graph != null) {
-                BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicParameters, addToCurrentSelection, selectAll, getNext);
+                BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection, selectAll, getNext);
                 PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
             }
         }
     }
 
-    public BasicFindReplaceParameters getCurrentBasicParameters() {
-        return currentBasicParameters;
+    public void replaceMatchingElements(boolean selectAll, boolean getNext) {
+        if (currentBasicReplaceParameters.isSearchAllGraphs()) {
+            for (Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+                if (graph != null) {
+                    if (currentBasicReplaceParameters.isSearchAllGraphs()) {
+                        ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, selectAll, getNext);
+                        PluginExecution.withPlugin(basicReplacePlugin).executeLater(graph);
+                    }
+                }
+            }
+        } else {
+            final Graph graph = GraphManager.getDefault().getActiveGraph();
+            if (graph != null) {
+                ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, selectAll, getNext);
+                PluginExecution.withPlugin(basicReplacePlugin).executeLater(graph);
+            }
+        }
+    }
+
+    public BasicFindReplaceParameters getCurrentBasicFindParameters() {
+        return currentBasicFindParameters;
+    }
+
+    public BasicFindReplaceParameters getCurrentBasicReplaceParameters() {
+        return currentBasicReplaceParameters;
     }
 
     public boolean isAddToCurrentSelection() {

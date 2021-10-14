@@ -15,6 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.find2.gui;
 
+import au.gov.asd.tac.constellation.graph.Attribute;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.views.find2.BasicFindReplaceParameters;
+import au.gov.asd.tac.constellation.views.find2.FindViewController;
+import java.util.ArrayList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -36,17 +41,24 @@ public class ReplaceTab extends BasicFindTab {
         super(parentComponent);
         this.setText("Replace");
         setReplaceGridContent();
+
+        replaceAllButton.setOnAction(action -> {
+            replaceAllAction();
+        });
+
     }
 
     /**
      * Adds the UI changes for the replace tab
      */
     private void setReplaceGridContent() {
-        getTextGrid().add(replaceLabel, 0, 1);
-        getTextGrid().add(replaceTextField, 1, 1);
+        textGrid.add(replaceLabel, 0, 1);
+        textGrid.add(replaceTextField, 1, 1);
 
-        getButtonsHBox().getChildren().clear();
-        getButtonsHBox().getChildren().addAll(replaceNextButton, replaceAllButton);
+        buttonsHBox.getChildren().clear();
+        buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton);
+        buttonsVBox.getChildren().remove(addRemoveSelectionGrid);
+
     }
 
     public void updateButtons() {
@@ -54,6 +66,31 @@ public class ReplaceTab extends BasicFindTab {
         buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton, searchAllGraphs);
         getParentComponent().getParentComponent().setBottom(buttonsVBox);
 
+    }
+
+    /**
+     * Reads the find text, element type, attributes selected, standard text
+     * selection, regEx selection, ignore case selection, exact match selected
+     * and search all graphs selection and passes them to the controller to
+     * create a BasicFindReplaceParameter
+     */
+    public void updateBasicReplaceParamters() {
+        final GraphElementType elementType = GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
+        final ArrayList<Attribute> attributeList = new ArrayList<Attribute>(getMatchingAttributeList(elementType));
+
+        BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), replaceTextField.getText(),
+                elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
+                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), searchAllGraphs.isSelected());
+
+        FindViewController.getDefault().updateBasicReplaceParameters(parameters);
+    }
+
+    public void replaceAllAction() {
+        if (!findTextField.getText().isEmpty() && !replaceTextField.getText().isEmpty()) {
+            saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+            updateBasicReplaceParamters();
+            FindViewController.getDefault().replaceMatchingElements(true, false);
+        }
     }
 
 }
