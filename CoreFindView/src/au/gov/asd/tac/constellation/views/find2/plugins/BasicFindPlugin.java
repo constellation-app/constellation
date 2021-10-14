@@ -134,6 +134,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         }
 
         FindResultsList findInCurrentSelectionList = new FindResultsList();
+        FindResultsList removeFromCurrentSelectionList = new FindResultsList();
 
         String searchString = regex ? findString : Pattern.quote(findString);
         int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
@@ -159,17 +160,15 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                         found = match.find();
                     }
                     if (found) {
-                        if (findInCurrentSelection) {
+                        if (findInCurrentSelection || removeFromCurrentSelection) {
                             final long uid = elementType.getUID(graph, currElement);
                             if (graph.getBooleanValue(selectedAttribute, currElement)) {
                                 findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                                removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
                             }
                         }
-                        if (selectAll) {
+                        if (selectAll && !findInCurrentSelection && !removeFromCurrentSelection) {
                             graph.setBooleanValue(selectedAttribute, currElement, true);
-                            if (removeFromCurrentSelection) {
-                                graph.setBooleanValue(selectedAttribute, currElement, false);
-                            }
                         }
                         final long uid = elementType.getUID(graph, currElement);
                         FindResult fr = new FindResult(currElement, uid, elementType);
@@ -183,6 +182,16 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                 clearSelection(graph);
                 for (FindResult fr : findInCurrentSelectionList) {
                     graph.setBooleanValue(selectedAttribute, fr.getID(), true);
+                }
+            }
+        }
+        if (removeFromCurrentSelection) {
+            if (!removeFromCurrentSelectionList.isEmpty()) {
+                for (FindResult fr : removeFromCurrentSelectionList) {
+                    graph.setBooleanValue(selectedAttribute, fr.getID(), false);
+                    if (getNext) {
+                        break;
+                    }
                 }
             }
         }
