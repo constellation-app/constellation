@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -49,6 +52,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableViewPreferencesIoProviderNGTest {
+    private static final Logger LOGGER = Logger.getLogger(TableViewPreferencesIoProviderNGTest.class.getName());
 
     private static MockedStatic<JsonIO> jsonIOStaticMock;
 
@@ -57,16 +61,22 @@ public class TableViewPreferencesIoProviderNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
 
         jsonIOStaticMock = Mockito.mockStatic(JsonIO.class);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
         jsonIOStaticMock.close();
+        
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

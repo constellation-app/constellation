@@ -52,6 +52,7 @@ public class SetGraphValues extends RestService {
 
     private static final String NAME = "set_graph_values";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
+    private static final String ATTRIBUTES_PARAMETER_ID = "attributes";
 
     private static final String COLUMNS = "columns";
 
@@ -81,8 +82,15 @@ public class SetGraphValues extends RestService {
 
         final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
-        graphIdParam.setDescription("The id of the graph to get the values of.");
+        graphIdParam.setDescription("The id of the graph to set the graph attributes. (Default is the active graph)");
         parameters.addParameter(graphIdParam);
+
+        final PluginParameter<StringParameterValue> dataParam = StringParameterType.build(ATTRIBUTES_PARAMETER_ID);
+        dataParam.setName("Graph attributes (body)");
+        dataParam.setDescription("A JSON representation of the graph attributes, in the form {\"columns\": [\"attribute1\",\"attribute2\",\"attribute3\"], \"data\": [[val1, val2, val3]]. This is the same as the output of pandas.DataFrame.to_json(orient='split', date_format='iso').");
+        dataParam.setRequestBodyExampleJson("#/components/examples/setGraphAttributesExample");
+        dataParam.setRequired(true);
+        parameters.addParameter(dataParam);
 
         return parameters;
     }

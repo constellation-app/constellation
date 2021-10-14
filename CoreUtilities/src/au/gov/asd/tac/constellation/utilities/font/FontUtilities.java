@@ -48,7 +48,7 @@ public class FontUtilities {
     private static final Map<String, Font> OUTPUT_FONTS = new HashMap<>();
 
     /**
-     * Set the default font size as a preference if its not already defined.
+     * Set the default font size and family preferences if they are not already defined.
      * <p>
      * Top Components listen for changes in
      * ApplicationFontPreferenceKeys.FONT_PREFERENCES and if its not defined
@@ -135,7 +135,7 @@ public class FontUtilities {
             } else {
                 fontFamily = ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT;
             }
-        } catch (final BackingStoreException | NumberFormatException ex) {
+        } catch (final BackingStoreException ex) {
             fontFamily = ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT;
             LOGGER.severe(ex.getLocalizedMessage());
         }
@@ -145,7 +145,8 @@ public class FontUtilities {
     }
 
     /**
-     * Set the default font size as a preference if its not already defined.
+     * Set the default font size and family as preferences if they are not 
+     * already defined.
      * <p>
      * Top Components listen for changes in
      * ApplicationPreferenceKeys.OUTPUT2_PREFERENCE and if its not defined then
@@ -229,7 +230,7 @@ public class FontUtilities {
             } else {
                 fontFamily = ApplicationPreferenceKeys.OUTPUT2_FONT_FAMILY_DEFAULT;
             }
-        } catch (final BackingStoreException | NumberFormatException ex) {
+        } catch (final BackingStoreException ex) {
             fontFamily = ApplicationPreferenceKeys.OUTPUT2_FONT_FAMILY_DEFAULT;
             LOGGER.severe(ex.getLocalizedMessage());
         }

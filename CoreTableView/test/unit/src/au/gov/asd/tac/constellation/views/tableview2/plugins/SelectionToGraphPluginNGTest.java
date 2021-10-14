@@ -21,6 +21,9 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
@@ -30,9 +33,7 @@ import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -40,27 +41,22 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class SelectionToGraphPluginNGTest {
-
-    public SelectionToGraphPluginNGTest() {
-    }
+    private static final Logger LOGGER = Logger.getLogger(SelectionToGraphPluginNGTest.class.getName());
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @Test

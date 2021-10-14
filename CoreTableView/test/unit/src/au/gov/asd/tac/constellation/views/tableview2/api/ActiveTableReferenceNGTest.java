@@ -29,6 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.application.Platform;
@@ -66,6 +69,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ActiveTableReferenceNGTest {
+    private static final Logger LOGGER = Logger.getLogger(ActiveTableReferenceNGTest.class.getName());
 
     private SortedList<ObservableList<String>> sortedRowList;
     private Map<Integer, ObservableList<String>> elementIdToRowIndex;
@@ -74,18 +78,20 @@ public class ActiveTableReferenceNGTest {
 
     private ActiveTableReference activeTableReference;
 
-    public ActiveTableReferenceNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

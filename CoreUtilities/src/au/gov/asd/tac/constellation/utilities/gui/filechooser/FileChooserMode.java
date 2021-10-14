@@ -29,5 +29,10 @@ public enum FileChooserMode {
     /**
      * Select a file name/location to save data.
      */
-    SAVE
+    SAVE,
+    
+    /**
+     * Select one or more files.
+     */
+    MULTI;
 }
