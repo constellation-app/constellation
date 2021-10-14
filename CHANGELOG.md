@@ -18,6 +18,11 @@
 
 -   Removed the verbose printing of garbage collection by default.
 
+-   Renamed tableview2 package to tableview now that it is the primary table
+    code being used.
+
+## Changes in September 2021
+
 -   Update the default configuration to always show errors as a dialog message.
 
 -   Updated the way exceptions are displayed to the user. Exceptions thrown in
