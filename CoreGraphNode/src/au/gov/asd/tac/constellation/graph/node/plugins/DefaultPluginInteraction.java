@@ -26,13 +26,11 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.netbeans.api.progress.ProgressHandle;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import static org.openide.NotifyDescriptor.DEFAULT_OPTION;
 import org.openide.awt.NotificationDisplayer;
@@ -241,22 +239,23 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                 message,
                 NotifyDescriptor.QUESTION_MESSAGE
         );
-        
+
         descriptor.setOptions(new Object[]{
             NotifyDescriptor.YES_OPTION,
             NotifyDescriptor.NO_OPTION
         });
-        
+
         try {
             return NotifyDisplayer.displayAndWait(descriptor).get()
                     == NotifyDescriptor.YES_OPTION;
         } catch (ExecutionException ex) {
-            throw new RuntimeException("Failed to open confirm dialog", ex);
+            LOGGER.log(Level.SEVERE, "Failed to open confirm dialog", ex);
         } catch (InterruptedException ex) {
             LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Failed to open confirm dialog", ex);
         }
+
+        return false;
     }
 
     @Override

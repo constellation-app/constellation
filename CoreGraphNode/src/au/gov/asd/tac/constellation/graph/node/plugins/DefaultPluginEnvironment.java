@@ -139,7 +139,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 }
             } catch (final InterruptedException ex) {
                 auditPluginError(plugin, ex);
-                reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+                reportException(plugin.getName(), interaction, currentReport, null, ex);
                 Thread.currentThread().interrupt();
             } catch (final PluginException ex) {
                 auditPluginError(plugin, ex);
@@ -216,7 +216,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             }
         } catch (final InterruptedException ex) {
             auditPluginError(plugin, ex);
-            reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            reportException(plugin.getName(), interaction, currentReport, null, ex);
             Thread.currentThread().interrupt();
             throw ex;
         } catch (final PluginException ex) {
@@ -318,7 +318,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             plugin.run(graph, interaction, parameters);
         } catch (final InterruptedException ex) {
             auditPluginError(plugin, ex);
-            reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            reportException(plugin.getName(), interaction, currentReport, null, ex);
             Thread.currentThread().interrupt();
             throw ex;
         } catch (final PluginException ex) {
