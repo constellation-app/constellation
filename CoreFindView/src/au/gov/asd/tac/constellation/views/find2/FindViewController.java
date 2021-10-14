@@ -215,12 +215,12 @@ public class FindViewController {
         }
     }
 
-    public void replaceMatchingElements(boolean selectAll, boolean getNext) {
+    public void replaceMatchingElements(boolean replaceAll, boolean replaceNext) {
         if (currentBasicReplaceParameters.isSearchAllGraphs()) {
             for (Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                 if (graph != null) {
                     if (currentBasicReplaceParameters.isSearchAllGraphs()) {
-                        ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, selectAll, getNext);
+                        ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext);
                         PluginExecution.withPlugin(basicReplacePlugin).executeLater(graph);
                     }
                 }
@@ -228,7 +228,7 @@ public class FindViewController {
         } else {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
             if (graph != null) {
-                ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, selectAll, getNext);
+                ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext);
                 PluginExecution.withPlugin(basicReplacePlugin).executeLater(graph);
             }
         }

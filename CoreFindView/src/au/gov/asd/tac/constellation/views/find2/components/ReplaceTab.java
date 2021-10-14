@@ -45,6 +45,9 @@ public class ReplaceTab extends BasicFindTab {
         replaceAllButton.setOnAction(action -> {
             replaceAllAction();
         });
+        replaceNextButton.setOnAction(action -> {
+            replaceNextAction();
+        });
 
     }
 
@@ -90,6 +93,14 @@ public class ReplaceTab extends BasicFindTab {
             saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
             FindViewController.getDefault().replaceMatchingElements(true, false);
+        }
+    }
+
+    public void replaceNextAction() {
+        if (!findTextField.getText().isEmpty() && !replaceTextField.getText().isEmpty()) {
+            saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+            updateBasicReplaceParamters();
+            FindViewController.getDefault().replaceMatchingElements(false, true);
         }
     }
 

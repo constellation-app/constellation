@@ -75,6 +75,9 @@ public class ReplacePlugin extends SimpleEditPlugin {
                     String newValue = match.replaceAll(replaceString);
                     if (!newValue.equals(value)) {
                         graph.setStringValue(a.getId(), currElement, newValue);
+                        if (replaceNext == true) {
+                            break;
+                        }
                     }
                 }
             }
