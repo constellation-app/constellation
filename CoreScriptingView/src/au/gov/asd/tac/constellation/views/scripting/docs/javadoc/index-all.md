@@ -16,13 +16,13 @@ JavaScript is disabled on your browser.
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](overview-summary.html)
+-   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
 -   Package
 -   Class
--   [Tree](overview-tree.html)
--   [Deprecated](deprecated-list.html)
+-   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-tree.md)
+-   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
 -   Index
--   [Help](help-doc.html)
+-   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -39,12 +39,12 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <!-- -->
 
--   [Frames](index.html?index-all.html)
--   [No Frames](index-all.html)
+-   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
+-   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
 
 <!-- -->
 
--   [All Classes](allclasses-noframe.html)
+-   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -61,49 +61,49 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 ## A
 
-<span class="memberNameLink">[addAttribute(GraphElementType, String, String, String, Object, String)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#addAttribute-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-java.lang.String-java.lang.String-java.lang.Object-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[addAttribute(GraphElementType, String, String, String, Object, String)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#addAttribute-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-java.lang.String-java.lang.String-java.lang.Object-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Add a new attribute to the graph.
 
 </div>
 
-<span class="memberNameLink">[addTransaction(SVertex, SVertex, boolean)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#addTransaction-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-boolean-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[addTransaction(SVertex, SVertex, boolean)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#addTransaction-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-boolean-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Add a transaction to the graph.
 
 </div>
 
-<span class="memberNameLink">[addVertex()](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#addVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[addVertex()](../constellation/CoreScriptingView/srcau/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#addVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Add a vertex to the graph.
 
 </div>
 
-<span class="memberNameLink">[attribute(int)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#attribute-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[attribute(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#attribute-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an attribute from the graph by id.
 
 </div>
 
-<span class="memberNameLink">[attribute(GraphElementType, String)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#attribute-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[attribute(GraphElementType, String)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#attribute-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an attribute from the graph by name.
 
 </div>
 
-<span class="memberNameLink">[attributeCount(GraphElementType)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#attributeCount-au.gov.asd.tac.constellation.graph.GraphElementType-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[attributeCount(GraphElementType)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#attributeCount-au.gov.asd.tac.constellation.graph.GraphElementType-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of attributes on the graph for a specific element type.
 
 </div>
 
-<span class="memberNameLink">[attributeModificationCounter()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#attributeModificationCounter--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[attributeModificationCounter()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#attributeModificationCounter--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a count representing the number of modifications that have occurred
@@ -111,41 +111,41 @@ which modified attributes on the graph.
 
 </div>
 
-<span class="memberNameLink">[attributes(GraphElementType)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#attributes-au.gov.asd.tac.constellation.graph.GraphElementType-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[attributes(GraphElementType)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#attributes-au.gov.asd.tac.constellation.graph.GraphElementType-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over attributes of the specified element type.
 
 </div>
 
-<span class="memberNameLink">[attributeType()](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html#attributeType--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[attributeType()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md#attributeType--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the type of this attribute.
 
 </div>
 
-[au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-summary.html) - package au.gov.asd.tac.constellation.views.scripting.graph  
+[au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md) - package au.gov.asd.tac.constellation.views.scripting.graph  
  
 
-[au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html) - package au.gov.asd.tac.constellation.views.scripting.graph.iterators  
+[au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md) - package au.gov.asd.tac.constellation.views.scripting.graph.iterators  
  
 
-[au.gov.asd.tac.constellation.views.scripting.utilities](au/gov/asd/tac/constellation/scripting/utilities/package-summary.html) - package au.gov.asd.tac.constellation.views.scripting.utilities  
+[au.gov.asd.tac.constellation.views.scripting.utilities](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/package-summary.md) - package au.gov.asd.tac.constellation.views.scripting.utilities  
  
 
 <span id="I:C"></span>
 
 ## C
 
-<span class="memberNameLink">[cleanup()](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#cleanup--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[cleanup()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#cleanup--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Clean up any graphs created by scripting which remain in memory.
 
 </div>
 
-<span class="memberNameLink">[commit()](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#commit--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[commit()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#commit--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Commit changes made to the graph using this write lock, then release the
@@ -153,21 +153,21 @@ lock.
 
 </div>
 
-<span class="memberNameLink">[complete()](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#complete--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[complete()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#complete--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Complete this transaction using the schema of the graph.
 
 </div>
 
-<span class="memberNameLink">[complete()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#complete--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[complete()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#complete--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Complete this vertex using the schema of the graph.
 
 </div>
 
-<span class="memberNameLink">[copyGraph(SGraph)](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html#copyGraph-au.gov.asd.tac.constellation.views.scripting.graph.SGraph-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
+<span class="memberNameLink">[copyGraph(SGraph)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md#copyGraph-au.gov.asd.tac.constellation.views.scripting.graph.SGraph-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
 <div class="block">
 
 Create an in-memory copy of the given graph.
@@ -178,42 +178,42 @@ Create an in-memory copy of the given graph.
 
 ## D
 
-<span class="memberNameLink">[defaultValue()](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html#defaultValue--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[defaultValue()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md#defaultValue--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the default value of this attribute.
 
 </div>
 
-<span class="memberNameLink">[description()](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html#description--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[description()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md#description--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a description of this attribute.
 
 </div>
 
-<span class="memberNameLink">[destinationVertex()](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#destinationVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[destinationVertex()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#destinationVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the destination vertex of this edge.
 
 </div>
 
-<span class="memberNameLink">[destinationVertex()](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#destinationVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[destinationVertex()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#destinationVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the destination vertex of this transaction.
 
 </div>
 
-<span class="memberNameLink">[direction()](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#direction--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[direction()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#direction--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the direction of this edge.
 
 </div>
 
-<span class="memberNameLink">[direction()](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#direction--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[direction()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#direction--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the direction of this transaction.
@@ -224,117 +224,117 @@ Get the direction of this transaction.
 
 ## E
 
-<span class="memberNameLink">[EDGE](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#EDGE)</span> - Static variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[EDGE](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#EDGE)</span> - Static variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 A reference to the 'Edge' element type.
 
 </div>
 
-<span class="memberNameLink">[edge(int)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#edge-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[edge(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#edge-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a edge on the graph by id.
 
 </div>
 
-<span class="memberNameLink">[edgeCount()](au/gov/asd/tac/constellation/scripting/graph/SLink.html#edgeCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[edgeCount()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#edgeCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of edges this link represents.
 
 </div>
 
-<span class="memberNameLink">[edgeCount()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#edgeCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[edgeCount()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#edgeCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of edges on the graph.
 
 </div>
 
-<span class="memberNameLink">[edgeCount()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#edgeCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[edgeCount()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#edgeCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of edges connected to this vertex.
 
 </div>
 
-<span class="memberNameLink">[edges()](au/gov/asd/tac/constellation/scripting/graph/SLink.html#edges--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[edges()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#edges--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over edges this link represents.
 
 </div>
 
-<span class="memberNameLink">[edges()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#edges--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[edges()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#edges--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over edges.
 
 </div>
 
-<span class="memberNameLink">[edges()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#edges--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[edges()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#edges--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over edges attached to this vertex.
 
 </div>
 
-<span class="memberNameLink">[elementIds()](au/gov/asd/tac/constellation/scripting/graph/SCollection.html#elementIds--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](au/gov/asd/tac/constellation/scripting/graph/SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[elementIds()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md#elementIds--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the ids of elements in this collection.
 
 </div>
 
-<span class="memberNameLink">[elementType()](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html#elementType--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[elementType()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md#elementType--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the element type of this attribute.
 
 </div>
 
-<span class="memberNameLink">[elementType()](au/gov/asd/tac/constellation/scripting/graph/SCollection.html#elementType--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](au/gov/asd/tac/constellation/scripting/graph/SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[elementType()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md#elementType--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the element type of elements in this collection.
 
 </div>
 
-<span class="memberNameLink">[empty()](au/gov/asd/tac/constellation/scripting/graph/SCollection.html#empty--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](au/gov/asd/tac/constellation/scripting/graph/SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[empty()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md#empty--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Check if this collection is empty.
 
 </div>
 
-<span class="memberNameLink">[ensureAttribute(GraphElementType, String)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#ensureAttribute-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[ensureAttribute(GraphElementType, String)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#ensureAttribute-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a schema attribute from the graph if it exists, otherwise create it.
 
 </div>
 
-<span class="memberNameLink">[equals(Object)](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#equals-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[equals(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#equals-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[equals(Object)](au/gov/asd/tac/constellation/scripting/graph/SLink.html#equals-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[equals(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#equals-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[equals(Object)](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#equals-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[equals(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#equals-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[equals(Object)](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#equals-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[equals(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#equals-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[executePlugin(SGraph, String)](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html#executePlugin-au.gov.asd.tac.constellation.views.scripting.graph.SGraph-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
+<span class="memberNameLink">[executePlugin(SGraph, String)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md#executePlugin-au.gov.asd.tac.constellation.views.scripting.graph.SGraph-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
 <div class="block">
 
 Lookup a plugin by name and execute it with default parameter values.
 
 </div>
 
-<span class="memberNameLink">[executePlugin(SGraph, String, Map\<String, String>)](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html#executePlugin-au.gov.asd.tac.constellation.views.scripting.graph.SGraph-java.lang.String-java.util.Map-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
+<span class="memberNameLink">[executePlugin(SGraph, String, Map\<String, String>)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md#executePlugin-au.gov.asd.tac.constellation.views.scripting.graph.SGraph-java.lang.String-java.util.Map-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
 <div class="block">
 
 Lookup a plugin by name and execute it with custom parameter values.
@@ -345,14 +345,14 @@ Lookup a plugin by name and execute it with custom parameter values.
 
 ## F
 
-<span class="memberNameLink">[filter(Object)](au/gov/asd/tac/constellation/scripting/graph/SCollection.html#filter-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](au/gov/asd/tac/constellation/scripting/graph/SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[filter(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md#filter-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Filter this collection using the provided function.
 
 </div>
 
-<span class="memberNameLink">[filterTransactions(Object)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#filterTransactions-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[filterTransactions(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#filterTransactions-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Evaluate a function against each transaction on the graph in order to
@@ -360,7 +360,7 @@ gather a filtered collection.
 
 </div>
 
-<span class="memberNameLink">[filterVertices(Object)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#filterVertices-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[filterVertices(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#filterVertices-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Evaluate a function against each vertex on the graph in order to gather
@@ -372,24 +372,24 @@ a filtered collection.
 
 ## G
 
-<span class="memberNameLink">[getEngine()](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#getEngine--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[getEngine()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#getEngine--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the scripting engine currently being used to evaluate scripts.
 
 </div>
 
-<span class="memberNameLink">[getGraph()](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#getGraph--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[getGraph()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#getGraph--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the actual graph on which scripts are being executed.
 
 </div>
 
-<span class="memberNameLink">[getName()](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html#getName--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
+<span class="memberNameLink">[getName()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md#getName--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
  
 
-<span class="memberNameLink">[getOpenGraphs()](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html#getOpenGraphs--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
+<span class="memberNameLink">[getOpenGraphs()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md#getOpenGraphs--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
 <div class="block">
 
 Provide a map of graph name to graph for every graph currently open in
@@ -397,21 +397,21 @@ Constellation.
 
 </div>
 
-<span class="memberNameLink">[getReadableGraph()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#getReadableGraph--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[getReadableGraph()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#getReadableGraph--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the actual read lock on the graph that this object represents.
 
 </div>
 
-<span class="memberNameLink">[getWritableGraph()](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#getWritableGraph--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[getWritableGraph()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#getWritableGraph--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the actual write lock on the graph that this object represents.
 
 </div>
 
-<span class="memberNameLink">[globalModificationCounter()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#globalModificationCounter--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[globalModificationCounter()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#globalModificationCounter--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a count representing the number of modifications that have occurred
@@ -419,101 +419,101 @@ globally on the graph.
 
 </div>
 
-<span class="memberNameLink">[GRAPH](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#GRAPH)</span> - Static variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[GRAPH](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#GRAPH)</span> - Static variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 A reference to the 'Graph' element type.
 
 </div>
 
-<span class="memberNameLink">[graph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#graph)</span> - Variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#graph)</span> - Variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
 <span id="I:H"></span>
 
 ## H
 
-<span class="memberNameLink">[hasAttribute(GraphElementType, String)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#hasAttribute-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[hasAttribute(GraphElementType, String)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#hasAttribute-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Check if the specified attribute exists on the graph.
 
 </div>
 
-<span class="memberNameLink">[hasEdge(int)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#hasEdge-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[hasEdge(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#hasEdge-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Check if the specified edge exists on the graph.
 
 </div>
 
-<span class="memberNameLink">[hashCode()](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#hashCode--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[hashCode()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#hashCode--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[hashCode()](au/gov/asd/tac/constellation/scripting/graph/SLink.html#hashCode--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[hashCode()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#hashCode--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[hashCode()](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#hashCode--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[hashCode()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#hashCode--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[hashCode()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#hashCode--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[hashCode()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#hashCode--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[hasLink(int)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#hasLink-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[hasLink(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#hasLink-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Check if the specified link exists on the graph.
 
 </div>
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/SAttributeIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SAttributeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SAttributeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SAttributeIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SAttributeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SAttributeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeTransactionIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeTransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeTransactionIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeTransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkEdgeIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkEdgeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkEdgeIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkEdgeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkTransactionIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkTransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkTransactionIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkTransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/STransactionIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[STransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/STransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/STransactionIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[STransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/STransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexEdgeIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexEdgeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexEdgeIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexEdgeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexLinkIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexLinkIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexLinkIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexLinkIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasNext()](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexTransactionIterator.html#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexTransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[hasNext()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md#hasNext--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexTransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[hasTransaction(int)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#hasTransaction-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[hasTransaction(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#hasTransaction-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Check if the specified transaction exists on the graph.
 
 </div>
 
-<span class="memberNameLink">[hasVertex(int)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#hasVertex-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[hasVertex(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#hasVertex-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Check if the specified vertex exists on the graph.
 
 </div>
 
-<span class="memberNameLink">[highVertex()](au/gov/asd/tac/constellation/scripting/graph/SLink.html#highVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[highVertex()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#highVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the vertex the end of this link with the higher id.
@@ -524,56 +524,56 @@ Get the vertex the end of this link with the higher id.
 
 ## I
 
-<span class="memberNameLink">[id()](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html#id--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[id()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md#id--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the id of this attribute.
 
 </div>
 
-<span class="memberNameLink">[id()](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#id--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[id()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#id--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the id of this edge.
 
 </div>
 
-<span class="memberNameLink">[id()](au/gov/asd/tac/constellation/scripting/graph/SLink.html#id--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[id()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#id--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the id of this link.
 
 </div>
 
-<span class="memberNameLink">[id()](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#id--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[id()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#id--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the id of this transaction.
 
 </div>
 
-<span class="memberNameLink">[id()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#id--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[id()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#id--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the id of this vertex.
 
 </div>
 
-<span class="memberNameLink">[init()](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#init--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[init()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#init--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Initialise this transaction using the schema of the graph.
 
 </div>
 
-<span class="memberNameLink">[init()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#init--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[init()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#init--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Initialise this vertex using the schema of the graph.
 
 </div>
 
-<span class="memberNameLink">[intersection(SCollection)](au/gov/asd/tac/constellation/scripting/graph/SCollection.html#intersection-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](au/gov/asd/tac/constellation/scripting/graph/SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[intersection(SCollection)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md#intersection-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the intersection of this collection with another.
@@ -584,56 +584,56 @@ Get the intersection of this collection with another.
 
 ## L
 
-<span class="memberNameLink">[LINK](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#LINK)</span> - Static variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[LINK](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#LINK)</span> - Static variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 A reference to the 'Link' element type.
 
 </div>
 
-<span class="memberNameLink">[link(int)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#link-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[link(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#link-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a link on the graph by id.
 
 </div>
 
-<span class="memberNameLink">[link(SVertex, SVertex)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#link-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[link(SVertex, SVertex)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#link-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a link on the graph by its endpoints.
 
 </div>
 
-<span class="memberNameLink">[linkCount()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#linkCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[linkCount()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#linkCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of links on the graph.
 
 </div>
 
-<span class="memberNameLink">[linkCount()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#linkCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[linkCount()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#linkCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of links connected to this vertex.
 
 </div>
 
-<span class="memberNameLink">[links()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#links--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[links()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#links--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over links.
 
 </div>
 
-<span class="memberNameLink">[links()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#links--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[links()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#links--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over links attached to this vertex.
 
 </div>
 
-<span class="memberNameLink">[lowVertex()](au/gov/asd/tac/constellation/scripting/graph/SLink.html#lowVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[lowVertex()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#lowVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the vertex the end of this link with the lower id.
@@ -644,21 +644,21 @@ Get the vertex the end of this link with the lower id.
 
 ## M
 
-<span class="memberNameLink">[mergerId()](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html#mergerId--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[mergerId()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md#mergerId--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the id of the merger for this attribute.
 
 </div>
 
-<span class="memberNameLink">[mergeVertices(int, int)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#mergeVertices-int-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[mergeVertices(int, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#mergeVertices-int-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Merge two vertices together.
 
 </div>
 
-<span class="memberNameLink">[mergeVertices(int, SCollection)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#mergeVertices-int-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[mergeVertices(int, SCollection)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#mergeVertices-int-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Merge more than two vertices together.
@@ -669,51 +669,51 @@ Merge more than two vertices together.
 
 ## N
 
-<span class="memberNameLink">[name()](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html#name--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[name()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md#name--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the name of this attribute.
 
 </div>
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/SAttributeIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SAttributeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SAttributeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SAttributeIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SAttributeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SAttributeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeTransactionIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeTransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeTransactionIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeTransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkEdgeIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkEdgeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkEdgeIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkEdgeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkTransactionIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkTransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkTransactionIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkTransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/STransactionIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[STransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/STransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/STransactionIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[STransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/STransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexEdgeIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexEdgeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexEdgeIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexEdgeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexLinkIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexLinkIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexLinkIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexLinkIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[next()](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexTransactionIterator.html#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexTransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[next()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md#next--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexTransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
 <span id="I:O"></span>
 
 ## O
 
-<span class="memberNameLink">[openFile(String)](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html#openFile-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
+<span class="memberNameLink">[openFile(String)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md#openFile-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
 <div class="block">
 
 Provide a NetBeans open file dialog box that remembers where it was last
@@ -721,80 +721,80 @@ opened.
 
 </div>
 
-<span class="memberNameLink">[otherVertex(SVertex)](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#otherVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[otherVertex(SVertex)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#otherVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the other vertex of this edge given one end.
 
 </div>
 
-<span class="memberNameLink">[otherVertex(SVertex)](au/gov/asd/tac/constellation/scripting/graph/SLink.html#otherVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[otherVertex(SVertex)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#otherVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the other vertex of this link given one end.
 
 </div>
 
-<span class="memberNameLink">[otherVertex(SVertex)](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#otherVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[otherVertex(SVertex)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#otherVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
 <span id="I:R"></span>
 
 ## R
 
-<span class="memberNameLink">[readableGraph()](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#readableGraph--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[readableGraph()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#readableGraph--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a read lock on the graph so that its data can be interrogated.
 
 </div>
 
-<span class="memberNameLink">[readableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#readableGraph)</span> - Variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[readableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#readableGraph)</span> - Variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[release()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#release--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[release()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#release--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Release the read lock on the graph.
 
 </div>
 
-<span class="memberNameLink">[removeAttribute(int)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#removeAttribute-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[removeAttribute(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#removeAttribute-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Remove an attribute from the graph.
 
 </div>
 
-<span class="memberNameLink">[removeTransaction(int)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#removeTransaction-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[removeTransaction(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#removeTransaction-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Remove a transaction from the graph.
 
 </div>
 
-<span class="memberNameLink">[removeTransactions(SCollection)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#removeTransactions-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[removeTransactions(SCollection)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#removeTransactions-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Remove a collection of transactions from the graph.
 
 </div>
 
-<span class="memberNameLink">[removeVertex(int)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#removeVertex-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[removeVertex(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#removeVertex-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Remove a vertex from the graph.
 
 </div>
 
-<span class="memberNameLink">[removeVertices(SCollection)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#removeVertices-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[removeVertices(SCollection)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#removeVertices-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Remove a collection of vertices from the graph.
 
 </div>
 
-<span class="memberNameLink">[rollback()](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#rollback--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[rollback()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#rollback--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Rollback changes made to the graph using this write lock, then release
@@ -806,33 +806,33 @@ the lock.
 
 ## S
 
-[<span class="typeNameLink">SAttribute</span>](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-summary.html)  
+[<span class="typeNameLink">SAttribute</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)  
 <div class="block">
 
 A representation of an attribute for use with scripting.
 
 </div>
 
-<span class="memberNameLink">[SAttribute(GraphReadMethods, int, GraphElementType, String, String, String, Object, String)](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html#SAttribute-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-java.lang.String-java.lang.String-java.lang.Object-java.lang.String-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[SAttribute(GraphReadMethods, int, GraphElementType, String, String, String, Object, String)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md#SAttribute-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-java.lang.String-java.lang.String-java.lang.Object-java.lang.String-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[SAttribute(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html#SAttribute-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[SAttribute(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md#SAttribute-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[SAttribute(GraphReadMethods, GraphElementType, String)](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html#SAttribute-au.gov.asd.tac.constellation.graph.GraphReadMethods-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](au/gov/asd/tac/constellation/scripting/graph/SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[SAttribute(GraphReadMethods, GraphElementType, String)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md#SAttribute-au.gov.asd.tac.constellation.graph.GraphReadMethods-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SAttribute](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-[<span class="typeNameLink">SAttributeIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/SAttributeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">SAttributeIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SAttributeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing attributes via scripting.
 
 </div>
 
-<span class="memberNameLink">[SAttributeIterator(GraphReadMethods, GraphElementType)](au/gov/asd/tac/constellation/scripting/graph/iterators/SAttributeIterator.html#SAttributeIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-au.gov.asd.tac.constellation.graph.GraphElementType-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SAttributeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SAttributeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[SAttributeIterator(GraphReadMethods, GraphElementType)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SAttributeIterator.md#SAttributeIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-au.gov.asd.tac.constellation.graph.GraphElementType-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SAttributeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SAttributeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-[<span class="typeNameLink">SCollection</span>](au/gov/asd/tac/constellation/scripting/graph/SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-summary.html)  
+[<span class="typeNameLink">SCollection</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)  
 <div class="block">
 
 A collection which efficiently stores vertices or transactions for use
@@ -840,40 +840,40 @@ with scripting.
 
 </div>
 
-<span class="memberNameLink">[SCollection(ScriptEngine, GraphReadMethods, GraphElementType, BitSet)](au/gov/asd/tac/constellation/scripting/graph/SCollection.html#SCollection-javax.script.ScriptEngine-au.gov.asd.tac.constellation.graph.GraphReadMethods-au.gov.asd.tac.constellation.graph.GraphElementType-java.util.BitSet-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](au/gov/asd/tac/constellation/scripting/graph/SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[SCollection(ScriptEngine, GraphReadMethods, GraphElementType, BitSet)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md#SCollection-javax.script.ScriptEngine-au.gov.asd.tac.constellation.graph.GraphReadMethods-au.gov.asd.tac.constellation.graph.GraphElementType-java.util.BitSet-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-[<span class="typeNameLink">ScriptingUtilities</span>](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html "class in au.gov.asd.tac.constellation.views.scripting.utilities") - Class in [au.gov.asd.tac.constellation.views.scripting.utilities](au/gov/asd/tac/constellation/scripting/utilities/package-summary.html)  
+[<span class="typeNameLink">ScriptingUtilities</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md "class in au.gov.asd.tac.constellation.views.scripting.utilities") - Class in [au.gov.asd.tac.constellation.views.scripting.utilities](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/package-summary.md)  
 <div class="block">
 
 Core scripting utilities.
 
 </div>
 
-<span class="memberNameLink">[ScriptingUtilities()](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html#ScriptingUtilities--)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
+<span class="memberNameLink">[ScriptingUtilities()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md#ScriptingUtilities--)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/ScriptingUtilities.md "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
  
 
-[<span class="typeNameLink">SEdge</span>](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-summary.html)  
+[<span class="typeNameLink">SEdge</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)  
 <div class="block">
 
 A representation of an edge for use with scripting.
 
 </div>
 
-<span class="memberNameLink">[SEdge(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#SEdge-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[SEdge(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#SEdge-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-[<span class="typeNameLink">SEdgeIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">SEdgeIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing edges via scripting.
 
 </div>
 
-<span class="memberNameLink">[SEdgeIterator(GraphReadMethods)](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeIterator.html#SEdgeIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[SEdgeIterator(GraphReadMethods)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeIterator.md#SEdgeIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-[<span class="typeNameLink">SEdgeTransactionIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">SEdgeTransactionIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing transactions from the context of edges via
@@ -881,67 +881,67 @@ scripting.
 
 </div>
 
-<span class="memberNameLink">[SEdgeTransactionIterator(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeTransactionIterator.html#SEdgeTransactionIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeTransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SEdgeTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[SEdgeTransactionIterator(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeTransactionIterator.md#SEdgeTransactionIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SEdgeTransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[setEngine(ScriptEngine)](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#setEngine-javax.script.ScriptEngine-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[setEngine(ScriptEngine)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#setEngine-javax.script.ScriptEngine-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Set a new scripting engine to be used for evaluating scripts.
 
 </div>
 
-[<span class="typeNameLink">SGraph</span>](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-summary.html)  
+[<span class="typeNameLink">SGraph</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)  
 <div class="block">
 
 A representation of a graph for use with scripting.
 
 </div>
 
-<span class="memberNameLink">[SGraph(ScriptEngine, Graph)](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#SGraph-javax.script.ScriptEngine-au.gov.asd.tac.constellation.graph.Graph-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[SGraph(ScriptEngine, Graph)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#SGraph-javax.script.ScriptEngine-au.gov.asd.tac.constellation.graph.Graph-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[SGraph(Graph)](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#SGraph-au.gov.asd.tac.constellation.graph.Graph-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[SGraph(Graph)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#SGraph-au.gov.asd.tac.constellation.graph.Graph-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[size()](au/gov/asd/tac/constellation/scripting/graph/SCollection.html#size--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](au/gov/asd/tac/constellation/scripting/graph/SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[size()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md#size--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the size of this collection.
 
 </div>
 
-[<span class="typeNameLink">SLink</span>](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-summary.html)  
+[<span class="typeNameLink">SLink</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)  
 <div class="block">
 
 A representation of a link for use with scripting.
 
 </div>
 
-<span class="memberNameLink">[SLink(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/SLink.html#SLink-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[SLink(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#SLink-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-[<span class="typeNameLink">SLinkEdgeIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">SLinkEdgeIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing edges from the context of links via scripting.
 
 </div>
 
-<span class="memberNameLink">[SLinkEdgeIterator(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkEdgeIterator.html#SLinkEdgeIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkEdgeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[SLinkEdgeIterator(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkEdgeIterator.md#SLinkEdgeIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkEdgeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-[<span class="typeNameLink">SLinkIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">SLinkIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing links via scripting.
 
 </div>
 
-<span class="memberNameLink">[SLinkIterator(GraphReadMethods)](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkIterator.html#SLinkIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[SLinkIterator(GraphReadMethods)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkIterator.md#SLinkIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-[<span class="typeNameLink">SLinkTransactionIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">SLinkTransactionIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing transactions from the context of links via
@@ -949,51 +949,51 @@ scripting.
 
 </div>
 
-<span class="memberNameLink">[SLinkTransactionIterator(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkTransactionIterator.html#SLinkTransactionIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkTransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SLinkTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[SLinkTransactionIterator(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkTransactionIterator.md#SLinkTransactionIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SLinkTransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[sourceVertex()](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#sourceVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[sourceVertex()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#sourceVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the source vertex of this edge.
 
 </div>
 
-<span class="memberNameLink">[sourceVertex()](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#sourceVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[sourceVertex()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#sourceVertex--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the source vertex of this transaction.
 
 </div>
 
-[<span class="typeNameLink">SReadableGraph</span>](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-summary.html)  
+[<span class="typeNameLink">SReadableGraph</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)  
 <div class="block">
 
 A representation of a read lock on a graph for use with scripting.
 
 </div>
 
-[<span class="typeNameLink">STransaction</span>](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-summary.html)  
+[<span class="typeNameLink">STransaction</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)  
 <div class="block">
 
 A representation of a transaction for use with scripting.
 
 </div>
 
-<span class="memberNameLink">[STransaction(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#STransaction-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[STransaction(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#STransaction-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-[<span class="typeNameLink">STransactionIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/STransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">STransactionIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/STransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing transactions via scripting.
 
 </div>
 
-<span class="memberNameLink">[STransactionIterator(GraphReadMethods)](au/gov/asd/tac/constellation/scripting/graph/iterators/STransactionIterator.html#STransactionIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[STransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/STransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[STransactionIterator(GraphReadMethods)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/STransactionIterator.md#STransactionIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[STransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/STransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-<span class="memberNameLink">[structureModificationCounter()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#structureModificationCounter--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[structureModificationCounter()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#structureModificationCounter--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a count representing the number of modifications that have occurred
@@ -1001,17 +1001,17 @@ which modified the structure of the graph.
 
 </div>
 
-[<span class="typeNameLink">SVertex</span>](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-summary.html)  
+[<span class="typeNameLink">SVertex</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)  
 <div class="block">
 
 A representation of a vertex for use with scripting.
 
 </div>
 
-<span class="memberNameLink">[SVertex(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#SVertex-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[SVertex(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#SVertex-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-[<span class="typeNameLink">SVertexEdgeIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">SVertexEdgeIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing edges from the context of vertices via
@@ -1019,20 +1019,20 @@ scripting.
 
 </div>
 
-<span class="memberNameLink">[SVertexEdgeIterator(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexEdgeIterator.html#SVertexEdgeIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexEdgeIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexEdgeIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[SVertexEdgeIterator(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexEdgeIterator.md#SVertexEdgeIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexEdgeIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-[<span class="typeNameLink">SVertexIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">SVertexIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing vertices via scripting.
 
 </div>
 
-<span class="memberNameLink">[SVertexIterator(GraphReadMethods)](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexIterator.html#SVertexIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[SVertexIterator(GraphReadMethods)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexIterator.md#SVertexIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-[<span class="typeNameLink">SVertexLinkIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexLinkIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">SVertexLinkIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing links from the context of vertices via
@@ -1040,10 +1040,10 @@ scripting.
 
 </div>
 
-<span class="memberNameLink">[SVertexLinkIterator(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexLinkIterator.html#SVertexLinkIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexLinkIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexLinkIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[SVertexLinkIterator(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md#SVertexLinkIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexLinkIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-[<span class="typeNameLink">SVertexTransactionIterator</span>](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-summary.html)  
+[<span class="typeNameLink">SVertexTransactionIterator</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators") - Class in [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)  
 <div class="block">
 
 An iterator for accessing transactions from the context of vertices via
@@ -1051,10 +1051,10 @@ scripting.
 
 </div>
 
-<span class="memberNameLink">[SVertexTransactionIterator(GraphReadMethods, int)](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexTransactionIterator.html#SVertexTransactionIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexTransactionIterator](au/gov/asd/tac/constellation/scripting/graph/iterators/SVertexTransactionIterator.html "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
+<span class="memberNameLink">[SVertexTransactionIterator(GraphReadMethods, int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md#SVertexTransactionIterator-au.gov.asd.tac.constellation.graph.GraphReadMethods-int-)</span> - Constructor for class au.gov.asd.tac.constellation.views.scripting.graph.iterators.[SVertexTransactionIterator](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")  
  
 
-[<span class="typeNameLink">SWritableGraph</span>](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-summary.html)  
+[<span class="typeNameLink">SWritableGraph</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph") - Class in [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)  
 <div class="block">
 
 A representation of a graph write lock for use with scripting.
@@ -1065,94 +1065,94 @@ A representation of a graph write lock for use with scripting.
 
 ## T
 
-<span class="memberNameLink">[toString()](au/gov/asd/tac/constellation/scripting/graph/SCollection.html#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](au/gov/asd/tac/constellation/scripting/graph/SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[toString()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[toString()](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[toString()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[toString()](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[toString()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[toString()](au/gov/asd/tac/constellation/scripting/graph/SLink.html#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[toString()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[toString()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[toString()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[toString()](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[toString()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[toString()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[toString()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[toString()](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[toString()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#toString--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
  
 
-<span class="memberNameLink">[TRANSACTION](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#TRANSACTION)</span> - Static variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[TRANSACTION](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#TRANSACTION)</span> - Static variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 A reference to the 'Transaction' element type.
 
 </div>
 
-<span class="memberNameLink">[transaction(int)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#transaction-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[transaction(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#transaction-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a transaction on the graph by id.
 
 </div>
 
-<span class="memberNameLink">[transactionCount()](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#transactionCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[transactionCount()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#transactionCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of transactions this edge represents.
 
 </div>
 
-<span class="memberNameLink">[transactionCount()](au/gov/asd/tac/constellation/scripting/graph/SLink.html#transactionCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[transactionCount()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#transactionCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of transactions this link represents.
 
 </div>
 
-<span class="memberNameLink">[transactionCount()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#transactionCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[transactionCount()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#transactionCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of transactions on the graph.
 
 </div>
 
-<span class="memberNameLink">[transactionCount()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#transactionCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[transactionCount()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#transactionCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of transactions connected to this vertex.
 
 </div>
 
-<span class="memberNameLink">[transactions()](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#transactions--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[transactions()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#transactions--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over transactions this edge represents.
 
 </div>
 
-<span class="memberNameLink">[transactions()](au/gov/asd/tac/constellation/scripting/graph/SLink.html#transactions--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[transactions()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#transactions--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over transactions this link represents.
 
 </div>
 
-<span class="memberNameLink">[transactions()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#transactions--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[transactions()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#transactions--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over transactions.
 
 </div>
 
-<span class="memberNameLink">[transactions()](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#transactions--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[transactions()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#transactions--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over transactions attached to this vertex.
@@ -1163,7 +1163,7 @@ Get an iterator over transactions attached to this vertex.
 
 ## U
 
-<span class="memberNameLink">[union(SCollection)](au/gov/asd/tac/constellation/scripting/graph/SCollection.html#union-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](au/gov/asd/tac/constellation/scripting/graph/SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[union(SCollection)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md#union-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SCollection](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the union of this collection with another.
@@ -1174,7 +1174,7 @@ Get the union of this collection with another.
 
 ## V
 
-<span class="memberNameLink">[valueModificationCounter(GraphElementType, String)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#valueModificationCounter-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[valueModificationCounter(GraphElementType, String)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#valueModificationCounter-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a count representing the number of modifications that have occurred
@@ -1182,28 +1182,28 @@ to the value of a single attribute on the graph.
 
 </div>
 
-<span class="memberNameLink">[VERTEX](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#VERTEX)</span> - Static variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[VERTEX](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#VERTEX)</span> - Static variable in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 A reference to the 'Vertex' element type.
 
 </div>
 
-<span class="memberNameLink">[vertex(int)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#vertex-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[vertex(int)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#vertex-int-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a vertex on the graph by id.
 
 </div>
 
-<span class="memberNameLink">[vertexCount()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#vertexCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[vertexCount()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#vertexCount--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get the number of vertices on the graph.
 
 </div>
 
-<span class="memberNameLink">[vertices()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#vertices--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[vertices()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#vertices--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get an iterator over vertices.
@@ -1214,7 +1214,7 @@ Get an iterator over vertices.
 
 ## W
 
-<span class="memberNameLink">[withReadableGraph(Object)](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#withReadableGraph-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[withReadableGraph(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#withReadableGraph-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Evaluate a function against a read lock on the graph with releases
@@ -1222,21 +1222,21 @@ handled automatically.
 
 </div>
 
-<span class="memberNameLink">[withTransactions(Object)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#withTransactions-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[withTransactions(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#withTransactions-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Evaluate a function against each transaction on the graph.
 
 </div>
 
-<span class="memberNameLink">[withVertices(Object)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#withVertices-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[withVertices(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#withVertices-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Evaluate a function against each vertex on the graph.
 
 </div>
 
-<span class="memberNameLink">[withWritableGraph(Object)](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#withWritableGraph-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[withWritableGraph(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#withWritableGraph-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Evaluate a function against a write lock on the graph with commits or
@@ -1244,7 +1244,7 @@ rollbacks handled automatically.
 
 </div>
 
-<span class="memberNameLink">[writableGraph(String)](au/gov/asd/tac/constellation/scripting/graph/SGraph.html#writableGraph-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](au/gov/asd/tac/constellation/scripting/graph/SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[writableGraph(String)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md#writableGraph-java.lang.String-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Get a write lock on the graph so that edits can be made to its data.
@@ -1255,98 +1255,98 @@ Get a write lock on the graph so that edits can be made to its data.
 
 ## \_
 
-<span class="memberNameLink">[\_\_enter\_\_()](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#Z:Z__enter__--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_enter\_\_()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#Z:Z__enter__--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 The entry point for the Python context manager.
 
 </div>
 
-<span class="memberNameLink">[\_\_enter\_\_()](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#Z:Z__enter__--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_enter\_\_()](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#Z:Z__enter__--)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 The entry point for the Python context manager.
 
 </div>
 
-<span class="memberNameLink">[\_\_exit\_\_(Object, Object, Object)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#Z:Z__exit__-java.lang.Object-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_exit\_\_(Object, Object, Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#Z:Z__exit__-java.lang.Object-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 The exit point for the Python context manager.
 
 </div>
 
-<span class="memberNameLink">[\_\_exit\_\_(Object, Object, Object)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#Z:Z__exit__-java.lang.Object-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_exit\_\_(Object, Object, Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#Z:Z__exit__-java.lang.Object-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 The exit point for the Python context manager.
 
 </div>
 
-<span class="memberNameLink">[\_\_getitem\_\_(Object)](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#Z:Z__getitem__-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_getitem\_\_(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#Z:Z__getitem__-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Python evaluation of self\[key\].
 
 </div>
 
-<span class="memberNameLink">[\_\_getitem\_\_(Object)](au/gov/asd/tac/constellation/scripting/graph/SLink.html#Z:Z__getitem__-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_getitem\_\_(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#Z:Z__getitem__-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Python evaluation of self\[key\].
 
 </div>
 
-<span class="memberNameLink">[\_\_getitem\_\_(Object)](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html#Z:Z__getitem__-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](au/gov/asd/tac/constellation/scripting/graph/SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_getitem\_\_(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md#Z:Z__getitem__-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Python assignment to self\[key\].
 
 </div>
 
-<span class="memberNameLink">[\_\_getitem\_\_(Object)](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#Z:Z__getitem__-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_getitem\_\_(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#Z:Z__getitem__-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Python evaluation of self\[key\].
 
 </div>
 
-<span class="memberNameLink">[\_\_getitem\_\_(Object)](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#Z:Z__getitem__-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_getitem\_\_(Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#Z:Z__getitem__-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Python evaluation of self\[key\].
 
 </div>
 
-<span class="memberNameLink">[\_\_setitem\_\_(Object, Object)](au/gov/asd/tac/constellation/scripting/graph/SEdge.html#Z:Z__setitem__-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](au/gov/asd/tac/constellation/scripting/graph/SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_setitem\_\_(Object, Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md#Z:Z__setitem__-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SEdge](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Python assignment to self\[key\].
 
 </div>
 
-<span class="memberNameLink">[\_\_setitem\_\_(Object, Object)](au/gov/asd/tac/constellation/scripting/graph/SLink.html#Z:Z__setitem__-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](au/gov/asd/tac/constellation/scripting/graph/SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_setitem\_\_(Object, Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md#Z:Z__setitem__-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SLink](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Python assignment to self\[key\].
 
 </div>
 
-<span class="memberNameLink">[\_\_setitem\_\_(Object, Object)](au/gov/asd/tac/constellation/scripting/graph/STransaction.html#Z:Z__setitem__-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_setitem\_\_(Object, Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md#Z:Z__setitem__-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Python assignment to self\[key\].
 
 </div>
 
-<span class="memberNameLink">[\_\_setitem\_\_(Object, Object)](au/gov/asd/tac/constellation/scripting/graph/SVertex.html#Z:Z__setitem__-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](au/gov/asd/tac/constellation/scripting/graph/SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_setitem\_\_(Object, Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md#Z:Z__setitem__-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SVertex](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Python assignment to self\[key\].
 
 </div>
 
-<span class="memberNameLink">[\_\_setitem\_\_(Object, Object)](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html#Z:Z__setitem__-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](au/gov/asd/tac/constellation/scripting/graph/SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")  
+<span class="memberNameLink">[\_\_setitem\_\_(Object, Object)](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#Z:Z__setitem__-java.lang.Object-java.lang.Object-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.graph.[SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")  
 <div class="block">
 
 Python assignment to self\[key\].
@@ -1369,13 +1369,13 @@ Python assignment to self\[key\].
 
 <span id="navbar.bottom.firstrow"></span>
 
--   [Overview](overview-summary.html)
+-   [Overview](](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
 -   Package
 -   Class
--   [Tree](overview-tree.html)
--   [Deprecated](deprecated-list.html)
+-   [Tree](](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-tree.md)
+-   [Deprecated](](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
 -   Index
--   [Help](help-doc.html)
+-   [Help](](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -1392,12 +1392,12 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <!-- -->
 
--   [Frames](index.html?index-all.html)
--   [No Frames](index-all.html)
+-   [Frames](](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
+-   [No Frames](](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
 
 <!-- -->
 
--   [All Classes](allclasses-noframe.html)
+-   [All Classes](](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 

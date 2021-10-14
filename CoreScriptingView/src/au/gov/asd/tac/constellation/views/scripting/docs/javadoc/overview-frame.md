@@ -2,7 +2,7 @@
 
 <div class="indexHeader">
 
-[All Classes](allclasses-frame.html)
+[All Classes](allclasses-frame.md)
 
 </div>
 
@@ -10,9 +10,9 @@
 
 ## Packages
 
--   [au.gov.asd.tac.constellation.views.scripting.graph](au/gov/asd/tac/constellation/scripting/graph/package-frame.html)
--   [au.gov.asd.tac.constellation.views.scripting.graph.iterators](au/gov/asd/tac/constellation/scripting/graph/iterators/package-frame.html)
--   [au.gov.asd.tac.constellation.views.scripting.utilities](au/gov/asd/tac/constellation/scripting/utilities/package-frame.html)
+-   [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-frame.md)
+-   [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-frame.md)
+-   [au.gov.asd.tac.constellation.views.scripting.utilities](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/package-frame.md)
 
 </div>
 

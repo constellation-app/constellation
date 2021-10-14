@@ -16,12 +16,12 @@ JavaScript is disabled on your browser.
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](overview-summary.html)
+-   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
 -   Package
 -   Class
--   [Tree](overview-tree.html)
--   [Deprecated](deprecated-list.html)
--   [Index](index-all.html)
+-   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-tree.md)
+-   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
+-   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
 -   Help
 
 <div class="aboutLanguage">
@@ -39,12 +39,12 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <!-- -->
 
--   [Frames](index.html?help-doc.html)
--   [No Frames](help-doc.html)
+-   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
+-   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
 
 <!-- -->
 
--   [All Classes](allclasses-noframe.html)
+-   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -71,7 +71,7 @@ corresponding to the items in the navigation bar, described as follows.
 
 -   ## Overview
 
-    The [Overview](overview-summary.html) page is the front page of this
+    The [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md) page is the front page of this
     API document and provides a list of all packages with a summary for
     each. This page can also contain an overall description of the set
     of packages.
@@ -144,7 +144,7 @@ corresponding to the items in the navigation bar, described as follows.
 
 -   ## Tree (Class Hierarchy)
 
-    There is a [Class Hierarchy](overview-tree.html) page for all
+    There is a [Class Hierarchy](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-tree.md) page for all
     packages, plus a hierarchy for each package. Each hierarchy page
     contains a list of classes and a list of interfaces. The classes are
     organized by inheritance structure starting with `java.lang.Object`.
@@ -157,14 +157,14 @@ corresponding to the items in the navigation bar, described as follows.
 
 -   ## Deprecated API
 
-    The [Deprecated API](deprecated-list.html) page lists all of the API
+    The [Deprecated API](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md) page lists all of the API
     that have been deprecated. A deprecated API is not recommended for
     use, generally due to improvements, and a replacement API is usually
     given. Deprecated APIs may be removed in future implementations.
 
 -   ## Index
 
-    The [Index](index-all.html) contains an alphabetic list of all
+    The [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md) contains an alphabetic list of all
     classes, interfaces, constructors, methods, and fields.
 
 -   ## Prev/Next
@@ -179,7 +179,7 @@ corresponding to the items in the navigation bar, described as follows.
 
 -   ## All Classes
 
-    The [All Classes](allclasses-noframe.html) link shows all classes
+    The [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md) link shows all classes
     and interfaces except non-static nested types.
 
 -   ## Serialized Form
@@ -193,7 +193,7 @@ corresponding to the items in the navigation bar, described as follows.
 
 -   ## Constant Field Values
 
-    The [Constant Field Values](constant-values.html) page lists the
+    The [Constant Field Values](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/constant-values.md) page lists the
     static final fields and their values.
 
 <span class="emphasizedPhrase">This help file applies to API
@@ -213,12 +213,12 @@ documentation generated using the standard doclet.</span>
 
 <span id="navbar.bottom.firstrow"></span>
 
--   [Overview](overview-summary.html)
+-   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
 -   Package
 -   Class
--   [Tree](overview-tree.html)
--   [Deprecated](deprecated-list.html)
--   [Index](index-all.html)
+-   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-tree.md)
+-   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
+-   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
 -   Help
 
 <div class="aboutLanguage">
@@ -236,12 +236,12 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <!-- -->
 
--   [Frames](index.html?help-doc.html)
--   [No Frames](help-doc.html)
+-   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
+-   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
 
 <!-- -->
 
--   [All Classes](allclasses-noframe.html)
+-   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 

@@ -1,17 +1,17 @@
-# [au.gov.asd.tac.constellation.views.scripting.graph](../../../../../../../au/gov/asd/tac/constellation/scripting/graph/package-summary.html)
+# [au.gov.asd.tac.constellation.views.scripting.graph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)
 
 <div class="indexContainer">
 
 ## Classes
 
--   [SAttribute](SAttribute.html "class in au.gov.asd.tac.constellation.views.scripting.graph")
--   [SCollection](SCollection.html "class in au.gov.asd.tac.constellation.views.scripting.graph")
--   [SEdge](SEdge.html "class in au.gov.asd.tac.constellation.views.scripting.graph")
--   [SGraph](SGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")
--   [SLink](SLink.html "class in au.gov.asd.tac.constellation.views.scripting.graph")
--   [SReadableGraph](SReadableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")
--   [STransaction](STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")
--   [SVertex](SVertex.html "class in au.gov.asd.tac.constellation.views.scripting.graph")
--   [SWritableGraph](SWritableGraph.html "class in au.gov.asd.tac.constellation.views.scripting.graph")
+-   [SAttribute](SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+-   [SCollection](SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+-   [SEdge](SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+-   [SGraph](SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+-   [SLink](SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+-   [SReadableGraph](SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+-   [STransaction](STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+-   [SVertex](SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+-   [SWritableGraph](SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
 </div>
