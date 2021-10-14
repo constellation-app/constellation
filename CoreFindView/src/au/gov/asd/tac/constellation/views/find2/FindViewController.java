@@ -46,6 +46,7 @@ public class FindViewController {
     private BasicFindReplaceParameters currentBasicFindParameters;
     private boolean addToCurrentSelection = false;
     private boolean removeFromCurrentSelection = false;
+    private boolean findInCurrentSelection = false;
 
     private BasicFindReplaceParameters currentBasicReplaceParameters;
 
@@ -183,9 +184,10 @@ public class FindViewController {
      * @param addToCurrent
      * @param removeFromCurrent
      */
-    public void updateSelectionFactors(final boolean addToCurrent, final boolean removeFromCurrent) {
+    public void updateSelectionFactors(final boolean addToCurrent, final boolean removeFromCurrent, final boolean findInSelected) {
         this.addToCurrentSelection = addToCurrent;
         this.removeFromCurrentSelection = removeFromCurrent;
+        this.findInCurrentSelection = findInSelected;
     }
 
     /**
@@ -202,7 +204,7 @@ public class FindViewController {
                 if (graph != null) {
                     if (currentBasicFindParameters.isSearchAllGraphs()) {
                         BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection,
-                                removeFromCurrentSelection, selectAll, getNext);
+                                removeFromCurrentSelection, findInCurrentSelection, selectAll, getNext);
                         PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
                     }
                 }
@@ -211,7 +213,7 @@ public class FindViewController {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
             if (graph != null) {
                 BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection,
-                        removeFromCurrentSelection, selectAll, getNext);
+                        removeFromCurrentSelection, findInCurrentSelection, selectAll, getNext);
                 PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
             }
         }

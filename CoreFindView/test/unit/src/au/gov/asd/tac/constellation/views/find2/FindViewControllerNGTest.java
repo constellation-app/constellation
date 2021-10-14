@@ -78,7 +78,7 @@ public class FindViewControllerNGTest {
 
     /**
      * Test of updateUI method, of class FindViewController.
-     * 
+     *
      * I need access to UI elements
      */
     @Test
@@ -143,8 +143,9 @@ public class FindViewControllerNGTest {
         System.out.println("updateSelectionFactors");
         boolean addToCurrent = false;
         boolean removeFromCurrent = false;
+        boolean findInCurrent = false;
         FindViewController instance = null;
-        instance.updateSelectionFactors(addToCurrent, removeFromCurrent);
+        instance.updateSelectionFactors(addToCurrent, removeFromCurrent, findInCurrent);
         // TODO review the generated test code and remove the default call to fail.
     }
 

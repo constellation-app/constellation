@@ -92,6 +92,7 @@ public class BasicFindTab extends Tab {
 
     protected final CheckBox addToCurrent = new CheckBox("Add to Current Selection");
     protected final CheckBox removeFromCurrent = new CheckBox("Remove from Current Selection");
+    protected final CheckBox findInSelected = new CheckBox("Find In Current Selection");
     protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
 
     private final Button findNextButton = new Button("Find Next");
@@ -133,10 +134,23 @@ public class BasicFindTab extends Tab {
         });
         addToCurrent.setOnAction(action -> {
             removeFromCurrent.setSelected(false);
+            findInSelected.setSelected(false);
+            findNextButton.setDisable(false);
+            findPrevButton.setDisable(false);
             updateSelectionFactors();
         });
         removeFromCurrent.setOnAction(action -> {
             addToCurrent.setSelected(false);
+            findInSelected.setSelected(false);
+            findNextButton.setDisable(false);
+            findPrevButton.setDisable(false);
+            updateSelectionFactors();
+        });
+        findInSelected.setOnAction(action -> {
+            addToCurrent.setSelected(false);
+            removeFromCurrent.setSelected(false);
+            findNextButton.setDisable(true);
+            findPrevButton.setDisable(true);
             updateSelectionFactors();
         });
 
@@ -207,6 +221,7 @@ public class BasicFindTab extends Tab {
 
         addRemoveSelectionGrid.add(addToCurrent, 0, 0);
         addRemoveSelectionGrid.add(removeFromCurrent, 1, 0);
+        addRemoveSelectionGrid.add(findInSelected, 0, 1);
         addRemoveSelectionGrid.setHgap(5);
         addRemoveSelectionGrid.setVgap(5);
 
@@ -344,7 +359,7 @@ public class BasicFindTab extends Tab {
      * the variables values stored in the controller
      */
     public void updateSelectionFactors() {
-        FindViewController.getDefault().updateSelectionFactors(addToCurrent.isSelected(), removeFromCurrent.isSelected());
+        FindViewController.getDefault().updateSelectionFactors(addToCurrent.isSelected(), removeFromCurrent.isSelected(), findInSelected.isSelected());
     }
 
     public void findAllAction() {

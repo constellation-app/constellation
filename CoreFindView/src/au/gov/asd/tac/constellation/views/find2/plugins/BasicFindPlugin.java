@@ -52,6 +52,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean matchWholeWord;
     private final boolean addToSelection;
     private final boolean removeFromCurrentSelection;
+    private final boolean findInCurrentSelection;
     private final boolean selectAll;
     private final boolean getNext;
     private final BasicFindReplaceParameters parameters;
@@ -59,7 +60,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final static int STARTING_INDEX = -1;
     private static final Logger LOGGER = Logger.getLogger(BasicFindPlugin.class.getName());
 
-    public BasicFindPlugin(BasicFindReplaceParameters parameters, boolean addToSelection, boolean removeFromCurrentSelection, boolean selectAll, boolean getNext) {
+    public BasicFindPlugin(BasicFindReplaceParameters parameters, boolean addToSelection, boolean removeFromCurrentSelection, boolean findInCurrentSelection, boolean selectAll, boolean getNext) {
         this.elementType = parameters.getGraphElement();
         this.selectedAttributes = parameters.getAttributeList();
         this.findString = parameters.getFindString();
@@ -71,6 +72,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.getNext = getNext;
         this.parameters = parameters;
         this.removeFromCurrentSelection = removeFromCurrentSelection;
+        this.findInCurrentSelection = findInCurrentSelection;
     }
 
     private void clearSelection(GraphWriteMethods graph) {
@@ -127,9 +129,11 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         final int elementCount = elementType.getElementCount(graph);
 
         // do this if add to selection
-        if (!addToSelection && !removeFromCurrentSelection) {
+        if (!addToSelection && !removeFromCurrentSelection && !findInCurrentSelection) {
             clearSelection(graph);
         }
+
+        FindResultsList findInCurrentSelectionList = new FindResultsList();
 
         String searchString = regex ? findString : Pattern.quote(findString);
         int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
@@ -155,6 +159,12 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                         found = match.find();
                     }
                     if (found) {
+                        if (findInCurrentSelection) {
+                            final long uid = elementType.getUID(graph, currElement);
+                            if (graph.getBooleanValue(selectedAttribute, currElement)) {
+                                findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                            }
+                        }
                         if (selectAll) {
                             graph.setBooleanValue(selectedAttribute, currElement, true);
                             if (removeFromCurrentSelection) {
@@ -168,6 +178,15 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                 }
             }
         }
+        if (findInCurrentSelection) {
+            if (!findInCurrentSelectionList.isEmpty()) {
+                clearSelection(graph);
+                for (FindResult fr : findInCurrentSelectionList) {
+                    graph.setBooleanValue(selectedAttribute, fr.getID(), true);
+                }
+            }
+        }
+
         /**
          * If the user clicked find next or find previous
          */
