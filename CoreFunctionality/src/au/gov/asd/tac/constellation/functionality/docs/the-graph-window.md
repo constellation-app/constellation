@@ -117,6 +117,6 @@ than eight transactions between two nodes, they will be drawn as the
 corresponding edge.
 
 Text can be drawn above and below nodes: use the graph-level attributes
-"node_labels_bottom" and "node_labels_top" to determine what text is
+"node\_labels\_bottom" and "node\_labels\_top" to determine what text is
 drawn. Similarly for transactions using the attribute
-"transaction_labels".
+"transaction\_labels".
