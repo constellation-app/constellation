@@ -2,6 +2,10 @@
 
 ## Changes in October 2021
 
+-   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
+    can be used to configure the required plugin parameters to mark as `*required`
+	in the swagger.
+
 -   Added a file chooser utility to core utilities. This provides a template
     for opening file choosers. It protects against common mistakes that may
     cause issues on different platforms.
@@ -10,6 +14,9 @@
 
 -   Removed `RecentFilesWelcomePage` and moved functionality between 
     `RecentFiles` and `WelcomeViewPane`
+
+-   Renamed tableview2 package to tableview now that it is the primary table
+    code being used.
 
 ## Changes in September 2021
 

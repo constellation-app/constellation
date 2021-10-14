@@ -128,7 +128,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         if (pp.getName().toLowerCase(Locale.ENGLISH).contains("(body)")) {
                             final ObjectNode requestBody = httpMethod.putObject("requestBody");
                             requestBody.put(DESCRIPTION, pp.getName().replace("(body)", " - ") + pp.getDescription());
-                            requestBody.put(REQUIRED, false); //TODO Remove hard-code in #633
+                            requestBody.put(REQUIRED, pp.isRequired());
                             final ObjectNode content = requestBody.putObject("content");
                             final ObjectNode mime = content.putObject(RestServiceUtilities.APPLICATION_JSON);
                             final ObjectNode schema = mime.putObject(SCHEMA);
@@ -137,7 +137,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                             final ObjectNode param = params.addObject();
                             param.put("name", pp.getId());
                             param.put("in", "query");
-                            param.put(REQUIRED, false); // TODO Hard-code this until PluginParameters grows a required field.
+                            param.put(REQUIRED, pp.isRequired());
                             param.put(DESCRIPTION, pp.getDescription());
                             final ObjectNode schema = param.putObject(SCHEMA);
                             schema.put("type", pp.getType().getId());
