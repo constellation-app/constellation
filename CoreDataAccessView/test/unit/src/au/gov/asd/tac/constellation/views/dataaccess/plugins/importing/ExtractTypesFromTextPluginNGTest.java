@@ -27,18 +27,8 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import java.util.concurrent.CompletableFuture;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import org.openide.NotifyDescriptor;
-import org.openide.awt.NotificationDisplayer;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -48,28 +38,7 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class ExtractTypesFromTextPluginNGTest {
-//    private static MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic;
-//    private static MockedStatic<NotificationDisplayer> notificationDisplayerMockedStatic;
-//    
     private StoreGraph graph;
-
-//    @BeforeClass
-//    public static void beforeClass() {
-//        notifyDisplayerMockedStatic = Mockito.mockStatic(NotifyDisplayer.class);
-//        notificationDisplayerMockedStatic = Mockito.mockStatic(NotificationDisplayer.class);
-//        
-//        notifyDisplayerMockedStatic.when(() -> NotifyDisplayer.displayAndWait(any(NotifyDescriptor.class)))
-//                .thenReturn(CompletableFuture.completedFuture(null));
-//        
-//        notificationDisplayerMockedStatic.when(NotificationDisplayer::getDefault)
-//                .thenReturn(mock(NotificationDisplayer.class));
-//    }
-//    
-//    @AfterClass
-//    public static void afterClass() {
-//        notifyDisplayerMockedStatic.close();
-//        notificationDisplayerMockedStatic.close();
-//    }
     
     @BeforeMethod
     public void setUpMethod() throws Exception {

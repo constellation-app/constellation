@@ -27,21 +27,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import org.openide.NotifyDescriptor;
-import org.openide.awt.NotificationDisplayer;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -50,27 +40,6 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class SelectTopNNGTest {
-
-//    private static MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic;
-//    private static MockedStatic<NotificationDisplayer> notificationDisplayerMockedStatic;
-//    
-//    @BeforeClass
-//    public static void beforeClass() {
-//        notifyDisplayerMockedStatic = Mockito.mockStatic(NotifyDisplayer.class);
-//        notificationDisplayerMockedStatic = Mockito.mockStatic(NotificationDisplayer.class);
-//        
-//        notifyDisplayerMockedStatic.when(() -> NotifyDisplayer.displayAndWait(any(NotifyDescriptor.class)))
-//                .thenReturn(CompletableFuture.completedFuture(null));
-//        
-//        notificationDisplayerMockedStatic.when(NotificationDisplayer::getDefault)
-//                .thenReturn(mock(NotificationDisplayer.class));
-//    }
-//    
-//    @AfterClass
-//    public static void afterClass() {
-//        notifyDisplayerMockedStatic.close();
-//        notificationDisplayerMockedStatic.close();
-//    }
     
     /**
      * Test of edit method, of class SelectTopNPlugin.
