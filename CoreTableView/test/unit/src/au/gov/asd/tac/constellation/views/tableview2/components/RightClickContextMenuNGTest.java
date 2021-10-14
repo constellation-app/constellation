@@ -17,6 +17,9 @@ package au.gov.asd.tac.constellation.views.tableview2.components;
 
 import au.gov.asd.tac.constellation.views.tableview2.utils.TableViewUtilities;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,24 +49,27 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class RightClickContextMenuNGTest {
+    private static final Logger LOGGER = Logger.getLogger(RightClickContextMenuNGTest.class.getName());
 
     private Table table;
     private TableView<ObservableList<String>> tableView;
 
     private RightClickContextMenu rightClickContextMenu;
 
-    public RightClickContextMenuNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

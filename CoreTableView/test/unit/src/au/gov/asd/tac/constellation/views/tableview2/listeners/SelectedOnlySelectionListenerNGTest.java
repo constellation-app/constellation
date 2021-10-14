@@ -23,6 +23,9 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
@@ -43,6 +46,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class SelectedOnlySelectionListenerNGTest {
+    private static final Logger LOGGER = Logger.getLogger(SelectedOnlySelectionListenerNGTest.class.getName());
 
     private SelectedOnlySelectionListener selectedOnlySelectionListener;
 
@@ -53,18 +57,20 @@ public class SelectedOnlySelectionListenerNGTest {
     private ActiveTableReference activeTableReference;
     private Set<ObservableList<String>> selectedOnlySelectedRows;
 
-    public SelectedOnlySelectionListenerNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
