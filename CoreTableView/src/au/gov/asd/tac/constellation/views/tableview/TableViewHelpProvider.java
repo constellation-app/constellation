@@ -45,7 +45,7 @@ public class TableViewHelpProvider extends HelpPageProvider {
         final String tableModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep
                 + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "tableview" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent", tableModulePath + "table-view.md");
+        map.put("au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent", tableModulePath + "table-view.md");
         return map;
     }
 
@@ -59,7 +59,7 @@ public class TableViewHelpProvider extends HelpPageProvider {
         final String sep = File.separator;
         final String tableViewPath;
         tableViewPath = CODEBASE_NAME + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "tableview2" + sep + "docs" + sep + "tableview-toc.xml";
+                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "tableview" + sep + "docs" + sep + "tableview-toc.xml";
 
         return tableViewPath;
     }
