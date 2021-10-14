@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot;
 
+import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -27,7 +28,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
@@ -100,6 +104,7 @@ public class RecentGraphScreenshotUtilities {
         try {
             // resizeAndSave the buffered image in memory and write the image to disk
             resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
+            refreshScreenshotDir();
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
@@ -143,5 +148,25 @@ public class RecentGraphScreenshotUtilities {
 
         // we want image in png format
         ImageIO.write(newResizedImage, fileExtension, target.toFile());
+    }
+
+    /**
+     * Refresh folder for screenshots of files to the max number of recent files
+     * allowed in the history.
+     */
+    private static void refreshScreenshotDir() {
+
+        final List<String> filesInHistory = new ArrayList<>();
+        final List<File> filesInDirectory = Arrays.asList(getScreenshotsDir().listFiles());
+
+        RecentFiles.getRecentFiles().forEach(item -> {
+            filesInHistory.add(item.getFileName() + ".png");
+        });
+
+        filesInDirectory.forEach(file -> {
+            if (!filesInHistory.contains(file.getName())) {
+                file.delete();
+            }
+        });
     }
 }

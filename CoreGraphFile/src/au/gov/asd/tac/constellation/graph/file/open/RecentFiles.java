@@ -69,7 +69,7 @@ import org.openide.windows.WindowManager;
  * @author Dafe Simonek
  */
 public final class RecentFiles {
-    
+
     private static final Logger LOGGER = Logger.getLogger(RecentFiles.class.getName());
 
     private static final WindowRegistryL RECENT_FILE_SAVED = new WindowRegistryL();
@@ -80,23 +80,28 @@ public final class RecentFiles {
      * List of recently closed files
      */
     private static final List<HistoryItem> HISTORY = new ArrayList<>();
+
     /**
      * Preferences node for storing history info
      */
     private static Preferences prefs;
+
     private static final Object HISTORY_LOCK = new Object();
+
     /**
      * Name of preferences node where we persist history
      */
     private static final String PREFS_NODE = "RecentFilesHistory"; //NOI18N
+
     /**
      * Prefix of property for recent file URL
      */
     private static final String PROP_URL_PREFIX = "RecentFilesURL."; //NOI18N
+
     /**
      * Boundary for items count in history
      */
-    static final int MAX_HISTORY_ITEMS = 15;
+    static final int MAX_HISTORY_ITEMS = 10;
 
     private RecentFiles() {
     }
@@ -129,12 +134,13 @@ public final class RecentFiles {
     /**
      * Returns read-only list of recently closed files
      */
-    static List<HistoryItem> getRecentFiles() {
+    public static List<HistoryItem> getRecentFiles() {
         synchronized (HISTORY_LOCK) {
             checkHistory();
             return Collections.unmodifiableList(HISTORY);
         }
     }
+
     private static volatile boolean historyProbablyValid;
 
     /**
@@ -333,7 +339,7 @@ public final class RecentFiles {
      * One item of the recently closed files history. Comparable by the time
      * field, ascending from most recent to older items.
      */
-    static final class HistoryItem implements Comparable<HistoryItem> {
+    public static final class HistoryItem implements Comparable<HistoryItem> {
 
         private int id;
         private final String path;
