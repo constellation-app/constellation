@@ -34,10 +34,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import javafx.scene.control.Button;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -45,20 +43,15 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.openide.NotifyDescriptor;
-import org.testfx.api.FxRobot;
-import org.testfx.api.FxToolkit;
-import static org.testfx.util.NodeQueryUtils.hasText;
-import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -66,30 +59,8 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class JsonIONGTest {
-
     private static final Optional<String> SUB_DIRECTORY = Optional.of("test");
     private static final Optional<String> FILE_PREFIX = Optional.of("my-");
-
-    public JsonIONGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-        FxToolkit.registerPrimaryStage();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        FxToolkit.cleanupStages();
-    }
 
     @Test
     public void loadJsonPreferences_get_pojo_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
@@ -275,30 +246,28 @@ public class JsonIONGTest {
 
     @Test
     public void saveJsonPreferences_file_exists_dont_write() throws URISyntaxException, FileNotFoundException, IOException, InterruptedException, ExecutionException {
-        final FxRobot robot = new FxRobot();
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try {
             outputFile.createNewFile();
 
-            final Future<Void> future = WaitForAsyncUtils.asyncFx(() -> {
-                try (
-                        final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
-                        final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
-                    setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
+            try (
+                    final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
+                    final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
+                    final MockedConstruction<Alert> alertConstruction = Mockito.mockConstruction(Alert.class,
+                            (mock, cnxt) -> {
+                                assertEquals(cnxt.arguments(), List.of(Alert.AlertType.CONFIRMATION));
 
-                    JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper());
-                }
-            });
+                                when(mock.showAndWait()).thenReturn(Optional.of(ButtonType.CANCEL));
+                            });
+            ) {
+                setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
 
-            final Stage dialog = getDialog(robot);
+                JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper());
 
-            robot.clickOn(robot.from(dialog.getScene().getRoot())
-                    .lookup(".button")
-                    .lookup(hasText("Cancel"))
-                    .queryAs(Button.class));
-
-            WaitForAsyncUtils.waitFor(future);
+                verify(alertConstruction.constructed().get(0)).setContentText("'my-preferences' already exists. Do you want to overwrite it?");
+                verify(alertConstruction.constructed().get(0)).setHeaderText("Preference File Exists");
+            }
 
             final String output;
 
@@ -314,30 +283,28 @@ public class JsonIONGTest {
 
     @Test
     public void saveJsonPreferences_file_exists_overwrite() throws URISyntaxException, FileNotFoundException, IOException, InterruptedException, ExecutionException {
-        final FxRobot robot = new FxRobot();
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try {
             outputFile.createNewFile();
 
-            final Future<Void> future = WaitForAsyncUtils.asyncFx(() -> {
-                try (
-                        final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
-                        final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
-                    setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
+            try (
+                    final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
+                    final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
+                    final MockedConstruction<Alert> alertConstruction = Mockito.mockConstruction(Alert.class,
+                            (mock, cnxt) -> {
+                                assertEquals(cnxt.arguments(), List.of(Alert.AlertType.CONFIRMATION));
 
-                    JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper());
-                }
-            });
+                                when(mock.showAndWait()).thenReturn(Optional.of(ButtonType.OK));
+                            });
+            ) {
+                setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
 
-            final Stage dialog = getDialog(robot);
-
-            robot.clickOn(robot.from(dialog.getScene().getRoot())
-                    .lookup(".button")
-                    .lookup(hasText("OK"))
-                    .queryAs(Button.class));
-
-            WaitForAsyncUtils.waitFor(future);
+                JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper());
+                
+                verify(alertConstruction.constructed().get(0)).setContentText("'my-preferences' already exists. Do you want to overwrite it?");
+                verify(alertConstruction.constructed().get(0)).setHeaderText("Preference File Exists");
+            }
 
             verifyOutputFileMatchesFixture(outputFile);
         } finally {
@@ -347,7 +314,6 @@ public class JsonIONGTest {
 
     @Test
     public void saveJsonPreferences_no_name_provided() throws URISyntaxException, FileNotFoundException, IOException {
-
         final Instant fakeNow = Instant.parse("2020-01-01T00:00:00.00Z");
         final String expectedDateTimeString = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z")
                 .withZone(ZoneId.systemDefault()).format(fakeNow);
@@ -379,7 +345,6 @@ public class JsonIONGTest {
 
     @Test
     public void saveJsonPreferences_pref_dir_not_a_dir() throws URISyntaxException, FileNotFoundException, IOException {
-
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (
@@ -409,7 +374,6 @@ public class JsonIONGTest {
 
     @Test
     public void saveJsonPreferences_user_cancels() throws URISyntaxException, FileNotFoundException, IOException {
-
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (
@@ -427,7 +391,6 @@ public class JsonIONGTest {
 
     @Test
     public void deleteJsonPreferences() throws URISyntaxException, FileNotFoundException, IOException {
-
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
@@ -452,7 +415,6 @@ public class JsonIONGTest {
 
     @Test
     public void deleteJsonPreferences_fails() throws URISyntaxException, FileNotFoundException, IOException {
-
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (
@@ -532,34 +494,6 @@ public class JsonIONGTest {
         }
 
         assertEquals(output, expectedOutput);
-    }
-
-    /**
-     * Get a dialog that has been displayed to the user. This will iterate
-     * through all open windows and identify one that is modal. The assumption
-     * is that there will only ever be one dialog open.
-     * <p/>
-     * If a dialog is not found then it will wait for the JavaFX thread queue to
-     * empty and try again.
-     *
-     * @param robot the FX robot for these tests
-     * @return the found dialog
-     */
-    private Stage getDialog(final FxRobot robot) {
-        Stage dialog = null;
-        while (dialog == null) {
-            dialog = robot.robotContext().getWindowFinder().listWindows().stream()
-                    .filter(window -> window instanceof javafx.stage.Stage)
-                    .map(window -> (javafx.stage.Stage) window)
-                    .filter(stage -> stage.getModality() == Modality.APPLICATION_MODAL)
-                    .findFirst()
-                    .orElse(null);
-
-            if (dialog == null) {
-                WaitForAsyncUtils.waitForFxEvents();
-            }
-        }
-        return dialog;
     }
 
     /**

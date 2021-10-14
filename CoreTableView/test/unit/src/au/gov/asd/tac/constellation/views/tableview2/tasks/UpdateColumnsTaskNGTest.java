@@ -31,6 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -62,6 +65,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class UpdateColumnsTaskNGTest {
+    private static final Logger LOGGER = Logger.getLogger(UpdateColumnsTaskNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
     private TableView<ObservableList<String>> tableView;
@@ -96,18 +100,20 @@ public class UpdateColumnsTaskNGTest {
 
     private UpdateColumnsTask updateColumnsTask;
 
-    public UpdateColumnsTaskNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

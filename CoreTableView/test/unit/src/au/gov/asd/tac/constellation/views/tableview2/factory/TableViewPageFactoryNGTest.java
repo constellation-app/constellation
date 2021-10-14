@@ -29,6 +29,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -69,6 +72,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableViewPageFactoryNGTest {
+    private static final Logger LOGGER = Logger.getLogger(TableViewPageFactoryNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
     private TableView<ObservableList<String>> tableView;
@@ -95,18 +99,20 @@ public class TableViewPageFactoryNGTest {
 
     private TableViewPageFactory tableViewPageFactory;
 
-    public TableViewPageFactoryNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Tooltip;
 import static org.mockito.Mockito.mock;
@@ -41,6 +44,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class DefaultQualityControlAutoButtonNGTest {
+    private static final Logger LOGGER = Logger.getLogger(DefaultQualityControlAutoButtonNGTest.class.getName());
 
     private StoreGraph graph;
     private List<QualityControlEvent> events;
@@ -67,13 +71,18 @@ public class DefaultQualityControlAutoButtonNGTest {
         Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
                 .forEach(file -> file.delete());
 
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

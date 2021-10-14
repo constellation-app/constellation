@@ -31,6 +31,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -67,6 +70,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ColumnVisibilityContextMenuNGTest {
+    private static final Logger LOGGER = Logger.getLogger(ColumnVisibilityContextMenuNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
     private TablePane tablePane;
@@ -96,18 +100,20 @@ public class ColumnVisibilityContextMenuNGTest {
 
     private ColumnVisibilityContextMenu columnVisibilityContextMenu;
 
-    public ColumnVisibilityContextMenuNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.showStage();
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FxToolkit.hideStage();
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
