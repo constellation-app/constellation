@@ -370,7 +370,7 @@ public class DefaultPluginEnvironmentNGTest {
 
         doThrow(interruptedException)
                 .when(plugin)
-                .run(any(GraphReadMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
+                .run(any(GraphWriteMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
 
         DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
 
@@ -390,7 +390,7 @@ public class DefaultPluginEnvironmentNGTest {
 
         doThrow(pluginException)
                 .when(plugin)
-                .run(any(GraphReadMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
+                .run(any(GraphWriteMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
 
         when(pluginException.getNotificationLevel()).thenReturn(PluginNotificationLevel.FATAL);
 
@@ -409,7 +409,7 @@ public class DefaultPluginEnvironmentNGTest {
 
         doThrow(runtimeException)
                 .when(plugin)
-                .run(any(GraphReadMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
+                .run(any(GraphWriteMethods.class), any(PluginInteraction.class), any(PluginParameters.class));
 
         DefaultPluginEnvironment instance = new DefaultPluginEnvironment();
         instance.executeEditPluginNow(graph, plugin, parameters, interactive);

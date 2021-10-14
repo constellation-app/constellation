@@ -252,34 +252,73 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             final Plugin plugin, final PluginParameters parameters,
             final boolean interactive) throws InterruptedException, PluginException {
 
-        return executeGraphMethodsNow(graph, plugin, parameters, interactive);
+        if (graph == null) {
+            LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
+        }
+
+        final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
+        final int silentCount = callingConstraints.getSilentCount();
+        final boolean alwaysSilent = callingConstraints.isAlwaysSilent();
+        callingConstraints.setSilentCount(0);
+        callingConstraints.setAlwaysSilent(alwaysSilent || silentCount > 0);
+
+        final GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
+        PluginReport parentReport = null;
+        PluginReport currentReport = null;
+        if (graphReport != null) {
+            parentReport = callingConstraints.getCurrentReport();
+            if (parentReport == null) {
+                currentReport = graphReport.addPluginReport(plugin);
+            } else {
+                currentReport = parentReport.addChildReport(plugin);
+            }
+            callingConstraints.setCurrentReport(currentReport);
+        }
+
+        final PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, null);
+        final PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
+        try {
+            ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
+        } catch (final Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+        }
+
+        try {
+            plugin.run(graph, interaction, parameters);
+        } catch (final InterruptedException ex) {
+            auditPluginError(plugin, ex);
+            reportException(plugin.getName(), interaction, currentReport, null, ex);
+            Thread.currentThread().interrupt();
+            throw ex;
+        } catch (final PluginException ex) {
+            auditPluginError(plugin, ex);
+            reportException(plugin.getName(), interaction, currentReport, ex.getNotificationLevel(), ex);
+            throw ex;
+        } catch (final Exception ex) {
+            auditPluginError(plugin, ex);
+            reportException(plugin.getName(), interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            throw ex;
+        } finally {
+            callingConstraints.setSilentCount(silentCount);
+            callingConstraints.setAlwaysSilent(alwaysSilent);
+
+            if (currentReport != null) {
+                currentReport.stop();
+                callingConstraints.setCurrentReport(parentReport);
+                currentReport.firePluginReportChangedEvent();
+            }
+
+            try {
+                ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
+            } catch (final Exception ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            }
+        }
+        return null;
     }
 
     @Override
     public Object executeReadPluginNow(final GraphReadMethods graph,
-            final Plugin plugin, final PluginParameters parameters,
-            final boolean interactive) throws InterruptedException, PluginException {
-
-        return executeGraphMethodsNow(graph, plugin, parameters, interactive);
-    }
-
-    /**
-     * A method to handle the logic for {@code executeEditPluginNow()} and
-     * {@code executeReadPluginNow()} which have identical logic. This helps
-     * reduce code duplication. The {@code executePluginNow()} is almost
-     * identical but uses a {@code Graph} instead so including this method was
-     * not possible at this time.
-     *
-     * @param graph The graph
-     * @param plugin The plugin
-     * @param parameters The plugin parameters
-     * @param interactive The interactive status
-     * @return Returns null if the plugin executed without errors
-     *
-     * @throws InterruptedException
-     * @throws PluginException
-     */
-    private Object executeGraphMethodsNow(final GraphReadMethods graph,
             final Plugin plugin, final PluginParameters parameters,
             final boolean interactive) throws InterruptedException, PluginException {
 
