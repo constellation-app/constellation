@@ -151,8 +151,7 @@ public class RecentGraphScreenshotUtilities {
     }
 
     /**
-     * Refresh folder for screenshots of files to the max number of recent files
-     * allowed in the history.
+     * Refresh screenshots of recent files to match the recent files in history.
      */
     private static void refreshScreenshotDir() {
 
