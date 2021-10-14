@@ -12,6 +12,9 @@
 
 -   Changed `DataAccessPluginType` from an abstract class to an interface.
 
+-   Renamed tableview2 package to tableview now that it is the primary table
+    code being used.
+
 ## Changes in September 2021
 
 -   Added a preference to choose between viewing the help documentation offline,
