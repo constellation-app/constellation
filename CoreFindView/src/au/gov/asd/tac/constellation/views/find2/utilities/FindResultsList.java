@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.find2;
+package au.gov.asd.tac.constellation.views.find2.utilities;
 
 import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
 import java.util.ArrayList;

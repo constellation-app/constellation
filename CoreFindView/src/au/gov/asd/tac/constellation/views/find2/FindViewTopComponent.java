@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.views.find2.gui.FindViewPane;
+import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import java.awt.Dimension;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;

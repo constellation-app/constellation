@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.find2;
+package au.gov.asd.tac.constellation.views.find2.plugins;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
@@ -26,6 +26,9 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
+import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
+import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;

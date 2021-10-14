@@ -15,13 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.find2;
 
+import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
+import au.gov.asd.tac.constellation.views.find2.plugins.ReplacePlugin;
+import au.gov.asd.tac.constellation.views.find2.plugins.BasicFindPlugin;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find.advanced.GraphAttributePlugin;
-import au.gov.asd.tac.constellation.views.find2.gui.FindViewPane;
+import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;

@@ -15,9 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.find2;
 
+import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.views.find2.gui.FindViewPane;
+import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import java.util.ArrayList;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
