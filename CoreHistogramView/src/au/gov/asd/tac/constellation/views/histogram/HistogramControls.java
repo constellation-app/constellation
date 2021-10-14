@@ -93,7 +93,7 @@ public class HistogramControls extends JPanel {
             selectionModeChoice.addItem(selectionMode);
         }
 
-        JMenuItem saveBinsToGraphMenuItem = new JMenuItem("Save Bins To Graph");
+        JMenuItem saveBinsToGraphMenuItem = new JMenuItem("Save Bins to Graph");
         saveBinsToGraphMenuItem.addActionListener(e -> {
             saveBinsToGraph();
         });
@@ -105,13 +105,13 @@ public class HistogramControls extends JPanel {
         });
         actionsMenu.add(saveBinsToClipboardMenuItem);
 
-        final JMenuItem decreaseHeightBarMenuItem = new JMenuItem("Decrease height of each bin");
+        final JMenuItem decreaseHeightBarMenuItem = new JMenuItem("Decrease Height of Each Bin");
         decreaseHeightBarMenuItem.addActionListener((final ActionEvent e) -> {
             topComponent.modifyBinHeight(-1);
         });
         actionsMenu.add(decreaseHeightBarMenuItem);
 
-        final JMenuItem increaseHeightBarMenuItem = new JMenuItem("Increase height of each bin");
+        final JMenuItem increaseHeightBarMenuItem = new JMenuItem("Increase Height of Each Bin");
         increaseHeightBarMenuItem.addActionListener((final ActionEvent e) -> {
             topComponent.modifyBinHeight(1);
         });
