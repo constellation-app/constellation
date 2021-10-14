@@ -23,9 +23,11 @@ import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -185,32 +187,26 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         final String title = pluginManager.getPlugin().getName();
         switch (level) {
             case FATAL:
-                SwingUtilities.invokeLater(() -> {
-                    final NotifyDescriptor ndf = new NotifyDescriptor(
-                            "Fatal Error:\n" + message,
-                            title,
-                            DEFAULT_OPTION,
-                            NotifyDescriptor.ERROR_MESSAGE,
-                            new Object[]{NotifyDescriptor.OK_OPTION},
-                            NotifyDescriptor.OK_OPTION
-                    );
-                    DialogDisplayer.getDefault().notify(ndf);
-                });
+                NotifyDisplayer.display(new NotifyDescriptor(
+                        "Fatal Error:\n" + message,
+                        title,
+                        DEFAULT_OPTION,
+                        NotifyDescriptor.ERROR_MESSAGE,
+                        new Object[]{NotifyDescriptor.OK_OPTION},
+                        NotifyDescriptor.OK_OPTION
+                ));
                 LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
             case ERROR:
-                SwingUtilities.invokeLater(() -> {
-                    final NotifyDescriptor nde = new NotifyDescriptor(
-                            "Error:\n" + message,
-                            title,
-                            DEFAULT_OPTION,
-                            NotifyDescriptor.ERROR_MESSAGE,
-                            new Object[]{NotifyDescriptor.OK_OPTION},
-                            NotifyDescriptor.OK_OPTION
-                    );
-                    DialogDisplayer.getDefault().notify(nde);
-                });
+                NotifyDisplayer.display(new NotifyDescriptor(
+                        "Error:\n" + message,
+                        title,
+                        DEFAULT_OPTION,
+                        NotifyDescriptor.ERROR_MESSAGE,
+                        new Object[]{NotifyDescriptor.OK_OPTION},
+                        NotifyDescriptor.OK_OPTION
+                ));
                 LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
@@ -241,21 +237,26 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
     @Override
     public boolean confirm(final String message) {
-        final int[] result = new int[1];
+        final NotifyDescriptor descriptor = new NotifyDescriptor.Message(
+                message,
+                NotifyDescriptor.QUESTION_MESSAGE
+        );
+        
+        descriptor.setOptions(new Object[]{
+            NotifyDescriptor.YES_OPTION,
+            NotifyDescriptor.NO_OPTION
+        });
+        
         try {
-            SwingUtilities.invokeAndWait(() -> {
-                final NotifyDescriptor descriptor = new NotifyDescriptor.Message(message, NotifyDescriptor.QUESTION_MESSAGE);
-                descriptor.setOptions(new Object[]{NotifyDescriptor.YES_OPTION, NotifyDescriptor.NO_OPTION});
-                result[0] = (int) DialogDisplayer.getDefault().notify(descriptor);
-            });
-        } catch (final InterruptedException ex) {
+            return NotifyDisplayer.displayAndWait(descriptor).get()
+                    == NotifyDescriptor.YES_OPTION;
+        } catch (ExecutionException ex) {
+            throw new RuntimeException("Failed to open confirm dialog", ex);
+        } catch (InterruptedException ex) {
             LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (final InvocationTargetException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            throw new RuntimeException("Failed to open confirm dialog", ex);
         }
-
-        return result[0] == 0;
     }
 
     @Override
