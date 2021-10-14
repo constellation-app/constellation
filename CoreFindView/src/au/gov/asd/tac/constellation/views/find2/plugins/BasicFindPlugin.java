@@ -51,6 +51,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean ignorecase;
     private final boolean matchWholeWord;
     private final boolean addToSelection;
+    private final boolean removeFromCurrentSelection;
     private final boolean selectAll;
     private final boolean getNext;
     private final BasicFindReplaceParameters parameters;
@@ -58,7 +59,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final static int STARTING_INDEX = -1;
     private static final Logger LOGGER = Logger.getLogger(BasicFindPlugin.class.getName());
 
-    public BasicFindPlugin(BasicFindReplaceParameters parameters, boolean addToSelection, boolean selectAll, boolean getNext) {
+    public BasicFindPlugin(BasicFindReplaceParameters parameters, boolean addToSelection, boolean removeFromCurrentSelection, boolean selectAll, boolean getNext) {
         this.elementType = parameters.getGraphElement();
         this.selectedAttributes = parameters.getAttributeList();
         this.findString = parameters.getFindString();
@@ -69,6 +70,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.selectAll = selectAll;
         this.getNext = getNext;
         this.parameters = parameters;
+        this.removeFromCurrentSelection = removeFromCurrentSelection;
     }
 
     private void clearSelection(GraphWriteMethods graph) {
@@ -125,7 +127,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         final int elementCount = elementType.getElementCount(graph);
 
         // do this if add to selection
-        if (!addToSelection) {
+        if (!addToSelection && !removeFromCurrentSelection) {
             clearSelection(graph);
         }
 
@@ -155,6 +157,9 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                     if (found) {
                         if (selectAll) {
                             graph.setBooleanValue(selectedAttribute, currElement, true);
+                            if (removeFromCurrentSelection) {
+                                graph.setBooleanValue(selectedAttribute, currElement, false);
+                            }
                         }
                         final long uid = elementType.getUID(graph, currElement);
                         FindResult fr = new FindResult(currElement, uid, elementType);
@@ -186,6 +191,9 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                 }
                 int elementId = foundResult.get(foundResult.getCurrentIndex()).getID();
                 graph.setBooleanValue(selectedAttribute, elementId, true);
+                if (removeFromCurrentSelection) {
+                    graph.setBooleanValue(selectedAttribute, elementId, false);
+                }
             }
             graph.setObjectValue(stateId, 0, foundResult);
 
