@@ -40,7 +40,7 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class SelectTopNNGTest {
-
+    
     /**
      * Test of edit method, of class SelectTopNPlugin.
      *
