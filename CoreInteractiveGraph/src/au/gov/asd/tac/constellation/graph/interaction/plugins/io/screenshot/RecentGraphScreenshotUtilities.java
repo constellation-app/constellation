@@ -162,10 +162,12 @@ public class RecentGraphScreenshotUtilities {
             filesInHistory.add(item.getFileName() + ".png");
         });
 
-        filesInDirectory.forEach(file -> {
-            if (!filesInHistory.contains(file.getName())) {
-                file.delete();
-            }
-        });
+        if (filesInDirectory != null) {
+            filesInDirectory.forEach(file -> {
+                if (!filesInHistory.contains(file.getName())) {
+                    file.delete();
+                }
+            });
+        }
     }
 }
