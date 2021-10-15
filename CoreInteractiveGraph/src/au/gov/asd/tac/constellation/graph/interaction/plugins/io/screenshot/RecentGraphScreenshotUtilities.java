@@ -153,25 +153,29 @@ public class RecentGraphScreenshotUtilities {
     }
 
     /**
-     * Refresh screenshots of recent files to match the recent files in history.
+     * Refresh stored screenshots of recent files to match the recent files
+     * stored in history.
      */
     public static void refreshScreenshotsDir() {
 
         final List<String> filesInHistory = new ArrayList<>();
-        final List<File> filesInDirectory = Arrays.asList(getScreenshotsDir() != null ? getScreenshotsDir().listFiles() : null);
+        final List<File> filesInDirectory = new ArrayList<>();
+        final File screenShotsDir = getScreenshotsDir();
+
+        if (screenShotsDir != null) {
+            filesInDirectory.addAll(Arrays.asList(screenShotsDir.listFiles()));
+        }
 
         RecentFiles.getRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + ".png"));
 
-        if (filesInDirectory != null) {
-            filesInDirectory.forEach(file -> {
-                if (!filesInHistory.contains(file.getName())) {
-                    try {
-                        Files.delete(file.toPath());
-                    } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
+        filesInDirectory.forEach(file -> {
+            if (!filesInHistory.contains(file.getName())) {
+                try {
+                    Files.delete(file.toPath());
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
                 }
-            });
-        }
+            }
+        });
     }
 }
