@@ -30,6 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -62,6 +65,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 
 /**
  * A RunPane displays the UI necessary to allow the user to drag and drop
@@ -120,6 +124,13 @@ public final class RunPane extends BorderPane implements KeyListener {
 
     protected static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
     private static final String ROW_FILTER_INITIALISER = "Importer: Row Filter Initialiser";
+    
+    // made protected purely so that FilterStartUp load can trigger the process for this on startup
+    protected static final Future<RowFilter> FILTER_LOAD;
+    
+    static {
+        FILTER_LOAD = CompletableFuture.supplyAsync(() -> new RowFilter());
+    }
 
     private class AttributeBox extends BorderPane {
 
@@ -183,11 +194,18 @@ public final class RunPane extends BorderPane implements KeyListener {
 
         filterField.setPromptText("The filter is currently unavailable. It should be ready to use shortly");
         if (rowFilter == null) {
-            new Thread(() -> {
-                rowFilter = new RowFilter();
-                //the filter is ready to use so change the prompt text
-                filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\"");
-            }, ROW_FILTER_INITIALISER).start();
+            //new Thread(() -> {
+                try {
+                    rowFilter = FILTER_LOAD.get();
+                    //the filter is ready to use so change the prompt text
+                    filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\"");
+                } catch (final InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                    Thread.currentThread().interrupt();
+                } catch (final ExecutionException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            //}, ROW_FILTER_INITIALISER).start();
         }
         
         sampleDataView.setMinHeight(SAMPLEVIEW_MIN_HEIGHT);
