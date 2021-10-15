@@ -37,7 +37,7 @@ public class FindViewConcept extends SchemaConcept {
 
     @Override
     public String getName() {
-        return ("Find View"); //To change body of generated methods, choose Tools | Templates.
+        return ("Find View");
     }
 
     @Override

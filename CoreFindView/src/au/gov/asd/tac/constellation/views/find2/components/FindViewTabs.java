@@ -35,7 +35,7 @@ public class FindViewTabs extends TabPane {
     private final ReplaceTab replaceTab;
     private final Tab advancedFindTab;
 
-    public FindViewTabs(FindViewPane parentComponent) {
+    public FindViewTabs(final FindViewPane parentComponent) {
         this.parentComponent = parentComponent;
         basicFindTab = new BasicFindTab(this);
         replaceTab = new ReplaceTab(this);

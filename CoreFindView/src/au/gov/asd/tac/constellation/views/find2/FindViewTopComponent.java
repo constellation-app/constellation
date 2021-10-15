@@ -67,17 +67,17 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     public FindViewTopComponent() {
         setName(Bundle.CTL_FindViewTopComponent2());
         setToolTipText(Bundle.HINT_FindViewTopComponent2());
+        findViewController = FindViewController.getDefault().init(this);
 
         WindowManager.getDefault().setTopComponentFloating(this, true);
         initComponents();
         this.pane = new FindViewPane(this);
-        findViewController = FindViewController.getDefault().init(this);
+
         initContent();
         WindowManager.getDefault().setTopComponentFloating(this, true);
 
         setInitialDimensions();
         disableFindView();
-
     }
 
     @Override
@@ -93,14 +93,14 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        FindViewController.getDefault().updateUI();
+        findViewController.updateUI();
         disableFindView();
     }
 
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        FindViewController.getDefault().updateUI();
+        findViewController.updateUI();
         disableFindView();
         focusFindTextField();
     }
@@ -108,7 +108,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     @Override
     protected void handleGraphOpened(final Graph graph) {
         super.handleGraphOpened(graph);
-        FindViewController.getDefault().updateUI();
+        findViewController.updateUI();
         disableFindView();
 
     }
@@ -116,7 +116,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     @Override
     protected void handleGraphClosed(final Graph graph) {
         super.handleGraphClosed(graph);
-        FindViewController.getDefault().updateUI();
+        findViewController.updateUI();
         disableFindView();
 
     }
@@ -124,22 +124,17 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     @Override
     protected void handleNewGraph(final Graph graph) {
         super.handleNewGraph(graph);
-        FindViewController.getDefault().updateUI();
-
+        findViewController.updateUI();
     }
 
     @Override
     protected void handleGraphChange(final GraphChangeEvent event) {
         super.handleNewGraph(GraphManager.getDefault().getActiveGraph());
-        FindViewController.getDefault().updateUI();
+        findViewController.updateUI();
     }
 
     public void disableFindView() {
-        if (GraphManager.getDefault().getAllGraphs().isEmpty()) {
-            FindViewController.getDefault().disableFindView(pane, true);
-        } else {
-            FindViewController.getDefault().disableFindView(pane, false);
-        }
+        pane.setDisable(GraphManager.getDefault().getAllGraphs().isEmpty());
     }
 
     public void setInitialDimensions() {

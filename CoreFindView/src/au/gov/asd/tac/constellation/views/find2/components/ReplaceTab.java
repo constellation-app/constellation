@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -37,7 +38,7 @@ public class ReplaceTab extends BasicFindTab {
     private final Button replaceNextButton = new Button("Replace Next");
     private final Button replaceAllButton = new Button("Replace All");
 
-    public ReplaceTab(FindViewTabs parentComponent) {
+    public ReplaceTab(final FindViewTabs parentComponent) {
         super(parentComponent);
         this.setText("Replace");
         setReplaceGridContent();
@@ -79,9 +80,9 @@ public class ReplaceTab extends BasicFindTab {
      */
     public void updateBasicReplaceParamters() {
         final GraphElementType elementType = GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
-        final ArrayList<Attribute> attributeList = new ArrayList<Attribute>(getMatchingAttributeList(elementType));
+        final List<Attribute> attributeList = new ArrayList<>(getMatchingAttributeList(elementType));
 
-        BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), replaceTextField.getText(),
+        final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), replaceTextField.getText(),
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
                 ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), searchAllGraphs.isSelected());
 

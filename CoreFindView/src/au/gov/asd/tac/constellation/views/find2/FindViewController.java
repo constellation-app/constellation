@@ -24,10 +24,11 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.find.advanced.GraphAttributePlugin;
+import au.gov.asd.tac.constellation.views.find2.plugins.GraphAttributePlugin;
 import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -40,16 +41,17 @@ import org.openide.util.Exceptions;
  */
 public class FindViewController {
 
-    // Layers view controller instance
+    // Find view controller instance
     private static FindViewController instance = null;
     private FindViewTopComponent parentComponent;
 
-    private BasicFindReplaceParameters currentBasicFindParameters;
     private boolean addToCurrentSelection = false;
     private boolean removeFromCurrentSelection = false;
     private boolean findInCurrentSelection = false;
 
-    private BasicFindReplaceParameters currentBasicReplaceParameters;
+    // Parameters
+    private final BasicFindReplaceParameters currentBasicFindParameters;
+    private final BasicFindReplaceParameters currentBasicReplaceParameters;
 
     private static final Logger LOGGER = Logger.getLogger(FindViewController.class.getName());
 
@@ -57,6 +59,8 @@ public class FindViewController {
      * Private constructor for singleton
      */
     private FindViewController() {
+        currentBasicFindParameters = new BasicFindReplaceParameters();
+        currentBasicReplaceParameters = new BasicFindReplaceParameters();
     }
 
     /**
@@ -81,24 +85,19 @@ public class FindViewController {
      */
     public void updateUI() {
         if (currentBasicFindParameters != null) {
-            /**
-             * Copies a list of the current attributes to avoid manipulating the
-             * original list
-             */
-            ArrayList<Attribute> attributes = new ArrayList();
-            for (Attribute a : currentBasicFindParameters.getAttributeList()) {
+            //Copies a list of the current attributes to avoid manipulating the original list
+            final List<Attribute> attributes = new ArrayList<>();
+            for (final Attribute a : currentBasicFindParameters.getAttributeList()) {
                 attributes.add(a);
             }
-            /*
-             * repopulates the attributes list incase its changed
-             * updates the currentBasicParameters to match the UI
-             */
+
+            // repopulates the attributes list incase its changed updates the currentBasicParameters to match the UI
             populateAttributes(currentBasicFindParameters.getGraphElement(), attributes, Long.MIN_VALUE);
             updateBasicReplaceParameters(currentBasicReplaceParameters);
         }
         if (currentBasicReplaceParameters != null) {
-            ArrayList<Attribute> attributes = new ArrayList();
-            for (Attribute a : currentBasicReplaceParameters.getAttributeList()) {
+            final List<Attribute> attributes = new ArrayList<>();
+            for (final Attribute a : currentBasicReplaceParameters.getAttributeList()) {
                 attributes.add(a);
             }
             populateAttributes(currentBasicReplaceParameters.getGraphElement(), attributes, Long.MIN_VALUE);
@@ -114,37 +113,36 @@ public class FindViewController {
      * @param attributes the list of attributes
      * @param attributeModificationCounter
      */
-    public ArrayList<String> populateAttributes(GraphElementType type, ArrayList<Attribute> attributes, long attributeModificationCounter) {
+    public List<String> populateAttributes(final GraphElementType type, final List<Attribute> attributes, final long attributeModificationCounter) {
         attributes.clear();
-        ArrayList<String> attributeList = new ArrayList<>();
-        ArrayList<Attribute> allAttributes = new ArrayList<>();
+        final List<String> attributeList = new ArrayList<>();
+        final List<Attribute> allAttributes = new ArrayList<>();
 
-        for (Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+        for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
             final GraphAttributePlugin attrPlugin = new GraphAttributePlugin(type, attributes, attributeModificationCounter);
             final Future<?> future = PluginExecution.withPlugin(attrPlugin).interactively(true).executeLater(graph);
 
             // Wait for the search to find its results:
             try {
                 future.get();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
                 Thread.currentThread().interrupt();
-            } catch (ExecutionException ex) {
+            } catch (final ExecutionException ex) {
                 Exceptions.printStackTrace(ex);
             }
 
             // Retrieve a list of all String attributes
             if (attrPlugin.getAttributeModificationCounter() != attributeModificationCounter) {
-                allAttributes = attrPlugin.getAttributes();
-                for (Attribute a : allAttributes) {
+                allAttributes.addAll(attrPlugin.getAttributes());
+                for (final Attribute a : allAttributes) {
                     if (a.getAttributeType().equals("string")) {
                         attributeList.add(a.getName());
-
                     }
                 }
             }
         }
-        Set<String> set = new LinkedHashSet<>();
+        final Set<String> set = new LinkedHashSet<>();
         set.addAll(attributeList);
         attributeList.clear();
         attributeList.addAll(set);
@@ -152,30 +150,16 @@ public class FindViewController {
     }
 
     /**
-     * Disables the find view. This is triggered when no graphs are open open
-     *
-     * @param pane the find view pane
-     * @param disable true if no graphs are open
-     */
-    public void disableFindView(FindViewPane pane, boolean disable) {
-        pane.setDisable(disable);
-    }
-
-    public void focusFindTextField() {
-        parentComponent.focusFindTextField();
-    }
-
-    /**
      * Updates the controllers current parameters with those passed
      *
      * @param parameters
      */
-    public void updateBasicFindParameters(BasicFindReplaceParameters parameters) {
-        currentBasicFindParameters = parameters;
+    public void updateBasicFindParameters(final BasicFindReplaceParameters parameters) {
+        currentBasicFindParameters.copyParameters(parameters);
     }
 
-    public void updateBasicReplaceParameters(BasicFindReplaceParameters parameters) {
-        currentBasicReplaceParameters = parameters;
+    public void updateBasicReplaceParameters(final BasicFindReplaceParameters parameters) {
+        currentBasicReplaceParameters.copyParameters(parameters);
     }
 
     /**
@@ -199,25 +183,24 @@ public class FindViewController {
      * @param selectAll true if finding all graph elements
      * @param getNext true if finding the next element, false if the previous
      */
-    public void retriveMatchingElements(boolean selectAll, boolean getNext) {
+    public void retriveMatchingElements(final boolean selectAll, final boolean getNext) {
 
         if (currentBasicFindParameters.isSearchAllGraphs()) {
-            for (Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+            for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                 long elementChangeCount = 0;
+
                 final ReadableGraph rg = graph.getReadableGraph();
                 try {
                     elementChangeCount = rg.getStructureModificationCounter();
                 } finally {
                     rg.release();
                 }
-
-                if (graph != null) {
-                    if (currentBasicFindParameters.isSearchAllGraphs()) {
-                        BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection,
-                                removeFromCurrentSelection, findInCurrentSelection, selectAll, getNext, elementChangeCount);
-                        PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
-                    }
+                if (graph != null && currentBasicFindParameters.isSearchAllGraphs()) {
+                    final BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection,
+                            removeFromCurrentSelection, findInCurrentSelection, selectAll, getNext, elementChangeCount);
+                    PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
                 }
+
             }
         } else {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
@@ -229,27 +212,25 @@ public class FindViewController {
                 rg.release();
             }
             if (graph != null) {
-                BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection,
+                final BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection,
                         removeFromCurrentSelection, findInCurrentSelection, selectAll, getNext, elementChangeCount);
                 PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
             }
         }
     }
 
-    public void replaceMatchingElements(boolean replaceAll, boolean replaceNext) {
+    public void replaceMatchingElements(final boolean replaceAll, final boolean replaceNext) {
+        final ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext);
+
         if (currentBasicReplaceParameters.isSearchAllGraphs()) {
-            for (Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
-                if (graph != null) {
-                    if (currentBasicReplaceParameters.isSearchAllGraphs()) {
-                        ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext);
-                        PluginExecution.withPlugin(basicReplacePlugin).executeLater(graph);
-                    }
+            for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+                if (graph != null && currentBasicReplaceParameters.isSearchAllGraphs()) {
+                    PluginExecution.withPlugin(basicReplacePlugin).executeLater(graph);
                 }
             }
         } else {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
             if (graph != null) {
-                ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext);
                 PluginExecution.withPlugin(basicReplacePlugin).executeLater(graph);
             }
         }

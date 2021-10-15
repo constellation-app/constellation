@@ -25,23 +25,25 @@ import java.util.ArrayList;
 public class FindResultsList extends ArrayList<FindResult> {
 
     private int currentIndex = -1;
-    private String graphId;
-    private BasicFindReplaceParameters searchParameters;
+    private final String graphId;
+    private final BasicFindReplaceParameters searchParameters;
 
-    public FindResultsList() {
-        graphId = "";
+    public FindResultsList(final String graphId) {
+        this.graphId = graphId;
+        this.searchParameters = new BasicFindReplaceParameters();
     }
 
-    public FindResultsList(int index, BasicFindReplaceParameters searchParameters) {
+    public FindResultsList(final int index, final BasicFindReplaceParameters searchParameters, final String graphId) {
         this.currentIndex = index;
         this.searchParameters = searchParameters;
+        this.graphId = graphId;
     }
 
     public int getCurrentIndex() {
         return currentIndex;
     }
 
-    public void setCurrentIndex(int index) {
+    public void setCurrentIndex(final int index) {
         currentIndex = index;
     }
 
@@ -67,10 +69,6 @@ public class FindResultsList extends ArrayList<FindResult> {
         }
     }
 
-    public void setGraphId(String id) {
-        graphId = id;
-    }
-
     public String getGraphId() {
         return graphId;
     }
@@ -79,8 +77,8 @@ public class FindResultsList extends ArrayList<FindResult> {
         return searchParameters;
     }
 
-    public void setSearchParameters(BasicFindReplaceParameters parameters) {
-        this.searchParameters = parameters;
+    public void setSearchParameters(final BasicFindReplaceParameters parameters) {
+        this.searchParameters.copyParameters(parameters);
     }
 
 }
