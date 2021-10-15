@@ -53,7 +53,6 @@ public class BasicFindTab extends Tab {
 
     protected final FindViewTabs parentComponent;
 
-    // TODO: name this something else other than "layers"
     protected final VBox layers = new VBox();
 
     protected final GridPane textGrid = new GridPane();

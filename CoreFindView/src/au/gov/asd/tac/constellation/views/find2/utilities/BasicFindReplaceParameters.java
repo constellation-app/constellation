@@ -122,7 +122,6 @@ public class BasicFindReplaceParameters {
         if (searchAllGraphs == object.isSearchAllGraphs()) {
             matches++;
         }
-        // debugging code?
         if (matches == 9) {
             return true;
         }
