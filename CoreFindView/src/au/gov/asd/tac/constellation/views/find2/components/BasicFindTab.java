@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -44,7 +45,7 @@ import javafx.scene.layout.VBox;
 import org.controlsfx.control.CheckComboBox;
 
 /**
- * This class contains all the UI elements for the Basic find Tab
+ * BasicFindTab contains all the UI elements for the Basic find functionality
  *
  * @author Atlas139mkm
  */
@@ -69,11 +70,11 @@ public class BasicFindTab extends Tab {
 
     protected final Label inAttributesLabel = new Label("In Attributes:");
     protected final CheckComboBox<String> inAttributesMenu = new CheckComboBox<String>();
-    protected ArrayList<Attribute> attributes = new ArrayList<>();
-    protected ArrayList<Attribute> selectedNodeAttributes = new ArrayList<>();
-    protected ArrayList<Attribute> selectedTransAttributes = new ArrayList<>();
-    protected ArrayList<Attribute> selectedEdgeAttributes = new ArrayList<>();
-    protected ArrayList<Attribute> selectedLinkAttributes = new ArrayList<>();
+    protected List<Attribute> attributes = new ArrayList<>();
+    protected List<Attribute> selectedNodeAttributes = new ArrayList<>();
+    protected List<Attribute> selectedTransAttributes = new ArrayList<>();
+    protected List<Attribute> selectedEdgeAttributes = new ArrayList<>();
+    protected List<Attribute> selectedLinkAttributes = new ArrayList<>();
 
     final ContextMenu contextMenu = new ContextMenu();
     final MenuItem selectAllMenuItem = new MenuItem("Select All");
@@ -107,11 +108,11 @@ public class BasicFindTab extends Tab {
 
     protected static final Logger LOGGER = Logger.getLogger(BasicFindTab.class.getName());
 
-    public BasicFindTab(FindViewTabs parentComponent) {
+    public BasicFindTab(final FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;
-        this.setText("Basic Find");
+        setText("Basic Find");
         setGridContent();
-        this.setContent(layers);
+        setContent(layers);
         populateAttributes(GraphElementType.VERTEX);
 
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -158,10 +159,10 @@ public class BasicFindTab extends Tab {
      * Sets all the UI elements to the basic find Tab
      */
     private void setGridContent() {
-        ColumnConstraints neverGrow = new ColumnConstraints();
-        neverGrow.setHgrow(Priority.NEVER);
-        ColumnConstraints alwaysGrow = new ColumnConstraints();
+        final ColumnConstraints neverGrow = new ColumnConstraints();
+        final ColumnConstraints alwaysGrow = new ColumnConstraints();
         alwaysGrow.setHgrow(Priority.ALWAYS);
+        neverGrow.setHgrow(Priority.NEVER);
 
         layers.setSpacing(5);
         textGrid.setPadding(new Insets(10, 10, 10, 10));
@@ -243,11 +244,11 @@ public class BasicFindTab extends Tab {
      * @param type
      */
     public void populateAttributes(final GraphElementType type) {
-        final ArrayList<String> attributeList = FindViewController.getDefault().populateAttributes(type, attributes, attributeModificationCounter);
+        final List<String> attributeList = FindViewController.getDefault().populateAttributes(type, attributes, attributeModificationCounter);
         inAttributesMenu.getItems().clear();
 
-        final ArrayList<Attribute> selected = getMatchingAttributeList(type);
-        for (String attribute : attributeList) {
+        final List<Attribute> selected = getMatchingAttributeList(type);
+        for (final String attribute : attributeList) {
             inAttributesMenu.getItems().add(attribute);
             for (int i = 0; i < selected.size() - 1; i++) {
                 if (selected.get(i).getName() == attribute) {
@@ -263,7 +264,7 @@ public class BasicFindTab extends Tab {
      *
      * @param selectedAttributes
      */
-    public void updateSelectedAttributes(ArrayList<Attribute> selectedAttributes) {
+    public void updateSelectedAttributes(final List<Attribute> selectedAttributes) {
         for (int i = 0; i < selectedAttributes.size(); i++) {
             if (checkSelectedContains(selectedAttributes.get(i), attributes)) {
                 inAttributesMenu.getCheckModel().check(selectedAttributes.get(i).getName());
@@ -277,15 +278,16 @@ public class BasicFindTab extends Tab {
      * @param type
      * @return
      */
-    public ArrayList<Attribute> getMatchingAttributeList(GraphElementType type) {
-        if (type.equals(GraphElementType.VERTEX)) {
-            return selectedNodeAttributes;
-        } else if (type.equals(GraphElementType.TRANSACTION)) {
-            return selectedTransAttributes;
-        } else if (type.equals(GraphElementType.EDGE)) {
-            return selectedEdgeAttributes;
-        } else {
-            return selectedLinkAttributes;
+    public List<Attribute> getMatchingAttributeList(final GraphElementType type) {
+        switch (type) {
+            case VERTEX:
+                return selectedNodeAttributes;
+            case TRANSACTION:
+                return selectedTransAttributes;
+            case EDGE:
+                return selectedEdgeAttributes;
+            default:
+                return selectedLinkAttributes;
         }
     }
 
@@ -295,11 +297,11 @@ public class BasicFindTab extends Tab {
      *
      * @param type
      */
-    public void saveSelected(GraphElementType type) {
-        ArrayList<Attribute> selectedAttributes = getMatchingAttributeList(type);
+    public void saveSelected(final GraphElementType type) {
+        final List<Attribute> selectedAttributes = getMatchingAttributeList(type);
         selectedAttributes.clear();
 
-        for (Attribute a : attributes) {
+        for (final Attribute a : attributes) {
             if (a.getAttributeType().equals("string")) {
                 if (inAttributesMenu.getCheckModel().isChecked(a.getName())) {
                     selectedAttributes.add(a);
@@ -316,8 +318,8 @@ public class BasicFindTab extends Tab {
      * @param selectedAttributes
      * @return
      */
-    private boolean checkSelectedContains(Attribute attribute, ArrayList<Attribute> selectedAttributes) {
-        for (Attribute sa : selectedAttributes) {
+    private boolean checkSelectedContains(final Attribute attribute, final List<Attribute> selectedAttributes) {
+        for (final Attribute sa : selectedAttributes) {
             if (attribute.getName().equals(sa.getName())) {
                 return true;
             }
@@ -333,9 +335,9 @@ public class BasicFindTab extends Tab {
      */
     public void updateBasicFindParamters() {
         final GraphElementType elementType = GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
-        final ArrayList<Attribute> attributeList = new ArrayList<Attribute>(getMatchingAttributeList(elementType));
+        final List<Attribute> attributeList = new ArrayList<>(getMatchingAttributeList(elementType));
 
-        BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), "",
+        final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), "",
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
                 ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), searchAllGraphs.isSelected());
 

@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.views.find2;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import java.util.ArrayList;
+import java.util.List;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -57,7 +57,6 @@ public class FindViewControllerNGTest {
      */
     @Test
     public void testGetDefault() {
-
         FindViewController instance = FindViewController.getDefault();
         assertEquals(instance, FindViewController.getDefault());
     }
@@ -98,30 +97,18 @@ public class FindViewControllerNGTest {
     public void testPopulateAttributes() {
         System.out.println("populateAttributes");
         GraphElementType type = GraphElementType.VERTEX;
-        ArrayList<Attribute> attributes = new ArrayList<>();
+        List<Attribute> attributes = new ArrayList<>();
         long attributeModificationCounter = 0L;
         FindViewController instance = FindViewController.getDefault();
-        ArrayList<String> expResult = new ArrayList<>();
+        List<String> expResult = new ArrayList<>();
         expResult.add("Label");
         expResult.add("Identifier");
         expResult.add("Source");
-        ArrayList result = instance.populateAttributes(type, attributes, attributeModificationCounter);
+        List result = instance.populateAttributes(type, attributes, attributeModificationCounter);
         assertEquals(result, expResult);
         // TODO review the generated test code and remove the default call to fail.
     }
 
-    /**
-     * Test of disableFindView method, of class FindViewController.
-     */
-    @Test
-    public void testDisableFindView() {
-        System.out.println("disableFindView");
-        FindViewPane pane = null;
-        boolean disable = false;
-        FindViewController instance = null;
-        instance.disableFindView(pane, disable);
-        // TODO review the generated test code and remove the default call to fail.
-    }
 
     /**
      * Test of updateBasicParameters method, of class FindViewController.

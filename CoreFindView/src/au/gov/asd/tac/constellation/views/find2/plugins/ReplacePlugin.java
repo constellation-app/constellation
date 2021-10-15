@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +38,7 @@ import java.util.regex.Pattern;
 public class ReplacePlugin extends SimpleEditPlugin {
 
     private final GraphElementType elementType;
-    private final ArrayList<Attribute> selectedAttributes;
+    private final List<Attribute> selectedAttributes;
     private String findString;
     private final String replaceString;
     private Boolean regex;
@@ -45,7 +46,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final Boolean replaceAll;
     private final Boolean replaceNext;
 
-    public ReplacePlugin(BasicFindReplaceParameters parameters, boolean replaceAll, boolean replaceNext) {
+    public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext) {
         this.elementType = parameters.getGraphElement();
         this.selectedAttributes = parameters.getAttributeList();
         this.findString = parameters.getFindString();
@@ -62,17 +63,17 @@ public class ReplacePlugin extends SimpleEditPlugin {
             findString = "^$";
             regex = true;
         }
-        int elementCount = elementType.getElementCount(graph);
-        String searchString = regex ? findString : Pattern.quote(findString);
-        int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
-        Pattern searchPattern = Pattern.compile(searchString, caseSensitivity);
-        for (Attribute a : selectedAttributes) {
+        final int elementCount = elementType.getElementCount(graph);
+        final String searchString = regex ? findString : Pattern.quote(findString);
+        final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
+        final Pattern searchPattern = Pattern.compile(searchString, caseSensitivity);
+        for (final Attribute a : selectedAttributes) {
             for (int i = 0; i < elementCount; i++) {
-                int currElement = elementType.getElement(graph, i);
-                String value = graph.getStringValue(a.getId(), currElement);
+                final int currElement = elementType.getElement(graph, i);
+                final String value = graph.getStringValue(a.getId(), currElement);
                 if (value != null) {
-                    Matcher match = searchPattern.matcher(value);
-                    String newValue = match.replaceAll(replaceString);
+                    final Matcher match = searchPattern.matcher(value);
+                    final String newValue = match.replaceAll(replaceString);
                     if (!newValue.equals(value)) {
                         graph.setStringValue(a.getId(), currElement, newValue);
                         if (replaceNext == true) {

@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.views.find2.utilities;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -25,17 +27,37 @@ import java.util.ArrayList;
  */
 public class BasicFindReplaceParameters {
 
-    private final String findString;
-    private final String replaceString;
-    private final GraphElementType graphElement;
-    private final ArrayList<Attribute> attributeList;
-    private final boolean standardText;
-    private final boolean regEx;
-    private final boolean ignoreCase;
-    private final boolean exactMatch;
-    private final boolean searchAllGraphs;
+    private String findString;
+    private String replaceString;
+    private GraphElementType graphElement;
+    private List<Attribute> attributeList;
+    private boolean standardText;
+    private boolean regEx;
+    private boolean ignoreCase;
+    private boolean exactMatch;
+    private boolean searchAllGraphs;
 
-    public BasicFindReplaceParameters(BasicFindReplaceParameters parameters) {
+    public BasicFindReplaceParameters() {
+        // May need initialisation for the class variables that can be null.
+        attributeList = new ArrayList<>();
+        graphElement = GraphElementType.VERTEX;
+    }
+
+    /**
+     * Construct a Parameters object from another
+     *
+     * @param parameters the parameters object to copy from
+     */
+    public BasicFindReplaceParameters(final BasicFindReplaceParameters parameters) {
+        this.copyParameters(parameters);
+    }
+
+    /**
+     * Copy the parameters from a parameters object into the current object.
+     *
+     * @param parameters
+     */
+    public void copyParameters(final BasicFindReplaceParameters parameters) {
         this.findString = parameters.findString;
         this.replaceString = parameters.replaceString;
         this.graphElement = parameters.graphElement;
@@ -48,32 +70,26 @@ public class BasicFindReplaceParameters {
 
     }
 
-    public BasicFindReplaceParameters(String findString, String replaceString, GraphElementType graphElement,
-            ArrayList<Attribute> attributeList, boolean standardText, boolean regEx, boolean ignoreCase,
-            boolean exactMatch, boolean searchAllGraphs) {
+    public BasicFindReplaceParameters(final String findString, final String replaceString, final GraphElementType graphElement,
+            final List<Attribute> attributeList, final boolean standardText, final boolean regEx, final boolean ignoreCase,
+            final boolean exactMatch, final boolean searchAllGraphs) {
 
         this.findString = findString;
-        if (replaceString.isEmpty() || replaceString == "") {
-            this.replaceString = "";
-        } else {
-            this.replaceString = replaceString;
-        }
+        this.replaceString = StringUtils.isBlank(replaceString) ? "" : replaceString;
         this.graphElement = graphElement;
-
         this.attributeList = attributeList;
-
         this.standardText = standardText;
         this.regEx = regEx;
         this.ignoreCase = ignoreCase;
         this.exactMatch = exactMatch;
         this.searchAllGraphs = searchAllGraphs;
 
+        // Do these need to happen before the assignment to the class variables?
         trimText(findString);
         ignoreCase(findString);
-
     }
 
-    public boolean equals(BasicFindReplaceParameters object) {
+    public boolean equals(final BasicFindReplaceParameters object) {
         int matches = 0;
 
         if (this == null || object == null) {
@@ -124,7 +140,7 @@ public class BasicFindReplaceParameters {
         return graphElement;
     }
 
-    public ArrayList<Attribute> getAttributeList() {
+    public List<Attribute> getAttributeList() {
         return attributeList;
     }
 
