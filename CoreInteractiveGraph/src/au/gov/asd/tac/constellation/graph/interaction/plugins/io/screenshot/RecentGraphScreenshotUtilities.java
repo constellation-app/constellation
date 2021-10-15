@@ -106,7 +106,7 @@ public class RecentGraphScreenshotUtilities {
         try {
             // resizeAndSave the buffered image in memory and write the image to disk
             resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
-            refreshScreenshotDir();
+            refreshScreenshotsDir();
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
@@ -155,10 +155,10 @@ public class RecentGraphScreenshotUtilities {
     /**
      * Refresh screenshots of recent files to match the recent files in history.
      */
-    public static void refreshScreenshotDir() {
+    public static void refreshScreenshotsDir() {
 
         final List<String> filesInHistory = new ArrayList<>();
-        final List<File> filesInDirectory = getScreenshotsDir() != null ? Arrays.asList(getScreenshotsDir().listFiles()) : null;
+        final List<File> filesInDirectory = Arrays.asList(getScreenshotsDir() != null ? getScreenshotsDir().listFiles() : null);
 
         RecentFiles.getRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + ".png"));
 
