@@ -158,7 +158,7 @@ public class RecentGraphScreenshotUtilities {
     public static void refreshScreenshotDir() {
 
         final List<String> filesInHistory = new ArrayList<>();
-        final List<File> filesInDirectory = Arrays.asList(getScreenshotsDir().listFiles());
+        final List<File> filesInDirectory = getScreenshotsDir() != null ? Arrays.asList(getScreenshotsDir().listFiles()) : null;
 
         RecentFiles.getRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + ".png"));
 
