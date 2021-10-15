@@ -56,13 +56,11 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean selectAll;
     private final boolean getNext;
     private final BasicFindReplaceParameters parameters;
-    private long modificationCounter = 0;
-    private final boolean modified;
 
     private final static int STARTING_INDEX = -1;
     private static final Logger LOGGER = Logger.getLogger(BasicFindPlugin.class.getName());
 
-    public BasicFindPlugin(BasicFindReplaceParameters parameters, boolean addToSelection, boolean removeFromCurrentSelection, boolean findInCurrentSelection, boolean selectAll, boolean getNext, long elementModificationCounter) {
+    public BasicFindPlugin(BasicFindReplaceParameters parameters, boolean addToSelection, boolean removeFromCurrentSelection, boolean findInCurrentSelection, boolean selectAll, boolean getNext) {
         this.elementType = parameters.getGraphElement();
         this.selectedAttributes = parameters.getAttributeList();
         this.findString = parameters.getFindString();
@@ -75,11 +73,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.parameters = parameters;
         this.removeFromCurrentSelection = removeFromCurrentSelection;
         this.findInCurrentSelection = findInCurrentSelection;
-        if (this.modificationCounter != elementModificationCounter) {
-            this.modified = true;
-        } else {
-            this.modified = false;
-        }
     }
 
     private void clearSelection(GraphWriteMethods graph) {
@@ -250,9 +243,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private int getIndex(FindResultsList foundResult, FindResultsList lastFoundResult) {
         // If selecting all elements, reset the index
         if (selectAll) {
-            return STARTING_INDEX;
-        }
-        if (modified) {
             return STARTING_INDEX;
         }
         // If the foundresult has been created

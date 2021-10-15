@@ -60,8 +60,9 @@ public class ReplaceTab extends BasicFindTab {
 
         buttonsHBox.getChildren().clear();
         buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton);
-        buttonsVBox.getChildren().remove(addRemoveSelectionGrid);
 
+        currentSelectionChoiceBox.getItems().remove(1, 4);
+        currentSelectionChoiceBox.getItems().add("Replace in");
     }
 
     public void updateButtons() {

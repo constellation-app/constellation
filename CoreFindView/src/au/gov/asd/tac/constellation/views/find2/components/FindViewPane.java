@@ -35,7 +35,6 @@ public class FindViewPane extends BorderPane {
         this.parentComponent = parentComponent;
         this.findViewTabs = new FindViewTabs(this);
         setCenter(findViewTabs.getFindViewTabs());
-        setMinSize(450, 231);
     }
 
     public FindViewTabs getTabs() {

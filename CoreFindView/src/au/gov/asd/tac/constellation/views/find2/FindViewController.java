@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.find2.plugins.BasicFindPlugin;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find.advanced.GraphAttributePlugin;
@@ -203,34 +202,19 @@ public class FindViewController {
 
         if (currentBasicFindParameters.isSearchAllGraphs()) {
             for (Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
-                long elementChangeCount = 0;
-                final ReadableGraph rg = graph.getReadableGraph();
-                try {
-                    elementChangeCount = rg.getStructureModificationCounter();
-                } finally {
-                    rg.release();
-                }
-
                 if (graph != null) {
                     if (currentBasicFindParameters.isSearchAllGraphs()) {
                         BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection,
-                                removeFromCurrentSelection, findInCurrentSelection, selectAll, getNext, elementChangeCount);
+                                removeFromCurrentSelection, findInCurrentSelection, selectAll, getNext);
                         PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
                     }
                 }
             }
         } else {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
-            long elementChangeCount = 0;
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
-                elementChangeCount = rg.getStructureModificationCounter();
-            } finally {
-                rg.release();
-            }
             if (graph != null) {
                 BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection,
-                        removeFromCurrentSelection, findInCurrentSelection, selectAll, getNext, elementChangeCount);
+                        removeFromCurrentSelection, findInCurrentSelection, selectAll, getNext);
                 PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
             }
         }

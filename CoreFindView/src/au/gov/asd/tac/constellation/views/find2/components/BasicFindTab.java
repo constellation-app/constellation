@@ -95,6 +95,9 @@ public class BasicFindTab extends Tab {
     protected final CheckBox findInSelected = new CheckBox("Find In Current Selection");
     protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
 
+    protected final Label currentSelectionLabel = new Label("Current Selection:");
+    protected final ChoiceBox currentSelectionChoiceBox = new ChoiceBox();
+
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Prev");
     private final Button findAllButton = new Button("Find All");
@@ -109,6 +112,7 @@ public class BasicFindTab extends Tab {
         this.setText("Basic Find");
         setGridContent();
         this.setContent(layers);
+        populateAttributes(GraphElementType.VERTEX);
 
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -132,26 +136,11 @@ public class BasicFindTab extends Tab {
         inAttributesMenu.setOnContextMenuRequested(event -> {
             contextMenu.show(inAttributesMenu, event.getScreenX(), event.getScreenY());
         });
-        addToCurrent.setOnAction(action -> {
-            removeFromCurrent.setSelected(false);
-            findInSelected.setSelected(false);
-            findNextButton.setDisable(false);
-            findPrevButton.setDisable(false);
-            updateSelectionFactors();
-        });
-        removeFromCurrent.setOnAction(action -> {
-            addToCurrent.setSelected(false);
-            findInSelected.setSelected(false);
-            findNextButton.setDisable(false);
-            findPrevButton.setDisable(false);
-            updateSelectionFactors();
-        });
-        findInSelected.setOnAction(action -> {
-            addToCurrent.setSelected(false);
-            removeFromCurrent.setSelected(false);
-            findNextButton.setDisable(true);
-            findPrevButton.setDisable(true);
-            updateSelectionFactors();
+        currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
+                updateSelectionFactors();
+            }
         });
 
         findAllButton.setOnAction(action -> {
@@ -219,18 +208,17 @@ public class BasicFindTab extends Tab {
 
         settingsGrid.add(preferencesGrid, 2, 0, 2, 2);
 
-        addRemoveSelectionGrid.add(addToCurrent, 0, 0);
-        addRemoveSelectionGrid.add(removeFromCurrent, 1, 0);
-        addRemoveSelectionGrid.add(findInSelected, 0, 1);
-        addRemoveSelectionGrid.setHgap(5);
-        addRemoveSelectionGrid.setVgap(5);
+        currentSelectionChoiceBox.getItems().addAll("", "Add to", "Find in", "Remove From");
+        currentSelectionChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
+        settingsGrid.add(currentSelectionLabel, 0, 2);
+        settingsGrid.add(currentSelectionChoiceBox, 1, 2);
 
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
         buttonsHBox.setPadding(new Insets(5, 10, 5, 10));
         buttonsHBox.setSpacing(5);
         buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton, searchAllGraphs);
 
-        buttonsVBox.getChildren().addAll(addRemoveSelectionGrid, buttonsHBox);
+        buttonsVBox.getChildren().addAll(buttonsHBox);
 
         parentComponent.getParentComponent().setBottom(buttonsVBox);
 
@@ -359,7 +347,33 @@ public class BasicFindTab extends Tab {
      * the variables values stored in the controller
      */
     public void updateSelectionFactors() {
-        FindViewController.getDefault().updateSelectionFactors(addToCurrent.isSelected(), removeFromCurrent.isSelected(), findInSelected.isSelected());
+        boolean addTo = false;
+        boolean removeFrom = false;
+        boolean findIn = false;
+        switch (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                findNextButton.setDisable(false);
+                findPrevButton.setDisable(false);
+                break;
+            case 1:
+                addTo = true;
+                findNextButton.setDisable(false);
+                findPrevButton.setDisable(false);
+                break;
+            case 2:
+                findIn = true;
+                findNextButton.setDisable(true);
+                findPrevButton.setDisable(true);
+                break;
+            case 3:
+                removeFrom = true;
+                findNextButton.setDisable(false);
+                findPrevButton.setDisable(false);
+                break;
+            default:
+                break;
+        }
+        FindViewController.getDefault().updateSelectionFactors(addTo, removeFrom, findIn);
     }
 
     public void findAllAction() {
