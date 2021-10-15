@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find2.plugins.GraphAttributePlugin;
-import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -84,25 +83,21 @@ public class FindViewController {
      * Updates the UI elements and controllers variables to match the UI
      */
     public void updateUI() {
-        if (currentBasicFindParameters != null) {
-            //Copies a list of the current attributes to avoid manipulating the original list
-            final List<Attribute> attributes = new ArrayList<>();
-            for (final Attribute a : currentBasicFindParameters.getAttributeList()) {
-                attributes.add(a);
-            }
+        // Find attributes
+        //Copies a list of the current attributes to avoid manipulating the original list
+        final List<Attribute> findAttributes = new ArrayList<>();
+        findAttributes.addAll(currentBasicFindParameters.getAttributeList());
+        // repopulates the attributes list incase its changed updates the currentBasicParameters to match the UI
+        populateAttributes(currentBasicFindParameters.getGraphElement(), findAttributes, Long.MIN_VALUE);
+        updateBasicReplaceParameters(currentBasicReplaceParameters);
 
-            // repopulates the attributes list incase its changed updates the currentBasicParameters to match the UI
-            populateAttributes(currentBasicFindParameters.getGraphElement(), attributes, Long.MIN_VALUE);
-            updateBasicReplaceParameters(currentBasicReplaceParameters);
-        }
-        if (currentBasicReplaceParameters != null) {
-            final List<Attribute> attributes = new ArrayList<>();
-            for (final Attribute a : currentBasicReplaceParameters.getAttributeList()) {
-                attributes.add(a);
-            }
-            populateAttributes(currentBasicReplaceParameters.getGraphElement(), attributes, Long.MIN_VALUE);
-            updateBasicReplaceParameters(currentBasicReplaceParameters);
-        }
+        // Replace attributes
+        //Copies a list of the current attributes to avoid manipulating the original list
+        final List<Attribute> replaceAttributes = new ArrayList<>();
+        replaceAttributes.addAll(currentBasicReplaceParameters.getAttributeList());
+        // repopulates the attributes list incase its changed updates the currentBasicParameters to match the UI
+        populateAttributes(currentBasicReplaceParameters.getGraphElement(), replaceAttributes, Long.MIN_VALUE);
+        updateBasicReplaceParameters(currentBasicReplaceParameters);
     }
 
     /**
