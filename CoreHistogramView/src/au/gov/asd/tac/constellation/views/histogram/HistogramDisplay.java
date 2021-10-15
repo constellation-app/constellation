@@ -94,7 +94,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private int preferredHeight;
     private int iconPadding;
     private int barHeight;   // the vertical thickness of the bars
-    private int userSetBarHeight = -1;   // the vertical thiccness of the bars as set by the user
+    private int userSetBarHeight = -1;   // the vertical thickness of the bars as set by the user
     private int barsWidth; // the length of the longest bar
     private int textWidth; // the width of the space allocated to text
     private float scaleFactor; // the scale factor from histogram count to bar length in pixels
