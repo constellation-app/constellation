@@ -56,13 +56,11 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean selectAll;
     private final boolean getNext;
     private final BasicFindReplaceParameters parameters;
-    private long modificationCounter = 0;
-    private final boolean modified;
 
     private final static int STARTING_INDEX = -1;
     private static final Logger LOGGER = Logger.getLogger(BasicFindPlugin.class.getName());
 
-    public BasicFindPlugin(final BasicFindReplaceParameters parameters, final boolean addToSelection, final boolean removeFromCurrentSelection, final boolean findInCurrentSelection, final boolean selectAll, final boolean getNext, final long elementModificationCounter) {
+    public BasicFindPlugin(final BasicFindReplaceParameters parameters, final boolean addToSelection, final boolean removeFromCurrentSelection, final boolean findInCurrentSelection, final boolean selectAll, final boolean getNext) {
         this.elementType = parameters.getGraphElement();
         this.selectedAttributes = parameters.getAttributeList();
         this.findString = parameters.getFindString();
@@ -75,7 +73,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.parameters = parameters;
         this.removeFromCurrentSelection = removeFromCurrentSelection;
         this.findInCurrentSelection = findInCurrentSelection;
-        this.modified = this.modificationCounter != elementModificationCounter;
     }
 
     private void clearSelection(final GraphWriteMethods graph) {
@@ -230,18 +227,12 @@ public class BasicFindPlugin extends SimpleEditPlugin {
      * @return the correct current index
      */
     private int getIndex(final FindResultsList foundResult, final FindResultsList lastFoundResult) {
-        // If selecting all elements, reset the index
-        if (selectAll || modified) {
-            return STARTING_INDEX;
-        }
-
-        // If the foundresult has been created
-        if (foundResult != null && this.parameters.equals(lastFoundResult.getSearchParameters())) {
+        if (!selectAll && foundResult != null && this.parameters.equals(lastFoundResult.getSearchParameters())) {
             // If the query hasnt changed and there must be elements in the list
             // get the current index
             return foundResult.getCurrentIndex();
         }
-        // If all else fails reset the index
+        // If selecting all elements, reset the index
         return STARTING_INDEX;
     }
 
