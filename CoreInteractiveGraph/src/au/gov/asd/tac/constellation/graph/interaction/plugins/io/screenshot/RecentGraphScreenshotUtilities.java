@@ -26,6 +26,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
+import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -153,19 +155,21 @@ public class RecentGraphScreenshotUtilities {
     /**
      * Refresh screenshots of recent files to match the recent files in history.
      */
-    private static void refreshScreenshotDir() {
+    public static void refreshScreenshotDir() {
 
         final List<String> filesInHistory = new ArrayList<>();
         final List<File> filesInDirectory = Arrays.asList(getScreenshotsDir().listFiles());
 
-        RecentFiles.getRecentFiles().forEach(item -> {
-            filesInHistory.add(item.getFileName() + ".png");
-        });
+        RecentFiles.getRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + ".png"));
 
         if (filesInDirectory != null) {
             filesInDirectory.forEach(file -> {
                 if (!filesInHistory.contains(file.getName())) {
-                    file.delete();
+                    try {
+                        Files.delete(file.toPath());
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
                 }
             });
         }

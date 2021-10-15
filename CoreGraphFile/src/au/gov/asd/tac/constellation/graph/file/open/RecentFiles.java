@@ -101,7 +101,7 @@ public final class RecentFiles {
     /**
      * Boundary for items count in history
      */
-    static final int MAX_HISTORY_ITEMS = 10;
+    private static final int MAX_HISTORY_ITEMS = 10;
 
     private RecentFiles() {
     }
