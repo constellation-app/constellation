@@ -97,7 +97,7 @@ public class MultiChoiceInputPane extends HBox {
                 switch (change) {
                     case VALUE:
                         isAdjusting = true;
-                        field.getCheckModel().clearChecks();
+                        field.getCheckModel().clearChecks(); //The order matters here- this should be called before clearing the options.
                         options.clear();
                         options.addAll(MultiChoiceParameterType.getOptionsData(mcPluginParameter));
                         @SuppressWarnings("unchecked") //checkedItems will be list of parameter values
