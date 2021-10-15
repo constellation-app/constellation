@@ -33,6 +33,9 @@ public class MatrixUtilities {
 
     public static SimpleMatrix adjacency(final GraphReadMethods graph, final boolean weighted) {
         final int vertexCount = graph.getVertexCount();
+        if (vertexCount == 0) {
+            return new SimpleMatrix(0, 0);
+        }
         final double[][] data = new double[vertexCount][vertexCount];
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
@@ -84,6 +87,9 @@ public class MatrixUtilities {
     }
 
     public static SimpleMatrix inverseLaplacian(final GraphReadMethods graph) {
+        if (graph.getVertexCount() == 0) {
+            return new SimpleMatrix(0, 0);
+        }
         final SimpleMatrix laplacian = laplacian(graph);
         return laplacian.pseudoInverse();
     }
