@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -159,20 +157,6 @@ public final class RunPane extends BorderPane implements KeyListener {
         this.importController = importController;
         this.paneName = paneName;
 
-        if (rowFilter == null) {
-            try {
-                final CountDownLatch latch = new CountDownLatch(1);
-                new Thread(() -> {
-                    rowFilter = new RowFilter();
-                    latch.countDown();
-                }, ROW_FILTER_INITIALISER).start();
-                latch.await();
-            } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
-                Thread.currentThread().interrupt();
-            }
-        }
-
         setMaxHeight(Double.MAX_VALUE);
         setMaxWidth(Double.MAX_VALUE);
 
@@ -188,7 +172,6 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField = new TextField();
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
-        filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\"");
         filterField.setStyle(FILTER_STYLE);
         filterField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (setFilter(newValue)) {
@@ -198,6 +181,15 @@ public final class RunPane extends BorderPane implements KeyListener {
             }
         });
 
+        filterField.setPromptText("The filter is currently unavailable. It should be ready to use shortly");
+        if (rowFilter == null) {
+            new Thread(() -> {
+                rowFilter = new RowFilter();
+                //the filter is ready to use so change the prompt text
+                filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\"");
+            }, ROW_FILTER_INITIALISER).start();
+        }
+        
         sampleDataView.setMinHeight(SAMPLEVIEW_MIN_HEIGHT);
         sampleDataView.setPrefHeight(SAMPLEVIEW_HEIGHT);
         sampleDataView.setMaxHeight(Double.MAX_VALUE);
