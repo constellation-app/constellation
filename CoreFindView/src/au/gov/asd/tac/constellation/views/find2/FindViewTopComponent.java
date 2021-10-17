@@ -81,6 +81,12 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         setInitialDimensions();
         disableFindView();
 
+        /**
+         * This is called whenever a node or transaction is added or deleted. It
+         * resets the searching index back to the default to avoid index out of
+         * bounds issues when trying to find a node or transaction that no
+         * longer exists.
+         */
         addStructureChangeHandler(graph -> {
             final ResetStatePlugin resetState = new ResetStatePlugin();
             PluginExecution.withPlugin(resetState).executeLater(graph);
