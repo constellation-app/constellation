@@ -52,8 +52,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class NotifyDisplayNGTest {
-    private static final Logger LOGGER = Logger.getLogger(NotifyDisplayNGTest.class.getName());
+public class NotifyDisplayerNGTest {
+    private static final Logger LOGGER = Logger.getLogger(NotifyDisplayerNGTest.class.getName());
     
     @BeforeClass
     public static void setUpClass() throws Exception {
