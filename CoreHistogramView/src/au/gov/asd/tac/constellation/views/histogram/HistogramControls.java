@@ -93,7 +93,7 @@ public class HistogramControls extends JPanel {
             selectionModeChoice.addItem(selectionMode);
         }
 
-        JMenuItem saveBinsToGraphMenuItem = new JMenuItem("Save Bins to Graph");
+        final JMenuItem saveBinsToGraphMenuItem = new JMenuItem("Save Bins to Graph");
         saveBinsToGraphMenuItem.addActionListener(e -> {
             saveBinsToGraph();
         });
