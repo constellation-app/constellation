@@ -122,19 +122,6 @@ public class FindViewControllerNGTest {
         // TODO review the generated test code and remove the default call to fail.
     }
 
-    /**
-     * Test of updateSelectionFactors method, of class FindViewController.
-     */
-    @Test
-    public void testUpdateSelectionFactors() {
-        System.out.println("updateSelectionFactors");
-        boolean addToCurrent = false;
-        boolean removeFromCurrent = false;
-        boolean findInCurrent = false;
-        FindViewController instance = null;
-        instance.updateSelectionFactors(addToCurrent, removeFromCurrent, findInCurrent);
-        // TODO review the generated test code and remove the default call to fail.
-    }
 
     /**
      * Test of retriveMatchingElements method, of class FindViewController.

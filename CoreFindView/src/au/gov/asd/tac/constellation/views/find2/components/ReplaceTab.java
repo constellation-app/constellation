@@ -82,10 +82,19 @@ public class ReplaceTab extends BasicFindTab {
     public void updateBasicReplaceParamters() {
         final GraphElementType elementType = GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
         final List<Attribute> attributeList = new ArrayList<>(getMatchingAttributeList(elementType));
-
+        boolean replaceIn = false;
+        switch (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                break;
+            case 1:
+                replaceIn = true;
+                break;
+            default:
+                break;
+        }
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), replaceTextField.getText(),
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
-                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), searchAllGraphs.isSelected());
+                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), false, false, false, replaceIn, searchAllGraphs.isSelected());
 
         FindViewController.getDefault().updateBasicReplaceParameters(parameters);
     }

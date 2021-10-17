@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -60,19 +59,19 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final static int STARTING_INDEX = -1;
     private static final Logger LOGGER = Logger.getLogger(BasicFindPlugin.class.getName());
 
-    public BasicFindPlugin(final BasicFindReplaceParameters parameters, final boolean addToSelection, final boolean removeFromCurrentSelection, final boolean findInCurrentSelection, final boolean selectAll, final boolean getNext) {
+    public BasicFindPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll, final boolean getNext) {
         this.elementType = parameters.getGraphElement();
         this.selectedAttributes = parameters.getAttributeList();
         this.findString = parameters.getFindString();
         this.regex = parameters.isRegEx();
         this.ignorecase = parameters.isIgnoreCase();
         this.matchWholeWord = parameters.isExactMatch();
-        this.addToSelection = addToSelection;
         this.selectAll = selectAll;
         this.getNext = getNext;
         this.parameters = parameters;
-        this.removeFromCurrentSelection = removeFromCurrentSelection;
-        this.findInCurrentSelection = findInCurrentSelection;
+        this.addToSelection = parameters.isAddTo();
+        this.removeFromCurrentSelection = parameters.isRemoveFrom();
+        this.findInCurrentSelection = parameters.isFindIn();
     }
 
     private void clearSelection(final GraphWriteMethods graph) {
@@ -158,9 +157,11 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                     }
                     if (found) {
                         final long uid = elementType.getUID(graph, currElement);
-                        if (findInCurrentSelection || removeFromCurrentSelection && graph.getBooleanValue(selectedAttribute, currElement)) {
-                            findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
-                            removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                        if (findInCurrentSelection || removeFromCurrentSelection) {
+                            if (graph.getBooleanValue(selectedAttribute, currElement)) {
+                                findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                                removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                            }
                         }
                         if (selectAll && !findInCurrentSelection && !removeFromCurrentSelection) {
                             graph.setBooleanValue(selectedAttribute, currElement, true);

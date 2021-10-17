@@ -43,10 +43,6 @@ public class FindViewController {
     private static FindViewController instance = null;
     private FindViewTopComponent parentComponent;
 
-    private boolean addToCurrentSelection = false;
-    private boolean removeFromCurrentSelection = false;
-    private boolean findInCurrentSelection = false;
-
     // Parameters
     private final BasicFindReplaceParameters currentBasicFindParameters;
     private final BasicFindReplaceParameters currentBasicReplaceParameters;
@@ -157,19 +153,6 @@ public class FindViewController {
     }
 
     /**
-     * updates the add to current and remove from current variables based on the
-     * UI selection
-     *
-     * @param addToCurrent
-     * @param removeFromCurrent
-     */
-    public void updateSelectionFactors(final boolean addToCurrent, final boolean removeFromCurrent, final boolean findInSelected) {
-        this.addToCurrentSelection = addToCurrent;
-        this.removeFromCurrentSelection = removeFromCurrent;
-        this.findInCurrentSelection = findInSelected;
-    }
-
-    /**
      * Calls the BasicFindPlugin for the active graph if isSearchAllGraphs =
      * false or all graphs if isSearchAllGraphs = true. The plugin is the main
      * source of logic for the searching and selecting of graph elements.
@@ -178,7 +161,7 @@ public class FindViewController {
      * @param getNext true if finding the next element, false if the previous
      */
     public void retriveMatchingElements(final boolean selectAll, final boolean getNext) {
-        final BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, addToCurrentSelection, removeFromCurrentSelection, findInCurrentSelection, selectAll, getNext);
+        final BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, selectAll, getNext);
         if (currentBasicFindParameters.isSearchAllGraphs()) {
             for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                 if (graph != null && currentBasicFindParameters.isSearchAllGraphs()) {
@@ -217,13 +200,4 @@ public class FindViewController {
     public BasicFindReplaceParameters getCurrentBasicReplaceParameters() {
         return currentBasicReplaceParameters;
     }
-
-    public boolean isAddToCurrentSelection() {
-        return addToCurrentSelection;
-    }
-
-    public boolean isRemoveFromCurrentSelection() {
-        return removeFromCurrentSelection;
-    }
-
 }

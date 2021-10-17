@@ -336,10 +336,29 @@ public class BasicFindTab extends Tab {
     public void updateBasicFindParamters() {
         final GraphElementType elementType = GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
         final List<Attribute> attributeList = new ArrayList<>(getMatchingAttributeList(elementType));
+        boolean addTo = false;
+        boolean removeFrom = false;
+        boolean findIn = false;
+        switch (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                break;
+            case 1:
+                addTo = true;
+                break;
+            case 2:
+                removeFrom = true;
+                break;
+            case 3:
+                findIn = true;
+                break;
+            default:
+                break;
+        }
 
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), "",
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
-                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), searchAllGraphs.isSelected());
+                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), findIn, addTo, removeFrom, false, searchAllGraphs.isSelected()
+        );
 
         FindViewController.getDefault().updateBasicFindParameters(parameters);
     }
@@ -375,7 +394,6 @@ public class BasicFindTab extends Tab {
             default:
                 break;
         }
-        FindViewController.getDefault().updateSelectionFactors(addTo, removeFrom, findIn);
     }
 
     public void findAllAction() {

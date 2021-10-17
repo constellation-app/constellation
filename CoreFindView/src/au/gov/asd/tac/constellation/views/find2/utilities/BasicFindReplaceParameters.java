@@ -36,6 +36,10 @@ public class BasicFindReplaceParameters {
     private boolean ignoreCase;
     private boolean exactMatch;
     private boolean searchAllGraphs;
+    private boolean addTo;
+    private boolean findIn;
+    private boolean removeFrom;
+    private boolean replaceIn;
 
     public BasicFindReplaceParameters() {
         // May need initialisation for the class variables that can be null.
@@ -67,12 +71,15 @@ public class BasicFindReplaceParameters {
         this.ignoreCase = parameters.ignoreCase;
         this.exactMatch = parameters.exactMatch;
         this.searchAllGraphs = parameters.searchAllGraphs;
-
+        this.findIn = parameters.findIn;
+        this.addTo = parameters.addTo;
+        this.removeFrom = parameters.removeFrom;
+        this.replaceIn = parameters.replaceIn;
     }
 
     public BasicFindReplaceParameters(final String findString, final String replaceString, final GraphElementType graphElement,
             final List<Attribute> attributeList, final boolean standardText, final boolean regEx, final boolean ignoreCase,
-            final boolean exactMatch, final boolean searchAllGraphs) {
+            final boolean exactMatch, final boolean findIn, final boolean addTo, final boolean removeFrom, final boolean replaceIn, final boolean searchAllGraphs) {
 
         this.findString = findString;
         this.replaceString = StringUtils.isBlank(replaceString) ? "" : replaceString;
@@ -83,10 +90,11 @@ public class BasicFindReplaceParameters {
         this.ignoreCase = ignoreCase;
         this.exactMatch = exactMatch;
         this.searchAllGraphs = searchAllGraphs;
+        this.findIn = findIn;
+        this.addTo = addTo;
+        this.removeFrom = removeFrom;
+        this.replaceIn = replaceIn;
 
-        // Do these need to happen before the assignment to the class variables?
-        trimText(findString);
-        ignoreCase(findString);
     }
 
     public boolean equals(final BasicFindReplaceParameters object) {
@@ -164,15 +172,20 @@ public class BasicFindReplaceParameters {
         return searchAllGraphs;
     }
 
-    private void trimText(final String text) {
-        //  if (!isExactMatch()) {
-        text.trim();
-        // }
+    public boolean isAddTo() {
+        return addTo;
     }
 
-    private void ignoreCase(final String text) {
-        if (isIgnoreCase()) {
-            text.toLowerCase();
-        }
+    public boolean isFindIn() {
+        return findIn;
     }
+
+    public boolean isRemoveFrom() {
+        return removeFrom;
+    }
+
+    public boolean isReplaceIn() {
+        return replaceIn;
+    }
+
 }

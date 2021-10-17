@@ -18,13 +18,13 @@ package au.gov.asd.tac.constellation.views.find2.plugins;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +45,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final Boolean ignorecase;
     private final Boolean replaceAll;
     private final Boolean replaceNext;
+    private final Boolean replaceIn;
 
     public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext) {
         this.elementType = parameters.getGraphElement();
@@ -55,6 +56,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
         this.ignorecase = parameters.isIgnoreCase();
         this.replaceAll = replaceAll;
         this.replaceNext = replaceNext;
+        this.replaceIn = parameters.isReplaceIn();
     }
 
     @Override
@@ -63,6 +65,9 @@ public class ReplacePlugin extends SimpleEditPlugin {
             findString = "^$";
             regex = true;
         }
+
+        final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
+
         final int elementCount = elementType.getElementCount(graph);
         final String searchString = regex ? findString : Pattern.quote(findString);
         final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
@@ -71,12 +76,19 @@ public class ReplacePlugin extends SimpleEditPlugin {
             for (int i = 0; i < elementCount; i++) {
                 final int currElement = elementType.getElement(graph, i);
                 final String value = graph.getStringValue(a.getId(), currElement);
+                boolean selected = graph.getBooleanValue(selectedAttribute, currElement);
                 if (value != null) {
                     final Matcher match = searchPattern.matcher(value);
                     final String newValue = match.replaceAll(replaceString);
                     if (!newValue.equals(value)) {
-                        graph.setStringValue(a.getId(), currElement, newValue);
-                        if (replaceNext == true) {
+                        if (!replaceIn) {
+                            graph.setStringValue(a.getId(), currElement, newValue);
+                        } else {
+                            if (selected) {
+                                graph.setStringValue(a.getId(), currElement, newValue);
+                            }
+                        }
+                        if (replaceNext) {
                             break;
                         }
                     }
