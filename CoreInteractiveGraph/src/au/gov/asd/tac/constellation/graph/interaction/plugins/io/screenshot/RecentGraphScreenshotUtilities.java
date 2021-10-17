@@ -39,7 +39,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -107,7 +106,7 @@ public class RecentGraphScreenshotUtilities {
             // resizeAndSave the buffered image in memory and write the image to disk
             resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
             refreshScreenshotsDir();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
@@ -172,8 +171,8 @@ public class RecentGraphScreenshotUtilities {
             if (!filesInHistory.contains(file.getName())) {
                 try {
                     Files.delete(file.toPath());
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
         });
