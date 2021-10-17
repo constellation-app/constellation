@@ -346,10 +346,10 @@ public class BasicFindTab extends Tab {
                 addTo = true;
                 break;
             case 2:
-                removeFrom = true;
+                findIn = true;
                 break;
             case 3:
-                findIn = true;
+                removeFrom = true;
                 break;
             default:
                 break;
