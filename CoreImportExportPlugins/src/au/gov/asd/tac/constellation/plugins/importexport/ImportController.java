@@ -427,8 +427,10 @@ public abstract class ImportController<D> {
     }
 
     public Attribute showNewAttributeDialog(final GraphElementType elementType) {
-        final NewAttributeDialog dialog = new NewAttributeDialog(importPane.getParentWindow(), elementType);
-        dialog.showAndWait();
+        SwingUtilities.isEventDispatchThread();//false
+        Platform.isFxApplicationThread();//false
+        final NewAttributeDialog dialog = new NewAttributeDialog(elementType);
+        dialog.showDialog("New Attribute");
         return dialog.getAttribute();
     }
 

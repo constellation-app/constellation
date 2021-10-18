@@ -15,10 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
+import au.gov.asd.tac.constellation.functionality.dialog.ConstellationDialog;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -30,10 +33,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
+import javax.swing.SwingUtilities;
 
 /**
  * The NewAttributeDialog provides a dialog box allowing the user to create a
@@ -43,7 +43,7 @@ import javafx.stage.Window;
  *
  * @author sirius
  */
-public class NewAttributeDialog extends Stage {
+public class NewAttributeDialog extends ConstellationDialog {
 
     private static final int GRIDPANE_GAP = 5;
     private static final Insets GRIDPANE_PADDING = new Insets(10);
@@ -60,20 +60,14 @@ public class NewAttributeDialog extends Stage {
 
     private Attribute attribute;
 
-    public NewAttributeDialog(final Window owner, final GraphElementType elementType) {
+    private final Button okButton;
+
+    public NewAttributeDialog(final GraphElementType elementType) {
 
         this.elementType = elementType;
 
-        initStyle(StageStyle.UTILITY);
-        initModality(Modality.APPLICATION_MODAL);
-        initOwner(owner);
-
-        setTitle("New Attribute");
-
         final BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #DDDDDD;");
-        final Scene scene = new Scene(root);
-        setScene(scene);
 
         final GridPane fieldPane = new GridPane();
         fieldPane.setHgap(GRIDPANE_GAP);
@@ -118,20 +112,33 @@ public class NewAttributeDialog extends Stage {
         buttonPane.setHgap(GRIDPANE_GAP);
         root.setBottom(buttonPane);
 
-        final Button okButton = new Button("OK");
+        okButton = new Button("OK");
         okButton.setOnAction((ActionEvent event) -> {
-            attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(),
-                    labelText.getText(), descriptionText.getText());
-            NewAttributeDialog.this.hide();
+            hideDialog();
+            attribute = new NewAttribute(
+                    elementType,
+                    typeBox.getSelectionModel().getSelectedItem(),
+                    labelText.getText(), descriptionText.getText()
+            );
         });
         buttonPane.getChildren().add(okButton);
 
         final Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction((ActionEvent event) -> NewAttributeDialog.this.hide());
+        cancelButton.setOnAction((ActionEvent event) -> hideDialog());
         buttonPane.getChildren().add(cancelButton);
+
+        final Scene scene = new Scene(root);
+        fxPanel.setScene(scene);
+
+    }
+
+    public void setOkButtonAction(EventHandler<ActionEvent> event) {
+        okButton.setOnAction(event);
     }
 
     public Attribute getAttribute() {
+        SwingUtilities.isEventDispatchThread();//false
+        Platform.isFxApplicationThread();//false
         return attribute;
     }
 }

@@ -35,6 +35,7 @@ public abstract class ConstellationDialog {
 
     protected final JFXPanel fxPanel;
     protected JDialog dialog;
+//    protected CountDownLatch latch;
     private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
     protected double mouseOrigX = 0;
@@ -46,6 +47,7 @@ public abstract class ConstellationDialog {
         fxPanel.setLayout(layout);
         fxPanel.setOpaque(false);
         fxPanel.setBackground(TRANSPARENT);
+//        latch = new CountDownLatch(1);
     }
 
     /**
@@ -70,6 +72,23 @@ public abstract class ConstellationDialog {
         });
     }
 
+//    /**
+//     * Shows this dialog and waits until you down the latch
+//     *
+//     * @param title The title of the dialog.
+//     * @throws InterruptedException
+//     */
+//    public CountDownLatch showAndWaitDialog(final String title) {
+//        SwingUtilities.invokeLater(() -> {
+//            final DialogDescriptor dd = new DialogDescriptor(fxPanel, title);
+//            dd.setOptions(new Object[0]);
+//            dialog = (JDialog) DialogDisplayer.getDefault().createDialog(dd);
+//            dialog.setEnabled(true);
+//            dialog.setVisible(true);
+//        });
+//
+//        return latch;
+//    }
     /**
      * Hides this dialog.
      */

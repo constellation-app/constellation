@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -63,7 +64,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 
 /**
  * A RunPane displays the UI necessary to allow the user to drag and drop
@@ -73,7 +76,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author sirius
  */
 public final class RunPane extends BorderPane implements KeyListener {
-    
+
     private static final Logger LOGGER = Logger.getLogger(RunPane.class.getName());
 
     private static final int SCROLLPANE_HEIGHT = 450;
@@ -95,7 +98,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private final AttributeList destinationVertexAttributeList;
     private final AttributeList transactionAttributeList;
     private String paneName = "";
-    
+
     private Point2D draggingOffset;
     private AttributeNode draggingAttributeNode;
     private ImportTableColumn mouseOverColumn;
@@ -143,10 +146,42 @@ public final class RunPane extends BorderPane implements KeyListener {
 
             final Button button = new Button("", new ImageView(ADD_IMAGE));
             button.setOnAction((ActionEvent event) -> {
-                Attribute attribute = importController.showNewAttributeDialog(attributeList.getAttributeType().getElementType());
-                if (attribute != null) {
-                    importController.createManualAttribute(attribute);
-                }
+                SwingUtilities.isEventDispatchThread();//false
+                Platform.isFxApplicationThread();//true
+                new Thread(() -> {
+                    SwingUtilities.isEventDispatchThread();//false
+                    Platform.isFxApplicationThread();//false
+
+                    Attribute attribute = null;
+                    final Attribute[] selected = new Attribute[1];
+                    final CountDownLatch latch = new CountDownLatch(1);
+                    final NewAttributeDialog[] dialog = new NewAttributeDialog(null)[1];
+                    Platform.runLater(() -> {
+                        dialog[0] = new NewAttributeDialog(attributeList.getAttributeType().getElementType());
+//                        dialog.setOkButtonAction(e -> {
+////                            attribute = new NewAttribute(
+////                                    elementType, typeBox.getSelectionModel().getSelectedItem(),
+////                                    labelText.getText(), descriptionText.getText()
+////                            );
+//                            dialog.hideDialog();
+//                        });
+
+                        dialog.showDialog("New Attribute");
+                    });
+
+                    try {
+                        latch.await();
+                        attribute = dialog.getAttribute();
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                        Thread.currentThread().interrupt();
+                    }
+
+//                    Attribute attribute = importController.showNewAttributeDialog(attributeList.getAttributeType().getElementType());
+//                    if (attribute != null) {
+//                        importController.createManualAttribute(attribute);
+//                    }
+                }).start();
             });
             button.setTooltip(new Tooltip("Add a new " + attributeList.getAttributeType().getElementType() + " attribute"));
             labelPane.setRight(button);
@@ -313,14 +348,17 @@ public final class RunPane extends BorderPane implements KeyListener {
     }
 
     /**
-     * Update name associated with this pane. This value is used in ImportDefinition construction to identify the
-     * source of the ImportDefinition - ultimately being used when performing import to support an import status dialog.
+     * Update name associated with this pane. This value is used in
+     * ImportDefinition construction to identify the source of the
+     * ImportDefinition - ultimately being used when performing import to
+     * support an import status dialog.
+     *
      * @param paneName Value to set paneName to.
      */
     public void setPaneName(String paneName) {
         this.paneName = paneName;
-    } 
-    
+    }
+
     public Point2D getDraggingOffset() {
         return draggingOffset;
     }
