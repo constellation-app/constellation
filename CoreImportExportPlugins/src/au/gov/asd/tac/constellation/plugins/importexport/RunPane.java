@@ -32,7 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -65,7 +67,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 
 /**
  * A RunPane displays the UI necessary to allow the user to drag and drop
@@ -129,7 +130,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     protected static final Future<RowFilter> FILTER_LOAD;
     
     static {
-        FILTER_LOAD = CompletableFuture.supplyAsync(() -> new RowFilter());
+        FILTER_LOAD = CompletableFuture.supplyAsync(() -> new RowFilter(), Executors.newSingleThreadExecutor());
     }
 
     private class AttributeBox extends BorderPane {
@@ -194,18 +195,18 @@ public final class RunPane extends BorderPane implements KeyListener {
 
         filterField.setPromptText("The filter is currently unavailable. It should be ready to use shortly");
         if (rowFilter == null) {
-            //new Thread(() -> {
+            new Thread(() -> {
                 try {
                     rowFilter = FILTER_LOAD.get();
                     //the filter is ready to use so change the prompt text
                     filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\"");
                 } catch (final InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                    LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
                     Thread.currentThread().interrupt();
                 } catch (final ExecutionException ex) {
-                    Exceptions.printStackTrace(ex);
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
-            //}, ROW_FILTER_INITIALISER).start();
+            }, ROW_FILTER_INITIALISER).start();
         }
         
         sampleDataView.setMinHeight(SAMPLEVIEW_MIN_HEIGHT);
