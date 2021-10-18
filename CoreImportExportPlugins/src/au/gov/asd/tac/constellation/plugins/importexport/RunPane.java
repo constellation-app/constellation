@@ -193,7 +193,7 @@ public final class RunPane extends BorderPane implements KeyListener {
             }
         });
 
-        filterField.setPromptText("The filter is currently unavailable. It should be ready to use shortly");
+        filterField.setPromptText("Currently unavailable. The filter will be ready to use shortly");
         if (rowFilter == null) {
             new Thread(() -> {
                 try {
