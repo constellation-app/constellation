@@ -84,7 +84,7 @@ import org.python.core.PyTraceback;
  *
  * @author cygnus_x-1
  */
-public class ScriptingViewPane extends JPanel {
+    public class ScriptingViewPane extends JPanel {
 
     private static final Logger LOGGER = Logger.getLogger(ScriptingViewPane.class.getName());
     private static final File GET_STARTED_FILE = ConstellationInstalledFileLocator.locate(
@@ -109,11 +109,12 @@ public class ScriptingViewPane extends JPanel {
 
     public ScriptingViewPane(final ScriptingViewTopComponent topComponent) {
         this.topComponent = topComponent;
+        
         this.scriptFile = null;
         this.newOutput = false;
 
         this.scriptParser = new ScriptingParser();
-
+        
         this.scriptEditor = new RSyntaxTextArea(5, 80);
         scriptEditor.addParser(scriptParser);
 //        scriptEditor.setAnimateBracketMatching(false);
@@ -190,7 +191,7 @@ public class ScriptingViewPane extends JPanel {
 
         final JMenuItem apiItem = new JMenuItem("API Documentation");
         apiItem.addActionListener(e -> {
-            new HelpCtx(topComponent.getClass().getName()).display();
+            new HelpCtx(ScriptingViewPane.class.getPackageName()).display();
         });
         optionsMenu.add(apiItem);
 
