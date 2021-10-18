@@ -90,7 +90,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private static final int LEFT_MARGIN = 3;
     private static final int RIGHT_MARGIN = 3;
     private static final int TEXT_TO_BAR_GAP = 10;
-    private static final int MAX_USER_SET_BAR_HEIGHT = 98;
+    private static final int MAX_USER_SET_BAR_HEIGHT = 99;
     private static final int MIN_USER_SET_BAR_HEIGHT = 2;
     private final HistogramTopComponent topComponent;
     private int preferredHeight;
