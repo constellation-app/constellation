@@ -84,7 +84,7 @@ import org.python.core.PyTraceback;
  *
  * @author cygnus_x-1
  */
-    public class ScriptingViewPane extends JPanel {
+public class ScriptingViewPane extends JPanel {
 
     private static final Logger LOGGER = Logger.getLogger(ScriptingViewPane.class.getName());
     private static final File GET_STARTED_FILE = ConstellationInstalledFileLocator.locate(
@@ -109,7 +109,6 @@ import org.python.core.PyTraceback;
 
     public ScriptingViewPane(final ScriptingViewTopComponent topComponent) {
         this.topComponent = topComponent;
-        
         this.scriptFile = null;
         this.newOutput = false;
 
