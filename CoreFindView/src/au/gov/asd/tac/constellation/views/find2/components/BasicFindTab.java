@@ -113,7 +113,7 @@ public class BasicFindTab extends Tab {
         setText("Basic Find");
         setGridContent();
         setContent(layers);
-        populateAttributes(GraphElementType.VERTEX);
+//        populateAttributes(GraphElementType.VERTEX);
 
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -192,7 +192,7 @@ public class BasicFindTab extends Tab {
         settingsGrid.add(inAttributesMenu, 1, 1);
 
         inAttributesMenu.setMaxWidth(DROP_DOWN_WIDTH);
-        populateAttributes(GraphElementType.VERTEX);
+//        populateAttributes(GraphElementType.VERTEX);
 
         contextMenu.getItems().addAll(selectAllMenuItem, deselectAllMenuItem);
 
@@ -209,7 +209,8 @@ public class BasicFindTab extends Tab {
 
         settingsGrid.add(preferencesGrid, 2, 0, 2, 2);
 
-        currentSelectionChoiceBox.getItems().addAll("", "Add to", "Find in", "Remove From");
+        currentSelectionChoiceBox.getItems().addAll("Ignore", "Add to", "Find in", "Remove From");
+        lookForChoiceBox.getSelectionModel().select(0);
         currentSelectionChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
         settingsGrid.add(currentSelectionLabel, 0, 2);
         settingsGrid.add(currentSelectionChoiceBox, 1, 2);
@@ -256,6 +257,7 @@ public class BasicFindTab extends Tab {
                 }
             }
         }
+        updateBasicFindParamters();
     }
 
     /**
@@ -368,26 +370,20 @@ public class BasicFindTab extends Tab {
      * the variables values stored in the controller
      */
     public void updateSelectionFactors() {
-        boolean addTo = false;
-        boolean removeFrom = false;
-        boolean findIn = false;
         switch (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex()) {
             case 0:
                 findNextButton.setDisable(false);
                 findPrevButton.setDisable(false);
                 break;
             case 1:
-                addTo = true;
                 findNextButton.setDisable(false);
                 findPrevButton.setDisable(false);
                 break;
             case 2:
-                findIn = true;
                 findNextButton.setDisable(true);
                 findPrevButton.setDisable(true);
                 break;
             case 3:
-                removeFrom = true;
                 findNextButton.setDisable(false);
                 findPrevButton.setDisable(false);
                 break;

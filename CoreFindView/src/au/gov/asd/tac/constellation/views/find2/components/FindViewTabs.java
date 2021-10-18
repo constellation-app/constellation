@@ -94,4 +94,8 @@ public class FindViewTabs extends TabPane {
         return basicFindTab;
     }
 
+    public ReplaceTab getReplaceTab() {
+        return replaceTab;
+    }
+
 }

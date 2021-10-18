@@ -79,20 +79,17 @@ public class FindViewController {
      */
     public void updateUI() {
         // Find attributes
-        //Copies a list of the current attributes to avoid manipulating the original list
-        final List<Attribute> findAttributes = new ArrayList<>();
-        findAttributes.addAll(currentBasicFindParameters.getAttributeList());
+        // Copies a list of the current attributes to avoid manipulating the original list
+        final List<Attribute> findAttributes = new ArrayList<>(currentBasicFindParameters.getAttributeList());
         // repopulates the attributes list incase its changed updates the currentBasicParameters to match the UI
         populateAttributes(currentBasicFindParameters.getGraphElement(), findAttributes, Long.MIN_VALUE);
-        updateBasicReplaceParameters(currentBasicReplaceParameters);
 
         // Replace attributes
-        //Copies a list of the current attributes to avoid manipulating the original list
-        final List<Attribute> replaceAttributes = new ArrayList<>();
-        replaceAttributes.addAll(currentBasicReplaceParameters.getAttributeList());
+        // Copies a list of the current attributes to avoid manipulating the original list
+        final List<Attribute> replaceAttributes = new ArrayList<>(currentBasicReplaceParameters.getAttributeList());
         // repopulates the attributes list incase its changed updates the currentBasicParameters to match the UI
         populateAttributes(currentBasicReplaceParameters.getGraphElement(), replaceAttributes, Long.MIN_VALUE);
-        updateBasicReplaceParameters(currentBasicReplaceParameters);
+
     }
 
     /**
@@ -109,6 +106,7 @@ public class FindViewController {
         final List<Attribute> allAttributes = new ArrayList<>();
 
         for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+
             final GraphAttributePlugin attrPlugin = new GraphAttributePlugin(type, attributes, attributeModificationCounter);
             final Future<?> future = PluginExecution.withPlugin(attrPlugin).interactively(true).executeLater(graph);
 

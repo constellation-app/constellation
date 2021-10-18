@@ -114,7 +114,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        findViewController.updateUI();
+        UpdateUI();
         disableFindView();
         focusFindTextField();
     }
@@ -122,29 +122,31 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     @Override
     protected void handleGraphOpened(final Graph graph) {
         super.handleGraphOpened(graph);
-        findViewController.updateUI();
         disableFindView();
+        if (GraphManager.getDefault().getAllGraphs().size() == 1) {
+            pane.getTabs().getBasicFindTab().populateAttributes(findViewController.getCurrentBasicFindParameters().getGraphElement());
+            pane.getTabs().getReplaceTab().populateAttributes(findViewController.getCurrentBasicReplaceParameters().getGraphElement());
+            UpdateUI();
+        }
 
     }
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
         super.handleGraphClosed(graph);
-        findViewController.updateUI();
         disableFindView();
-
     }
 
     @Override
     protected void handleNewGraph(final Graph graph) {
         super.handleNewGraph(graph);
-        findViewController.updateUI();
+        UpdateUI();
     }
 
     @Override
     protected void handleGraphChange(final GraphChangeEvent event) {
         super.handleNewGraph(GraphManager.getDefault().getActiveGraph());
-        findViewController.updateUI();
+        UpdateUI();
     }
 
     public void disableFindView() {
@@ -160,6 +162,10 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
 
     public void focusFindTextField() {
         pane.getTabs().getBasicFindTab().requestTextFieldFocus();
+    }
+
+    public void UpdateUI() {
+        findViewController.updateUI();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
