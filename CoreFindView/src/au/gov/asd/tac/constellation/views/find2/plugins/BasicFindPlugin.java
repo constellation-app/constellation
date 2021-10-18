@@ -145,28 +145,30 @@ public class BasicFindPlugin extends SimpleEditPlugin {
          * find result to the foundResults list
          */
         for (final Attribute a : selectedAttributes) {
-            for (int i = 0; i < elementCount; i++) {
-                final int currElement = elementType.getElement(graph, i);
-                final String value = graph.getStringValue(graph.getAttribute(elementType, a.getName()), currElement);
-                if (value != null) {
-                    Matcher match = searchPattern.matcher(value);
-                    if (matchWholeWord) {
-                        found = match.matches();
-                    } else {
-                        found = match.find();
-                    }
-                    if (found) {
-                        final long uid = elementType.getUID(graph, currElement);
-                        if (findInCurrentSelection || removeFromCurrentSelection) {
-                            if (graph.getBooleanValue(selectedAttribute, currElement)) {
-                                findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
-                                removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+            if (graph.getAttribute(elementType, a.getName()) >= 0) {
+                for (int i = 0; i < elementCount; i++) {
+                    final int currElement = elementType.getElement(graph, i);
+                    final String value = graph.getStringValue(graph.getAttribute(elementType, a.getName()), currElement);
+                    if (value != null) {
+                        Matcher match = searchPattern.matcher(value);
+                        if (matchWholeWord) {
+                            found = match.matches();
+                        } else {
+                            found = match.find();
+                        }
+                        if (found) {
+                            final long uid = elementType.getUID(graph, currElement);
+                            if (findInCurrentSelection || removeFromCurrentSelection) {
+                                if (graph.getBooleanValue(selectedAttribute, currElement)) {
+                                    findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                                    removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                                }
                             }
+                            if (selectAll && !findInCurrentSelection && !removeFromCurrentSelection) {
+                                graph.setBooleanValue(selectedAttribute, currElement, true);
+                            }
+                            foundResult.add(new FindResult(currElement, uid, elementType));
                         }
-                        if (selectAll && !findInCurrentSelection && !removeFromCurrentSelection) {
-                            graph.setBooleanValue(selectedAttribute, currElement, true);
-                        }
-                        foundResult.add(new FindResult(currElement, uid, elementType));
                     }
                 }
             }
