@@ -73,24 +73,26 @@ public class ReplacePlugin extends SimpleEditPlugin {
         final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
         final Pattern searchPattern = Pattern.compile(searchString, caseSensitivity);
         for (final Attribute a : selectedAttributes) {
-            for (int i = 0; i < elementCount; i++) {
-                final int currElement = elementType.getElement(graph, i);
-                final String value = graph.getStringValue(a.getId(), currElement);
-                boolean selected = graph.getBooleanValue(selectedAttribute, currElement);
-                if (value != null) {
-                    final Matcher match = searchPattern.matcher(value);
-                    final String newValue = match.replaceAll(replaceString);
-                    if (!newValue.equals(value)) {
-                        if (!replaceIn) {
-                            graph.setStringValue(a.getId(), currElement, newValue);
-                            if (replaceNext) {
-                                break;
-                            }
-                        } else {
-                            if (selected) {
+            if (graph.getAttribute(elementType, a.getName()) >= 0) {
+                for (int i = 0; i < elementCount; i++) {
+                    final int currElement = elementType.getElement(graph, i);
+                    final String value = graph.getStringValue(a.getId(), currElement);
+                    boolean selected = graph.getBooleanValue(selectedAttribute, currElement);
+                    if (value != null) {
+                        final Matcher match = searchPattern.matcher(value);
+                        final String newValue = match.replaceAll(replaceString);
+                        if (!newValue.equals(value)) {
+                            if (!replaceIn) {
                                 graph.setStringValue(a.getId(), currElement, newValue);
                                 if (replaceNext) {
                                     break;
+                                }
+                            } else {
+                                if (selected) {
+                                    graph.setStringValue(a.getId(), currElement, newValue);
+                                    if (replaceNext) {
+                                        break;
+                                    }
                                 }
                             }
                         }
