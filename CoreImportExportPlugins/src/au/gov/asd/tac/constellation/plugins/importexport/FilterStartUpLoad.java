@@ -29,7 +29,7 @@ public class FilterStartUpLoad implements Runnable {
     @Override
     public void run() {
         //pointless statement to trigger RunPane proesses
-        final Future<RowFilter> f = RunPane.FILTER_LOAD;
+        final Future<Void> f = RunPane.FILTER_LOAD;
     }
     
 }

@@ -31,11 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -76,8 +72,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author sirius
  */
 public final class RunPane extends BorderPane implements KeyListener {
-    
-    private static final Logger LOGGER = Logger.getLogger(RunPane.class.getName());
 
     private static final int SCROLLPANE_HEIGHT = 450;
     private static final int SCROLLPANE_VIEW_WIDTH = 400;
@@ -106,7 +100,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private int attributeCount = 0;
 
     private final TextField filterField;
-    protected RowFilter rowFilter;
+    protected static RowFilter rowFilter;
     private String filter = "";
 
     private final TextField attributeFilterTextField = new TextField();
@@ -124,13 +118,14 @@ public final class RunPane extends BorderPane implements KeyListener {
     private String[] currentColumnLabels = new String[0];
 
     protected static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
-    private static final String ROW_FILTER_INITIALISER = "Importer: Row Filter Initialiser";
     
     // made protected purely so that FilterStartUp load can trigger the process for this on startup
-    protected static final Future<RowFilter> FILTER_LOAD;
+    // needs to declared CompletableFuture rather than simply Future so that we can call thenRun() later on
+    protected static final CompletableFuture<Void> FILTER_LOAD;
     
     static {
-        FILTER_LOAD = CompletableFuture.supplyAsync(RowFilter::new, Executors.newSingleThreadExecutor());
+        FILTER_LOAD = CompletableFuture.supplyAsync(RowFilter::new, Executors.newSingleThreadExecutor())
+                .thenAccept(rf -> rowFilter = rf);
     }
 
     private class AttributeBox extends BorderPane {
@@ -194,20 +189,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         });
 
         filterField.setPromptText("Currently unavailable. The filter will be ready to use shortly");
-        if (rowFilter == null) {
-            new Thread(() -> {
-                try {
-                    rowFilter = FILTER_LOAD.get();
-                    //the filter is ready to use so change the prompt text
-                    filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\"");
-                } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
-                    Thread.currentThread().interrupt();
-                } catch (final ExecutionException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                }
-            }, ROW_FILTER_INITIALISER).start();
-        }
+        FILTER_LOAD.thenRun(() -> filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\""));
         
         sampleDataView.setMinHeight(SAMPLEVIEW_MIN_HEIGHT);
         sampleDataView.setPrefHeight(SAMPLEVIEW_HEIGHT);
