@@ -46,10 +46,10 @@
         </p>
         <ol>
             <li>
-                <p>Add the relevant JDBC Driver via "Manage Connections" -&gt; "Drivers" tab.  These drivers will be specific to the database that you are connecting to.
+                Add the relevant JDBC Driver via "Manage Connections" -&gt; "Drivers" tab.  These drivers will be specific to the database that you are connecting to.
                     You only need one driver for each database type e.g. MySQL, PostgresQL, SQLite
                 Example drivers:
-                </p>
+                
             </li>
             <ul>
                 <li>MySQL - <a href="https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.23/mysql-connector-java-8.0.23.jar">mysql-connector-java-8.0.23.jar</a></li>
@@ -62,11 +62,11 @@
             </li>
             <li>Add the Connection details in "Manage Connections" -&gt; "Connections" tab.  The connection will be an instance to a specific database.
                 <ul>
-                    <li><strong>Connection name:</strong> user specified name for the connection</li>
-                    <li><strong>Driver:</strong> Pick the database driver needed to connect to the db</li>
-                    <li><strong>Connection String:</strong>  It will contain the database type, host, port, and database of the db in the format</li>
-                    <li><i>jdbc:[database name]://[host]:[port]/[database name]</i></li>
-                    <li><i>e.g. jdbc:mysql://localhost:3306/employees</i> for mysql or <i>jdbc:postgresql://localhost:5432/test for postgres.</i></li>
+                    <li><em>Connection name</em> - user specified name for the connection</li>
+                    <li><em>Driver</em> - Pick the database driver needed to connect to the db</li>
+                    <li><em>Connection String</em> -  It will contain the database type, host, port, and database of the db in the format 
+                        "jdbc:[database name]://[host]:[port]/[database name]"
+                    <li>e.g. jdbc:mysql://localhost:3306/employees for mysql or jdbc:postgresql://localhost:5432/test for postgres.</li>
                     <li>If the username and password are not required, leave them blank.</li>
                 </ul>
             </li>
@@ -92,7 +92,7 @@
             <li>Filter in the Configuration Pane by adding searches of the form &lt;column_name&gt; =="&lt;search text&gt;" E.g. first_name=="Nick".</li>
         </ul>
         
-        Full Example:
+        <p>Full Example:</p>
         <div style="text-align: center">
             <img src="resources/ImportDatabaseFullExample.png" alt="Database Importer Connection example"/>
         </div>
