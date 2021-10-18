@@ -130,7 +130,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     protected static final Future<RowFilter> FILTER_LOAD;
     
     static {
-        FILTER_LOAD = CompletableFuture.supplyAsync(() -> new RowFilter(), Executors.newSingleThreadExecutor());
+        FILTER_LOAD = CompletableFuture.supplyAsync(RowFilter::new, Executors.newSingleThreadExecutor());
     }
 
     private class AttributeBox extends BorderPane {
