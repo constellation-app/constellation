@@ -12,6 +12,9 @@
 
 -   Changed `DataAccessPluginType` from an abstract class to an interface.
 
+-   Removed `RecentFilesWelcomePage` and moved functionality between 
+    `RecentFiles` and `WelcomeViewPane`
+
 -   Renamed tableview2 package to tableview now that it is the primary table
     code being used.
 

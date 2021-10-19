@@ -43,7 +43,6 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
-import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import java.awt.Component;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -51,7 +50,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.beans.BeanInfo;
 import java.io.File;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -90,6 +90,8 @@ import org.openide.util.actions.Presenter;
 @ActionReference(path = "Menu/File", position = 400)
 public class RecentFileAction extends AbstractAction
         implements Presenter.Menu, PopupMenuListener, ChangeListener {
+
+    private static final Logger LOGGER = Logger.getLogger(RecentFileAction.class.getName());
 
     /**
      * property of menu items where we store fileobject to open
@@ -172,8 +174,7 @@ public class RecentFileAction extends AbstractAction
      * Fills submenu with recently closed files got from RecentFiles support
      */
     private void fillSubMenu() {
-        List<HistoryItem> files = RecentFiles.getRecentFiles();
-        for (final HistoryItem hItem : files) {
+        RecentFiles.getUniqueRecentFiles().forEach(hItem -> {
             // Attempt to create a menu item for the history item.
             // We will skip the creation if the file object corresponding to the
             // history item is null (indicating that the file no longer exists)
@@ -181,12 +182,13 @@ public class RecentFileAction extends AbstractAction
             try {
                 final FileObject fo = RecentFiles.convertPath2File(hItem.getPath());
                 if (fo != null) {
-                    JMenuItem jmi = newSubMenuItem(fo);
+                    final JMenuItem jmi = newSubMenuItem(fo);
                     menu.add(jmi);
                 }
-            } catch (DataObjectNotFoundException ex) {
+            } catch (final DataObjectNotFoundException ex) {
+                LOGGER.log(Level.FINE, "Icon for file was not found, skipping the creation of the menu item");
             }
-        }
+        });
         ensureSelected();
     }
 
