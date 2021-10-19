@@ -56,6 +56,7 @@ public class DataAccessViewHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionsPlugin", dataModulePath + "merge-transactions.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin", dataModulePath + "remove-nodes.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.experimental.TestParametersPlugin", dataModulePath + "test-parameters.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.experimental.TestParametersBatched", dataModulePath + "test-parameters.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectAllPlugin", dataModulePath + "select-all.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopNPlugin", dataModulePath + "select-top-n.md");
         return map;
