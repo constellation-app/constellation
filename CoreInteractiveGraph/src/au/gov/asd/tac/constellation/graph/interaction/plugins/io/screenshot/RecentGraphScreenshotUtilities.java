@@ -165,7 +165,7 @@ public class RecentGraphScreenshotUtilities {
             filesInDirectory.addAll(Arrays.asList(screenShotsDir.listFiles()));
         }
 
-        RecentFiles.getRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + ".png"));
+        RecentFiles.getUniqueRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + ".png"));
 
         filesInDirectory.forEach(file -> {
             if (!filesInHistory.contains(file.getName())) {

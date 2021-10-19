@@ -358,7 +358,7 @@ public final class RecentFiles {
         private final String path;
         private String fileName;
 
-        HistoryItem(final int id, final String path) {
+        public HistoryItem(final int id, final String path) {
             this.path = path;
             this.id = id;
         }
