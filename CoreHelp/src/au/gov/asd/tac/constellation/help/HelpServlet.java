@@ -23,10 +23,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -77,29 +81,34 @@ public class HelpServlet extends HttpServlet {
      */
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
-        final String requestPath = request.getRequestURI();
-        final String referer = request.getHeader("referer");
-
-        LOGGER.log(Level.INFO, "GET {0}", requestPath);
-        final URL fileUrl = redirectPath(requestPath, referer);
-
-        if (fileUrl != null) {
-            try {
-                response.sendRedirect("/" + fileUrl.toString());
-            } catch (final IOException ex) {
-                LOGGER.log(Level.WARNING, ex, () -> "Failed to send redirect while navigating to {0}" + fileUrl.toString());
-            }
-        }
-
-        final int extIx = requestPath.lastIndexOf('.');
-        final String ext = extIx > -1 ? requestPath.substring(extIx) : "";
-        final String mimeType = MIME_TYPES.containsKey(ext) ? MIME_TYPES.get(ext) : "application/octet-stream";
-        response.setContentType(mimeType);
-
         try {
-            ConstellationHelpDisplayer.copy(stripLeadingPath(requestPath), response.getOutputStream());
-        } catch (final IOException ex) {
-            throw new ServletException(ex);
+            final String requestPath = request.getRequestURI();
+            final String referer = request.getHeader("referer");
+
+            LOGGER.log(Level.INFO, "GET {0}", requestPath);
+            final URL fileUrl = redirectPath(requestPath, referer);
+
+            if (fileUrl != null) {
+                try {
+                    response.sendRedirect("/" + fileUrl.toString());
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.WARNING, ex, () -> "Failed to send redirect while navigating to {0}" + fileUrl.toString());
+                }
+            }
+
+            final int extIx = requestPath.lastIndexOf('.');
+            final String ext = extIx > -1 ? requestPath.substring(extIx) : "";
+            final String mimeType = MIME_TYPES.containsKey(ext) ? MIME_TYPES.get(ext) : "application/octet-stream";
+            response.setContentType(mimeType);
+            final String path = URLDecoder.decode(requestPath, StandardCharsets.UTF_8.name());
+
+            try {
+                ConstellationHelpDisplayer.copy(stripLeadingPath(path), response.getOutputStream());
+            } catch (final IOException ex) {
+                throw new ServletException(ex);
+            }
+        } catch (UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 
