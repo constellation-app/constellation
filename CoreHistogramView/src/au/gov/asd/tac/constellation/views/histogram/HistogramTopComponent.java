@@ -306,6 +306,14 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
+    public void modifyBinHeight(final int change) {
+        if (change < 0) {
+            display.decreaseBarHeight();
+        } else if (change > 0) {
+            display.increaseBarHeight();
+        }
+    }
+
     private void reset() {
         if (currentGraph != null) {
             ReadableGraph rg = currentGraph.getReadableGraph();
