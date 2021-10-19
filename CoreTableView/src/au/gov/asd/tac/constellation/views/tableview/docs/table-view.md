@@ -21,7 +21,7 @@
 <td>Ctrl + Shift + Y</td>
 <td>Views -&gt; Table View</td>
 <td><div style="text-align: center">
-<img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/table-view.png" width="16" height="16" />
+<img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/resources/table-view.png" width="16" height="16" />
 </div></td>
 </tr>
 </tbody>
@@ -36,7 +36,7 @@ control buttons) will result in the selection of the table rows and the
 associated elements in the graph itself. Conversely, changes to the
 graph selection are reflected in the table.
 
-<img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/TableView.png" alt="Table
+<img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/resources/TableView.png" alt="Table
 View" />
 
 ## Column Sorting
@@ -60,37 +60,37 @@ options to copy data from the clicked cell, row or column.
 
 ## Menu Items
 
--   *Column Visibility* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/TableColumnVisibility.png" alt="Column Visibility
+-   *Column Visibility* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/resources/TableColumnVisibility.png" alt="Column Visibility
     Button" />
     - Clicking the column visibility toolbar button will open a menu
     allowing you to customise which attributes are displayed in the
     table.
--   *Selected Only* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/TableVisibilityAll.png" alt="Selected Only Button
+-   *Selected Only* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/resources/TableVisibilityAll.png" alt="Selected Only Button
     Unselected" />
-    \<\> <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/TableVisibilitySelectedOnly.png" alt="Selected Only Button
+    \<\> <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/resources/TableVisibilitySelectedOnly.png" alt="Selected Only Button
     Selected" />
     - Clicking the selected only toolbar button will hide any elements
     which are not selected on the graph. Note that while this option is
     enabled, selection in the table will not update selection on the
     graph.
--   *Element Type* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/TableElementTypeTransactions.png" alt="Transaction Element Type
+-   *Element Type* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/resources/TableElementTypeTransactions.png" alt="Transaction Element Type
     Button" />
-    \<\> <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/TableElementTypeNodes.png" alt="Node Element Type
+    \<\> <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/resources/TableElementTypeNodes.png" alt="Node Element Type
     Button" />
     - Clicking the element type toolbar button will switch between
     tabular views of transaction data (which includes the nodes at
     either end), or node data.
--   *Copy Table* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/TableCopy.png" alt="Copy Table
+-   *Copy Table* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/resources/TableCopy.png" alt="Copy Table
     Button" />
     - Clicking on the copy toolbar button will provide you with options
     to copy the table to the system clipboard. The table will be copied
     exactly as it appears in the Table View.
--   *Export Table* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/TableExport.png" alt="Export Table
+-   *Export Table* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/resources/TableExport.png" alt="Export Table
     Button" />
     - Clicking on the export toolbar button will provide you with
     options to export the table to CSV or Excel. The table will be
     copied exactly as it appears in the Table View.
--   *Other Settings* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/resources/TableOtherSettings.png" alt="Other Settings
+-   *Other Settings* <img src="../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/resources/TableOtherSettings.png" alt="Other Settings
     Button" />
     - Clicking on the other settings toolbar button will provide you
     with options to load and save your table preferences (e.g. column
