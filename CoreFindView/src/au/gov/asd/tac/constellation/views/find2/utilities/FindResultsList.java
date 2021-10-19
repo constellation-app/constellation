@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.find2.utilities;
 
-import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import java.util.ArrayList;
 
 /**
@@ -37,6 +37,13 @@ public class FindResultsList extends ArrayList<FindResult> {
         this.currentIndex = index;
         this.searchParameters = searchParameters;
         this.graphId = graphId;
+    }
+
+    public FindResultsList(FindResultsList resultsList) {
+        this.currentIndex = resultsList.getCurrentIndex();
+        this.graphId = resultsList.getGraphId();
+        this.searchParameters = resultsList.getSearchParameters();
+        this.addAll(resultsList);
     }
 
     public int getCurrentIndex() {

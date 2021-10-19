@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
@@ -99,7 +99,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         //Retrieve the existing FindResultList Meta attribute
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         FindResultsList foundResult = graph.getObjectValue(stateId, 0);
-
+//        int test = foundResult.getCurrentIndex();
         /**
          * If it doesn't exist or is null, create a new list with the starting
          * index and the current find parameters. If it does exist, create a
@@ -177,11 +177,16 @@ public class BasicFindPlugin extends SimpleEditPlugin {
             clearSelection(graph);
             for (final FindResult fr : findInCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
+                foundResult.clear();
+                foundResult.addAll(findInCurrentSelectionList);
+
             }
         }
         if (removeFromCurrentSelection && !removeFromCurrentSelectionList.isEmpty()) {
             for (final FindResult fr : removeFromCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), false);
+                foundResult.clear();
+                foundResult.addAll(removeFromCurrentSelectionList);
                 if (getNext) {
                     break;
                 }
@@ -218,6 +223,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         //If no results are found, set the meta attribute to null
         if (foundResult.isEmpty()) {
             graph.setObjectValue(stateId, 0, null);
+        } else {
+            graph.setObjectValue(stateId, 0, foundResult);
         }
     }
 
