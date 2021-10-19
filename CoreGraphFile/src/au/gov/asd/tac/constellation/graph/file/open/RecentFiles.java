@@ -44,6 +44,7 @@
 package au.gov.asd.tac.constellation.graph.file.open;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
+import com.google.common.collect.ImmutableList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -139,6 +140,18 @@ public final class RecentFiles {
             checkHistory();
             return Collections.unmodifiableList(HISTORY);
         }
+    }
+
+    /**
+     * Gets the read-only list of unique, existing recent closed files
+     *
+     * @return list of recent files
+     */
+    public static List<HistoryItem> getUniqueRecentFiles() {
+        return getRecentFiles().stream()
+                .filter(file -> convertPath2File(file.getPath()) != null)
+                .distinct()
+                .collect(ImmutableList.toImmutableList());
     }
 
     private static volatile boolean historyProbablyValid;
@@ -308,7 +321,7 @@ public final class RecentFiles {
         return f == null ? null : f.getPath();
     }
 
-    static FileObject convertPath2File(final String path) {
+    public static FileObject convertPath2File(final String path) {
         File f = new File(path);
         f = FileUtil.normalizeFile(f);
         return f == null ? null : FileUtil.toFileObject(f);
