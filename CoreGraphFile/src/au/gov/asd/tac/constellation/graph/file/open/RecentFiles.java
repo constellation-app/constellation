@@ -134,8 +134,10 @@ public final class RecentFiles {
 
     /**
      * Returns read-only list of recently closed files
+     *
+     * @return list of recent files
      */
-    public static List<HistoryItem> getRecentFiles() {
+    static List<HistoryItem> getRecentFiles() {
         synchronized (HISTORY_LOCK) {
             checkHistory();
             return Collections.unmodifiableList(HISTORY);
