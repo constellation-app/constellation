@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -43,6 +44,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     private static MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock;
     private static MockedStatic<RecentFiles> recentFilesMock;
     private static MockedStatic<Files> filesMock;
+    private static MockedStatic<Logger> loggerMock;
 
     public RecentGraphScreenshotUtilitiesNGTest() {
     }
@@ -52,6 +54,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentGraphScreenshotUtilitiesMock = Mockito.mockStatic(RecentGraphScreenshotUtilities.class);
         recentFilesMock = Mockito.mockStatic(RecentFiles.class);
         filesMock = Mockito.mockStatic(Files.class);
+        loggerMock = Mockito.mockStatic(Logger.class);
     }
 
     @AfterClass
@@ -59,6 +62,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentGraphScreenshotUtilitiesMock.close();
         recentFilesMock.close();
         filesMock.close();
+        loggerMock.close();
     }
 
     @BeforeMethod
@@ -66,6 +70,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentGraphScreenshotUtilitiesMock.reset();
         recentFilesMock.reset();
         filesMock.reset();
+        loggerMock.reset();
     }
 
     @AfterMethod
@@ -98,11 +103,12 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 
     /**
      * Test of refreshScreenshotDir method, of class
-     * RecentGraphScreenshotUtilities, where getScreenShotsDir returns null.
+     * RecentGraphScreenshotUtilities, where getScreenShotsDir returns null
+     * value.
      */
     @Test
-    public void testRefreshScreenshotsDirWithNull() {
-        System.out.println("refreshScreenshotDirWithNull");
+    public void testRefreshScreenshotsDirNull() {
+        System.out.println("refreshScreenshotDirNull");
 
         // getScreenshotsDir() will return null therefore there will be no files in filesInDirectory to iterate through.
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(null);
@@ -123,19 +129,19 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 
     /**
      * Test of refreshScreenshotDir method, of class
-     * RecentGraphScreenshotUtilities, where getScreenShotsDir returns not null.
+     * RecentGraphScreenshotUtilities, where getScreenShotsDir returns non null
+     * value.
      */
     @Test
-    public void testRefreshScreenshotsDirWithoutNull() {
-        System.out.println("refreshScreenshotDirWithoutNull");
+    public void testRefreshScreenshotsDirNotNull() {
+        System.out.println("refreshScreenshotDirNotNull");
 
         final File file1 = mock(File.class);
-        final File file2 = mock(File.class);
-
         when(file1.getName()).thenReturn("file1.png");
-        when(file2.getName()).thenReturn("file2.png");
-
         when(file1.toPath()).thenReturn(Paths.get("path\'file1.png"));
+
+        final File file2 = mock(File.class);
+        when(file2.getName()).thenReturn("file2.png");
         when(file2.toPath()).thenReturn(Paths.get("path\'file2.png"));
 
         final File screenShotsDir = mock(File.class);
@@ -154,7 +160,51 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentGraphScreenshotUtilitiesMock.verify(() -> RecentGraphScreenshotUtilities.getScreenshotsDir(), times(1));
         recentFilesMock.verify(() -> RecentFiles.getUniqueRecentFiles(), times(1));
 
-        // Files.delete() will be called on file2 since it is not in filesInHistory.
+        // Files.delete() will be called only on file2 since it is not in filesInHistory.
+        filesMock.verify(() -> Files.delete(Mockito.any()), times(1));
         filesMock.verify(() -> Files.delete(Mockito.eq(Paths.get("path\'file2.png"))), times(1));
     }
+
+    // Couldn't find a way to mock LOGGER.log() to assert whether it was ever invoked.
+//    /**
+//     * Test of refreshScreenshotDir method, of class
+//     * RecentGraphScreenshotUtilities, when an IOException is thrown.
+//     */
+//    @Test
+//    public void testRefreshScreenshotsDirThrowsException() {
+//        System.out.println("refreshScreenshotDirWithoutNull");
+//
+//        final Logger logger = mock(Logger.class);
+//        loggerMock.when(() -> Logger.getLogger(Mockito.any())).thenReturn(logger);
+////        when(logger.log(Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
+//
+//        final File file1 = mock(File.class);
+//        when(file1.getName()).thenReturn("file1.png");
+//        when(file1.toPath()).thenReturn(Paths.get("path\'file1.png"));
+//
+//        final File file2 = mock(File.class);
+//        when(file2.getName()).thenReturn("file2.png");
+//        when(file2.toPath()).thenReturn(Paths.get("path\'file2.png"));
+//
+//        final File screenShotsDir = mock(File.class);
+//        when(screenShotsDir.listFiles()).thenReturn(new File[]{file1, file2});
+//
+//        // getScreenshotsDir() will return a file structure with files therefore there will be files in filesInDirectory to iterate through.
+//        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(screenShotsDir);
+//        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.refreshScreenshotsDir()).thenCallRealMethod();
+//
+//        // Return a HistoryItem from getUniqueRecentFiles() to add to filesInHistory.
+//        recentFilesMock.when(() -> RecentFiles.getUniqueRecentFiles()).thenReturn(new ArrayList<>(Arrays.asList(new HistoryItem(1, "file1"))));
+//        filesMock.when(() -> Files.delete(Mockito.any())).thenThrow(IOException.class);
+//
+//        RecentGraphScreenshotUtilities.refreshScreenshotsDir();
+//
+//        recentGraphScreenshotUtilitiesMock.verify(() -> RecentGraphScreenshotUtilities.getScreenshotsDir(), times(1));
+//        recentFilesMock.verify(() -> RecentFiles.getUniqueRecentFiles(), times(1));
+//
+//        // Files.delete() will be called only on file2 since it is not in filesInHistory and it will throw an IOException because of its invalid path.
+//        filesMock.verify(() -> Files.delete(Mockito.any()), times(1));
+//        filesMock.verify(() -> Files.delete(Mockito.eq(Paths.get("path\'file2.png"))), times(1));
+//        loggerMock.verifyNoInteractions();
+//    }
 }
