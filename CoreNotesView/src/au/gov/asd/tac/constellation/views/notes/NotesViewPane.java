@@ -160,7 +160,7 @@ public class NotesViewPane extends BorderPane {
                     }
                 }
                 final ObservableList<String> filters = filterCheckComboBox.getCheckModel().getCheckedItems();
-                final String checkedFilters = String.join(",", filters);
+                final String checkedFilters = String.join(", ", filters);
                 filterCheckComboBox.setTitle(filters.isEmpty()? "Select a filter..." : checkedFilters);
             }
         });
