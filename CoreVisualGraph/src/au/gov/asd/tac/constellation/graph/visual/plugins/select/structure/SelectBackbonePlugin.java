@@ -62,7 +62,9 @@ public class SelectBackbonePlugin extends SimpleEditPlugin {
         // identify all transactions whose both nodes are selected
         for (int position = 0; position < graph.getTransactionCount(); position++) {
             final int txId = graph.getTransaction(position);
-            if (selected_nodes.contains(graph.getTransactionDestinationVertex(txId)) && selected_nodes.contains(graph.getTransactionSourceVertex(txId))) {
+            final int destVert = graph.getTransactionDestinationVertex(txId);
+            final int srcVert = graph.getTransactionSourceVertex(txId);
+            if (selected_nodes.contains(destVert) && selected_nodes.contains(srcVert) && srcVert != destVert) {
                 graph.setBooleanValue(selectedTransactionAttrId, txId, true);
             }
 
