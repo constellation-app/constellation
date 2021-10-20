@@ -100,7 +100,7 @@ public class AddRecordStore extends RestService {
 
         final PluginParameter<StringParameterValue> graphidParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphidParam.setName("Graph id");
-        graphidParam.setDescription("The id of the graph to add the recordstore to.");
+        graphidParam.setDescription("The id of the graph to add the recordstore to. (Default is the active graph)");
         parameters.addParameter(graphidParam);
 
         final PluginParameter<BooleanParameterValue> completeParam = BooleanParameterType.build(COMPLETE_PARAMETER_ID);
@@ -124,6 +124,7 @@ public class AddRecordStore extends RestService {
         dataParam.setName("Data (body)");
         dataParam.setDescription("A JSON representation of the RecordStore data, in the form {\"columns\": [\"COL1\",\"COL2\",\"COL3\"], \"data\": [[r1c1, r1c2, r1c3],[r2c1,r2c2,r2c3]]. This is the same as the output of pandas.DataFrame.to_json(orient='split', date_format='iso').");
         dataParam.setRequestBodyExampleJson("#/components/examples/addRecordStoreExample");
+        dataParam.setRequired(true);
         parameters.addParameter(dataParam);
 
         return parameters;

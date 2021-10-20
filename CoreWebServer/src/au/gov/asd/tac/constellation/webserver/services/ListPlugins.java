@@ -59,7 +59,7 @@ public class ListPlugins extends RestService {
 
         final PluginParameter<BooleanParameterType.BooleanParameterValue> aliasParam = BooleanParameterType.build(ALIAS_PARAMETER_ID);
         aliasParam.setName("Show aliases");
-        aliasParam.setDescription("Show the plugin aliases if true, the full name otherwise.");
+        aliasParam.setDescription("Show the plugin aliases if true, the full name otherwise (default false).");
         aliasParam.setObjectValue(true);
         parameters.addParameter(aliasParam);
 

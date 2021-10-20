@@ -26,9 +26,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import javax.swing.Icon;
 import javax.swing.SwingUtilities;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.util.Exceptions;
 
 /**
@@ -50,6 +52,29 @@ public class NotifyDisplayer {
     public static void display(final String message, final int descriptorType) {
         final NotifyDescriptor descriptor = new NotifyDescriptor.Message(message, descriptorType);
         display(descriptor);
+    }
+    
+    /**
+     * Utility to notify the user of some fact. The passed icon can be used to
+     * classify the severity or type of notification.
+     *
+     * @param title the title of the notification
+     * @param icon the icon to be added to the dialog
+     * @param message the notification message
+     */
+    public static void display(final String title, final Icon icon, final String message) {
+        if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
+            // If this was called from one of the UI threads we don't want to 
+            // display the dialog and block beacasue some OS's (macos) will go into deadlock
+            // I think what happens is, instead of running the display dialog in this
+            // "task" it creates a new one to display the dialog, puts it on the event
+            // queue then blocks in this task waiting for input from the user closing the dialog.
+            // Now because this thread (the UI thread) is blocked waiting for user input
+            // the dialog is never rendered and a deadlock happens.
+            CompletableFuture.runAsync(() -> display(title, icon, message));
+        } else {
+            EventQueue.invokeLater(() -> NotificationDisplayer.getDefault().notify(title, icon, message, null));
+        }
     }
     
     /**
