@@ -58,6 +58,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.StringUtils;
 
 public class JDBCSourcePane extends SourcePane {
 
@@ -404,16 +405,16 @@ public class JDBCSourcePane extends SourcePane {
 
     }
     
-    private boolean validateConnectionParams(TextField cn, TextField connectionStringF, ComboBox<JDBCDriver> driversComboBox) {
+    private boolean validateConnectionParams(final TextField cn, final TextField connectionStringF, final ComboBox<JDBCDriver> driversComboBox) {
         final StringJoiner missingParamsMsgs = new StringJoiner(System.lineSeparator() + System.lineSeparator());
 
-        if (cn.getText().isBlank()) {
+        if (StringUtils.isBlank(cn.getText())) {
             missingParamsMsgs.add("\tConnection Name - please enter a name before continuing, it can be any name of your choosing.");
         }
-        if (connectionStringF.getText().isBlank()) {
+        if (StringUtils.isBlank(connectionStringF.getText())) {
             missingParamsMsgs.add("\tConnection String - please enter a connection string before continuing. "
                     + "The connection string will contain the database type, host, port, and database of the db in the format "
-                    + "\"jdbc:[database name]://[host]:[port]/[database name]" + System.lineSeparator()
+                    + "\"jdbc:[database name]://[host]:[port]/[database name]\"" + System.lineSeparator()
                     + "e.g. jdbc:mysql://localhost:3306/employees for mysql or jdbc:postgresql://localhost:5432/test for postgres.");
         }
         if (driversComboBox.getValue() == null) {
@@ -459,7 +460,7 @@ public class JDBCSourcePane extends SourcePane {
         cn.setFocusTraversable(false);
         cn.focusedProperty().addListener((obs, oldVal, newVal) -> {
             cn.setStyle(""); 
-            if (!newVal && cn.getText().isBlank()){
+            if (!newVal && StringUtils.isBlank(cn.getText())){
                 cn.setStyle("-fx-text-box-border: red;");  
             }
         });
@@ -483,7 +484,7 @@ public class JDBCSourcePane extends SourcePane {
         connectionStringF.setFocusTraversable(false);
         connectionStringF.focusedProperty().addListener((obs, oldVal, newVal) -> {
             connectionStringF.setStyle(""); 
-            if (!newVal && connectionStringF.getText().isBlank()){
+            if (!newVal && StringUtils.isBlank(connectionStringF.getText())){
                 connectionStringF.setStyle("-fx-text-box-border: red;");  
             }
         });
