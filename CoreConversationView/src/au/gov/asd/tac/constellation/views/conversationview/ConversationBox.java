@@ -262,22 +262,14 @@ public final class ConversationBox extends StackPane {
             foundLabel.setStyle(FOUND_PASS_COLOUR);
             
              // If they hit enter iterate through the results
-            if(e.getCharacter().equals("\r")){
-                searchCount = (searchCount + 1) % foundCount;
-            }else{
-                searchCount = 0;
-            }
+            searchCount = e.getCharacter().equals("\r") ? (searchCount + 1) % foundCount : 0;
             
             highlightRegions();
             refreshCountUI(false);
         });
         
         prevButton.setOnAction(event -> {
-            if(searchCount <= 0){
-                searchCount = foundCount - 1;
-            }else{
-                searchCount = (searchCount - 1) % foundCount;
-            }
+            searchCount = searchCount <= 0 ? foundCount - 1 : (searchCount - 1) % foundCount;
             highlightRegions();
             foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
         });
@@ -318,7 +310,7 @@ public final class ConversationBox extends StackPane {
     private void highlightRegions() {
         foundCount = 0;
 
-        final HashMap<Integer, ConversationMessage> matches = new HashMap<Integer, ConversationMessage>();
+        final Map<Integer, ConversationMessage> matches = new HashMap<Integer, ConversationMessage>();
         final List<ConversationMessage> visibleMessages = conversation.getVisibleMessages();
 
         visibleMessages.forEach(message -> {
