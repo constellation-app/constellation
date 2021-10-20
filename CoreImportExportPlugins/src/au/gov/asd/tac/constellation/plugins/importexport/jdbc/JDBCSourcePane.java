@@ -426,7 +426,7 @@ public class JDBCSourcePane extends SourcePane {
                     "The connection name, driver, and connection string are all required fields, you are missing the following:"
                     + System.lineSeparator()
                     + System.lineSeparator()
-                    + missingParamsMsgs.toString() + "</span>",
+                    + missingParamsMsgs.toString(),
                     AlertType.ERROR);
             return false;
         }
