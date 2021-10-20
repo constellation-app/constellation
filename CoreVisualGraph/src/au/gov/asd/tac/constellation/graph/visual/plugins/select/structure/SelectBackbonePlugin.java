@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -46,13 +47,14 @@ public class SelectBackbonePlugin extends SimpleEditPlugin {
 
         for (int position = 0; position < graph.getVertexCount(); position++) {
             final int vxId = graph.getVertex(position);
-
-            // identify all nodes with connections > 1
-            final int degree = graph.getVertexLinkCount(vxId);
-            if (degree > 1) {
+            
+            // identify all nodes with connections > 1 that aren't self-loops
+            final IntStream neighbours = IntStream.range(0, graph.getVertexLinkCount(vxId))
+                    .map(linkPos -> graph.getVertexNeighbour(vxId, linkPos))
+                    .filter(neighbourId -> neighbourId != vxId);
+            
+            if (neighbours.count() > 1) {
                 graph.setBooleanValue(selectedNodeAttrId, vxId, true);
-            }
-            if (degree > 1) {
                 selected_nodes.add(vxId);
             }
         }
