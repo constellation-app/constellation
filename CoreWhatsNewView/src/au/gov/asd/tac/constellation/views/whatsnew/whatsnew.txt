@@ -5,6 +5,12 @@
 <p> When searching in the conversation viewer you will be taken to the messages that contain the search term.</p>
 <p> You can also iterate through the search terms using the new buttons</p>
 
+== 2021-10-15 User Settable Bin Size in Histogram
+<p>The user can now manually increase or decrease the height of the bins in the histogram (Added to the popup displayed when you click the Actions button in the bottom right of the histogram panel).</p>
+
+== 2021-10-08 Layer by Time
+<p>Layer by Time has been updated so that the graph that is created has the same schema as the original graph. Previously it created a Visual Graph.</p>
+
 == 2021-10-06 Plugin Parameters
 <p>If you enter a value into a number parameter field that is either less than the minimum allowed or more than maximum allowed, the field turns red.</p>
 

@@ -3,7 +3,7 @@
 <toc version="2.0">
     <tocitem text="Views" mergetype="javax.help.SortMerge">
         <tocitem text="Data Access View" mergetype="javax.help.SortMerge">
-            <tocitem text="Data Access View" target="au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewTopComponent"/>
+            <tocitem text="Data Access View" target="au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent"/>
             <tocitem text="Data Access View: Options" target="au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIO"/>
             <tocitem text="Import" mergetype="javax.help.SortMerge">
                 <tocitem text="Extract Types from Text" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin"/>

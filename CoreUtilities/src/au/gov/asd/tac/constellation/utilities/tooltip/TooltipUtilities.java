@@ -20,13 +20,11 @@ import java.time.Duration;
 import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.skin.TextAreaSkin;
 import javafx.scene.control.skin.TextFieldSkin;
 import javafx.scene.control.skin.TextInputControlSkin;
 import javafx.scene.text.HitInfo;
-import javafx.stage.Popup;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.fxmisc.richtext.event.MouseOverTextEvent;
 
@@ -142,16 +140,6 @@ public class TooltipUtilities {
         final int[] characterIndex = new int[1];
         final TooltipNode[] tooltipNode = new TooltipNode[1];
 
-        // PLACEHOLDER CODE TO IMITATE TOOLTIPPANE POPUP. REMOVE LATER ONCE TOOLTIPPANE CONFIRMED WORKING.
-        final Popup popup = new Popup();
-        final Label popupMsg = new Label();
-        popupMsg.setStyle(
-                "-fx-background-color: black;"
-                + "-fx-text-fill: white;"
-                + "-fx-padding: 5;");
-        popup.getContent().add(popupMsg);
-        // ^
-
         textArea.setMouseOverTextDelay(Duration.ofMillis(100));
         textArea.addEventHandler(MouseOverTextEvent.MOUSE_OVER_TEXT_BEGIN, event -> {
             if (tooltipPane.isEnabled()) {
@@ -165,24 +153,12 @@ public class TooltipUtilities {
                     Point2D location = event.getScreenPosition();
                     tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
                 }
-
-                // PLACEHOLDER CODE TO IMITATE TOOLTIPPANE POPUP. REMOVE LATER ONCE TOOLTIPPANE CONFIRMED WORKING.
-                popupMsg.setText(
-                        "Character '" + textArea.getText(characterIndex[0], characterIndex[0] + 1)
-                        + "' at Index '" + characterIndex[0] + "'");
-                final Point2D pos = event.getScreenPosition();
-                popup.show(textArea, pos.getX(), pos.getY() + 10);
-                // ^
             }
         });
 
         textArea.addEventHandler(MouseOverTextEvent.MOUSE_OVER_TEXT_END, event -> {
             if (tooltipPane.isEnabled()) {
                 tooltipPane.hideTooltip();
-
-                // PLACEHOLDER CODE TO IMITATE TOOLTIPPANE POPUP. REMOVE LATER ONCE TOOLTIPPANE CONFIRMED WORKING.
-                popup.hide();
-                // ^
             }
         });
     }

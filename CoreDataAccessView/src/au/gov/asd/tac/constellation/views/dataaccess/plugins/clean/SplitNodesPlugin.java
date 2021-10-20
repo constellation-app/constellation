@@ -45,8 +45,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

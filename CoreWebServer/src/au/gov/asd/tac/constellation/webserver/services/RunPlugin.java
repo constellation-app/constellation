@@ -77,11 +77,12 @@ public class RunPlugin extends RestService {
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(PLUGIN_NAME_PARAMETER_ID);
         nameParam.setName("Plugin name");
         nameParam.setDescription("The name of the plugin to run.");
+        nameParam.setRequired(true);
         parameters.addParameter(nameParam);
 
         final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
-        graphIdParam.setDescription("The id of a graph to run the plugin on (optional).");
+        graphIdParam.setDescription("The id of a graph to run the plugin on. (Default is the active graph)");
         parameters.addParameter(graphIdParam);
 
         final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(ARGS_PARAMETER_ID);

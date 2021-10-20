@@ -25,9 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -40,17 +38,6 @@ public class SplitNodesPluginSplitLogicNGTest {
             vertexAttributeX, vertexAttributeY, vertexAttributeZ;
     private int vxId1, vxId2, vxId3, vxId4;
     private StoreGraph graph;
-
-    public SplitNodesPluginSplitLogicNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
