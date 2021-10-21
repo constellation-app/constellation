@@ -121,13 +121,17 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingSenderLabels;
 
     private int foundCount;
-    private static final String FOUND_TEXT = "Found: ";
+    private int searchCount;
+    
+    private static final String FOUND_TEXT = "Showing ";
     private static final String FOUND_PASS_COLOUR = "-fx-text-fill: yellow;";
     private static final String FOUND_FAIL_COLOUR = "-fx-text-fill: red;";
     private final Label foundLabel = new Label();
 
     private final TextField searchTextField = new TextField();
-    private final VBox searchVBox = new VBox();
+    private final Button nextButton = new Button("Next");
+    private final Button prevButton = new Button("Previous");
+    private final HBox searchHBox = new HBox();
 
     /**
      * Create a ConversationBox with the given Conversation.
@@ -247,13 +251,30 @@ public final class ConversationBox extends StackPane {
         searchTextField.setOnKeyTyped(e -> {
             foundLabel.setText("searching...");
             foundLabel.setStyle(FOUND_PASS_COLOUR);
+            
+             // If they hit enter iterate through the results
+            searchCount = e.getCharacter().equals("\r") ? (searchCount + 1) % foundCount : 0;
+            
             highlightRegions();
             refreshCountUI(false);
         });
+        
+        prevButton.setOnAction(event -> {
+            searchCount = searchCount <= 0 ? foundCount - 1 : (searchCount - 1) % foundCount;
+            highlightRegions();
+            foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+        });
+        nextButton.setOnAction(event -> {
+            searchCount = Math.abs((searchCount + 1) % foundCount);
+            highlightRegions();
+            foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+        });
+        searchTextField.setPrefWidth(300);
+        
         foundLabel.setPadding(new Insets(4, 8, 4, 8));
-        searchVBox.getChildren().addAll(searchTextField, foundLabel);
+        searchHBox.getChildren().addAll(searchTextField, prevButton, nextButton, foundLabel);
 
-        content.getChildren().addAll(optionsPane, searchVBox, contributionsPane, bubbles);
+        content.getChildren().addAll(optionsPane, searchHBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);
     }
 
@@ -266,9 +287,10 @@ public final class ConversationBox extends StackPane {
     protected void refreshCountUI(final boolean resetCount) {
         if (resetCount) {
             foundCount = 0;
+            searchCount = 0;
         }
 
-        foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + foundCount);
+        foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
         foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
     }
 
@@ -279,6 +301,7 @@ public final class ConversationBox extends StackPane {
     private void highlightRegions() {
         foundCount = 0;
 
+        final Map<Integer, ConversationMessage> matches = new HashMap<Integer, ConversationMessage>();
         final List<ConversationMessage> visibleMessages = conversation.getVisibleMessages();
 
         visibleMessages.forEach(message -> {
@@ -289,17 +312,22 @@ public final class ConversationBox extends StackPane {
 
                 if (region instanceof EnhancedTextArea) {
                     foundCount += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
+                    matches.put(foundCount, message);
                 }
 
                 if (region instanceof GridPane) {
                     ((GridPane) region).getChildren().forEach(child -> {
                         if (child instanceof EnhancedTextArea) {
                             foundCount += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
+                            matches.put(foundCount, message);
                         }
                     });
                 }
             });
         });
+        if (foundCount > 0){
+            bubbles.scrollTo(matches.get(searchCount));
+        }
     }
 
     // A VBox to hold a bubble and a sender.
