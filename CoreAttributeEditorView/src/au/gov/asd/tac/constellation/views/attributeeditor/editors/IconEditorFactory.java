@@ -240,19 +240,19 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             final Button addDirButton = new Button("Add Directory...");
             final Button removeButton = new Button("Remove");
 
-            addFilesButton.setOnAction(event -> {
-                FileChooser.openMultiDialog(getIconEditorFileChooser().setFilesOnly(true)).thenAccept(optionalFiles -> optionalFiles.ifPresent(selectedFiles -> {
-                    SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
-                    addIcons(selectedFiles);
-                }));
-            });
+            addFilesButton.setOnAction(event
+                    -> FileChooser.openMultiDialog(getIconEditorFileChooser().setFilesOnly(true)).thenAccept(optionalFiles
+                            -> optionalFiles.ifPresent(selectedFiles -> {
+                        SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
+                        addIcons(selectedFiles);
+                    })));
 
-            addDirButton.setOnAction(event -> {
-                FileChooser.openOpenDialog(getIconEditorFileChooser().setDirectoriesOnly(true)).thenAccept(optionalFolder -> optionalFolder.ifPresent(selectedFolder -> {
-                    SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFolder : DEFAULT_DIRECTORY;
-                    addIcons(IconEditorUtilities.pngWalk(selectedFolder));
-                }));
-            });
+            addDirButton.setOnAction(event
+                    -> FileChooser.openOpenDialog(getIconEditorFileChooser().setDirectoriesOnly(true)).thenAccept(optionalFolder
+                            -> optionalFolder.ifPresent(selectedFolder -> {
+                        SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFolder : DEFAULT_DIRECTORY;
+                        addIcons(IconEditorUtilities.pngWalk(selectedFolder));
+                    })));
 
             removeButton.setOnAction(event -> {
                 final boolean iconRemoved = IconManager.removeIcon(listView.getSelectionModel().getSelectedItem());

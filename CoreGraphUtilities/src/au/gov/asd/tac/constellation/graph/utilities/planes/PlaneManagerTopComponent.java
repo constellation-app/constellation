@@ -110,7 +110,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
     private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
 
-    private static final String TITLE = "Import Plane";
+    private static final String TITLE = "Import plane";
 
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
@@ -556,7 +556,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
 
         @Override
         public String getName() {
-            return "Import Plane";
+            return TITLE;
         }
 
         @Override

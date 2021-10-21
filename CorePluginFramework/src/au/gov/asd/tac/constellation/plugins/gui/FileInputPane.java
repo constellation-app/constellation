@@ -62,14 +62,8 @@ public class FileInputPane extends HBox {
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
     private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
 
-    private static final String TITLE = "Open File";
+    private static final String TITLE = "Open file";
 
-//    private static final Frame window = WindowManager.getDefault().getMainWindow();
-//    private static final Preferences preferences = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-//    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = preferences.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-//
-//    public static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-//    private File SAVED_DIRECTORY = null;
     public static final int DEFAULT_WIDTH = 300;
 
     private final Button fileAddButton;

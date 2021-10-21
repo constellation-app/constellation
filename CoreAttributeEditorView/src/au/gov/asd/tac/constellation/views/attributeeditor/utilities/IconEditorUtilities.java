@@ -20,17 +20,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Utility class for IconEditor.
  *
  * @author sol695510
  */
 public class IconEditorUtilities {
 
+    private IconEditorUtilities() {
+    }
+
+    /**
+     * Calls pngWalk() with given file path and returns a list of png files.
+     *
+     * @param path
+     * @return list of png files
+     */
     public static List<File> pngWalk(final File path) {
         final List<File> files = new ArrayList<>();
         pngWalk(path, files);
         return files;
     }
 
+    /**
+     * Checks if given file path is a directory and returns a list of png files
+     * if found in the directory.
+     *
+     * @param path
+     * @param files
+     * @return list of png files
+     */
     private static List<File> pngWalk(final File path, final List<File> files) {
         final File[] filesInPath = path.listFiles((File pathname) -> {
             if (pathname.isDirectory()) {

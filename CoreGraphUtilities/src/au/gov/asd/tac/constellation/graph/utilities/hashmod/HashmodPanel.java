@@ -59,7 +59,7 @@ public class HashmodPanel extends javax.swing.JPanel {
 
     private String hashmodCSVFileStr = "";
     private String hashmodCSVChainStr = "";
-    private Boolean isChainedHashmods = false;
+    private boolean isChainedHashmods = false;
     private int numChainedHashmods = 0;
     private final Hashmod[] chainedHashmods = new Hashmod[10];
 
@@ -80,7 +80,7 @@ public class HashmodPanel extends javax.swing.JPanel {
         return !hashmodCSVFileStr.isBlank() ? new Hashmod(hashmodCSVFileStr) : new Hashmod();
     }
 
-    public Boolean isChainedHashmods() {
+    public boolean isChainedHashmods() {
         return isChainedHashmods;
     }
 
