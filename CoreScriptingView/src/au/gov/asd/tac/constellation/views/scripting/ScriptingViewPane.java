@@ -190,7 +190,7 @@ public class ScriptingViewPane extends JPanel {
 
         final JMenuItem apiItem = new JMenuItem("API Documentation");
         apiItem.addActionListener(e -> {
-            new HelpCtx(ScriptingViewPane.class.getPackageName()).display();
+            new HelpCtx(this.getClass().getPackage().getName()).display();
         });
         optionsMenu.add(apiItem);
 
