@@ -34,7 +34,9 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
@@ -45,6 +47,7 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -63,6 +66,7 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
@@ -100,6 +104,13 @@ import org.openide.windows.TopComponent;
     "HINT_PlaneManagerTopComponent=Plane Manager"
 })
 public final class PlaneManagerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
+
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+
+    private static final String TITLE = "Import Plane";
 
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
@@ -166,11 +177,13 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     }
 
     private void importPlaneActionPerformed(final ActionEvent e) {
-        final FileNameExtensionFilter filter = new FileNameExtensionFilter("Image file", "png", "jpg");
-        final File f = new FileChooserBuilder("Import plane").addFileFilter(filter).showOpenDialog();
-        if (f != null) {
-            PluginExecution.withPlugin(new ImportPlanePlugin(f)).executeLater(graph);
-        }
+
+        final FileChooserBuilder fileChooser = getPlaneManagerFileChooser();
+
+        FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
+            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+            PluginExecution.withPlugin(new ImportPlanePlugin(selectedFile)).executeLater(graph);
+        }));
     }
 
     private void removeSelectedPlanesActionPerformed(final ActionEvent e) {
@@ -483,6 +496,20 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
 //    }
 
     /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getPlaneManagerFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setFileFilter(new FileNameExtensionFilter("Image files (.png, .jpg)", "png", "jpg"))
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true);
+    }
+
+    /**
      * Plugin to update the plane visibility on the graph.
      */
     @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
@@ -518,7 +545,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
      */
     @PluginInfo(pluginType = PluginType.VIEW, tags = {"IMPORT"})
     private static class ImportPlanePlugin extends SimpleEditPlugin {
-        
+
         private static final Logger LOGGER = Logger.getLogger(ImportPlanePlugin.class.getName());
 
         private final File f;

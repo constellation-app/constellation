@@ -18,27 +18,39 @@ package au.gov.asd.tac.constellation.plugins.importexport.json;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.importexport.image.ExportToImagePlugin;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import javax.swing.filechooser.FileFilter;
+import java.util.prefs.Preferences;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 
+/**
+ * Export to JSON.
+ */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.plugins.importexport.json.ExportToJsonAction")
-@ActionRegistration(displayName = "#CTL_ExportToJsonAction",
-        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/json/exportToJSON.png",
-        surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ExportToJsonAction", iconBase = "au/gov/asd/tac/constellation/plugins/importexport/json/exportToJSON.png", surviveFocusChange = true)
 @ActionReference(path = "Menu/File/Export", position = 100)
 @Messages("CTL_ExportToJsonAction=To JSON...")
 public final class ExportToJsonAction implements ActionListener {
 
-    private static final String EXT = ".json";
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
 
-    final GraphNode context;
+    private static final String TITLE = "Export to JSON";
+
+    private static final String EXT = ".json";
+    private final GraphNode context;
 
     public ExportToJsonAction(final GraphNode context) {
         this.context = context;
@@ -46,35 +58,35 @@ public final class ExportToJsonAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        final FileChooserBuilder fChooser = new FileChooserBuilder("ExportJson")
-                .setTitle("Export to JSON")
-                .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File pathName) {
-                        final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && name.toLowerCase().endsWith(EXT)) {
-                            return true;
-                        }
+        final FileChooserBuilder fileChooser = getExportToImageFileChooser();
 
-                        return pathName.isDirectory();
-                    }
+        FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
+            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
 
-                    @Override
-                    public String getDescription() {
-                        return "JSON file";
-                    }
-                });
+            String fileName = selectedFile.getAbsolutePath();
 
-        final File file = fChooser.showSaveDialog();
-        if (file != null) {
-            String fnam = file.getAbsolutePath();
-            if (!fnam.toLowerCase().endsWith(EXT)) {
-                fnam += EXT;
+            if (!fileName.toLowerCase().endsWith(EXT)) {
+                fileName += EXT;
             }
 
-            PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_JSON)
-                    .withParameter(ExportToJsonPlugin.FILE_NAME_PARAMETER_ID, fnam)
+            PluginExecution
+                    .withPlugin(ImportExportPluginRegistry.EXPORT_JSON)
+                    .withParameter(ExportToImagePlugin.FILE_NAME_PARAMETER_ID, fileName)
                     .executeLater(context.getGraph());
-        }
+        }));
+    }
+
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getExportToImageFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setFileFilter(new FileNameExtensionFilter("JSON files (.json)", "json"))
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true);
     }
 }

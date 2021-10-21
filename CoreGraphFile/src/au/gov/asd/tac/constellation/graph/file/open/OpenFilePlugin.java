@@ -24,18 +24,15 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import java.awt.Frame;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.prefs.Preferences;
-import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.WindowManager;
 
 /**
  * Open a file.
@@ -48,12 +45,12 @@ import org.openide.windows.WindowManager;
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"LOW LEVEL"})
 public class OpenFilePlugin extends SimpleReadPlugin {
 
-    private static final Frame window = WindowManager.getDefault().getMainWindow();
-    private static final Preferences preferences = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = preferences.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
 
-    private final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File SAVED_DIRECTORY = null;
+    private static final String TITLE = "Open";
 
     @Override
     public HelpCtx getHelpCtx() {
@@ -62,21 +59,25 @@ public class OpenFilePlugin extends SimpleReadPlugin {
 
     @Override
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        final FileChooserBuilder fileChooser = getOpenFileChooser();
 
-        final JFileChooser chooser = new FileChooser();
-        chooser.setCurrentDirectory(SAVED_DIRECTORY != null ? SAVED_DIRECTORY : DEFAULT_DIRECTORY);
-        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
-
-        final List<File> selectedFiles = new ArrayList<>();
-
-        if (chooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
-            selectedFiles.addAll(Arrays.asList(chooser.getSelectedFiles()));
-        }
-
-        if (!selectedFiles.isEmpty()) {
-            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? chooser.getCurrentDirectory() : DEFAULT_DIRECTORY;
-
+        FileChooser.openMultiDialog(fileChooser).thenAccept(optionalFiles -> optionalFiles.ifPresent(selectedFiles -> {
+            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
             selectedFiles.forEach(file -> OpenFile.openFile(file, -1));
-        }
+        }));
+    }
+
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getOpenFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setFileFilter(new FileNameExtensionFilter("Constellation files (.star, .nebula)", "star", "nebula"))
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true);
     }
 }

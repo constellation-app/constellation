@@ -18,29 +18,38 @@ package au.gov.asd.tac.constellation.plugins.importexport.image;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.importexport.json.ExportToJsonPlugin;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import javax.swing.filechooser.FileFilter;
+import java.util.prefs.Preferences;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 
-/*
- * export current graph as an image
+/**
+ * Export current graph as an image.
  */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.plugins.importexport.image.ExportToImage")
-@ActionRegistration(displayName = "#CTL_ExportToImage",
-        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/image/exportToImage.png",
-        surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ExportToImage", iconBase = "au/gov/asd/tac/constellation/plugins/importexport/image/exportToImage.png", surviveFocusChange = true)
 @ActionReference(path = "Menu/File/Export", position = 0)
 @Messages("CTL_ExportToImage=To Screenshot Image...")
 public final class ExportToImageAction implements ActionListener {
 
-    private static final String EXT = ".png";
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
 
+    private static final String TITLE = "Export to Image";
+
+    private static final String EXT = ".png";
     private final GraphNode context;
 
     public ExportToImageAction(final GraphNode context) {
@@ -48,36 +57,36 @@ public final class ExportToImageAction implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(final ActionEvent ev) {
-        final FileChooserBuilder fChooser = new FileChooserBuilder("ExportToImage")
-                .setTitle("Export to Image")
-                .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File pathName) {
-                        final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && name.toLowerCase().endsWith(EXT)) {
-                            return true;
-                        }
+    public void actionPerformed(final ActionEvent e) {
+        final FileChooserBuilder fileChooser = getExportToImageFileChooser();
 
-                        return pathName.isDirectory();
-                    }
+        FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
+            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
 
-                    @Override
-                    public String getDescription() {
-                        return "Image PNG file";
-                    }
-                });
+            String fileName = selectedFile.getAbsolutePath();
 
-        final File file = fChooser.showSaveDialog();
-        if (file != null) {
-            String fnam = file.getAbsolutePath();
-            if (!fnam.toLowerCase().endsWith(EXT)) {
-                fnam += EXT;
+            if (!fileName.toLowerCase().endsWith(EXT)) {
+                fileName += EXT;
             }
 
-            PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_IMAGE)
-                    .withParameter(ExportToImagePlugin.FILE_NAME_PARAMETER_ID, fnam)
+            PluginExecution
+                    .withPlugin(ImportExportPluginRegistry.EXPORT_IMAGE)
+                    .withParameter(ExportToJsonPlugin.FILE_NAME_PARAMETER_ID, fileName)
                     .executeLater(context.getGraph());
-        }
+        }));
+    }
+
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getExportToImageFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setFileFilter(new FileNameExtensionFilter("Image files (.png)", "png"))
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true);
     }
 }

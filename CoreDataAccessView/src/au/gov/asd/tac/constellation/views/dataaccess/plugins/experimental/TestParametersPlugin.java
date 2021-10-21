@@ -58,9 +58,9 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.QueryNameValidator;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -296,7 +296,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         saveFileParam.setName("Output file");
         saveFileParam.setDescription("A file to write stuff to");
         FileParameterType.setKind(saveFileParam, FileParameterType.FileParameterKind.SAVE);
-        FileParameterType.setFileFilters(saveFileParam, new FileNameExtensionFilter("Text files", "txt"));
+        FileParameterType.setFileFilters(saveFileParam, new FileNameExtensionFilter("Text files (.txt)", "txt"));
         params.addParameter(saveFileParam);
 
         final PluginParameter<ColorParameterValue> color = ColorParameterType.build(COLOR_PARAMETER_ID);

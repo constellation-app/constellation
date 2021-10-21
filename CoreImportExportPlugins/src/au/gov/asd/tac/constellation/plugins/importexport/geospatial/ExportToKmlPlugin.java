@@ -40,7 +40,7 @@ public class ExportToKmlPlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected FileNameExtensionFilter getExportType() {
-        return new FileNameExtensionFilter("KML", "kml");
+        return new FileNameExtensionFilter("KML files (.kml)", "kml");
     }
 
     @Override

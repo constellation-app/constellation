@@ -67,7 +67,7 @@ public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected FileNameExtensionFilter getExportType() {
-        return new FileNameExtensionFilter("Shapefile", "shp");
+        return new FileNameExtensionFilter("Shapefile files (.shp)", "shp");
     }
 
     @Override

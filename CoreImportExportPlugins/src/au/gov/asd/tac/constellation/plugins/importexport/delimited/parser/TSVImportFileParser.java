@@ -76,6 +76,6 @@ public class TSVImportFileParser extends ImportFileParser {
 
     @Override
     public FileNameExtensionFilter getExtensionFilter() {
-        return new FileNameExtensionFilter("Tab Separated Files", "tsv");
+        return new FileNameExtensionFilter("Tab Separated files (.tsv)", "tsv");
     }
 }

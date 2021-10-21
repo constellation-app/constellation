@@ -392,7 +392,7 @@ public class JSONImportFileParser extends ImportFileParser {
             final ArrayNode childNode = mapper.createArrayNode();
             JsonNode node = null;
             int counter = 0;
-            
+
             // read in all JSON object from input
             final MappingIterator<JsonNode> it = mapper.readerFor(JsonNode.class)
                     .readValues(in);
@@ -401,12 +401,12 @@ public class JSONImportFileParser extends ImportFileParser {
                 childNode.add(node);
                 counter++;
             }
-            // Maps newline delimited JSON to valid JSON in the format 
+            // Maps newline delimited JSON to valid JSON in the format
             // {"results": [<ndjson>]}
-            switch(counter){
-                case(0):
+            switch (counter) {
+                case (0):
                     throw new IOException(WARN_NO_VALID_LIST);
-                case(1):
+                case (1):
                     root = node;
                     break;
                 default:
@@ -414,7 +414,7 @@ public class JSONImportFileParser extends ImportFileParser {
                     final ObjectMapper newJSON = new ObjectMapper();
                     final ObjectNode rootNode = newJSON.createObjectNode();
                     rootNode.set("results", childNode);
-                    root = rootNode;                         
+                    root = rootNode;
             }
             lookForChildArrays(root, "", 0);
 
@@ -501,6 +501,6 @@ public class JSONImportFileParser extends ImportFileParser {
      */
     @Override
     public FileNameExtensionFilter getExtensionFilter() {
-        return new FileNameExtensionFilter("JSON Files", "json");
+        return new FileNameExtensionFilter("JSON files (.json)", "json");
     }
 }

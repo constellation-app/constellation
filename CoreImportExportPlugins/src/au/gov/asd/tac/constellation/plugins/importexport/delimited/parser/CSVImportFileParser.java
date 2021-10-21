@@ -77,6 +77,6 @@ public class CSVImportFileParser extends ImportFileParser {
 
     @Override
     public FileNameExtensionFilter getExtensionFilter() {
-        return new FileNameExtensionFilter("CSV Files", "csv");
+        return new FileNameExtensionFilter("CSV files (.csv)", "csv");
     }
 }

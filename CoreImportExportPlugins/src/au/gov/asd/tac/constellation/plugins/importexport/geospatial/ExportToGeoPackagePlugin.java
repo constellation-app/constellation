@@ -41,7 +41,7 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected FileNameExtensionFilter getExportType() {
-        return new FileNameExtensionFilter("GeoPackage", "gpkg");
+        return new FileNameExtensionFilter("GeoPackage files (.gpkg)", "gpkg");
     }
 
     @Override

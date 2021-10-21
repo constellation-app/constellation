@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.support;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,13 +25,14 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.JFileChooser;
+import java.util.prefs.Preferences;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.NbBundle.Messages;
-import org.openide.windows.WindowManager;
+import org.openide.util.NbPreferences;
 
 @ActionID(
         category = "Help",
@@ -46,16 +49,26 @@ import org.openide.windows.WindowManager;
 })
 public final class SupportPackageAction implements ActionListener {
 
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+
+    private static final String TITLE = Bundle.MSG_SaveAsTitle();
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        final File saveAsDirectory = getSaveAsDirectory();
-        if (saveAsDirectory != null) {
+        final FileChooserBuilder fileChooser = getSupportPackageFileChooser();
+
+        FileChooser.openOpenDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
+            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+
             final Date now = new Date();
             final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
             final String username = StringUtilities.removeSpecialCharacters(System.getProperty("user.name"));
 
-            final File destination = new File(saveAsDirectory.getPath(), String.format("%s-%s-%s.zip", "SupportPackage", username, simpleDateFormat.format(now)));
+            final File destination = new File(selectedFile.getPath(), String.format("%s-%s-%s.zip", "SupportPackage", username, simpleDateFormat.format(now)));
             final SupportPackage supportPackage = new SupportPackage();
             final Thread supportPackageThread = new Thread(() -> {
                 try {
@@ -67,26 +80,20 @@ public final class SupportPackageAction implements ActionListener {
             });
             supportPackageThread.setName("Support Package Thread");
             supportPackageThread.start();
-        }
+
+        }));
     }
 
     /**
-     * Show file "Save As" dialog
+     * Creates a new file chooser.
      *
-     * @return File selected by the user or null if no file was selected.
+     * @return the created file chooser.
      */
-    private File getSaveAsDirectory() {
-
-        final JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.setDialogTitle(Bundle.MSG_SaveAsTitle());
-        chooser.setMultiSelectionEnabled(false);
-        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-
-        if (JFileChooser.APPROVE_OPTION == chooser.showSaveDialog(WindowManager.getDefault().getMainWindow())) {
-            return chooser.getSelectedFile();
-        } else {
-            return null;
-        }
+    public FileChooserBuilder getSupportPackageFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setAcceptAllFileFilterUsed(false)
+                .setDirectoriesOnly(true);
     }
 }

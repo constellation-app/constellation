@@ -262,6 +262,6 @@ public class ExcelImportFileParser extends ImportFileParser {
 
     @Override
     public FileNameExtensionFilter getExtensionFilter() {
-        return new FileNameExtensionFilter("Excel Files", "xls", "xlsx");
+        return new FileNameExtensionFilter("Excel files (.xls, .xlsx)", "xls", "xlsx");
     }
 }

@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -28,8 +30,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -41,19 +43,29 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.util.NbPreferences;
 
 /**
  *
  * @author algol
  */
 public final class IconChooser extends javax.swing.JPanel implements TreeSelectionListener, ListSelectionListener {
+
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+
+    private static final String TITLE = "Add/Save Icon";
+    private static final String TITLE_OPEN = "Add Icons";
+    private static final String TITLE_SAVE = "Save Icon";
 
     private final Set<ConstellationIcon> icons;
     private final boolean iconAdded = false;
@@ -257,57 +269,38 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
     }// </editor-fold>//GEN-END:initComponents
 
 private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        // Add an icon to the icon list.
-        String addedIcon = null;
+        final FileChooserBuilder fileChooser = getIconFileChooser();
 
-        final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
-                .setTitle("Add icons")
-                .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File pathName) {
-                        final int extlen = 4;
-                        final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && (name.endsWith(".png") || name.endsWith(".jpg"))) {
-                            final String label = name.substring(0, name.length() - extlen);
+        FileChooser.openMultiDialog(fileChooser.setTitle(TITLE_OPEN)).thenAccept(optionalFiles -> optionalFiles.ifPresent(selectedFiles -> {
+            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
 
-                            // The name must contain at least one category (a '.' in position 1 or greater).
-                            return label.indexOf('.') > 0;
-                        }
+            String addedIcon = null;
 
-                        return pathName.isDirectory();
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "Graph Icon";
-                    }
-                });
-
-        final File[] files = fChooser.showMultiOpenDialog();
-        if (files != null) {
-            for (File file : files) {
+            for (final File file : selectedFiles) {
                 // The name must contain at least one category (a '.' in position 1 or greater).
                 final int extlen = 4;
                 final String fnam = file.getName();
                 final String label = fnam.substring(0, fnam.length() - extlen);
+
                 if (label.indexOf('.') < 1) {
                     final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Icon name %s must contain categories separated by '.'", fnam), NotifyDescriptor.ERROR_MESSAGE);
                     nd.setTitle("Bad icon file name");
                     DialogDisplayer.getDefault().notify(nd);
                 } else {
                     ConstellationIcon customIcon = new ConstellationIcon.Builder(fnam, new FileIconData(file)).build();
+
                     if (IconManager.addIcon(customIcon)) {
                         addedIcon = label;
                     }
                 }
             }
-        }
 
-        if (addedIcon != null) {
-            icons.clear();
-            icons.addAll(IconManager.getIcons());
-            init(addedIcon);
-        }
+            if (addedIcon != null) {
+                icons.clear();
+                icons.addAll(IconManager.getIcons());
+                init(addedIcon);
+            }
+        }));
 }//GEN-LAST:event_addButtonActionPerformed
 
 private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
@@ -327,37 +320,33 @@ private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 }//GEN-LAST:event_removeButtonActionPerformed
 
 private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // Save an icon from the icon list.
-        final String iconName = getSelectedIconName();
-        if (iconName != null) {
-            final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
-                    .setTitle("Save icon");
-//        final File file = fChooser.showSaveDialog();
+        final FileChooserBuilder fileChooser = getIconFileChooser();
 
-            // We need to get a JFileChooser because FileChooserBuilder doesn't have setSelectedFile().
-            final JFileChooser chooser = fChooser.createFileChooser();
+        FileChooser.openSaveDialog(fileChooser.setTitle(TITLE_SAVE)).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
+            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
 
-            chooser.setSelectedFile(new File(iconName + ".png"));
-            final int result = chooser.showSaveDialog(this);
-            final File file = result == JFileChooser.APPROVE_OPTION ? chooser.getSelectedFile() : null;
+            // Save an icon from the icon list.
+            final String iconName = getSelectedIconName();
 
-            if (file != null) {
-                try {
-                    final IconListModel listModel = (IconListModel) iconsList.getModel();
-                    final int index = iconsList.getSelectedIndex();
-                    final IconListElement element = listModel.getElementAt(index);
-
-                    try (final FileOutputStream fos = new FileOutputStream(file)) {
-                        fos.write(element.iconValue.buildByteArray());
-                        fos.flush();
-                    }
-                } catch (IOException ex) {
-                    final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Error writing icon file %s:%n%s", file.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
-                    nd.setTitle("Icon file error");
-                    DialogDisplayer.getDefault().notify(nd);
-                }
+            if (iconName != null) {
+                selectedFile = new File(selectedFile.getAbsolutePath() + "/" + iconName + ".png");
             }
-        }
+
+            try {
+                final IconListModel listModel = (IconListModel) iconsList.getModel();
+                final int index = iconsList.getSelectedIndex();
+                final IconListElement element = listModel.getElementAt(index);
+
+                try (final FileOutputStream fos = new FileOutputStream(selectedFile)) {
+                    fos.write(element.iconValue.buildByteArray());
+                    fos.flush();
+                }
+            } catch (IOException ex) {
+                final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Error writing icon file %s:%n%s", selectedFile.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
+                nd.setTitle("Icon file error");
+                DialogDisplayer.getDefault().notify(nd);
+            }
+        }));
 }//GEN-LAST:event_saveButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -389,6 +378,19 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     public void valueChanged(final ListSelectionEvent e) {
         saveButton.setEnabled(true);
         removeButton.setEnabled(true);
+    }
+
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getIconFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setFileFilter(new FileNameExtensionFilter("Graph Icon files (.png, .jpg)", "png", "jpg"))
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true);
     }
 }
 

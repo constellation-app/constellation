@@ -90,7 +90,7 @@ public class XMLImportFileParser extends ImportFileParser {
 
     @Override
     public FileNameExtensionFilter getExtensionFilter() {
-        return new FileNameExtensionFilter("XML Files", "xml");
+        return new FileNameExtensionFilter("XML files (.xml)", "xml");
     }
 
     private void exploreElement(final Element element, final List<String> path, final Map<List<String>, Counter> counts) {

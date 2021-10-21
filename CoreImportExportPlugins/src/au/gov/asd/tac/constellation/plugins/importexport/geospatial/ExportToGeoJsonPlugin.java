@@ -40,7 +40,7 @@ public class ExportToGeoJsonPlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected FileNameExtensionFilter getExportType() {
-        return new FileNameExtensionFilter("JSON", "json");
+        return new FileNameExtensionFilter("JSON files (.json)", "json");
     }
 
     @Override

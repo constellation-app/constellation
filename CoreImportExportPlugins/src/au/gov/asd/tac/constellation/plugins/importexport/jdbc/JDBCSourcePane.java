@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -58,19 +58,18 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.NbPreferences;
-import org.openide.windows.WindowManager;
 
 public class JDBCSourcePane extends SourcePane {
 
-    private static final Frame window = WindowManager.getDefault().getMainWindow();
-    private static final Preferences preferences = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = preferences.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
 
-    private File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private File SAVED_DIRECTORY = null;
+    private static final String TITLE = "Add JAR";
 
     private static final Logger LOGGER = Logger.getLogger(JDBCSourcePane.class.getName());
     private static final int GRIDPANE_MIN_WIDTH = 200;
@@ -259,27 +258,18 @@ public class JDBCSourcePane extends SourcePane {
                 gp.add(driverName, 1, 1, 1, 1);
                 final Button chooser = new Button(" ... ");
                 chooser.setOnAction((final ActionEvent t2) -> {
-                    final JFileChooser cho = new JFileChooser();
-                    cho.setCurrentDirectory(SAVED_DIRECTORY != null ? SAVED_DIRECTORY : DEFAULT_DIRECTORY);
-                    cho.setFileFilter(new FileNameExtensionFilter("JAR", "jar"));
-                    File f = null;
-
-                    if (cho.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
-                        f = cho.getSelectedFile();
-                    }
-
-                    if (f != null) {
-                        SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? cho.getCurrentDirectory() : DEFAULT_DIRECTORY;
-
+                    final FileChooserBuilder fileChooser = getJDBCImportFileChooser();
+                    FileChooser.openOpenDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
+                        SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
                         try {
-                            j.setText(f.getCanonicalPath());
+                            j.setText(selectedFile.getCanonicalPath());
                             driverName.getItems().clear();
-                            driverName.getItems().addAll(JDBCDriver.getDrivers(f));
+                            driverName.getItems().addAll(JDBCDriver.getDrivers(selectedFile));
                             driverName.getSelectionModel().selectFirst();
                         } catch (final IOException ex) {
                             LOGGER.log(Level.WARNING, ex.getMessage(), ex);
                         }
-                    }
+                    }));
                 });
                 gp.add(chooser, 2, 0, 1, 1);
                 final Button add = new Button("Add");
@@ -553,5 +543,19 @@ public class JDBCSourcePane extends SourcePane {
         stage.setWidth(LARGE_SCROLLPANE_PREF_WIDTH);
         stage.setHeight(ADD_CONNECTION_PANE_HEIGHT);
         stage.showAndWait();
+    }
+
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getJDBCImportFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setFileFilter(new FileNameExtensionFilter("JAR files (.jar)", "jar"))
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true);
     }
 }
