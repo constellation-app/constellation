@@ -517,7 +517,8 @@ public class NotesViewPane extends BorderPane {
                     createNote(note);
                 });
             }
-
+            notesListScrollPane.applyCss();
+            notesListScrollPane.layout();
             // Keeps the scroll bar at the bottom?
             notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
         });
