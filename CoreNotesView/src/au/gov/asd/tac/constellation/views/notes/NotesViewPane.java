@@ -159,6 +159,9 @@ public class NotesViewPane extends BorderPane {
                         controller.writeState(activeGraph);
                     }
                 }
+                final ObservableList<String> filters = filterCheckComboBox.getCheckModel().getCheckedItems();
+                final String checkedFilters = String.join(", ", filters);
+                filterCheckComboBox.setTitle(filters.isEmpty()? "Select a filter..." : checkedFilters);
             }
         });
 
