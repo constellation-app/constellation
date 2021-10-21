@@ -30,7 +30,8 @@ public class IconEditorUtilities {
     }
 
     /**
-     * Calls pngWalk() with given file path and returns a list of png files.
+     * Calls pngWalk(path, files) with given file path and returns a list of png
+     * files if found in the directory.
      *
      * @param path
      * @return list of png files
