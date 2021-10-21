@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-10-20 Conversation Search scroll
+<p> When searching in the conversation viewer you will be taken to the messages that contain the search term.</p>
+<p> You can also iterate through the search terms using the new buttons</p>
+
 == 2021-10-15 User Settable Bin Size in Histogram
 <p>The user can now manually increase or decrease the height of the bins in the histogram (Added to the popup displayed when you click the Actions button in the bottom right of the histogram panel).</p>
 

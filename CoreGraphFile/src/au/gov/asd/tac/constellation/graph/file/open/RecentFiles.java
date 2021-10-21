@@ -70,7 +70,7 @@ import org.openide.windows.WindowManager;
  * @author Dafe Simonek
  */
 public final class RecentFiles {
-    
+
     private static final Logger LOGGER = Logger.getLogger(RecentFiles.class.getName());
 
     private static final WindowRegistryL RECENT_FILE_SAVED = new WindowRegistryL();
@@ -81,23 +81,28 @@ public final class RecentFiles {
      * List of recently closed files
      */
     private static final List<HistoryItem> HISTORY = new ArrayList<>();
+
     /**
      * Preferences node for storing history info
      */
     private static Preferences prefs;
+
     private static final Object HISTORY_LOCK = new Object();
+
     /**
      * Name of preferences node where we persist history
      */
     private static final String PREFS_NODE = "RecentFilesHistory"; //NOI18N
+
     /**
      * Prefix of property for recent file URL
      */
     private static final String PROP_URL_PREFIX = "RecentFilesURL."; //NOI18N
+
     /**
      * Boundary for items count in history
      */
-    static final int MAX_HISTORY_ITEMS = 15;
+    private static final int MAX_HISTORY_ITEMS = 10;
 
     private RecentFiles() {
     }
@@ -129,6 +134,8 @@ public final class RecentFiles {
 
     /**
      * Returns read-only list of recently closed files
+     *
+     * @return list of recent files
      */
     static List<HistoryItem> getRecentFiles() {
         synchronized (HISTORY_LOCK) {
@@ -136,7 +143,7 @@ public final class RecentFiles {
             return Collections.unmodifiableList(HISTORY);
         }
     }
-    
+
     /**
      * Gets the read-only list of unique, existing recent closed files
      *
@@ -148,7 +155,7 @@ public final class RecentFiles {
                 .distinct()
                 .collect(ImmutableList.toImmutableList());
     }
-    
+
     private static volatile boolean historyProbablyValid;
 
     /**
@@ -353,7 +360,7 @@ public final class RecentFiles {
         private final String path;
         private String fileName;
 
-        HistoryItem(final int id, final String path) {
+        public HistoryItem(final int id, final String path) {
             this.path = path;
             this.id = id;
         }
