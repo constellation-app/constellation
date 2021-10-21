@@ -99,7 +99,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         //Retrieve the existing FindResultList Meta attribute
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         FindResultsList foundResult = graph.getObjectValue(stateId, 0);
-//        int test = foundResult.getCurrentIndex();
         /**
          * If it doesn't exist or is null, create a new list with the starting
          * index and the current find parameters. If it does exist, create a
@@ -179,7 +178,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
                 foundResult.clear();
                 foundResult.addAll(findInCurrentSelectionList);
-
             }
         }
         if (removeFromCurrentSelection && !removeFromCurrentSelectionList.isEmpty()) {

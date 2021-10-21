@@ -159,17 +159,17 @@ public class FindViewController {
      * @param getNext true if finding the next element, false if the previous
      */
     public void retriveMatchingElements(final boolean selectAll, final boolean getNext) {
-        final BasicFindPlugin basicfindPlugin = new BasicFindPlugin(currentBasicFindParameters, selectAll, getNext);
+        final BasicFindPlugin basicFindPlugin = new BasicFindPlugin(currentBasicFindParameters, selectAll, getNext);
         if (currentBasicFindParameters.isSearchAllGraphs()) {
             for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                 if (graph != null && currentBasicFindParameters.isSearchAllGraphs()) {
-                    PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
+                    PluginExecution.withPlugin(basicFindPlugin).executeLater(graph);
                 }
             }
         } else {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
             if (graph != null) {
-                PluginExecution.withPlugin(basicfindPlugin).executeLater(graph);
+                PluginExecution.withPlugin(basicFindPlugin).executeLater(graph);
             }
         }
     }

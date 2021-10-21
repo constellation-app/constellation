@@ -43,8 +43,20 @@ public class BasicFindReplaceParameters {
 
     public BasicFindReplaceParameters() {
         // May need initialisation for the class variables that can be null.
-        attributeList = new ArrayList<>();
-        graphElement = GraphElementType.VERTEX;
+        this.findString = "";
+        this.replaceString = "";
+        this.graphElement = GraphElementType.VERTEX;
+        this.attributeList = new ArrayList<>();
+        this.standardText = false;
+        this.regEx = false;
+        this.ignoreCase = false;
+        this.exactMatch = false;
+        this.searchAllGraphs = false;
+        this.findIn = false;
+        this.addTo = false;
+        this.removeFrom = false;
+        this.replaceIn = false;
+
     }
 
     /**
@@ -97,37 +109,46 @@ public class BasicFindReplaceParameters {
 
     }
 
-    public boolean equals(final BasicFindReplaceParameters object) {
+    @Override
+    public boolean equals(final Object object) {
         int matches = 0;
+        if (this == object) {
+            return true;
+        }
+        if (getClass() != object.getClass()) {
+            return false;
+        }
+        BasicFindReplaceParameters parameters = (BasicFindReplaceParameters) object;
 
         if (this == null || object == null) {
             return false;
         }
-        if (findString.equals(object.getFindString())) {
+
+        if (findString.equals(parameters.getFindString())) {
             matches++;
         }
-        if (replaceString.equals(object.getReplaceString())) {
+        if (replaceString.equals(parameters.getReplaceString())) {
             matches++;
         }
-        if (graphElement.equals(object.getGraphElement())) {
+        if (graphElement.equals(parameters.getGraphElement())) {
             matches++;
         }
-        if (attributeList.equals(object.getAttributeList())) {
+        if (attributeList.equals(parameters.getAttributeList())) {
             matches++;
         }
-        if (standardText == object.isStandardText()) {
+        if (standardText == parameters.isStandardText()) {
             matches++;
         }
-        if (regEx == object.isRegEx()) {
+        if (regEx == parameters.isRegEx()) {
             matches++;
         }
-        if (ignoreCase == object.isIgnoreCase()) {
+        if (ignoreCase == parameters.isIgnoreCase()) {
             matches++;
         }
-        if (exactMatch == object.isExactMatch()) {
+        if (exactMatch == parameters.isExactMatch()) {
             matches++;
         }
-        if (searchAllGraphs == object.isSearchAllGraphs()) {
+        if (searchAllGraphs == parameters.isSearchAllGraphs()) {
             matches++;
         }
         if (matches == 9) {
