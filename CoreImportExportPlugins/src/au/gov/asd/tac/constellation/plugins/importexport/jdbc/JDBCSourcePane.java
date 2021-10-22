@@ -67,7 +67,7 @@ public class JDBCSourcePane extends SourcePane {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+    private static File savedDirectory = DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Add JAR";
 
@@ -260,7 +260,7 @@ public class JDBCSourcePane extends SourcePane {
                 chooser.setOnAction((final ActionEvent t2) -> {
                     final FileChooserBuilder fileChooser = getJDBCImportFileChooser();
                     FileChooser.openOpenDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-                        SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+                        savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
                         try {
                             j.setText(selectedFile.getCanonicalPath());
                             driverName.getItems().clear();
@@ -553,7 +553,7 @@ public class JDBCSourcePane extends SourcePane {
     public FileChooserBuilder getJDBCImportFileChooser() {
         return new FileChooserBuilder(TITLE)
                 .setTitle(TITLE)
-                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setDefaultWorkingDirectory(savedDirectory)
                 .setFileFilter(new FileNameExtensionFilter("JAR files (.jar)", "jar"))
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);

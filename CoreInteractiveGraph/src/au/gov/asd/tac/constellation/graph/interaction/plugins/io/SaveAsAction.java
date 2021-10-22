@@ -125,7 +125,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+    private static File savedDirectory = DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Save As";
 
@@ -189,7 +189,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             final FileChooserBuilder fileChooser = getSaveAsFileChooser();
 
             FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-                SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+                savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
 
                 try {
                     saveAs.saveAs(FileUtil.toFileObject(selectedFile.getParentFile()), selectedFile.getName());
@@ -292,7 +292,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     public FileChooserBuilder getSaveAsFileChooser() {
         return new FileChooserBuilder(TITLE)
                 .setTitle(TITLE)
-                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setDefaultWorkingDirectory(savedDirectory)
                 .setFileFilter(new FileNameExtensionFilter("Star files (.star)", "star"))
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);

@@ -65,7 +65,7 @@ public class DelimitedSourcePane extends SourcePane {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+    private static File savedDirectory = DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Import From File";
 
@@ -185,7 +185,7 @@ public class DelimitedSourcePane extends SourcePane {
         final FileChooserBuilder fileChooser = getDelimitedImportFileChooser();
 
         FileChooser.openMultiDialog(fileChooser.setFileFilter(extensionFilter)).thenAccept(optionalFiles -> optionalFiles.ifPresent(newFiles -> {
-            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? newFiles.get(0) : DEFAULT_DIRECTORY;
+            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? newFiles.get(0) : DEFAULT_DIRECTORY;
 
             final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
             final StringBuilder sb = new StringBuilder();
@@ -264,7 +264,7 @@ public class DelimitedSourcePane extends SourcePane {
     public FileChooserBuilder getDelimitedImportFileChooser() {
         return new FileChooserBuilder(TITLE)
                 .setTitle(TITLE)
-                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setDefaultWorkingDirectory(savedDirectory)
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);
     }

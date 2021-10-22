@@ -52,7 +52,7 @@ public final class SupportPackageAction implements ActionListener {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+    private static File savedDirectory = DEFAULT_DIRECTORY;
 
     private static final String TITLE = Bundle.MSG_SaveAsTitle();
 
@@ -62,7 +62,7 @@ public final class SupportPackageAction implements ActionListener {
         final FileChooserBuilder fileChooser = getSupportPackageFileChooser();
 
         FileChooser.openOpenDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
 
             final Date now = new Date();
             final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
@@ -92,7 +92,7 @@ public final class SupportPackageAction implements ActionListener {
     public FileChooserBuilder getSupportPackageFileChooser() {
         return new FileChooserBuilder(TITLE)
                 .setTitle(TITLE)
-                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setDefaultWorkingDirectory(savedDirectory)
                 .setAcceptAllFileFilterUsed(false)
                 .setDirectoriesOnly(true);
     }

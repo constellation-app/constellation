@@ -60,7 +60,7 @@ public class FileInputPane extends HBox {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+    private static File savedDirectory = DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Open file";
 
@@ -106,20 +106,20 @@ public class FileInputPane extends HBox {
             switch (paramaterValue.getKind()) {
                 case OPEN:
                     FileChooser.openOpenDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-                        SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+                        savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
                         files.add(selectedFile);
                     }));
                     break;
                 case OPEN_MULTIPLE:
                     FileChooser.openMultiDialog(fileChooser).thenAccept(optionalFiles -> optionalFiles.ifPresent(selectedFiles -> {
-                        SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
+                        savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
                         files.addAll(selectedFiles);
                     }));
                     break;
                 case SAVE:
 
                     FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-                        SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+                        savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
                         files.add(selectedFile);
                     }));
                     break;
@@ -252,7 +252,7 @@ public class FileInputPane extends HBox {
     public FileChooserBuilder getFileInputPaneFileChooser() {
         return new FileChooserBuilder(TITLE)
                 .setTitle(TITLE)
-                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setDefaultWorkingDirectory(savedDirectory)
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);
     }

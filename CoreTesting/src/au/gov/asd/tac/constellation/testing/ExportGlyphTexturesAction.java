@@ -44,7 +44,7 @@ public final class ExportGlyphTexturesAction implements ActionListener {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+    private static File savedDirectory = DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Export Glyph Textures";
 
@@ -54,7 +54,7 @@ public final class ExportGlyphTexturesAction implements ActionListener {
         final FileChooserBuilder fileChooser = getExportGlyphTexturesFileChooser();
 
         FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
             SharedDrawable.exportGlyphTextures(selectedFile);
         }));
     }
@@ -67,7 +67,7 @@ public final class ExportGlyphTexturesAction implements ActionListener {
     public FileChooserBuilder getExportGlyphTexturesFileChooser() {
         return new FileChooserBuilder(TITLE)
                 .setTitle(TITLE)
-                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setDefaultWorkingDirectory(savedDirectory)
                 .setFileFilter(new FileNameExtensionFilter("Image files (.png)", "png"))
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);

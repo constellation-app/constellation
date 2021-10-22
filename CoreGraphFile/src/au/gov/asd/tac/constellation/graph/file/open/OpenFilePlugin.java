@@ -48,7 +48,7 @@ public class OpenFilePlugin extends SimpleReadPlugin {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+    private static File savedDirectory = DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Open";
 
@@ -62,7 +62,7 @@ public class OpenFilePlugin extends SimpleReadPlugin {
         final FileChooserBuilder fileChooser = getOpenFileChooser();
 
         FileChooser.openMultiDialog(fileChooser).thenAccept(optionalFiles -> optionalFiles.ifPresent(selectedFiles -> {
-            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
+            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
             selectedFiles.forEach(file -> OpenFile.openFile(file, -1));
         }));
     }
@@ -75,7 +75,7 @@ public class OpenFilePlugin extends SimpleReadPlugin {
     public FileChooserBuilder getOpenFileChooser() {
         return new FileChooserBuilder(TITLE)
                 .setTitle(TITLE)
-                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setDefaultWorkingDirectory(savedDirectory)
                 .setFileFilter(new FileNameExtensionFilter("Constellation files (.star, .nebula)", "star", "nebula"))
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);

@@ -108,7 +108,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+    private static File savedDirectory = DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Import plane";
 
@@ -181,7 +181,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         final FileChooserBuilder fileChooser = getPlaneManagerFileChooser();
 
         FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
             PluginExecution.withPlugin(new ImportPlanePlugin(selectedFile)).executeLater(graph);
         }));
     }
@@ -503,7 +503,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     public FileChooserBuilder getPlaneManagerFileChooser() {
         return new FileChooserBuilder(TITLE)
                 .setTitle(TITLE)
-                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setDefaultWorkingDirectory(savedDirectory)
                 .setFileFilter(new FileNameExtensionFilter("Image files (.png, .jpg)", "png", "jpg"))
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);

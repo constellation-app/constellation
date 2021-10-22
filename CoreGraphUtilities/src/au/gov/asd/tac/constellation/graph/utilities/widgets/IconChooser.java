@@ -61,7 +61,7 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
     private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File SAVED_DIRECTORY = DEFAULT_DIRECTORY;
+    private static File savedDirectory = DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Add/Save Icon";
     private static final String TITLE_OPEN = "Add Icons";
@@ -272,7 +272,7 @@ private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         final FileChooserBuilder fileChooser = getIconFileChooser();
 
         FileChooser.openMultiDialog(fileChooser.setTitle(TITLE_OPEN)).thenAccept(optionalFiles -> optionalFiles.ifPresent(selectedFiles -> {
-            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
+            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
 
             String addedIcon = null;
 
@@ -323,7 +323,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         final FileChooserBuilder fileChooser = getIconFileChooser();
 
         FileChooser.openSaveDialog(fileChooser.setTitle(TITLE_SAVE)).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-            SAVED_DIRECTORY = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
 
             // Save an icon from the icon list.
             final String iconName = getSelectedIconName();
@@ -387,7 +387,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
      */
     public FileChooserBuilder getIconFileChooser() {
         return new FileChooserBuilder(TITLE)
-                .setDefaultWorkingDirectory(SAVED_DIRECTORY)
+                .setDefaultWorkingDirectory(savedDirectory)
                 .setFileFilter(new FileNameExtensionFilter("Graph Icon files (.png, .jpg)", "png", "jpg"))
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);
