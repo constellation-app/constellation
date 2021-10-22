@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
@@ -341,10 +342,8 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                     fos.write(element.iconValue.buildByteArray());
                     fos.flush();
                 }
-            } catch (IOException ex) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Error writing icon file %s:%n%s", selectedFile.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
-                nd.setTitle("Icon file error");
-                DialogDisplayer.getDefault().notify(nd);
+            } catch (final IOException ex) {
+                NotifyDisplayer.display(String.format("Error writing icon file %s:%n%s", selectedFile.toString(), ex.getMessage()), NotifyDescriptor.WARNING_MESSAGE);
             }
         }));
 }//GEN-LAST:event_saveButtonActionPerformed

@@ -49,11 +49,12 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
 
 /**
  * Action to open a file. It is installed in Menu | File | Open file.
@@ -72,6 +73,8 @@ import org.openide.util.Exceptions;
     @ActionReference(path = "Shortcuts", name = "C-O")})
 public class OpenFileAction implements ActionListener {
 
+    private static final Logger LOGGER = Logger.getLogger(OpenFileAction.class.getName());
+
     /**
      * Displays a file chooser dialog and opens the selected files.
      */
@@ -80,11 +83,11 @@ public class OpenFileAction implements ActionListener {
         final StoreGraph sg = new StoreGraph();
         try {
             PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE).executeNow(sg);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             Thread.currentThread().interrupt();
-        } catch (PluginException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final PluginException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 }
