@@ -113,17 +113,6 @@ public class FindViewControllerNGTest {
     }
 
     /**
-     * Test of updateUI method, of class FindViewController.
-     */
-    @Test
-    public void testUpdateUI() {
-        System.out.println("updateUI");
-        FindViewController instance = null;
-        instance.updateUI();
-        // TODO review the generated test code and remove the default call to fail.
-    }
-
-    /**
      * Test of populateAttributes method, of class FindViewController.
      */
     @Test
