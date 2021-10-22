@@ -343,7 +343,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                     fos.flush();
                 }
             } catch (final IOException ex) {
-                NotifyDisplayer.display(String.format("Error writing icon file %s:%n%s", selectedFile.toString(), ex.getMessage()), NotifyDescriptor.WARNING_MESSAGE);
+                NotifyDisplayer.display(String.format("Error writing icon file %s:%n%s", selectedFile.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
             }
         }));
 }//GEN-LAST:event_saveButtonActionPerformed
