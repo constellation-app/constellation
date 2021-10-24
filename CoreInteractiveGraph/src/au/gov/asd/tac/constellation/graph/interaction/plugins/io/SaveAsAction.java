@@ -201,7 +201,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
                     // take a screenshot in a separate thread in parrallel
                     new Thread(() -> {
-                        RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName());
+                        RecentGraphScreenshotUtilities.takeScreenshot(newFile.getAbsolutePath());
                     }, "Take Graph Screenshot").start();
                 } catch (final IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,

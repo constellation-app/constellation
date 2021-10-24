@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,6 +41,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
+import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -82,13 +86,52 @@ public class RecentGraphScreenshotUtilities {
     }
 
     /**
+     * Creates a MD5 hash of the filepath.
+     * @param filepath The filepath of the graph
+     * @return MD5 hash of filepath
+     */
+    private static String hashFilePath(final String filepath){
+        final MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("MD5");
+            md.update(filepath.getBytes());
+            final byte[] digest = md.digest();
+            return DatatypeConverter.printHexBinary(digest).toUpperCase();            
+        } catch (NoSuchAlgorithmException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return filepath;
+    }
+    
+    /**
+     * Finds the path for the screenshot
+     * @param filepath the filepath for the graph
+     * @param filename the filename of the graph
+     * @return the filepath to the screenshot png
+     */
+    public static String findScreenshot(final String filepath, final String filename){
+        final String screenshotFilenameFormat = getScreenshotsDir() + File.separator + "%s.png";
+        final String screenshotHash = RecentGraphScreenshotUtilities.hashFilePath(filepath);
+        final String screenshotFilename = String.format(screenshotFilenameFormat, screenshotHash);
+        final String legacyScreenshotFilename = String.format(screenshotFilenameFormat, filename);
+        if (new File(screenshotFilename).exists()) {
+            return screenshotFilename;
+        } else if (new File(legacyScreenshotFilename).exists()) {
+            return legacyScreenshotFilename;
+        }
+        return "";
+    }
+    
+    /**
      * Take a screenshot of the graph and save it to the screenshots directory
      * so that it can be used by the Welcome View.
      *
-     * @param filename The filename of the graph
+     * @param filepath The filepath of the graph
      */
-    public static void takeScreenshot(final String filename) {
-        final String imageFile = getScreenshotsDir() + File.separator + filename + ".png";
+    public static void takeScreenshot(final String filepath) {
+        final String pathHash = hashFilePath(filepath);
+        final String imageFile = getScreenshotsDir() + File.separator + pathHash + ".png";
+
         final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(GraphManager.getDefault().getActiveGraph());
         final VisualManager visualManager = graphNode.getVisualManager();
@@ -164,11 +207,13 @@ public class RecentGraphScreenshotUtilities {
         if (screenShotsDir != null) {
             filesInDirectory.addAll(Arrays.asList(screenShotsDir.listFiles()));
         }
-
-        RecentFiles.getUniqueRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + ".png"));
-
+        RecentFiles.getUniqueRecentFiles().forEach(item -> {
+            filesInHistory.add(item.getFileName() + ".png");
+            filesInHistory.add(findScreenshot(item.getPath(), item.getFileName()));
+        });
         filesInDirectory.forEach(file -> {
-            if (!filesInHistory.contains(file.getName())) {
+            // Backward compatible with <filename>.png and newer <hashed filepath>.png
+            if (!filesInHistory.contains(file.getName()) && !filesInHistory.contains(findScreenshot(file.getPath(), file.getName()))){
                 try {
                     Files.delete(file.toPath());
                 } catch (final IOException ex) {

@@ -203,7 +203,7 @@ public class WelcomeViewPane extends BorderPane {
                     recentGraphButtons[i].setTooltip(toolTip);
                     final String text = recentGraphButtons[i].getText();
 
-                    final String screenshotFilename = String.format(screenshotFilenameFormat, text);
+                    final String screenshotFilename = RecentGraphScreenshotUtilities.findScreenshot(fileDetails.get(i).getPath(), fileDetails.get(i).getFileName());
                     if (new File(screenshotFilename).exists()) {
                         recentGraphButtons[i].setGraphic(buildGraphic(
                                 new Image("file:///" + screenshotFilename)
