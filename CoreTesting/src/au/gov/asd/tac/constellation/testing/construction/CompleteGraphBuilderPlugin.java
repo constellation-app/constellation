@@ -220,8 +220,8 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         final Date d = new Date();
         final int fourDays = 4 * 24 * 60 * 60 * 1000;
 
-        for (int x : vxIds) {
-            for (int y : vxIds) {
+        for (final int x : vxIds) {
+            for (final int y : vxIds) {
                 if (x == y) {
                     continue;
                 }
@@ -236,21 +236,21 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
                     if (randomWeights) {
                         switch (reciprocity) {
                             case 0:
-                                boolean random0 = r.nextBoolean();
+                                final boolean random0 = r.nextBoolean();
                                 if (random0) {
                                     sxId = y;
                                     dxId = x;
                                 }
                                 break;
                             case 1:
-                                int random1 = r.nextInt(5);
+                                final int random1 = r.nextInt(5);
                                 if (random1 == 0) {
                                     sxId = y;
                                     dxId = x;
                                 }
                                 break;
                             default:
-                                int randomDefault = r.nextInt(5);
+                                final int randomDefault = r.nextInt(5);
                                 if (randomDefault != 0) {
                                     sxId = y;
                                     dxId = x;

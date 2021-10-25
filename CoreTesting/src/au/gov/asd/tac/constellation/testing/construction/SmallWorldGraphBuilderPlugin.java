@@ -57,6 +57,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle.Messages;
@@ -121,7 +122,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         FloatParameterType.setMaximum(p, 1f);
         params.addParameter(p);
 
-        ArrayList<String> modes = new ArrayList<>();
+        final List<String> modes = new ArrayList<>();
         modes.add("Default");
         modes.add("Newman");
         modes.add(CONNECTED);
@@ -268,7 +269,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         for (int s = 1; s <= t; s++) {
 
             final int[] vxIds = new int[n];
-            final HashSet<Integer> transactions = new HashSet<>();
+            final Set<Integer> transactions = new HashSet<>();
             int vx = 0;
 
             while (vx < n) {
@@ -292,7 +293,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
             }
 
             for (int j = 1; j < (k / 2) + 1; j++) {
-                ArrayList<Integer> destinations = new ArrayList<>();
+                final List<Integer> destinations = new ArrayList<>();
                 for (int i = j; i < n; i++) {
                     destinations.add(vxIds[i]);
                 }
@@ -309,7 +310,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
             }
 
             for (int j = 1; j < (k / 2) + 1; j++) {
-                ArrayList<Integer> destinations = new ArrayList<>();
+                final List<Integer> destinations = new ArrayList<>();
                 for (int i = j; i < n; i++) {
                     destinations.add(vxIds[i]);
                 }
@@ -348,7 +349,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
                 }
             }
 
-            for (int txId : transactions) {
+            for (final int txId : transactions) {
                 final int reciprocity = r.nextInt(3);
                 int numTimes = 1;
                 if (randomWeights) {
@@ -360,21 +361,21 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
                     if (randomWeights) {
                         switch (reciprocity) {
                             case 0:
-                                boolean random0 = r.nextBoolean();
+                                final boolean random0 = r.nextBoolean();
                                 if (random0) {
                                     sxId = graph.getTransactionDestinationVertex(txId);
                                     dxId = graph.getTransactionSourceVertex(txId);
                                 }
                                 break;
                             case 1:
-                                int random1 = r.nextInt(5);
+                                final int random1 = r.nextInt(5);
                                 if (random1 == 0) {
                                     sxId = graph.getTransactionDestinationVertex(txId);
                                     dxId = graph.getTransactionSourceVertex(txId);
                                 }
                                 break;
                             default:
-                                int randomDefault = r.nextInt(5);
+                                final int randomDefault = r.nextInt(5);
                                 if (randomDefault != 0) {
                                     sxId = graph.getTransactionDestinationVertex(txId);
                                     dxId = graph.getTransactionSourceVertex(txId);
@@ -397,7 +398,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
             }
 
             if (buildMode.equals(CONNECTED) && componentCount(graph) != initialComponents + 1 && s != t) {
-                for (int vxId : vxIds) {
+                for (final int vxId : vxIds) {
                     graph.removeVertex(vxId);
                 }
             } else {
@@ -460,11 +461,11 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
 
             // for each neighbour, check if there is any new information it needs to receive
             for (int vertexPosition = update.nextSetBit(0); vertexPosition >= 0; vertexPosition = update.nextSetBit(vertexPosition + 1)) {
-                int vertexId = graph.getVertex(vertexPosition);
+                final int vertexId = graph.getVertex(vertexPosition);
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
-                    int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                    int neighbourPosition = graph.getVertexPosition(neighbourId);
+                    final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
+                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
                     if (!traversal[vertexPosition].equals(traversal[neighbourPosition])) {
                         turn.set(neighbourPosition, true);
 
@@ -486,7 +487,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
             newUpdate.clear();
         }
 
-        final HashSet<BitSet> connectedComponents = new HashSet<>();
+        final Set<BitSet> connectedComponents = new HashSet<>();
         int numComponents = 0;
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final BitSet subgraph = traversal[vertexPosition];

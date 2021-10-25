@@ -74,21 +74,15 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
             if (typeList.getItems().contains(type)) {
                 typeList.getSelectionModel().select(type);
             } else {
-                if (type != null) {
-                    nameText.setText(type.getName());
-                } else {
-                    nameText.setText("");
-                }
+                nameText.setText(type != null ? type.getName() : "");
             }
         }
 
         @Override
         protected SchemaVertexType getValueFromControls() {
-            if (typeList.getSelectionModel().getSelectedItem() != null) {
-                return typeList.getSelectionModel().getSelectedItem();
-            } else {
-                return SchemaVertexTypeUtilities.getTypeOrBuildNew(nameText.getText());
-            }
+            return typeList.getSelectionModel().getSelectedItem() != null 
+                    ? typeList.getSelectionModel().getSelectedItem()
+                    : SchemaVertexTypeUtilities.getTypeOrBuildNew(nameText.getText());
         }
 
         @Override
@@ -100,7 +94,7 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
             typeList = new ListView<>();
             typeList.setCellFactory(p -> new ListCell<SchemaVertexType>() {
                 @Override
-                protected void updateItem(final SchemaVertexType item, boolean empty) {
+                protected void updateItem(final SchemaVertexType item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (!empty && item != null) {
                         setText(item.getName());

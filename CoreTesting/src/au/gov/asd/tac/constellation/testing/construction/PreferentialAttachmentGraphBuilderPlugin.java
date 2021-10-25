@@ -239,7 +239,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         final int fourDays = 4 * 24 * 60 * 60 * 1000;
 
         Set<Integer> destinations = Arrays.stream(startVxIds).boxed().collect(Collectors.toSet());
-        ArrayList<Integer> repeats = new ArrayList<>();
+        final List<Integer> repeats = new ArrayList<>();
         while (vx < n) {
             final int vxId = graph.addVertex();
             final String label = "Node_" + vxId;
@@ -252,7 +252,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.getSchema().completeVertex(graph, vxId);
             }
             final int reciprocity = r.nextInt(3);
-            for (int destination : destinations) {
+            for (final int destination : destinations) {
                 int numTimes = 1;
                 if (randomWeights) {
                     numTimes = r.nextInt(1 + r.nextInt(100));
@@ -263,21 +263,21 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                     if (randomWeights) {
                         switch (reciprocity) {
                             case 0:
-                                boolean random0 = r.nextBoolean();
+                                final boolean random0 = r.nextBoolean();
                                 if (random0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
                             case 1:
-                                int random1 = r.nextInt(5);
+                                final int random1 = r.nextInt(5);
                                 if (random1 == 0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
                             default:
-                                int randomDefault = r.nextInt(5);
+                                final int randomDefault = r.nextInt(5);
                                 if (randomDefault != 0) {
                                     sxId = destination;
                                     dxId = vxId;
@@ -333,7 +333,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
      *
      * @return A random set of destinations
      */
-    private static Set<Integer> generateDestinations(ArrayList<Integer> repeats, int nVxStart, SecureRandom r) {
+    private static Set<Integer> generateDestinations(final List<Integer> repeats, final int nVxStart, final SecureRandom r) {
         final Set<Integer> destinations = new HashSet<>();
         while (destinations.size() < nVxStart) {
             destinations.add(repeats.get(r.nextInt(repeats.size())));

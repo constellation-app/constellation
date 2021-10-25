@@ -74,21 +74,15 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
             if (typeList.getItems().contains(type)) {
                 typeList.getSelectionModel().select(type);
             } else {
-                if (type != null) {
-                    nameText.setText(type.getName());
-                } else {
-                    nameText.setText("");
-                }
+                nameText.setText(type != null ? type.getName() : "");
             }
         }
 
         @Override
         protected SchemaTransactionType getValueFromControls() {
-            if (typeList.getSelectionModel().getSelectedItem() != null) {
-                return typeList.getSelectionModel().getSelectedItem();
-            } else {
-                return SchemaTransactionTypeUtilities.getTypeOrBuildNew(nameText.getText());
-            }
+            return typeList.getSelectionModel().getSelectedItem() != null
+                    ? typeList.getSelectionModel().getSelectedItem()
+                    : SchemaTransactionTypeUtilities.getTypeOrBuildNew(nameText.getText());
         }
 
         @Override
@@ -100,7 +94,7 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
             typeList = new ListView<>();
             typeList.setCellFactory(p -> new ListCell<SchemaTransactionType>() {
                 @Override
-                protected void updateItem(final SchemaTransactionType item, boolean empty) {
+                protected void updateItem(final SchemaTransactionType item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (!empty && item != null) {
                         setText(item.getName());

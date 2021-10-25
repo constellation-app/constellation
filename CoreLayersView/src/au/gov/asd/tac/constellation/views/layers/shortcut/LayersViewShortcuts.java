@@ -60,8 +60,8 @@ public class LayersViewShortcuts extends AbstractAction {
     private static final Logger LOGGER = Logger.getLogger(LayersViewShortcuts.class.getName());
 
     private void triggerLayerSelection(final Graph graph, final int layerId) {
-        BitMaskQueryCollection vxCollection = LayersViewController.getDefault().getVxQueryCollection();
-        BitMaskQueryCollection txCollection = LayersViewController.getDefault().getTxQueryCollection();
+        final BitMaskQueryCollection vxCollection = LayersViewController.getDefault().getVxQueryCollection();
+        final BitMaskQueryCollection txCollection = LayersViewController.getDefault().getTxQueryCollection();
 
         if (vxCollection.getQuery(layerId) != null) {
             vxCollection.getQuery(layerId).setVisibility(!vxCollection.getQuery(layerId).getVisibility());
@@ -95,7 +95,7 @@ public class LayersViewShortcuts extends AbstractAction {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         final String hotkey = e.getActionCommand();
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
         switch (hotkey) {

@@ -311,7 +311,7 @@ public class AnalyticConfigurationPane extends VBox {
             docBox.setPadding(new Insets(5, 5, 5, 5));
             docBox.getChildren().add(documentationView);
             documentationTab.setContent(docBox);
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             this.documentationView = null;
             documentationTab.setContent(null);
             Thread.currentThread().interrupt();
@@ -481,7 +481,7 @@ public class AnalyticConfigurationPane extends VBox {
         final List<SelectableAnalyticPlugin> categoryPlugins = selectedCategory == null ? new ArrayList<>() : categoryToPluginsMap.get(selectedCategory);
         final List<SelectableAnalyticPlugin> selectablePlugins = new ArrayList<>();
         setSuppressedFlag(true);
-        for (SelectableAnalyticPlugin selectablePlugin : categoryPlugins) {
+        for (final SelectableAnalyticPlugin selectablePlugin : categoryPlugins) {
             selectablePlugin.checkbox.setDisable(false);
             selectablePlugin.checkbox.setSelected(false);
             selectablePlugins.add(selectablePlugin);
@@ -503,7 +503,7 @@ public class AnalyticConfigurationPane extends VBox {
             }
         });
         final List<SelectableAnalyticPlugin> selectablePlugins = new ArrayList<>();
-        for (SelectableAnalyticPlugin selectablePlugin : questionPlugins) {
+        for (final SelectableAnalyticPlugin selectablePlugin : questionPlugins) {
             selectablePlugin.checkbox.setDisable(true);
             selectablePlugin.checkbox.setSelected(true);
             selectablePlugins.add(selectablePlugin);
@@ -536,7 +536,7 @@ public class AnalyticConfigurationPane extends VBox {
         return Collections.unmodifiableList(SELECTABLE_PLUGINS);
     }
 
-    public final SelectableAnalyticPlugin lookupSelectablePlugin(Plugin plugin) {
+    public final SelectableAnalyticPlugin lookupSelectablePlugin(final Plugin plugin) {
         return PLUGIN_TO_SELECTABLE_PLUGIN_MAP.get(plugin);
     }
 
@@ -603,7 +603,7 @@ public class AnalyticConfigurationPane extends VBox {
         }
 
         public final PluginParameters getPluginSpecificParameters() {
-            PluginParameters pluginParameters = new PluginParameters();
+            final PluginParameters pluginParameters = new PluginParameters();
             parameters.getParameters().entrySet().forEach(parameter -> {
                 if (!globalAnalyticParameters.hasParameter(parameter.getKey())) {
                     pluginParameters.addParameter(parameter.getValue());
@@ -637,8 +637,8 @@ public class AnalyticConfigurationPane extends VBox {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            AnalyticViewState newState;
-            int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
+            final AnalyticViewState newState;
+            final int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
             newState = graph.getObjectValue(stateAttributeId, 0) == null ? new AnalyticViewState()
                     : new AnalyticViewState(graph.getObjectValue(stateAttributeId, 0));
             newState.addAnalyticQuestion(question, plugins);
@@ -672,8 +672,8 @@ public class AnalyticConfigurationPane extends VBox {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            String currentCategory = analyticConfigurationPane.categoryList.getSelectionModel().getSelectedItem();
-            int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
+            final String currentCategory = analyticConfigurationPane.categoryList.getSelectionModel().getSelectedItem();
+            final int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
 
             // Make a copy in case the state on the graph is currently being modified.
             final AnalyticViewState currentState = graph.getObjectValue(stateAttributeId, 0) == null
@@ -684,7 +684,7 @@ public class AnalyticConfigurationPane extends VBox {
                 // remove all plugins matching category
                 currentState.removePluginsMatchingCategory(currentCategory);
                 // grab all plugins from currently selected category
-                List<SelectableAnalyticPlugin> checkedPlugins = new ArrayList<>();
+                final List<SelectableAnalyticPlugin> checkedPlugins = new ArrayList<>();
                 // adding items to checkedPlugins array when they are selected
                 analyticConfigurationPane.pluginList.getItems().forEach(selectablePlugin -> {
                     if (selectablePlugin.isSelected()) {
@@ -705,7 +705,7 @@ public class AnalyticConfigurationPane extends VBox {
                         : currentState.getActiveAnalyticQuestions().get(currentState.getCurrentAnalyticQuestionIndex());
             });
             if (!currentState.getActiveSelectablePlugins().isEmpty()) {
-                for (SelectableAnalyticPlugin selectedPlugin : currentState.getActiveSelectablePlugins().get(currentState.getCurrentAnalyticQuestionIndex())) {
+                for (final SelectableAnalyticPlugin selectedPlugin : currentState.getActiveSelectablePlugins().get(currentState.getCurrentAnalyticQuestionIndex())) {
                     if (currentCategory.equals(selectedPlugin.plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())) {
                         Platform.runLater(() -> {
                             AnalyticConfigurationPane.setSuppressedFlag(true);
