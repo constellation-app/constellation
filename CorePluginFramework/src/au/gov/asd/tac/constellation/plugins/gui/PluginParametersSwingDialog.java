@@ -118,7 +118,7 @@ public class PluginParametersSwingDialog {
         Platform.runLater(() -> {
             final BorderPane root = new BorderPane();
             root.setPadding(new Insets(10));
-            root.setStyle("-fx-background-color: #DDDDDD;");
+            root.setStyle("-fx-background-color: #F0F0F0;");
 
             // Attempt to give the window a sensible width and/or height.
             root.setMinWidth(500);
