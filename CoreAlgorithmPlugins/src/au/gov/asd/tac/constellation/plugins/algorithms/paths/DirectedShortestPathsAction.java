@@ -16,12 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.paths;
 
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -35,32 +31,24 @@ import org.openide.util.NbBundle.Messages;
  *
  * @author algol
  */
-@ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsFollowDirectionAction")
-@ActionRegistration(displayName = "#CTL_ShortestPathsFollowDirectionAction", iconBase = "au/gov/asd/tac/constellation/plugins/algorithms/paths/shortestpathsfd.png", surviveFocusChange = true)
+@ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.plugins.algorithms.paths.DirectedShortestPathsAction")
+@ActionRegistration(displayName = "#CTL_DirectedShortestPathsAction", iconBase = "au/gov/asd/tac/constellation/plugins/algorithms/paths/shortestpathsfd.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 1600)
 })
-@Messages("CTL_ShortestPathsFollowDirectionAction=Directed Shortest Paths")
-public final class ShortestPathsFollowDirectionAction implements ActionListener {
+@Messages("CTL_DirectedShortestPathsAction=Directed Shortest Paths")
+public final class DirectedShortestPathsAction implements ActionListener {
 
     private final GraphNode context;
 
-    public ShortestPathsFollowDirectionAction(final GraphNode context) {
+    public DirectedShortestPathsAction(final GraphNode context) {
         this.context = context;
     }
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-        final Plugin shortestPathsFollowDirectionPlugin = PluginRegistry.get(AlgorithmPluginRegistry.DIRECTED_SHORTEST_PATHS);
-        final PluginParameters parameters = shortestPathsFollowDirectionPlugin.createParameters();
-        final PluginParametersSwingDialog dlg = new PluginParametersSwingDialog("Set the source node", parameters);
-        dlg.showAndWait();
-
-        if (PluginParametersSwingDialog.OK.equals(dlg.getResult())) {
-            PluginExecution.withPlugin(AlgorithmPluginRegistry.DIRECTED_SHORTEST_PATHS)
-                    .withParameters(parameters)
-                    .executeLater(context.getGraph());
-        }
-
+        PluginExecution.withPlugin(AlgorithmPluginRegistry.DIRECTED_SHORTEST_PATHS)
+                .interactively(true)
+                .executeLater(context.getGraph());
     }
 }

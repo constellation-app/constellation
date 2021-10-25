@@ -12,11 +12,20 @@
 
 -   Changed `DataAccessPluginType` from an abstract class to an interface.
 
+-   Changed the access of some of the constants in `DirectedShortestPathsPlugin` 
+    to private since they weren't being used elsewhere. 
+
 -   Removed `RecentFilesWelcomePage` and moved functionality between 
     `RecentFiles` and `WelcomeViewPane`
 
 -   Renamed tableview2 package to tableview now that it is the primary table
     code being used.
+
+-   Renamed `ShortestPathsFollowDirectionAction` to `DirectedShortestPathsAction`
+    to align with the plugin it calls.
+
+-   Renamed constants in `DirectedShortestPathsPlugin` with VERTEX in name to 
+    have NODE instead.
 
 ## Changes in September 2021
 
