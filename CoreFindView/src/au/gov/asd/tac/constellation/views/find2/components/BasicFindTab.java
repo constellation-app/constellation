@@ -210,7 +210,7 @@ public class BasicFindTab extends Tab {
         settingsGrid.add(preferencesGrid, 2, 0, 2, 2);
 
         currentSelectionChoiceBox.getItems().addAll("Ignore", "Add to", "Find in", "Remove From");
-        lookForChoiceBox.getSelectionModel().select(0);
+        currentSelectionChoiceBox.getSelectionModel().select(0);
         currentSelectionChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
         settingsGrid.add(currentSelectionLabel, 0, 2);
         settingsGrid.add(currentSelectionChoiceBox, 1, 2);
