@@ -40,7 +40,7 @@ public class HelpSearchProvider implements SearchProvider {
      * @param response
      */
     @Override
-    public void evaluate(SearchRequest request, SearchResponse response) {
+    public void evaluate(final SearchRequest request, final SearchResponse response) {
         // Check the request is valid
         final String text;
         if (request != null && StringUtils.isNotBlank(request.getText())) {
@@ -54,19 +54,18 @@ public class HelpSearchProvider implements SearchProvider {
         final Collection<String> values = mappings.values();
 
         // Match the search to values in the map
-        for (String value : values) {
-            final String sep = File.separator;
-            final int index = value.lastIndexOf(sep);
-            value = value.substring(index + 1);
-            if (value.contains(text) || value.startsWith(text)) {
+        for (final String value : values) {
+            final int index = value.lastIndexOf(File.separator);
+            final String fileName = value.substring(index + 1);
+            if (fileName.contains(text)) {
 
                 // Create a display name that is easier to search
-                String displayName = value.replaceAll("-", " ");
+                String displayName = fileName.replaceAll("-", " ");
                 final int indexMD = displayName.lastIndexOf(".");
                 displayName = displayName.substring(0, indexMD);
 
                 // Display the result and add a runnable for when it is clicked on 
-                if (!response.addResult(new HelpSearchProviderTask(value), displayName)) {
+                if (!response.addResult(new HelpSearchProviderTask(fileName), displayName)) {
                     return;
                 }
             }

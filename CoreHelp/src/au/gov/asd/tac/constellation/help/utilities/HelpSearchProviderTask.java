@@ -51,9 +51,9 @@ public class HelpSearchProviderTask implements Runnable {
         final Collection<String> values = mappings.values();
 
         // Find the value that matches the name of the quick search item
-        for (String value : values) {
+        for (final String value : values) {
             if (value.contains(helpPageName)) {
-                for (Map.Entry<String, String> entry : mappings.entrySet()) {
+                for (final Map.Entry<String, String> entry : mappings.entrySet()) {
 
                     // Display the help page for that value 
                     if (value.equals(entry.getValue())) {
