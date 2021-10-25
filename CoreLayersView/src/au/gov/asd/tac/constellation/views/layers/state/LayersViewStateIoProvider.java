@@ -135,7 +135,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray(layer.getIndex());
+                        jsonGenerator.writeStartArray("index", layer.getIndex());
                         jsonGenerator.writeNumber(layer.getIndex());
                         jsonGenerator.writeBoolean(layer.getVisibility());
                         jsonGenerator.writeString(layer.getQueryString());
@@ -151,7 +151,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray(layer.getIndex());
+                        jsonGenerator.writeStartArray("index", layer.getIndex());
                         jsonGenerator.writeNumber(layer.getIndex());
                         jsonGenerator.writeBoolean(layer.getVisibility());
                         jsonGenerator.writeString(layer.getQueryString());
@@ -167,7 +167,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (attr == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray(count++);
+                        jsonGenerator.writeStartArray("index", count++);
                         jsonGenerator.writeString(attr.getElementType().toString());
                         jsonGenerator.writeString(attr.getName());
                         jsonGenerator.writeEndArray();
