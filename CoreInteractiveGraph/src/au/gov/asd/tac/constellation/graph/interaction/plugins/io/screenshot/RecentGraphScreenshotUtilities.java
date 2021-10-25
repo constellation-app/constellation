@@ -26,7 +26,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,7 +44,7 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import org.openide.util.NbPreferences;
-
+        
 /**
  * Recent Graph Screenshot Utilities
  *
@@ -94,10 +94,10 @@ public class RecentGraphScreenshotUtilities {
         final MessageDigest md;
         try {
             md = MessageDigest.getInstance("MD5");
-            md.update(filepath.getBytes("UTF-8"));
+            md.update(filepath.getBytes(StandardCharsets.UTF_8));
             final byte[] digest = md.digest();
             return DatatypeConverter.printHexBinary(digest).toUpperCase();            
-        } catch (final NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+        } catch (final NoSuchAlgorithmException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
         return filepath;
