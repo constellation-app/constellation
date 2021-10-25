@@ -121,7 +121,8 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         if (graph != null) {
             final ReadableGraph readableGraph = graph.getReadableGraph();
             try {
-                final List<SchemaVertexType> nodeTypes = GraphManager.getDefault().getActiveGraph().getSchema().getFactory().getRegisteredVertexTypes();
+                final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
+                final List<SchemaVertexType> nodeTypes = currentGraph.getSchema().getFactory().getRegisteredVertexTypes();
 
                 for (int i = 0; i < nodeTypes.size(); i++) {
                     SchemaVertexType type = nodeTypes.get(i);
@@ -129,7 +130,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
                 }
                 nAttributes.sort(String::compareTo);
 
-                final List<SchemaTransactionType> transactionTypes = GraphManager.getDefault().getActiveGraph().getSchema().getFactory().getRegisteredTransactionTypes();
+                final List<SchemaTransactionType> transactionTypes = currentGraph.getSchema().getFactory().getRegisteredTransactionTypes();
                 for (int i = 0; i < transactionTypes.size(); i++) {
                     SchemaTransactionType type = transactionTypes.get(i);
                     tAttributes.add(type.getName());

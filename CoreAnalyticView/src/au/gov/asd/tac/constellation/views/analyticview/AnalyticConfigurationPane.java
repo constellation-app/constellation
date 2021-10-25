@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -384,12 +385,14 @@ public class AnalyticConfigurationPane extends VBox {
         if (selectedPlugins.isEmpty()) {
             throw new AnalyticException("You must select at least one analytic!");
         }
+        
+        final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
 
         // update the analytic view state
-        PluginExecution.withPlugin(new AnalyticViewStateWriter(currentQuestion, selectedPlugins)).executeLater(GraphManager.getDefault().getActiveGraph());
+        PluginExecution.withPlugin(new AnalyticViewStateWriter(currentQuestion, selectedPlugins)).executeLater(currentGraph);
 
         // answer the question
-        return question.answer(GraphManager.getDefault().getActiveGraph());
+        return question.answer(currentGraph);
     }
 
     private void populateDocumentationPane(final SelectableAnalyticPlugin plugin) {

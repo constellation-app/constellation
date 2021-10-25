@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
@@ -109,8 +110,9 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
 
             // get all types supported by the current schema
             final List<SchemaVertexType> types = new ArrayList<>();
-            if (GraphManager.getDefault().getActiveGraph() != null && GraphManager.getDefault().getActiveGraph().getSchema() != null) {
-                final SchemaFactory schemaFactory = GraphManager.getDefault().getActiveGraph().getSchema().getFactory();
+            final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
+            if (currentGraph != null && currentGraph.getSchema() != null) {
+                final SchemaFactory schemaFactory = currentGraph.getSchema().getFactory();
                 final Set<Class<? extends SchemaConcept>> concepts = new HashSet<>();
                 concepts.addAll(schemaFactory.getRegisteredConcepts());
                 SchemaConceptUtilities.getChildConcepts(schemaFactory.getRegisteredConcepts())
