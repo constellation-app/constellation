@@ -26,8 +26,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.FindViewTopComponent;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
@@ -101,19 +100,9 @@ public class BasicFindPluginNGTest {
         setupGraph();
         attributeList.addAll(getAttributes());
 
-        PluginInteraction interaction = mock(PluginInteraction.class);
-        PluginParameters pluginParameters = mock(PluginParameters.class);
-        WritableGraph wg = graph.getWritableGraph("", true);
-
         BasicFindPlugin basicFindPlugin = new BasicFindPlugin(parameters, true, false);
-
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
-
-        wg.commit();
-
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
         ReadableGraph rg = graph.getReadableGraph();
-        selectedV = VisualConcept.VertexAttribute.SELECTED.get(rg);
-
         /**
          * Testing finding all elements with "label name", Should select
          * vxId1,2,3,4
@@ -122,140 +111,157 @@ public class BasicFindPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
+        rg.close();
 
         /**
          * Testing finding all elements with "clear", should deselect all
          * existing elements as no elements have clear in their name
          */
         basicFindPlugin = new BasicFindPlugin(parametersClearSelections, true, false);
-
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        rg.close();
 
         /**
          * Testing finding next element with "label name", Should select vxId1
          */
         basicFindPlugin = new BasicFindPlugin(parameters, false, true);
-
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        rg.close();
 
         /**
          * Testing finding next element with "label name", Should select vxId2
          * and deselect vxId1
          */
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        rg.close();
 
         /**
          * Testing finding previous element with "label name", Should select
          * vxId1 and deselect vxId2
          */
         basicFindPlugin = new BasicFindPlugin(parameters, false, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        rg.close();
 
         /**
          * Testing finding all transaction elements with "label name", Should
          * select txId1,2,3,4
          */
         basicFindPlugin = new BasicFindPlugin(parametersTransactionType, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedT, txId1), true);
         assertEquals(rg.getBooleanValue(selectedT, txId2), true);
         assertEquals(rg.getBooleanValue(selectedT, txId3), true);
         assertEquals(rg.getBooleanValue(selectedT, txId4), true);
+        rg.close();
 
         /**
          * clear selection
          */
         basicFindPlugin = new BasicFindPlugin(parametersClearSelections, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
 
         /**
          * Testing finding all elements with regEx "la*", should select
          * vxId1,2,3,4
          */
         basicFindPlugin = new BasicFindPlugin(parametersRegEx, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
+        rg.close();
 
         /**
          * clear selection
          */
         basicFindPlugin = new BasicFindPlugin(parametersClearSelections, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
 
         /**
          * Testing finding all elements with ignoreCase "label name" should
          * select vxId1,2,3,4,5UpperCase
          */
         basicFindPlugin = new BasicFindPlugin(parametersIgnoreCase, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId5UpperCase), true);
+        rg.close();
 
         /**
          * clear selection
          */
         basicFindPlugin = new BasicFindPlugin(parametersClearSelections, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
 
         /**
          * Testing finding all elements without ignoreCase "label name" should
          * select vxId1,2,3,4
          */
         basicFindPlugin = new BasicFindPlugin(parameters, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId5UpperCase), false);
+        rg.close();
 
         /**
          * clear selection
          */
         basicFindPlugin = new BasicFindPlugin(parametersClearSelections, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
 
         /**
          * Testing finding all elements with exactMatch "label" shouldn't select
          * anything
          */
         basicFindPlugin = new BasicFindPlugin(parametersExactMatch, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        rg.close();
 
         /**
          * Testing finding all elements within the current selection that
@@ -263,6 +269,7 @@ public class BasicFindPluginNGTest {
          * isn't selected
          */
         basicFindPlugin = new BasicFindPlugin(parametersFindIn, true, false);
+        WritableGraph wg = graph.getWritableGraph("", true);
 
         wg.setBooleanValue(selectedV, vxId1, true);
         wg.setBooleanValue(selectedV, vxId2, true);
@@ -271,8 +278,10 @@ public class BasicFindPluginNGTest {
         wg.setBooleanValue(selectedV, vxId6, true);
         wg.setBooleanValue(selectedV, vxId7, true);
         wg.setBooleanValue(selectedV, vxId8, false);
+        wg.commit();
 
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
@@ -281,13 +290,15 @@ public class BasicFindPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
+        rg.close();
 
         /**
          * Testing finding all elements with "label name" and adding them to the
          * current selected items. vxId1,2,3,4 and 6 should be selected
          */
         basicFindPlugin = new BasicFindPlugin(parametersAddTo, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
@@ -296,13 +307,15 @@ public class BasicFindPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
+        rg.close();
 
         /**
          * Testing removing all elements "label name" from the currently
          * selected. Only vxId6 should remain selected
          */
         basicFindPlugin = new BasicFindPlugin(parametersRemoveFrom, true, false);
-        basicFindPlugin.edit(wg, interaction, pluginParameters);
+        PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
@@ -311,7 +324,6 @@ public class BasicFindPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
-
         rg.close();
 
     }

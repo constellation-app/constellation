@@ -85,13 +85,13 @@ public class ReplacePlugin extends SimpleEditPlugin {
                             if (!replaceIn) {
                                 graph.setStringValue(a.getId(), currElement, newValue);
                                 if (replaceNext) {
-                                    break;
+                                    return;
                                 }
                             } else {
                                 if (selected) {
                                     graph.setStringValue(a.getId(), currElement, newValue);
                                     if (replaceNext) {
-                                        break;
+                                        return;
                                     }
                                 }
                             }

@@ -64,6 +64,7 @@ public class ReplaceTab extends BasicFindTab {
 
         currentSelectionChoiceBox.getItems().remove(1, 4);
         currentSelectionChoiceBox.getItems().add("Replace in");
+        preferencesGrid.getChildren().remove(exactMatchCB);
     }
 
     public void updateButtons() {
