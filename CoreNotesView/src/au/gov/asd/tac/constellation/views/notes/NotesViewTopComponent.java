@@ -101,6 +101,10 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         if (needsUpdate() && graph != null) {
             notesViewPane.clearNotes();
         }
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null) {
+            notesViewController.readState(activeGraph);
+        }
     }
 
     @Override
