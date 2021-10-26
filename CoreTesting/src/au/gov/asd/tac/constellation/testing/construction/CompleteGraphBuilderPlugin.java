@@ -18,10 +18,8 @@ package au.gov.asd.tac.constellation.testing.construction;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
@@ -119,26 +117,21 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         final List<String> nChoices = new ArrayList<>();
         final List<String> tChoices = new ArrayList<>();
         if (graph != null) {
-            final ReadableGraph readableGraph = graph.getReadableGraph();
-            try {
-                final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
-                final List<SchemaVertexType> nodeTypes = currentGraph.getSchema().getFactory().getRegisteredVertexTypes();
+            final List<SchemaVertexType> nodeTypes = graph.getSchema().getFactory().getRegisteredVertexTypes();
 
-                for (int i = 0; i < nodeTypes.size(); i++) {
-                    SchemaVertexType type = nodeTypes.get(i);
-                    nAttributes.add(type.getName());
-                }
-                nAttributes.sort(String::compareTo);
-
-                final List<SchemaTransactionType> transactionTypes = currentGraph.getSchema().getFactory().getRegisteredTransactionTypes();
-                for (int i = 0; i < transactionTypes.size(); i++) {
-                    SchemaTransactionType type = transactionTypes.get(i);
-                    tAttributes.add(type.getName());
-                }
-                tAttributes.sort(String::compareTo);
-            } finally {
-                readableGraph.release();
+            for (int i = 0; i < nodeTypes.size(); i++) {
+                final SchemaVertexType type = nodeTypes.get(i);
+                nAttributes.add(type.getName());
             }
+            nAttributes.sort(String::compareTo);
+
+            final List<SchemaTransactionType> transactionTypes = graph.getSchema().getFactory().getRegisteredTransactionTypes();
+            for (int i = 0; i < transactionTypes.size(); i++) {
+                final SchemaTransactionType type = transactionTypes.get(i);
+                tAttributes.add(type.getName());
+            }
+            tAttributes.sort(String::compareTo);
+            
             nChoices.add(nAttributes.get(0));
             tChoices.add(tAttributes.get(0));
         }
