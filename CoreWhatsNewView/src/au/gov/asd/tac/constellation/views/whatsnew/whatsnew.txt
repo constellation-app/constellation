@@ -1,6 +1,11 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-10-18 Data Access View
+<p>There is a known issue with the Data Access View that it will open in the graph tab section during the latest update.
+You should be able to manually reposition it to the left pane section and it will open as expected from then on wards.
+This is a side affect of some back end changes we had to make.</p>
+
 == 2021-10-08 Layer by Time
 <p>Layer by Time has been updated so that the graph that is created has the same schema as the original graph. Previously it created a Visual Graph.</p>
 

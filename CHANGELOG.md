@@ -12,7 +12,10 @@
 
 -   Changed `DataAccessPluginType` from an abstract class to an interface.
 
--   Renamed tableview2 package to tableview now that it is the primary table
+-   Renamed `au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys` 
+    to `au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities`
+
+-   Renamed `tableview2` package to `tableview` now that it is the primary table
     code being used.
 
 ## Changes in September 2021
