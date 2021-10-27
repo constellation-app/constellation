@@ -367,13 +367,17 @@ public class FindViewControllerNGTest {
         final FindViewTopComponent findViewTopComponent = mock(FindViewTopComponent.class);
         FindViewController instance = FindViewController.getDefault().init(findViewTopComponent);
 
-        // Check getting getCurrentBasicReplaceParamters returns the default
-        // when it has not been set
+        /**
+         * Check getting getCurrentBasicReplaceParamters returns the default
+         * parameters
+         */
         BasicFindReplaceParameters defaultParameters = new BasicFindReplaceParameters();
+        instance.updateBasicFindParameters(defaultParameters);
         assertEquals(instance.getCurrentBasicFindParameters(), defaultParameters);
-
-        // Check getting getCurrentBasicReplaceParamters returns the parameters it has been set to
-        // it has been set to when it has not been set
+        /**
+         * Check getting getCurrentBasicReplaceParamters returns the matching
+         * parameters of what it was set to
+         */
         instance.updateBasicFindParameters(parameters);
         assertEquals(instance.getCurrentBasicFindParameters(), parameters);
     }
@@ -392,6 +396,7 @@ public class FindViewControllerNGTest {
         // Check getting getCurrentBasicReplaceParamters returns the default
         // when it has not been set
         BasicFindReplaceParameters defaultParameters = new BasicFindReplaceParameters();
+        instance.updateBasicReplaceParameters(defaultParameters);
         assertEquals(instance.getCurrentBasicReplaceParameters(), defaultParameters);
 
         // Check getting getCurrentBasicReplaceParamters returns the parameters it has been set to

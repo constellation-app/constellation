@@ -101,19 +101,32 @@ public class ReplaceTab extends BasicFindTab {
     }
 
     public void replaceAllAction() {
-        if (!findTextField.getText().isEmpty() && !replaceTextField.getText().isEmpty()) {
-            saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+        if (!getFindTextField().getText().isEmpty() && !getReplaceTextField().getText().isEmpty()) {
+            saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
             FindViewController.getDefault().replaceMatchingElements(true, false);
         }
     }
 
     public void replaceNextAction() {
-        if (!findTextField.getText().isEmpty() && !replaceTextField.getText().isEmpty()) {
-            saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+        if (!getFindTextField().getText().isEmpty() && !getReplaceTextField().getText().isEmpty()) {
+            saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
             FindViewController.getDefault().replaceMatchingElements(false, true);
         }
     }
+
+    public TextField getReplaceTextField() {
+        return replaceTextField;
+    }
+
+    public Button getReplaceNextButton() {
+        return replaceNextButton;
+    }
+
+    public Button getReplaceAllButton() {
+        return replaceAllButton;
+    }
+
 
 }
