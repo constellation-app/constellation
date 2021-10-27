@@ -78,6 +78,11 @@ public class ResetStatePluginNGTest {
         FindResultsList graphFindResults = rg.getObjectValue(stateId, 0);
         rg.close();
 
+        /**
+         * The FINDVIEW_STATE object was set to an empty FindResults list with a
+         * given current index of 2. The resetStatePlugin should reset its
+         * current index to -1.
+         */
         assertEquals(graphFindResults.getCurrentIndex(), -1);
 
     }
@@ -90,7 +95,7 @@ public class ResetStatePluginNGTest {
         System.out.println("getName");
 
         ResetStatePlugin instance = new ResetStatePlugin();
-        String expResult = "Find/Replaces String attribute values";
+        String expResult = "Find: Update State";
         String result = instance.getName();
         assertEquals(result, expResult);
     }

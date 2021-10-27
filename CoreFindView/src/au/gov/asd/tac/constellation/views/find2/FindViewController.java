@@ -101,7 +101,7 @@ public class FindViewController {
      * @param attributeModificationCounter
      */
     public List<String> populateAttributes(final GraphElementType type, final List<Attribute> attributes, final long attributeModificationCounter) {
-        attributes.clear();
+        //attributes.clear();
         final List<String> attributeList = new ArrayList<>();
         final List<Attribute> allAttributes = new ArrayList<>();
 

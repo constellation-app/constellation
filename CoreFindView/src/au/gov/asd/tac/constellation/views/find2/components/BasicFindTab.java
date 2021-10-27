@@ -158,7 +158,7 @@ public class BasicFindTab extends Tab {
     /**
      * Sets all the UI elements to the basic find Tab
      */
-    private void setGridContent() {
+    protected void setGridContent() {
         final ColumnConstraints neverGrow = new ColumnConstraints();
         final ColumnConstraints alwaysGrow = new ColumnConstraints();
         alwaysGrow.setHgrow(Priority.ALWAYS);
@@ -248,10 +248,19 @@ public class BasicFindTab extends Tab {
         final List<String> attributeList = FindViewController.getDefault().populateAttributes(type, attributes, attributeModificationCounter);
         inAttributesMenu.getItems().clear();
 
+        System.out.println(type.getShortLabel());
+
         final List<Attribute> selected = getMatchingAttributeList(type);
+        for (Attribute a : selected) {
+            System.out.println("selected " + a.getName());
+
+        }
+
         for (final String attribute : attributeList) {
+            System.out.println(attribute);
+
             inAttributesMenu.getItems().add(attribute);
-            for (int i = 0; i < selected.size() - 1; i++) {
+            for (int i = 0; i <= selected.size() - 1; i++) {
                 if (selected.get(i).getName() == attribute) {
                     inAttributesMenu.getCheckModel().check(attribute);
                 }
@@ -393,24 +402,24 @@ public class BasicFindTab extends Tab {
     }
 
     public void findAllAction() {
-        if (!findTextField.getText().isEmpty()) {
-            saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+        if (!getFindTextField().getText().isEmpty()) {
+            saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(true, false);
         }
     }
 
     public void findNextAction() {
-        if (!findTextField.getText().isEmpty()) {
-            saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+        if (!getFindTextField().getText().isEmpty()) {
+            saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(false, true);
         }
     }
 
     public void findPrevAction() {
-        if (!findTextField.getText().isEmpty()) {
-            saveSelected(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+        if (!getFindTextField().getText().isEmpty()) {
+            saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(false, false);
         }
@@ -419,4 +428,31 @@ public class BasicFindTab extends Tab {
     public void requestTextFieldFocus() {
         findTextField.requestFocus();
     }
+
+    public TextField getFindTextField() {
+        return findTextField;
+    }
+
+    public Button getFindNextButton() {
+        return findNextButton;
+    }
+
+    public Button getFindPrevButton() {
+        return findPrevButton;
+    }
+
+    public Button getFindAllButton() {
+        return findAllButton;
+    }
+
+    public CheckBox getSearchAllGraphs() {
+        return searchAllGraphs;
+    }
+
+    public ChoiceBox<String> getLookForChoiceBox() {
+        return lookForChoiceBox;
+    }
+
+
+
 }
