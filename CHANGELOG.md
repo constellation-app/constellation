@@ -2,7 +2,7 @@
 
 ## Changes in October 2021
 
--   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
+-   Added `isRequired` in `PluginParameter` with a getter and a setter, which
     can be used to configure the required plugin parameters to mark as `*required`
 	in the swagger.
 
@@ -12,15 +12,17 @@
 
 -   Changed `DataAccessPluginType` from an abstract class to an interface.
 
--   Renamed `au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys` 
+-   Renamed `au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys`
     to `au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities`
 
 -   Renamed `tableview2` package to `tableview` now that it is the primary table
-    code being used.
+
+-   Removed `RecentFilesWelcomePage` and moved functionality between
+    `RecentFiles` and `WelcomeViewPane`
 
 ## Changes in September 2021
 
--   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
+-   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing
     rotation values in the wrong value positions.
 
 -   Moved `DataAccessPlugin`, `DataAccessPluginCoreType`, `DataAccessPluginRegistry
@@ -30,21 +32,21 @@
 -   Removed unused `localized` parameter from the signature of the `locate()`
     method in `ConstellationInstalledFileLocator`.
 
--   Removed all the unused `*Action.java` classes from 
+-   Removed all the unused `*Action.java` classes from
     `au.gov.asd.tac.constellation.plugins.algorithms.sna`.
 
 -   Renamed `PreferenceUtilites` to `PreferenceUtilities` to fix the typo.
 
 -   Updated Core Import Export summary text to provide more information. To
     achieve this, added `definitionName` parameter to `ImportDefinition`
-    constructor and paneName parameter to `RunPane` constructor. Updated 
+    constructor and paneName parameter to `RunPane` constructor. Updated
     displaySummaryAlert` within `ImportDelimitedPlugin` class to take additional
     parameters. The combination of these changes allows a more meaningful
     summary dialog post delimited file import.
 
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
-    
+
 ## Changes in August 2021
 
 -   Added `updateTagsFiltersAvailable`, `updateSelectedTagsCombo`,
