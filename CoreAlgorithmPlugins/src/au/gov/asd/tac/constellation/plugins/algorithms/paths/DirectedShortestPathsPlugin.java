@@ -51,7 +51,7 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
     
     private static final Integer SOURCE_NODE_NOT_SET = -1;
     
-    private Map<String, Integer> selectedNodes = new HashMap<>();
+    private Map<String, Integer> selectedNodes = null;
 
     @Override
     public PluginParameters createParameters() {
