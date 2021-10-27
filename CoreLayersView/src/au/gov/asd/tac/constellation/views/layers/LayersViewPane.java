@@ -55,7 +55,8 @@ public class LayersViewPane extends BorderPane {
     private static final Logger LOGGER = Logger.getLogger(LayersViewPane.class.getName());
     private final LayersViewController controller;
     private final GridPane layersGridPane;
-    private final VBox layersViewPane;
+    protected final VBox layersViewPane;
+    protected final VBox noGraphPane;
     private final HBox options;
     private final Label errorLabel;
     private static final String QUERY_WARNING_TEXT = "Invalid query structure";
@@ -162,6 +163,14 @@ public class LayersViewPane extends BorderPane {
         options.prefWidthProperty().bind(layersViewPane.widthProperty());
 
         this.setCenter(layersViewPane);
+        
+        final Label noGraphLabel = new Label("Open or create a graph to enable the Layers View.");
+        // add layers grid and options to pane
+        this.noGraphPane = new VBox(5, noGraphLabel, helpButton);
+        noGraphPane.setPadding(new Insets(0,0,0,0));
+
+        // create layout bindings
+        noGraphPane.prefWidthProperty().bind(this.widthProperty());
     }
 
     private void createLayer(final int currentIndex, final boolean checkBoxSelected, final String vxQuery, final String txQuery, final String description, final boolean showVertices, final boolean showTransactions) {
@@ -391,5 +400,15 @@ public class LayersViewPane extends BorderPane {
                 description = null;
             }
         }
+    }
+
+    protected void setEnabled(final boolean enable) {
+        Platform.runLater(()->{
+            if(enable){
+                this.setCenter(layersViewPane);
+            }else{
+                this.setCenter(noGraphPane);
+            }
+        });
     }
 }

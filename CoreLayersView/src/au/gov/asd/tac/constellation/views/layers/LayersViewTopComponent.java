@@ -119,6 +119,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         if (needsUpdate() && graph != null) {
             preparePane();
         }
+        setPaneStatus();
     }
 
     @Override
@@ -126,6 +127,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         if (needsUpdate() && graph != null) {
             preparePane();
         }
+        setPaneStatus();
     }
 
     @Override
@@ -133,24 +135,40 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         if (needsUpdate() && graph != null) {
             preparePane();
         }
+        setPaneStatus();
     }
 
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
         preparePane();
+        setPaneStatus();
     }
 
     @Override
     protected void componentShowing() {
         super.componentShowing();
         preparePane();
+        setPaneStatus();
     }
 
-    private void preparePane() {
-        layersViewPane.setDefaultLayers();
+    protected void preparePane() {
+        createContent().setEnabled(true);
+        createContent().setDefaultLayers();
         layersViewController.readState();
         layersViewController.addAttributes();
+    }
+    
+    /**
+     * Sets the status of the pane dependent on if a graph is currently active.
+     * The status is used to enable or disable the view when a graph exists.
+     */
+    protected void setPaneStatus(){
+        if(GraphManager.getDefault().getActiveGraph() == null){
+            createContent().setEnabled(false);
+        }else{
+            createContent().setEnabled(true);
+        }
     }
 
     /**
