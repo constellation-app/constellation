@@ -402,13 +402,15 @@ public class LayersViewPane extends BorderPane {
         }
     }
 
+    /**
+     * Set the pane enabled will switch between the real layers pane and a 
+     * message pane notifying the user that a graph is required.
+     * 
+     * @param enable true if there is a graph
+     */
     protected void setEnabled(final boolean enable) {
         Platform.runLater(()->{
-            if(enable){
-                this.setCenter(layersViewPane);
-            }else{
-                this.setCenter(noGraphPane);
-            }
+            this.setCenter(enable ? layersViewPane : noGraphPane);
         });
     }
 }
