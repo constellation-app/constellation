@@ -164,11 +164,8 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
      * The status is used to enable or disable the view when a graph exists.
      */
     protected void setPaneStatus(){
-        if(GraphManager.getDefault().getActiveGraph() == null){
-            createContent().setEnabled(false);
-        }else{
-            createContent().setEnabled(true);
-        }
+        createContent().setEnabled(GraphManager.getDefault().getActiveGraph() != null);
+        
     }
 
     /**
