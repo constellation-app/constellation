@@ -67,7 +67,7 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.EffectiveResistanceAnalytic", analyticModulePath + "analytic-effective-resistance.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.EigenvectorCentralityAnalytic", analyticModulePath + "analytic-eigenvector-centrality.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.GlobalClusteringCoefficientAnalytic", analyticModulePath + "analytic-global-clustering-coefficient.md");
-        map.put("au.gov.asd.tac.constellation.views.analyticview.analyticsGraphDensityAnalytic", analyticModulePath + "analytic-graph-density.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.GraphDensityAnalytic", analyticModulePath + "analytic-graph-density.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.GraphDistanceAnalytic", analyticModulePath + "analytic-graph-distance.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.HitsCentralityAnalytic", analyticModulePath + "analytic-hits-centrality.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.JaccardIndexAnalytic", analyticModulePath + "analytic-jaccard-index.md");

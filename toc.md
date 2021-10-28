@@ -68,7 +68,7 @@
 <div id="Global" class="collapse" aria-labelledby="Global" data-parent="#Global"> <div class="card-body">          <a href="..\constellation\CoreAnalyticView\src\au\gov\asd\tac\constellation\views\analyticview\docs\analytic-average-degree.md">Average Degree</a><br/>
           <a href="..\constellation\CoreAnalyticView\src\au\gov\asd\tac\constellation\views\analyticview\docs\analytic-component-count.md">Component Count</a><br/>
           <a href="..\constellation\CoreAnalyticView\src\au\gov\asd\tac\constellation\views\analyticview\docs\analytic-global-clustering-coefficient.md">Global Clustering Coefficient</a><br/>
-          <a href="..\constellation\CoreAnalyticView\src\au\gov\asd\tac\constellation\views\analyticview\docs\analytic-graph-density.md">Graph Density</a><br/>
+          Graph Density
           <a href="..\constellation\CoreAnalyticView\src\au\gov\asd\tac\constellation\views\analyticview\docs\analytic-graph-distance.md">Graph Distance</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Metrics" aria-expanded="false" aria-controls="Metrics">Metrics</button></h2></div>
 <div id="Metrics" class="collapse" aria-labelledby="Metrics" data-parent="#Metrics"> <div class="card-body">          <a href="..\constellation\CoreAnalyticView\src\au\gov\asd\tac\constellation\views\analyticview\docs\analytic-connectivity-degree.md">Connectivity Degree</a><br/>

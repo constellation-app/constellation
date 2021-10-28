@@ -39,6 +39,12 @@ import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
+import com.github.rjeschke.txtmark.Processor;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,6 +68,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -397,7 +404,13 @@ public class AnalyticConfigurationPane extends VBox {
             if (plugin == null || plugin.getPlugin() == null || plugin.getPlugin().getDocumentationUrl() == null) {
                 documentationView.getEngine().loadContent("<html>No Documentation Available</html>", "text/html");
             } else {
-                documentationView.getEngine().load(plugin.getPlugin().getDocumentationUrl());
+                try {
+                    final Path path = Paths.get(plugin.getPlugin().getDocumentationUrl());
+                    final InputStream pageInput = new FileInputStream(path.toString());
+                    documentationView.getEngine().loadContent(Processor.process(pageInput), "text/html");
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
         }
     }
