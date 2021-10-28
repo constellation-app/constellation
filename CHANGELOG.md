@@ -2,6 +2,11 @@
 
 ## Changes in October 2021
 
+-   Removed the `keepAlive` method from `HttpsConnection` as it is not the 
+    method to enable HTTP keep-alive for `HttpURLConnection`. `keepAlive` is 
+    turned on by default and is controlled using the `http.keepalive` VM
+    argument.
+
 -   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
     can be used to configure the required plugin parameters to mark as `*required`
 	in the swagger.
