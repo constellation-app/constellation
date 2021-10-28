@@ -140,6 +140,8 @@ public class OperatorRegistry {
             return parameterClass.isAssignableFrom(parameter);
         }
 
+        // Suppressing warning as the parameter within the registry will always be convertable to type P
+        @SuppressWarnings("unchecked")
         public R apply(Object parameter) {
             return function.apply((P) parameter);
         }
@@ -174,6 +176,8 @@ public class OperatorRegistry {
             return parameter1Class.isAssignableFrom(parameter1) && parameter2Class.isAssignableFrom(parameter2);
         }
 
+        // Suppressing warning as the parameters will always be of types P1 and P2
+        @SuppressWarnings("unchecked")
         public R apply(Object parameter1, Object parameter2) {
             return biFunction.apply((P1) parameter1, (P2) parameter2);
         }

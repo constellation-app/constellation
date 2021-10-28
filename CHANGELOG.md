@@ -18,6 +18,9 @@
 
 -   Removed the verbose printing of garbage collection by default.
 
+-   Removed `RecentFilesWelcomePage` and moved functionality between
+    `RecentFiles` and `WelcomeViewPane`
+
 -   Renamed tableview2 package to tableview now that it is the primary table
     code being used.
 
