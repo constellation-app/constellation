@@ -75,24 +75,6 @@ public class FindViewController {
     }
 
     /**
-     * Updates the UI elements and controllers variables to match the UI
-     */
-    public void updateUI() {
-        // Find attributes
-        // Copies a list of the current attributes to avoid manipulating the original list
-        final List<Attribute> findAttributes = new ArrayList<>(currentBasicFindParameters.getAttributeList());
-        // repopulates the attributes list incase its changed updates the currentBasicParameters to match the UI
-        populateAttributes(currentBasicFindParameters.getGraphElement(), findAttributes, Long.MIN_VALUE);
-
-        // Replace attributes
-        // Copies a list of the current attributes to avoid manipulating the original list
-        final List<Attribute> replaceAttributes = new ArrayList<>(currentBasicReplaceParameters.getAttributeList());
-        // repopulates the attributes list incase its changed updates the currentBasicParameters to match the UI
-        populateAttributes(currentBasicReplaceParameters.getGraphElement(), replaceAttributes, Long.MIN_VALUE);
-
-    }
-
-    /**
      * This loops through all the attribute lists in each open graph adding all
      * unique attributes to the UI attribute list if they are of type string
      *
@@ -101,14 +83,16 @@ public class FindViewController {
      * @param attributeModificationCounter
      */
     public List<String> populateAttributes(final GraphElementType type, final List<Attribute> attributes, final long attributeModificationCounter) {
-        //attributes.clear();
+        attributes.clear();
         final List<String> attributeList = new ArrayList<>();
         final List<Attribute> allAttributes = new ArrayList<>();
 
         for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
 
-            final GraphAttributePlugin attrPlugin = new GraphAttributePlugin(type, attributes, attributeModificationCounter);
+            final GraphAttributePlugin attrPlugin = new GraphAttributePlugin(type, allAttributes, attributeModificationCounter);
             final Future<?> future = PluginExecution.withPlugin(attrPlugin).interactively(true).executeLater(graph);
+
+            attributes.clear();
 
             // Wait for the search to find its results:
             try {
@@ -125,11 +109,17 @@ public class FindViewController {
                 allAttributes.addAll(attrPlugin.getAttributes());
                 for (final Attribute a : allAttributes) {
                     if (a.getAttributeType().equals("string")) {
+                        attributes.add(a);
                         attributeList.add(a.getName());
                     }
                 }
             }
         }
+        final Set<Attribute> attributeSet = new LinkedHashSet<>();
+        attributeSet.addAll(attributes);
+        attributes.clear();
+        attributes.addAll(attributeSet);
+
         final Set<String> set = new LinkedHashSet<>();
         set.addAll(attributeList);
         attributeList.clear();

@@ -17,11 +17,13 @@ package au.gov.asd.tac.constellation.views.find2.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
+import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -43,6 +45,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.CheckComboBox;
+import org.openide.util.Exceptions;
 
 /**
  * BasicFindTab contains all the UI elements for the Basic find functionality
@@ -121,12 +124,13 @@ public class BasicFindTab extends Tab {
                 if (oldElement != null) {
                     saveSelected(GraphElementType.getValue(oldElement));
                 }
-                inAttributesMenu.getCheckModel().clearChecks();
+//                inAttributesMenu.getCheckModel().clearChecks();
                 populateAttributes(GraphElementType.getValue(newElement));
                 updateSelectedAttributes(getMatchingAttributeList(GraphElementType.getValue(newElement)));
-
             }
-        });
+        }
+        );
+
 
         selectAllMenuItem.setOnAction(event -> {
             inAttributesMenu.getCheckModel().checkAll();
@@ -143,7 +147,6 @@ public class BasicFindTab extends Tab {
                 updateSelectionFactors();
             }
         });
-
         findAllButton.setOnAction(action -> {
             findAllAction();
         });
@@ -192,7 +195,7 @@ public class BasicFindTab extends Tab {
         settingsGrid.add(inAttributesMenu, 1, 1);
 
         inAttributesMenu.setMaxWidth(DROP_DOWN_WIDTH);
-//        populateAttributes(GraphElementType.VERTEX);
+        populateAttributes(GraphElementType.VERTEX);
 
         contextMenu.getItems().addAll(selectAllMenuItem, deselectAllMenuItem);
 
@@ -246,24 +249,39 @@ public class BasicFindTab extends Tab {
      */
     public void populateAttributes(final GraphElementType type) {
         final List<String> attributeList = FindViewController.getDefault().populateAttributes(type, attributes, attributeModificationCounter);
-        inAttributesMenu.getItems().clear();
 
-        System.out.println(type.getShortLabel());
-
-        final List<Attribute> selected = getMatchingAttributeList(type);
-        for (Attribute a : selected) {
-            System.out.println("selected " + a.getName());
-
-        }
-
-        for (final String attribute : attributeList) {
-            System.out.println(attribute);
-
-            inAttributesMenu.getItems().add(attribute);
-            for (int i = 0; i <= selected.size() - 1; i++) {
-                if (selected.get(i).getName() == attribute) {
-                    inAttributesMenu.getCheckModel().check(attribute);
+        if (Platform.isFxApplicationThread()) {
+            inAttributesMenu.getCheckModel().clearChecks();
+            inAttributesMenu.getItems().clear();
+            final List<Attribute> selected = getMatchingAttributeList(type);
+            for (final String attribute : attributeList) {
+                inAttributesMenu.getItems().add(attribute);
+                for (int i = 0; i <= selected.size() - 1; i++) {
+                    if (selected.get(i).getName() == attribute) {
+                        inAttributesMenu.getCheckModel().check(attribute);
+                    }
                 }
+            }
+        } else {
+            CountDownLatch cdl = new CountDownLatch(1);
+            Platform.runLater(() -> {
+                inAttributesMenu.getCheckModel().clearChecks();
+                inAttributesMenu.getItems().clear();
+                final List<Attribute> selected = getMatchingAttributeList(type);
+                for (final String attribute : attributeList) {
+                    inAttributesMenu.getItems().add(attribute);
+                    for (int i = 0; i <= selected.size() - 1; i++) {
+                        if (selected.get(i).getName() == attribute) {
+                            inAttributesMenu.getCheckModel().check(attribute);
+                        }
+                    }
+                }
+                cdl.countDown();
+            });
+            try {
+                cdl.await();
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
             }
         }
         updateBasicFindParamters();
@@ -276,11 +294,18 @@ public class BasicFindTab extends Tab {
      * @param selectedAttributes
      */
     public void updateSelectedAttributes(final List<Attribute> selectedAttributes) {
-        for (int i = 0; i < selectedAttributes.size(); i++) {
-            if (checkSelectedContains(selectedAttributes.get(i), attributes)) {
-                inAttributesMenu.getCheckModel().check(selectedAttributes.get(i).getName());
+
+        CountDownLatch cdl = new CountDownLatch(1);
+
+        Platform.runLater(() -> {
+            for (int i = 0; i < selectedAttributes.size(); i++) {
+                if (checkSelectedContains(selectedAttributes.get(i), attributes)) {
+                    inAttributesMenu.getCheckModel().check(selectedAttributes.get(i).getName());
+                }
             }
-        }
+            cdl.countDown();
+        });
+
     }
 
     /**
@@ -312,10 +337,16 @@ public class BasicFindTab extends Tab {
         final List<Attribute> selectedAttributes = getMatchingAttributeList(type);
         selectedAttributes.clear();
 
-        for (final Attribute a : attributes) {
-            if (a.getAttributeType().equals("string")) {
-                if (inAttributesMenu.getCheckModel().isChecked(a.getName())) {
-                    selectedAttributes.add(a);
+        if (!attributes.isEmpty()) {
+            for (final Attribute a : attributes) {
+                if (!inAttributesMenu.getCheckModel().isEmpty()) {
+
+                    //     String temp = a.getName();
+                    List<Attribute> temp2 = attributes;
+
+                    if (inAttributesMenu.getCheckModel().isChecked(a.getName())) {
+                        selectedAttributes.add(a);
+                    }
                 }
             }
         }
@@ -452,7 +483,5 @@ public class BasicFindTab extends Tab {
     public ChoiceBox<String> getLookForChoiceBox() {
         return lookForChoiceBox;
     }
-
-
 
 }

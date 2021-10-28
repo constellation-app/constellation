@@ -32,7 +32,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
+import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
@@ -233,6 +235,23 @@ public class BasicFindTabNGTest {
         basicFindTab.updateSelectedAttributes(selectedAttributes);
 
         /**
+         * Create a blank run later to guarantee the updateSelectedAttributes
+         * function is called before assertEquals at the end
+         */
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        Platform.runLater(() -> {
+            System.out.println("Queued platform task for test");
+            latch.countDown();
+        });
+
+        try {
+            latch.await();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        /**
          * In the inAttributeMenu the label attribute (index 0) should be
          * checked and the identifier should not
          */
@@ -244,6 +263,7 @@ public class BasicFindTabNGTest {
      * Test of getMatchingAttributeList method, of class BasicFindTab.
      */
     @Test
+
     public void testGetMatchingAttributeList() {
         System.out.println("getMatchingAttributeList");
         setUpUi();

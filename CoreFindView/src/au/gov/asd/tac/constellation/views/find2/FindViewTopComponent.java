@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -92,6 +93,14 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
             PluginExecution.withPlugin(resetState).executeLater(graph);
         });
 
+        /**
+         * This is updates the attribute list UI element when a new attribute is
+         * added to the
+         */
+        addAttributeCountChangeHandler(graph -> {
+            UpdateUI();
+        });
+
     }
 
     @Override
@@ -107,7 +116,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        findViewController.updateUI();
+        UpdateUI();
         disableFindView();
     }
 
@@ -117,14 +126,14 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         UpdateUI();
         disableFindView();
         focusFindTextField();
-        UpdateUIFirstTime();
+//        UpdateUIFirstTime();
     }
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
         super.handleGraphOpened(graph);
         disableFindView();
-        UpdateUIFirstTime();
+//        UpdateUIFirstTime();
     }
 
     @Override
@@ -142,7 +151,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     @Override
     protected void handleGraphChange(final GraphChangeEvent event) {
         super.handleNewGraph(GraphManager.getDefault().getActiveGraph());
-        UpdateUI();
+//        UpdateUI();
     }
 
     public void disableFindView() {
@@ -161,15 +170,15 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     }
 
     public void UpdateUI() {
-        findViewController.updateUI();
-    }
+        final GraphElementType basicFindType = GraphElementType.getValue(pane.getTabs().getBasicFindTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
+        pane.getTabs().getBasicFindTab().saveSelected(basicFindType);
+        pane.getTabs().getBasicFindTab().populateAttributes(basicFindType);
+        pane.getTabs().getBasicFindTab().updateSelectedAttributes(pane.getTabs().getBasicFindTab().getMatchingAttributeList(basicFindType));
 
-    public void UpdateUIFirstTime() {
-        if (GraphManager.getDefault().getAllGraphs().size() == 1) {
-            pane.getTabs().getBasicFindTab().populateAttributes(findViewController.getCurrentBasicFindParameters().getGraphElement());
-            pane.getTabs().getReplaceTab().populateAttributes(findViewController.getCurrentBasicReplaceParameters().getGraphElement());
-            UpdateUI();
-        }
+        final GraphElementType replaceType = GraphElementType.getValue(pane.getTabs().getReplaceTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
+        pane.getTabs().getReplaceTab().saveSelected(replaceType);
+        pane.getTabs().getReplaceTab().populateAttributes(replaceType);
+        pane.getTabs().getReplaceTab().updateSelectedAttributes(pane.getTabs().getReplaceTab().getMatchingAttributeList(replaceType));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
