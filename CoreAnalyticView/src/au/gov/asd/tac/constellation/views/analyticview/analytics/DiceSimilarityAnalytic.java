@@ -16,13 +16,11 @@
 package au.gov.asd.tac.constellation.views.analyticview.analytics;
 
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.similarity.DiceSimilarityPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,13 +42,9 @@ import org.openide.util.lookup.ServiceProviders;
 @NbBundle.Messages("DiceSimilarityAnalytic=Dice Similarity Analytic")
 public class DiceSimilarityAnalytic extends ScoreAnalyticPlugin {
 
-    private static final String CODEBASE_NAME = "constellation";
-
     @Override
     public String getDocumentationUrl() {
-        final String sep = File.separator;
-        return Generator.getBaseDirectory() + CODEBASE_NAME + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analytic-dice-similarity.md";
+        return getHelpPath() + "analytic-dice-similarity.md";
     }
 
     @Override

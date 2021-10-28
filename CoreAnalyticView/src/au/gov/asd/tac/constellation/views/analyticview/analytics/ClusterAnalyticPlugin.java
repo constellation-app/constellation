@@ -22,6 +22,7 @@ import static au.gov.asd.tac.constellation.graph.GraphElementType.VERTEX;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -31,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult.ClusterData;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +53,13 @@ public abstract class ClusterAnalyticPlugin extends AnalyticPlugin<ClusterResult
 
     protected boolean ignoreDefaultValues() {
         return true;
+    }
+
+    public String getHelpPath() {
+        final String CODEBASE_NAME = "constellation";
+        final String sep = File.separator;
+        return Generator.getBaseDirectory() + CODEBASE_NAME + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "analyticview" + sep + "docs" + sep;
     }
 
     protected final void computeResultsFromGraph(final GraphReadMethods graph, final PluginParameters parameters) {

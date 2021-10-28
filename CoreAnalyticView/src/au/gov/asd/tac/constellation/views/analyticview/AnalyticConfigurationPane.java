@@ -68,7 +68,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -408,8 +407,8 @@ public class AnalyticConfigurationPane extends VBox {
                     final Path path = Paths.get(plugin.getPlugin().getDocumentationUrl());
                     final InputStream pageInput = new FileInputStream(path.toString());
                     documentationView.getEngine().loadContent(Processor.process(pageInput), "text/html");
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.WARNING, ex.getMessage());
                 }
             }
         }

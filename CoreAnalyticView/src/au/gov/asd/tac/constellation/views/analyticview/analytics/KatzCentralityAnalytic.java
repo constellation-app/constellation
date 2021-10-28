@@ -16,13 +16,11 @@
 package au.gov.asd.tac.constellation.views.analyticview.analytics;
 
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.KatzCentralityPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,13 +41,9 @@ import org.openide.util.lookup.ServiceProviders;
 @NbBundle.Messages("KatzCentralityAnalytic=Katz Centrality Analytic")
 public class KatzCentralityAnalytic extends ScoreAnalyticPlugin {
 
-    private static final String CODEBASE_NAME = "constellation";
-
     @Override
     public String getDocumentationUrl() {
-        final String sep = File.separator;
-        return Generator.getBaseDirectory() + CODEBASE_NAME + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analytic-katz-centrality.md";
+        return getHelpPath() + "analytic-katz-centrality.md";
     }
 
     @Override
