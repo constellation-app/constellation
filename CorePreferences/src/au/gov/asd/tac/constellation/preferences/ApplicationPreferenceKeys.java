@@ -113,6 +113,13 @@ public final class ApplicationPreferenceKeys {
     public static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT = true;
 
     /**
+     * Dialog has the OK button set to default (so Enter will press the OK
+     * button).
+     */
+    public static final String DIALOG_HAS_ENTER_AS_DEFAULT = "dialogHasEnterAsDefault";
+    public static final boolean DIALOG_HAS_ENTER_AS_DEFAULT_DEFAULT = false;
+
+    /**
      * File Save location.
      */
     public static final String FILE_OPEN_AND_SAVE_LOCATION = "fileOpenAndSaveLocation";

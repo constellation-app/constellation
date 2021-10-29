@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import java.util.prefs.Preferences;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,6 +29,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -34,6 +38,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import org.openide.util.NbPreferences;
 
 /**
  * The NewAttributeDialog provides a dialog box allowing the user to create a
@@ -57,12 +62,17 @@ public class NewAttributeDialog extends Stage {
     private final ComboBox<String> typeBox;
     private final TextField labelText;
     private final TextArea descriptionText;
+    private String userSearched = "";
+
+    final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    final boolean dialogHasEnterAsDefault = prefs.getBoolean(ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT, ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT_DEFAULT);
 
     private Attribute attribute;
 
     public NewAttributeDialog(final Window owner, final GraphElementType elementType) {
 
         this.elementType = elementType;
+        userSearched = "";
 
         initStyle(StageStyle.UTILITY);
         initModality(Modality.APPLICATION_MODAL);
@@ -90,6 +100,7 @@ public class NewAttributeDialog extends Stage {
         typeBox.getSelectionModel().select("string");
         GridPane.setConstraints(typeBox, 1, 0);
         fieldPane.getChildren().add(typeBox);
+        typeBox.setOnKeyPressed(this::handleOnKeyPressed);
 
         final Label labelLabel = new Label("Label:");
         GridPane.setConstraints(labelLabel, 0, 1);
@@ -119,6 +130,11 @@ public class NewAttributeDialog extends Stage {
         root.setBottom(buttonPane);
 
         final Button okButton = new Button("OK");
+
+        if (dialogHasEnterAsDefault) {
+            okButton.setDefaultButton(true);
+        }
+
         okButton.setOnAction((ActionEvent event) -> {
             attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(),
                     labelText.getText(), descriptionText.getText());
@@ -129,6 +145,26 @@ public class NewAttributeDialog extends Stage {
         final Button cancelButton = new Button("Cancel");
         cancelButton.setOnAction((ActionEvent event) -> NewAttributeDialog.this.hide());
         buttonPane.getChildren().add(cancelButton);
+    }
+
+    public void handleOnKeyPressed(KeyEvent e) {
+        if (e.getCode() == KeyCode.BACK_SPACE) {
+            if (userSearched.length() >= 1) {
+                userSearched = userSearched.substring(0, userSearched.length() - 1);
+            }
+            if (userSearched.length() >= 5) {
+                userSearched = "";
+            }
+        } else if (e.getCode().isLetterKey()) {
+            if (userSearched.length() <= 5) {
+                userSearched += e.getText();
+            }
+        }
+        for (String item : typeBox.getItems()) {
+            if (item.toLowerCase().startsWith(userSearched.toLowerCase())) {
+                typeBox.getSelectionModel().select(item);
+            }
+        }
     }
 
     public Attribute getAttribute() {

@@ -16,7 +16,9 @@
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.functionality.dialog.ConstellationDialog;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
+import java.util.prefs.Preferences;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -27,6 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.openide.util.NbPreferences;
 
 /**
  * Dialog for the editing of attribute values through CONSTELLATION's attribute
@@ -45,6 +48,9 @@ public class AttributeEditorDialog extends ConstellationDialog {
     private final Button cancelButton;
     private final Button defaultButton;
 
+    final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    final boolean dialogHasEnterAsDefault = prefs.getBoolean(ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT, ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT_DEFAULT);
+
     public AttributeEditorDialog(final boolean restoreDefaultButton, final AbstractEditor<?> editor) {
         final VBox root = new VBox();
         root.setPadding(new Insets(10));
@@ -55,6 +61,9 @@ public class AttributeEditorDialog extends ConstellationDialog {
         errorLabel.setId("error");
 
         okButton = new Button("OK");
+        if (dialogHasEnterAsDefault) {
+            okButton.setDefaultButton(true);
+        }
         cancelButton = new Button("Cancel");
         defaultButton = new Button("Restore Default");
 

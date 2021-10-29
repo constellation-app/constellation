@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.util.prefs.Preferences;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -26,6 +28,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import org.openide.util.NbPreferences;
 
 /**
  * A Javafx dialog that will present the {@link PluginParametersPane} GUI for a
@@ -41,6 +44,9 @@ public class PluginParametersDialog extends Stage {
     public static final String CANCEL = "Cancel";
 
     private volatile String result;
+
+    final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    final boolean dialogHasEnterAsDefault = prefs.getBoolean(ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT, ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT_DEFAULT);
 
     /**
      * Display a dialog box containing the parameters that allows the user to
@@ -90,6 +96,11 @@ public class PluginParametersDialog extends Stage {
         final String[] labels = options != null && options.length > 0 ? options : new String[]{OK, CANCEL};
         for (final String option : labels) {
             final Button okButton = new Button(option);
+
+            if (dialogHasEnterAsDefault) {
+                okButton.setDefaultButton(true);
+            }
+
             okButton.setOnAction(event -> {
                 result = option;
                 parameters.storeRecentValues();

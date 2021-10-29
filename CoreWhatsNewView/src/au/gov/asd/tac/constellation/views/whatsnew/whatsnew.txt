@@ -1,6 +1,11 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-10-26 Press Enter as Default
+<p>Gives the user an option to be able to make the OK button the default button.  Works specifically for:</p>
+<p>Attribute Editor Dialog, New Attribute Dialog, Default Attribute Dialog.</p>
+<p>You can now also type in the first couple of letters in the New Attribute dialog to jump to the matching type</p>
+
 == 2021-10-15 User Settable Bin Size in Histogram
 <p>The user can now manually increase or decrease the height of the bins in the histogram (Added to the popup displayed when you click the Actions button in the bottom right of the histogram panel).</p>
 

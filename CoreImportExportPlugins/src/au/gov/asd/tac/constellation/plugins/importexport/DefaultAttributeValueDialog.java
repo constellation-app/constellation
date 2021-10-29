@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
+import java.util.prefs.Preferences;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,6 +31,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import org.openide.util.NbPreferences;
 
 /**
  * The DefaultAttributeValueDialog is a dialog that allows the user to specify a
@@ -51,6 +54,9 @@ public class DefaultAttributeValueDialog extends Stage {
 
     private final TextField labelText;
     private String defaultValue;
+
+    final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    final boolean dialogHasEnterAsDefault = prefs.getBoolean(ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT, ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT_DEFAULT);
 
     public DefaultAttributeValueDialog(final Window owner, final String attributeName, final String initialValue) {
 
@@ -95,6 +101,11 @@ public class DefaultAttributeValueDialog extends Stage {
         root.setBottom(buttonPane);
 
         final Button okButton = new Button("OK");
+
+        if (dialogHasEnterAsDefault) {
+            okButton.setDefaultButton(true);
+        }
+
         okButton.setOnAction((ActionEvent event) -> {
             defaultValue = labelText.getText();
             DefaultAttributeValueDialog.this.hide();
