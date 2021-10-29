@@ -49,6 +49,23 @@ public class ConstellationColorNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
+    
+    /**
+     * Convenience method for asserting the RGBA values of a ConstellationColor
+     * 
+     * @param colour
+     * @param expectedRedValue
+     * @param expectedGreenValue
+     * @param expectedBlueValue
+     * @param expectedAlphaValue 
+     */
+    private void assertColourProperties(final ConstellationColor colour, final float expectedRedValue, final float expectedGreenValue, 
+            final float expectedBlueValue, final float expectedAlphaValue) {
+        assertEquals(colour.getRed(), expectedRedValue);
+        assertEquals(colour.getGreen(), expectedGreenValue);
+        assertEquals(colour.getBlue(), expectedBlueValue);
+        assertEquals(colour.getAlpha(), expectedAlphaValue);
+    }
 
     /**
      * Test of getColorValue method, of class ConstellationColor. 1 parameter
@@ -67,22 +84,13 @@ public class ConstellationColorNGTest {
         assertEquals(namedGreyColour, ConstellationColor.GREY);
         
         final ConstellationColor rgbColour = ConstellationColor.getColorValue("rgb255255000");
-        assertEquals(rgbColour.getRed(), 1F);
-        assertEquals(rgbColour.getGreen(), 1F);
-        assertEquals(rgbColour.getBlue(), 0F);
-        assertEquals(rgbColour.getAlpha(), 1F);
+        assertColourProperties(rgbColour, 1F, 1F, 0F, 1F);
         
         final ConstellationColor rgbCommaColour = ConstellationColor.getColorValue("0.2,1,0.6,0.7");
-        assertEquals(rgbCommaColour.getRed(), 0.2F);
-        assertEquals(rgbCommaColour.getGreen(), 1F);
-        assertEquals(rgbCommaColour.getBlue(), 0.6F);
-        assertEquals(rgbCommaColour.getAlpha(), 0.7F);
+        assertColourProperties(rgbCommaColour, 0.2F, 1F, 0.6F, 0.7F);
         
         final ConstellationColor htmlColour = ConstellationColor.getColorValue("#6699CC");
-        assertEquals(htmlColour.getRed(), 0.4F);
-        assertEquals(htmlColour.getGreen(), 0.6F);
-        assertEquals(htmlColour.getBlue(), 0.8F);
-        assertEquals(htmlColour.getAlpha(), 1F);
+        assertColourProperties(htmlColour, 0.4F, 0.6F, 0.8F, 1F);
         
         final ConstellationColor notAColour = ConstellationColor.getColorValue("Not a colour");
         assertEquals(notAColour, null);
@@ -156,10 +164,7 @@ public class ConstellationColorNGTest {
         assertEquals(nullColour, null);
         
         final ConstellationColor constellationColour = ConstellationColor.fromJavaColor(Color.CYAN);
-        assertEquals(constellationColour.getRed(), 0F);
-        assertEquals(constellationColour.getGreen(), 1F);
-        assertEquals(constellationColour.getBlue(), 1F);
-        assertEquals(constellationColour.getAlpha(), 1F);
+        assertColourProperties(constellationColour, 0F, 1F, 1F, 1F);
     }
     
     /**
@@ -173,10 +178,7 @@ public class ConstellationColorNGTest {
         assertEquals(nullColour, null);
         
         final ConstellationColor constellationColour = ConstellationColor.fromFXColor(javafx.scene.paint.Color.CYAN);
-        assertEquals(constellationColour.getRed(), 0F);
-        assertEquals(constellationColour.getGreen(), 1F);
-        assertEquals(constellationColour.getBlue(), 1F);
-        assertEquals(constellationColour.getAlpha(), 1F);
+        assertColourProperties(constellationColour, 0F, 1F, 1F, 1F);
     }
 
     /**
@@ -196,16 +198,10 @@ public class ConstellationColorNGTest {
         assertEquals(noHashColour, null);
         
         final ConstellationColor ucConstellationColour = ConstellationColor.fromHtmlColor("#FFEEDD");
-        assertEquals(ucConstellationColour.getRed(), 1F);
-        assertEquals(ucConstellationColour.getGreen(), 238/255F);
-        assertEquals(ucConstellationColour.getBlue(), 221/255F);
-        assertEquals(ucConstellationColour.getAlpha(), 1F);
+        assertColourProperties(ucConstellationColour, 1F, 238/255F, 221/255F, 1F);
         
         final ConstellationColor lcConstellationColour = ConstellationColor.fromHtmlColor("#ffeedd");
-        assertEquals(lcConstellationColour.getRed(), 1F);
-        assertEquals(lcConstellationColour.getGreen(), 238/255F);
-        assertEquals(lcConstellationColour.getBlue(), 221/255F);
-        assertEquals(lcConstellationColour.getAlpha(), 1F);
+        assertColourProperties(lcConstellationColour, 1F, 238/255F, 221/255F, 1F);
     }
 
     /**
@@ -319,10 +315,7 @@ public class ConstellationColorNGTest {
         assertEquals(nullColour, null);
         
         final ConstellationColor constellationColour = ConstellationColor.fromRgbColor("RGB000255255");
-        assertEquals(constellationColour.getRed(), 0F);
-        assertEquals(constellationColour.getGreen(), 1F);
-        assertEquals(constellationColour.getBlue(), 1F);
-        assertEquals(constellationColour.getAlpha(), 1F);
+        assertColourProperties(constellationColour, 0F, 1F, 1F, 1F);
     }
 
     /**
@@ -336,16 +329,10 @@ public class ConstellationColorNGTest {
         assertEquals(nullColour, null);
         
         final ConstellationColor constellationColourNoBracket = ConstellationColor.fromRgbWithCommaColor("0,1,1");
-        assertEquals(constellationColourNoBracket.getRed(), 0F);
-        assertEquals(constellationColourNoBracket.getGreen(), 1F);
-        assertEquals(constellationColourNoBracket.getBlue(), 1F);
-        assertEquals(constellationColourNoBracket.getAlpha(), 1F);
+        assertColourProperties(constellationColourNoBracket, 0F, 1F, 1F, 1F);
         
         final ConstellationColor constellationColourBracket = ConstellationColor.fromRgbWithCommaColor("[0,1,1]");
-        assertEquals(constellationColourBracket.getRed(), 0F);
-        assertEquals(constellationColourBracket.getGreen(), 1F);
-        assertEquals(constellationColourBracket.getBlue(), 1F);
-        assertEquals(constellationColourBracket.getAlpha(), 1F);
+        assertColourProperties(constellationColourBracket, 0F, 1F, 1F, 1F);
     }
 
     /**
@@ -423,29 +410,16 @@ public class ConstellationColorNGTest {
         
         final ConstellationColor[] oneColourPalette = ConstellationColor.createPalette(1, 0.6F, 0.4F);
         assertEquals(oneColourPalette.length, 1);
-        assertEquals(oneColourPalette[0].getRed(), 0.4F);
-        assertEquals(oneColourPalette[0].getGreen(), 41/255F);
-        assertEquals(oneColourPalette[0].getBlue(), 41/255F);
-        assertEquals(oneColourPalette[0].getAlpha(), 1F);
+        assertColourProperties(oneColourPalette[0], 0.4F, 41/255F, 41/255F, 1F);
         
         final ConstellationColor[] twoColourPalette = ConstellationColor.createPalette(2, 0.6F, 0.4F);
         assertEquals(twoColourPalette.length, 2);
-        assertEquals(twoColourPalette[1].getRed(), 41/255F);
-        assertEquals(twoColourPalette[1].getGreen(), 0.4F);
-        assertEquals(twoColourPalette[1].getBlue(), 0.4F);
-        assertEquals(twoColourPalette[1].getAlpha(), 1F);
+        assertColourProperties(twoColourPalette[1], 41/255F, 0.4F, 0.4F, 1F);
         
         final ConstellationColor[] moreColourPalette = ConstellationColor.createPalette(4, 0.6F, 0.4F);
         assertEquals(moreColourPalette.length, 4);
-        assertEquals(moreColourPalette[2].getRed(), 71/255F);
-        assertEquals(moreColourPalette[2].getGreen(), 41/255F);
-        assertEquals(moreColourPalette[2].getBlue(), 0.4F);
-        assertEquals(moreColourPalette[2].getAlpha(), 1F);
-        
-        assertEquals(moreColourPalette[3].getRed(), 71/255F);
-        assertEquals(moreColourPalette[3].getGreen(), 0.4F);
-        assertEquals(moreColourPalette[3].getBlue(), 41/255F);
-        assertEquals(moreColourPalette[3].getAlpha(), 1F);
+        assertColourProperties(moreColourPalette[2], 71/255F, 41/255F, 0.4F, 1F);
+        assertColourProperties(moreColourPalette[3], 71/255F, 0.4F, 41/255F, 1F);
     }
 
     /**
@@ -460,29 +434,16 @@ public class ConstellationColorNGTest {
         
         final ConstellationColor[] oneColourPalette = ConstellationColor.createPalette(1);
         assertEquals(oneColourPalette.length, 1);
-        assertEquals(oneColourPalette[0].getRed(), 1F);
-        assertEquals(oneColourPalette[0].getGreen(), 0F);
-        assertEquals(oneColourPalette[0].getBlue(), 0F);
-        assertEquals(oneColourPalette[0].getAlpha(), 1F);
+        assertColourProperties(oneColourPalette[0], 1F, 0F, 0F, 1F);
         
         final ConstellationColor[] twoColourPalette = ConstellationColor.createPalette(2);
         assertEquals(twoColourPalette.length, 2);
-        assertEquals(twoColourPalette[1].getRed(), 0F);
-        assertEquals(twoColourPalette[1].getGreen(), 1F);
-        assertEquals(twoColourPalette[1].getBlue(), 1F);
-        assertEquals(twoColourPalette[1].getAlpha(), 1F);
+        assertColourProperties(twoColourPalette[1], 0F, 1F, 1F, 1F);
         
         final ConstellationColor[] moreColourPalette = ConstellationColor.createPalette(4);
         assertEquals(moreColourPalette.length, 4);
-        assertEquals(moreColourPalette[2].getRed(), 128/255F);
-        assertEquals(moreColourPalette[2].getGreen(), 0F);
-        assertEquals(moreColourPalette[2].getBlue(), 1F);
-        assertEquals(moreColourPalette[2].getAlpha(), 1F);
-        
-        assertEquals(moreColourPalette[3].getRed(), 128/255F);
-        assertEquals(moreColourPalette[3].getGreen(), 1F);
-        assertEquals(moreColourPalette[3].getBlue(), 0F);
-        assertEquals(moreColourPalette[3].getAlpha(), 1F);
+        assertColourProperties(moreColourPalette[2], 128/255F, 0F, 1F, 1F);
+        assertColourProperties(moreColourPalette[3], 128/255F, 1F, 0F, 1F);
     }
 
     /**
@@ -504,20 +465,9 @@ public class ConstellationColorNGTest {
 
         final ConstellationColor[] palette = ConstellationColor.createLinearPalette(3, ConstellationColor.CYAN, ConstellationColor.GOLDEN_ROD);
         assertEquals(palette.length, 3);
-        assertEquals(palette[0].getRed(), 0F);
-        assertEquals(palette[0].getGreen(), 1F);
-        assertEquals(palette[0].getBlue(), 1F);
-        assertEquals(palette[0].getAlpha(), 1F);
-        
-        assertEquals(palette[1].getRed(), 0.5F);
-        assertEquals(palette[1].getGreen(), 0.875F);
-        assertEquals(palette[1].getBlue(), 0.5F);
-        assertEquals(palette[1].getAlpha(), 1F);
-
-        assertEquals(palette[2].getRed(), 1F);
-        assertEquals(palette[2].getGreen(), 0.75F);
-        assertEquals(palette[2].getBlue(), 0F);
-        assertEquals(palette[2].getAlpha(), 1F);
+        assertColourProperties(palette[0], 0F, 1F, 1F, 1F);
+        assertColourProperties(palette[1], 0.5F, 0.875F, 0.5F, 1F);
+        assertColourProperties(palette[2], 1F, 0.75F, 0F, 1F);
     }
 
     /**
@@ -529,19 +479,8 @@ public class ConstellationColorNGTest {
         
         final ConstellationColor[] palette = ConstellationColor.createPalettePhi(3, 0.1F, 0.2F, 0.3F);
         assertEquals(palette.length, 3);
-        assertEquals(palette[0].getRed(), 77/255F);
-        assertEquals(palette[0].getGreen(), 70/255F);
-        assertEquals(palette[0].getBlue(), 61/255F);
-        assertEquals(palette[0].getAlpha(), 1F);
-        
-        assertEquals(palette[1].getRed(), 66/255F);
-        assertEquals(palette[1].getGreen(), 61/255F);
-        assertEquals(palette[1].getBlue(), 77/255F);
-        assertEquals(palette[1].getAlpha(), 1F);
-
-        assertEquals(palette[2].getRed(), 61/255F);
-        assertEquals(palette[2].getGreen(), 77/255F);
-        assertEquals(palette[2].getBlue(), 61/255F);
-        assertEquals(palette[2].getAlpha(), 1F);
+        assertColourProperties(palette[0], 77/255F, 70/255F, 61/255F, 1F);
+        assertColourProperties(palette[1], 66/255F, 61/255F, 77/255F, 1F);
+        assertColourProperties(palette[2], 61/255F, 77/255F, 61/255F, 1F);
     }   
 }
