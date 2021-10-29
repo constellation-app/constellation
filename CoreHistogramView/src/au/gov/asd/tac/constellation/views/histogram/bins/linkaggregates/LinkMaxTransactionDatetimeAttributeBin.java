@@ -46,7 +46,7 @@ public class LinkMaxTransactionDatetimeAttributeBin extends DateTimeBin {
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getLinkTransaction(element, t);
             final ZonedDateTime zdt = graph.getObjectValue(attribute, transaction);
-            if (zdt.isAfter(currentMax)) {
+            if (zdt != null && zdt.isAfter(currentMax)) {
                 currentMax = zdt;
             }
         }
