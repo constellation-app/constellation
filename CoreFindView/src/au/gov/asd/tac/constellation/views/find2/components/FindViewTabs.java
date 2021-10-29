@@ -41,6 +41,7 @@ public class FindViewTabs extends TabPane {
         replaceTab = new ReplaceTab(this);
         advancedFindTab = new Tab("Advanced Find");
         setTabContent();
+        requestFocus();
 
         getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override

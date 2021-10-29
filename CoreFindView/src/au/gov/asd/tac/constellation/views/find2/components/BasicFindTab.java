@@ -116,8 +116,8 @@ public class BasicFindTab extends Tab {
         setText("Basic Find");
         setGridContent();
         setContent(layers);
-//        populateAttributes(GraphElementType.VERTEX);
 
+//        populateAttributes(GraphElementType.VERTEX);
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
@@ -130,7 +130,6 @@ public class BasicFindTab extends Tab {
             }
         }
         );
-
 
         selectAllMenuItem.setOnAction(event -> {
             inAttributesMenu.getCheckModel().checkAll();

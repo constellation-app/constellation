@@ -18,18 +18,15 @@ package au.gov.asd.tac.constellation.views.find2;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find2.plugins.ResetStatePlugin;
-import java.awt.Dimension;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  * Find View Top Component.
@@ -72,14 +69,14 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         setToolTipText(Bundle.HINT_FindViewTopComponent2());
         findViewController = FindViewController.getDefault().init(this);
 
-        WindowManager.getDefault().setTopComponentFloating(this, true);
+//        WindowManager.getDefault().setTopComponentFloating(this, true);
         initComponents();
         this.pane = new FindViewPane(this);
 
         initContent();
-        WindowManager.getDefault().setTopComponentFloating(this, true);
+//        WindowManager.getDefault().setTopComponentFloating(this, true);
 
-        setInitialDimensions();
+//        setInitialDimensions();
         disableFindView();
 
         /**
@@ -126,14 +123,12 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         UpdateUI();
         disableFindView();
         focusFindTextField();
-//        UpdateUIFirstTime();
     }
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
         super.handleGraphOpened(graph);
         disableFindView();
-//        UpdateUIFirstTime();
     }
 
     @Override
@@ -148,37 +143,35 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         UpdateUI();
     }
 
-    @Override
-    protected void handleGraphChange(final GraphChangeEvent event) {
-        super.handleNewGraph(GraphManager.getDefault().getActiveGraph());
-//        UpdateUI();
+    public FindViewPane getFindViewPane() {
+        return pane;
     }
 
     public void disableFindView() {
         pane.setDisable(GraphManager.getDefault().getAllGraphs().isEmpty());
     }
 
-    public void setInitialDimensions() {
-        WindowManager.getDefault().setTopComponentFloating(this, true);
-        this.setLocation(500, 500);
-        this.setMinimumSize(new Dimension(500, 500));
-
-    }
+//    public void setInitialDimensions() {
+//        WindowManager.getDefault().setTopComponentFloating(this, true);
+//        this.setLocation(500, 500);
+//        this.setMinimumSize(new Dimension(500, 500));
+//
+//    }
 
     public void focusFindTextField() {
         pane.getTabs().getBasicFindTab().requestTextFieldFocus();
     }
 
     public void UpdateUI() {
-        final GraphElementType basicFindType = GraphElementType.getValue(pane.getTabs().getBasicFindTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
-        pane.getTabs().getBasicFindTab().saveSelected(basicFindType);
-        pane.getTabs().getBasicFindTab().populateAttributes(basicFindType);
-        pane.getTabs().getBasicFindTab().updateSelectedAttributes(pane.getTabs().getBasicFindTab().getMatchingAttributeList(basicFindType));
+        final GraphElementType basicFindType = GraphElementType.getValue(getFindViewPane().getTabs().getBasicFindTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
+        getFindViewPane().getTabs().getBasicFindTab().saveSelected(basicFindType);
+        getFindViewPane().getTabs().getBasicFindTab().populateAttributes(basicFindType);
+        getFindViewPane().getTabs().getBasicFindTab().updateSelectedAttributes(getFindViewPane().getTabs().getBasicFindTab().getMatchingAttributeList(basicFindType));
 
         final GraphElementType replaceType = GraphElementType.getValue(pane.getTabs().getReplaceTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
-        pane.getTabs().getReplaceTab().saveSelected(replaceType);
-        pane.getTabs().getReplaceTab().populateAttributes(replaceType);
-        pane.getTabs().getReplaceTab().updateSelectedAttributes(pane.getTabs().getReplaceTab().getMatchingAttributeList(replaceType));
+        getFindViewPane().getTabs().getReplaceTab().saveSelected(replaceType);
+        getFindViewPane().getTabs().getReplaceTab().populateAttributes(replaceType);
+        getFindViewPane().getTabs().getReplaceTab().updateSelectedAttributes(pane.getTabs().getReplaceTab().getMatchingAttributeList(replaceType));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
