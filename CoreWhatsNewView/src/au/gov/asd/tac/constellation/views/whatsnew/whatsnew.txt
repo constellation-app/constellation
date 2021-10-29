@@ -4,6 +4,11 @@
 == 2021-10-27 Layers View Graph Context
 <p> Layers View now requires a graph to be present before presenting the full feature set of the view.</p>
 
+== 2021-10-26 Press Enter as Default
+<p>Gives the user an option to be able to make the OK button the default button.  Works specifically for:</p>
+<p>Attribute Editor Dialog, New Attribute Dialog, Default Attribute Dialog.</p>
+<p>You can now also type in the first couple of letters in the New Attribute dialog to jump to the matching type</p>
+
 == 2021-10-20 Conversation Search scroll
 <p> When searching in the conversation viewer you will be taken to the messages that contain the search term.</p>
 <p> You can also iterate through the search terms using the new buttons</p>

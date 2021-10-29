@@ -130,6 +130,14 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         this.rememberOpenAndSaveLocationCheckBox.setSelected(rememberSaveLocation);
     }
 
+    public boolean getDialogHasEnterAsDefault() {
+        return dialogHasEnterAsDefaultCheckBox.isSelected();
+    }
+
+    public void setDialogHasEnterAsDefault(final boolean dialogHasEnterAsDefault) {
+        this.dialogHasEnterAsDefaultCheckBox.setSelected(dialogHasEnterAsDefault);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -161,6 +169,8 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         downloadPythonClientCheckBox = new JCheckBox();
         openAndSaveLocationPanel = new JPanel();
         rememberOpenAndSaveLocationCheckBox = new JCheckBox();
+        dialogHasEnterAsDefaultPanel = new JPanel();
+        dialogHasEnterAsDefaultCheckBox = new JCheckBox();
 
         Mnemonics.setLocalizedText(userDirectoryLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.userDirectoryLabel.text")); // NOI18N
 
@@ -351,6 +361,27 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        dialogHasEnterAsDefaultPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.dialogHasEnterAsDefaultPanel.border.title"))); // NOI18N
+
+        dialogHasEnterAsDefaultCheckBox.setSelected(true);
+        Mnemonics.setLocalizedText(dialogHasEnterAsDefaultCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.dialogHasEnterAsDefaultCheckBox.text")); // NOI18N
+        dialogHasEnterAsDefaultCheckBox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.dialogHasEnterAsDefaultCheckBox.actionCommand")); // NOI18N
+
+        GroupLayout openAndSaveLocationPanel1Layout = new GroupLayout(dialogHasEnterAsDefaultPanel);
+        dialogHasEnterAsDefaultPanel.setLayout(openAndSaveLocationPanel1Layout);
+        openAndSaveLocationPanel1Layout.setHorizontalGroup(openAndSaveLocationPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(openAndSaveLocationPanel1Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(dialogHasEnterAsDefaultCheckBox)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        openAndSaveLocationPanel1Layout.setVerticalGroup(openAndSaveLocationPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(openAndSaveLocationPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(dialogHasEnterAsDefaultCheckBox)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -367,7 +398,8 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                         .addComponent(userDirectoryButton))
                     .addComponent(webserverPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(notebookPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(openAndSaveLocationPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(openAndSaveLocationPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dialogHasEnterAsDefaultPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -387,11 +419,14 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(notebookPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(openAndSaveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dialogHasEnterAsDefaultPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N
         openAndSaveLocationPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.openAndSaveLocationPanel.AccessibleContext.accessibleName")); // NOI18N
+        dialogHasEnterAsDefaultPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.dialogHasEnterAsDefaultPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void userDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_userDirectoryButtonActionPerformed
@@ -451,7 +486,9 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JTextField notebookDirectoryText;
     private JPanel notebookPanel;
     private JPanel openAndSaveLocationPanel;
+    private JPanel dialogHasEnterAsDefaultPanel;
     private JCheckBox rememberOpenAndSaveLocationCheckBox;
+    private JCheckBox dialogHasEnterAsDefaultCheckBox;
     private JButton restDirectoryButton;
     private JLabel restDirectoryLabel;
     private JTextField restDirectoryText;

@@ -59,6 +59,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setRestDirectory(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT));
         applicationOptionsPanel.setDownloadPythonClient(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
         applicationOptionsPanel.setRememberOpenSaveLocation(prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT));
+        applicationOptionsPanel.setDialogHasEnterAsDefault(prefs.getBoolean(ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT, ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT_DEFAULT));
     }
 
     @Override
@@ -82,6 +83,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 prefs.put(ApplicationPreferenceKeys.REST_DIR, applicationOptionsPanel.getRestDirectory());
                 prefs.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, applicationOptionsPanel.getDownloadPythonClient());
                 prefs.putBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, applicationOptionsPanel.getRememberOpenSaveLocation());
+                prefs.putBoolean(ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT, applicationOptionsPanel.getDialogHasEnterAsDefault());
             }
         }
     }
@@ -114,7 +116,8 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getNotebookDirectory().equals(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT))
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
                 && applicationOptionsPanel.getDownloadPythonClient() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
-                && applicationOptionsPanel.getRememberOpenSaveLocation() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT));
+                && applicationOptionsPanel.getRememberOpenSaveLocation() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT)
+                && applicationOptionsPanel.getDialogHasEnterAsDefault() == prefs.getBoolean(ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT, ApplicationPreferenceKeys.DIALOG_HAS_ENTER_AS_DEFAULT_DEFAULT));
     }
 
     @Override
