@@ -159,6 +159,9 @@ public class NotesViewPane extends BorderPane {
                         controller.writeState(activeGraph);
                     }
                 }
+                final ObservableList<String> filters = filterCheckComboBox.getCheckModel().getCheckedItems();
+                final String checkedFilters = String.join(", ", filters);
+                filterCheckComboBox.setTitle(filters.isEmpty()? "Select a filter..." : checkedFilters);
             }
         });
 
@@ -514,7 +517,8 @@ public class NotesViewPane extends BorderPane {
                     createNote(note);
                 });
             }
-
+            notesListScrollPane.applyCss();
+            notesListScrollPane.layout();
             // Keeps the scroll bar at the bottom?
             notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
         });
