@@ -22,11 +22,16 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find2.plugins.ResetStatePlugin;
+import java.awt.Dimension;
+import java.awt.Window;
+import java.util.logging.Logger;
+import javafx.stage.Screen;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * Find View Top Component.
@@ -46,7 +51,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.find2.FindTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 3000),
+    @ActionReference(path = "Menu/Experimental/Views", position = 3000),
     @ActionReference(path = "Shortcuts", name = "C-F")
 })
 @TopComponent.OpenActionRegistration(
@@ -61,6 +66,8 @@ import org.openide.windows.TopComponent;
 
 public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane> {
 
+    private static final Logger LOGGER = Logger.getLogger(FindViewTopComponent.class.getName());
+
     private final FindViewPane pane;
     private final FindViewController findViewController;
 
@@ -69,14 +76,12 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         setToolTipText(Bundle.HINT_FindViewTopComponent2());
         findViewController = FindViewController.getDefault().init(this);
 
-//        WindowManager.getDefault().setTopComponentFloating(this, true);
         initComponents();
         this.pane = new FindViewPane(this);
 
         initContent();
-//        WindowManager.getDefault().setTopComponentFloating(this, true);
+        WindowManager.getDefault().setTopComponentFloating(this, true);
 
-//        setInitialDimensions();
         disableFindView();
 
         /**
@@ -123,6 +128,24 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         UpdateUI();
         disableFindView();
         focusFindTextField();
+        WindowManager.getDefault().setTopComponentFloating(this, true);
+
+        this.setRequestFocusEnabled(true);
+        /**
+         * NOTE - This is by no means a flawless solution. Loop through all
+         * active windows. All view windows will have a default name of
+         * dialog0,1,2,3 etc. This code works of the basis that the only dialog
+         * window in float mode is the find view. It is assumed all other
+         * windows will remain docked. I have not found a way to capture the
+         * exact window that contains the find view hence this is the only
+         * solution I could think of at the current time.
+         */
+        for (Window window : Window.getWindows()) {
+            if (window.getName().contains("dialog")) {
+                window.setMinimumSize(new Dimension(485, 285));
+                window.setLocation((int) Screen.getPrimary().getBounds().getMaxX() - 510, 110);
+            }
+        }
     }
 
     @Override
@@ -150,13 +173,6 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     public void disableFindView() {
         pane.setDisable(GraphManager.getDefault().getAllGraphs().isEmpty());
     }
-
-//    public void setInitialDimensions() {
-//        WindowManager.getDefault().setTopComponentFloating(this, true);
-//        this.setLocation(500, 500);
-//        this.setMinimumSize(new Dimension(500, 500));
-//
-//    }
 
     public void focusFindTextField() {
         pane.getTabs().getBasicFindTab().requestTextFieldFocus();
