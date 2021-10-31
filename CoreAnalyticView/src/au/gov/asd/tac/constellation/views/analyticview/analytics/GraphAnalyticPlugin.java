@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.analyticview.analytics;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -28,7 +27,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.GraphResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.GraphResult.GraphScore;
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,13 +58,6 @@ public abstract class GraphAnalyticPlugin extends AnalyticPlugin<GraphResult> {
             final float score = graph.getFloatValue(scoreAttributeId, 0);
             result.add(new GraphScore(identifier, false, schemaAttribute.getName(), score));
         });
-    }
-
-    public String getHelpPath() {
-        final String CODEBASE_NAME = "constellation";
-        final String sep = File.separator;
-        return Generator.getBaseDirectory() + CODEBASE_NAME + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "analyticview" + sep + "docs" + sep;
     }
 
     @Override
