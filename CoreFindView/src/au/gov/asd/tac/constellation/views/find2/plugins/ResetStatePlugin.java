@@ -34,6 +34,10 @@ public class ResetStatePlugin extends SimpleEditPlugin {
 
     private final static int STARTING_INDEX = -1;
 
+    /**
+     * This plugin is used with no variables, as its intended purpose is to
+     * update the program in the background
+     */
     public ResetStatePlugin() {
     }
 

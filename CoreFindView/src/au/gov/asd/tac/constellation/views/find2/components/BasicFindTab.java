@@ -117,14 +117,12 @@ public class BasicFindTab extends Tab {
         setGridContent();
         setContent(layers);
 
-//        populateAttributes(GraphElementType.VERTEX);
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
                 if (oldElement != null) {
                     saveSelected(GraphElementType.getValue(oldElement));
                 }
-//                inAttributesMenu.getCheckModel().clearChecks();
                 populateAttributes(GraphElementType.getValue(newElement));
                 updateSelectedAttributes(getMatchingAttributeList(GraphElementType.getValue(newElement)));
             }
@@ -281,6 +279,7 @@ public class BasicFindTab extends Tab {
                 cdl.await();
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             }
         }
         updateBasicFindParamters();
@@ -339,10 +338,6 @@ public class BasicFindTab extends Tab {
         if (!attributes.isEmpty()) {
             for (final Attribute a : attributes) {
                 if (!inAttributesMenu.getCheckModel().isEmpty()) {
-
-                    //     String temp = a.getName();
-                    List<Attribute> temp2 = attributes;
-
                     if (inAttributesMenu.getCheckModel().isChecked(a.getName())) {
                         selectedAttributes.add(a);
                     }
@@ -409,25 +404,12 @@ public class BasicFindTab extends Tab {
      * the variables values stored in the controller
      */
     public void updateSelectionFactors() {
-        switch (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                findNextButton.setDisable(false);
-                findPrevButton.setDisable(false);
-                break;
-            case 1:
-                findNextButton.setDisable(false);
-                findPrevButton.setDisable(false);
-                break;
-            case 2:
-                findNextButton.setDisable(true);
-                findPrevButton.setDisable(true);
-                break;
-            case 3:
-                findNextButton.setDisable(false);
-                findPrevButton.setDisable(false);
-                break;
-            default:
-                break;
+        if (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 2) {
+            findNextButton.setDisable(true);
+            findPrevButton.setDisable(true);
+        } else {
+            findNextButton.setDisable(false);
+            findPrevButton.setDisable(false);
         }
     }
 

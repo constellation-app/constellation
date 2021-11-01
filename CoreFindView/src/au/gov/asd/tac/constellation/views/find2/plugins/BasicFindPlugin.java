@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParame
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -57,7 +56,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final BasicFindReplaceParameters parameters;
 
     private final static int STARTING_INDEX = -1;
-    private static final Logger LOGGER = Logger.getLogger(BasicFindPlugin.class.getName());
 
     public BasicFindPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll, final boolean getNext) {
         this.elementType = parameters.getGraphElement();
@@ -99,6 +97,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         //Retrieve the existing FindResultList Meta attribute
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         FindResultsList foundResult = graph.getObjectValue(stateId, 0);
+
         /**
          * If it doesn't exist or is null, create a new list with the starting
          * index and the current find parameters. If it does exist, create a

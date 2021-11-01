@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find2.plugins.ResetStatePlugin;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.util.logging.Logger;
 import javafx.stage.Screen;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -66,15 +65,12 @@ import org.openide.windows.WindowManager;
 
 public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane> {
 
-    private static final Logger LOGGER = Logger.getLogger(FindViewTopComponent.class.getName());
-
     private final FindViewPane pane;
-    private final FindViewController findViewController;
 
     public FindViewTopComponent() {
         setName(Bundle.CTL_FindViewTopComponent2());
         setToolTipText(Bundle.HINT_FindViewTopComponent2());
-        findViewController = FindViewController.getDefault().init(this);
+        FindViewController.getDefault().init(this);
 
         initComponents();
         this.pane = new FindViewPane(this);
@@ -184,10 +180,10 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         getFindViewPane().getTabs().getBasicFindTab().populateAttributes(basicFindType);
         getFindViewPane().getTabs().getBasicFindTab().updateSelectedAttributes(getFindViewPane().getTabs().getBasicFindTab().getMatchingAttributeList(basicFindType));
 
-        final GraphElementType replaceType = GraphElementType.getValue(pane.getTabs().getReplaceTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
+        final GraphElementType replaceType = GraphElementType.getValue(getFindViewPane().getTabs().getReplaceTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
         getFindViewPane().getTabs().getReplaceTab().saveSelected(replaceType);
         getFindViewPane().getTabs().getReplaceTab().populateAttributes(replaceType);
-        getFindViewPane().getTabs().getReplaceTab().updateSelectedAttributes(pane.getTabs().getReplaceTab().getMatchingAttributeList(replaceType));
+        getFindViewPane().getTabs().getReplaceTab().updateSelectedAttributes(getFindViewPane().getTabs().getReplaceTab().getMatchingAttributeList(replaceType));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

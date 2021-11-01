@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -155,6 +156,21 @@ public class BasicFindReplaceParameters {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 83 * hash + Objects.hashCode(this.findString);
+        hash = 83 * hash + Objects.hashCode(this.replaceString);
+        hash = 83 * hash + Objects.hashCode(this.graphElement);
+        hash = 83 * hash + Objects.hashCode(this.attributeList);
+        hash = 83 * hash + (this.standardText ? 1 : 0);
+        hash = 83 * hash + (this.regEx ? 1 : 0);
+        hash = 83 * hash + (this.ignoreCase ? 1 : 0);
+        hash = 83 * hash + (this.exactMatch ? 1 : 0);
+        hash = 83 * hash + (this.searchAllGraphs ? 1 : 0);
+        return hash;
     }
 
     public String getFindString() {

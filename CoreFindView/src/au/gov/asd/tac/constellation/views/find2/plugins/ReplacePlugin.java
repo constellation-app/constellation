@@ -43,7 +43,6 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final String replaceString;
     private Boolean regex;
     private final Boolean ignorecase;
-    private final Boolean replaceAll;
     private final Boolean replaceNext;
     private final Boolean replaceIn;
 
@@ -54,7 +53,6 @@ public class ReplacePlugin extends SimpleEditPlugin {
         this.replaceString = parameters.getReplaceString();
         this.regex = parameters.isRegEx();
         this.ignorecase = parameters.isIgnoreCase();
-        this.replaceAll = replaceAll;
         this.replaceNext = replaceNext;
         this.replaceIn = parameters.isReplaceIn();
     }

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find2.plugins;
 
-import au.gov.asd.tac.constellation.views.find.advanced.*;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;

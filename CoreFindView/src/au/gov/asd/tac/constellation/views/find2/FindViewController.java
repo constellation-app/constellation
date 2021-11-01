@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 
 /**
@@ -46,8 +45,6 @@ public class FindViewController {
     // Parameters
     private final BasicFindReplaceParameters currentBasicFindParameters;
     private final BasicFindReplaceParameters currentBasicReplaceParameters;
-
-    private static final Logger LOGGER = Logger.getLogger(FindViewController.class.getName());
 
     /**
      * Private constructor for singleton
@@ -179,6 +176,10 @@ public class FindViewController {
                 PluginExecution.withPlugin(basicReplacePlugin).executeLater(graph);
             }
         }
+    }
+
+    public FindViewTopComponent getParentComponent() {
+        return parentComponent;
     }
 
     public BasicFindReplaceParameters getCurrentBasicFindParameters() {

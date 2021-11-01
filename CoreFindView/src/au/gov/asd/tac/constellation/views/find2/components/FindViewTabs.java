@@ -30,7 +30,6 @@ public class FindViewTabs extends TabPane {
 
     private final FindViewPane parentComponent;
 
-//    private final TabPane tabPane;
     private final BasicFindTab basicFindTab;
     private final ReplaceTab replaceTab;
     private final Tab advancedFindTab;
@@ -51,7 +50,7 @@ public class FindViewTabs extends TabPane {
                 } else if (newTab.equals(replaceTab)) {
                     replaceTab.updateButtons();
                 } else {
-
+                    // place holder for advanced tab
                 }
             }
         }
