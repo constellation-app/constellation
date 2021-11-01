@@ -124,7 +124,7 @@ public final class ConversationBox extends StackPane {
 
     private int foundCount;
     private int searchCount;
-    
+
     private static final String FOUND_TEXT = "Showing ";
     private static final String FOUND_PASS_COLOUR = "-fx-text-fill: yellow;";
     private static final String FOUND_FAIL_COLOUR = "-fx-text-fill: red;";
@@ -260,26 +260,30 @@ public final class ConversationBox extends StackPane {
         searchTextField.setOnKeyTyped(e -> {
             foundLabel.setText("searching...");
             foundLabel.setStyle(FOUND_PASS_COLOUR);
-            
-             // If they hit enter iterate through the results
+
+            // If they hit enter iterate through the results
             searchCount = e.getCharacter().equals("\r") ? (searchCount + 1) % foundCount : 0;
-            
+
             highlightRegions();
             refreshCountUI(false);
         });
-        
+
         prevButton.setOnAction(event -> {
-            searchCount = searchCount <= 0 ? foundCount - 1 : (searchCount - 1) % foundCount;
-            highlightRegions();
-            foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+            if (foundCount > 0) {
+                searchCount = searchCount <= 0 ? foundCount - 1 : (searchCount - 1) % foundCount;
+                highlightRegions();
+                foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+            }
         });
         nextButton.setOnAction(event -> {
-            searchCount = Math.abs((searchCount + 1) % foundCount);
-            highlightRegions();
-            foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+            if (foundCount > 0) {
+                searchCount = Math.abs((searchCount + 1) % foundCount);
+                highlightRegions();
+                foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+            }
         });
         searchTextField.setPrefWidth(300);
-        
+
         foundLabel.setPadding(new Insets(4, 8, 4, 8));
         searchHBox.getChildren().addAll(searchTextField, prevButton, nextButton, foundLabel);
 
@@ -299,7 +303,11 @@ public final class ConversationBox extends StackPane {
             searchCount = 0;
         }
 
-        foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+        foundLabel.setText(
+                StringUtils.isBlank(searchTextField.getText()) || foundCount == 0
+                ? ""
+                : FOUND_TEXT + (searchCount + 1) + " of " + foundCount
+        );
         foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
     }
 
@@ -310,7 +318,7 @@ public final class ConversationBox extends StackPane {
     private void highlightRegions() {
         foundCount = 0;
 
-        final Map<Integer, ConversationMessage> matches = new HashMap<Integer, ConversationMessage>();
+        final Map<Integer, ConversationMessage> matches = new HashMap<>();
         final List<ConversationMessage> visibleMessages = conversation.getVisibleMessages();
 
         visibleMessages.forEach(message -> {
@@ -334,7 +342,7 @@ public final class ConversationBox extends StackPane {
                 }
             });
         });
-        if (foundCount > 0){
+        if (foundCount > 0) {
             bubbles.scrollTo(matches.get(searchCount));
         }
     }
