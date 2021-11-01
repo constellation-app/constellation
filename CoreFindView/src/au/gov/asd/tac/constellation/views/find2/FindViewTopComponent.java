@@ -127,19 +127,19 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         WindowManager.getDefault().setTopComponentFloating(this, true);
 
         this.setRequestFocusEnabled(true);
+
         /**
-         * NOTE - This is by no means a flawless solution. Loop through all
-         * active windows. All view windows will have a default name of
-         * dialog0,1,2,3 etc. This code works of the basis that the only dialog
-         * window in float mode is the find view. It is assumed all other
-         * windows will remain docked. I have not found a way to capture the
-         * exact window that contains the find view hence this is the only
-         * solution I could think of at the current time.
+         * This loops through all the current windows and compares this top
+         * components top level ancestor with the windows parent. If they match
+         * the window is the find view so we set the location and the size of
+         * the window.
          */
         for (Window window : Window.getWindows()) {
-            if (window.getName().contains("dialog")) {
-                window.setMinimumSize(new Dimension(485, 285));
-                window.setLocation((int) Screen.getPrimary().getBounds().getMaxX() - 510, 110);
+            if (this.getTopLevelAncestor() != null) {
+                if (this.getTopLevelAncestor().getName().equals(window.getName())) {
+                    window.setMinimumSize(new Dimension(485, 285));
+                    window.setLocation((int) Screen.getPrimary().getBounds().getMaxX() - 510, 110);
+                }
             }
         }
     }
