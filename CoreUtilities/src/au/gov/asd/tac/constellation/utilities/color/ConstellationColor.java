@@ -520,14 +520,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return integer representing the result of the comparison
      */
     private int compareColourComponents(final float colour1Component, final float colour2Component) {
-        final float comparison = colour1Component - colour2Component;
-        if (comparison > 0) {
-            return 1;
-        } else if (comparison < 0) {
-            return -1;
-        } else {
-            return 0;
-        }
+        return colour1Component == colour2Component ? 0 : (int) ((colour1Component - colour2Component) / Math.abs(colour1Component - colour2Component)); 
     }
 
     /**
