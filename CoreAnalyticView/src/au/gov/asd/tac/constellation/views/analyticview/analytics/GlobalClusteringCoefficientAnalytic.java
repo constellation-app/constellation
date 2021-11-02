@@ -44,7 +44,7 @@ public class GlobalClusteringCoefficientAnalytic extends GraphAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-global-clustering-coefficient.html";
+        return getHelpPath() + "analytic-global-clustering-coefficient.md";
     }
 
     @Override

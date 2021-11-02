@@ -44,7 +44,7 @@ public class ResourceAllocationIndexAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-resource-allocation-index.html";
+        return getHelpPath() + "analytic-resource-allocation-index.md";
     }
 
     @Override

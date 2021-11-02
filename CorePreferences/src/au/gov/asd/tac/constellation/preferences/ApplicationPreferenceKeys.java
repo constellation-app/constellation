@@ -185,6 +185,7 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String RULE_PRIORITIES = "customRules";
 
+
     private ApplicationPreferenceKeys() {
     }
 }

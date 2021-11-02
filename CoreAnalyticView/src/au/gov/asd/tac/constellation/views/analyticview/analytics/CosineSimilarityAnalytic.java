@@ -44,7 +44,7 @@ public class CosineSimilarityAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-cosine-similarity.html";
+        return getHelpPath() + "analytic-cosine-similarity.md";
     }
 
     @Override
