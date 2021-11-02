@@ -138,12 +138,12 @@ public class DataAccessUserPreferencesNGTest {
                         "param2", "value2"
                 )
         );
-        expectedPreferences.setPluginParameters(
-                Map.of(
+        final Map<String, Map<String, String>> examplePluginParameters = new HashMap<>();
+        examplePluginParameters.put(plugin1.getClass().getSimpleName(), Map.of(
                         plugin1.getClass().getSimpleName() + "." + "__is_enabled__", "true",
                         "param3", "value3"
-                )
-        );
+                ));
+        expectedPreferences.setPluginParameters(examplePluginParameters);
 
         assertEquals(preferences, expectedPreferences);
     }

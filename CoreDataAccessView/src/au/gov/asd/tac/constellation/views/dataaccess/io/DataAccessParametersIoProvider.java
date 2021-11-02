@@ -133,14 +133,15 @@ public class DataAccessParametersIoProvider {
                         // the JSON if the JSON contains data for this plugin and it's
                         // enabled.
                         .filter(pane ->
-                                loadedParameter.getPluginParameters().containsKey(getEnabledPluginKey(pane))
+                                loadedParameter.getPluginParameters().containsKey(pane.getPlugin().getClass().getSimpleName())
+                                        && loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName()).containsKey(getEnabledPluginKey(pane))
                                         && Boolean.valueOf(
-                                                loadedParameter.getPluginParameters().get(
+                                                loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName()).get(
                                                         getEnabledPluginKey(pane)
                                                 ))
                         )
                         .forEach(pane -> pane.setParameterValues(
-                                loadedParameter.getPluginParameters()
+                                loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName())
                         ));
             });
         }
