@@ -106,8 +106,19 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         if (foundResult == null) {
             foundResult = new FindResultsList(STARTING_INDEX, this.parameters, graph.getId());
         } else {
+            /**
+             * This is delicate, so don't change. This process, captures the
+             * users previous search and their current search, compares the 2 to
+             * see if they are the same. If yes then get the previous index of
+             * the last foundResult. If its different reset the index. The
+             * parameters are instantiated as new variables as they were
+             * manipulation issues elsewhere causing this process to fail.
+             */
             final FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getSearchParameters(), foundResult.getGraphId());
-            foundResult = new FindResultsList(getIndex(foundResult, oldList), this.parameters, oldList.getGraphId());
+            final BasicFindReplaceParameters oldparameters = oldList.getSearchParameters();
+            final BasicFindReplaceParameters newParamters = new BasicFindReplaceParameters(this.parameters);
+            int newIndex = getIndex(newParamters, oldparameters, foundResult.getCurrentIndex());
+            foundResult = new FindResultsList(newIndex, newParamters, oldList.getGraphId());
         }
 
         foundResult.clear();
@@ -233,11 +244,12 @@ public class BasicFindPlugin extends SimpleEditPlugin {
      * @param foundResult the list of foundResults
      * @return the correct current index
      */
-    private int getIndex(final FindResultsList foundResult, final FindResultsList lastFoundResult) {
-        if (!selectAll && foundResult != null && this.parameters.equals(lastFoundResult.getSearchParameters())) {
+    private int getIndex(final BasicFindReplaceParameters currentParameters, final BasicFindReplaceParameters oldParameters, int currentIndex) {
+
+        if (!selectAll && currentParameters.equals(oldParameters)) {
             // If the query hasnt changed and there must be elements in the list
             // get the current index
-            return foundResult.getCurrentIndex();
+            return currentIndex;
         }
         // If selecting all elements, reset the index
         return STARTING_INDEX;

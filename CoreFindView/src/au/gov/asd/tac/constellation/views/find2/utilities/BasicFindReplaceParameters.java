@@ -113,9 +113,7 @@ public class BasicFindReplaceParameters {
     @Override
     public boolean equals(final Object object) {
         int matches = 0;
-        if (this == object) {
-            return true;
-        }
+
         if (getClass() != object.getClass()) {
             return false;
         }
