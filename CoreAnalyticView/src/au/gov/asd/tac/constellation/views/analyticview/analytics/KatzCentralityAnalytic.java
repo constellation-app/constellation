@@ -43,7 +43,7 @@ public class KatzCentralityAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-katz-centrality.html";
+        return getHelpPath() + "analytic-katz-centrality.md";
     }
 
     @Override

@@ -29,6 +29,11 @@
 
 ## Changes in September 2021
 
+-   Added a preference to choose between viewing the help documentation offline,
+    or online.
+
+-   Removed JavaHelp and replaced it with the new help system.
+
 -   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
     rotation values in the wrong value positions.
 

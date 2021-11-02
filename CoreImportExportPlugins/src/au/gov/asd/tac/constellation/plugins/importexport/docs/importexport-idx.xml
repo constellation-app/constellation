@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE index PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 2.0//EN" "http://java.sun.com/products/javahelp/index_2_0.dtd">
-<index version="2.0">
-    <indexitem text="Export From Constellation" target="au.gov.asd.tac.constellation.plugins.importexport.export"/>
-    <indexitem text="Import From File" target="au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane"/>
-    <indexitem text="Import from Database" target="au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane"/>
-</index>
