@@ -44,7 +44,7 @@ public class AverageDegreeAnalytic extends GraphAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-average-degree.html";
+        return getHelpPath() + "analytic-average-degree.md";
     }
 
     @Override

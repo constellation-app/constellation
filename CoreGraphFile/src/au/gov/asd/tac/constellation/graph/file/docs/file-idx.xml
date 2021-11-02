@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE index PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 2.0//EN" "http://java.sun.com/products/javahelp/index_2_0.dtd">
-<index version="2.0">
-    <indexitem text="Autosave" target="au.gov.asd.tac.constellation.graph.file.autosave"/>
-    <indexitem text="New Graph" target="au.gov.asd.tac.constellation.graph.file.newGraph"/>
-    <indexitem text="Open Graph" target="au.gov.asd.tac.constellation.graph.file.openGraph"/>
-    <indexitem text="Save Graph" target="au.gov.asd.tac.constellation.graph.file.saveGraph"/>
-    <indexitem text="Nebula" target="au.gov.asd.tac.constellation.graph.file.nebula"/>
-</index>

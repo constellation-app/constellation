@@ -44,7 +44,7 @@ public class MultiplexityAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-multiplexity.html";
+        return getHelpPath() + "analytic-multiplexity.md";
     }
 
     @Override
