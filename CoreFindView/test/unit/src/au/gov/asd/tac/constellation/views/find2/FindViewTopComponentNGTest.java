@@ -101,7 +101,7 @@ public class FindViewTopComponentNGTest {
 
         setUpTests();
 
-        assertEquals(topComponent.createContent(), topComponent.getFindViewPane());
+        assertEquals(spyTopComponent.createContent(), spyTopComponent.getFindViewPane());
     }
 
     /**
@@ -126,24 +126,23 @@ public class FindViewTopComponentNGTest {
         setUpTests();
         setupGraph();
 
-        topComponent = mock(FindViewTopComponent.class);
-        doNothing().when(topComponent).UpdateUI();
-        doNothing().when(topComponent).disableFindView();
+        doNothing().when(spyTopComponent).UpdateUI();
+        doNothing().when(spyTopComponent).disableFindView();
 
         // Open the component first to set up the supers listener
-        doCallRealMethod().when(topComponent).handleComponentOpened();
-        topComponent.handleComponentOpened();
+        doCallRealMethod().when(spyTopComponent).handleComponentOpened();
+        spyTopComponent.handleComponentOpened();
 
         // close the component
-        doCallRealMethod().when(topComponent).handleComponentClosed();
-        topComponent.handleComponentClosed();
+        doCallRealMethod().when(spyTopComponent).handleComponentClosed();
+        spyTopComponent.handleComponentClosed();
 
         /**
          * updateUI and disable findFindView should be called twice for
          * component open and component close
          */
-        verify(topComponent, times(2)).UpdateUI();
-        verify(topComponent, times(2)).disableFindView();
+        verify(spyTopComponent, times(2)).UpdateUI();
+        verify(spyTopComponent, times(2)).disableFindView();
     }
 
     /**
@@ -155,19 +154,18 @@ public class FindViewTopComponentNGTest {
         setUpTests();
         setupGraph();
 
-        topComponent = mock(FindViewTopComponent.class);
-        doNothing().when(topComponent).UpdateUI();
-        doNothing().when(topComponent).disableFindView();
-        doNothing().when(topComponent).focusFindTextField();
+        doNothing().when(spyTopComponent).UpdateUI();
+        doNothing().when(spyTopComponent).disableFindView();
+        doNothing().when(spyTopComponent).focusFindTextField();
 
         // Open the component
-        doCallRealMethod().when(topComponent).handleComponentOpened();
-        topComponent.handleComponentOpened();
+        doCallRealMethod().when(spyTopComponent).handleComponentOpened();
+        spyTopComponent.handleComponentOpened();
 
         // verify the 3 methods were all called once
-        verify(topComponent, times(1)).UpdateUI();
-        verify(topComponent, times(1)).disableFindView();
-        verify(topComponent, times(1)).focusFindTextField();
+        verify(spyTopComponent, times(1)).UpdateUI();
+        verify(spyTopComponent, times(1)).disableFindView();
+        verify(spyTopComponent, times(1)).focusFindTextField();
 
     }
 
@@ -180,15 +178,14 @@ public class FindViewTopComponentNGTest {
         setUpTests();
         setupGraph();
 
-        topComponent = mock(FindViewTopComponent.class);
-        doNothing().when(topComponent).disableFindView();
+        doNothing().when(spyTopComponent).disableFindView();
 
         // call handle graph opened
-        doCallRealMethod().when(topComponent).handleGraphOpened(graph);
-        topComponent.handleGraphOpened(graph);
+        doCallRealMethod().when(spyTopComponent).handleGraphOpened(graph);
+        spyTopComponent.handleGraphOpened(graph);
 
         // verify that the disableFindView function was called once
-        verify(topComponent, times(1)).disableFindView();
+        verify(spyTopComponent, times(1)).disableFindView();
     }
 
     /**
@@ -200,15 +197,14 @@ public class FindViewTopComponentNGTest {
         setUpTests();
         setupGraph();
 
-        topComponent = mock(FindViewTopComponent.class);
-        doNothing().when(topComponent).disableFindView();
+        doNothing().when(spyTopComponent).disableFindView();
 
         // call handle graph closed
-        doCallRealMethod().when(topComponent).handleGraphClosed(any(Graph.class));
-        topComponent.handleGraphClosed(graph);
+        doCallRealMethod().when(spyTopComponent).handleGraphClosed(any(Graph.class));
+        spyTopComponent.handleGraphClosed(graph);
 
         // verify the disableFindViewFunction was called
-        verify(topComponent, times(1)).disableFindView();
+        verify(spyTopComponent, times(1)).disableFindView();
 
     }
 
@@ -222,15 +218,14 @@ public class FindViewTopComponentNGTest {
         setUpTests();
         setupGraph();
 
-        topComponent = mock(FindViewTopComponent.class);
-        doNothing().when(topComponent).UpdateUI();
+        doNothing().when(spyTopComponent).UpdateUI();
 
         // Call handle new graph
-        doCallRealMethod().when(topComponent).handleNewGraph(graph);
-        topComponent.handleNewGraph(graph);
+        doCallRealMethod().when(spyTopComponent).handleNewGraph(graph);
+        spyTopComponent.handleNewGraph(graph);
 
         // verify updateUI was called
-        verify(topComponent, times(1)).UpdateUI();
+        verify(spyTopComponent, times(1)).UpdateUI();
     }
 
     /**
@@ -252,16 +247,16 @@ public class FindViewTopComponentNGTest {
              * Call to disable the view when no graphs are present. Verify that
              * the pane is disabled.
              */
-            topComponent.disableFindView();
-            assertEquals(topComponent.getFindViewPane().isDisabled(), true);
+            spyTopComponent.disableFindView();
+            assertEquals(spyTopComponent.getFindViewPane().isDisabled(), true);
 
             /**
              * SetUp the graph then repeat the same process. Verify that the
              * pane is no longer disabled
              */
             setupGraph();
-            topComponent.disableFindView();
-            assertEquals(topComponent.getFindViewPane().isDisabled(), false);
+            spyTopComponent.disableFindView();
+            assertEquals(spyTopComponent.getFindViewPane().isDisabled(), false);
 
         }
     }
@@ -310,8 +305,6 @@ public class FindViewTopComponentNGTest {
         setUpTests();
 
         //Create spys for all UI components
-        spyTopComponent = spy(topComponent);
-
         pane = new FindViewPane(topComponent);
         spyPane = spy(pane);
 
@@ -353,6 +346,8 @@ public class FindViewTopComponentNGTest {
 
     public void setUpTests() {
         topComponent = new FindViewTopComponent();
+        spyTopComponent = spy(topComponent);
+
         pane = mock(FindViewPane.class);
         tabs = mock(FindViewTabs.class);
 

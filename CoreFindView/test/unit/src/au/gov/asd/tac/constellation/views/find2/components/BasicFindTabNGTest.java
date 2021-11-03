@@ -45,6 +45,7 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -74,6 +75,8 @@ public class BasicFindTabNGTest {
     private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
 
     FindViewTopComponent findViewTopComponent;
+    FindViewTopComponent spyTopComponent;
+
 //    FindViewController findViewController;
     BasicFindTab basicFindTab;
     ReplaceTab replaceTab;
@@ -424,7 +427,7 @@ public class BasicFindTabNGTest {
 
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(findViewTopComponent);
+        mockController.init(spyTopComponent);
         doNothing().when(mockController).retriveMatchingElements(Mockito.eq(true), Mockito.eq(false));
 
         /**
@@ -475,7 +478,7 @@ public class BasicFindTabNGTest {
         setupGraph();
 
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(findViewTopComponent);
+        mockController.init(spyTopComponent);
         doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(true));
 
         BasicFindTab basicFindMock = mock(BasicFindTab.class);
@@ -515,7 +518,7 @@ public class BasicFindTabNGTest {
         setupGraph();
 
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(findViewTopComponent);
+        mockController.init(spyTopComponent);
         doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(false));
 
         BasicFindTab basicFindMock = mock(BasicFindTab.class);
@@ -561,6 +564,8 @@ public class BasicFindTabNGTest {
     public void setUpUi() {
 
         findViewTopComponent = mock(FindViewTopComponent.class);
+        spyTopComponent = spy(findViewTopComponent);
+
         findViewPane = mock(FindViewPane.class);
         findViewTabs = mock(FindViewTabs.class);
         FindViewController.getDefault();
