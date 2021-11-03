@@ -28,7 +28,11 @@ import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.Exceptions;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -43,16 +47,25 @@ import org.testng.annotations.Test;
 public class ResetStatePluginNGTest {
 
     private Graph graph;
+    private static final Logger LOGGER = Logger.getLogger(ResetStatePluginNGTest.class.getName());
 
     public ResetStatePluginNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

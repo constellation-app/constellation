@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -77,6 +79,7 @@ public class BasicFindTabNGTest {
     ReplaceTab replaceTab;
     FindViewPane findViewPane;
     FindViewTabs findViewTabs;
+    private static final Logger LOGGER = Logger.getLogger(BasicFindTabNGTest.class.getName());
 
     public BasicFindTabNGTest() {
     }
@@ -93,6 +96,7 @@ public class BasicFindTabNGTest {
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
 
@@ -113,8 +117,6 @@ public class BasicFindTabNGTest {
 
         setUpUi();
         assertEquals(basicFindTab.getParentComponent(), findViewTabs);
-
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**

@@ -34,12 +34,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,6 +71,7 @@ public class FindViewTopComponentNGTest {
     private BasicFindTab spyBasicFindTab;
     private ReplaceTab replaceTab;
     private ReplaceTab spyReplaceTab;
+    private static final Logger LOGGER = Logger.getLogger(FindViewTopComponentNGTest.class.getName());
 
     public FindViewTopComponentNGTest() {
     }
@@ -84,6 +88,7 @@ public class FindViewTopComponentNGTest {
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
 
@@ -301,48 +306,48 @@ public class FindViewTopComponentNGTest {
      */
     @Test
     public void testUpdateUI() {
-//        System.out.println("UpdateUI");
-//        setUpTests();
-//
-//        //Create spys for all UI components
-//        spyTopComponent = spy(topComponent);
-//
-//        pane = new FindViewPane(topComponent);
-//        spyPane = spy(pane);
-//
-//        tabs = new FindViewTabs(spyPane);
-//        spyTabs = spy(tabs);
-//
-//        basicFindTab = new BasicFindTab(spyTabs);
-//        spyBasicFindTab = spy(basicFindTab);
-//
-//        replaceTab = new ReplaceTab(spyTabs);
-//        spyReplaceTab = spy(replaceTab);
-//
-//        when(spyTopComponent.getFindViewPane()).thenReturn(spyPane);
-//        when(spyPane.getTabs()).thenReturn(spyTabs);
-//        when(spyTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
-//        when(spyTabs.getReplaceTab()).thenReturn(spyReplaceTab);
-//
-//        // Make the functions not do nothing
-//        doNothing().when(spyBasicFindTab).saveSelected(Mockito.any());
-//        doNothing().when(spyBasicFindTab).populateAttributes(Mockito.any());
-//        doNothing().when(spyBasicFindTab).updateSelectedAttributes(Mockito.any());
-//        doNothing().when(spyReplaceTab).saveSelected(Mockito.any());
-//        doNothing().when(spyReplaceTab).populateAttributes(Mockito.any());
-//        doNothing().when(spyReplaceTab).updateSelectedAttributes(Mockito.any());
-//
-//        // call the update UI method
-//        doCallRealMethod().when(spyTopComponent).UpdateUI();
-//        spyTopComponent.UpdateUI();
-//
-//        // verify each function was called once
-//        verify(spyBasicFindTab, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
-//        verify(spyBasicFindTab, times(1)).populateAttributes(Mockito.eq(GraphElementType.VERTEX));
-//        verify(spyBasicFindTab, times(1)).updateSelectedAttributes(Mockito.eq(spyBasicFindTab.getMatchingAttributeList(GraphElementType.VERTEX)));
-//        verify(spyReplaceTab, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
-//        verify(spyReplaceTab, times(1)).populateAttributes(Mockito.eq(GraphElementType.VERTEX));
-//        verify(spyReplaceTab, times(1)).updateSelectedAttributes(Mockito.eq(spyBasicFindTab.getMatchingAttributeList(GraphElementType.VERTEX)));
+        System.out.println("UpdateUI");
+        setUpTests();
+
+        //Create spys for all UI components
+        spyTopComponent = spy(topComponent);
+
+        pane = new FindViewPane(topComponent);
+        spyPane = spy(pane);
+
+        tabs = new FindViewTabs(spyPane);
+        spyTabs = spy(tabs);
+
+        basicFindTab = new BasicFindTab(spyTabs);
+        spyBasicFindTab = spy(basicFindTab);
+
+        replaceTab = new ReplaceTab(spyTabs);
+        spyReplaceTab = spy(replaceTab);
+
+        when(spyTopComponent.getFindViewPane()).thenReturn(spyPane);
+        when(spyPane.getTabs()).thenReturn(spyTabs);
+        when(spyTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
+        when(spyTabs.getReplaceTab()).thenReturn(spyReplaceTab);
+
+        // Make the functions not do nothing
+        doNothing().when(spyBasicFindTab).saveSelected(Mockito.any());
+        doNothing().when(spyBasicFindTab).populateAttributes(Mockito.any());
+        doNothing().when(spyBasicFindTab).updateSelectedAttributes(Mockito.any());
+        doNothing().when(spyReplaceTab).saveSelected(Mockito.any());
+        doNothing().when(spyReplaceTab).populateAttributes(Mockito.any());
+        doNothing().when(spyReplaceTab).updateSelectedAttributes(Mockito.any());
+
+        // call the update UI method
+        doCallRealMethod().when(spyTopComponent).UpdateUI();
+        spyTopComponent.UpdateUI();
+
+        // verify each function was called once
+        verify(spyBasicFindTab, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
+        verify(spyBasicFindTab, times(1)).populateAttributes(Mockito.eq(GraphElementType.VERTEX));
+        verify(spyBasicFindTab, times(1)).updateSelectedAttributes(Mockito.eq(spyBasicFindTab.getMatchingAttributeList(GraphElementType.VERTEX)));
+        verify(spyReplaceTab, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
+        verify(spyReplaceTab, times(1)).populateAttributes(Mockito.eq(GraphElementType.VERTEX));
+        verify(spyReplaceTab, times(1)).updateSelectedAttributes(Mockito.eq(spyBasicFindTab.getMatchingAttributeList(GraphElementType.VERTEX)));
 
     }
 

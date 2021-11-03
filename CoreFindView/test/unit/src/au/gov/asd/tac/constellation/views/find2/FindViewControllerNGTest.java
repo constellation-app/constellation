@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -38,6 +41,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.util.Exceptions;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 import org.testng.annotations.AfterClass;
@@ -62,16 +66,25 @@ public class FindViewControllerNGTest {
     private BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("equal", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
     private BasicFindReplaceParameters parameters2 = new BasicFindReplaceParameters("notEqual", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
     private BasicFindReplaceParameters parametersAllGraphs = new BasicFindReplaceParameters("equal", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, true);
+    private static final Logger LOGGER = Logger.getLogger(FindViewControllerNGTest.class.getName());
 
     public FindViewControllerNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
