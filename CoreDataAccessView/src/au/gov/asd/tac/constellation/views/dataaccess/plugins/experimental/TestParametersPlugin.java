@@ -218,7 +218,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         for (final GraphElementType elementType : GraphElementType.values()) {
             elementTypeOptions.add(new GraphElementTypeParameterValue(elementType));
         }
-        final PluginParameter<SingleChoiceParameterValue> elementType = SingleChoiceParameterType.build(ELEMENT_TYPE_PARAMETER_ID);
+        final PluginParameter<SingleChoiceParameterValue> elementType = SingleChoiceParameterType.build(ELEMENT_TYPE_PARAMETER_ID, GraphElementTypeParameterValue.class);
         elementType.setName("Graph element type");
         elementType.setDescription("Graph element type");
         SingleChoiceParameterType.setOptionsData(elementType, elementTypeOptions);
@@ -526,7 +526,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         return results;
     }
 
-    public class GraphElementTypeParameterValue extends ParameterValue {
+    public static class GraphElementTypeParameterValue extends ParameterValue {
 
         private GraphElementType elementType;
 
