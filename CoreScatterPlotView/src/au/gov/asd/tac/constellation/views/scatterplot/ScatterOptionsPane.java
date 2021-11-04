@@ -46,7 +46,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.util.Callback;
-import org.netbeans.api.javahelp.Help;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
@@ -234,15 +233,8 @@ public class ScatterOptionsPane extends BorderPane {
 
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         helpButton = new Button("", helpImage);
-        helpButton.setOnAction(event -> {
-            final Help help = Lookup.getDefault().lookup(Help.class);
-            if (help != null) {
-                final String helpId = this.getClass().getPackage().getName();
-                if (help.isValidID(helpId, true)) {
-                    new HelpCtx(helpId).display();
-                }
-            }
-        });
+        helpButton.setOnAction(event
+                -> new HelpCtx(this.getClass().getPackage().getName()).display());
 
         this.optionsToolBar = new ToolBar();
         optionsToolBar.getItems().addAll(elementTypeComboBox, xAttributeComboBox, yAttributeComboBox, selectedOnlyButton, logarithmicAxisX, logarithmicAxisY, helpButton);

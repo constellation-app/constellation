@@ -23,10 +23,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.MissingResourceException;
-import org.netbeans.api.javahelp.Help;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -139,15 +137,7 @@ public abstract class AbstractPlugin implements Plugin {
      */
     @Override
     public HelpCtx getHelpCtx() {
-        final Help help = Lookup.getDefault().lookup(Help.class);
-        if (help != null) {
-            final String helpId = getClass().getName();
-            if (help.isValidID(helpId, true)) {
-                return new HelpCtx(helpId);
-            }
-        }
-
-        return null;
+        return new HelpCtx(getClass().getName());
     }
 
     @Override
