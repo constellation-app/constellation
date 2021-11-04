@@ -6,6 +6,15 @@
     
     <property name="ivy.jar.file" value="${user.home}/.ivy2/ivy-2.5.0.jar"/>
     <property name="dependency.dir" value="CoreDependencies"/>
+    <property name="help.deploy.dir" value="dist/constellation/constellation"/>
+    <property name="help.docs.dir" value="**/docs"/>
+    <property name="help.docs.resources.dir" value="**/docs/resources"/>
+    <property name="help.type.md" value="**.md"/>
+    <property name="help.type.png" value="**.png"/>
+    <property name="help.type.jpg" value="**.jpg"/>
+    <property name="help.bootstrap.dir" value="bootstrap/**"/>
+    <property name="help.toc.file" value="toc.md"/>
+    
     
     <target name="update-dependencies-clean-build" 
             description="Download dependencies and build all modules in the suite.">
@@ -28,6 +37,28 @@
             <property name="projectupdater.dir" value="../ProjectUpdater/"/>
             <property name="third.party.depdendencies" value="true"/>
         </ant>
+    </target>
+    
+    <!-- Unzips the release from build-zip and places relevant help resources for deployment and rezips -->
+    <target name="build-zip-with-help" depends="build-zip" description="Deploy help files for release">
+        <unzip src="${basedir}/dist/constellation.zip" dest="${basedir}/dist"/>
+        <copy todir="${help.deploy.dir}" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${basedir}">
+                <include name="${help.toc.file}"/>
+                <include name="${help.bootstrap.dir}"/>
+                <include name="${help.docs.dir}/${help.type.md}"/>
+                <include name="${help.docs.dir}/${help.type.png}"/>
+                <include name="${help.docs.dir}/${help.type.jpg}"/>
+                <include name="${help.docs.resources.dir}/${help.type.md}"/>
+                <include name="${help.docs.resources.dir}/${help.type.png}"/>
+                <include name="${help.docs.resources.dir}/${help.type.jpg}"/>
+                <exclude name="docs/**"/>
+                <exclude name="**/build/**"/>
+                <exclude name="${help.deploy.dir}/**"/>
+            </fileset>
+        </copy>
+        <zip destfile="${basedir}/dist/constellation.zip" basedir="${basedir}/dist/constellation"/>
+        <delete dir="${basedir}/dist/constellation" failonerror="false"/>
     </target>
     
     <!-- Useful Dependency Utilities -->

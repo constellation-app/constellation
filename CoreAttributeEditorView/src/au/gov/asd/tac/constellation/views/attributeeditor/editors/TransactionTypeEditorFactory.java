@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
@@ -73,21 +74,15 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
             if (typeList.getItems().contains(type)) {
                 typeList.getSelectionModel().select(type);
             } else {
-                if (type != null) {
-                    nameText.setText(type.getName());
-                } else {
-                    nameText.setText("");
-                }
+                nameText.setText(type != null ? type.getName() : "");
             }
         }
 
         @Override
         protected SchemaTransactionType getValueFromControls() {
-            if (typeList.getSelectionModel().getSelectedItem() != null) {
-                return typeList.getSelectionModel().getSelectedItem();
-            } else {
-                return SchemaTransactionTypeUtilities.getTypeOrBuildNew(nameText.getText());
-            }
+            return typeList.getSelectionModel().getSelectedItem() != null
+                    ? typeList.getSelectionModel().getSelectedItem()
+                    : SchemaTransactionTypeUtilities.getTypeOrBuildNew(nameText.getText());
         }
 
         @Override
@@ -99,7 +94,7 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
             typeList = new ListView<>();
             typeList.setCellFactory(p -> new ListCell<SchemaTransactionType>() {
                 @Override
-                protected void updateItem(final SchemaTransactionType item, boolean empty) {
+                protected void updateItem(final SchemaTransactionType item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (!empty && item != null) {
                         setText(item.getName());
@@ -109,8 +104,9 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
 
             // get all types supported by the current schema
             final List<SchemaTransactionType> types = new ArrayList<>();
-            if (GraphManager.getDefault().getActiveGraph() != null && GraphManager.getDefault().getActiveGraph().getSchema() != null) {
-                final SchemaFactory schemaFactory = GraphManager.getDefault().getActiveGraph().getSchema().getFactory();
+            final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
+            if (currentGraph != null && currentGraph.getSchema() != null) {
+                final SchemaFactory schemaFactory = currentGraph.getSchema().getFactory();
                 final Set<Class<? extends SchemaConcept>> concepts = new HashSet<>();
                 concepts.addAll(schemaFactory.getRegisteredConcepts());
                 SchemaConceptUtilities.getChildConcepts(schemaFactory.getRegisteredConcepts())
