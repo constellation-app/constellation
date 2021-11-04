@@ -72,7 +72,7 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
             final Boolean searchAllGraphs = jnode.get("searchAllGraphs").asBoolean();
 
             // Get the selected attributes
-            final List<Attribute> selectedAttributes = new ArrayList<Attribute>();
+            final List<Attribute> selectedAttributes = new ArrayList<>();
             final ArrayNode selectedAttributesArray = (ArrayNode) jnode.withArray("selectedAttributes");
 
             for (int i = 0; i < selectedAttributesArray.size(); i++) {
@@ -89,7 +89,7 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
                     selectedAttributes, standardText, regEx, ignoreCase, exactMatch, findInSelection, addToSelection, removeFromSelection, replaceInSelected, searchAllGraphs);
 
             // Get the find results
-            final List<FindResult> findResults = new ArrayList<FindResult>();
+            final List<FindResult> findResults = new ArrayList<>();
             final ArrayNode findResultsArray = (ArrayNode) jnode.withArray("findResults");
             for (int i = 0; i < findResultsArray.size(); i = i + 3) {
                 if (findResultsArray.get(i).isNull()) {

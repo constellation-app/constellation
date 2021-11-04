@@ -113,15 +113,13 @@ public class BasicFindReplaceParameters {
     @Override
     public boolean equals(final Object object) {
         int matches = 0;
-
+        if (this == null || object == null) {
+            return false;
+        }
         if (getClass() != object.getClass()) {
             return false;
         }
         BasicFindReplaceParameters parameters = (BasicFindReplaceParameters) object;
-
-        if (this == null || object == null) {
-            return false;
-        }
 
         if (findString.equals(parameters.getFindString())) {
             matches++;
@@ -150,10 +148,8 @@ public class BasicFindReplaceParameters {
         if (searchAllGraphs == parameters.isSearchAllGraphs()) {
             matches++;
         }
-        if (matches == 9) {
-            return true;
-        }
-        return false;
+        return matches == 9;
+
     }
 
     @Override

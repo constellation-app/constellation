@@ -105,7 +105,7 @@ public class FindViewController {
             if (attrPlugin.getAttributeModificationCounter() != attributeModificationCounter) {
                 allAttributes.addAll(attrPlugin.getAttributes());
                 for (final Attribute a : allAttributes) {
-                    if (a.getAttributeType().equals("string")) {
+                    if (("string").equals(a.getAttributeType())) {
                         attributes.add(a);
                         attributeList.add(a.getName());
                     }

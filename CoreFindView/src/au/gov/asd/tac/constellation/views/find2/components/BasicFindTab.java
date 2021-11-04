@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParame
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -69,21 +68,21 @@ public class BasicFindTab extends Tab {
 
     protected final Label lookForLabel = new Label("Look For:");
     protected final String[] elementTypes = {GraphElementType.VERTEX.getShortLabel(), GraphElementType.TRANSACTION.getShortLabel(), GraphElementType.EDGE.getShortLabel(), GraphElementType.LINK.getShortLabel()};
-    protected final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<String>(FXCollections.observableArrayList(elementTypes));
+    protected final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(elementTypes));
 
     protected final Label inAttributesLabel = new Label("In Attributes:");
-    protected final CheckComboBox<String> inAttributesMenu = new CheckComboBox<String>();
+    protected final CheckComboBox<String> inAttributesMenu = new CheckComboBox<>();
     protected List<Attribute> attributes = new ArrayList<>();
     protected List<Attribute> selectedNodeAttributes = new ArrayList<>();
     protected List<Attribute> selectedTransAttributes = new ArrayList<>();
     protected List<Attribute> selectedEdgeAttributes = new ArrayList<>();
     protected List<Attribute> selectedLinkAttributes = new ArrayList<>();
 
-    final ContextMenu contextMenu = new ContextMenu();
-    final MenuItem selectAllMenuItem = new MenuItem("Select All");
-    final MenuItem deselectAllMenuItem = new MenuItem("Deselect All");
+    protected final ContextMenu contextMenu = new ContextMenu();
+    protected final MenuItem selectAllMenuItem = new MenuItem("Select All");
+    protected final MenuItem deselectAllMenuItem = new MenuItem("Deselect All");
 
-    final long attributeModificationCounter = Long.MIN_VALUE;
+    private static final long attributeModificationCounter = Long.MIN_VALUE;
 
     // need to add menu items
     protected final GridPane preferencesGrid = new GridPane();
@@ -106,10 +105,8 @@ public class BasicFindTab extends Tab {
     private final Button findPrevButton = new Button("Find Prev");
     private final Button findAllButton = new Button("Find All");
 
-    protected final int LABEL_WIDTH = 90;
-    protected final int DROP_DOWN_WIDTH = 120;
-
-    protected static final Logger LOGGER = Logger.getLogger(BasicFindTab.class.getName());
+    protected static final int LABEL_WIDTH = 90;
+    protected static final int DROP_DOWN_WIDTH = 120;
 
     public BasicFindTab(final FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;
@@ -129,15 +126,10 @@ public class BasicFindTab extends Tab {
         }
         );
 
-        selectAllMenuItem.setOnAction(event -> {
-            inAttributesMenu.getCheckModel().checkAll();
-        });
-        deselectAllMenuItem.setOnAction(event -> {
-            inAttributesMenu.getCheckModel().clearChecks();
-        });
-        inAttributesMenu.setOnContextMenuRequested(event -> {
-            contextMenu.show(inAttributesMenu, event.getScreenX(), event.getScreenY());
-        });
+        selectAllMenuItem.setOnAction(event -> inAttributesMenu.getCheckModel().checkAll());
+        deselectAllMenuItem.setOnAction(event -> inAttributesMenu.getCheckModel().clearChecks());
+        inAttributesMenu.setOnContextMenuRequested(event -> contextMenu.show(inAttributesMenu, event.getScreenX(), event.getScreenY()));
+
         currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {

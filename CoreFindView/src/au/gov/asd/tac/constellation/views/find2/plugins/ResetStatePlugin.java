@@ -32,13 +32,13 @@ import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {"UPDATE", "MODIFY"})
 public class ResetStatePlugin extends SimpleEditPlugin {
 
-    private final static int STARTING_INDEX = -1;
+    private static final int STARTING_INDEX = -1;
 
-    /**
-     * This plugin is used with no variables, as its intended purpose is to
-     * update the program in the background
-     */
     public ResetStatePlugin() {
+        /**
+         * This plugin is used with no variables, as does not explicitly need
+         * any.
+         */
     }
 
     @Override

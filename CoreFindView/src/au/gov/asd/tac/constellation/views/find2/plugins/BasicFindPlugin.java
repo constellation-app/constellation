@@ -55,7 +55,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean getNext;
     private final BasicFindReplaceParameters parameters;
 
-    private final static int STARTING_INDEX = -1;
+    private static final int STARTING_INDEX = -1;
 
     public BasicFindPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll, final boolean getNext) {
         this.elementType = parameters.getGraphElement();
@@ -217,7 +217,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
              * 1. Set the element at the specified index to selected.
              */
             if (!foundResult.isEmpty()) {
-                if (getNext == true) {
+                if (getNext) {
                     foundResult.incrementCurrentIndex();
                 } else {
                     foundResult.decrementCurrentIndex();

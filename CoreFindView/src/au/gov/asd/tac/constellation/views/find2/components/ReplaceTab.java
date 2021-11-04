@@ -43,12 +43,8 @@ public class ReplaceTab extends BasicFindTab {
         this.setText("Replace");
         setReplaceGridContent();
 
-        replaceAllButton.setOnAction(action -> {
-            replaceAllAction();
-        });
-        replaceNextButton.setOnAction(action -> {
-            replaceNextAction();
-        });
+        replaceAllButton.setOnAction(action -> replaceAllAction());
+        replaceNextButton.setOnAction(action -> replaceNextAction());
 
     }
 
@@ -127,6 +123,5 @@ public class ReplaceTab extends BasicFindTab {
     public Button getReplaceAllButton() {
         return replaceAllButton;
     }
-
 
 }

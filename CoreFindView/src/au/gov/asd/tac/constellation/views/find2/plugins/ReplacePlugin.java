@@ -41,10 +41,10 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final List<Attribute> selectedAttributes;
     private String findString;
     private final String replaceString;
-    private Boolean regex;
-    private final Boolean ignorecase;
-    private final Boolean replaceNext;
-    private final Boolean replaceIn;
+    private boolean regex;
+    private final boolean ignorecase;
+    private final boolean replaceNext;
+    private final boolean replaceIn;
 
     public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext) {
         this.elementType = parameters.getGraphElement();
