@@ -84,7 +84,6 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
                 }
             }
         }
-
         return added;
     }
 
@@ -108,7 +107,7 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
         return new ArrayList<>(CUSTOM_ICONS.keySet());
     }
 
-    private static File getIconDirectory() {
+    protected static File getIconDirectory() {
         // If for whatever reason we are not running as a netbeans application then it doesn't make sense to check preferences for a user icon directory.
         if (!NetbeansUtilities.isNetbeansApplicationRunning()) {
             return null;
