@@ -17,6 +17,9 @@
 
 -   Changed `DataAccessPluginType` from an abstract class to an interface.
 
+-   Changed the access of some of the constants in `DirectedShortestPathsPlugin` 
+    to private since they weren't being used elsewhere. 
+
 -   Renamed `au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys`
     to `au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities`
 
@@ -24,6 +27,12 @@
 
 -   Removed `RecentFilesWelcomePage` and moved functionality between
     `RecentFiles` and `WelcomeViewPane`
+
+-   Renamed `ShortestPathsFollowDirectionAction` to `DirectedShortestPathsAction`
+    to align with the plugin it calls.
+
+-   Renamed constants in `DirectedShortestPathsPlugin` with VERTEX in name to 
+    have NODE instead.
 
 ## Changes in September 2021
 

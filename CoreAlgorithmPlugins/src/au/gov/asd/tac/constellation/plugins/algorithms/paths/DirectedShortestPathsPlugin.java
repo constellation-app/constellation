@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -48,22 +47,33 @@ import org.openide.util.lookup.ServiceProvider;
 @Messages("DirectedShortestPathsPlugin=Directed Shortest Paths")
 public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
 
-    public static final String SOURCE_VERTEX_PARAMETER_ID = PluginParameter.buildId(DirectedShortestPathsPlugin.class, "source_vertex");
-    public static final Integer SOURCE_VERTEX_NOT_SET = -1;
+    public static final String SOURCE_NODE_PARAMETER_ID = PluginParameter.buildId(DirectedShortestPathsPlugin.class, "source_node");
+    
+    private static final Integer SOURCE_NODE_NOT_SET = -1;
+    
+    private Map<String, Integer> selectedNodes = null;
 
     @Override
     public PluginParameters createParameters() {
         final PluginParameters params = new PluginParameters();
 
-        final PluginParameter<SingleChoiceParameterValue> sourceVertex = SingleChoiceParameterType.build(SOURCE_VERTEX_PARAMETER_ID);
-        sourceVertex.setName("Source Node");
-        sourceVertex.setDescription("The source node is used to dictate the direction");
-        SingleChoiceParameterType.setOptions(sourceVertex, Lists.newArrayList(getSelectedNodes().keySet()));
-        params.addParameter(sourceVertex);
+        final PluginParameter<SingleChoiceParameterValue> sourceNode = SingleChoiceParameterType.build(SOURCE_NODE_PARAMETER_ID);
+        sourceNode.setName("Source Node");
+        sourceNode.setDescription("The source node is used to dictate the direction");
+        params.addParameter(sourceNode);
 
         return params;
     }
 
+    @Override
+    public void updateParameters(final Graph graph, final PluginParameters parameters) {
+        final Map<String, PluginParameter<?>> params = parameters.getParameters();
+        
+        @SuppressWarnings("unchecked") //SOURCE_NODE_PARAMETER is always of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> sourceNode = (PluginParameter<SingleChoiceParameterValue>) params.get(SOURCE_NODE_PARAMETER_ID);
+        SingleChoiceParameterType.setOptions(sourceNode, Lists.newArrayList(getSelectedNodes(graph).keySet()));        
+    }
+    
     /**
      * Returns true if the provided <code>Graph</code> has more than one vertex
      * selected.
@@ -117,11 +127,11 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
                     }
                 }
 
-                final String sourceVertexLabel = params.get(SOURCE_VERTEX_PARAMETER_ID).getStringValue();
-                final int sourceVertex = sourceVertexLabel == null ? SOURCE_VERTEX_NOT_SET : getSelectedNodes().get(sourceVertexLabel);
+                final String sourceVertexLabel = params.get(SOURCE_NODE_PARAMETER_ID).getStringValue();
+                final int sourceVertex = sourceVertexLabel == null ? SOURCE_NODE_NOT_SET : selectedNodes.get(sourceVertexLabel);
 
                 // if a source vertex is set then make sure it is at the start of the List
-                if (sourceVertex != SOURCE_VERTEX_NOT_SET && verticesToPath.get(0) != sourceVertex) {
+                if (sourceVertex != SOURCE_NODE_NOT_SET && verticesToPath.get(0) != sourceVertex) {
                     verticesToPath.remove((Object) sourceVertex);
                     verticesToPath.add(0, sourceVertex);
                 }
@@ -131,32 +141,33 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
             }
         }
     }
+    
+    private Map<String, Integer> getSelectedNodes(final Graph graph) {
+        if (selectedNodes == null) {
+            final Map<String, Integer> label2VxId = new HashMap<>();
+            if (graph != null) {
+                final ReadableGraph rg = graph.getReadableGraph();
+                try {
+                    final int vxLabelAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.LABEL.getName());
+                    final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
 
-    private Map<String, Integer> getSelectedNodes() {
-        final Map<String, Integer> label2VxId = new HashMap<>();
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-        if (graph != null) {
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
-                final int vxLabelAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.LABEL.getName());
-                final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-
-                if (vxSelectedAttr != Graph.NOT_FOUND && vxLabelAttr != Graph.NOT_FOUND) {
-                    final int vxCount = rg.getVertexCount();
-                    for (int position = 0; position < vxCount; position++) {
-                        final int vxId = rg.getVertex(position);
-                        if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
-                            final String label = rg.getStringValue(vxLabelAttr, vxId);
-                            label2VxId.put(label, vxId);
+                    if (vxSelectedAttr != Graph.NOT_FOUND && vxLabelAttr != Graph.NOT_FOUND) {
+                        final int vxCount = rg.getVertexCount();
+                        for (int position = 0; position < vxCount; position++) {
+                            final int vxId = rg.getVertex(position);
+                            if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
+                                final String label = rg.getStringValue(vxLabelAttr, vxId);
+                                label2VxId.put(label, vxId);
+                            }
                         }
                     }
+                } finally {
+                    rg.release();
                 }
-            } finally {
-                rg.release();
             }
+            selectedNodes = label2VxId;
         }
-
-        return label2VxId;
+        return selectedNodes;
     }
 
 }
