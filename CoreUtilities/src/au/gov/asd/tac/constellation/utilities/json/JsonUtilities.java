@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -373,8 +374,8 @@ public class JsonUtilities {
      * @return A String, String map based on the JSON String
      */
     public static Map<String, String> getStringAsMap(final JsonFactory factory, final String mapAsString) {
+        final Map<String, String> map = new HashMap<>();
         if (StringUtils.isNotEmpty(mapAsString)) {
-            final Map<String, String> map = new HashMap<>();
             try (final JsonParser jp = factory.createParser(mapAsString)) {
                 if (jp.nextToken() == JsonToken.START_OBJECT) {
                     while (jp.nextToken() != JsonToken.END_OBJECT) {
@@ -386,11 +387,10 @@ public class JsonUtilities {
                         }
                     }
                 }
-                return map;
             } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
-        return MapUtils.EMPTY_SORTED_MAP;
+        return map;
     }
 }
