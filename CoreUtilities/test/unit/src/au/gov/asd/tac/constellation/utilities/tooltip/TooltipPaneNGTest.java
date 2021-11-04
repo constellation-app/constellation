@@ -80,8 +80,8 @@ public class TooltipPaneNGTest {
     @Test
     public void testShowTooltip() {
         System.out.println("showTooltip");
-        final Pane node = mock(Pane.class);
-        doNothing().when(node).setManaged(Mockito.eq(false));
+        final Pane node = spy(new Pane());
+        doNothing().when(node).setManaged(Mockito.anyBoolean());
         
         final double x = 1.1;
         final double y = 2.2;
@@ -128,10 +128,10 @@ public class TooltipPaneNGTest {
     @Test
     public void testShowTooltip2() {
         System.out.println("showTooltip2");
-        final Pane toolTipNode = mock(Pane.class);
+        final Pane toolTipNode = spy(new Pane());
         doNothing().when(toolTipNode).setManaged(Mockito.eq(true));
         
-        final Pane node = mock(Pane.class);
+        final Pane node = spy(new Pane());
         doNothing().when(node).setManaged(Mockito.eq(false));
         
         final double x = 1.1;
