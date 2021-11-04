@@ -267,6 +267,7 @@
                 <package>au.gov.asd.tac.constellation.views.dataaccess.plugins.utility</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.state</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.templates</package>
+                <package>au.gov.asd.tac.constellation.views.dataaccess.utilities</package>
             </public-packages>
         </data>
     </configuration>
