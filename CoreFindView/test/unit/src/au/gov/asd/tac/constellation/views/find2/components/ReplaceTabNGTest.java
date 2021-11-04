@@ -298,7 +298,6 @@ public class ReplaceTabNGTest {
         when(findViewPane.getTabs()).thenReturn(findViewTabs);
         when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
         when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
-
         replaceTab = new ReplaceTab(findViewTabs);
 
     }

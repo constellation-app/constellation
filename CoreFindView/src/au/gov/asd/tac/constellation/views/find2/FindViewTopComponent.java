@@ -167,11 +167,11 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     }
 
     public void disableFindView() {
-        pane.setDisable(GraphManager.getDefault().getAllGraphs().isEmpty());
+        getFindViewPane().setDisable(GraphManager.getDefault().getAllGraphs().isEmpty());
     }
 
     public void focusFindTextField() {
-        pane.getTabs().getBasicFindTab().requestTextFieldFocus();
+        getFindViewPane().getTabs().getBasicFindTab().requestTextFieldFocus();
     }
 
     public void UpdateUI() {
