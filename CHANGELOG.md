@@ -2,9 +2,14 @@
 
 ## Changes in October 2021
 
--   Added `isRequired` in `PluginParameter` with a getter and a setter, which
+-   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
     can be used to configure the required plugin parameters to mark as `*required`
-	in the swagger.
+  	in the swagger.
+
+-   Removed the `keepAlive` method from `HttpsConnection` as it is not the 
+    method to enable HTTP keep-alive for `HttpURLConnection`. `keepAlive` is 
+    turned on by default and is controlled using the `http.keepalive` VM
+    argument.
 
 -   Added a file chooser utility to core utilities. This provides a template
     for opening file choosers. It protects against common mistakes that may
@@ -22,12 +27,17 @@
 
 ## Changes in September 2021
 
--   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing
-    rotation values in the wrong value positions.
+-   Added a preference to choose between viewing the help documentation offline,
+    or online.
 
+-   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
+    rotation values in the wrong value positions.
+    
 -   Moved `DataAccessPlugin`, `DataAccessPluginCoreType`, `DataAccessPluginRegistry
     and `DataAccessPluginType` from `au.gov.asd.tac.constellation.views.dataaccess`
     to `au.gov.asd.tac.constellation.views.dataaccess.plugins`.
+
+-   Removed JavaHelp and replaced it with the new help system.
 
 -   Removed unused `localized` parameter from the signature of the `locate()`
     method in `ConstellationInstalledFileLocator`.

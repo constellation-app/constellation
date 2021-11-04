@@ -50,7 +50,6 @@ public class HttpsConnection {
     private static final String NO_CERTIFICATE_ERROR = "Failed to create a secure connection. Make sure CONSTELLATION has access to your certificate.";
 
     private final HttpURLConnection httpConnection;
-    private final boolean enableSSL;
 
     /**
      * A {@code HttpsURLConnection} with some sensible default values
@@ -66,9 +65,8 @@ public class HttpsConnection {
      */
     public HttpsConnection(final URL url, final boolean enableSSL) throws IOException {
         this.httpConnection = enableSSL ? (HttpsURLConnection) url.openConnection() : (HttpURLConnection) url.openConnection();
-        this.enableSSL = enableSSL;
 
-        if (this.enableSSL) {
+        if (enableSSL) {
             if (ConstellationSecurityManager.getCurrentSecurityContext() == null) {
                 throw new RuntimeException(NO_CERTIFICATE_ERROR);
             }
@@ -253,16 +251,6 @@ public class HttpsConnection {
      */
     public HttpsConnection withXmlContentType() {
         httpConnection.setRequestProperty(HttpsConnection.CONTENT_TYPE, HttpsConnection.APPLICATION_XML);
-        return this;
-    }
-
-    /**
-     * Set the request property to Connection Keep Alive
-     *
-     * @return HttpsConnection
-     */
-    public HttpsConnection keepAlive() {
-        httpConnection.setRequestProperty(HttpsConnection.CONNECTION, HttpsConnection.KEEP_ALIVE);
         return this;
     }
 

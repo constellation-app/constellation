@@ -37,6 +37,8 @@ public class AccessRegistry<D> {
         return this;
     }
 
+    // Suppressing warning as the data within the registry will always be convertable to type D
+    @SuppressWarnings("unchecked")
     public D convert(Object source) {
         final Class<?> sourceClass = source.getClass();
         final List<FunctionRecord<?, D>> applicableRecords = new ArrayList<>();
@@ -92,10 +94,14 @@ public class AccessRegistry<D> {
             return this.sourceClass.isAssignableFrom(sourceClass);
         }
 
+        // Suppressing warning as the data within the registry will always be convertable to type S
+        @SuppressWarnings("unchecked")
         public D apply(Object parameter) {
             return function.apply((S) parameter);
         }
 
+        // Suppressing warning as the data within the registry will always be convertable to type FunctionRecord<S,D>
+        @SuppressWarnings("unchecked")
         @Override
         public int compareTo(FunctionRecord functionRecord) {
             if (sourceClass == functionRecord.sourceClass) {
