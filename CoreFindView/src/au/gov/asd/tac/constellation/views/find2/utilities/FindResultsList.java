@@ -28,17 +28,34 @@ public class FindResultsList extends ArrayList<FindResult> {
     private final String graphId;
     private final BasicFindReplaceParameters searchParameters;
 
+    /**
+     * Constructor for a findReuslts list
+     *
+     * @param graphId
+     */
     public FindResultsList(final String graphId) {
         this.graphId = graphId;
         this.searchParameters = new BasicFindReplaceParameters();
     }
 
+    /**
+     * Constructor for a findReuslts list
+     *
+     * @param index
+     * @param searchParameters
+     * @param graphId
+     */
     public FindResultsList(final int index, final BasicFindReplaceParameters searchParameters, final String graphId) {
         this.currentIndex = index;
         this.searchParameters = searchParameters;
         this.graphId = graphId;
     }
 
+    /**
+     * Constructor that takes another FindResultList and replicates it
+     *
+     * @param resultsList
+     */
     public FindResultsList(FindResultsList resultsList) {
         this.currentIndex = resultsList.getCurrentIndex();
         this.graphId = resultsList.getGraphId();
@@ -46,19 +63,27 @@ public class FindResultsList extends ArrayList<FindResult> {
         this.addAll(resultsList);
     }
 
+    /**
+     * Gets the current index
+     *
+     * @return currentIndex
+     */
     public int getCurrentIndex() {
         return currentIndex;
     }
 
+    /**
+     * Sets the current index
+     *
+     * @param index
+     */
     public void setCurrentIndex(final int index) {
         currentIndex = index;
     }
 
-    /*
-     * -1 - next
-        0 - next
-        1 - 
-     *
+    /**
+     * Increments the current index to the right value. If the index is the size
+     * of the list: index = 0, otherwise increment by 1
      */
     public void incrementCurrentIndex() {
         if (currentIndex == this.size() - 1) {
@@ -68,6 +93,10 @@ public class FindResultsList extends ArrayList<FindResult> {
         }
     }
 
+    /**
+     * Decrements the current index to the right value. If the index is 0 or the
+     * starting index (-1): index = size -1, otherwise decrement by 1
+     */
     public void decrementCurrentIndex() {
         if (currentIndex == 0 || currentIndex == -1) {
             currentIndex = this.size() - 1;
@@ -76,6 +105,11 @@ public class FindResultsList extends ArrayList<FindResult> {
         }
     }
 
+    /**
+     * Gets the graph Id of the graph this list is associated with
+     *
+     * @return
+     */
     public String getGraphId() {
         return graphId;
     }

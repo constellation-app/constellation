@@ -412,8 +412,8 @@ public class BasicFindTabNGTest {
         // Replace in
         basicFindTab.currentSelectionChoiceBox.getSelectionModel().select(3);
         basicFindTab.updateSelectionFactors();
-        assertEquals(basicFindTab.getFindNextButton().isDisable(), false);
-        assertEquals(basicFindTab.getFindPrevButton().isDisable(), false);
+        assertEquals(basicFindTab.getFindNextButton().isDisable(), true);
+        assertEquals(basicFindTab.getFindPrevButton().isDisable(), true);
     }
 
     /**

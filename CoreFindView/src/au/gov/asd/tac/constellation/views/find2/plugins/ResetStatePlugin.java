@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {"UPDATE", "MODIFY"})
 public class ResetStatePlugin extends SimpleEditPlugin {
 
+    // the starting index for the FindResultsList
     private static final int STARTING_INDEX = -1;
 
     public ResetStatePlugin() {
@@ -41,15 +42,30 @@ public class ResetStatePlugin extends SimpleEditPlugin {
          */
     }
 
+    /**
+     * This edit function retrieves the FindViewConcept MetaAttribute
+     * (FindResultsList) and resets the current index back to -1 as the graph
+     * element count has changed.
+     *
+     * @param graph
+     * @param interaction
+     * @param parameters
+     * @throws InterruptedException
+     * @throws PluginException
+     */
     @Override
     protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-
         int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         FindResultsList foundResult = graph.getObjectValue(stateId, 0);
         foundResult.setCurrentIndex(STARTING_INDEX);
 
     }
 
+    /**
+     * Gets the name of the plugin
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return "Find: Update State";

@@ -42,6 +42,10 @@ public class FindViewTabs extends TabPane {
         setTabContent();
         requestFocus();
 
+        /**
+         * Logic for what occurs when the user changes tabs. This should update
+         * the buttons at the bottom of the pane to match the tab selected.
+         */
         getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
             public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
@@ -61,14 +65,17 @@ public class FindViewTabs extends TabPane {
      * Adds the tabs into the tabPane and sets some tab specific attributes.
      */
     private void setTabContent() {
+        // Ensure all 3 tabs can not be closed.
         basicFindTab.setClosable(false);
         replaceTab.setClosable(false);
         advancedFindTab.setClosable(false);
 
+        // Add all 3 tabs to the tabPane
         getTabs().add(basicFindTab);
         getTabs().add(replaceTab);
         getTabs().add(advancedFindTab);
 
+        // Update the buttons based on the currently selected tab
         switch (getSelectionModel().getSelectedIndex()) {
             case 0:
                 basicFindTab.updateButtons();
@@ -82,18 +89,38 @@ public class FindViewTabs extends TabPane {
 
     }
 
+    /**
+     * Gets the findViewTabs
+     *
+     * @return the findViewTabs
+     */
     public TabPane getFindViewTabs() {
         return this;
     }
 
+    /**
+     * Gets the parent component
+     *
+     * @return FindViewPane
+     */
     public FindViewPane getParentComponent() {
         return parentComponent;
     }
 
+    /**
+     * Gets the BasicFindTab
+     *
+     * @return BasicFindTab
+     */
     public BasicFindTab getBasicFindTab() {
         return basicFindTab;
     }
 
+    /**
+     * Gets the ReplaceTab
+     *
+     * @return ReplaceTab
+     */
     public ReplaceTab getReplaceTab() {
         return replaceTab;
     }

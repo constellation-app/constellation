@@ -70,23 +70,50 @@ public class ReplacePlugin extends SimpleEditPlugin {
         final String searchString = regex ? findString : Pattern.quote(findString);
         final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
         final Pattern searchPattern = Pattern.compile(searchString, caseSensitivity);
+
+        /**
+         * Loop through all selected attributes, get the current element of the
+         * selected type and its value, check the value isn't null, then compare
+         * the value with the replace string based on the search preferences. If
+         * that element matches the search criteria, change its matching part of
+         * the value to the replace string.
+         */
         for (final Attribute a : selectedAttributes) {
+            // If the attribute exists on the graph
             if (graph.getAttribute(elementType, a.getName()) >= 0) {
+
+                // for each element of the given type
                 for (int i = 0; i < elementCount; i++) {
+
+                    // get the current graph element
                     final int currElement = elementType.getElement(graph, i);
+
+                    // get string value of it graph elements attribute
                     final String value = graph.getStringValue(a.getId(), currElement);
+
+                    // get the selected value of that graph element
                     boolean selected = graph.getBooleanValue(selectedAttribute, currElement);
+
+                    // If the value isnt null
                     if (value != null) {
+
                         final Matcher match = searchPattern.matcher(value);
                         final String newValue = match.replaceAll(replaceString);
+
                         if (!newValue.equals(value)) {
+                            // if replace in selected is false
                             if (!replaceIn) {
+                                // set the string of the element types attribute
+                                // to the new value
                                 graph.setStringValue(a.getId(), currElement, newValue);
                                 if (replaceNext) {
                                     return;
                                 }
                             } else {
+                                // if selected is false
                                 if (selected) {
+                                    // set the string of the element types attribute
+                                    // to the new value
                                     graph.setStringValue(a.getId(), currElement, newValue);
                                     if (replaceNext) {
                                         return;

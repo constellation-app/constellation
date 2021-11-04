@@ -28,7 +28,6 @@ import javafx.scene.layout.BorderPane;
 public class FindViewPane extends BorderPane {
 
     private final FindViewTopComponent parentComponent;
-
     private final FindViewTabs findViewTabs;
 
     public FindViewPane(final FindViewTopComponent parentComponent) {
@@ -38,10 +37,20 @@ public class FindViewPane extends BorderPane {
         this.requestFocus();
     }
 
+    /**
+     * Get the findViewPanes parent component
+     *
+     * @return find view Top Component
+     */
     public FindViewTopComponent getParentComponent() {
         return parentComponent;
     }
 
+    /**
+     * Get the Find view Tabs
+     *
+     * @return findViewTabs
+     */
     public FindViewTabs getTabs() {
         return findViewTabs;
     }

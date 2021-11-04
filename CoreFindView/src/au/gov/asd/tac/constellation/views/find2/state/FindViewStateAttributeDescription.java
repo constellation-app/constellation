@@ -29,6 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
 public final class FindViewStateAttributeDescription extends ObjectAttributeDescription {
 
     public FindViewStateAttributeDescription() {
+        // calls the super of this class with the name "Find View"
         super(FindViewConcept.NAME);
     }
 }

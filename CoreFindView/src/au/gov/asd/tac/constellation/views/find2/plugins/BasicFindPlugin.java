@@ -72,18 +72,25 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.findInCurrentSelection = parameters.isFindIn();
     }
 
+    /**
+     * This clears all the graph elements that are currently selected
+     *
+     * @param graph
+     */
     private void clearSelection(final GraphWriteMethods graph) {
         final int nodesCount = GraphElementType.VERTEX.getElementCount(graph);
         final int nodeSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         final int transactionsCount = GraphElementType.TRANSACTION.getElementCount(graph);
         final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
 
+        // loop through all nodes that are selected and deselect them
         if (nodeSelectedAttribute != Graph.NOT_FOUND) {
             for (int i = 0; i < nodesCount; i++) {
                 final int currElement = GraphElementType.VERTEX.getElement(graph, i);
                 graph.setBooleanValue(nodeSelectedAttribute, currElement, false);
             }
         }
+        // loop through all transactions that are selected and deselect them
         if (transactionSelectedAttribute != Graph.NOT_FOUND) {
             for (int i = 0; i < transactionsCount; i++) {
                 final int currElement = GraphElementType.TRANSACTION.getElement(graph, i);
@@ -154,11 +161,22 @@ public class BasicFindPlugin extends SimpleEditPlugin {
          * find result to the foundResults list
          */
         for (final Attribute a : selectedAttributes) {
+            // if the attribute exists on the current graph
             if (graph.getAttribute(elementType, a.getName()) >= 0) {
+                // for all elements on the graph of the given type
                 for (int i = 0; i < elementCount; i++) {
+
+                    // get the current element
                     final int currElement = elementType.getElement(graph, i);
+
+                    // get string value of it graph elements attribute
                     final String value = graph.getStringValue(graph.getAttribute(elementType, a.getName()), currElement);
+
+                    // if the value isnt null
                     if (value != null) {
+
+                        // Determine if the find string matches the attribute 
+                        // string
                         Matcher match = searchPattern.matcher(value);
                         if (matchWholeWord) {
                             found = match.matches();
@@ -166,39 +184,59 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                             found = match.find();
                         }
                         if (found) {
+                            // get the UID of the element and the graph
                             final long uid = elementType.getUID(graph, currElement);
+                            // if the user wants to find it in, or remove it from 
+                            // their current selection
                             if (findInCurrentSelection || removeFromCurrentSelection) {
+                                // if the element is selected
                                 if (graph.getBooleanValue(selectedAttribute, currElement)) {
+                                    // Add the element to the find in and
+                                    // remove from list
                                     findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
                                     removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
                                 }
                             }
+                            // if the user wants to select all, select the
+                            // matching element
                             if (selectAll && !findInCurrentSelection && !removeFromCurrentSelection) {
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                             }
+                            // add the graph element to the foundResult list
                             foundResult.add(new FindResult(currElement, uid, elementType));
                         }
                     }
                 }
             }
         }
+        /**
+         * If findIncurrentSelection is true, clear the current selection and
+         * loop through the list of found elements and set them to selected.
+         */
         if (findInCurrentSelection && !findInCurrentSelectionList.isEmpty()) {
             clearSelection(graph);
             for (final FindResult fr : findInCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
-                foundResult.clear();
-                foundResult.addAll(findInCurrentSelectionList);
+
             }
+            foundResult.clear();
+            foundResult.addAll(findInCurrentSelectionList);
         }
+        /**
+         * If removeFromCurrentlySelection is true, loop through the list of
+         * found elements and set their selection status to false.
+         */
         if (removeFromCurrentSelection && !removeFromCurrentSelectionList.isEmpty()) {
             for (final FindResult fr : removeFromCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), false);
-                foundResult.clear();
-                foundResult.addAll(removeFromCurrentSelectionList);
                 if (getNext) {
+                    foundResult.clear();
+                    foundResult.addAll(removeFromCurrentSelectionList);
                     break;
                 }
             }
+            foundResult.clear();
+            foundResult.addAll(removeFromCurrentSelectionList);
         }
 
         /**

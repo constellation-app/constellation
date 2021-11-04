@@ -47,7 +47,7 @@ import org.controlsfx.control.CheckComboBox;
 import org.openide.util.Exceptions;
 
 /**
- * BasicFindTab contains all the UI elements for the Basic find functionality
+ * BasicFindTab contains all the UI elements for the Basic find tab.
  *
  * @author Atlas139mkm
  */
@@ -82,9 +82,8 @@ public class BasicFindTab extends Tab {
     protected final MenuItem selectAllMenuItem = new MenuItem("Select All");
     protected final MenuItem deselectAllMenuItem = new MenuItem("Deselect All");
 
-    private static final long attributeModificationCounter = Long.MIN_VALUE;
+    private static final long ATTRIBUTE_MODIFICATION_COUNTER = Long.MIN_VALUE;
 
-    // need to add menu items
     protected final GridPane preferencesGrid = new GridPane();
     protected final ToggleGroup textStyleTB = new ToggleGroup();
     protected final RadioButton standardRadioBtn = new RadioButton("Standard Text");
@@ -92,10 +91,6 @@ public class BasicFindTab extends Tab {
     protected final VBox toggleVBox = new VBox();
     protected final CheckBox ignoreCaseCB = new CheckBox("Ignore Case");
     protected final CheckBox exactMatchCB = new CheckBox("Exact Match Only");
-
-    protected final CheckBox addToCurrent = new CheckBox("Add to Current Selection");
-    protected final CheckBox removeFromCurrent = new CheckBox("Remove from Current Selection");
-    protected final CheckBox findInSelected = new CheckBox("Find In Current Selection");
     protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
 
     protected final Label currentSelectionLabel = new Label("Current Selection:");
@@ -109,11 +104,23 @@ public class BasicFindTab extends Tab {
     protected static final int DROP_DOWN_WIDTH = 120;
 
     public BasicFindTab(final FindViewTabs parentComponent) {
+        /**
+         * Set the parent Component, set the text of the tab to Basic find, set
+         * the grid content, and set the content to the layers which is
+         * populated within setGridContent.
+         */
         this.parentComponent = parentComponent;
         setText("Basic Find");
         setGridContent();
         setContent(layers);
 
+        /**
+         * Set the actions for changing the selected graphElementType in the
+         * lookForChoiceBox. This should save the currently selected check boxes
+         * for the old element, populate the attributes with the new
+         * graphElementType and update the selectedAttributes to retrieve
+         * potentially previously selected elements of the new GraphElementType
+         */
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
@@ -126,42 +133,51 @@ public class BasicFindTab extends Tab {
         }
         );
 
+        // Set the actions for selectAll and deselectAll context menu items
         selectAllMenuItem.setOnAction(event -> inAttributesMenu.getCheckModel().checkAll());
         deselectAllMenuItem.setOnAction(event -> inAttributesMenu.getCheckModel().clearChecks());
+        // Set the context menu to show when right clicking on the
+        // inAttributesMenu
         inAttributesMenu.setOnContextMenuRequested(event -> contextMenu.show(inAttributesMenu, event.getScreenX(), event.getScreenY()));
 
+        // set the action for changing the seleciton in the
+        // currentSelctionChoiceBox
         currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
                 updateSelectionFactors();
             }
         });
-        findAllButton.setOnAction(action -> {
-            findAllAction();
-        });
-        findNextButton.setOnAction(action -> {
-            findNextAction();
-        });
-        findPrevButton.setOnAction(action -> {
-            findPrevAction();
-        });
+
+        //Set the actions for the 3 bottom buttons
+        findAllButton.setOnAction(action -> findAllAction());
+        findNextButton.setOnAction(action -> findNextAction());
+        findPrevButton.setOnAction(action -> findPrevAction());
     }
 
     /**
      * Sets all the UI elements to the basic find Tab
      */
     protected void setGridContent() {
+        // Create column constrains for never and always grow
         final ColumnConstraints neverGrow = new ColumnConstraints();
         final ColumnConstraints alwaysGrow = new ColumnConstraints();
         alwaysGrow.setHgrow(Priority.ALWAYS);
         neverGrow.setHgrow(Priority.NEVER);
 
+        /**
+         * Set the padding for all of the grids that make up the BasicFindView
+         */
         layers.setSpacing(5);
         textGrid.setPadding(new Insets(10, 10, 10, 10));
         settingsGrid.setPadding(new Insets(0, 10, 0, 10));
         addRemoveSelectionGrid.setPadding(new Insets(10, 10, 10, 10));
         preferencesGrid.setPadding(new Insets(5, 0, 5, 0));
 
+        /**
+         * Set the settings for the textGrid which contains the findLabel and
+         * findTextField
+         */
         findLabel.setMinWidth(LABEL_WIDTH);
         textGrid.setVgap(5);
         textGrid.add(findLabel, 0, 0);
@@ -169,25 +185,42 @@ public class BasicFindTab extends Tab {
         textGrid.getColumnConstraints().addAll(neverGrow, alwaysGrow);
         findTextField.requestFocus();
 
-        settingsGrid.setHgap(5);
-        settingsGrid.setVgap(5);
-
+        /**
+         * Set the preference for the lookForChoiceBox and label, and default
+         * select Vertex
+         */
         lookForLabel.setMinWidth(LABEL_WIDTH - settingsGrid.getHgap());
         lookForChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
         lookForChoiceBox.getSelectionModel().select(GraphElementType.VERTEX.getShortLabel());
+
+        // set the gaps for the settings grid
+        settingsGrid.setHgap(5);
+        settingsGrid.setVgap(5);
+
+        // Add the lookForChoiceBox and label to the settingsGrid
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 1, 0);
 
-        inAttributesLabel.setMinWidth(LABEL_WIDTH - settingsGrid.getHgap());
-
+        // add the inAttributesMenu and label to the settings grid
         settingsGrid.add(inAttributesLabel, 0, 1);
         settingsGrid.add(inAttributesMenu, 1, 1);
 
+        // set the maxWidth for the in attributes menu a default populate it
+        // with vertex elements
         inAttributesMenu.setMaxWidth(DROP_DOWN_WIDTH);
         populateAttributes(GraphElementType.VERTEX);
 
+        // set the min width for the inAttributesLabel
+        inAttributesLabel.setMinWidth(LABEL_WIDTH - settingsGrid.getHgap());
+
+        // add selectAllMenuItem and deselectAllMenuItem to the contextMenu for
+        // the attributesMenu
         contextMenu.getItems().addAll(selectAllMenuItem, deselectAllMenuItem);
 
+        /**
+         * Set the preferences for the check boxes and radio boxes in the
+         * preferences grid
+         */
         standardRadioBtn.setToggleGroup(textStyleTB);
         regExBtn.setToggleGroup(textStyleTB);
         standardRadioBtn.setSelected(true);
@@ -201,30 +234,52 @@ public class BasicFindTab extends Tab {
 
         settingsGrid.add(preferencesGrid, 2, 0, 2, 2);
 
+        /**
+         * Add options to the currentSelectionChoiceBox and default select
+         * Ignore. Set the sizing preferences and add the currentSelectionLabel
+         * and ChoiceBox to the settings grid
+         */
         currentSelectionChoiceBox.getItems().addAll("Ignore", "Add to", "Find in", "Remove From");
         currentSelectionChoiceBox.getSelectionModel().select(0);
         currentSelectionChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
         settingsGrid.add(currentSelectionLabel, 0, 2);
         settingsGrid.add(currentSelectionChoiceBox, 1, 2);
 
+        // Set the preferences for the buttonsHbox and all relvent Buttons
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
         buttonsHBox.setPadding(new Insets(5, 10, 5, 10));
         buttonsHBox.setSpacing(5);
         buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton, searchAllGraphs);
 
+        // add the buttonsHBox to the buttonsVbox
         buttonsVBox.getChildren().addAll(buttonsHBox);
 
+        // Set the bottom of the pane to contain the buttonsVbox
         parentComponent.getParentComponent().setBottom(buttonsVBox);
 
+        // add all the parent most grids to the layers
         layers.getChildren().addAll(textGrid, settingsGrid);
 
     }
 
+    /**
+     * Gets the BasicFindTabs parent component
+     *
+     * @return parentComponent
+     */
     public FindViewTabs getParentComponent() {
         return parentComponent;
     }
 
+    /**
+     * updates the current buttons at the bottom of the pane to match the
+     * currently selected tab
+     */
     public void updateButtons() {
+        /**
+         * Clear all buttons, add the relevant buttons and set the panes bottom
+         * to the buttonsHbox
+         */
         buttonsHBox.getChildren().clear();
         buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton, searchAllGraphs);
         parentComponent.getParentComponent().setBottom(buttonsVBox);
@@ -237,14 +292,32 @@ public class BasicFindTab extends Tab {
      * @param type
      */
     public void populateAttributes(final GraphElementType type) {
-        final List<String> attributeList = FindViewController.getDefault().populateAttributes(type, attributes, attributeModificationCounter);
 
+        //retrieve a list of all current attributes that exist in all active
+        //graphs that are of type string
+        final List<String> attributeList = FindViewController.getDefault().populateAttributes(type, attributes, ATTRIBUTE_MODIFICATION_COUNTER);
+
+        /**
+         * Check if the current thread is the main application thread. If it is
+         * run the logic. If it isnt set up a countdown latch to ensure it this
+         * process is completed.
+         */
         if (Platform.isFxApplicationThread()) {
+            // clear all current checks and all items in the inAttributeMenu
             inAttributesMenu.getCheckModel().clearChecks();
             inAttributesMenu.getItems().clear();
+
+            // Get the matching selected attribute list
             final List<Attribute> selected = getMatchingAttributeList(type);
+
+            // loop through all attributes in the complete attribute list
             for (final String attribute : attributeList) {
+
+                // add all attributes to the inAttributeMenu
                 inAttributesMenu.getItems().add(attribute);
+
+                // loop through all selected attributes, reselect them if the
+                // selected attributes name matches the current attribute
                 for (int i = 0; i <= selected.size() - 1; i++) {
                     if (selected.get(i).getName() == attribute) {
                         inAttributesMenu.getCheckModel().check(attribute);
@@ -274,6 +347,7 @@ public class BasicFindTab extends Tab {
                 Thread.currentThread().interrupt();
             }
         }
+        // update the current parameters to be current
         updateBasicFindParamters();
     }
 
@@ -285,11 +359,17 @@ public class BasicFindTab extends Tab {
      */
     public void updateSelectedAttributes(final List<Attribute> selectedAttributes) {
 
+        // Preform in a run later to ensure this process is done before the
+        // next starts
         CountDownLatch cdl = new CountDownLatch(1);
-
         Platform.runLater(() -> {
+            // loops through all selectedAttributes
             for (int i = 0; i < selectedAttributes.size(); i++) {
+                // checks if the current attribute is contained within
+                // the attributes list
                 if (checkSelectedContains(selectedAttributes.get(i), attributes)) {
+                    // if it is check the matchng attribute in the
+                    // inAttribute menu
                     inAttributesMenu.getCheckModel().check(selectedAttributes.get(i).getName());
                 }
             }
@@ -302,9 +382,10 @@ public class BasicFindTab extends Tab {
      * Gets the selected elements list for the matching type
      *
      * @param type
-     * @return
+     * @return matching graphElementType list
      */
     public List<Attribute> getMatchingAttributeList(final GraphElementType type) {
+        // based on the element type return the matching list
         switch (type) {
             case VERTEX:
                 return selectedNodeAttributes;
@@ -327,10 +408,15 @@ public class BasicFindTab extends Tab {
         final List<Attribute> selectedAttributes = getMatchingAttributeList(type);
         selectedAttributes.clear();
 
+        // if the attributes list is not empty
         if (!attributes.isEmpty()) {
+            // loop through all attributes
             for (final Attribute a : attributes) {
+                // if there is attributes selected in the attributesMenu
                 if (!inAttributesMenu.getCheckModel().isEmpty()) {
+                    // if that attribute is selected
                     if (inAttributesMenu.getCheckModel().isChecked(a.getName())) {
+                        // add it to the selected attributes list
                         selectedAttributes.add(a);
                     }
                 }
@@ -344,7 +430,7 @@ public class BasicFindTab extends Tab {
      *
      * @param attribute
      * @param selectedAttributes
-     * @return
+     * @return true if an attribute exists in the selectedAttributes else false
      */
     private boolean checkSelectedContains(final Attribute attribute, final List<Attribute> selectedAttributes) {
         for (final Attribute sa : selectedAttributes) {
@@ -367,6 +453,9 @@ public class BasicFindTab extends Tab {
         boolean addTo = false;
         boolean removeFrom = false;
         boolean findIn = false;
+
+        // retrieves the currently selected index, setting the relevent boolean
+        // to true
         switch (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex()) {
             case 0:
                 break;
@@ -383,6 +472,8 @@ public class BasicFindTab extends Tab {
                 break;
         }
 
+        // creates a new basicFindReplaceParameter with the currently selected
+        // UI parameters
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), "",
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
                 ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), findIn, addTo, removeFrom, false, searchAllGraphs.isSelected()
@@ -396,7 +487,7 @@ public class BasicFindTab extends Tab {
      * the variables values stored in the controller
      */
     public void updateSelectionFactors() {
-        if (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 2) {
+        if (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 2 || currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 3) {
             findNextButton.setDisable(true);
             findPrevButton.setDisable(true);
         } else {
@@ -405,6 +496,13 @@ public class BasicFindTab extends Tab {
         }
     }
 
+    /**
+     * This is run when the user presses the find all button. It confirms the
+     * find string is not empty, saves the currently selected graph element,
+     * updates the basic find parameters to ensure they are current then calls
+     * the retrieveMatchinElements function in the FindViewController to call
+     * the basicFindPlugin.
+     */
     public void findAllAction() {
         if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
@@ -413,6 +511,13 @@ public class BasicFindTab extends Tab {
         }
     }
 
+    /**
+     * This is run when the user presses the find next button. It confirms the
+     * find string is not empty, saves the currently selected graph element,
+     * updates the basic find parameters to ensure they are current then calls
+     * the retrieveMatchinElements function in the FindViewController to call
+     * the basicFindPlugin.
+     */
     public void findNextAction() {
         if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
@@ -421,6 +526,13 @@ public class BasicFindTab extends Tab {
         }
     }
 
+    /**
+     * This is run when the user presses the find previous button. It confirms
+     * the find string is not empty, saves the currently selected graph element,
+     * updates the basic find parameters to ensure they are current then calls
+     * the retrieveMatchinElements function in the FindViewController to call
+     * the basicFindPlugin.
+     */
     public void findPrevAction() {
         if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
@@ -429,30 +541,63 @@ public class BasicFindTab extends Tab {
         }
     }
 
+    /**
+     * requests the focus of the findTextField
+     */
     public void requestTextFieldFocus() {
         findTextField.requestFocus();
     }
 
+    /**
+     * Gets and returns the findTextField
+     *
+     * @return findTextField
+     */
     public TextField getFindTextField() {
         return findTextField;
     }
 
+    /**
+     * Gets and returns the findNextButton
+     *
+     * @return findNextButton
+     */
     public Button getFindNextButton() {
         return findNextButton;
     }
 
+    /**
+     * Gets and returns the findPrevButton
+     *
+     * @return findPrevButton
+     */
     public Button getFindPrevButton() {
         return findPrevButton;
     }
 
+    /**
+     * Gets and returns the findAllButton
+     *
+     * @return findAllButton
+     */
     public Button getFindAllButton() {
         return findAllButton;
     }
 
+    /**
+     * Gets and returns the searchAllGraphs
+     *
+     * @return searchAllGraphs
+     */
     public CheckBox getSearchAllGraphs() {
         return searchAllGraphs;
     }
 
+    /**
+     * Gets and returns the lookForChoiceBox
+     *
+     * @return lookForChoiceBox
+     */
     public ChoiceBox<String> getLookForChoiceBox() {
         return lookForChoiceBox;
     }

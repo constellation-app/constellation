@@ -27,6 +27,9 @@ import java.util.Set;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * This class is used to create a MetaAttribute for the find view. It is used to
+ * contain a FindResultsList that contains a list of all results that are found
+ * from the basicFindPlugin
  *
  * @author Atlas139mkm
  */
@@ -48,7 +51,6 @@ public class FindViewConcept extends SchemaConcept {
     }
 
     public static class MetaAttribute {
-
         public static final SchemaAttribute FINDVIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, NAME, NAME)
                 .setDescription("The current list of found graph elements in realation to this graph")
                 .build();

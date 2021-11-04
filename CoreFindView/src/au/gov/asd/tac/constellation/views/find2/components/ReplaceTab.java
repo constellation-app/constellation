@@ -43,31 +43,46 @@ public class ReplaceTab extends BasicFindTab {
         this.setText("Replace");
         setReplaceGridContent();
 
+        // Sets the actions for the replace all and replace next buttons.
         replaceAllButton.setOnAction(action -> replaceAllAction());
         replaceNextButton.setOnAction(action -> replaceNextAction());
 
     }
 
     /**
-     * Adds the UI changes for the replace tab
+     * Adds the UI changes for the replace tab. This removes the content from
+     * the unneeded basic find tab and adds anything new specific to the replace
+     * tab
      */
     private void setReplaceGridContent() {
+        // Add the replace text box and label
         textGrid.add(replaceLabel, 0, 1);
         textGrid.add(replaceTextField, 1, 1);
 
+        // remove the buttons at the bottom of the pane
         buttonsHBox.getChildren().clear();
+
+        // add the replace buttons
         buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton);
 
+        // remove addTo, findIn, removeFrom
         currentSelectionChoiceBox.getItems().remove(1, 4);
+
+        // add replaceIn
         currentSelectionChoiceBox.getItems().add("Replace in");
+
+        // remove exact match checkBox
         preferencesGrid.getChildren().remove(exactMatchCB);
     }
 
+    /**
+     * Updates the buttons at the bottom of the pane to be specific to the
+     * replace tab.
+     */
     public void updateButtons() {
         buttonsHBox.getChildren().clear();
         buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton, searchAllGraphs);
         getParentComponent().getParentComponent().setBottom(buttonsVBox);
-
     }
 
     /**
@@ -77,9 +92,14 @@ public class ReplaceTab extends BasicFindTab {
      * create a BasicFindReplaceParameter
      */
     public void updateBasicReplaceParamters() {
+        // get the currently selected graphElementType
         final GraphElementType elementType = GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
+
+        // get the matching attributeList
         final List<Attribute> attributeList = new ArrayList<>(getMatchingAttributeList(elementType));
         boolean replaceIn = false;
+
+        // determine what currentSelectionChoiceBox option is selected
         switch (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex()) {
             case 0:
                 break;
@@ -89,13 +109,22 @@ public class ReplaceTab extends BasicFindTab {
             default:
                 break;
         }
+        // Create the paramters with the current UI selections
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), replaceTextField.getText(),
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
                 ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), false, false, false, replaceIn, searchAllGraphs.isSelected());
 
+        // Update the basic replace paramters with the newly created parameter
         FindViewController.getDefault().updateBasicReplaceParameters(parameters);
     }
 
+    /**
+     * This is run when the user presses the replace All button. It confirms the
+     * find and replace strings are not empty, saves the currently selected
+     * graph element, updates the basic replace parameters to ensure they are
+     * current then calls the replaceMatchinElements function in the
+     * FindViewController to call the replacePlugin.
+     */
     public void replaceAllAction() {
         if (!getFindTextField().getText().isEmpty() && !getReplaceTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
@@ -104,6 +133,13 @@ public class ReplaceTab extends BasicFindTab {
         }
     }
 
+    /**
+     * This is run when the user presses the replace next button. It confirms
+     * the find and replace strings are not empty, saves the currently selected
+     * graph element, updates the basic replace parameters to ensure they are
+     * current then calls the replaceMatchinElements function in the
+     * FindViewController to call the replacePlugin.
+     */
     public void replaceNextAction() {
         if (!getFindTextField().getText().isEmpty() && !getReplaceTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
@@ -112,14 +148,29 @@ public class ReplaceTab extends BasicFindTab {
         }
     }
 
+    /**
+     * Gets the replaceTextField
+     *
+     * @return replaceTextField
+     */
     public TextField getReplaceTextField() {
         return replaceTextField;
     }
 
+    /**
+     * Gets the replaceNextButton
+     *
+     * @return replaceNextButton
+     */
     public Button getReplaceNextButton() {
         return replaceNextButton;
     }
 
+    /**
+     * Gets the replaceAllButton
+     *
+     * @return replaceAllButton
+     */
     public Button getReplaceAllButton() {
         return replaceAllButton;
     }
