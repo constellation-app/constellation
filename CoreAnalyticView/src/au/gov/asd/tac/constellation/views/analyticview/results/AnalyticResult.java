@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,8 +35,7 @@ import java.util.stream.Collectors;
  */
 public abstract class AnalyticResult<D extends AnalyticData> {
 
-    protected final Map<IdentificationData, D> result = new HashMap<>();
-//    protected final List<D> result = new LinkedList<>();
+    protected Map<IdentificationData, D> result = new LinkedHashMap<>();
     protected final Map<String, String> metadata = new HashMap<>();
     protected boolean ignoreNullResults = false;
     protected AnalyticController analyticController = null;
@@ -78,6 +79,35 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     }
 
     public final void sort() {
+        result = sortMapByValuesWithDuplicates(result);
+    }
+
+    private LinkedHashMap sortMapByValuesWithDuplicates(Map<IdentificationData, D> passedMap) {
+        List mapKeys = new ArrayList(passedMap.keySet());
+        List mapValues = new ArrayList(passedMap.values());
+        Collections.sort(mapValues);
+
+        LinkedHashMap sortedMap = new LinkedHashMap();
+
+        Iterator valueIt = mapValues.iterator();
+        while (valueIt.hasNext()) {
+            Object val = valueIt.next();
+            Iterator keyIt = mapKeys.iterator();
+
+            while (keyIt.hasNext()) {
+                Object key = keyIt.next();
+                String comp1 = passedMap.get(key).toString();
+                String comp2 = val.toString();
+
+                if (comp1.equals(comp2)) {
+                    passedMap.remove(key);
+                    mapKeys.remove(key);
+                    sortedMap.put(key, val);
+                    break;
+                }
+            }
+        }
+        return sortedMap;
     }
 
     public final List<D> get() {
