@@ -28,7 +28,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -82,23 +81,17 @@ public class TooltipNodeNGTest {
         System.out.println("setTooltips");
         
         final List<TooltipDefinition> tooltips = new ArrayList<>();
-        TooltipNode instance = new TooltipNode();
-        instance = spy(instance);
+        final TooltipNode instance = spy(new TooltipNode());
         
-        final TooltipDefinition ttd1 = mock(TooltipDefinition.class);
-        final TooltipDefinition ttd2 = mock(TooltipDefinition.class);
-        final TooltipDefinition ttd3 = mock(TooltipDefinition.class);
-        final TooltipDefinition ttd4 = mock(TooltipDefinition.class);
+        final Pane p1 = spy(new Pane());
+        final Pane p2 = spy(new Pane());
+        final Pane p3 = spy(new Pane());
+        final Pane p4 = spy(new Pane());
         
-        final Pane p1 = mock(Pane.class);
-        final Pane p2 = mock(Pane.class);
-        final Pane p3 = mock(Pane.class);
-        final Pane p4 = mock(Pane.class);
-        
-        when(ttd1.getNode()).thenReturn(p1);
-        when(ttd2.getNode()).thenReturn(p2);
-        when(ttd3.getNode()).thenReturn(p3);
-        when(ttd4.getNode()).thenReturn(p4);
+        final TooltipProvider.TooltipDefinition ttd1 = spy(new TooltipProvider.TooltipDefinition(p1));
+        final TooltipProvider.TooltipDefinition ttd2 = spy(new TooltipProvider.TooltipDefinition(p2));
+        final TooltipProvider.TooltipDefinition ttd3 = spy(new TooltipProvider.TooltipDefinition(p3));
+        final TooltipProvider.TooltipDefinition ttd4 = spy(new TooltipProvider.TooltipDefinition(p4));
         
         tooltips.add(ttd1);
         tooltips.add(ttd2);
@@ -106,11 +99,12 @@ public class TooltipNodeNGTest {
         tooltips.add(ttd4);
         
         // Check that no children exist before adding tooltips
-        assertEquals(instance.getChildren().size(),0);
+        assertEquals(instance.getChildren().size(), 0);
         
         instance.setTooltips(tooltips);
         
         // Check that tooltips were successfully added
+        assertNotNull(instance.getChildren());
         assertEquals(instance.getChildren().size(), 4);
         
         // Verify that all the tooltips had their node fetched
