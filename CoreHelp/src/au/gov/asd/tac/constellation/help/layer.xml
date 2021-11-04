@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="QuickSearch">
+        <folder name="Help Documentation">
+            <attr name="command" stringvalue="Help"/>
+            <attr name="position" intvalue="0"/>
+            <file name="au-gov-asd-tac-constellation-help-utilities-HelpSearchProvider.instance">
+                <attr name="displayName" bundlevalue="au.gov.asd.tac.constellation.help.Bundle#QuickSearch/HelpDocumentation/au-gov-asd-tac-constellation-help-utilities-HelpSearchProvider.instance"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>

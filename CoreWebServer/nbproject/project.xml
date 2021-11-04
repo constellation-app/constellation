@@ -186,6 +186,7 @@
                 </test-type>
             </test-dependencies>
             <public-packages>
+                <package>au.gov.asd.tac.constellation.webserver</package>
                 <package>au.gov.asd.tac.constellation.webserver.restapi</package>
             </public-packages>
         </data>

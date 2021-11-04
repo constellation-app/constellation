@@ -18,10 +18,8 @@ package au.gov.asd.tac.constellation.testing.construction;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
@@ -132,25 +130,20 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         final List<String> nChoices = new ArrayList<>();
         final List<String> tChoices = new ArrayList<>();
         if (graph != null) {
-            final ReadableGraph readableGraph = graph.getReadableGraph();
-            try {
-                final List<SchemaVertexType> nodeTypes = GraphManager.getDefault().getActiveGraph().getSchema().getFactory().getRegisteredVertexTypes();
-
-                for (int i = 0; i < nodeTypes.size(); i++) {
-                    SchemaVertexType type = nodeTypes.get(i);
-                    nAttributes.add(type.getName());
-                }
-                nAttributes.sort(String::compareTo);
-
-                final List<SchemaTransactionType> transactionTypes = GraphManager.getDefault().getActiveGraph().getSchema().getFactory().getRegisteredTransactionTypes();
-                for (int i = 0; i < transactionTypes.size(); i++) {
-                    SchemaTransactionType type = transactionTypes.get(i);
-                    tAttributes.add(type.getName());
-                }
-                tAttributes.sort(String::compareTo);
-            } finally {
-                readableGraph.release();
+            final List<SchemaVertexType> nodeTypes = graph.getSchema().getFactory().getRegisteredVertexTypes();
+            for (int i = 0; i < nodeTypes.size(); i++) {
+                final SchemaVertexType type = nodeTypes.get(i);
+                nAttributes.add(type.getName());
             }
+            nAttributes.sort(String::compareTo);
+
+            final List<SchemaTransactionType> transactionTypes = graph.getSchema().getFactory().getRegisteredTransactionTypes();
+            for (int i = 0; i < transactionTypes.size(); i++) {
+                final SchemaTransactionType type = transactionTypes.get(i);
+                tAttributes.add(type.getName());
+            }
+            tAttributes.sort(String::compareTo);
+            
             nChoices.add(nAttributes.get(0));
             tChoices.add(tAttributes.get(0));
         }
@@ -238,7 +231,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         final int fourDays = 4 * 24 * 60 * 60 * 1000;
 
         Set<Integer> destinations = Arrays.stream(startVxIds).boxed().collect(Collectors.toSet());
-        ArrayList<Integer> repeats = new ArrayList<>();
+        final List<Integer> repeats = new ArrayList<>();
         while (vx < n) {
             final int vxId = graph.addVertex();
             final String label = "Node_" + vxId;
@@ -251,7 +244,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.getSchema().completeVertex(graph, vxId);
             }
             final int reciprocity = r.nextInt(3);
-            for (int destination : destinations) {
+            for (final int destination : destinations) {
                 int numTimes = 1;
                 if (randomWeights) {
                     numTimes = r.nextInt(1 + r.nextInt(100));
@@ -262,21 +255,21 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                     if (randomWeights) {
                         switch (reciprocity) {
                             case 0:
-                                boolean random0 = r.nextBoolean();
+                                final boolean random0 = r.nextBoolean();
                                 if (random0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
                             case 1:
-                                int random1 = r.nextInt(5);
+                                final int random1 = r.nextInt(5);
                                 if (random1 == 0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
                             default:
-                                int randomDefault = r.nextInt(5);
+                                final int randomDefault = r.nextInt(5);
                                 if (randomDefault != 0) {
                                     sxId = destination;
                                     dxId = vxId;
@@ -332,7 +325,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
      *
      * @return A random set of destinations
      */
-    private static Set<Integer> generateDestinations(ArrayList<Integer> repeats, int nVxStart, SecureRandom r) {
+    private static Set<Integer> generateDestinations(final List<Integer> repeats, final int nVxStart, final SecureRandom r) {
         final Set<Integer> destinations = new HashSet<>();
         while (destinations.size() < nVxStart) {
             destinations.add(repeats.get(r.nextInt(repeats.size())));

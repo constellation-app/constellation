@@ -1,30 +1,10 @@
 # Constellation Changes
 
-## Changes in October 2021
-
--   Added `isRequired` in `PluginParameter` with a getter and a setter, which
-    can be used to configure the required plugin parameters to mark as `*required`
-	in the swagger.
+## Changes in November 2021
 
 -   Added `netbeans.exception.report.min.level=900` and
     `netbeans.exception.alert.min.level=900` with both set to `900` to make
     sure all `ERROR` and `FATAL` levels will present a dialog box.
-
--   Added a file chooser utility to core utilities. This provides a template
-    for opening file choosers. It protects against common mistakes that may
-    cause issues on different platforms.
-
--   Changed `DataAccessPluginType` from an abstract class to an interface.
-
--   Removed the verbose printing of garbage collection by default.
-
--   Removed `RecentFilesWelcomePage` and moved functionality between
-    `RecentFiles` and `WelcomeViewPane`
-
--   Renamed tableview2 package to tableview now that it is the primary table
-    code being used.
-
-## Changes in September 2021
 
 -   Update the default configuration to always show errors as a dialog message.
 
@@ -33,11 +13,58 @@
     class `NotifyDescriptor.Exception`. This presents an exception dialog
     when Constellation is ran from the executable.
 
+## Changes in October 2021
+
+-   Added `isRequired` in `PluginParameter` with a getter and a setter, which
+    can be used to configure the required plugin parameters to mark as `*required`
+  	in the swagger.
+
+-   Added a file chooser utility to core utilities. This provides a template
+    for opening file choosers. It protects against common mistakes that may
+    cause issues on different platforms.
+
+-   Removed the verbose printing of garbage collection by default.
+
+-   Removed the `keepAlive` method from `HttpsConnection` as it is not the 
+    method to enable HTTP keep-alive for `HttpURLConnection`. `keepAlive` is 
+    turned on by default and is controlled using the `http.keepalive` VM
+    argument.
+
+-   Renamed `au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys`
+    to `au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities`
+
+-   Renamed `tableview2` package to `tableview` now that it is the primary table
+
+-   Removed `RecentFilesWelcomePage` and moved functionality between
+    `RecentFiles` and `WelcomeViewPane`
+
+-   Renamed `ShortestPathsFollowDirectionAction` to `DirectedShortestPathsAction`
+    to align with the plugin it calls.
+
+-   Renamed constants in `DirectedShortestPathsPlugin` with VERTEX in name to 
+    have NODE instead.
+
+-   Updated `DataAccessPluginType` from an abstract class to an interface.
+
+-   Updated the access of some of the constants in `DirectedShortestPathsPlugin` 
+    to private since they weren't being used elsewhere. 
+
 ## Changes in September 2021
 
+-   Added a preference to choose between viewing the help documentation offline,
+    or online.
+
+-   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
+    rotation values in the wrong value positions.
+    
 -   Moved `DataAccessPlugin`, `DataAccessPluginCoreType`, `DataAccessPluginRegistry
     and `DataAccessPluginType` from `au.gov.asd.tac.constellation.views.dataaccess`
     to `au.gov.asd.tac.constellation.views.dataaccess.plugins`.
+
+-   Removed JavaHelp and replaced it with the new help system.
+
+-   Removed unused `localized` parameter from the signature of the `locate()`
+    method in `ConstellationInstalledFileLocator`.
 
 -   Removed all the unused `*Action.java` classes from
     `au.gov.asd.tac.constellation.plugins.algorithms.sna`.

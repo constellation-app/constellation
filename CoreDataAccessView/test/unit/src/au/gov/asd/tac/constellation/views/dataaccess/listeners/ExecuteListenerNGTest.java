@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.listeners;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.create.NewDefaultSchemaGraphAction;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -28,14 +29,12 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
-import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.WaitForQueriesToCompleteTask;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
-import java.awt.Desktop;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -87,6 +86,7 @@ public class ExecuteListenerNGTest {
     private static final String GRAPH_ID = "graphId";
     
     private static MockedStatic<GraphManager> graphManagerMockedStatic;
+    private static MockedStatic<GraphNode> graphNodeMockedStatic;
     private static MockedStatic<DataAccessTabPane> dataAccessTabPaneMockedStatic;
     private static MockedStatic<PluginExecution> pluginExecutionMockedStatic;
     private static MockedStatic<NotificationDisplayer> notificationDisplayerMockedStatic;
@@ -119,6 +119,7 @@ public class ExecuteListenerNGTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class);
+        graphNodeMockedStatic = Mockito.mockStatic(GraphNode.class);
         dataAccessTabPaneMockedStatic = Mockito.mockStatic(DataAccessTabPane.class);
         pluginExecutionMockedStatic = Mockito.mockStatic(PluginExecution.class);
         notificationDisplayerMockedStatic = Mockito.mockStatic(NotificationDisplayer.class);
@@ -136,6 +137,7 @@ public class ExecuteListenerNGTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         graphManagerMockedStatic.close();
+        graphNodeMockedStatic.close();
         dataAccessTabPaneMockedStatic.close();
         pluginExecutionMockedStatic.close();
         notificationDisplayerMockedStatic.close();
@@ -215,6 +217,7 @@ public class ExecuteListenerNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
         graphManagerMockedStatic.reset();
+        graphNodeMockedStatic.reset();
         dataAccessTabPaneMockedStatic.reset();
         pluginExecutionMockedStatic.reset();
         notificationDisplayerMockedStatic.reset();
@@ -236,6 +239,8 @@ public class ExecuteListenerNGTest {
         // active and valid plugins in the tab pane so that a new graph is created
         // on the fly
         when(dataAccessTabPane.hasActiveAndValidPlugins()).thenReturn(true);
+        
+        graphNodeMockedStatic.when(() -> GraphNode.getGraph(anyString())).thenReturn(activeGraph);
         
         // Set up our fake tab pane
         final Tab tab1 = mock(Tab.class);

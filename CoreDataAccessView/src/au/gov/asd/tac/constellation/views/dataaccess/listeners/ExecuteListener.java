@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.listeners;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.create.NewDefaultSchemaGraphAction;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -27,7 +29,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
-import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.WaitForQueriesToCompleteTask;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
@@ -96,12 +97,15 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
             // Create new graph
             final NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
             graphAction.actionPerformed(null);
-            while (GraphManager.getDefault().getActiveGraph() == null) {
-                // Wait and do nothing while graph is getting made
+            
+            Graph newActiveGraph = null;
+            // Wait while graph is getting made
+            while (newActiveGraph == null) {
+                newActiveGraph = GraphManager.getDefault().getActiveGraph();
             }
             
             // Set the state's current graph ID to the ID of the new graph
-            DataAccessPaneState.setCurrentGraphId(GraphManager.getDefault().getActiveGraph().getId());
+            DataAccessPaneState.setCurrentGraphId(newActiveGraph.getId());
         }
         
         // Run the selected queries
@@ -139,7 +143,7 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
                                        final PluginParameters parameters) throws InterruptedException, PluginException {
                     DataAccessUtilities.saveDataAccessState(
                             dataAccessPane.getDataAccessTabPane().getTabPane(),
-                            GraphManager.getDefault().getActiveGraph()
+                            GraphNode.getGraph(DataAccessPaneState.getCurrentGraphId())
                     );
                 }
             }).executeLater(null);
