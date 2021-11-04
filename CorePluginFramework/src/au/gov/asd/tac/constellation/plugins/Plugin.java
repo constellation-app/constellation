@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.openide.util.HelpCtx;
@@ -191,10 +191,16 @@ public interface Plugin {
      * {@link PluginRegistry} will ensure that that plugin is not loaded.
      *
      * @return The name of the plugin this plugin is intended to replace in the
-     * , otherwise null.
+     * , otherwise an empty list. Note that the name of the plugin should be the
+     * full package and class name like the following to be consistent with the
+     * {@code PluginRegistry}.
+     *
+     * <pre><code>
+     * plugin.getClass().getName();
+     * </code></pre>
      */
     public default List<String> getOverriddenPlugins() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
 }
