@@ -213,31 +213,13 @@ public class BasicFindPlugin extends SimpleEditPlugin {
          * If findIncurrentSelection is true, clear the current selection and
          * loop through the list of found elements and set them to selected.
          */
-        if (findInCurrentSelection && !findInCurrentSelectionList.isEmpty()) {
-            clearSelection(graph);
-            for (final FindResult fr : findInCurrentSelectionList) {
-                graph.setBooleanValue(selectedAttribute, fr.getID(), true);
+        selectFindInResults(findInCurrentSelection, findInCurrentSelectionList, foundResult, graph, selectedAttribute);
 
-            }
-            foundResult.clear();
-            foundResult.addAll(findInCurrentSelectionList);
-        }
         /**
          * If removeFromCurrentlySelection is true, loop through the list of
          * found elements and set their selection status to false.
          */
-        if (removeFromCurrentSelection && !removeFromCurrentSelectionList.isEmpty()) {
-            for (final FindResult fr : removeFromCurrentSelectionList) {
-                graph.setBooleanValue(selectedAttribute, fr.getID(), false);
-                if (getNext) {
-                    foundResult.clear();
-                    foundResult.addAll(removeFromCurrentSelectionList);
-                    break;
-                }
-            }
-            foundResult.clear();
-            foundResult.addAll(removeFromCurrentSelectionList);
-        }
+        selectRemoveFromResults(removeFromCurrentSelection, removeFromCurrentSelectionList, foundResult, graph, selectedAttribute);
 
         /**
          * If the user clicked find next or find previous
@@ -271,6 +253,56 @@ public class BasicFindPlugin extends SimpleEditPlugin {
             graph.setObjectValue(stateId, 0, null);
         } else {
             graph.setObjectValue(stateId, 0, foundResult);
+        }
+    }
+
+    /**
+     * Completes the steps required to select the FindResults within the
+     * findInCurrentSelectionList. Its split into a separate function to reduce
+     * cognitive complexity of the edit function.
+     *
+     * @param findInCurrentSelection
+     * @param findInCurrentSelectionList
+     * @param foundResult
+     * @param graph
+     * @param selectedAttribute
+     */
+    private void selectFindInResults(boolean findInCurrentSelection, FindResultsList findInCurrentSelectionList,
+            FindResultsList foundResult, GraphWriteMethods graph, int selectedAttribute) {
+        if (findInCurrentSelection && !findInCurrentSelectionList.isEmpty()) {
+            clearSelection(graph);
+            for (final FindResult fr : findInCurrentSelectionList) {
+                graph.setBooleanValue(selectedAttribute, fr.getID(), true);
+            }
+            foundResult.clear();
+            foundResult.addAll(findInCurrentSelectionList);
+        }
+    }
+
+    /**
+     * Completes the steps required to deselected the FindResults within the
+     * removeFromCurrentSelectionList. Its split into a separate function to
+     * reduce cognitive complexity of the edit function.
+     *
+     * @param removeFromCurrentSelection
+     * @param removeFromCurrentSelectionList
+     * @param foundResult
+     * @param graph
+     * @param selectedAttribute
+     */
+    private void selectRemoveFromResults(boolean removeFromCurrentSelection, FindResultsList removeFromCurrentSelectionList,
+            FindResultsList foundResult, GraphWriteMethods graph, int selectedAttribute) {
+        if (removeFromCurrentSelection && !removeFromCurrentSelectionList.isEmpty()) {
+            for (final FindResult fr : removeFromCurrentSelectionList) {
+                graph.setBooleanValue(selectedAttribute, fr.getID(), false);
+                if (getNext) {
+                    foundResult.clear();
+                    foundResult.addAll(removeFromCurrentSelectionList);
+                    break;
+                }
+            }
+            foundResult.clear();
+            foundResult.addAll(removeFromCurrentSelectionList);
         }
     }
 

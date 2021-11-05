@@ -90,6 +90,24 @@ public class BasicFindReplaceParameters {
         this.replaceIn = parameters.replaceIn;
     }
 
+    /**
+     * Create a new object with all of UI elements present on the basicFind and
+     * replace tabs
+     *
+     * @param findString
+     * @param replaceString
+     * @param graphElement
+     * @param attributeList
+     * @param standardText
+     * @param regEx
+     * @param ignoreCase
+     * @param exactMatch
+     * @param findIn
+     * @param addTo
+     * @param removeFrom
+     * @param replaceIn
+     * @param searchAllGraphs
+     */
     public BasicFindReplaceParameters(final String findString, final String replaceString, final GraphElementType graphElement,
             final List<Attribute> attributeList, final boolean standardText, final boolean regEx, final boolean ignoreCase,
             final boolean exactMatch, final boolean findIn, final boolean addTo, final boolean removeFrom, final boolean replaceIn, final boolean searchAllGraphs) {
@@ -110,6 +128,13 @@ public class BasicFindReplaceParameters {
 
     }
 
+    /**
+     * Checks to see if two basicFindParameters are the same by checking if 9/9
+     * parameters match
+     *
+     * @param object
+     * @return
+     */
     @Override
     public boolean equals(final Object object) {
         int matches = 0;

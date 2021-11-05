@@ -183,11 +183,8 @@ public class FindResult {
             return false;
         }
         FindResult other = (FindResult) obj;
-        if (this.id == other.id) {
-            return true;
-        }
 
-        return false;
+        return (this.id == other.id);
     }
 
     @Override
