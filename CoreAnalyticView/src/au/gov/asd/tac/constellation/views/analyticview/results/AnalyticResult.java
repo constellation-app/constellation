@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
  */
 public abstract class AnalyticResult<D extends AnalyticData> {
 
-    protected Map<IdentificationData, D> result = new LinkedHashMap<>();
+    protected final Map<IdentificationData, D> result = new LinkedHashMap<>();
     protected final Map<String, String> metadata = new HashMap<>();
     protected boolean ignoreNullResults = false;
     protected AnalyticController analyticController = null;
@@ -79,35 +80,28 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     }
 
     public final void sort() {
-        result = sortMapByValuesWithDuplicates(result);
-    }
 
-    private LinkedHashMap sortMapByValuesWithDuplicates(Map<IdentificationData, D> passedMap) {
-        List mapKeys = new ArrayList(passedMap.keySet());
-        List mapValues = new ArrayList(passedMap.values());
-        Collections.sort(mapValues);
+        final List<Entry<IdentificationData, D>> mapPairs = new ArrayList<>(result.entrySet());
+        final List<D> mapValues = new ArrayList<>(result.values());
+        mapValues.sort(null);
 
-        LinkedHashMap sortedMap = new LinkedHashMap();
+        result.clear();
 
-        Iterator valueIt = mapValues.iterator();
+        final Iterator<D> valueIt = mapValues.iterator();
         while (valueIt.hasNext()) {
-            Object val = valueIt.next();
-            Iterator keyIt = mapKeys.iterator();
+            final D val = valueIt.next();
 
-            while (keyIt.hasNext()) {
-                Object key = keyIt.next();
-                String comp1 = passedMap.get(key).toString();
-                String comp2 = val.toString();
+            final Iterator<Entry<IdentificationData, D>> pairIt = mapPairs.iterator();
+            while (pairIt.hasNext()) {
+                final Entry<IdentificationData, D> pair = pairIt.next();
 
-                if (comp1.equals(comp2)) {
-                    passedMap.remove(key);
-                    mapKeys.remove(key);
-                    sortedMap.put(key, val);
+                if (pair.getValue().equals(val)) {
+                    mapPairs.remove(pair);
+                    result.put(pair.getKey(), pair.getValue());
                     break;
                 }
             }
         }
-        return sortedMap;
     }
 
     public final List<D> get() {
