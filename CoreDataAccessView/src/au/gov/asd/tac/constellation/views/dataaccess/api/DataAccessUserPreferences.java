@@ -93,7 +93,7 @@ public final class DataAccessUserPreferences {
                     if (parameters != null) {
                         parameters.getParameters().entrySet().stream()
                                 .filter(param -> !PasswordParameterType.ID.equals(param.getValue().getType().getId())
-                                        && !globalParameters.containsKey(param.getKey()))
+                                        && !pane.getGlobalParametersPane().getParams().getParameters().containsKey(param.getKey()))
                                 .forEach(param -> pluginParameters.get(dataAccessPane.getPlugin().getClass().getSimpleName()).put(
                                             param.getKey(), param.getValue().getStringValue()
                                 ));
