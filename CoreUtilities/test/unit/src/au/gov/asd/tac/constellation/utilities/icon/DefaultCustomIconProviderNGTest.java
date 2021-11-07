@@ -40,6 +40,8 @@ import org.testng.annotations.Test;
  */
 public class DefaultCustomIconProviderNGTest {
 
+    final static String TEST_ICON_NAME = "TestIcon2";
+
     public DefaultCustomIconProviderNGTest() {
     }
 
@@ -60,109 +62,135 @@ public class DefaultCustomIconProviderNGTest {
     }
 
     /**
-     * Test of addIcon method, of class DefaultCustomIconProvider.
+     * Runner for tests
      */
-    @Test
-    public void testAddIcon() {
+    @Test(expectedExceptions = NullPointerException.class)
+    public void runTests() {
         try ( MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class)) {
             try ( MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class)) {
-
                 // Get a test directory location for the getIconDirectory call
                 URL exampleIcon = DefaultCustomIconProviderNGTest.class.getResource("resources/");
                 File testFile = new File(exampleIcon.toURI());
+                defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.getIconDirectory()).thenReturn(testFile);
 
-                // Create a test icon
+                // Create a test icon to be removed by testRemoveIcon
                 final ConstellationColor ICON_COLOR = ConstellationColor.BLUEBERRY;
                 final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
                 final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
 
-                ConstellationIcon icon = new ConstellationIcon.Builder("TestIcon",
+                ConstellationIcon icon = new ConstellationIcon.Builder(TEST_ICON_NAME,
                         new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
                                 ICON_BACKGROUND.buildBufferedImage(16, ICON_COLOR.getJavaColor()),
                                 ICON_SYMBOL.buildBufferedImage(16), 0, 0)))
                         .build();
-                icon.buildBufferedImage();
-
-                defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.getIconDirectory()).thenReturn(testFile);
-                iconManagerMock.when(() -> IconManager.iconExists(Mockito.any())).thenReturn(false);
-
+                icon.setEditable(true);
                 DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
+                // Add a test icon to be removed later
+                instance.addIcon(icon);
 
-                boolean result = instance.addIcon(icon);
+                // Run testAddIcon
+                testAddIcon(iconManagerMock);
 
-                defaultCustomIconProviderMock.verify(() -> DefaultCustomIconProvider.getIconDirectory(), times(2));
-                assertEquals(result, true);
+                //Run testAddIconFileDoesExist
+                testAddIconFileDoesExist(icon);
 
-            } catch (URISyntaxException ex) {
+                // Run testRemoveIcon
+                testRemoveIcon(iconManagerMock, icon);
+
+                // Run testRemoveIconDoesNotExist
+                testRemoveIconDoesNotExist();
+
+                // Run testLoadIcons
+                testLoadIcons(testFile);
+
+                // Verify defaultCustomIconProvider.getIconDirectory was called the correct number of times 
+                defaultCustomIconProviderMock.verify(() -> DefaultCustomIconProvider.getIconDirectory(), times(6));
+
+            } catch (final URISyntaxException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
     }
 
     /**
-     * Test of addIcon method, of class DefaultCustomIconProvider using an icon file that does exist.
+     * Test of addIcon method, of class DefaultCustomIconProvider.
+     *
+     * @param iconManager
+     * @throws URISyntaxException
      */
-    @Test
-    public void testAddIconFileDoesExist() {
-        try ( MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class)) {
+    public void testAddIcon(final MockedStatic<IconManager> iconManager) throws URISyntaxException {
+        // Create a test icon
+        final ConstellationColor ICON_COLOR = ConstellationColor.BLUEBERRY;
+        final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
+        final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
 
-            // Get a test directory location for the getIconDirectory call
-            URL exampleIcon = DefaultCustomIconProviderNGTest.class.getResource("resources/");
-            File testFile = new File(exampleIcon.toURI());
+        ConstellationIcon icon = new ConstellationIcon.Builder("TestIcon",
+                new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
+                        ICON_BACKGROUND.buildBufferedImage(16, ICON_COLOR.getJavaColor()),
+                        ICON_SYMBOL.buildBufferedImage(16), 0, 0)))
+                .build();
 
-            // Get an icon that does exist
-            ConstellationIcon icon = IconManager.getIcon("resources/test_bagel_blue.png");
+        iconManager.when(() -> IconManager.iconExists(Mockito.any())).thenReturn(false);
 
-            defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.getIconDirectory()).thenReturn(testFile);
-            DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
+        DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
 
-            boolean result = instance.addIcon(icon);
-            assertEquals(result, false);
+        final boolean result = instance.addIcon(icon);
+        assertEquals(result, true);
 
-        } catch (URISyntaxException ex) {
-            Exceptions.printStackTrace(ex);
+        // Clean up for after the test
+        if (DefaultCustomIconProviderNGTest.class.getResource("resources/TestIcon.png") != null) {
+            File removeFile = new File(DefaultCustomIconProviderNGTest.class.getResource("resources/TestIcon.png").toURI());
+            removeFile.delete();
         }
+
+    }
+
+    /**
+     * Test of addIcon method, of class DefaultCustomIconProvider using an icon file that does exist.
+     * @param icon
+     */
+    public void testAddIconFileDoesExist(final ConstellationIcon icon) {
+        // Get an icon that does exist
+        DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
+
+        final boolean result = instance.addIcon(icon);
+        assertEquals(result, false);
     }
 
     /**
      * Test of removeIcon method, of class DefaultCustomIconProvider.
+     * @param iconManager
+     * @param icon
      */
-    @Test
-    public void testRemoveIcon() {
-        try ( MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class)) {
-            // Get a test directory location for the getIconDirectory call
-            URL exampleIcon = DefaultCustomIconProviderNGTest.class.getResource("resources/");
-            File testFile = new File(exampleIcon.toURI());
-            defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.getIconDirectory()).thenReturn(testFile);
+    public void testRemoveIcon(final MockedStatic<IconManager> iconManager, final ConstellationIcon icon) {
+        // Test remove icon
+        DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
+        iconManager.when(() -> IconManager.getIcon(Mockito.any())).thenReturn(icon);
+        final boolean result = instance.removeIcon(TEST_ICON_NAME);
+        assertEquals(result, true);
+    }
 
-            String iconName = "TestIcon";
-            DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
-
-            boolean result = instance.removeIcon(iconName);
-            assertEquals(result, true);
-
-        } catch (URISyntaxException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+    /**
+     * Test of removeIcon method, of class DefaultCustomIconProvider, using an icon that does not exist.
+     */
+    public void testRemoveIconDoesNotExist() {
+        // Test remove icon
+        DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
+        final boolean result = instance.removeIcon("TestIcon3");
+        assertEquals(result, false);
     }
 
     /**
      * Test of loadIcons method, of class DefaultCustomIcomProvider.
+     *
+     * @param testFile
      */
-    @Test
-    public void testLoadIcons() {
-        try ( MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class)) {
-            // Get a test directory location for the getIconDirectory call
-            URL testIcon = DefaultCustomIconProviderNGTest.class.getResource("resources/");
-            File testFile = new File(testIcon.toURI());
+    public void testLoadIcons(final File testFile) {
+        DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
+        List list = instance.getIcons();
 
-            defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.getIconDirectory()).thenReturn(testFile);
-            DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
-            List list = instance.getIcons();
-            assertEquals(list.size(), 1);
-
-        } catch (URISyntaxException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        // the number of icons should be the number of files in the resources folder minus "test_bagel_blue.png"
+        final int expResult = testFile.listFiles().length - 1;
+        assertEquals(list.size(), expResult);
     }
 }
