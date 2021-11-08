@@ -38,6 +38,10 @@ public final class JNumberedTextArea extends JTextArea {
         setText(getLineNumbersText());
     }
 
+    protected String getSetLineNumbersText() {
+        return getText();
+    }
+
     private String getLineNumbersText() {
         final int caretPosition = textArea.getDocument().getLength();
         final Element root = textArea.getDocument().getDefaultRootElement();
