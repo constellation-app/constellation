@@ -32,6 +32,10 @@ import java.util.zip.InflaterInputStream;
  * @author arcturus
  */
 public class HttpsUtilities {
+    
+    private HttpsUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Get a {@code InputStream} from a {@code HttpsURLConnection} using the
