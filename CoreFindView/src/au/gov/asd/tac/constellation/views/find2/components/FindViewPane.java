@@ -33,7 +33,7 @@ public class FindViewPane extends BorderPane {
     public FindViewPane(final FindViewTopComponent parentComponent) {
         this.parentComponent = parentComponent;
         this.findViewTabs = new FindViewTabs(this);
-        setCenter(findViewTabs.getFindViewTabs());
+        setCenter(findViewTabs);
         this.requestFocus();
     }
 
