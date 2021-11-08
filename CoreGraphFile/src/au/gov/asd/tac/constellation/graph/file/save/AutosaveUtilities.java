@@ -175,19 +175,19 @@ public final class AutosaveUtilities {
      */
     public static void copyFile(final File autosave, final File to) throws IOException {
         final File toBak = new File(to.getPath() + ".bak");
-        LOGGER.log(Level.INFO, String.format("Processing request to open autosave file: %s", autosave.toString()));
+        LOGGER.log(Level.INFO, "Processing request to open autosave file: {0}", autosave.toString());
         if (toBak.exists()) {
             final boolean toBakIsDeleted = toBak.delete();
             if (!toBakIsDeleted) {
-                LOGGER.log(Level.WARNING, String.format("Unable to remove old backup file: %s", toBak.toString()));
+                LOGGER.log(Level.WARNING, "Unable to remove old backup file: {0}", toBak.toString());
             }
         }
 
         if (to.exists()) {
             final boolean toRenamed = to.renameTo(toBak);
-             LOGGER.log(Level.INFO, String.format("Backing up %s to %s", to.toString(), toBak.toString()));
+                LOGGER.log(Level.INFO, "Backing up {0} to {1}", new Object[]{to.toString(), toBak.toString()});
             if (!toRenamed) {
-                LOGGER.log(Level.WARNING, String.format("Unable to backup file: %s", to.toString()));
+                LOGGER.log(Level.WARNING, "Unable to backup file: {0}", to.toString());
             }
         }
 
@@ -204,7 +204,7 @@ public final class AutosaveUtilities {
                 }
             }
         }
-        LOGGER.log(Level.INFO, String.format("Replacing %s with autosave file prior to opening", to.toString()));
+        LOGGER.log(Level.INFO, "Replacing {0} with autosave file prior to opening", to.toString());
     }
 
     /**
