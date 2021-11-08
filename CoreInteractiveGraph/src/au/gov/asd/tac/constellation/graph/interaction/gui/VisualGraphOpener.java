@@ -211,6 +211,7 @@ public final class VisualGraphOpener extends GraphOpener {
                             // Backup file successfully loaded, copy it over top of corrupt actual file - theres no reason to keep the corrupted file.
                             // Don't do a move, rather perform the move in two stages, a copy, then a delete to ensure there
                             // is always going to be a valid file somewhere as only the copy or the delete can fail in a given run.
+                            LOGGER.log(Level.INFO, String.format("Successfully opened backup file: %s, replacing star file", backupFile.toString()));
                             FileUtils.copyFile(new File(backupFile.toString()), new File(graphFile.toString()));
                         }
                     }
