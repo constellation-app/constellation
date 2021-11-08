@@ -83,7 +83,8 @@ public final class AutosaveUtilities {
     }
 
     /**
-     * Delete the autosave files belonging to the specified graph id.
+     * Delete the 
+     * files belonging to the specified graph id.
      * <p>
      * This is typically for when the VisualTopComponent is closing and the
      * graph has not been modified.
@@ -167,28 +168,30 @@ public final class AutosaveUtilities {
      * The destination file is renamed to file.bak, the source file is copied,
      * the .bak file is deleted.
      *
-     * @param from The source file.
+     * @param autosave The autosave source file.
      * @param to The destination file.
      *
      * @throws IOException When an error happens.
      */
-    public static void copyFile(final File from, final File to) throws IOException {
+    public static void copyFile(final File autosave, final File to) throws IOException {
         final File toBak = new File(to.getPath() + ".bak");
+        LOGGER.log(Level.INFO, "Processing request to open autosave file: {0}", autosave);
         if (toBak.exists()) {
             final boolean toBakIsDeleted = toBak.delete();
             if (!toBakIsDeleted) {
-                //TODO: Handle case where file not successfully deleted
+                LOGGER.log(Level.WARNING, "Unable to remove old backup file: {0}", toBak);
             }
         }
 
         if (to.exists()) {
             final boolean toRenamed = to.renameTo(toBak);
+            LOGGER.log(Level.INFO, "Backing up {0} to {1}", new Object[]{to, toBak});
             if (!toRenamed) {
-                //TODO: Handle case where file not successfully renamed
+                LOGGER.log(Level.WARNING, "Unable to backup file: {0}", to);
             }
         }
 
-        try (InputStream in = new FileInputStream(from)) {
+        try (InputStream in = new FileInputStream(autosave)) {
             try (final OutputStream out = new FileOutputStream(to)) {
                 final int bufsiz = 1024 * 1024;
                 final byte[] buf = new byte[bufsiz];
@@ -197,11 +200,11 @@ public final class AutosaveUtilities {
                     if (len == -1) {
                         break;
                     }
-
                     out.write(buf, 0, len);
                 }
             }
         }
+        LOGGER.log(Level.INFO, "Replacing {0} with autosave file prior to opening", to);
     }
 
     /**
