@@ -20,6 +20,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -41,6 +43,8 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class IconManagerNGTest {
+
+    private final static Map<String, ConstellationIcon> TEST_CACHE = new HashMap<>();
 
     public IconManagerNGTest() {
     }
@@ -78,6 +82,13 @@ public class IconManagerNGTest {
             IconManager.addIcon(icon1);
             IconManager.addIcon(icon2);
             IconManager.addIcon(icon3);
+
+            final Map<String, ConstellationIcon> iconNames = new HashMap<>();
+            iconNames.put("Test1", icon1);
+            iconNames.put("Test2", icon2);
+            iconNames.put("Test3", icon3);
+
+            TEST_CACHE.putAll(iconNames);
 
         } catch (URISyntaxException ex) {
             Exceptions.printStackTrace(ex);
@@ -153,17 +164,20 @@ public class IconManagerNGTest {
      */
     @Test
     public void testGetIconNames() {
-        // Test when editable boolean is set to true
-        final Set<String> namesTrue = IconManager.getIconNames(true);
-        assertEquals(namesTrue.size(), 3);
+        try ( MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class)) {
+            iconManagerMock.when(() -> IconManager.getCache()).thenReturn(TEST_CACHE);
+            // Test when editable boolean is set to true
+            final Set<String> namesTrue = IconManager.getIconNames(true);
+            assertEquals(namesTrue.size(), 0);
 
-        // Test when editable boolean is set to false
-        final Set<String> namesFalse = IconManager.getIconNames(false);
-        assertEquals(namesFalse.size(), 611);
+            // Test when editable boolean is set to false
+            final Set<String> namesFalse = IconManager.getIconNames(false);
+            assertEquals(namesFalse.size(), 0);
 
-        // Test when editable boolean is set to null 
-        final Set<String> namesNull = IconManager.getIconNames(null);
-        assertEquals(namesNull.size(), 614);
+            // Test when editable boolean is set to null
+            final Set<String> namesNull = IconManager.getIconNames(null);
+            assertEquals(namesNull.size(), 0);
+        }
     }
 
     /**

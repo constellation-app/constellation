@@ -160,7 +160,7 @@ public class IconManager {
      * @return a {@link Map} of icon name to icon representing all icons from
      * all loaded icon providers.
      */
-    private static synchronized Map<String, ConstellationIcon> getCache() {
+    protected static synchronized Map<String, ConstellationIcon> getCache() {
         if (CACHE == null) {
             final Map<String, ConstellationIcon> iconNames = new HashMap<>();
             final Map<String, ConstellationIcon> iconExtendedNames = new HashMap<>();
