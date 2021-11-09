@@ -58,7 +58,7 @@ public class JNumberedTextAreaNGTest {
 
         JNumberedTextArea instance = new JNumberedTextArea(jTextArea);
         instance.updateLineNumbers();
-        String expResult = "1\r\n";
+        String expResult = "1" + System.lineSeparator();
         String result = instance.getSetLineNumbersText();
         assertEquals(result, expResult);
     }
@@ -74,7 +74,7 @@ public class JNumberedTextAreaNGTest {
 
         JNumberedTextArea instance = new JNumberedTextArea(jTextArea);
         instance.updateLineNumbers();
-        String expResult = "1\r\n";
+        String expResult = "1" + System.lineSeparator();
         String result = instance.getSetLineNumbersText();
         assertEquals(result, expResult);
     }
@@ -85,12 +85,12 @@ public class JNumberedTextAreaNGTest {
      */
     @Test
     public void testUpdateLineNumbers_emptyTextWithNewLine() {
-        String text = " \r\n";
+        String text = " " + System.lineSeparator();
         final JTextArea jTextArea = new JTextArea(text);
 
         JNumberedTextArea instance = new JNumberedTextArea(jTextArea);
         instance.updateLineNumbers();
-        String expResult = "1\r\n2\r\n";
+        String expResult = "1" + System.lineSeparator() + "2" + System.lineSeparator();
         String result = instance.getSetLineNumbersText();
         assertEquals(result, expResult);
     }
@@ -101,15 +101,15 @@ public class JNumberedTextAreaNGTest {
      */
     @Test
     public void testUpdateLineNumbers_multilLinedText() {
-        String multilLinedText = "Text1 \r\n"
-                + "Text2 \r\n"
-                + "Text3 \r\n"
-                + "Text4 ";
+        String multilLinedText = "Text1" + System.lineSeparator()
+                + "Text2" + System.lineSeparator()
+                + "Text3" + System.lineSeparator()
+                + "Text4";
         final JTextArea jTextArea = new JTextArea(multilLinedText, 1, 3);
 
         JNumberedTextArea instance = new JNumberedTextArea(jTextArea);
         instance.updateLineNumbers();
-        String expResult = "1\r\n2\r\n3\r\n4\r\n";
+        String expResult = "1" + System.lineSeparator() + "2" + System.lineSeparator() + "3" + System.lineSeparator() + "4" + System.lineSeparator();
         String result = instance.getSetLineNumbersText();
         assertEquals(result, expResult);
     }
