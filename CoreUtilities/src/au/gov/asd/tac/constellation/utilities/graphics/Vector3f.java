@@ -392,16 +392,7 @@ public final class Vector3f implements Serializable {
      * @return true if the Vector3f are the same, false otherwise
      */
     public boolean areSame(final Vector3f vec) {
-        if(a[0] != vec.a[0]){
-            return false;
-        }
-        if(a[1] != vec.a[1]){
-            return false;
-        }
-        if(a[2] != vec.a[2]){
-            return false;
-        }
-        return true;
+        return a[0] == vec.a[0] && a[1] == vec.a[1] && a[2] == vec.a[2];
     }
 
     @Override

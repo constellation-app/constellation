@@ -178,33 +178,14 @@ public final class Camera implements Serializable {
      * @return true if the cameras are the same, false otherwise
      */
     public boolean areSame(final Camera camera) {
-        if(!lookAtEye.areSame(camera.lookAtEye)){
-            return false;
-        }
-        if(!lookAtCentre.areSame(camera.lookAtCentre)){
-            return false;
-        }
-        if(!lookAtUp.areSame(camera.lookAtUp)){
-            return false;
-        }
-        if(!lookAtRotation.areSame(camera.lookAtRotation)){
-            return false;
-        }
-        if(!lookAtPreviousEye.areSame(camera.lookAtPreviousEye)){
-            return false;
-        }
-        if(!lookAtPreviousCentre.areSame(camera.lookAtPreviousCentre)){
-            return false;
-        }
-        if(!lookAtPreviousUp.areSame(camera.lookAtPreviousUp)){
-            return false;
-        }
-        if(!lookAtPreviousRotation.areSame(camera.lookAtPreviousRotation)){
-            return false;
-        }
-        if(!boundingBox.equals(camera.boundingBox)){
-            return false;
-        }
-        return true;
+        return lookAtEye.areSame(camera.lookAtEye) 
+                && lookAtCentre.areSame(camera.lookAtCentre) 
+                && lookAtUp.areSame(camera.lookAtUp) 
+                && lookAtRotation.areSame(camera.lookAtRotation) 
+                && lookAtPreviousEye.areSame(camera.lookAtPreviousEye)
+                && lookAtPreviousCentre.areSame(camera.lookAtPreviousCentre) 
+                && lookAtPreviousUp.areSame(camera.lookAtPreviousUp) 
+                && lookAtPreviousRotation.areSame(camera.lookAtPreviousRotation) 
+                && boundingBox.equals(camera.boundingBox);
     }
 }

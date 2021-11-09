@@ -349,19 +349,7 @@ public final class BoundingBox implements Serializable {
      * @return true if the BoundingBox are the same, false otherwise
      */
     public boolean areSame(final BoundingBox bbox) {
-        if(min.areSame(bbox.getMin())){
-            return false;
-        }
-        if(min2.areSame(bbox.getMin2())){
-            return false;
-        }
-        if(max.areSame(bbox.getMax())){
-            return false;
-        }
-        if(max2.areSame(bbox.getMax2())){
-            return false;
-        }
-        return true && Boolean.compare(isEmpty, bbox.isEmpty()) == 0;
+        return min.areSame(bbox.getMin()) && min2.areSame(bbox.getMin2()) && max.areSame(bbox.getMax()) && max2.areSame(bbox.getMax2()) && Boolean.compare(isEmpty, bbox.isEmpty()) == 0;
     }
 
     @Override
