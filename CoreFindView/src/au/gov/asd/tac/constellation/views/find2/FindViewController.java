@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This controller class handles the interaction between the findView2 UI
@@ -47,6 +48,7 @@ public class FindViewController {
     // Parameters
     private final BasicFindReplaceParameters currentBasicFindParameters;
     private final BasicFindReplaceParameters currentBasicReplaceParameters;
+    private static final Logger LOGGER = Logger.getLogger(FindViewController.class.getName());
 
     /**
      * Private constructor for singleton
@@ -107,10 +109,10 @@ public class FindViewController {
             try {
                 future.get();
             } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getMessage());
                 Thread.currentThread().interrupt();
             } catch (final ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getMessage());
             }
 
             // Retrieve a list of all String attributes

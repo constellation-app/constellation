@@ -178,11 +178,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                         // Determine if the find string matches the attribute 
                         // string
                         Matcher match = searchPattern.matcher(value);
-                        if (matchWholeWord) {
-                            found = match.matches();
-                        } else {
-                            found = match.find();
-                        }
+                        found = matchWholeWord ? match.matches() : match.find();
                         if (found) {
                             // get the UID of the element and the graph
                             final long uid = elementType.getUID(graph, currElement);
@@ -249,11 +245,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
 
         }
         //If no results are found, set the meta attribute to null
-        if (foundResult.isEmpty()) {
-            graph.setObjectValue(stateId, 0, null);
-        } else {
-            graph.setObjectValue(stateId, 0, foundResult);
-        }
+        graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult);
     }
 
     /**
@@ -267,8 +259,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
      * @param graph
      * @param selectedAttribute
      */
-    private void selectFindInResults(boolean findInCurrentSelection, FindResultsList findInCurrentSelectionList,
-            FindResultsList foundResult, GraphWriteMethods graph, int selectedAttribute) {
+    private void selectFindInResults(final boolean findInCurrentSelection, final FindResultsList findInCurrentSelectionList,
+            final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
         if (findInCurrentSelection && !findInCurrentSelectionList.isEmpty()) {
             clearSelection(graph);
             for (final FindResult fr : findInCurrentSelectionList) {
@@ -290,8 +282,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
      * @param graph
      * @param selectedAttribute
      */
-    private void selectRemoveFromResults(boolean removeFromCurrentSelection, FindResultsList removeFromCurrentSelectionList,
-            FindResultsList foundResult, GraphWriteMethods graph, int selectedAttribute) {
+    private void selectRemoveFromResults(final boolean removeFromCurrentSelection, final FindResultsList removeFromCurrentSelectionList,
+            final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
         if (removeFromCurrentSelection && !removeFromCurrentSelectionList.isEmpty()) {
             for (final FindResult fr : removeFromCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), false);

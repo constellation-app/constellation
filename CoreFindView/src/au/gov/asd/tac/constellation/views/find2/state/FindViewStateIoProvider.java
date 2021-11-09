@@ -49,7 +49,10 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(int attributeId, int elementId, JsonNode jnode, GraphWriteMethods writableGraph, Map<Integer, Integer> vertexMap, Map<Integer, Integer> transactionMap, GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
+            final GraphWriteMethods writableGraph, final Map<Integer, Integer> vertexMap,
+            final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader,
+            final ImmutableObjectCache cache) throws IOException {
         if (!jnode.isNull()) {
 
             // Get the findResultsList variables
@@ -92,12 +95,8 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
             final List<FindResult> findResults = new ArrayList<>();
             final ArrayNode findResultsArray = (ArrayNode) jnode.withArray("findResults");
             for (int i = 0; i < findResultsArray.size(); i = i + 3) {
-                if (findResultsArray.get(i).isNull()) {
-                    findResults.add(null);
-                } else {
-                    findResults.add(new FindResult(findResultsArray.get(i).asInt(),
-                            findResultsArray.get(i + 1).asInt(), GraphElementType.getValue(findResultsArray.get(i + 2).asText())));
-                }
+                findResults.add(findResultsArray.get(i).isNull() ? null : new FindResult(findResultsArray.get(i).asInt(),
+                        findResultsArray.get(i + 1).asInt(), GraphElementType.getValue(findResultsArray.get(i + 2).asText())));
             }
 
             // Create the findResultList object
@@ -111,8 +110,8 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void writeObject(Attribute attribute, int elementId, JsonGenerator jsonGenerator,
-            GraphReadMethods graph, GraphByteWriter byteWriter,
+    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator,
+            final GraphReadMethods graph, final GraphByteWriter byteWriter,
             boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
 
@@ -129,7 +128,7 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
 
                 // Stores a list of the Find Results, ID, UID and Graph element type label
                 jsonGenerator.writeArrayFieldStart("findResults");
-                for (FindResult fr : resultsList) {
+                for (final FindResult fr : resultsList) {
                     jsonGenerator.writeNumber(fr.getID());
                     jsonGenerator.writeNumber(fr.getUID());
                     jsonGenerator.writeString(fr.getType().getShortLabel());
@@ -137,7 +136,7 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeEndArray();
 
                 // Store all the basic find replace parameters
-                BasicFindReplaceParameters parameters = resultsList.getSearchParameters();
+                final BasicFindReplaceParameters parameters = resultsList.getSearchParameters();
                 jsonGenerator.writeStringField("findString", parameters.getFindString());
                 jsonGenerator.writeStringField("replaceString", parameters.getReplaceString());
                 jsonGenerator.writeStringField("graphElement", parameters.getGraphElement().getShortLabel());
@@ -153,7 +152,7 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
 
                 // Store all the selected attributes of the search
                 jsonGenerator.writeArrayFieldStart("selectedAttributes");
-                for (Attribute a : parameters.getAttributeList()) {
+                for (final Attribute a : parameters.getAttributeList()) {
                     jsonGenerator.writeObject(a.getName());
                 }
                 jsonGenerator.writeEndArray();

@@ -51,7 +51,7 @@ import org.openide.windows.WindowManager;
 )
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Views", position = 3000),
-    @ActionReference(path = "Shortcuts", name = "C-F")
+    @ActionReference(path = "Shortcuts", name = "C-B")
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_FindView2Action",
@@ -161,12 +161,10 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
          * the window is the find view so we set the location and the size of
          * the window.
          */
-        for (Window window : Window.getWindows()) {
-            if (this.getTopLevelAncestor() != null) {
-                if (this.getTopLevelAncestor().getName().equals(window.getName())) {
-                    window.setMinimumSize(new Dimension(485, 285));
-                    window.setLocation((int) Screen.getPrimary().getBounds().getMaxX() - 510, 110);
-                }
+        for (final Window window : Window.getWindows()) {
+            if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
+                window.setMinimumSize(new Dimension(485, 285));
+                window.setLocation((int) Screen.getPrimary().getBounds().getMaxX() - 510, 110);
             }
         }
     }

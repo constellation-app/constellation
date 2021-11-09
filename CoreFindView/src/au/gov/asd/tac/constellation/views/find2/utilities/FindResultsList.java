@@ -56,7 +56,7 @@ public class FindResultsList extends ArrayList<FindResult> {
      *
      * @param resultsList
      */
-    public FindResultsList(FindResultsList resultsList) {
+    public FindResultsList(final FindResultsList resultsList) {
         this.currentIndex = resultsList.getCurrentIndex();
         this.graphId = resultsList.getGraphId();
         this.searchParameters = resultsList.getSearchParameters();

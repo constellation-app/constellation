@@ -69,7 +69,7 @@ public class ReplaceTab extends BasicFindTab {
         currentSelectionChoiceBox.getItems().remove(1, 4);
 
         // add replaceIn
-        currentSelectionChoiceBox.getItems().add("Replace in");
+        currentSelectionChoiceBox.getItems().add("Replace In");
 
         // remove exact match checkBox
         preferencesGrid.getChildren().remove(exactMatchCB);
@@ -101,8 +101,6 @@ public class ReplaceTab extends BasicFindTab {
 
         // determine what currentSelectionChoiceBox option is selected
         switch (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                break;
             case 1:
                 replaceIn = true;
                 break;

@@ -54,9 +54,9 @@ public class ResetStatePlugin extends SimpleEditPlugin {
      * @throws PluginException
      */
     @Override
-    protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-        int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
-        FindResultsList foundResult = graph.getObjectValue(stateId, 0);
+    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
+        final FindResultsList foundResult = graph.getObjectValue(stateId, 0);
         foundResult.setCurrentIndex(STARTING_INDEX);
 
     }

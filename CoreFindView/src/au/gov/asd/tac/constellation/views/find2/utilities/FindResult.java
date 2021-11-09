@@ -175,14 +175,14 @@ public class FindResult {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         }
         if (!(obj instanceof FindResult)) {
             return false;
         }
-        FindResult other = (FindResult) obj;
+        final FindResult other = (FindResult) obj;
 
         return this.id == other.id;
     }

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find2.components;
 
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -46,19 +45,15 @@ public class FindViewTabs extends TabPane {
          * Logic for what occurs when the user changes tabs. This should update
          * the buttons at the bottom of the pane to match the tab selected.
          */
-        getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
-            @Override
-            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
-                if (newTab.equals(basicFindTab)) {
-                    basicFindTab.updateButtons();
-                } else if (newTab.equals(replaceTab)) {
-                    replaceTab.updateButtons();
-                } else {
-                    // place holder for advanced tab
-                }
+        getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
+            if (newTab.equals(getBasicFindTab())) {
+                getBasicFindTab().updateButtons();
+            } else if (newTab.equals(getReplaceTab())) {
+                getReplaceTab().updateButtons();
+            } else {
+                // place holder for advanced tab
             }
-        }
-        );
+        });
     }
 
     /**
@@ -66,22 +61,22 @@ public class FindViewTabs extends TabPane {
      */
     private void setTabContent() {
         // Ensure all 3 tabs can not be closed.
-        basicFindTab.setClosable(false);
-        replaceTab.setClosable(false);
+        getBasicFindTab().setClosable(false);
+        getReplaceTab().setClosable(false);
         advancedFindTab.setClosable(false);
 
         // Add all 3 tabs to the tabPane
-        getTabs().add(basicFindTab);
-        getTabs().add(replaceTab);
+        getTabs().add(getBasicFindTab());
+        getTabs().add(getReplaceTab());
         getTabs().add(advancedFindTab);
 
         // Update the buttons based on the currently selected tab
         switch (getSelectionModel().getSelectedIndex()) {
             case 0:
-                basicFindTab.updateButtons();
+                getBasicFindTab().updateButtons();
                 break;
             case 1:
-                replaceTab.updateButtons();
+                getReplaceTab().updateButtons();
                 break;
             case 2:
                 break;

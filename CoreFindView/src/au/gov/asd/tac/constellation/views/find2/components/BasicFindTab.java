@@ -22,6 +22,8 @@ import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParame
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -44,7 +46,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.CheckComboBox;
-import org.openide.util.Exceptions;
 
 /**
  * BasicFindTab contains all the UI elements for the Basic find tab.
@@ -102,6 +103,7 @@ public class BasicFindTab extends Tab {
 
     protected static final int LABEL_WIDTH = 90;
     protected static final int DROP_DOWN_WIDTH = 120;
+    private static final Logger LOGGER = Logger.getLogger(BasicFindTab.class.getName());
 
     public BasicFindTab(final FindViewTabs parentComponent) {
         /**
@@ -121,17 +123,13 @@ public class BasicFindTab extends Tab {
          * graphElementType and update the selectedAttributes to retrieve
          * potentially previously selected elements of the new GraphElementType
          */
-        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
-                if (oldElement != null) {
-                    saveSelected(GraphElementType.getValue(oldElement));
-                }
-                populateAttributes(GraphElementType.getValue(newElement));
-                updateSelectedAttributes(getMatchingAttributeList(GraphElementType.getValue(newElement)));
+        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
+            if (oldElement != null) {
+                saveSelected(GraphElementType.getValue(oldElement));
             }
-        }
-        );
+            populateAttributes(GraphElementType.getValue(newElement));
+            updateSelectedAttributes(getMatchingAttributeList(GraphElementType.getValue(newElement)));
+        });
 
         // Set the actions for selectAll and deselectAll context menu items
         selectAllMenuItem.setOnAction(event -> inAttributesMenu.getCheckModel().checkAll());
@@ -239,7 +237,7 @@ public class BasicFindTab extends Tab {
          * Ignore. Set the sizing preferences and add the currentSelectionLabel
          * and ChoiceBox to the settings grid
          */
-        currentSelectionChoiceBox.getItems().addAll("Ignore", "Add to", "Find in", "Remove From");
+        currentSelectionChoiceBox.getItems().addAll("Ignore", "Add To", "Find In", "Remove From");
         currentSelectionChoiceBox.getSelectionModel().select(0);
         currentSelectionChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
         settingsGrid.add(currentSelectionLabel, 0, 2);
@@ -325,7 +323,7 @@ public class BasicFindTab extends Tab {
                 }
             }
         } else {
-            CountDownLatch cdl = new CountDownLatch(1);
+            final CountDownLatch cdl = new CountDownLatch(1);
             Platform.runLater(() -> {
                 inAttributesMenu.getCheckModel().clearChecks();
                 inAttributesMenu.getItems().clear();
@@ -342,8 +340,8 @@ public class BasicFindTab extends Tab {
             });
             try {
                 cdl.await();
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage());
                 Thread.currentThread().interrupt();
             }
         }
@@ -361,7 +359,7 @@ public class BasicFindTab extends Tab {
 
         // Preform in a run later to ensure this process is done before the
         // next starts
-        CountDownLatch cdl = new CountDownLatch(1);
+        final CountDownLatch cdl = new CountDownLatch(1);
         Platform.runLater(() -> {
             // loops through all selectedAttributes
             for (int i = 0; i < selectedAttributes.size(); i++) {
@@ -412,13 +410,11 @@ public class BasicFindTab extends Tab {
         if (!attributes.isEmpty()) {
             // loop through all attributes
             for (final Attribute a : attributes) {
-                // if there is attributes selected in the attributesMenu
-                if (!inAttributesMenu.getCheckModel().isEmpty()) {
-                    // if that attribute is selected
-                    if (inAttributesMenu.getCheckModel().isChecked(a.getName())) {
-                        // add it to the selected attributes list
-                        selectedAttributes.add(a);
-                    }
+                // if there is attributes selected in the attributesMenu and
+                // if that attribute is selected
+                if (!inAttributesMenu.getCheckModel().isEmpty() && inAttributesMenu.getCheckModel().isChecked(a.getName())) {
+                    // add it to the selected attributes list
+                    selectedAttributes.add(a);
                 }
             }
         }
@@ -487,13 +483,9 @@ public class BasicFindTab extends Tab {
      * the variables values stored in the controller
      */
     public void updateSelectionFactors() {
-        if (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 2 || currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 3) {
-            findNextButton.setDisable(true);
-            findPrevButton.setDisable(true);
-        } else {
-            findNextButton.setDisable(false);
-            findPrevButton.setDisable(false);
-        }
+        final boolean disable = currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 2 || currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 3;
+        findNextButton.setDisable(disable);
+        findPrevButton.setDisable(disable);
     }
 
     /**
