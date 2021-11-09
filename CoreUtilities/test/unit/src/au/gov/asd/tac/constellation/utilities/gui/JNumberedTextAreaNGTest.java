@@ -59,7 +59,7 @@ public class JNumberedTextAreaNGTest {
         JNumberedTextArea instance = new JNumberedTextArea(jTextArea);
         instance.updateLineNumbers();
         String expResult = "1" + System.lineSeparator();
-        String result = instance.getSetLineNumbersText();
+        String result = instance.getText();
         assertEquals(result, expResult);
     }
 
@@ -75,7 +75,7 @@ public class JNumberedTextAreaNGTest {
         JNumberedTextArea instance = new JNumberedTextArea(jTextArea);
         instance.updateLineNumbers();
         String expResult = "1" + System.lineSeparator();
-        String result = instance.getSetLineNumbersText();
+        String result = instance.getText();
         assertEquals(result, expResult);
     }
 
@@ -91,7 +91,7 @@ public class JNumberedTextAreaNGTest {
         JNumberedTextArea instance = new JNumberedTextArea(jTextArea);
         instance.updateLineNumbers();
         String expResult = "1" + System.lineSeparator() + "2" + System.lineSeparator();
-        String result = instance.getSetLineNumbersText();
+        String result = instance.getText();
         assertEquals(result, expResult);
     }
 
@@ -110,7 +110,7 @@ public class JNumberedTextAreaNGTest {
         JNumberedTextArea instance = new JNumberedTextArea(jTextArea);
         instance.updateLineNumbers();
         String expResult = "1" + System.lineSeparator() + "2" + System.lineSeparator() + "3" + System.lineSeparator() + "4" + System.lineSeparator();
-        String result = instance.getSetLineNumbersText();
+        String result = instance.getText();
         assertEquals(result, expResult);
     }
 }
