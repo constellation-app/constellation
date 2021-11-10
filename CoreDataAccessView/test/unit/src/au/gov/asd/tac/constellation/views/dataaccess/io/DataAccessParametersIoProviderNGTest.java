@@ -209,11 +209,7 @@ public class DataAccessParametersIoProviderNGTest {
         // tab1 plugin parameters - only plugin1 because plugin2 is disabled
         verify(dataSourceTitledPane1).setParameterValues(Map.of(
                 plugin1.getClass().getSimpleName() + "." + "__is_enabled__", "true",
-                plugin1.getClass().getSimpleName() + "." + "param1", "plugin1_param1_value",
-                plugin2.getClass().getSimpleName() + "." + "__is_enabled__", "false",
-                plugin2.getClass().getSimpleName() + "." + "param1", "plugin2_param1_value",
-                "OTHER_PLUGIN1.param1", "other1_param1_value",
-                "OTHER_PLUGIN1.__is_enabled__", "true"
+                plugin1.getClass().getSimpleName() + "." + "param1", "plugin1_param1_value"
         ));
 
         // tab2 global parameters
