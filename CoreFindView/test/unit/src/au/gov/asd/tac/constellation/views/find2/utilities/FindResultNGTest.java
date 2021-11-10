@@ -73,7 +73,6 @@ public class FindResultNGTest {
 
         findResult.setID(2);
         assertEquals(findResult.getID(), 2);
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**
@@ -85,7 +84,6 @@ public class FindResultNGTest {
         findResult = new FindResult(1, 2, GraphElementType.VERTEX);
 
         assertEquals(findResult.getUID(), 2);
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**
@@ -98,7 +96,6 @@ public class FindResultNGTest {
 
         findResult.setUID(3);
         assertEquals(findResult.getUID(), 3);
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**
