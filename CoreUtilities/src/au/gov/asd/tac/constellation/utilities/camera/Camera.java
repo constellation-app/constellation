@@ -186,6 +186,11 @@ public final class Camera implements Serializable {
                 && lookAtPreviousCentre.areSame(camera.lookAtPreviousCentre) 
                 && lookAtPreviousUp.areSame(camera.lookAtPreviousUp) 
                 && lookAtPreviousRotation.areSame(camera.lookAtPreviousRotation) 
-                && boundingBox.equals(camera.boundingBox);
+                && visibilityLow == camera.visibilityLow
+                && visibilityHigh == camera.visibilityHigh
+                && mixRatio == camera.mixRatio
+                && objectFrame.areSame(camera.objectFrame)
+                && boundingBox.areSame(camera.boundingBox);
+        
     }
 }
