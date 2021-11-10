@@ -170,4 +170,27 @@ public final class Camera implements Serializable {
     public float getMix() {
         return ((float) mixRatio) / (MIX_RATIO_MAX - MIX_RATIO_MIN);
     }
+    
+    /**
+     * Method used for testing to check if camera values are equal
+     * 
+     * @param camera the camera to compare to this instance
+     * @return true if the cameras are the same, false otherwise
+     */
+    public boolean areSame(final Camera camera) {
+        return lookAtEye.areSame(camera.lookAtEye) 
+                && lookAtCentre.areSame(camera.lookAtCentre) 
+                && lookAtUp.areSame(camera.lookAtUp) 
+                && lookAtRotation.areSame(camera.lookAtRotation) 
+                && lookAtPreviousEye.areSame(camera.lookAtPreviousEye)
+                && lookAtPreviousCentre.areSame(camera.lookAtPreviousCentre) 
+                && lookAtPreviousUp.areSame(camera.lookAtPreviousUp) 
+                && lookAtPreviousRotation.areSame(camera.lookAtPreviousRotation) 
+                && visibilityLow == camera.visibilityLow
+                && visibilityHigh == camera.visibilityHigh
+                && mixRatio == camera.mixRatio
+                && objectFrame.areSame(camera.objectFrame)
+                && boundingBox.areSame(camera.boundingBox);
+        
+    }
 }

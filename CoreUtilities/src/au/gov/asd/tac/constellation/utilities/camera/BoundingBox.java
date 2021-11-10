@@ -341,6 +341,16 @@ public final class BoundingBox implements Serializable {
 
         isEmpty = false;
     }
+    
+    /**
+     * Method used for testing to check if BoundingBox values are equal
+     * 
+     * @param bbox the BoundingBox to compare to this instance
+     * @return true if the BoundingBox are the same, false otherwise
+     */
+    public boolean areSame(final BoundingBox bbox) {
+        return min.areSame(bbox.getMin()) && min2.areSame(bbox.getMin2()) && max.areSame(bbox.getMax()) && max2.areSame(bbox.getMax2()) && Boolean.compare(isEmpty, bbox.isEmpty()) == 0;
+    }
 
     @Override
     public String toString() {

@@ -366,6 +366,14 @@ public class Vector3fNGTest {
         v.a[2] = 0F;
         assertTrue(v.isZero());
     }
+    
+    @Test
+    public void testAreSame() {
+        assertTrue(new Vector3f(F1, F2, F3).areSame(new Vector3f(F1, F2, F3)));
+        assertFalse(new Vector3f(F2, F2, F3).areSame(new Vector3f(F1, F2, F3)));
+        assertFalse(new Vector3f(F1, F1, F3).areSame(new Vector3f(F1, F2, F3)));
+        assertFalse(new Vector3f(F1, F2, F1).areSame(new Vector3f(F1, F2, F3)));
+    }
 
     /**
      * Can get a string representation of a vector.
