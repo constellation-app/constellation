@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.tooltip;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider.TooltipDefinition;
 import java.util.List;
 import javafx.geometry.Insets;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -27,15 +28,14 @@ import javafx.scene.layout.VBox;
 public class TooltipNode extends VBox {
 
     public TooltipNode() {
-
         setPadding(new Insets(3));
         setFillWidth(true);
         setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 5;");
     }
 
-    public final void setTooltips(List<TooltipDefinition> tooltips) {
+    public final void setTooltips(final List<TooltipDefinition> tooltips) {
         getChildren().clear();
-        for (TooltipDefinition tooltip : tooltips) {
+        for (final TooltipDefinition tooltip : tooltips) {
             getChildren().add(tooltip.getNode());
         }
     }
