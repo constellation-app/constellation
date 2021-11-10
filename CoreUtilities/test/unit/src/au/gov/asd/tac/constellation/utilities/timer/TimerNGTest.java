@@ -61,9 +61,6 @@ public class TimerNGTest {
         final Timer instance = new Timer().start();
         final long startTime = instance.getStartTime();
         
-        // added purely to ensure there is some amount of time between the timer starting and stopping
-        Thread.sleep(1);
-        
         instance.stop("Timer Test");
         final long endTime = instance.getStartTime();
         
