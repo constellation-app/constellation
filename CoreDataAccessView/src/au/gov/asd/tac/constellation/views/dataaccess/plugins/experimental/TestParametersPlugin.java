@@ -526,7 +526,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         return results;
     }
 
-    public class GraphElementTypeParameterValue extends ParameterValue {
+    public static class GraphElementTypeParameterValue extends ParameterValue {
 
         private GraphElementType elementType;
 
