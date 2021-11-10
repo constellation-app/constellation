@@ -60,18 +60,16 @@ public class TimeZoneUtilitiesNGTest {
      */
     @Test
     public void testComparator() {
-        final ZoneId utcZone = ZoneId.of("UTC");
-        
         // offset smaller than UTC
-        final int compare1 = TimeZoneUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("-10:00"), utcZone);
+        final int compare1 = TimeZoneUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("-10:00"), TimeZoneUtilities.UTC);
         assertTrue(compare1 < 0);
         
         // offset larger than UTC
-        final int compare2 = TimeZoneUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("+10:00"), utcZone);
+        final int compare2 = TimeZoneUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("+10:00"), TimeZoneUtilities.UTC);
         assertTrue(compare2 > 0);
         
         // offset equal to UTC (therefore comes down to id)
-        final int compare3 = TimeZoneUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("+00:00"), utcZone);
+        final int compare3 = TimeZoneUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("+00:00"), TimeZoneUtilities.UTC);
         assertTrue(compare3 > 0);
     }
 
@@ -95,7 +93,7 @@ public class TimeZoneUtilitiesNGTest {
             final String result2 = TimeZoneUtilities.getTimeZoneAsString(ZoneId.of("+10:00"));
             assertEquals(result2, "+10:00");
             
-            final String result3 = TimeZoneUtilities.getTimeZoneAsString(ZoneId.of("UTC"));
+            final String result3 = TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC);
             assertEquals(result3, "+00:00 [UTC]");
         }
     }
@@ -111,7 +109,7 @@ public class TimeZoneUtilitiesNGTest {
         final String result1 = TimeZoneUtilities.getTimeZoneAsString(localDateTime, ZoneId.of("+10:00"));
         assertEquals(result1, "+10:00");
         
-        final String result2 = TimeZoneUtilities.getTimeZoneAsString(localDateTime, ZoneId.of("UTC"));
+        final String result2 = TimeZoneUtilities.getTimeZoneAsString(localDateTime, TimeZoneUtilities.UTC);
         assertEquals(result2, "+00:00 [UTC]");
     }
     
