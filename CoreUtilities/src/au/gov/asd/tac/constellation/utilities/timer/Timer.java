@@ -24,6 +24,10 @@ public class Timer {
 
     private long startTime;
 
+    protected long getStartTime() {
+        return startTime;
+    }
+    
     /**
      * Starts the timer.
      *
@@ -44,7 +48,7 @@ public class Timer {
      */
     public void stop(final String message) {
         final long endTime = System.nanoTime();
-        long difference = endTime - startTime;
+        final long difference = endTime - startTime;
         startTime = endTime;
         System.out.println(message + ": " + ((double) difference / 1000000000.0));
     }
