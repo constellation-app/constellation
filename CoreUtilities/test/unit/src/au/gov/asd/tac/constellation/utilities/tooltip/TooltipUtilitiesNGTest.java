@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.utilities.tooltip;
 
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseEnteredHyperlinkHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseMovedHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseEnteredHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseExitedHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseEnteredTextAreaHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHyperlinkHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseMovedHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseExitedHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredTextAreaHandler;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,15 +92,15 @@ public class TooltipUtilitiesNGTest {
         final TextArea textInputControl = mock(TextArea.class);
         final TooltipPane tooltipPane = new TooltipPane();
         
-        doNothing().when(textInputControl).setOnMouseEntered(Mockito.any(MouseEnteredHandler.class));
-        doNothing().when(textInputControl).setOnMouseMoved(Mockito.any(MouseMovedHandler.class));
-        doNothing().when(textInputControl).setOnMouseExited(Mockito.any(MouseExitedHandler.class));
+        doNothing().when(textInputControl).setOnMouseEntered(Mockito.any(TooltipMouseEnteredHandler.class));
+        doNothing().when(textInputControl).setOnMouseMoved(Mockito.any(TooltipMouseMovedHandler.class));
+        doNothing().when(textInputControl).setOnMouseExited(Mockito.any(TooltipMouseExitedHandler.class));
         
         TooltipUtilities.activateTextInputControl(textInputControl, tooltipPane);
         
-        verify(textInputControl, times(1)).setOnMouseEntered(Mockito.any(MouseEnteredHandler.class));
-        verify(textInputControl, times(1)).setOnMouseMoved(Mockito.any(MouseMovedHandler.class));
-        verify(textInputControl, times(1)).setOnMouseExited(Mockito.any(MouseExitedHandler.class));
+        verify(textInputControl, times(1)).setOnMouseEntered(Mockito.any(TooltipMouseEnteredHandler.class));
+        verify(textInputControl, times(1)).setOnMouseMoved(Mockito.any(TooltipMouseMovedHandler.class));
+        verify(textInputControl, times(1)).setOnMouseExited(Mockito.any(TooltipMouseExitedHandler.class));
     }
 
     /**
@@ -113,13 +113,13 @@ public class TooltipUtilitiesNGTest {
         final Hyperlink hyperlink = mock(Hyperlink.class);
         final TooltipPane tooltipPane = new TooltipPane();
         
-        doNothing().when(hyperlink).setOnMouseEntered(Mockito.any(MouseEnteredHyperlinkHandler.class));
-        doNothing().when(hyperlink).setOnMouseExited(Mockito.any(MouseExitedHandler.class));
+        doNothing().when(hyperlink).setOnMouseEntered(Mockito.any(TooltipMouseEnteredHyperlinkHandler.class));
+        doNothing().when(hyperlink).setOnMouseExited(Mockito.any(TooltipMouseExitedHandler.class));
         
         TooltipUtilities.activateTextInputControl(hyperlink, tooltipPane);
         
-        verify(hyperlink, times(1)).setOnMouseEntered(Mockito.any(MouseEnteredHyperlinkHandler.class));
-        verify(hyperlink, times(1)).setOnMouseExited(Mockito.any(MouseExitedHandler.class));
+        verify(hyperlink, times(1)).setOnMouseEntered(Mockito.any(TooltipMouseEnteredHyperlinkHandler.class));
+        verify(hyperlink, times(1)).setOnMouseExited(Mockito.any(TooltipMouseExitedHandler.class));
         
     }
 
@@ -133,14 +133,14 @@ public class TooltipUtilitiesNGTest {
         final TooltipPane tooltipPane = new TooltipPane();
         
         doNothing().when(textArea).setMouseOverTextDelay(Mockito.any(Duration.class));
-        doNothing().when(textArea).addEventHandler(Mockito.eq(MouseOverTextEvent.MOUSE_OVER_TEXT_BEGIN),Mockito.any(MouseEnteredTextAreaHandler.class));
-        doNothing().when(textArea).addEventHandler(Mockito.eq(MouseOverTextEvent.MOUSE_OVER_TEXT_END),Mockito.any(MouseExitedHandler.class));
+        doNothing().when(textArea).addEventHandler(Mockito.eq(MouseOverTextEvent.MOUSE_OVER_TEXT_BEGIN),Mockito.any(TooltipMouseEnteredTextAreaHandler.class));
+        doNothing().when(textArea).addEventHandler(Mockito.eq(MouseOverTextEvent.MOUSE_OVER_TEXT_END),Mockito.any(TooltipMouseExitedHandler.class));
         
         TooltipUtilities.activateTextInputControl(textArea, tooltipPane);
         
         verify(textArea, times(1)).setMouseOverTextDelay(Mockito.any(Duration.class));
-        verify(textArea, times(1)).addEventHandler(Mockito.eq(MouseOverTextEvent.MOUSE_OVER_TEXT_BEGIN),Mockito.any(MouseEnteredTextAreaHandler.class));
-        verify(textArea, times(1)).addEventHandler(Mockito.eq(MouseOverTextEvent.MOUSE_OVER_TEXT_END),Mockito.any(MouseExitedHandler.class));
+        verify(textArea, times(1)).addEventHandler(Mockito.eq(MouseOverTextEvent.MOUSE_OVER_TEXT_BEGIN),Mockito.any(TooltipMouseEnteredTextAreaHandler.class));
+        verify(textArea, times(1)).addEventHandler(Mockito.eq(MouseOverTextEvent.MOUSE_OVER_TEXT_END),Mockito.any(TooltipMouseExitedHandler.class));
     }
     
     /**

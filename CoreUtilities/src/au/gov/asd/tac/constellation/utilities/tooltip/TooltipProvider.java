@@ -71,13 +71,9 @@ public abstract class TooltipProvider {
         return TOOLTIP_PROVIDERS;
     }
     
-    public TooltipDefinition createTooltips(final String content) {
-        return null;
-    }
+    public abstract TooltipDefinition createTooltips(final String content);
 
-    public TooltipDefinition createTooltip(final String content, final int activePosition) {
-        return null;
-    }
+    public abstract TooltipDefinition createTooltip(final String content, final int activePosition);
 
     public static class TooltipDefinition {
 

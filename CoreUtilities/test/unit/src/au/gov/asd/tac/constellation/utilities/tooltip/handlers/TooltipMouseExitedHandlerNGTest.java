@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.tooltip.handlers;
 
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseExitedHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseExitedHandler;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.control.TextArea;
@@ -39,9 +39,9 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class MouseExitedHandlerNGTest {
+public class TooltipMouseExitedHandlerNGTest {
     
-    public MouseExitedHandlerNGTest() {
+    public TooltipMouseExitedHandlerNGTest() {
     }
 
     @BeforeClass
@@ -61,7 +61,7 @@ public class MouseExitedHandlerNGTest {
     }
 
     /**
-     * Test of handle method, of class MouseExitedHandler.
+     * Test of handle method, of class TooltipMouseExitedHandler.
      */
     @Test
     public void testHandle() {
@@ -72,7 +72,7 @@ public class MouseExitedHandlerNGTest {
         doNothing().when(tooltipPane).hideTooltip();
         
         
-        final MouseExitedHandler instance = new MouseExitedHandler(tooltipPane);
+        final TooltipMouseExitedHandler instance = new TooltipMouseExitedHandler(tooltipPane);
         final MouseEvent event = mock(MouseEvent.class);
             
         instance.handle(event);
@@ -82,7 +82,7 @@ public class MouseExitedHandlerNGTest {
     }
     
         /**
-     * Test of handle method, of class MouseExitedHandler.
+     * Test of handle method, of class TooltipMouseExitedHandler.
      */
     @Test
     public void testHandle2() {
@@ -93,7 +93,7 @@ public class MouseExitedHandlerNGTest {
         doNothing().when(tooltipPane).hideTooltip();
         
         
-        final MouseExitedHandler instance = new MouseExitedHandler(tooltipPane);
+        final TooltipMouseExitedHandler instance = new TooltipMouseExitedHandler(tooltipPane);
         final MouseEvent event = mock(MouseEvent.class);
             
         instance.handle(event);

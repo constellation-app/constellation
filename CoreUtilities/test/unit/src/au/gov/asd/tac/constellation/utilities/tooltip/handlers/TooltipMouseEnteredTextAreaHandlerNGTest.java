@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.utilities.tooltip.TooltipNode;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseEnteredTextAreaHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredTextAreaHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -56,11 +56,11 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class MouseEnteredTextAreaHandlerNGTest {
+public class TooltipMouseEnteredTextAreaHandlerNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(MouseEnteredTextAreaHandlerNGTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TooltipMouseEnteredTextAreaHandlerNGTest.class.getName());
     
-    public MouseEnteredTextAreaHandlerNGTest() {
+    public TooltipMouseEnteredTextAreaHandlerNGTest() {
     }
 
     @BeforeClass
@@ -88,7 +88,7 @@ public class MouseEnteredTextAreaHandlerNGTest {
     }
 
     /**
-     * Test of handle method, of class MouseEnteredTextAreaHandler.
+     * Test of handle method, of class TooltipMouseEnteredTextAreaHandler.
      */
     @Test
     public void testHandle() {
@@ -100,7 +100,7 @@ public class MouseEnteredTextAreaHandlerNGTest {
             ttuStatic.when(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class))).thenAnswer((Answer<Void>) invocation -> null);
             when(tooltipPane.isEnabled()).thenReturn(false);
             doNothing().when(inlineCssTextArea).requestFocus();
-            final MouseEnteredTextAreaHandler instance = new MouseEnteredTextAreaHandler(inlineCssTextArea, tooltipPane);
+            final TooltipMouseEnteredTextAreaHandler instance = new TooltipMouseEnteredTextAreaHandler(inlineCssTextArea, tooltipPane);
             final Event event = mock(Event.class);
             
             instance.handle(event);
@@ -112,7 +112,7 @@ public class MouseEnteredTextAreaHandlerNGTest {
     }
     
     /**
-     * Test of handle method, of class MouseEnteredTextAreaHandler.
+     * Test of handle method, of class TooltipMouseEnteredTextAreaHandler.
      */
     @Test
     public void testHandle2() {
@@ -133,10 +133,10 @@ public class MouseEnteredTextAreaHandlerNGTest {
         
         try(final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS)){
             try(final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS)){
-                try(final MockedStatic<MouseEnteredTextAreaHandler> melStatic = mockStatic(MouseEnteredTextAreaHandler.class, CALLS_REAL_METHODS)){
+                try(final MockedStatic<TooltipMouseEnteredTextAreaHandler> melStatic = mockStatic(TooltipMouseEnteredTextAreaHandler.class, CALLS_REAL_METHODS)){
                     ttuStatic.when(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class))).thenAnswer((Answer<Void>) invocation -> null);
                     ttpStatic.when(() -> TooltipProvider.getTooltips(Mockito.eq("returnText"), Mockito.eq(10))).thenReturn(definitions);
-                    melStatic.when(() -> MouseEnteredTextAreaHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
+                    melStatic.when(() -> TooltipMouseEnteredTextAreaHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
 
                     final MouseOverTextEvent event = mock(MouseOverTextEvent.class);
                     final Point2D p2d = mock(Point2D.class);
@@ -149,7 +149,7 @@ public class MouseEnteredTextAreaHandlerNGTest {
                     when(event.getCharacterIndex()).thenReturn(10);
                     when(event.getScreenPosition()).thenReturn(p2d);
 
-                    final MouseEnteredTextAreaHandler instance = new MouseEnteredTextAreaHandler(inlineCssTextArea, tooltipPane);
+                    final TooltipMouseEnteredTextAreaHandler instance = new TooltipMouseEnteredTextAreaHandler(inlineCssTextArea, tooltipPane);
 
                     instance.handle(event);
 
@@ -163,14 +163,14 @@ public class MouseEnteredTextAreaHandlerNGTest {
                     verify(tooltipPane, times(1)).showTooltip(Mockito.any(TooltipNode.class),Mockito.eq(200.0d),Mockito.eq(400.0d));
                     ttpStatic.verify(() -> TooltipProvider.getTooltips(Mockito.eq("returnText"), Mockito.eq(10)), times(1));
                     ttuStatic.verify(() -> TooltipUtilities.selectActiveArea(Mockito.any(InlineCssTextArea.class), Mockito.any(List.class)), times(1));
-                    melStatic.verify(() -> MouseEnteredTextAreaHandler.createTooltipNode(Mockito.any(List.class)), times(1));
+                    melStatic.verify(() -> TooltipMouseEnteredTextAreaHandler.createTooltipNode(Mockito.any(List.class)), times(1));
                 }
             }
         }
     }
     
     /**
-     * Test of handle method, of class MouseEnteredTextAreaHandler.
+     * Test of handle method, of class TooltipMouseEnteredTextAreaHandler.
      */
     @Test
     public void testHandle3() {
@@ -184,10 +184,10 @@ public class MouseEnteredTextAreaHandlerNGTest {
         
         try(final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS)){
             try(final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS)){
-                try(final MockedStatic<MouseEnteredTextAreaHandler> melStatic = mockStatic(MouseEnteredTextAreaHandler.class, CALLS_REAL_METHODS)){
+                try(final MockedStatic<TooltipMouseEnteredTextAreaHandler> melStatic = mockStatic(TooltipMouseEnteredTextAreaHandler.class, CALLS_REAL_METHODS)){
                     ttuStatic.when(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class))).thenAnswer((Answer<Void>) invocation -> null);
                     ttpStatic.when(() -> TooltipProvider.getTooltips(Mockito.eq("returnText"), Mockito.eq(10))).thenReturn(definitions);
-                    melStatic.when(() -> MouseEnteredTextAreaHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
+                    melStatic.when(() -> TooltipMouseEnteredTextAreaHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
 
                     final MouseOverTextEvent event = mock(MouseOverTextEvent.class);
                     final Point2D p2d = mock(Point2D.class);
@@ -200,7 +200,7 @@ public class MouseEnteredTextAreaHandlerNGTest {
                     when(event.getCharacterIndex()).thenReturn(10);
                     when(event.getScreenPosition()).thenReturn(p2d);
 
-                    final MouseEnteredTextAreaHandler instance = new MouseEnteredTextAreaHandler(inlineCssTextArea, tooltipPane);
+                    final TooltipMouseEnteredTextAreaHandler instance = new TooltipMouseEnteredTextAreaHandler(inlineCssTextArea, tooltipPane);
 
                     instance.handle(event);
 
@@ -214,14 +214,14 @@ public class MouseEnteredTextAreaHandlerNGTest {
                     verify(tooltipPane, times(0)).showTooltip(Mockito.any(TooltipNode.class),Mockito.eq(200.0d),Mockito.eq(400.0d));
                     ttpStatic.verify(() -> TooltipProvider.getTooltips(Mockito.eq("returnText"), Mockito.eq(10)), times(1));
                     ttuStatic.verify(() -> TooltipUtilities.selectActiveArea(Mockito.any(InlineCssTextArea.class), Mockito.any(List.class)), times(1));
-                    melStatic.verify(() -> MouseEnteredTextAreaHandler.createTooltipNode(Mockito.any(List.class)), times(0));
+                    melStatic.verify(() -> TooltipMouseEnteredTextAreaHandler.createTooltipNode(Mockito.any(List.class)), times(0));
                 }
             }
         }
     }
 
     /**
-     * Test of createTooltipNode method, of class MouseEnteredTextAreaHandler.
+     * Test of createTooltipNode method, of class TooltipMouseEnteredTextAreaHandler.
      */
     @Test
     public void testCreateTooltipNode() {
@@ -236,7 +236,7 @@ public class MouseEnteredTextAreaHandlerNGTest {
         definitions.add(ttd1);
         definitions.add(ttd2);
         
-        final TooltipNode result = MouseEnteredTextAreaHandler.createTooltipNode(definitions);
+        final TooltipNode result = TooltipMouseEnteredTextAreaHandler.createTooltipNode(definitions);
         assertNotNull(result);
         assertNotNull(result.getChildren());
         assertEquals(result.getChildren().size(), definitions.size());

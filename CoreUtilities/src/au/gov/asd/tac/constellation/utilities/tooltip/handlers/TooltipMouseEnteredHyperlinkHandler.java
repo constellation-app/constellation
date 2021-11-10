@@ -18,45 +18,41 @@ package au.gov.asd.tac.constellation.utilities.tooltip.handlers;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipNode;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider;
-import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import java.util.List;
-import java.util.logging.Logger;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import org.fxmisc.richtext.InlineCssTextArea;
-import org.fxmisc.richtext.event.MouseOverTextEvent;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.input.MouseEvent;
 
 /**
  * Creates a event handler for when the mouse enters a Hyperlink
  *
  * @author aldebaran30701
  */
-public class MouseEnteredTextAreaHandler implements EventHandler {
-    private static final Logger LOGGER = Logger.getLogger(MouseEnteredTextAreaHandler.class.getName());
+public class TooltipMouseEnteredHyperlinkHandler implements EventHandler {
     
-    private final InlineCssTextArea textArea;
+    private static final double HYPERLINK_TOOLTIP_VERTICAL_GAP = 15.0;
+    
+    private final Hyperlink hyperlink;
     private final TooltipPane tooltipPane;
     private final TooltipNode[] tooltipNode = new TooltipNode[1];
-    final int[] characterIndex = new int[1];
     
-    public MouseEnteredTextAreaHandler(final InlineCssTextArea textArea, final TooltipPane tooltipPane) {
-        this.textArea = textArea;
+    
+    public TooltipMouseEnteredHyperlinkHandler(final Hyperlink hyperlink, final TooltipPane tooltipPane) {
+        this.hyperlink = hyperlink;
         this.tooltipPane = tooltipPane;
     }
     
     @Override
     public void handle(final Event event) {
-        if(event instanceof MouseOverTextEvent){
-            MouseOverTextEvent mote = (MouseOverTextEvent)event;
-            if (tooltipPane.isEnabled()) {
-                characterIndex[0] = mote.getCharacterIndex();
-                final List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textArea.getText(), characterIndex[0]);
-                textArea.requestFocus();
-                TooltipUtilities.selectActiveArea(textArea, definitions);
-                if (!definitions.isEmpty()) {
-                    tooltipNode[0] = createTooltipNode(definitions);
-                    final Point2D location = mote.getScreenPosition();
+        if (tooltipPane.isEnabled()) {
+            final List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getAllTooltips(hyperlink.getText());
+            hyperlink.requestFocus();
+            if (!definitions.isEmpty()) {
+                tooltipNode[0] = createTooltipNode(definitions);
+                if(event instanceof MouseEvent){
+                    final Point2D location = hyperlink.localToScene(((MouseEvent)event).getX(), ((MouseEvent)event).getY() + hyperlink.getHeight() + HYPERLINK_TOOLTIP_VERTICAL_GAP);
                     tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
                 }
             }

@@ -112,7 +112,7 @@ public class TooltipPaneNGTest {
             apStatic.verify(() -> AnchorPane.setTopAnchor(Mockito.eq(node), Mockito.eq(p2dT)), times(1));
 
             // assert that instance is now using the new node as the tooltipNode
-            assertEquals(instance.tooltipNode, node);
+            assertEquals(instance.getTooltipNode(), node);
             verify(node,times(1)).setManaged(Mockito.eq(false));
             
             // assert and verify that the instance now has the child node.
@@ -154,7 +154,7 @@ public class TooltipPaneNGTest {
             apStatic.when(() -> AnchorPane.setTopAnchor(Mockito.eq(node), Mockito.eq(p2dT)))
                     .thenAnswer((Answer<Void>) invocation -> null);
             
-            instance.tooltipNode = toolTipNode;
+            instance.setTooltipNode(toolTipNode);
             
             // tooltipNode not same as node
             // tooltipNode is not null
@@ -164,7 +164,7 @@ public class TooltipPaneNGTest {
             apStatic.verify(() -> AnchorPane.setTopAnchor(Mockito.eq(node), Mockito.eq(p2dT)), times(1));
 
             // assert that instance is now using the new node as the tooltipNode
-            assertEquals(instance.tooltipNode, node);
+            assertEquals(instance.getTooltipNode(), node);
             verify(node,times(1)).setManaged(Mockito.eq(false));
             verify(toolTipNode,times(1)).setManaged(Mockito.eq(true));
             
@@ -207,7 +207,7 @@ public class TooltipPaneNGTest {
                     .thenAnswer((Answer<Void>) invocation -> null);
             
            
-            instance.tooltipNode = node;
+            instance.setTooltipNode(node);
             
             // tooltipNode not same as node
             // tooltipNode is not null
@@ -217,7 +217,7 @@ public class TooltipPaneNGTest {
             apStatic.verify(() -> AnchorPane.setTopAnchor(Mockito.eq(node), Mockito.eq(p2dT)), times(1));
 
             // assert that instance is now using the new node as the tooltipNode
-            assertEquals(instance.tooltipNode, node);
+            assertEquals(instance.getTooltipNode(), node);
             
             // assert and verify that the instance now has the child node.
             verify(instance, Mockito.times(0)).getChildren();
@@ -231,7 +231,7 @@ public class TooltipPaneNGTest {
         System.out.println("hideTooltip");
         
         final TooltipPane instance = spy(new TooltipPane());
-        instance.tooltipNode = null;
+        instance.setTooltipNode(null);
         instance.hideTooltip();
         
         // no children should be queried when the node is null
@@ -240,14 +240,14 @@ public class TooltipPaneNGTest {
         // set up for a not null node
         final Pane node = mock(Pane.class);
         doNothing().when(node).setManaged(Mockito.eq(true));
-        instance.tooltipNode = node;
+        instance.setTooltipNode(node);
         
         instance.hideTooltip();
         // Verify that node is managed, current node is reset and does not exist in 
         // the current children.
         verify(instance, times(1)).getChildren();
         verify(node,times(1)).setManaged(Mockito.eq(true));
-        assertNull(instance.tooltipNode);
+        assertNull(instance.getTooltipNode());
         assertFalse(instance.getChildren().contains(node));
     }
 
@@ -261,7 +261,7 @@ public class TooltipPaneNGTest {
         System.out.println("layoutChildren");
         
         final TooltipPane instance = spy(new TooltipPane());
-        instance.tooltipNode = null;
+        instance.setTooltipNode(null);
         
         final double d1 = 1;
         final double d2 = 2;
@@ -304,7 +304,7 @@ public class TooltipPaneNGTest {
         when(instance.getWidth()).thenReturn(width);
         when(instance.getHeight()).thenReturn(height);
         
-        instance.tooltipNode = node;
+        instance.setTooltipNode(node);
         
         final double d1 = 10;
         final double d2 = 20;
@@ -352,7 +352,7 @@ public class TooltipPaneNGTest {
         when(instance.getWidth()).thenReturn(width);
         when(instance.getHeight()).thenReturn(height);
         
-        instance.tooltipNode = node;
+        instance.setTooltipNode(node);
         
         final double d1 = 10;
         final double d2 = 20;

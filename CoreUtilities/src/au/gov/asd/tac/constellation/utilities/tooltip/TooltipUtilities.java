@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.utilities.tooltip;
 
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseEnteredHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseExitedHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseEnteredTextAreaHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseEnteredHyperlinkHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseMovedHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseExitedHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredTextAreaHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHyperlinkHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseMovedHandler;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider.TooltipDefinition;
 import java.time.Duration;
 import java.util.List;
@@ -38,15 +38,15 @@ import org.fxmisc.richtext.event.MouseOverTextEvent;
 public class TooltipUtilities {
 
     public static void activateTextInputControl(final TextInputControl textInputControl, final TooltipPane tooltipPane) {
-        textInputControl.setOnMouseEntered(new MouseEnteredHandler(textInputControl, tooltipPane));
-        textInputControl.setOnMouseMoved(new MouseMovedHandler(textInputControl, tooltipPane));
-        textInputControl.setOnMouseExited(new MouseExitedHandler(tooltipPane));
+        textInputControl.setOnMouseEntered(new TooltipMouseEnteredHandler(textInputControl, tooltipPane));
+        textInputControl.setOnMouseMoved(new TooltipMouseMovedHandler(textInputControl, tooltipPane));
+        textInputControl.setOnMouseExited(new TooltipMouseExitedHandler(tooltipPane));
     }
     
 
     public static void activateTextInputControl(final Hyperlink hyperlink, final TooltipPane tooltipPane) {
-        hyperlink.setOnMouseEntered(new MouseEnteredHyperlinkHandler(hyperlink, tooltipPane));
-        hyperlink.setOnMouseExited(new MouseExitedHandler(tooltipPane));
+        hyperlink.setOnMouseEntered(new TooltipMouseEnteredHyperlinkHandler(hyperlink, tooltipPane));
+        hyperlink.setOnMouseExited(new TooltipMouseExitedHandler(tooltipPane));
     }
 
     public static void selectActiveArea(final TextInputControl control, final List<TooltipProvider.TooltipDefinition> definitions) {
@@ -58,8 +58,8 @@ public class TooltipUtilities {
 
     public static void activateTextInputControl(final InlineCssTextArea textArea, final TooltipPane tooltipPane) {
         textArea.setMouseOverTextDelay(Duration.ofMillis(100));
-        textArea.addEventHandler(MouseOverTextEvent.MOUSE_OVER_TEXT_BEGIN, new MouseEnteredTextAreaHandler(textArea, tooltipPane));
-        textArea.addEventHandler(MouseOverTextEvent.MOUSE_OVER_TEXT_END, new MouseExitedHandler(tooltipPane));
+        textArea.addEventHandler(MouseOverTextEvent.MOUSE_OVER_TEXT_BEGIN, new TooltipMouseEnteredTextAreaHandler(textArea, tooltipPane));
+        textArea.addEventHandler(MouseOverTextEvent.MOUSE_OVER_TEXT_END, new TooltipMouseExitedHandler(tooltipPane));
     }
 
     public static void selectActiveArea(final InlineCssTextArea textArea, final List<TooltipProvider.TooltipDefinition> definitions) {

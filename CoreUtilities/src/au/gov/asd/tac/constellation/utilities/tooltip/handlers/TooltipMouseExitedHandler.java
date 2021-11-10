@@ -24,16 +24,16 @@ import javafx.event.EventHandler;
  *
  * @author aldebaran30701
  */
-public class MouseExitedHandler implements EventHandler {
+public class TooltipMouseExitedHandler implements EventHandler {
 
     private final TooltipPane tooltipPane;
     
-    public MouseExitedHandler(final TooltipPane tooltipPane) {
+    public TooltipMouseExitedHandler(final TooltipPane tooltipPane) {
         this.tooltipPane = tooltipPane;
     }
     
     @Override
-    public void handle(Event event) {
+    public void handle(final Event event) {
         if (tooltipPane.isEnabled()) {
             tooltipPane.hideTooltip();
         }

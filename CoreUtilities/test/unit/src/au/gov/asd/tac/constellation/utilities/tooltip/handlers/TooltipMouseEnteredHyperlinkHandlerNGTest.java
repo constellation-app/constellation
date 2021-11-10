@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.utilities.tooltip.handlers;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipNode;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseEnteredHyperlinkHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHyperlinkHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -57,11 +57,11 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class MouseEnteredHyperlinkHandlerNGTest {
+public class TooltipMouseEnteredHyperlinkHandlerNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(MouseEnteredHyperlinkHandlerNGTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TooltipMouseEnteredHyperlinkHandlerNGTest.class.getName());
     
-    public MouseEnteredHyperlinkHandlerNGTest() {
+    public TooltipMouseEnteredHyperlinkHandlerNGTest() {
     }
 
     @BeforeClass
@@ -91,7 +91,7 @@ try {
     }
 
     /**
-     * Test of handle method, of class MouseEnteredHyperlinkHandler.
+     * Test of handle method, of class TooltipMouseEnteredHyperlinkHandler.
      */
     @Test
     public void testHandle() {
@@ -100,7 +100,7 @@ try {
         final TooltipPane tooltipPane = spy(new TooltipPane());
         when(tooltipPane.isEnabled()).thenReturn(false);
         doNothing().when(hyperlink).requestFocus();
-        final MouseEnteredHyperlinkHandler instance = new MouseEnteredHyperlinkHandler(hyperlink, tooltipPane);
+        final TooltipMouseEnteredHyperlinkHandler instance = new TooltipMouseEnteredHyperlinkHandler(hyperlink, tooltipPane);
         final Event event = mock(Event.class);
 
         instance.handle(event);
@@ -110,7 +110,7 @@ try {
     }
     
     /**
-     * Test of handle method, of class MouseEnteredHyperlinkHandler.
+     * Test of handle method, of class TooltipMouseEnteredHyperlinkHandler.
      */
     @Test
     public void testHandle2() {
@@ -127,9 +127,9 @@ try {
         definitions.add(ttd2);
         final TooltipNode ttn = mock(TooltipNode.class);
         try(final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS)){
-            try(final MockedStatic<MouseEnteredHyperlinkHandler> melStatic = mockStatic(MouseEnteredHyperlinkHandler.class, CALLS_REAL_METHODS)){
+            try(final MockedStatic<TooltipMouseEnteredHyperlinkHandler> melStatic = mockStatic(TooltipMouseEnteredHyperlinkHandler.class, CALLS_REAL_METHODS)){
                 ttpStatic.when(() -> TooltipProvider.getAllTooltips(Mockito.eq("returnText"))).thenReturn(definitions);
-                melStatic.when(() -> MouseEnteredHyperlinkHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
+                melStatic.when(() -> TooltipMouseEnteredHyperlinkHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
 
                 final MouseEvent event = mock(MouseEvent.class);
                 final Point2D p2d = mock(Point2D.class);
@@ -141,7 +141,7 @@ try {
                 when(hyperlink.getText()).thenReturn("returnText");
                 when(hyperlink.localToScene(Mockito.anyDouble(), Mockito.anyDouble())).thenReturn(p2d);
 
-                final MouseEnteredHyperlinkHandler instance = new MouseEnteredHyperlinkHandler(hyperlink, tooltipPane);
+                final TooltipMouseEnteredHyperlinkHandler instance = new TooltipMouseEnteredHyperlinkHandler(hyperlink, tooltipPane);
 
                 instance.handle(event);
 
@@ -153,13 +153,13 @@ try {
                 verify(p2d, times(1)).getY();
                 verify(tooltipPane, times(1)).showTooltip(Mockito.any(TooltipNode.class),Mockito.eq(200.0d),Mockito.eq(400.0d));
                 ttpStatic.verify(() -> TooltipProvider.getAllTooltips(Mockito.eq("returnText")));
-                melStatic.verify(() -> MouseEnteredHyperlinkHandler.createTooltipNode(Mockito.any(List.class)), times(1));
+                melStatic.verify(() -> TooltipMouseEnteredHyperlinkHandler.createTooltipNode(Mockito.any(List.class)), times(1));
             }
         }
     }
 
     /**
-     * Test of createTooltipNode method, of class MouseEnteredHyperlinkHandler.
+     * Test of createTooltipNode method, of class TooltipMouseEnteredHyperlinkHandler.
      */
     @Test
     public void testCreateTooltipNode() {
@@ -175,7 +175,7 @@ try {
         definitions.add(ttd1);
         definitions.add(ttd2);
         
-        final TooltipNode result = MouseEnteredHyperlinkHandler.createTooltipNode(definitions);
+        final TooltipNode result = TooltipMouseEnteredHyperlinkHandler.createTooltipNode(definitions);
         assertNotNull(result);
         assertNotNull(result.getChildren());
         assertEquals(result.getChildren().size(), definitions.size());

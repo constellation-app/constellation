@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.utilities.tooltip.TooltipNode;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.MouseEnteredHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseMovedHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -42,12 +42,11 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import org.mockito.stubbing.Answer;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -58,11 +57,11 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class MouseEnteredHandlerNGTest {
+public class TooltipMouseMovedHandlerNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(MouseEnteredHandlerNGTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TooltipMouseMovedHandlerNGTest.class.getName());
     
-    public MouseEnteredHandlerNGTest() {
+    public TooltipMouseMovedHandlerNGTest() {
     }
 
     @BeforeClass
@@ -90,41 +89,42 @@ public class MouseEnteredHandlerNGTest {
     }
 
     /**
-     * Test of handle method, of class MouseEnteredHandler.
+     * Test of handle method, of class TooltipMouseMovedHandler.
      */
     @Test
     public void testHandle() {
         System.out.println("testHandle");
-        final TextArea textInputControl = new TextArea();
+        final TextArea textInputControl = spy(new TextArea());
         final TooltipPane tooltipPane = spy(new TooltipPane());
+        //when(textInputControl.getSkin()).thenReturn(null);
         
         try(final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS)){
             ttuStatic.when(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class))).thenAnswer((Answer<Void>) invocation -> null);
             when(tooltipPane.isEnabled()).thenReturn(false);
-            final MouseEnteredHandler instance = new MouseEnteredHandler(textInputControl, tooltipPane);
+            final TooltipMouseMovedHandler instance = new TooltipMouseMovedHandler(textInputControl, tooltipPane);
             final MouseEvent event = mock(MouseEvent.class);
             
             instance.handle(event);
             
             verify(tooltipPane, times(1)).isEnabled();
+            verifyNoInteractions(textInputControl);
         
             // Verify that mouseEntered did not trigger calls to the below method.
             ttuStatic.verify(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class)), times(0));
         }
     }
-    
     /**
-     * Test of handle method, of class MouseEnteredHandler.
+     * Test of handle method, of class TooltipMouseMovedHandler.
      */
     @Test
     public void testHandle2() {
-        System.out.println("testHandle2");
+    System.out.println("testHandle2");
         final TextArea textInputControl = spy(new TextArea());
         final TooltipPane tooltipPane = spy(new TooltipPane());
         
         try(final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS)){
             try(final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS)){
-                try(final MockedStatic<MouseEnteredHandler> melStatic = mockStatic(MouseEnteredHandler.class, CALLS_REAL_METHODS)){
+                try(final MockedStatic<TooltipMouseMovedHandler> melStatic = mockStatic(TooltipMouseMovedHandler.class, CALLS_REAL_METHODS)){
                     // Initialise mocks
                     final TooltipNode ttn = mock(TooltipNode.class);
                     final HitInfo info = mock(HitInfo.class);
@@ -148,65 +148,11 @@ public class MouseEnteredHandlerNGTest {
                     
                     // Set static mock behaviour
                     ttuStatic.when(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class))).thenAnswer((Answer<Void>) invocation -> null);
-                    melStatic.when(() -> MouseEnteredHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
+                    melStatic.when(() -> TooltipMouseMovedHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
                     ttpStatic.when(() -> TooltipProvider.getTooltips(Mockito.anyString(), Mockito.anyInt())).thenReturn(definitions);
 
                     // Create instance
-                    final MouseEnteredHandler instance = new MouseEnteredHandler(textInputControl, tooltipPane);
-                    
-                    // Call tested method
-                    instance.handle(event);
-
-                    // Verify calls are made
-                    verify(tooltipPane, times(1)).isEnabled();
-                    verify(info, times(1)).getCharIndex();
-                    verify(((TextAreaSkin)skin), times(1)).getIndex(Mockito.anyDouble(), Mockito.anyDouble()); 
-                    verify(textInputControl, times(2)).getSkin();
-                    verify(tooltipPane, times(1)).showTooltip(Mockito.any(TooltipNode.class),Mockito.anyDouble(),Mockito.anyDouble());
-                    verify(textInputControl, times(1)).requestFocus();
-                    ttuStatic.verify(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class)), times(1));
-                    melStatic.verify(() -> MouseEnteredHandler.createTooltipNode(Mockito.any(List.class)), times(1));
-                }
-            }
-        }  
-    }
-    
-    /**
-     * Test of handle method, of class MouseEnteredHandler.
-     */
-    @Test
-    public void testHandle3() {
-        System.out.println("testHandle3");
-        final TextArea textInputControl = spy(new TextArea());
-        final TooltipPane tooltipPane = spy(new TooltipPane());
-        
-        try(final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS)){
-            try(final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS)){
-                try(final MockedStatic<MouseEnteredHandler> melStatic = mockStatic(MouseEnteredHandler.class, CALLS_REAL_METHODS)){
-                    // Initialise mocks
-                    final TooltipNode ttn = mock(TooltipNode.class);
-                    final HitInfo info = mock(HitInfo.class);
-                    final TextInputControlSkin<?> skin = mock(TextAreaSkin.class);
-                    final MouseEvent event = mock(MouseEvent.class);
-                    
-                    // Create list of definitions to return.
-                    final List<TooltipProvider.TooltipDefinition> definitions = new ArrayList<>();
-                
-                    // Set mock behaviour
-                    when(tooltipPane.isEnabled()).thenReturn(true);
-                    when(info.getCharIndex()).thenReturn(0);
-                    when(((TextAreaSkin)skin).getIndex(Mockito.anyDouble(), Mockito.anyDouble())).thenReturn(info); 
-                    when(textInputControl.getSkin()).thenReturn(((Skin)skin));
-                    doNothing().when(tooltipPane).showTooltip(Mockito.any(TooltipNode.class),Mockito.anyDouble(),Mockito.anyDouble());
-                    doNothing().when(textInputControl).requestFocus();
-                    
-                    // Set static mock behaviour
-                    ttuStatic.when(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class))).thenAnswer((Answer<Void>) invocation -> null);
-                    melStatic.when(() -> MouseEnteredHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
-                    ttpStatic.when(() -> TooltipProvider.getTooltips(Mockito.anyString(), Mockito.anyInt())).thenReturn(definitions);
-
-                    // Create instance
-                    final MouseEnteredHandler instance = new MouseEnteredHandler(textInputControl, tooltipPane);
+                    final TooltipMouseMovedHandler instance = new TooltipMouseMovedHandler(textInputControl, tooltipPane);
                     
                     // Call tested method
                     instance.handle(event);
@@ -217,16 +163,131 @@ public class MouseEnteredHandlerNGTest {
                     verify(((TextAreaSkin)skin), times(1)).getIndex(Mockito.anyDouble(), Mockito.anyDouble()); 
                     verify(textInputControl, times(2)).getSkin();
                     verify(tooltipPane, times(0)).showTooltip(Mockito.any(TooltipNode.class),Mockito.anyDouble(),Mockito.anyDouble());
-                    verify(textInputControl, times(1)).requestFocus();
-                    ttuStatic.verify(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class)), times(1));
-                    melStatic.verify(() -> MouseEnteredHandler.createTooltipNode(Mockito.any(List.class)), times(0));
+                    verify(tooltipPane, times(1)).hideTooltip();
+                    verify(textInputControl, times(0)).requestFocus();
+                    ttuStatic.verify(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class)), times(0));
+                    melStatic.verify(() -> TooltipMouseMovedHandler.createTooltipNode(Mockito.any(List.class)), times(0));
                 }
             }
-        }  
+        }
+    }
+    
+    /**
+     * Test of handle method, of class TooltipMouseMovedHandler.
+     */
+    @Test
+    public void testHandle3() {
+    System.out.println("testHandle3");
+        final TextArea textInputControl = spy(new TextArea());
+        final TooltipPane tooltipPane = spy(new TooltipPane());
+        
+        try(final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS)){
+            try(final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS)){
+                try(final MockedStatic<TooltipMouseMovedHandler> melStatic = mockStatic(TooltipMouseMovedHandler.class, CALLS_REAL_METHODS)){
+                    // Initialise mocks
+                    final TooltipNode ttn = mock(TooltipNode.class);
+                    final HitInfo info = mock(HitInfo.class);
+                    final TextInputControlSkin<?> skin = mock(TextAreaSkin.class);
+                    final MouseEvent event = mock(MouseEvent.class);
+                    final TooltipProvider.TooltipDefinition ttd1 = mock(TooltipProvider.TooltipDefinition.class);
+                    final TooltipProvider.TooltipDefinition ttd2 = mock(TooltipProvider.TooltipDefinition.class);
+                    
+                    // Create list of definitions to return.
+                    final List<TooltipProvider.TooltipDefinition> definitions = new ArrayList<>();
+                    definitions.add(ttd1);
+                    definitions.add(ttd2);
+                
+                    // Set mock behaviour
+                    when(tooltipPane.isEnabled()).thenReturn(true);
+                    when(info.getCharIndex()).thenReturn(4);
+                    when(((TextAreaSkin)skin).getIndex(Mockito.anyDouble(), Mockito.anyDouble())).thenReturn(info); 
+                    when(textInputControl.getSkin()).thenReturn(((Skin)skin));
+                    doNothing().when(tooltipPane).showTooltip(Mockito.any(TooltipNode.class),Mockito.anyDouble(),Mockito.anyDouble());
+                    doNothing().when(textInputControl).requestFocus();
+                    
+                    // Set static mock behaviour
+                    ttuStatic.when(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class))).thenAnswer((Answer<Void>) invocation -> null);
+                    melStatic.when(() -> TooltipMouseMovedHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
+                    ttpStatic.when(() -> TooltipProvider.getTooltips(Mockito.anyString(), Mockito.anyInt())).thenReturn(definitions);
+
+                    // Create instance
+                    final TooltipMouseMovedHandler instance = new TooltipMouseMovedHandler(textInputControl, tooltipPane);
+                    
+                    // Call tested method
+                    instance.handle(event);
+
+                    // Verify calls are made
+                    verify(tooltipPane, times(1)).isEnabled();
+                    verify(info, times(2)).getCharIndex();
+                    verify(((TextAreaSkin)skin), times(1)).getIndex(Mockito.anyDouble(), Mockito.anyDouble()); 
+                    verify(textInputControl, times(2)).getSkin();
+                    verify(tooltipPane, times(1)).showTooltip(Mockito.any(TooltipNode.class),Mockito.anyDouble(),Mockito.anyDouble());
+                    verify(tooltipPane, times(0)).hideTooltip();
+                    verify(textInputControl, times(0)).requestFocus();
+                    ttuStatic.verify(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class)), times(1));
+                    melStatic.verify(() -> TooltipMouseMovedHandler.createTooltipNode(Mockito.any(List.class)), times(1));
+                }
+            }
+        }
+    }
+    
+    /**
+     * Test of handle method, of class TooltipMouseMovedHandler.
+     */
+    @Test
+    public void testHandle4() {
+    System.out.println("testHandle4");
+        final TextArea textInputControl = spy(new TextArea());
+        final TooltipPane tooltipPane = spy(new TooltipPane());
+        
+        try(final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS)){
+            try(final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS)){
+                try(final MockedStatic<TooltipMouseMovedHandler> melStatic = mockStatic(TooltipMouseMovedHandler.class, CALLS_REAL_METHODS)){
+                    // Initialise mocks
+                    final TooltipNode ttn = mock(TooltipNode.class);
+                    final HitInfo info = mock(HitInfo.class);
+                    final TextInputControlSkin<?> skin = mock(TextAreaSkin.class);
+                    final MouseEvent event = mock(MouseEvent.class);
+                    
+                    // Create empty list of definitions to return.
+                    final List<TooltipProvider.TooltipDefinition> definitions = new ArrayList<>();
+                
+                    // Set mock behaviour
+                    when(tooltipPane.isEnabled()).thenReturn(true);
+                    when(info.getCharIndex()).thenReturn(4);
+                    when(((TextAreaSkin)skin).getIndex(Mockito.anyDouble(), Mockito.anyDouble())).thenReturn(info); 
+                    when(textInputControl.getSkin()).thenReturn(((Skin)skin));
+                    doNothing().when(tooltipPane).showTooltip(Mockito.any(TooltipNode.class),Mockito.anyDouble(),Mockito.anyDouble());
+                    doNothing().when(textInputControl).requestFocus();
+                    
+                    // Set static mock behaviour
+                    ttuStatic.when(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class))).thenAnswer((Answer<Void>) invocation -> null);
+                    melStatic.when(() -> TooltipMouseMovedHandler.createTooltipNode(Mockito.any(List.class))).thenReturn(ttn);
+                    ttpStatic.when(() -> TooltipProvider.getTooltips(Mockito.anyString(), Mockito.anyInt())).thenReturn(definitions);
+
+                    // Create instance
+                    final TooltipMouseMovedHandler instance = new TooltipMouseMovedHandler(textInputControl, tooltipPane);
+                    
+                    // Call tested method
+                    instance.handle(event);
+
+                    // Verify calls are made
+                    verify(tooltipPane, times(1)).isEnabled();
+                    verify(info, times(2)).getCharIndex();
+                    verify(((TextAreaSkin)skin), times(1)).getIndex(Mockito.anyDouble(), Mockito.anyDouble()); 
+                    verify(textInputControl, times(2)).getSkin();
+                    verify(tooltipPane, times(0)).showTooltip(Mockito.any(TooltipNode.class),Mockito.anyDouble(),Mockito.anyDouble());
+                    verify(tooltipPane, times(1)).hideTooltip();
+                    verify(textInputControl, times(0)).requestFocus();
+                    ttuStatic.verify(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class)), times(1));
+                    melStatic.verify(() -> TooltipMouseMovedHandler.createTooltipNode(Mockito.any(List.class)), times(0));
+                }
+            }
+        }
     }
     
         /**
-     * Test of createTooltipNode method, of class MouseEnteredHandler.
+     * Test of createTooltipNode method, of class TooltipMouseMovedHandler.
      */
     @Test
     public void testCreateTooltipNode() {
@@ -241,7 +302,7 @@ public class MouseEnteredHandlerNGTest {
         definitions.add(ttd1);
         definitions.add(ttd2);
         
-        final TooltipNode result = MouseEnteredHandler.createTooltipNode(definitions);
+        final TooltipNode result = TooltipMouseMovedHandler.createTooltipNode(definitions);
         assertNotNull(result);
         assertNotNull(result.getChildren());
         assertEquals(result.getChildren().size(), definitions.size());

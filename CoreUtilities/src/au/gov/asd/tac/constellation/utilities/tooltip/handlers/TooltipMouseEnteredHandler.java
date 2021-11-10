@@ -18,9 +18,8 @@ package au.gov.asd.tac.constellation.utilities.tooltip.handlers;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipNode;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider;
-import static au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities.selectActiveArea;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import java.util.List;
-import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.control.TextInputControl;
@@ -31,19 +30,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.HitInfo;
 
 /**
- * Creates a event handler for when the mouse moves in an input control
+ * Creates a event handler for when the mouse enters an input control
  *
  * @author aldebaran30701
  */
-public class MouseMovedHandler implements EventHandler<MouseEvent> {
-    private static final Logger LOGGER = Logger.getLogger(MouseMovedHandler.class.getName());
+public class TooltipMouseEnteredHandler implements EventHandler<MouseEvent> {
     
     private final TextInputControl textInputControl;
     private final TooltipPane tooltipPane;
     private final int[] characterIndex = new int[1];
     private final TooltipNode[] tooltipNode = new TooltipNode[1];
     
-    public MouseMovedHandler(final TextInputControl textInputControl, final TooltipPane tooltipPane) {
+    
+    public TooltipMouseEnteredHandler(final TextInputControl textInputControl, final TooltipPane tooltipPane) {
         this.textInputControl = textInputControl;
         this.tooltipPane = tooltipPane;
     }
@@ -53,19 +52,12 @@ public class MouseMovedHandler implements EventHandler<MouseEvent> {
         if (tooltipPane.isEnabled()) {
             final TextInputControlSkin<?> skin = (TextInputControlSkin<?>) textInputControl.getSkin();
             final HitInfo info = (skin instanceof TextAreaSkin) ? ((TextAreaSkin) skin).getIndex(event.getX(), event.getY()) : ((TextFieldSkin) skin).getIndex(event.getX(), event.getY());
-
-            // If the mouse is over a different character then get new tooltips
-            if (info.getCharIndex() != characterIndex[0]) {
-                characterIndex[0] = info.getCharIndex();
-                final List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textInputControl.getText(), characterIndex[0]);
-                selectActiveArea(textInputControl, definitions);
-                tooltipNode[0] = definitions.isEmpty() ? null : createTooltipNode(definitions);
-            }
-
-            // If we have a tooltip then reposition under mouse
-            if (tooltipNode[0] == null) {
-                tooltipPane.hideTooltip();
-            } else {
+            characterIndex[0] = info.getCharIndex();
+            final List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textInputControl.getText(), characterIndex[0]);
+            textInputControl.requestFocus();
+            TooltipUtilities.selectActiveArea(textInputControl, definitions);
+            if (!definitions.isEmpty()) {
+                tooltipNode[0] = createTooltipNode(definitions);
                 final Point2D location = textInputControl.localToScene(event.getX(), textInputControl.getHeight());
                 tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
             }

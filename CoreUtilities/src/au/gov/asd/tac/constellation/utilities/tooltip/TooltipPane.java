@@ -27,12 +27,19 @@ import javafx.scene.layout.Pane;
  */
 public class TooltipPane extends AnchorPane {
 
-    protected Pane tooltipNode = null;
+    private Pane tooltipNode = null;
     private boolean enabled = true;
 
     public TooltipPane() {
         setStyle("-fx-background-color: transparent;");
         mouseTransparentProperty().set(true);
+    }
+    
+    protected Pane getTooltipNode() {
+        return tooltipNode;
+    }
+    protected void setTooltipNode(final Pane pane) {
+        this.tooltipNode = pane;
     }
 
     public void setEnabled(final boolean enabled) {
