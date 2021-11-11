@@ -60,7 +60,6 @@ public class BasicFindTab extends Tab {
 
     protected final GridPane textGrid = new GridPane();
     protected final GridPane settingsGrid = new GridPane();
-    protected final GridPane addRemoveSelectionGrid = new GridPane();
     protected final HBox buttonsHBox = new HBox();
     protected final VBox buttonsVBox = new VBox();
 
@@ -98,7 +97,7 @@ public class BasicFindTab extends Tab {
     protected final ChoiceBox currentSelectionChoiceBox = new ChoiceBox();
 
     private final Button findNextButton = new Button("Find Next");
-    private final Button findPrevButton = new Button("Find Prev");
+    private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
 
     protected static final int LABEL_WIDTH = 90;
@@ -169,7 +168,6 @@ public class BasicFindTab extends Tab {
         layers.setSpacing(5);
         textGrid.setPadding(new Insets(10, 10, 10, 10));
         settingsGrid.setPadding(new Insets(0, 10, 0, 10));
-        addRemoveSelectionGrid.setPadding(new Insets(10, 10, 10, 10));
         preferencesGrid.setPadding(new Insets(5, 0, 5, 0));
 
         /**
@@ -247,7 +245,10 @@ public class BasicFindTab extends Tab {
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
         buttonsHBox.setPadding(new Insets(5, 10, 5, 10));
         buttonsHBox.setSpacing(5);
-        buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton, searchAllGraphs);
+        buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
+
+        searchAllGraphs.setAlignment(Pos.CENTER_LEFT);
 
         // add the buttonsHBox to the buttonsVbox
         buttonsVBox.getChildren().addAll(buttonsHBox);
@@ -279,7 +280,8 @@ public class BasicFindTab extends Tab {
          * to the buttonsHbox
          */
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(findPrevButton, findNextButton, findAllButton, searchAllGraphs);
+        buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
+        searchAllGraphs.setAlignment(Pos.CENTER_LEFT);
         parentComponent.getParentComponent().setBottom(buttonsVBox);
     }
 

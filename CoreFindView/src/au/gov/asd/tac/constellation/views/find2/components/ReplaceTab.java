@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParame
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -81,7 +82,8 @@ public class ReplaceTab extends BasicFindTab {
      */
     public void updateButtons() {
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton, searchAllGraphs);
+        buttonsHBox.getChildren().addAll(searchAllGraphs, replaceAllButton, replaceNextButton);
+        searchAllGraphs.setAlignment(Pos.CENTER_LEFT);
         getParentComponent().getParentComponent().setBottom(buttonsVBox);
     }
 

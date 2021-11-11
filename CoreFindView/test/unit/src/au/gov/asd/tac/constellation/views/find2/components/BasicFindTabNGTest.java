@@ -139,10 +139,10 @@ public class BasicFindTabNGTest {
          * getFindAllButton and getSearchAllGraphs checkbox.
          */
         basicFindTab.updateButtons();
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(0), basicFindTab.getFindPrevButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getFindNextButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindAllButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(3), basicFindTab.getSearchAllGraphs());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(0), basicFindTab.getSearchAllGraphs());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getFindAllButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindPrevButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(3), basicFindTab.getFindNextButton());
     }
 
     /**

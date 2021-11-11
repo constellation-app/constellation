@@ -39,7 +39,6 @@ public class FindViewTabs extends TabPane {
         replaceTab = new ReplaceTab(this);
         advancedFindTab = new Tab("Advanced Find");
         setTabContent();
-        requestFocus();
 
         /**
          * Logic for what occurs when the user changes tabs. This should update

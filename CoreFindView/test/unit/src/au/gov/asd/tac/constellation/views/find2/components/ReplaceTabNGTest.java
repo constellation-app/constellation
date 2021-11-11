@@ -123,9 +123,9 @@ public class ReplaceTabNGTest {
          * and getSearchAllGraphs checkbox.
          */
         replaceTab.updateButtons();
-        assertEquals(replaceTab.buttonsHBox.getChildren().get(0), replaceTab.getReplaceNextButton());
+        assertEquals(replaceTab.buttonsHBox.getChildren().get(0), replaceTab.getSearchAllGraphs());
         assertEquals(replaceTab.buttonsHBox.getChildren().get(1), replaceTab.getReplaceAllButton());
-        assertEquals(replaceTab.buttonsHBox.getChildren().get(2), replaceTab.getSearchAllGraphs());
+        assertEquals(replaceTab.buttonsHBox.getChildren().get(2), replaceTab.getReplaceNextButton());
     }
 
     /**
