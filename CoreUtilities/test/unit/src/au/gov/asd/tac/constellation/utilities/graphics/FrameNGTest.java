@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.graphics;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
@@ -456,7 +458,28 @@ public class FrameNGTest {
             assertEquals(f.getUpVector().a, new float[]{0F, 1F, 0F});
         }
     }
-
+    
+    @Test
+    public void testAreSame() {
+        final Frame f = getFrame();
+        final Frame f2 = getFrame();
+        assertTrue(f.areSame(f2));
+        
+        f.setForwardVector(V1);
+        assertFalse(f.areSame(f2));
+        f.setForwardVector(f2.getForwardVector());
+        
+        f.setOrigin(V3);
+        assertFalse(f.areSame(f2));
+        f.setOrigin(f2.getOrigin());
+        
+        f.setUpVector(V2);
+        assertFalse(f.areSame(f2));
+        f.setUpVector(f2.getUpVector());
+        
+        assertTrue(f.areSame(f2));
+    }
+    
     /**
      * Can get a String representation of a Frame.
      */
