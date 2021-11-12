@@ -80,8 +80,8 @@ public class ConstellationIconNGTest {
      */
     @Test
     public void testGetCategories() {
-        final List expResult = categories;
-        final List result = testIcon.getCategories();
+        final List<String> expResult = categories;
+        final List<String> result = testIcon.getCategories();
         assertEquals(result, expResult);
     }
 

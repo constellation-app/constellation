@@ -24,7 +24,6 @@ import java.util.List;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
-import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -63,52 +62,49 @@ public class DefaultCustomIconProviderNGTest {
 
     /**
      * Runner for tests
+     * @throws java.net.URISyntaxException
      */
     @Test(expectedExceptions = NullPointerException.class)
-    public void runTests() {
-        try ( MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class)) {
-            try ( MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class)) {
-                // Get a test directory location for the getIconDirectory call
-                URL exampleIcon = DefaultCustomIconProviderNGTest.class.getResource("resources/");
-                File testFile = new File(exampleIcon.toURI());
-                defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.getIconDirectory()).thenReturn(testFile);
+    public void runTests() throws URISyntaxException {
+        try ( MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class);  MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class)) {
+            // Get a test directory location for the getIconDirectory call
+            URL exampleIcon = DefaultCustomIconProviderNGTest.class.getResource("resources/");
+            File testFile = new File(exampleIcon.toURI());
+            defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.getIconDirectory()).thenReturn(testFile);
 
-                // Create a test icon to be removed by testRemoveIcon
-                final ConstellationColor ICON_COLOR = ConstellationColor.BLUEBERRY;
-                final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
-                final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
+            // Create a test icon to be removed by testRemoveIcon
+            final ConstellationColor ICON_COLOR = ConstellationColor.BLUEBERRY;
+            final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
+            final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
 
-                ConstellationIcon icon = new ConstellationIcon.Builder(TEST_ICON_NAME,
-                        new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
-                                ICON_BACKGROUND.buildBufferedImage(16, ICON_COLOR.getJavaColor()),
-                                ICON_SYMBOL.buildBufferedImage(16), 0, 0)))
-                        .build();
-                icon.setEditable(true);
-                DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
-                // Add a test icon to be removed later
-                instance.addIcon(icon);
+            ConstellationIcon icon = new ConstellationIcon.Builder(TEST_ICON_NAME,
+                    new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
+                            ICON_BACKGROUND.buildBufferedImage(16, ICON_COLOR.getJavaColor()),
+                            ICON_SYMBOL.buildBufferedImage(16), 0, 0)))
+                    .build();
+            icon.setEditable(true);
+            DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
+            // Add a test icon to be removed later
+            instance.addIcon(icon);
 
-                // Run testAddIcon
-                testAddIcon(iconManagerMock);
+            // Run testAddIcon
+            testAddIcon(iconManagerMock);
 
-                //Run testAddIconFileDoesExist
-                testAddIconFileDoesExist(icon);
+            //Run testAddIconFileDoesExist
+            testAddIconFileDoesExist(icon);
 
-                // Run testRemoveIcon
-                testRemoveIcon(iconManagerMock, icon);
+            // Run testRemoveIcon
+            testRemoveIcon(iconManagerMock, icon);
 
-                // Run testRemoveIconDoesNotExist
-                testRemoveIconDoesNotExist();
+            // Run testRemoveIconDoesNotExist
+            testRemoveIconDoesNotExist();
 
-                // Run testLoadIcons
-                testLoadIcons(testFile);
+            // Run testLoadIcons
+            testLoadIcons(testFile);
 
-                // Verify defaultCustomIconProvider.getIconDirectory was called the correct number of times 
-                defaultCustomIconProviderMock.verify(() -> DefaultCustomIconProvider.getIconDirectory(), times(6));
+            // Verify defaultCustomIconProvider.getIconDirectory was called the correct number of times
+            defaultCustomIconProviderMock.verify(() -> DefaultCustomIconProvider.getIconDirectory(), times(6));
 
-            } catch (final URISyntaxException ex) {
-                Exceptions.printStackTrace(ex);
-            }
         }
     }
 
@@ -187,7 +183,7 @@ public class DefaultCustomIconProviderNGTest {
      */
     public void testLoadIcons(final File testFile) {
         DefaultCustomIconProvider instance = new DefaultCustomIconProvider();
-        List list = instance.getIcons();
+        List<ConstellationIcon> list = instance.getIcons();
 
         // the number of icons should be the number of files in the resources folder minus "test_bagel_blue.png"
         final int expResult = testFile.listFiles().length - 1;

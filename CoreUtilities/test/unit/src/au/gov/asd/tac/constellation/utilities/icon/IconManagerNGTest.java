@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -50,7 +49,7 @@ public class IconManagerNGTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() throws URISyntaxException {
         // Create test icons
         try ( MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class)) {
             // Get a test directory location for the getIconDirectory call
@@ -89,9 +88,6 @@ public class IconManagerNGTest {
             iconNames.put("Test3", icon3);
 
             TEST_CACHE.putAll(iconNames);
-
-        } catch (URISyntaxException ex) {
-            Exceptions.printStackTrace(ex);
         }
     }
 
