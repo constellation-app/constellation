@@ -155,24 +155,20 @@ public class JSingleChoiceComboBoxMenuNGTest {
      * Test of setIcon method, of class JSingleChoiceComboBoxMenu.
      */
     @Test
-    public void testSetIcon() {
+    public void testSetIcon() throws MalformedURLException {
         System.out.println("setIcon");
 
         JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
 
-        try {
-            final Icon newIcon1 = new ImageIcon(Utilities.toURI(iconFile).toURL());
-            final Icon newIcon2 = new ImageIcon(DROP_DOWN_ARROW_ICON_PATH);
-            instance.setIcon(newIcon1);
-            Icon result = instance.getIcon();
-            assertEquals(newIcon1, result);
+        final Icon newIcon1 = new ImageIcon(Utilities.toURI(iconFile).toURL());
+        final Icon newIcon2 = new ImageIcon(DROP_DOWN_ARROW_ICON_PATH);
+        instance.setIcon(newIcon1);
+        Icon result = instance.getIcon();
+        assertEquals(newIcon1, result);
 
-            instance.setIcon(newIcon2);
-            result = instance.getIcon();
-            assertEquals(newIcon2, result);
-        } catch (MalformedURLException ex) {
-            System.out.println("Could not create drop down arrow image");
-        }
+        instance.setIcon(newIcon2);
+        result = instance.getIcon();
+        assertEquals(newIcon2, result);
     }
 
     /**
