@@ -22,5 +22,6 @@ package au.gov.asd.tac.constellation.plugins.templates;
 public class PluginTags {
     
     public static final String ANALYTIC = "ANALYTIC";
+    public static final String LOW_LEVEL = "LOW LEVEL";
     
 }

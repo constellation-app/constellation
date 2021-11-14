@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -41,7 +42,7 @@ import org.openide.windows.WindowManager;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("OpenFilePlugin=Open File")
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.LOW_LEVEL})
 public class OpenFilePlugin extends SimpleReadPlugin {
 
     private boolean running;

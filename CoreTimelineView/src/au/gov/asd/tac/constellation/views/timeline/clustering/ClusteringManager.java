@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.views.timeline.TimeExtents;
@@ -408,7 +409,7 @@ public class ClusteringManager {
     // this to even be a plugin if there is no direct user interaction required
     // manually or programatically. If not then perhaps this should not be a
     // plugin but rather a function call.
-    @PluginInfo(tags = {"LOW LEVEL", "MODIFY"})
+    @PluginInfo(tags = {PluginTags.LOW_LEVEL, "MODIFY"})
     public final class UpdateDimOrHidePlugin extends SimplePlugin {
 
         final long lowerTimeExtent;
