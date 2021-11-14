@@ -44,7 +44,7 @@ public class DiceSimilarityAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-dice-similarity.html";
+        return getHelpPath() + "analytic-dice-similarity.md";
     }
 
     @Override

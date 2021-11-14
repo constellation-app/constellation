@@ -44,7 +44,7 @@ public class ConnectivityDegreeAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-connectivity-degree.html";
+        return getHelpPath() + "analytic-connectivity-degree.md";
     }
 
     @Override

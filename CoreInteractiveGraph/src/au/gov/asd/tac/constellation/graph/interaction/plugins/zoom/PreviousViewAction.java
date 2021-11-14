@@ -36,7 +36,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Tools", position = 0)
 })
-@Messages("CTL_PreviousViewAction=Previous View")
+@Messages("CTL_PreviousViewAction=Previous Camera View")
 public final class PreviousViewAction implements ActionListener {
 
     private final GraphNode context;

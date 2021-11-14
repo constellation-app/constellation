@@ -1,12 +1,25 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-11-02 Data Access View Templates
+<p>A bug relating to the Data Access View template structure has been resolved. Unfortunately this change means that existing DAV templates will no longer work and therefore they will need to be re-created.</p>
+
+== 2021-10-29 New Online & Offline Help
+<p>The help documentation is now able to be viewed both online through the constellation-app.com website and offline through a local server.</p>
+<p>A preference has been added where you choose to view help documentation either online or offline. This can be found via 
+Setup -> Options -> CONSTELLATION -> Help -> Online Help. The help documentation is accessible through the blue question mark icons found in each view. </p>
+
 == 2021-10-27 Layers View Graph Context
 <p> Layers View now requires a graph to be present before presenting the full feature set of the view.</p>
 
 == 2021-10-20 Conversation Search scroll
 <p> When searching in the conversation viewer you will be taken to the messages that contain the search term.</p>
 <p> You can also iterate through the search terms using the new buttons</p>
+
+== 2021-10-18 Data Access View
+<p>There is a known issue with the Data Access View that it will open in the graph tab section during the latest update.
+You should be able to manually reposition it to the left pane section and it will open as expected from then on wards.
+This is a side affect of some back end changes we had to make.</p>
 
 == 2021-10-15 User Settable Bin Size in Histogram
 <p>The user can now manually increase or decrease the height of the bins in the histogram (Added to the popup displayed when you click the Actions button in the bottom right of the histogram panel).</p>
@@ -19,7 +32,7 @@
 
 == 2021-09-28 Hashmod Improvements
 <p>Significant speed up in ingesting CSV files with a header line in as separate vertices and you can now specify
-(via a header field with format 'COLUMN1...COLUMN2;;;COLUMN3') that any transactions that hashmod creates via 
+(via a header field with format 'COLUMN1...COLUMN2;;;COLUMN3') that any transactions that hashmod creates via
 matching COLUMN1 and COLUMN2 values will also gain the COLUMN3 attribute from one of the vertices it connects.</p>
 
 == 2021-09-17 Anaglyphic Display

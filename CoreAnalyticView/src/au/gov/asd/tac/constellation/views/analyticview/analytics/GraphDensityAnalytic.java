@@ -44,7 +44,7 @@ public class GraphDensityAnalytic extends GraphAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-graph-density.html";
+        return getHelpPath() + "analytic-graph-density.md";
     }
 
     @Override

@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.views.analyticview.analytics;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.TRANSACTION;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.VERTEX;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;

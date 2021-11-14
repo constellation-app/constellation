@@ -28,7 +28,6 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
-import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.UserCancelException;
 import org.openide.util.lookup.ServiceProvider;
@@ -60,14 +59,7 @@ public class OpenFilePlugin extends SimpleReadPlugin {
     protected JFileChooser prepareFileChooser() {
         final JFileChooser chooser = new FileChooser();
         chooser.setCurrentDirectory(getCurrentDirectory());
-        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
-
         return chooser;
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return new HelpCtx(this.getClass().getName());
     }
 
     /**

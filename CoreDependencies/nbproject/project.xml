@@ -98,6 +98,8 @@
                 <package>com.fasterxml.jackson.databind.ser.std</package>
                 <package>com.fasterxml.jackson.databind.type</package>
                 <package>com.fasterxml.jackson.databind.util</package>
+                <package>com.github.rjeschke.txtmark</package>
+                <package>com.github.rjeschke.txtmark.cmd</package>
                 <package>com.google.common.annotations</package>
                 <package>com.google.common.base</package>
                 <package>com.google.common.base.internal</package>
@@ -4014,6 +4016,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/testfx-core-4.0.16-alpha.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/testfx-core-4.0.16-alpha.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/txtmark-0.13.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/txtmark-0.13.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/txw2-2.4.0-b180830.0438.jar</runtime-relative-path>

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview.overlays;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -190,7 +191,7 @@ public class ToolsOverlay extends MapOverlay {
             final Location start = getDrawToolStart();
             final Location end = getDrawToolEnd();
             if (start != null && end != null) {
-                float distance = measureSystem.getMeasureFunction().apply(start, end).floatValue();
+                final float distance = measureSystem.getMeasureFunction().apply(start, end).floatValue();
                 drawValue(String.format("%s", PApplet.nf(distance, 1, 3)), measureToolX, yOffset, measureToolWidth, false, false);
             } else {
                 drawValue(DISABLED, measureToolX, yOffset, measureToolWidth, false, false);
@@ -274,8 +275,9 @@ public class ToolsOverlay extends MapOverlay {
                 && renderer.mouseY > yOffset && renderer.mouseY < yOffset + valueBoxHeight) {
             if (leftMousePressed && mouseLeftAddToGraphRegion) {
                 try {
+                    final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
                     PluginExecution.withPlugin(MapViewPluginRegistry.COPY_CUSTOM_MARKERS_TO_GRAPH)
-                            .executeNow(GraphManager.getDefault().getActiveGraph());
+                            .executeNow(currentGraph);
 
                     final MarkerCache markerCache = renderer.getMarkerCache();
                     markerCache.getCustomMarkers().forEach(marker -> {
@@ -283,10 +285,10 @@ public class ToolsOverlay extends MapOverlay {
                         marker.setCustom(false);
                     });
 
-                    renderer.updateMarkers(GraphManager.getDefault().getActiveGraph(), renderer.getMarkerState());
-                } catch (PluginException ex) {
+                    renderer.updateMarkers(currentGraph, renderer.getMarkerState());
+                } catch (final PluginException ex) {
                     LOGGER.log(Level.SEVERE, "Error copying custom markers to graph", ex);
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, "Error copying custom markers to graph", ex);
                     Thread.currentThread().interrupt();
                 }

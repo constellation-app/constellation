@@ -93,27 +93,21 @@ public class Distance {
          * @param longitudeB the longitude of location B in decimal degrees.
          * @return the angle between location A and location B.
          */
-        private static double calulateAngle(double latitudeA, double longitudeA, double latitudeB, double longitudeB) {
-            double distance;
-
+        private static double calculateAngle(final double latitudeA, final double longitudeA, final double latitudeB, 
+                final double longitudeB) {
             if (latitudeA == latitudeB && longitudeA == longitudeB) {
-                distance = 0.0;
-            } else {
-                double latitudeARadians = degreesToRadians(latitudeA);
-                double longitudeARadians = degreesToRadians(longitudeA);
-                double latitudeBRadians = degreesToRadians(latitudeB);
-                double longitudeBRadians = degreesToRadians(longitudeB);
-
-                double coordinateVectorDotProduct = (Math.sin(latitudeARadians) * Math.sin(latitudeBRadians))
-                        + (Math.cos(latitudeARadians) * Math.cos(latitudeBRadians) * Math.cos(longitudeARadians - longitudeBRadians));
-
-                if (coordinateVectorDotProduct > 1) {
-                    distance = Math.acos(1);
-                } else {
-                    distance = Math.acos(coordinateVectorDotProduct);
-                }
+                return 0.0;
             }
-            return distance;
+            
+            final double latitudeARadians = degreesToRadians(latitudeA);
+            final double longitudeARadians = degreesToRadians(longitudeA);
+            final double latitudeBRadians = degreesToRadians(latitudeB);
+            final double longitudeBRadians = degreesToRadians(longitudeB);
+
+            final double coordinateVectorDotProduct = (Math.sin(latitudeARadians) * Math.sin(latitudeBRadians))
+                    + (Math.cos(latitudeARadians) * Math.cos(latitudeBRadians) * Math.cos(longitudeARadians - longitudeBRadians));
+
+            return Math.acos(coordinateVectorDotProduct > 1 ? 1 : coordinateVectorDotProduct);
         }
 
         /**
@@ -126,19 +120,20 @@ public class Distance {
          * @param longitudeB the longitude of location B in decimal degrees.
          * @return the distance between location A and location B.
          */
-        public static double estimateDistanceInDecimalDegrees(double latitudeA, double longitudeA, double latitudeB, double longitudeB) {
-            return EARTH_RADIUS_DD * calulateAngle(latitudeA, longitudeA, latitudeB, longitudeB);
+        public static double estimateDistanceInDecimalDegrees(final double latitudeA, final double longitudeA, final double latitudeB, 
+                final double longitudeB) {
+            return EARTH_RADIUS_DD * calculateAngle(latitudeA, longitudeA, latitudeB, longitudeB);
         }
 
-        public static double decimalDegreesToKilometers(double distanceInDecimalDegrees) {
+        public static double decimalDegreesToKilometers(final double distanceInDecimalDegrees) {
             return EARTH_RADIUS_KM * (distanceInDecimalDegrees / EARTH_RADIUS_DD);
         }
 
-        public static double decimalDegreesToMiles(double distanceInDecimalDegrees) {
+        public static double decimalDegreesToMiles(final double distanceInDecimalDegrees) {
             return EARTH_RADIUS_MI * (distanceInDecimalDegrees / EARTH_RADIUS_DD);
         }
 
-        public static double decimalDegreesToNauticalMiles(double distanceInDecimalDegrees) {
+        public static double decimalDegreesToNauticalMiles(final double distanceInDecimalDegrees) {
             return EARTH_RADIUS_NMI * (distanceInDecimalDegrees / EARTH_RADIUS_DD);
         }
 
@@ -152,19 +147,20 @@ public class Distance {
          * @param longitudeB the longitude of location B in decimal degrees.
          * @return the distance between location A and location B.
          */
-        public static double estimateDistanceInKilometers(double latitudeA, double longitudeA, double latitudeB, double longitudeB) {
-            return EARTH_RADIUS_KM * calulateAngle(latitudeA, longitudeA, latitudeB, longitudeB);
+        public static double estimateDistanceInKilometers(final double latitudeA, final double longitudeA, final double latitudeB, 
+                final double longitudeB) {
+            return EARTH_RADIUS_KM * calculateAngle(latitudeA, longitudeA, latitudeB, longitudeB);
         }
 
-        public static double kilometersToDecimalDegrees(double distanceInKilometers) {
+        public static double kilometersToDecimalDegrees(final double distanceInKilometers) {
             return EARTH_RADIUS_DD * (distanceInKilometers / EARTH_RADIUS_KM);
         }
 
-        public static double kilometersToMiles(double distanceInKilometers) {
+        public static double kilometersToMiles(final double distanceInKilometers) {
             return EARTH_RADIUS_MI * (distanceInKilometers / EARTH_RADIUS_KM);
         }
 
-        public static double kilometersToNauticalMiles(double distanceInKilometers) {
+        public static double kilometersToNauticalMiles(final double distanceInKilometers) {
             return EARTH_RADIUS_NMI * (distanceInKilometers / EARTH_RADIUS_KM);
         }
 
@@ -178,19 +174,20 @@ public class Distance {
          * @param longitudeB the longitude of location B in decimal degrees.
          * @return the distance between location A and location B.
          */
-        public static double estimateDistanceInMiles(double latitudeA, double longitudeA, double latitudeB, double longitudeB) {
-            return EARTH_RADIUS_MI * calulateAngle(latitudeA, longitudeA, latitudeB, longitudeB);
+        public static double estimateDistanceInMiles(final double latitudeA, final double longitudeA, final double latitudeB, 
+                final double longitudeB) {
+            return EARTH_RADIUS_MI * calculateAngle(latitudeA, longitudeA, latitudeB, longitudeB);
         }
 
-        public static double milesToDecimalDegrees(double distanceInMiles) {
+        public static double milesToDecimalDegrees(final double distanceInMiles) {
             return EARTH_RADIUS_DD * (distanceInMiles / EARTH_RADIUS_MI);
         }
 
-        public static double milesToKilometers(double distanceInMiles) {
+        public static double milesToKilometers(final double distanceInMiles) {
             return EARTH_RADIUS_KM * (distanceInMiles / EARTH_RADIUS_MI);
         }
 
-        public static double milesToNauticalMiles(double distanceInMiles) {
+        public static double milesToNauticalMiles(final double distanceInMiles) {
             return EARTH_RADIUS_NMI * (distanceInMiles / EARTH_RADIUS_MI);
         }
 
@@ -204,19 +201,20 @@ public class Distance {
          * @param longitudeB the longitude of location B in decimal degrees.
          * @return the distance between location A and location B.
          */
-        public static double estimateDistanceInNauticalMiles(double latitudeA, double longitudeA, double latitudeB, double longitudeB) {
-            return EARTH_RADIUS_NMI * calulateAngle(latitudeA, longitudeA, latitudeB, longitudeB);
+        public static double estimateDistanceInNauticalMiles(final double latitudeA, final double longitudeA, final double latitudeB, 
+                final double longitudeB) {
+            return EARTH_RADIUS_NMI * calculateAngle(latitudeA, longitudeA, latitudeB, longitudeB);
         }
 
-        public static double nauticalMilesToDecimalDegrees(double distanceInNauticalMiles) {
+        public static double nauticalMilesToDecimalDegrees(final double distanceInNauticalMiles) {
             return EARTH_RADIUS_DD * (distanceInNauticalMiles / EARTH_RADIUS_NMI);
         }
 
-        public static double nauticalMilesToKilometers(double distanceInNauticalMiles) {
+        public static double nauticalMilesToKilometers(final double distanceInNauticalMiles) {
             return EARTH_RADIUS_KM * (distanceInNauticalMiles / EARTH_RADIUS_NMI);
         }
 
-        public static double nauticalMilesToMiles(double distanceInNauticalMiles) {
+        public static double nauticalMilesToMiles(final double distanceInNauticalMiles) {
             return EARTH_RADIUS_MI * (distanceInNauticalMiles / EARTH_RADIUS_NMI);
         }
     }
