@@ -167,8 +167,8 @@ public class HelpServlet extends HttpServlet {
         final String replace2 = "\\/file:";
         final String replace3 = "file:";
         modifiedPath = modifiedPath.replaceAll(replace1, "");
-        modifiedPath = modifiedPath.replace(replace2, "");
-        modifiedPath = modifiedPath.replace(replace3, "");
+        modifiedPath = modifiedPath.replaceAll(replace2, "");
+        modifiedPath = modifiedPath.replaceAll(replace3, "");
 
         return modifiedPath;
     }
