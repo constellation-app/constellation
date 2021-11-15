@@ -24,6 +24,7 @@ public class PluginTags {
     public static final String ANALYTIC = "ANALYTIC";
     public static final String LOW_LEVEL = "LOW LEVEL";
     public static final String MODIFY = "MODIFY";
+    public static final String GENERAL = "GENERAL";
     
     private PluginTags(){
         throw new IllegalStateException("Utility class");
