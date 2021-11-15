@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  *
  * @author twinkle2_little
  */
-@PluginInfo(pluginType = PluginType.SEARCH, tags = {"SEARCH", PluginTags.MODIFY})
+@PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH, PluginTags.MODIFY})
 public class ReplacePlugin extends SimpleEditPlugin {
 
     private final GraphElementType elementType;
