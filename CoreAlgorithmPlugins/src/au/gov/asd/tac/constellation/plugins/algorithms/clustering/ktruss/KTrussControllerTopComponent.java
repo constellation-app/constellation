@@ -851,7 +851,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.SELECT})
     public static final class Select extends SimpleEditPlugin {
 
         private final KTrussState state;

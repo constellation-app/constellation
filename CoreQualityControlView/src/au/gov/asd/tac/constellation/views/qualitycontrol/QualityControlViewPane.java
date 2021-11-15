@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -728,7 +729,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Selects on the graph only nodes which have a corresponding selected
      * QualityControlEvent.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     protected static class SelectQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
@@ -775,7 +776,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Selects on the graph only nodes which do not have a corresponding
      * selected QualityControlEvent.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     protected static class DeselectQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;

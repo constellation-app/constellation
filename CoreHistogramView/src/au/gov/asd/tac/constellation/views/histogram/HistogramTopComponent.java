@@ -597,7 +597,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to only select bins.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class HistogramSelectOnlyBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -625,7 +625,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to select bins.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class SelectBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -655,7 +655,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to invert bins.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class InvertBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -683,7 +683,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to complete bins.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class CompleteBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -711,7 +711,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to filter selection.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class FilterSelection extends SimpleEditPlugin {
 
         @Override
@@ -768,7 +768,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to expand selection.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class ExpandSelection extends SimpleEditPlugin {
 
         @Override
