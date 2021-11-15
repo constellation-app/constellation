@@ -85,7 +85,7 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
         final HelpOptionsPanel helpOptionsPanel = getPanel();
-        return (helpOptionsPanel.isOnlineHelpSelected() != prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP));
+        return helpOptionsPanel.isOnlineHelpSelected() != prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP);
     }
 
     @Override

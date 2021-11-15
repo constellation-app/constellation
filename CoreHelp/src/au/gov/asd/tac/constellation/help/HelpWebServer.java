@@ -21,6 +21,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
@@ -81,8 +82,8 @@ public class HelpWebServer {
                 };
                 server.setRequestLog(requestLog);
 
-                final String serverVersion = Server.getVersion();
-                LOGGER.info(String.format("Starting Jetty version %s on%s:%d...", serverVersion, loopback, port));
+                final String loggingMessage = String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback.toString(), port);
+                LOGGER.log(Level.INFO, loggingMessage);
                 server.start();
 
                 // Wait for the server to stop (if it ever does).

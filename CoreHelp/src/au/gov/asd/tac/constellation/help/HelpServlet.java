@@ -62,7 +62,7 @@ public class HelpServlet extends HttpServlet {
     );
     private static boolean redirect = false;
 
-    protected boolean isRedirect() {
+    protected static boolean isRedirect() {
         return redirect;
     }
 
@@ -89,11 +89,7 @@ public class HelpServlet extends HttpServlet {
             final URL fileUrl = redirectPath(requestPath, referer);
 
             if (fileUrl != null) {
-                try {
-                    response.sendRedirect("/" + fileUrl.toString());
-                } catch (final IOException ex) {
-                    LOGGER.log(Level.WARNING, ex, () -> "Failed to send redirect while navigating to {0}" + fileUrl.toString());
-                }
+                tryResponseRedirect(fileUrl, response);
             }
 
             final int extIx = requestPath.lastIndexOf('.');
@@ -102,13 +98,39 @@ public class HelpServlet extends HttpServlet {
             response.setContentType(mimeType);
             final String path = URLDecoder.decode(requestPath, StandardCharsets.UTF_8.name());
 
-            try {
-                ConstellationHelpDisplayer.copy(stripLeadingPath(path), response.getOutputStream());
-            } catch (final IOException ex) {
-                throw new ServletException(ex);
-            }
+            tryCopy(path, response);
+
         } catch (UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
+        }
+    }
+
+    /**
+     * Try to send a redirect to the response with the given fileUrl
+     *
+     * @param fileUrl
+     * @param response
+     */
+    private void tryResponseRedirect(final URL fileUrl, final HttpServletResponse response) {
+        try {
+            response.sendRedirect("/" + fileUrl.toString());
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, ex, () -> "Failed to send redirect while navigating to {0}" + fileUrl.toString());
+        }
+    }
+
+    /**
+     * Try to display the correct page
+     *
+     * @param path
+     * @param response
+     * @throws ServletException
+     */
+    private void tryCopy(final String path, final HttpServletResponse response) throws ServletException {
+        try {
+            ConstellationHelpDisplayer.copy(stripLeadingPath(path), response.getOutputStream());
+        } catch (final IOException ex) {
+            throw new ServletException(ex);
         }
     }
 
@@ -164,11 +186,11 @@ public class HelpServlet extends HttpServlet {
     protected static String stripLeadingPath(final String fullPath) {
         String modifiedPath = fullPath;
         final String replace1 = "\\/file:\\/[a-zA-Z]:";
-        final String replace2 = "\\/file:";
+        final String replace2 = "/file:";
         final String replace3 = "file:";
         modifiedPath = modifiedPath.replaceAll(replace1, "");
-        modifiedPath = modifiedPath.replaceAll(replace2, "");
-        modifiedPath = modifiedPath.replaceAll(replace3, "");
+        modifiedPath = modifiedPath.replace(replace2, "");
+        modifiedPath = modifiedPath.replace(replace3, "");
 
         return modifiedPath;
     }

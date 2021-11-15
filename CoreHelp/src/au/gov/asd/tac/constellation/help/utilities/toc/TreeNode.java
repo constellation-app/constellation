@@ -188,12 +188,8 @@ public class TreeNode<T> {
      */
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof TreeNode && ((TreeNode) (obj)).getData() != null && (((TreeNode) (obj)).getData().equals(data))) {
-            return true;
-        } else if (obj instanceof TreeNode && ((TreeNode) (obj)).getData() == null && data == null) {
-            return true;
-        }
-        return false;
+        return obj instanceof TreeNode && ((((TreeNode) (obj)).getData() == null && data == null)
+                || ((TreeNode) (obj)).getData() != null && (((TreeNode) (obj)).getData().equals(data)));
     }
 
     @Override
