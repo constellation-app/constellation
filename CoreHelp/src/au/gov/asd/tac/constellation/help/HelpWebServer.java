@@ -40,6 +40,10 @@ public class HelpWebServer {
     private static int port = 0;
     private static final String WEB_SERVER_THREAD_NAME = "Help Web Server";
 
+    private HelpWebServer() {
+        // Intentionally left blank 
+    }
+
     public static boolean isRunning() {
         return running;
     }
@@ -77,7 +81,8 @@ public class HelpWebServer {
                 };
                 server.setRequestLog(requestLog);
 
-                LOGGER.info(String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
+                final String serverVersion = Server.getVersion();
+                LOGGER.info(String.format("Starting Jetty version %s on%s:%d...", serverVersion, loopback, port));
                 server.start();
 
                 // Wait for the server to stop (if it ever does).

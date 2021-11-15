@@ -48,6 +48,7 @@ import org.openide.util.lookup.ServiceProvider;
         urlPatterns = {"/"})
 public class HelpServlet extends HttpServlet {
 
+    private static final long serialVersionUID = 1;
     private static final Logger LOGGER = Logger.getLogger(HelpServlet.class.getName());
 
     private static final Map<String, String> MIME_TYPES = Map.of(
@@ -60,14 +61,14 @@ public class HelpServlet extends HttpServlet {
             ".txt", "text/plain",
             ".md", "text/html" // this allows a markdown file be converted to html on the fly
     );
-    private static boolean wasRedirect = false;
+    private static boolean redirect = false;
 
-    protected boolean getWasRedirect() {
-        return wasRedirect;
+    protected boolean isRedirect() {
+        return redirect;
     }
 
     protected void setWasRedirect(final boolean wasRedirect) {
-        this.wasRedirect = wasRedirect;
+        HelpServlet.redirect = wasRedirect;
     }
 
     /**
@@ -142,15 +143,15 @@ public class HelpServlet extends HttpServlet {
                         final String redirectURL = Generator.getBaseDirectory() + requestfrontHalfRemoved;
                         final File file2 = new File(redirectURL);
                         final URL fileUrl2 = file2.toURI().toURL();
-                        wasRedirect = true;
+                        HelpServlet.redirect = true;
                         return fileUrl2;
                     }
                 }
-            } else if (wasRedirect) {
-                wasRedirect = false;
+            } else if (HelpServlet.redirect) {
+                HelpServlet.redirect = false;
             }
         } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, "Redirect Failed! Could not navigate to: " + requestPath, ex);
+            LOGGER.log(Level.WARNING, String.format("Redirect Failed! Could not navigate to: %s", requestPath), ex);
         }
         return null;
     }
@@ -163,10 +164,12 @@ public class HelpServlet extends HttpServlet {
      */
     protected static String stripLeadingPath(final String fullPath) {
         String modifiedPath = fullPath;
-
-        modifiedPath = modifiedPath.replaceAll("\\/file:\\/[a-zA-Z]:", "");
-        modifiedPath = modifiedPath.replaceAll("\\/file:", "");
-        modifiedPath = modifiedPath.replaceAll("file:", "");
+        final String replace1 = "\\/file:\\/[a-zA-Z]:";
+        final String replace2 = "\\/file:";
+        final String replace3 = "file:";
+        modifiedPath = modifiedPath.replaceAll(replace1, "");
+        modifiedPath = modifiedPath.replaceAll(replace2, "");
+        modifiedPath = modifiedPath.replaceAll(replace3, "");
 
         return modifiedPath;
     }

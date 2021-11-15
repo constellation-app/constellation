@@ -55,7 +55,7 @@ public class TOCItem {
      */
     @Override
     public boolean equals(final Object obj) {
-        return obj != null && obj instanceof TOCItem
+        return obj instanceof TOCItem
                 && StringUtils.equals(text, ((TOCItem) obj).getText())
                 && StringUtils.equals(target, ((TOCItem) obj).getTarget());
     }
