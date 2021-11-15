@@ -1214,7 +1214,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     /**
      * Plugin to write the graph file.
      */
-    @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
     private class WriteGraphFile extends SimplePlugin {
 
         private final GraphReadMethods copy;

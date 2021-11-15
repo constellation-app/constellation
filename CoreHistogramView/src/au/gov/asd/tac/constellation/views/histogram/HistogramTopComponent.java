@@ -751,7 +751,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to save bins to clipboard.
      */
-    @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
     private class SaveBinsToClipboard extends SimpleReadPlugin {
 
         @Override
