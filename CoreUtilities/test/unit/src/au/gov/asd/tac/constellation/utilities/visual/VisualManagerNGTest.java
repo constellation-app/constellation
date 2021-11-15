@@ -178,7 +178,7 @@ public class VisualManagerNGTest {
      * 
      * TODO: This method currently runs in a loop as the tested method contains a while true.
      */
-    //@Test
+    @Test
     public void testProcess() {
         System.out.println("testProcess");
         
@@ -204,36 +204,57 @@ public class VisualManagerNGTest {
             queue.add(op);
             instance.setProcessing(true);
             when(instance.getOperations()).thenReturn(queue);
-            when(instance.isRendererIdle()).thenReturn(true);                  
+            when(instance.isRendererIdle()).thenReturn(true);    
+            when(instance.isProcessing()).thenReturn(true, false, false);    
             when(instance.getProcessor()).thenReturn(processor);
             
-            final Thread testingThread = new Thread(() -> {
-                while(!instance.getOperations().isEmpty()){
-                    System.out.println("waiting");
-                }
-                while(instance.getOperations().isEmpty()){
-                    System.out.println("empty");
-                    instance.setRendererIdle(true);
-                    final PriorityBlockingQueue<VisualOperation> queue2 = new PriorityBlockingQueue<>();
-                    final VisualChange vc2 = mock(VisualChange.class);
-                    final List<VisualChange> changes2 = new ArrayList<>();
-                    final VisualOperation op2 = mock(VisualOperation.class);
-                    changes2.add(vc2);
-                    when(op2.getVisualChanges()).thenReturn(changes2);
-                    doNothing().when(op2).apply();
-                    queue2.add(op2);
-                    instance.setOperations(queue2);
-                    break;
-                }
-            });
-            testingThread.start();
             instance.process();
             
             verify(op, times(1)).apply();
             verify(op, times(1)).getVisualChanges();
             verify(instance, times(3)).isProcessing();
             verify(instance, Mockito.atLeastOnce()).getOperations();
-            verify(processor, times(1)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
+            verify(processor, times(0)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
+        }
+    }
+    
+    @Test
+    public void testProcess2() {
+        System.out.println("testProcess2");
+        
+        try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
+            memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
+            memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
+
+            final VisualAccess access = mock(VisualAccess.class);
+            
+            final VisualProcessor processor = mock(VisualProcessor.class);
+            doNothing().when(processor).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
+            
+            final VisualManager instance = spy(new VisualManager(access, processor));
+            final PriorityBlockingQueue<VisualOperation> queue = new PriorityBlockingQueue<>();
+            final PriorityBlockingQueue<VisualOperation> queue2 = new PriorityBlockingQueue<>();
+            
+            final VisualChange vc = mock(VisualChange.class);
+            
+            final List<VisualChange> changes2 = new ArrayList<>();
+            final VisualOperation op = mock(VisualOperation.class);
+            changes2.add(vc);
+            when(op.getVisualChanges()).thenReturn(changes2);
+            doNothing().when(op).apply();
+            queue.add(INDIGENOUS_CHANGES_UPDATE_OPERATION);
+            queue2.add(op);
+            instance.setProcessing(true);
+            when(instance.getOperations()).thenReturn(queue, queue2);
+            when(instance.isRendererIdle()).thenReturn(true);    
+            when(instance.isProcessing()).thenReturn(true, false, false);    
+            when(instance.getProcessor()).thenReturn(processor);
+            
+            instance.process();
+            
+            verify(instance, times(3)).isProcessing();
+            verify(instance, Mockito.atLeastOnce()).getOperations();
+            verify(processor, times(0)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
         }
     }
     
