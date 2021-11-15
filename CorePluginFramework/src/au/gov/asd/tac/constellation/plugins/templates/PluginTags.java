@@ -34,7 +34,7 @@ public class PluginTags {
     public static final String DELETE = "DELETE";
     public static final String IMPORT = "IMPORT";
     public static final String UTILITY = "UTILITY";
-    
+    public static final String VIEW = "VIEW";
     
     
     private PluginTags(){
