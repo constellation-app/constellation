@@ -155,6 +155,10 @@ public final class VisualChange implements Comparable<VisualChange> {
 
     @Override
     public int compareTo(final VisualChange o) {
-        return o == null ? -1 : id == o.id ? 0 : Integer.compare(order, o.order);
+        if(o == null){
+            return -1;
+        }else{
+            return id == o.id ? 0 : Integer.compare(order, o.order);
+        }
     }
 }
