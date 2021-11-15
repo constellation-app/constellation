@@ -238,7 +238,7 @@ public class ClusteringManager {
         public void exclusionStateNotify(final long vxModCount, final long txModCount);
     }
 
-    @PluginInfo(tags = {"MODIFY"})
+    @PluginInfo(tags = {PluginTags.MODIFY})
     public final class InitDimOrHidePlugin extends SimplePlugin {
 
         final String dateTimeAttr;
@@ -409,7 +409,7 @@ public class ClusteringManager {
     // this to even be a plugin if there is no direct user interaction required
     // manually or programatically. If not then perhaps this should not be a
     // plugin but rather a function call.
-    @PluginInfo(tags = {PluginTags.LOW_LEVEL, "MODIFY"})
+    @PluginInfo(tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
     public final class UpdateDimOrHidePlugin extends SimplePlugin {
 
         final long lowerTimeExtent;

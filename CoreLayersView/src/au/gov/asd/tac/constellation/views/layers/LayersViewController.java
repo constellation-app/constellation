@@ -303,7 +303,7 @@ public class LayersViewController {
     /**
      * Read the current state from the graph.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, "MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
     protected static final class LayersStateReaderPlugin extends SimpleReadPlugin {
 
         private final LayersViewPane pane;
@@ -339,7 +339,7 @@ public class LayersViewController {
     /**
      * Write the current state to the graph.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, "MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
     protected static final class LayersStateWriterPlugin extends SimpleEditPlugin {
 
         private final BitMaskQuery[] vxLayers;
@@ -391,7 +391,7 @@ public class LayersViewController {
      * Plugin to update all bit masks relating to the queries held in both
      * vertex and transaction query collections.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, "MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
     protected static class UpdateQueryPlugin extends SimpleEditPlugin {
 
         private final BitMaskQueryCollection vxBitMasks;

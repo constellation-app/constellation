@@ -733,7 +733,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to save bins to graph.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     private class SaveBinsToGraph extends SimpleEditPlugin {
 
         @Override
