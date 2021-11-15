@@ -47,7 +47,7 @@ import org.openide.util.NbBundle;
  *
  * @author canis_majoris
  */
-@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE, PluginTags.EXPERIMENTAL, "WELCOME"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE, PluginTags.EXPERIMENTAL, PluginTags.WELCOME})
 @NbBundle.Messages("SphereGraphWelcomePlugin=Sphere Graph Welcome Plugin")
 public class SphereGraphWelcomePlugin implements WelcomePluginInterface {    
 

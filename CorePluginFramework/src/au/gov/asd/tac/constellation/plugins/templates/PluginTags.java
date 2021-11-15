@@ -28,10 +28,10 @@ public class PluginTags {
     public static final String SELECT = "SELECT";
     public static final String CREATE = "CREATE";
     public static final String EXPERIMENTAL = "EXPERIMENTAL";
+    public static final String WELCOME = "WELCOME";
     
     
     private PluginTags(){
         throw new IllegalStateException("Utility class");
     }
-    
 }

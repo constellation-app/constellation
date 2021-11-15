@@ -41,7 +41,7 @@ import org.openide.util.NbBundle;
  *
  * @author canis_majoris
  */
-@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE, "WELCOME"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE, PluginTags.WELCOME})
 @NbBundle.Messages("AddModeWelcomePlugin=Add Mode Welcome Plugin")
 public class AddModeWelcomePlugin implements WelcomePluginInterface {
 
