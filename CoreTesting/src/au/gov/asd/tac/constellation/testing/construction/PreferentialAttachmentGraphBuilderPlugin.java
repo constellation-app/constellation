@@ -69,7 +69,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("PreferentialAttachmentGraphBuilderPlugin=Preferential Attachment Graph Builder")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", PluginTags.CREATE})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
     
     private static final Logger LOGGER = Logger.getLogger(PreferentialAttachmentGraphBuilderPlugin.class.getName());

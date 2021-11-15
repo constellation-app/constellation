@@ -98,7 +98,7 @@ public class IconGraphBuilderAction extends AbstractAction {
     /**
      * Plugin to create an icon graph
      */
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE, "EXPERIMENTAL"})
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE, PluginTags.EXPERIMENTAL})
     public static class BuildIconGraphPlugin extends SimpleEditPlugin {
 
         @Override

@@ -77,7 +77,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("SphereGraphBuilderPlugin=Sphere Graph Builder")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", PluginTags.CREATE})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
     
     private static final Logger LOGGER = Logger.getLogger(SphereGraphBuilderPlugin.class.getName());

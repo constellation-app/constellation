@@ -72,7 +72,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("SmallWorldGraphBuilderPlugin=Small World Graph Builder")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", PluginTags.CREATE})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
     
     private static final Logger LOGGER = Logger.getLogger(SmallWorldGraphBuilderPlugin.class.getName());

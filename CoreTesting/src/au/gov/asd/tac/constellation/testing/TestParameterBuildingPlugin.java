@@ -47,7 +47,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @Messages("TestParameterBuildingPlugin=Test Parameter Building")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "DEVELOPER", PluginTags.CREATE})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, "DEVELOPER", PluginTags.CREATE})
 public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
 
     public static final String LOCALDATE_PARAMETER_ID = PluginParameter.buildId(TestParameterBuildingPlugin.class, "localdate");

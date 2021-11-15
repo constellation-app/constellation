@@ -35,7 +35,7 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
  *
  * @author cygnus_x-1
  */
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", PluginTags.CREATE})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class SudokuGraphBuilderPlugin extends SimpleEditPlugin {
 
     private static final int SIZE = 9;

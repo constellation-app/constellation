@@ -27,6 +27,7 @@ public class PluginTags {
     public static final String GENERAL = "GENERAL";
     public static final String SELECT = "SELECT";
     public static final String CREATE = "CREATE";
+    public static final String EXPERIMENTAL = "EXPERIMENTAL";
     
     
     private PluginTags(){

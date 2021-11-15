@@ -73,7 +73,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @NbBundle.Messages("ImageGraphBuilderPlugin=Image Graph Builder")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", PluginTags.CREATE})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(ImageGraphBuilderPlugin.class.getName());
