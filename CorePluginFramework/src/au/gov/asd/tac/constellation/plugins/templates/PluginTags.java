@@ -30,6 +30,9 @@ public class PluginTags {
     public static final String EXPERIMENTAL = "EXPERIMENTAL";
     public static final String WELCOME = "WELCOME";
     public static final String DELETE = "DELETE";
+    public static final String IMPORT = "IMPORT";
+    
+    
     
     
     private PluginTags(){

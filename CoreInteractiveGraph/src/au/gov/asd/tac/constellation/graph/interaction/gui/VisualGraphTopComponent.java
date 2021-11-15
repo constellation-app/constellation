@@ -72,6 +72,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.plugins.update.GraphUpdateController;
@@ -1190,7 +1191,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     /**
      * Plugin to import the record file.
      */
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     private class ImportRecordFile extends SimpleEditPlugin {
 
         private final RecordStore recordStore;

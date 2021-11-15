@@ -56,7 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class)
 public class LabelDropper implements GraphDropper {
     

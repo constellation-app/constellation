@@ -517,7 +517,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to import the plane on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.IMPORT})
     private static class ImportPlanePlugin extends SimpleEditPlugin {
         
         private static final Logger LOGGER = Logger.getLogger(ImportPlanePlugin.class.getName());

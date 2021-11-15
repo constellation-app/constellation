@@ -54,7 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author sirius
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class, position = 10000)
 public class ImageIconDropper implements GraphDropper {
 

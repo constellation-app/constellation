@@ -47,6 +47,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -75,7 +76,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @Messages("ExtractWordsFromTextPlugin=Extract Words from Text")
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     public static final String ATTRIBUTE_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "attribute");

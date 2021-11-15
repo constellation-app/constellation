@@ -45,6 +45,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterTy
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -62,7 +63,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @NbBundle.Messages("ImportJDBCPlugin=Import from Database")
 public class ImportJDBCPlugin extends SimpleEditPlugin {
 
