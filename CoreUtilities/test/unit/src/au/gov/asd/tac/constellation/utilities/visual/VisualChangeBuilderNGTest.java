@@ -143,18 +143,8 @@ public class VisualChangeBuilderNGTest {
         VisualChangeBuilder prop = new VisualChangeBuilder(property).withId(id).forItems(changeList);
         VisualChange vc = prop.build();
         
-        final VisualProperty property2 = mock(VisualProperty.class);
-        final int[] changeList2 = new int[25];
-        for(int i=0;i<changeList2.length;i++){
-            changeList2[i] = i;
-        }
-        final int numChangedItems2 = 5;
-        final int id2 = 0;
-        final VisualChange vc2 = new VisualChange(property2, changeList2, numChangedItems2, id2);
-        
         assertEquals(vc.getChangeList(), changeList);
         assertEquals(vc.id, id);
         assertEquals(vc.property, property);
-        assertEquals(vc,vc2);
     }
 }
