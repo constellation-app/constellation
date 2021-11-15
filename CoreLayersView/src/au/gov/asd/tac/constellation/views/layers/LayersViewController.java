@@ -468,7 +468,7 @@ public class LayersViewController {
     /**
      * Plugin to add the required Layers View attributes.
      */
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
     protected static class AddAttributesPlugin extends SimpleEditPlugin {
 
         @Override

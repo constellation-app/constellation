@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
@@ -53,7 +54,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("StructuredGraphBuilderPlugin=Structured Graph Builder")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", PluginTags.CREATE})
 public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
 
     public static final String BACKBONE_SIZE_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_size");

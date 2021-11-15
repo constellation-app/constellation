@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
@@ -72,7 +73,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @NbBundle.Messages("ImageGraphBuilderPlugin=Image Graph Builder")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", PluginTags.CREATE})
 public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(ImageGraphBuilderPlugin.class.getName());

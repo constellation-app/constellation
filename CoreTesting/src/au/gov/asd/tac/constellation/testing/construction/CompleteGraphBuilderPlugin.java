@@ -42,6 +42,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("CompleteGraphBuilderPlugin=Complete Graph Builder")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", PluginTags.CREATE})
 public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
     
     private static final Logger LOGGER = Logger.getLogger(CompleteGraphBuilderPlugin.class.getName());

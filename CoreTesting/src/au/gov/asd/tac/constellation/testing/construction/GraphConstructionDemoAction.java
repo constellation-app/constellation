@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.event.ActionEvent;
@@ -83,7 +84,7 @@ public final class GraphConstructionDemoAction extends AbstractAction {
     /**
      * Plugin to demonstrate graph construction
      */
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {"DEVELOPER", "EXPERIMENTAL", "CREATE"})
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {"DEVELOPER", "EXPERIMENTAL", PluginTags.CREATE})
     public static class GraphConstructionPlugin extends SimpleEditPlugin {
 
         @Override

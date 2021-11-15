@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import java.util.Arrays;
 import java.util.Map;
@@ -46,7 +47,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @Messages("TestParameterBuildingPlugin=Test Parameter Building")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "DEVELOPER", "CREATE"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "DEVELOPER", PluginTags.CREATE})
 public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
 
     public static final String LOCALDATE_PARAMETER_ID = PluginParameter.buildId(TestParameterBuildingPlugin.class, "localdate");

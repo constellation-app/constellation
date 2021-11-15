@@ -26,6 +26,8 @@ public class PluginTags {
     public static final String MODIFY = "MODIFY";
     public static final String GENERAL = "GENERAL";
     public static final String SELECT = "SELECT";
+    public static final String CREATE = "CREATE";
+    
     
     private PluginTags(){
         throw new IllegalStateException("Utility class");
