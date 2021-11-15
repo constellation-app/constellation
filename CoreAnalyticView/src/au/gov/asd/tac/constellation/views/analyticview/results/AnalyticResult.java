@@ -82,14 +82,14 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     public final void sort() {
 
         final List<Entry<IdentificationData, D>> mapPairs = new ArrayList<>(result.entrySet());
-        final List<AnalyticData> mapValues = new ArrayList<>(result.values());
+        final List<D> mapValues = new ArrayList<>(result.values());
         mapValues.sort(null);
 
         result.clear();
 
-        final Iterator<AnalyticData> valueIt = mapValues.iterator();
+        final Iterator<D> valueIt = mapValues.iterator();
         while (valueIt.hasNext()) {
-            final AnalyticData val = valueIt.next();
+            final D val = valueIt.next();
 
             final Iterator<Entry<IdentificationData, D>> pairIt = mapPairs.iterator();
             while (pairIt.hasNext()) {
