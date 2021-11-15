@@ -48,7 +48,6 @@ import org.openide.util.lookup.ServiceProvider;
         urlPatterns = {"/"})
 public class HelpServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1;
     private static final Logger LOGGER = Logger.getLogger(HelpServlet.class.getName());
 
     private static final Map<String, String> MIME_TYPES = Map.of(
@@ -67,7 +66,7 @@ public class HelpServlet extends HttpServlet {
         return redirect;
     }
 
-    protected void setWasRedirect(final boolean wasRedirect) {
+    protected static void setWasRedirect(final boolean wasRedirect) {
         HelpServlet.redirect = wasRedirect;
     }
 
@@ -121,7 +120,7 @@ public class HelpServlet extends HttpServlet {
      * @param referer
      * @return new file path
      */
-    protected URL redirectPath(final String requestPath, final String referer) {
+    protected static URL redirectPath(final String requestPath, final String referer) {
         try {
             if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js")
                     || requestPath.contains(".ico"))) {
@@ -168,8 +167,8 @@ public class HelpServlet extends HttpServlet {
         final String replace2 = "\\/file:";
         final String replace3 = "file:";
         modifiedPath = modifiedPath.replaceAll(replace1, "");
-        modifiedPath = modifiedPath.replaceAll(replace2, "");
-        modifiedPath = modifiedPath.replaceAll(replace3, "");
+        modifiedPath = modifiedPath.replace(replace2, "");
+        modifiedPath = modifiedPath.replace(replace3, "");
 
         return modifiedPath;
     }
