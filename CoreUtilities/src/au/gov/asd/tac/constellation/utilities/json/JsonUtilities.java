@@ -149,7 +149,7 @@ public class JsonUtilities {
     }
 
     public static double getDoubleField(JsonNode node, String... keys) {
-        return getLongField(0, node, keys);
+        return getDoubleField(0, node, keys);
     }
 
     public static double getDoubleField(double defaultVal, JsonNode node, String... keys) {
