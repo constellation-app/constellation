@@ -39,6 +39,6 @@ public class PluginTags {
     
     
     private PluginTags(){
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Constants class");
     }
 }
