@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, "DEVELOPER"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.DEVELOPER})
 @NbBundle.Messages("FiveSecondReadLockPlugin=Five Second Read Lock")
 public class FiveSecondReadLockPlugin extends SimpleReadPlugin {
 

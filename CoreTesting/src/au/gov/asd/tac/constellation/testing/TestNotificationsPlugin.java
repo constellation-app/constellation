@@ -32,7 +32,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @Messages("TestNotificationsPlugin=Test Notifications")
-@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, "DEVELOPER"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.DEVELOPER})
 public class TestNotificationsPlugin extends SimplePlugin {
 
     @Override

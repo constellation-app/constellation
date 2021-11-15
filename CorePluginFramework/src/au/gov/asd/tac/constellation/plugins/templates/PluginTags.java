@@ -26,7 +26,9 @@ public class PluginTags {
     public static final String MODIFY = "MODIFY";
     public static final String GENERAL = "GENERAL";
     public static final String SELECT = "SELECT";
+    public static final String SEARCH = "SEARCH";
     public static final String CREATE = "CREATE";
+    public static final String DEVELOPER = "DEVELOPER";
     public static final String EXPERIMENTAL = "EXPERIMENTAL";
     public static final String WELCOME = "WELCOME";
     public static final String DELETE = "DELETE";

@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, "DEVELOPER"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.DEVELOPER})
 @Messages("PluginExceptionPlugin=Throw a PluginException")
 public class PluginExceptionPlugin extends SimplePlugin {
 

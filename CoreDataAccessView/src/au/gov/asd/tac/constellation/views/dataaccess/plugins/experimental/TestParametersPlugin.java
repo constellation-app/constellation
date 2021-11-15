@@ -110,7 +110,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("TestParametersPlugin=Test Parameters")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"DEVELOPER", PluginTags.MODIFY})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.DEVELOPER, PluginTags.MODIFY})
 public class TestParametersPlugin extends RecordStoreQueryPlugin implements DataAccessPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(TestParametersPlugin.class.getName());

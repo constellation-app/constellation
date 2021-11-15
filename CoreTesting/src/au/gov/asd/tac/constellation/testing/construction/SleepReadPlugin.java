@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("SleepReadPlugin=Sleep Read")
-@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, "DEVELOPER"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.DEVELOPER})
 public class SleepReadPlugin extends SimpleReadPlugin {
 
     public static final String SECONDS_PARAMETER_ID = PluginParameter.buildId(SleepReadPlugin.class, "seconds");

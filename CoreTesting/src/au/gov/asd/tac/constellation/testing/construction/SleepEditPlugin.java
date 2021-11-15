@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("SleepEditPlugin=Sleep Edit")
-@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, "DEVELOPER"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.DEVELOPER})
 public class SleepEditPlugin extends SimpleEditPlugin {
 
     public static final String SECONDS_PARAMETER_ID = PluginParameter.buildId(SleepEditPlugin.class, "seconds");

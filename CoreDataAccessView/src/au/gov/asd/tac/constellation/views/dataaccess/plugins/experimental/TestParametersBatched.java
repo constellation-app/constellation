@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("TestParametersBatched=Test Parameters (Batched)")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"DEVELOPER", PluginTags.MODIFY})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.DEVELOPER, PluginTags.MODIFY})
 public class TestParametersBatched extends WorkflowQueryPlugin implements DataAccessPlugin {
 
     public TestParametersBatched() {

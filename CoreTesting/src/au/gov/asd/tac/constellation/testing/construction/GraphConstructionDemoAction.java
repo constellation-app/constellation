@@ -84,7 +84,7 @@ public final class GraphConstructionDemoAction extends AbstractAction {
     /**
      * Plugin to demonstrate graph construction
      */
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {"DEVELOPER", PluginTags.EXPERIMENTAL, PluginTags.CREATE})
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.DEVELOPER, PluginTags.EXPERIMENTAL, PluginTags.CREATE})
     public static class GraphConstructionPlugin extends SimpleEditPlugin {
 
         @Override
