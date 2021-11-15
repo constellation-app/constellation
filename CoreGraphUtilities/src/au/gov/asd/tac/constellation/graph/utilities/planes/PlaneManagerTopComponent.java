@@ -581,7 +581,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to remove the plane from the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"DELETE"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.DELETE})
     private static class RemovePlanePlugin extends SimpleEditPlugin {
 
         final List<Integer> toRemove;

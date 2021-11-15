@@ -696,7 +696,7 @@ public final class QualityControlViewPane extends BorderPane {
     /**
      * Delete nodes in a graph matching rows selected in QualityControlView.
      */
-    @PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE"})
+    @PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
     protected static class DeleteQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;

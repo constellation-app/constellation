@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -36,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("DeleteSelectionPlugin=Delete Selection")
-@PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE"})
+@PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
 public class DeleteSelectionPlugin extends SimpleEditPlugin {
 
     @Override
