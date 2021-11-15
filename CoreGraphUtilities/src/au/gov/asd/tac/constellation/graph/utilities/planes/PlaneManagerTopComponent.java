@@ -694,7 +694,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to scale the plane on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
     private static class ScalePlanesPlugin extends SimpleEditPlugin {
 
         final List<Integer> selectedPlanes;
