@@ -20,6 +20,7 @@ import com.jogamp.common.os.Platform;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.List;
@@ -42,6 +43,11 @@ public class TOCGenerator {
     private static final String MARKDOWN_LINK_FORMAT = "[%s](%s)";
     private static final String HTML_LINK_FORMAT = "<a href=\"%s\">%s</a><br/>";
     private static final String BLANK_STRING = " ";
+    private static final String EXCEPTION_MESSAGE = "Failed to write to file";
+
+    private TOCGenerator() {
+        // Intentionally left blank
+    }
 
     /**
      * Creates a toc file at the given path.
@@ -67,7 +73,7 @@ public class TOCGenerator {
         toc = new File(filePath);
         LOGGER.log(Level.WARNING, "file path is: {0}", toc.getAbsolutePath());
         try {
-            toc.createNewFile();
+            success = toc.createNewFile();
             LOGGER.log(Level.FINE, "Table of Contents file was created at: {0}", filePath);
 
         } catch (final IOException ex) {
@@ -145,7 +151,7 @@ public class TOCGenerator {
      * @param item the String to write
      * @param indentLevel the amount of indents to include
      */
-    public static void writeItem(final FileWriter writer, final String item, final int indentLevel) {
+    public static void writeItem(final Writer writer, final String item, final int indentLevel) {
         final int spacesPerIndent = 2;
         try {
             final String indent = StringUtils.repeat(BLANK_STRING, indentLevel * spacesPerIndent);
@@ -154,7 +160,7 @@ public class TOCGenerator {
             sb.append(item);
             writer.write(sb.toString());
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to write to file", ex);
+            LOGGER.log(Level.SEVERE, EXCEPTION_MESSAGE, ex);
         }
     }
 
@@ -165,7 +171,7 @@ public class TOCGenerator {
      * @param item the String to write
      * @param dataTarget the target to write on the item
      */
-    public static void writeAccordionItem(final FileWriter writer, final String item, final String dataTarget) {
+    public static void writeAccordionItem(final Writer writer, final String item, final String dataTarget) {
         try {
             final StringBuilder sb = new StringBuilder();
             sb.append("<div class=\"card\">");
@@ -174,7 +180,7 @@ public class TOCGenerator {
             if (item.equals(Generator.ROOT_NODE_NAME)) {
                 sb.append(item);
             } else {
-                sb.append("<button href=\"#\" role=\"button\" class=\"btn btn-link btn-block text-left collapsed\" data-toggle=\"collapse\" data-target=\"#");//collapseOne\" aria-controls=\"collapseOne\">");
+                sb.append("<button href=\"#\" role=\"button\" class=\"btn btn-link btn-block text-left collapsed\" data-toggle=\"collapse\" data-target=\"#");
                 sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
                 sb.append("\" aria-expanded=\"false\" aria-controls=\"");
                 sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
@@ -186,7 +192,7 @@ public class TOCGenerator {
             sb.append("</div>");
             writer.write(sb.toString());
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to write to file", ex);
+            LOGGER.log(Level.SEVERE, EXCEPTION_MESSAGE, ex);
         }
     }
 
@@ -196,11 +202,11 @@ public class TOCGenerator {
      * @param writer the FileWriter to use when writing
      * @param item the String to write
      */
-    public static void writeText(final FileWriter writer, final String item) {
+    public static void writeText(final Writer writer, final String item) {
         try {
             writer.write(item);
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to write to file", ex);
+            LOGGER.log(Level.SEVERE, EXCEPTION_MESSAGE, ex);
         }
     }
 

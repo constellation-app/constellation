@@ -382,7 +382,7 @@ public class TestParametersPluginNGTest {
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
 
         // Set plugin parameters here before execution - Should throw an exception here
-        final GraphElementTypeParameterValue graphElementType = instance.new GraphElementTypeParameterValue();
+        final GraphElementTypeParameterValue graphElementType = new GraphElementTypeParameterValue();
         graphElementType.setObjectValue((Object) "Unusable String Object");
     }
 
@@ -401,7 +401,7 @@ public class TestParametersPluginNGTest {
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
 
         // Set plugin parameters here before execution
-        final GraphElementTypeParameterValue graphElementType = instance.new GraphElementTypeParameterValue();
+        final GraphElementTypeParameterValue graphElementType = new GraphElementTypeParameterValue();
         for (final GraphElementType elementType : GraphElementType.values()) {
             graphElementType.setObjectValue(elementType);
             result.getParameters().get(TestParametersPlugin.ELEMENT_TYPE_PARAMETER_ID).setObjectValue(graphElementType);
@@ -425,7 +425,7 @@ public class TestParametersPluginNGTest {
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
 
         // Set plugin parameters here before execution
-        final GraphElementTypeParameterValue graphElementType = instance.new GraphElementTypeParameterValue();
+        final GraphElementTypeParameterValue graphElementType = new GraphElementTypeParameterValue();
         assertTrue(graphElementType.set(GraphElementType.META));
 
         // return false when setting same attribute

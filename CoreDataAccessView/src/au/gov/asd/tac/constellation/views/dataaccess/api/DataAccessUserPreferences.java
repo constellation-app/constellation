@@ -53,7 +53,7 @@ public final class DataAccessUserPreferences {
     private Map<String, String> globalParameters;
     
     @JsonProperty(value = "plugins")
-    private Map<String, String> pluginParameters;
+    private Map<String, Map<String, String>> pluginParameters;
 
     /**
      * Create a new {@link DataAccessUserPreferences}.
@@ -78,8 +78,10 @@ public final class DataAccessUserPreferences {
         pane.getDataAccessPanes().stream()
                 .filter(dataAccessPane -> dataAccessPane.isQueryEnabled())
                 .forEach(dataAccessPane -> {
+                    pluginParameters.put(dataAccessPane.getPlugin().getClass().getSimpleName(), new HashMap<>());
+                    
                     // Add the enabled parameter to the plugin parameters
-                    pluginParameters.put(
+                    pluginParameters.get(dataAccessPane.getPlugin().getClass().getSimpleName()).put(
                             PLUGIN_PARAMETER_KEY_GENERATOR.apply(dataAccessPane.getPlugin().getClass(), IS_ENABLED),
                             "true"
                     );
@@ -91,9 +93,9 @@ public final class DataAccessUserPreferences {
                     if (parameters != null) {
                         parameters.getParameters().entrySet().stream()
                                 .filter(param -> !PasswordParameterType.ID.equals(param.getValue().getType().getId())
-                                        && !globalParameters.containsKey(param.getKey()))
-                                .forEach(param -> pluginParameters.put(
-                                        param.getKey(), param.getValue().getStringValue()
+                                        && !pane.getGlobalParametersPane().getParams().getParameters().containsKey(param.getKey()))
+                                .forEach(param -> pluginParameters.get(dataAccessPane.getPlugin().getClass().getSimpleName()).put(
+                                            param.getKey(), param.getValue().getStringValue()
                                 ));
                     }
                 
@@ -108,11 +110,11 @@ public final class DataAccessUserPreferences {
         this.globalParameters = globalParameters;
     }
 
-    public Map<String, String> getPluginParameters() {
+    public Map<String, Map<String,String>> getPluginParameters() {
         return pluginParameters;
     }
 
-    public void setPluginParameters(final Map<String, String> pluginParameters) {
+    public void setPluginParameters(final Map<String, Map<String, String>> pluginParameters) {
         this.pluginParameters = pluginParameters;
     }
 

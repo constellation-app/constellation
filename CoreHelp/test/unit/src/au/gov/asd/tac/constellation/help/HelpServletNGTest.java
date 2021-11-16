@@ -141,7 +141,7 @@ public class HelpServletNGTest {
                 + "docs/analytic-view.md";
         HelpServlet instance = new HelpServlet();
         final URL fileUrl = instance.redirectPath(requestPath, referer);
-        assertFalse(instance.getWasRedirect());
+        assertFalse(instance.isRedirect());
         assertEquals(fileUrl, null);
     }
 
@@ -158,7 +158,7 @@ public class HelpServletNGTest {
         HelpServlet instance = new HelpServlet();
         final URL fileUrl = instance.redirectPath(requestPath, referer);
         assertTrue(fileUrl.toString().contains("constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-view.md"));
-        assertTrue(instance.getWasRedirect());
+        assertTrue(instance.isRedirect());
     }
 
     /**
@@ -175,7 +175,7 @@ public class HelpServletNGTest {
         final URL fileUrl = instance.redirectPath(requestPath, referer);
         assertTrue(fileUrl.toString().contains("constellation/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/"
                 + "docs/question-best-connects-network.md"));
-        assertTrue(instance.getWasRedirect());
+        assertTrue(instance.isRedirect());
     }
 
     /**
@@ -190,7 +190,7 @@ public class HelpServletNGTest {
         instance.setWasRedirect(true);
         final URL fileUrl = instance.redirectPath(requestPath, referer);
         assertEquals(fileUrl, null);
-        assertFalse(instance.getWasRedirect());
+        assertFalse(instance.isRedirect());
     }
 
     @Test

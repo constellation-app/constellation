@@ -35,14 +35,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@Messages("PreviousViewPlugin=Previous View")
+@Messages("PreviousViewPlugin=Previous Camera View")
 @PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {"VIEW"})
 public final class PreviousViewPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final Camera camera = new Camera(VisualGraphUtilities.getCamera(graph));
-        CameraUtilities.setPreviousToCurrent(camera);
+        CameraUtilities.setCurrentToPrevious(camera);
         VisualGraphUtilities.setCamera(graph, camera);
     }
 }

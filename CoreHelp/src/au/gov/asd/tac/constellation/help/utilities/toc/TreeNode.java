@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -35,14 +34,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TreeNode<T> {
 
-    private static final Logger LOGGER = Logger.getLogger(TreeNode.class.getName());
-
     private static Map<String, String> cachedHelpMappings = null;
-
     private final T data;
-
     private final List<TreeNode<T>> children = new ArrayList<>();
-
     private TreeNode<T> parent = null;
 
     public TreeNode(final T data) {
@@ -120,8 +114,6 @@ public class TreeNode<T> {
      */
     private static <T> void write(final TreeNode<T> node, final FileWriter writer, final int indent) {
         final TOCItem item = (TOCItem) (node.getData());
-        final TreeNode parentNode = node.getParent();
-        final TOCItem parent = parentNode == null ? null : (TOCItem) (node.getParent().getData());
 
         if (StringUtils.isBlank(item.getTarget())) {
             // when no target, its a normal heading.
@@ -196,12 +188,8 @@ public class TreeNode<T> {
      */
     @Override
     public boolean equals(final Object obj) {
-        if (obj != null && obj instanceof TreeNode && ((TreeNode) (obj)).getData() != null && (((TreeNode) (obj)).getData().equals(data))) {
-            return true;
-        } else if (obj != null && obj instanceof TreeNode && ((TreeNode) (obj)).getData() == null && data == null) {
-            return true;
-        }
-        return false;
+        return obj instanceof TreeNode && ((((TreeNode) (obj)).getData() == null && data == null)
+                || ((TreeNode) (obj)).getData() != null && (((TreeNode) (obj)).getData().equals(data)));
     }
 
     @Override

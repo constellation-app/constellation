@@ -80,7 +80,7 @@ public class TemporalFormatting {
     public static final String ERROR_PARSING_DATE_MESSAGE = "Error Parsing Date {0}: {1}";
 
     private static final ZonedDateTime EPOCH_UTC = ZonedDateTime.ofInstant(Instant.EPOCH, TimeZoneUtilities.UTC);
-
+    
     /**
      * A UTC date time formatter much like DateTimeFormatter.ISO_INSTANT but
      * with the guarantee that milliseconds will not appear. The format is
@@ -196,6 +196,10 @@ public class TemporalFormatting {
             .append(TIME_ZONE_FORMATTER)
             .toFormatter();
 
+    private TemporalFormatting() {
+        //Do nothing
+    }
+    
     /**
      * Takes a partially complete date-time string and adds default values for
      * the remaining fields to convert it to a CONSTELLATION format date-time
@@ -305,17 +309,17 @@ public class TemporalFormatting {
     }
 
     @SuppressWarnings("fallthrough")
-    private static void completeTimeString(final StringBuilder dateTimeStringBuilder) {
-        final int currentLength = dateTimeStringBuilder.length();
+    private static void completeTimeString(final StringBuilder timeStringBuilder) {
+        final int currentLength = timeStringBuilder.length();
         switch (currentLength) {
             case 0:
-                dateTimeStringBuilder.append(" 00");
+                timeStringBuilder.append("00");
             case HOUR_FORMAT_LENGTH:
-                dateTimeStringBuilder.append(":00");
+                timeStringBuilder.append(":00");
             case HOUR_MINUTE_FORMAT_LENGTH:
-                dateTimeStringBuilder.append(":00");
+                timeStringBuilder.append(":00");
             case HMS_FORMAT_LENGTH:
-                dateTimeStringBuilder.append(".000");
+                timeStringBuilder.append(".000");
             default:
                 break;
         }
@@ -422,7 +426,7 @@ public class TemporalFormatting {
      * milliseconds since epoch.
      * @return A ZonedDateTime object in UTC, corresponding to the given long.
      */
-    public static ZonedDateTime zonedDateTimeFromLong(long value) {
+    public static ZonedDateTime zonedDateTimeFromLong(final long value) {
         return ZonedDateTime.ofInstant(Instant.ofEpochMilli(value), TimeZoneUtilities.UTC);
     }
 
@@ -434,7 +438,7 @@ public class TemporalFormatting {
      * milliseconds since epoch.
      * @return A formatted String corresponding to the given long.
      */
-    public static String zonedDateTimeStringFromLong(long value) {
+    public static String zonedDateTimeStringFromLong(final long value) {
         return formatAsZonedDateTime(zonedDateTimeFromLong(value));
     }
 
@@ -469,22 +473,22 @@ public class TemporalFormatting {
             return null;
         }
         try {
-            TemporalAccessor myDateTime = formatter.parse(value);
-            ZoneId parsedTimeZone = myDateTime.query(TemporalQueries.zoneId());
-            ZoneOffset parsedOffset = myDateTime.query(TemporalQueries.offset());
+            final TemporalAccessor myDateTime = formatter.parse(value);
+            final ZoneId parsedTimeZone = myDateTime.query(TemporalQueries.zoneId());
+            final ZoneOffset parsedOffset = myDateTime.query(TemporalQueries.offset());
             if ((parsedTimeZone != null) || (parsedOffset != null)) {
-                ZonedDateTime myZonedDateTime = ZonedDateTime.parse(value, formatter);
+                final ZonedDateTime myZonedDateTime = ZonedDateTime.parse(value, formatter);
                 return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(myZonedDateTime);
             } else {
                 return TemporalFormatting.formatAsZonedDateTime(formatter.parse(value));
             }
-        } catch (DateTimeParseException ex) {
+        } catch (final DateTimeParseException ex) {
             logger.log(Level.SEVERE, ERROR_PARSING_DATE_MESSAGE, new Object[]{value, ex.getMessage()});
             return value;
         }
     }
 
-    private static TemporalAccessor withDefaults(TemporalAccessor accessor) {
+    private static TemporalAccessor withDefaults(final TemporalAccessor accessor) {
         return new DelegatingTemporalAccessorWithDefaults(accessor);
     }
 
@@ -497,7 +501,7 @@ public class TemporalFormatting {
         }
 
         @Override
-        public long getLong(TemporalField field) {
+        public long getLong(final TemporalField field) {
             if (delegate.isSupported(field)) {
                 return delegate.getLong(field);
             }
@@ -505,7 +509,7 @@ public class TemporalFormatting {
         }
 
         @Override
-        public boolean isSupported(TemporalField field) {
+        public boolean isSupported(final TemporalField field) {
             return delegate.isSupported(field) || EPOCH_UTC.isSupported(field);
         }
 

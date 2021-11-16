@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -31,7 +32,7 @@ public abstract class HelpPageProvider {
      * @return Map of the file names vs md file names
      */
     public Map<String, String> getHelpMap() {
-        return null;
+        return Collections.emptyMap();
     }
 
     /**
