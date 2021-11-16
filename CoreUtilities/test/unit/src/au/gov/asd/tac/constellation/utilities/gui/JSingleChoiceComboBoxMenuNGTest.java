@@ -34,6 +34,7 @@ import org.openide.util.Utilities;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertEqualsNoOrder;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -92,6 +93,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
      */
     @Test
     public void testConstructor_WithText() {
+        System.out.println("constructor_WithText");
         final File iconFile = new File("non_existing_icon.png");
         installedFileLocatorMockedStatic.when(() -> InstalledFileLocator.getDefault()
                 .locate("modules/ext/icons/drop_down_arrow.png", "au.gov.asd.tac.constellation.utilities", false))
@@ -109,10 +111,15 @@ public class JSingleChoiceComboBoxMenuNGTest {
      */
     @Test
     public void testConstructor_WithIcon() {
+        System.out.println("constructor_WithIcon");
         final Icon icon = new ImageIcon(COOKIE_ICON_PATH);
-        JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu(icon, items);
-        Icon result = instance.getIcon();
-        assertNotNull(result);
+        JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu(icon, items);
+        CompoundIcon result = (CompoundIcon) instance.getIcon();
+        assertEquals(result.getIconCount(), 2);
+        final List<Icon> icons = new ArrayList<>();
+        icons.add(result.getIcon(0));
+        icons.add(result.getIcon(1));
+        assertTrue(icons.contains(icon));
     }
 
     /**
