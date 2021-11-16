@@ -127,7 +127,7 @@ public final class VisualChangeBuilder {
      * @return the current changeList int[]
      */
     protected int[] getChangedItems() {
-        return this.changeList;
+        return this.changeList != null ? this.changeList.clone() : null;
     }
 
     /**

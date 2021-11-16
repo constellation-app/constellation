@@ -76,11 +76,8 @@ public final class VisualManager {
     private boolean indigenousChanges = false;
     private boolean refreshProcessor = false;
     
-    protected final Runnable processTask = new Runnable() {
-        @Override 
-        public void run() {
-            process();
-        }
+    protected final Runnable processTask = () -> {
+        process();
     };
 
     /**
@@ -230,9 +227,9 @@ public final class VisualManager {
         return processingFuture;
     }
     
-   protected VisualAccess getAccess() {
+    protected VisualAccess getAccess() {
         return access;   
-   }
+    }
 
     /**
      * Add a {@link VisualOperation} to this manager's queue of operations to be

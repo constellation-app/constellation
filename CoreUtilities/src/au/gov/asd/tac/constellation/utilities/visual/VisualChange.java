@@ -102,7 +102,7 @@ public final class VisualChange implements Comparable<VisualChange> {
      * @return The list of changes
      */
     protected int[] getChangeList() {
-        return changeList;
+        return changeList != null ? changeList.clone() : null;
     }
 
     /**
