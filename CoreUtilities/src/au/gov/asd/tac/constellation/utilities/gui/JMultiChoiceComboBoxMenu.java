@@ -229,6 +229,11 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
         button.setToolTipText(text);
     }
 
+    @Override
+    public final String getToolTipText() {
+        return button.getToolTipText();
+    }
+
     public static class OpenAction implements ActionListener {
 
         private final JPopupMenu menu;
