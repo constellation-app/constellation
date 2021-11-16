@@ -65,12 +65,12 @@ public class AnalyticResultNGTest {
         AnalyticResultImpl instance = new AnalyticResultImpl();
 
 //      Create unsorted ElementScore results
-        final GraphElementType node = GraphElementType.getValue("Node");
-        final IdentificationData idData1 = new IdentificationData(node, 1, "Node1");
-        final IdentificationData idData2 = new IdentificationData(node, 2, "Node2");
-        final IdentificationData idData3 = new IdentificationData(node, 3, "Node3");
-        final IdentificationData idData4 = new IdentificationData(node, 4, "Node4");
-        final IdentificationData idData5 = new IdentificationData(node, 5, "Node5");
+        GraphElementType vertex = GraphElementType.VERTEX;
+        final IdentificationData idData1 = new IdentificationData(vertex, 1, "Node1");
+        final IdentificationData idData2 = new IdentificationData(vertex, 2, "Node2");
+        final IdentificationData idData3 = new IdentificationData(vertex, 3, "Node3");
+        final IdentificationData idData4 = new IdentificationData(vertex, 4, "Node4");
+        final IdentificationData idData5 = new IdentificationData(vertex, 5, "Node5");
 
         final Map<String, Float> namedScores1 = new HashMap<>();
         namedScores1.put("Centrality.OutBetweenness", (float) .8);
@@ -83,11 +83,11 @@ public class AnalyticResultNGTest {
         final Map<String, Float> namedScores5 = new HashMap<>();
         namedScores5.put("Centrality.OutBetweenness", (float) .6);
 
-        final ElementScore elementScore1 = new ElementScore(node, 1, "Node1", false, namedScores1);
-        final ElementScore elementScore2 = new ElementScore(node, 2, "Node1", false, namedScores2);
-        final ElementScore elementScore3 = new ElementScore(node, 3, "Node1", false, namedScores3);
-        final ElementScore elementScore4 = new ElementScore(node, 4, "Node1", false, namedScores4);
-        final ElementScore elementScore5 = new ElementScore(node, 5, "Node1", false, namedScores5);
+        final ElementScore elementScore1 = new ElementScore(vertex, 1, "Node1", false, namedScores1);
+        final ElementScore elementScore2 = new ElementScore(vertex, 2, "Node1", false, namedScores2);
+        final ElementScore elementScore3 = new ElementScore(vertex, 3, "Node1", false, namedScores3);
+        final ElementScore elementScore4 = new ElementScore(vertex, 4, "Node1", false, namedScores4);
+        final ElementScore elementScore5 = new ElementScore(vertex, 5, "Node1", false, namedScores5);
 
         instance.getResult().put(idData1, elementScore1);
         instance.getResult().put(idData2, elementScore2);
