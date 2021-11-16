@@ -109,10 +109,10 @@ public class FindViewController {
             try {
                 future.get();
             } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage());
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
                 Thread.currentThread().interrupt();
             } catch (final ExecutionException ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage());
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
             }
 
             // Retrieve a list of all String attributes
