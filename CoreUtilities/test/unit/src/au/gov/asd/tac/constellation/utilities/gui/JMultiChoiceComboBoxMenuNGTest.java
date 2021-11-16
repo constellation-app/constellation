@@ -186,7 +186,7 @@ public class JMultiChoiceComboBoxMenuNGTest {
     public void testGetItems() {
         System.out.println("getItems");
         JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
-        Set result = instance.getItems();
+        Set<String> result = instance.getItems();
         assertEqualsNoOrder(result.toArray(), items.toArray());
     }
 
@@ -199,7 +199,7 @@ public class JMultiChoiceComboBoxMenuNGTest {
         String item = "Item 3";
         JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
         instance.setSelectedItem(item);
-        Set resultSet = instance.getSelectedItems();
+        Set<String> resultSet = instance.getSelectedItems();
         assertEquals(resultSet.size(), 1);
         assertEquals(resultSet.stream().findFirst().get().toString(), item);
     }
@@ -211,9 +211,11 @@ public class JMultiChoiceComboBoxMenuNGTest {
     public void testSetSelectedItem() {
         System.out.println("setSelectedItem");
         String item = "Item 3";
-        JMultiChoiceComboBoxMenu instance = mock(JMultiChoiceComboBoxMenu.class);
+        JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
+        assertEquals(instance.getSelectedItems().size(), 0);
         instance.setSelectedItem(item);
-        verify(instance, times(1)).setSelectedItem(item);
+        Set<String> resultSet = instance.getSelectedItems();
+        assertEquals(resultSet.stream().findFirst().get().toString(), item);
     }
 
     /**
@@ -221,13 +223,16 @@ public class JMultiChoiceComboBoxMenuNGTest {
      */
     @Test
     public void testSetSelectedItems() {
-        System.out.println("setSelectedItems");
         String s1 = "Item 1";
         String s2 = "Item 3";
         String s3 = "Item 4";
-        JMultiChoiceComboBoxMenu instance = mock(JMultiChoiceComboBoxMenu.class);
+        String[] selectedItems = {s1, s2, s3};
+        JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
+        assertEquals(instance.getSelectedItems().size(), 0);
         instance.setSelectedItems(s1, s2, s3);
-        verify(instance, times(1)).setSelectedItems(s1, s2, s3);
+        Set<String> resultSet = instance.getSelectedItems();
+        assertEquals(resultSet.size(), 3);
+        assertEqualsNoOrder(resultSet.toArray(), selectedItems);
     }
 
     /**
@@ -256,7 +261,7 @@ public class JMultiChoiceComboBoxMenuNGTest {
         String[] selectedItems = {s1, s2, s3};
         JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
         instance.addSelectedItems(s1, s2, s3);
-        Set resultSet = instance.getSelectedItems();
+        Set<String> resultSet = instance.getSelectedItems();
         assertEquals(resultSet.size(), 3);
         assertEqualsNoOrder(resultSet.toArray(), selectedItems);
     }
@@ -274,12 +279,12 @@ public class JMultiChoiceComboBoxMenuNGTest {
         JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
 
         instance.addSelectedItems(s1, s2, s3);
-        Set itemsbeforeRemove = instance.getSelectedItems();
+        Set<String> itemsbeforeRemove = instance.getSelectedItems();
         assertEquals(itemsbeforeRemove.size(), 3);
         assertEqualsNoOrder(itemsbeforeRemove.toArray(), selectedItems);
 
         instance.removeSelectedItem(s2);
-        Set resultSet = instance.getSelectedItems();
+        Set<String> resultSet = instance.getSelectedItems();
         assertEquals(resultSet.size(), 2);
         assertEqualsNoOrder(resultSet.toArray(), new String[]{s1, s3});
     }
@@ -297,12 +302,12 @@ public class JMultiChoiceComboBoxMenuNGTest {
         JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
 
         instance.addSelectedItems(s1, s2, s3);
-        Set itemsbeforeRemove = instance.getSelectedItems();
+        Set<String> itemsbeforeRemove = instance.getSelectedItems();
         assertEquals(itemsbeforeRemove.size(), 3);
         assertEqualsNoOrder(itemsbeforeRemove.toArray(), selectedItems);
 
         instance.removeSelectedItems(s2, s3);
-        Set resultSet = instance.getSelectedItems();
+        Set<String> resultSet = instance.getSelectedItems();
         assertEquals(resultSet.size(), 1);
         assertEquals(resultSet.toArray(), new String[]{s1});
     }
@@ -320,12 +325,12 @@ public class JMultiChoiceComboBoxMenuNGTest {
         JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
 
         instance.addSelectedItems(s1, s2, s3);
-        Set itemsbeforeRemove = instance.getSelectedItems();
+        Set<String> itemsbeforeRemove = instance.getSelectedItems();
         assertEquals(itemsbeforeRemove.size(), 3);
         assertEqualsNoOrder(itemsbeforeRemove.toArray(), selectedItems);
 
         instance.clearSelection();
-        Set resultSet = instance.getSelectedItems();
+        Set<String> resultSet = instance.getSelectedItems();
         assertEquals(resultSet.size(), 0);
     }
 
