@@ -141,6 +141,7 @@ public class JsonUtilitiesNGTest {
             assertEquals(nodes.toString(), "[\"2.v1\", \"2.v2\"]", "Populated node iterator matches");
             
             iterator = JsonUtilities.getFieldIterator(testJson, "1.k1");
+            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
             try {
                 JsonNode nextNode = iterator.next();
                 fail("NoSuchElementException not thrown for empty node");
@@ -148,6 +149,7 @@ public class JsonUtilitiesNGTest {
             }
             
             iterator = JsonUtilities.getFieldIterator(testJson, "1.Missing");
+            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
             try {
                 JsonNode nextNode = iterator.next();
                 fail("NoSuchElementException not thrown for missing node");
@@ -159,7 +161,7 @@ public class JsonUtilitiesNGTest {
     }
     
     /**
-     * Test calls to JsonUtilities.getFieldIterator.
+     * Test calls to JsonUtilities.getTextFieldIterator.
      */
     @Test
     public void testGetTextFieldIterator() {
@@ -177,9 +179,9 @@ public class JsonUtilitiesNGTest {
                 fail("NoSuchElementException not thrown at end of iteration");
             } catch (NoSuchElementException nse) {
             }
-            
-            
+
             iterator = JsonUtilities.getTextFieldIterator(testJson, "1.k1");
+            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
             try {
                 String nextNode = iterator.next();
                 fail("NoSuchElementException not thrown for empty node");
@@ -187,6 +189,7 @@ public class JsonUtilitiesNGTest {
             }
             
             iterator = JsonUtilities.getTextFieldIterator(testJson, "1.Missing");
+            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
             try {
                 String nextNode = iterator.next();
                 fail("NoSuchElementException not thrown for missing node");
@@ -205,10 +208,13 @@ public class JsonUtilitiesNGTest {
     public void testGetIntegerField_NoDefault() {
         try {
             ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\": 11, \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
             
             // Search for missing top level value
             assertEquals(JsonUtilities.getIntegerField(testJson, "1.Missing"), 0, "0 returned if not found");
+            
+            // Search for existing top level value with invalid value type
+            assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
             
             // Search for existing top level value
             assertEquals(JsonUtilities.getIntegerField(testJson, "1.k2"), 12, "L1 value returned if found");
@@ -222,6 +228,47 @@ public class JsonUtilitiesNGTest {
             // This would throw generating the JSON, which is not under test
         }  
     }
+
+    /**
+     * Test calls to JsonUtilities.getIntegerFieldIterator.
+     */
+    @Test
+    public void testGetIntegerFieldIterator() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}"); 
+            Iterator<String> iterator = JsonUtilities.getTextFieldIterator(testJson, "1.k3");
+            ArrayList<String> nodes = new ArrayList<String>();
+            while(iterator.hasNext()) {
+                nodes.add(iterator.next());  
+            }
+            assertEquals(nodes.toString(), "[2.v1, 2.v2]", "Populated node iterator matches");
+            try {
+                String nextNode = iterator.next();
+                fail("NoSuchElementException not thrown at end of iteration");
+            } catch (NoSuchElementException nse) {
+            }
+
+            iterator = JsonUtilities.getTextFieldIterator(testJson, "1.k1");
+            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
+            try {
+                String nextNode = iterator.next();
+                fail("NoSuchElementException not thrown for empty node");
+            } catch (NoSuchElementException nse) {
+            }
+            
+            iterator = JsonUtilities.getTextFieldIterator(testJson, "1.Missing");
+            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
+            try {
+                String nextNode = iterator.next();
+                fail("NoSuchElementException not thrown for missing node");
+            } catch (NoSuchElementException nse) {
+            }
+            
+          } catch (JsonProcessingException e) {
+            // This would throw generating the JSON, which is not under test
+        }       
+    }
     
     /**
      * Test calls to JsonUtilities.getIntegerField for which a default is supplied.
@@ -230,10 +277,13 @@ public class JsonUtilitiesNGTest {
     public void testGetIntegerField_Default() {
         try {
             ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\": 11, \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
             
             // Search for missing top level value
             assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.Missing"), 99, "L1 default returned if not found");
+            
+            // Search for existing top level value with invalid value type
+            assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
             
             // Search for existing top level value
             assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k2"), 12, "L1 value returned if found");
@@ -255,10 +305,13 @@ public class JsonUtilitiesNGTest {
     public void testGetLongField_NoDefault() {
         try {
             ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\": 11.1, \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
             
             // Search for missing top level value
             assertEquals(JsonUtilities.getLongField(testJson, "1.Missing"), 0, "Null returned if not found");
+            
+            // Search for existing top level value with invalid value type
+            assertEquals(JsonUtilities.getLongField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
             
             // Search for existing top level value
             assertEquals(JsonUtilities.getLongField(testJson, "1.k2"), 12, "L1 value returned if found");
@@ -280,11 +333,14 @@ public class JsonUtilitiesNGTest {
     public void testGetLongField_Default() {
         try {
             ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\": 11.1, \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
             
             // Search for missing top level value
             assertEquals(JsonUtilities.getLongField(99, testJson, "1.Missing"), 99, "L1 default returned if not found");
             
+            // Search for existing top level value with invalid value type
+            assertEquals(JsonUtilities.getLongField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
+
             // Search for existing top level value
             assertEquals(JsonUtilities.getLongField(99, testJson, "1.k2"), 12, "L1 value returned if found");
             
@@ -305,10 +361,13 @@ public class JsonUtilitiesNGTest {
     public void testGetDoubleField_NoDefault() {
         try {
             ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\": 11.1, \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
             
             // Search for missing top level value
             assertEquals(JsonUtilities.getDoubleField(testJson, "1.Missing"), 0.0, "Null returned if not found");
+            
+            // Search for existing top level value with invalid value type
+            assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k1"), 0.0, "L1 value returned if found with invalid value");
             
             // Search for existing top level value
             assertEquals(JsonUtilities.getDoubleField(testJson, "1.k2"), 12.1, "L1 value returned if found");
@@ -330,11 +389,14 @@ public class JsonUtilitiesNGTest {
     public void testGetDoubleField_Default() {
         try {
             ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\": 11.1, \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
             
             // Search for missing top level value
             assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.Missing"), 99.9, "L1 default returned if not found");
             
+            // Search for existing top level value with invalid value type
+            assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k1"), 0.0, "L1 value returned if found with invalid value");
+
             // Search for existing top level value
             assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k2"), 12.1, "L1 value returned if found");
             
@@ -347,6 +409,64 @@ public class JsonUtilitiesNGTest {
             // This would throw generating the JSON, which is not under test
         }  
     }
+     
+    /**
+     * Test calls to JsonUtilities.getBooleanField for which no default is supplied.
+     */
+    @Test
+    public void testGetBooleanField_NoDefault() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();   
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": true, \"1.k3\":{\"2.k1\": true}}");  
+            
+            // Search for missing top level value
+            assertEquals(JsonUtilities.getBooleanField(testJson, "1.Missing"), false, "L1 false returned if not found");
+            
+            // Search for existing top level value with invalid value type
+            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k1"), false, "L1 value returned if found with invalid value");
+            
+            // Search for existing top level value
+            assertEquals(JsonUtilities.getBooleanField(testJson, "1.k2"), true, "L1 value returned if found");
+            
+            // Search for missing nested value
+            assertEquals(JsonUtilities.getBooleanField(testJson, "1.k3", "2.Missing"), false, "L2 false returned if not found");
+            
+            // Search for existing nested value
+            assertEquals(JsonUtilities.getBooleanField(testJson, "1.k3", "2.k1"), true, "L2 value returned if found");  
+        } catch (JsonProcessingException e) {
+            // This would throw generating the JSON, which is not under test
+        }  
+    }
+    
+    /**
+     * Test calls to JsonUtilities.getBooleanField for which a default is supplied.
+     */
+    @Test
+    public void testGetBooleanField_Default() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();   
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":{\"2.k1\": false}}");  
+            
+            // Search for missing top level value
+            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.Missing"), true, "L1 default returned if not found");
+            
+            // Search for existing top level value with invalid value type
+            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k1"), false, "L1 value returned if found with invalid value");
+            
+            // Search for existing top level value
+            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k2"), false, "L1 value returned if found");
+            
+            // Search for missing nested value
+            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k3", "2.Missing"), true, "L2 default returned if not found");
+            
+            // Search for existing nested value
+            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k3", "2.k1"), false, "L2 value returned if found");  
+        } catch (JsonProcessingException e) {
+            // This would throw generating the JSON, which is not under test
+        }  
+    }
+
+    
     
     /**
      * Test of getMapAsString method, of class JsonUtilities.
