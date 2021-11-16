@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.io.File;
 import java.io.FileWriter;
@@ -35,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 @NbBundle.Messages("ExportToKmlPlugin=Export to KML")
 public class ExportToKmlPlugin extends AbstractGeoExportPlugin {
 

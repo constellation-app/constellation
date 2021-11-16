@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -504,7 +505,7 @@ public final class ConversationBox extends StackPane {
     /**
      * Plugin to update hidden contribution providers.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
     private class UpdateHiddenContributorProviders extends SimpleEditPlugin {
 
         private final boolean visible;
@@ -541,7 +542,7 @@ public final class ConversationBox extends StackPane {
     /**
      * Plugin to update sender attributes.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
     private class UpdateSenderAttributes extends SimpleEditPlugin {
 
         private final List<String> senderAttributes;

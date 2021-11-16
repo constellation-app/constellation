@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import java.security.SecureRandom;
 import java.util.Map;
@@ -34,7 +35,7 @@ import java.util.Map;
  *
  * @author sirius
  */
-@PluginInfo(pluginType = PluginType.NONE, tags = {"DEVELOPER"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.DEVELOPER})
 public class SynchronizerPlugin extends SimpleQueryPlugin {
 
     private static int NEXT_ID = 1;

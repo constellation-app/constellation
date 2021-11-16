@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.Arrays;
 import org.openide.util.NbBundle;
@@ -42,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("KatzCentralityPlugin=Katz Centrality")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class KatzCentralityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute KATZ_ATTRIBUTE = SnaConcept.VertexAttribute.KATZ_CENTRALITY;

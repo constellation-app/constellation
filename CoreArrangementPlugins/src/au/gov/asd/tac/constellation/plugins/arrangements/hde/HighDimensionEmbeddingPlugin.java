@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -46,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("HighDimensionEmbeddingPlugin=Arrange by High Dimension Embedding")
-@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class HighDimensionEmbeddingPlugin extends SimpleEditPlugin {
 
     public static final String DIMENSIONS_PARAMETER_ID = PluginParameter.buildId(HighDimensionEmbeddingPlugin.class, "dimensions");

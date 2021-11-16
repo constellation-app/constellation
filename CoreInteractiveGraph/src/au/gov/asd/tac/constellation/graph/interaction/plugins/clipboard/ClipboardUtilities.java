@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -46,7 +47,7 @@ public class ClipboardUtilities {
     /**
      * Plugin to copy to the clipboard.
      */
-    @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
     private static class CopyToClipboard extends SimplePlugin {
 
         private final String text;

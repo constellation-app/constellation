@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.Arrays;
 import org.openide.util.NbBundle.Messages;
@@ -43,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("EigenvectorCentralityPlugin=Eigenvector Centrality")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class EigenvectorCentralityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute EIGENVECTOR_ATTRIBUTE = SnaConcept.VertexAttribute.EIGENVECTOR_CENTRALITY;

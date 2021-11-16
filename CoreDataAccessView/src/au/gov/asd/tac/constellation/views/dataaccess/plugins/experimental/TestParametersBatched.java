@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.experimental;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.WorkflowQueryPlugin;
@@ -40,7 +41,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("TestParametersBatched=Test Parameters (Batched)")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"DEVELOPER", "MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.DEVELOPER, PluginTags.MODIFY})
 public class TestParametersBatched extends WorkflowQueryPlugin implements DataAccessPlugin {
 
     public TestParametersBatched() {

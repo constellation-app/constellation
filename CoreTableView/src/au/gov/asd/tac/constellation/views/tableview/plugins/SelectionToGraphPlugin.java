@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +41,7 @@ import javafx.scene.control.TableView;
  *
  * @author formalhaunt
  */
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 public class SelectionToGraphPlugin extends SimpleEditPlugin {
 
     public static final String SELECT_ON_GRAPH_PLUGIN = "Table View: Select on Graph";

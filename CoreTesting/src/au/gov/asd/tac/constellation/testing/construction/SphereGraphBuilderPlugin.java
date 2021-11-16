@@ -44,6 +44,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
@@ -76,7 +77,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("SphereGraphBuilderPlugin=Sphere Graph Builder")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
     
     private static final Logger LOGGER = Logger.getLogger(SphereGraphBuilderPlugin.class.getName());

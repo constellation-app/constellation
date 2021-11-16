@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import java.util.BitSet;
 import org.openide.util.NbBundle.Messages;
@@ -39,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("PasteTextPlugin=Paste Text")
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 public class PasteTextPlugin extends SimplePlugin {
 
     public static final String TEXT_PARAMETER_ID = PluginParameter.buildId(PasteTextPlugin.class, "text");

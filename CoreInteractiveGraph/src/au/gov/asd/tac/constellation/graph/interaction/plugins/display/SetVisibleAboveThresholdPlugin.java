@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -37,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("SetVisibleAboveThresholdPlugin=Set Visible Above Threshold")
-@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class SetVisibleAboveThresholdPlugin extends SimpleEditPlugin {
 
     public static final String FLAG_PARAMETER_ID = PluginParameter.buildId(SetVisibleAboveThresholdPlugin.class, "flag");

@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -31,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "DEVELOPER"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.DEVELOPER})
 @NbBundle.Messages("FiveSecondReadLockPlugin=Five Second Read Lock")
 public class FiveSecondReadLockPlugin extends SimpleReadPlugin {
 

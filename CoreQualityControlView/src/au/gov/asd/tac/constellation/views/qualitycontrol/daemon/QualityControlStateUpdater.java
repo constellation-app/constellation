@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
@@ -36,7 +37,7 @@ import java.util.List;
  *
  * @author aldebaran30701
  */
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
 public class QualityControlStateUpdater extends SimpleReadPlugin {
 
     protected static final String PLUGIN_NAME = "Quality Control View: Update State";
