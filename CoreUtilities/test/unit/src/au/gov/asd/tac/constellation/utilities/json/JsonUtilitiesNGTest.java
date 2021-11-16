@@ -230,47 +230,6 @@ public class JsonUtilitiesNGTest {
     }
 
     /**
-     * Test calls to JsonUtilities.getIntegerFieldIterator.
-     */
-    @Test
-    public void testGetIntegerFieldIterator() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}"); 
-            Iterator<String> iterator = JsonUtilities.getTextFieldIterator(testJson, "1.k3");
-            ArrayList<String> nodes = new ArrayList<String>();
-            while(iterator.hasNext()) {
-                nodes.add(iterator.next());  
-            }
-            assertEquals(nodes.toString(), "[2.v1, 2.v2]", "Populated node iterator matches");
-            try {
-                String nextNode = iterator.next();
-                fail("NoSuchElementException not thrown at end of iteration");
-            } catch (NoSuchElementException nse) {
-            }
-
-            iterator = JsonUtilities.getTextFieldIterator(testJson, "1.k1");
-            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
-            try {
-                String nextNode = iterator.next();
-                fail("NoSuchElementException not thrown for empty node");
-            } catch (NoSuchElementException nse) {
-            }
-            
-            iterator = JsonUtilities.getTextFieldIterator(testJson, "1.Missing");
-            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
-            try {
-                String nextNode = iterator.next();
-                fail("NoSuchElementException not thrown for missing node");
-            } catch (NoSuchElementException nse) {
-            }
-            
-          } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
-        }       
-    }
-    
-    /**
      * Test calls to JsonUtilities.getIntegerField for which a default is supplied.
      */
     @Test
@@ -296,6 +255,47 @@ public class JsonUtilitiesNGTest {
         } catch (JsonProcessingException e) {
             // This would throw generating the JSON, which is not under test
         }  
+    }
+    
+    /**
+     * Test calls to JsonUtilities.getIntegerFieldIterator.
+     */
+    @Test
+    public void testGetIntegerFieldIterator() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21, \"2.k2\": 22}}"); 
+            Iterator<Integer> iterator = JsonUtilities.getIntegerFieldIterator(testJson, "1.k3");
+            ArrayList<Integer> nodes = new ArrayList<Integer>();
+            while(iterator.hasNext()) {
+                nodes.add(iterator.next());  
+            }
+            assertEquals(nodes.toString(), "[21, 22]", "Populated node iterator matches");
+            try {
+                Integer nextNode = iterator.next();
+                fail("NoSuchElementException not thrown at end of iteration");
+            } catch (NoSuchElementException nse) {
+            }
+
+            iterator = JsonUtilities.getIntegerFieldIterator(testJson, "1.k1");
+            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
+            try {
+                Integer nextNode = iterator.next();
+                fail("NoSuchElementException not thrown for empty node");
+            } catch (NoSuchElementException nse) {
+            }
+            
+            iterator = JsonUtilities.getIntegerFieldIterator(testJson, "1.Missing");
+            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
+            try {
+                Integer nextNode = iterator.next();
+                fail("NoSuchElementException not thrown for missing node");
+            } catch (NoSuchElementException nse) {
+            }
+            
+          } catch (JsonProcessingException e) {
+            // This would throw generating the JSON, which is not under test
+        }       
     }
     
     /**
@@ -466,6 +466,47 @@ public class JsonUtilitiesNGTest {
         }  
     }
 
+    /**
+     * Test calls to JsonUtilities.getIntegerFieldIterator.
+     */
+    @Test
+    public void testGetBooleanFieldIterator() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": true, \"1.k3\":{\"2.k1\": true, \"2.k2\": false}}"); 
+            Iterator<Boolean> iterator = JsonUtilities.getBooleanFieldIterator(testJson, "1.k3");
+            ArrayList<Boolean> nodes = new ArrayList<Boolean>();
+            while(iterator.hasNext()) {
+                nodes.add(iterator.next());  
+            }
+            assertEquals(nodes.toString(), "[true, false]", "Populated node iterator matches");
+            try {
+                Boolean nextNode = iterator.next();
+                fail("NoSuchElementException not thrown at end of iteration");
+            } catch (NoSuchElementException nse) {
+            }
+
+            iterator = JsonUtilities.getBooleanFieldIterator(testJson, "1.k1");
+            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
+            try {
+                Boolean nextNode = iterator.next();
+                fail("NoSuchElementException not thrown for empty node");
+            } catch (NoSuchElementException nse) {
+            }
+            
+            iterator = JsonUtilities.getBooleanFieldIterator(testJson, "1.Missing");
+            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
+            try {
+                Boolean nextNode = iterator.next();
+                fail("NoSuchElementException not thrown for missing node");
+            } catch (NoSuchElementException nse) {
+            }
+            
+          } catch (JsonProcessingException e) {
+            // This would throw generating the JSON, which is not under test
+        }       
+    }
+    
     
     
     /**
