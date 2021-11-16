@@ -34,6 +34,7 @@ import org.openide.util.Utilities;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertEqualsNoOrder;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -89,6 +90,7 @@ public class JDropDownMenuNGTest {
      */
     @Test
     public void testConstructor_WithText() {
+        System.out.println("constructor_WithText");
         final File iconFile = new File("non_existing_icon.png");
         installedFileLocatorMockedStatic.when(() -> InstalledFileLocator.getDefault().locate("modules/ext/icons/drop_down_arrow.png", "au.gov.asd.tac.constellation.utilities", false)).thenReturn(iconFile);
 
@@ -104,10 +106,16 @@ public class JDropDownMenuNGTest {
      */
     @Test
     public void testConstructor_WithIcon() {
+        System.out.println("constructor_WithIcon");
         final Icon icon = new ImageIcon(COOKIE_ICON_PATH);
         JDropDownMenu instance = new JDropDownMenu(icon, items);
-        Icon result = instance.getIcon();
-        assertNotNull(result);
+        CompoundIcon result = (CompoundIcon) instance.getIcon();
+        assertEquals(result.getIconCount(), 2);
+
+        final List<Icon> icons = new ArrayList<>();
+        icons.add(result.getIcon(0));
+        icons.add(result.getIcon(1));
+        assertTrue(icons.contains(icon));
     }
 
     /**
