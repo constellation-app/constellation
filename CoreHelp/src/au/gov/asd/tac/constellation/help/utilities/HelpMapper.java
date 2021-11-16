@@ -22,12 +22,17 @@ import org.apache.commons.collections4.MapUtils;
 import org.openide.util.Lookup;
 
 /**
+ * Maps the class name of a help page to the address of the page.
  *
  * @author aldebaran30701
  */
 public class HelpMapper {
 
-    private final static Map<String, String> mappings = new HashMap<>();
+    private HelpMapper() {
+        // Intentionally left blank
+    }
+
+    private static final Map<String, String> mappings = new HashMap<>();
 
     /**
      * Uses the classname to find the location of the markdown file.
@@ -61,8 +66,6 @@ public class HelpMapper {
      *
      */
     public static void updateMappings() {
-        Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
-            mappings.putAll(provider.getHelpMap());
-        });
+        Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> mappings.putAll(provider.getHelpMap()));
     }
 }
