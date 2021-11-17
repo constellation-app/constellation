@@ -341,9 +341,11 @@ public class JMultiChoiceComboBoxMenuNGTest {
     public void testAddSelectionListener() {
         System.out.println("addSelectionListener");
         ListSelectionListener listSelectionListenerMock = mock(ListSelectionListener.class);
-        JMultiChoiceComboBoxMenu instance = mock(JMultiChoiceComboBoxMenu.class);
+        JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
         instance.addSelectionListener(listSelectionListenerMock);
-        verify(instance, times(1)).addSelectionListener(listSelectionListenerMock);
+        Set<ListSelectionListener> resultListeners = instance.getListeners();
+        assertEquals(resultListeners.size(), 1);
+        assertEquals(resultListeners.stream().findFirst().get(), listSelectionListenerMock);
     }
 
     /**
@@ -352,10 +354,16 @@ public class JMultiChoiceComboBoxMenuNGTest {
     @Test
     public void testValueChanged() {
         System.out.println("valueChanged");
-        JMultiChoiceComboBoxMenu instance = mock(JMultiChoiceComboBoxMenu.class);
+        ListSelectionListener listSelectionListenerMock1 = mock(ListSelectionListener.class);
+        ListSelectionListener listSelectionListenerMock2 = mock(ListSelectionListener.class);
         ListSelectionEvent mockEvent = mock(ListSelectionEvent.class);
+        JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
+
+        instance.addSelectionListener(listSelectionListenerMock1);
+        instance.addSelectionListener(listSelectionListenerMock2);
         instance.valueChanged(mockEvent);
-        verify(instance, times(1)).valueChanged(mockEvent);
+        verify(listSelectionListenerMock1, times(1)).valueChanged(mockEvent);
+        verify(listSelectionListenerMock2, times(1)).valueChanged(mockEvent);
     }
 
     /**

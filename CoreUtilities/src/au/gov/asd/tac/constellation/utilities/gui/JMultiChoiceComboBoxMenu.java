@@ -224,6 +224,10 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
         });
     }
 
+    public Set<ListSelectionListener> getListeners() {
+        return listeners;
+    }
+
     @Override
     public void setToolTipText(final String text) {
         button.setToolTipText(text);
