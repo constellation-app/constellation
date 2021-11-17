@@ -390,7 +390,7 @@ public class MapViewTileRenderer extends PApplet {
             if (boxSelectionEnabled || boxZoomEnabled) {
                 final int boxColor = MarkerUtilities.DEFAULT_BOX_COLOR;
                 fill(boxColor);
-                rect(boxOriginX, boxOriginY, boxDeltaX - boxOriginX, boxDeltaY - boxOriginY);
+                rect(boxOriginX, boxOriginY, (float) boxDeltaX - boxOriginX, (float) boxDeltaY - boxOriginY);
             }
 
             updateClusters(parent.getMarkerState());

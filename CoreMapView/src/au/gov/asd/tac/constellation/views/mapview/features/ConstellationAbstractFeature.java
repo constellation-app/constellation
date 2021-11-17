@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.mapview.features;
 
 import de.fhpotsdam.unfolding.data.Feature;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A feature object for use in the Map View.
