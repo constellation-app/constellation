@@ -64,9 +64,7 @@ public class MapViewHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        final String mapViewPath;
-        mapViewPath = CODEBASE_NAME + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+        return CODEBASE_NAME + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
                 + CODEBASE_NAME + sep + "views" + sep + "mapview" + sep + "docs" + sep + "mapview-toc.xml";
-        return mapViewPath;
     }
 }

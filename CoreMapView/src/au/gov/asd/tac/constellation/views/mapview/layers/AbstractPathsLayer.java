@@ -50,7 +50,6 @@ public abstract class AbstractPathsLayer extends MapLayer {
 
     private String graphId = "";
     private long structureModCount = -1;
-    private Set<Marker> onScreenMarkers = new HashSet<>();
     private int onScreenMarkerCount = 0;
 
     @Override
@@ -70,9 +69,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
 
             // check that we have the same graph, and that it hasn't been structurally modified
             try {
-                final Tuple<String, Long> graphTuple = graph.readFromGraph(reader -> {
-                    return Tuple.create(reader.getId(), reader.getStructureModificationCounter());
-                });
+                final Tuple<String, Long> graphTuple = graph.readFromGraph(reader -> Tuple.create(reader.getId(), reader.getStructureModificationCounter()));
                 if (!graphTuple.getFirst().equals(graphId)) {
                     graphId = graphTuple.getFirst();
                     return true;
@@ -106,6 +103,8 @@ public abstract class AbstractPathsLayer extends MapLayer {
         if (graph == null) {
             return null;
         }
+        
+        final Set<Marker> onScreenMarkers;
 
         final List<Tuple<GraphElement, GraphElement>> paths = new ArrayList<>();
         try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
@@ -125,9 +124,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
                         if (drawPathsToOffscreenMarkers() || onScreen) {
                             final Set<GraphElement> elementsAtMarker = renderer.getMarkerCache().get(marker);
                             if (elementsAtMarker != null) {
-                                elementsAtMarker.forEach(element -> {
-                                    paths.addAll(getPathsForElement(readableGraph, element));
-                                });
+                                elementsAtMarker.forEach(element -> paths.addAll(getPathsForElement(readableGraph, element)));
                             }
                         }
 
@@ -142,11 +139,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
         }
 
         final Map<GraphElement, Marker> elementToMarkerCache = new HashMap<>();
-        renderer.getMarkerCache().keys().forEach(marker -> {
-            renderer.getMarkerCache().get(marker).forEach(element -> {
-                elementToMarkerCache.put(element, marker);
-            });
-        });
+        renderer.getMarkerCache().keys().forEach(marker -> renderer.getMarkerCache().get(marker).forEach(element -> elementToMarkerCache.put(element, marker)));
 
         // set up a color palette
         final int[] palette = Arrays.asList(ConstellationColor.createLinearPalette(N_COLORS, SRC_COLOR, DST_COLOR)).stream()
@@ -234,9 +227,6 @@ public abstract class AbstractPathsLayer extends MapLayer {
             image.line(x0, y0, x1, y1);
         }
     }
-
-//    public abstract void addPaths(final ReadableGraph graph, final GraphElement onScreenElement,
-//            final BitSet connectedVertexIds, final BitSet connectedTransactionIds);
     public abstract List<Tuple<GraphElement, GraphElement>> getPathsForElement(final ReadableGraph graph, final GraphElement element);
 
     public abstract boolean drawPathsToOffscreenMarkers();

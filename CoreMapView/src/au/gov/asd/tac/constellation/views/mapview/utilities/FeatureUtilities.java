@@ -33,6 +33,10 @@ import java.util.stream.Collectors;
  * @author cygnus_x-1
  */
 public class FeatureUtilities {
+    
+    private FeatureUtilities() {
+        throw new IllegalStateException("Utility Class");
+    }
 
     public static ConstellationAbstractFeature convert(final Feature feature) {
         final ConstellationAbstractFeature constellationFeature;
@@ -48,7 +52,7 @@ public class FeatureUtilities {
                 break;
             case MULTI:
                 final List<ConstellationAbstractFeature> constellationFeatures = ((MultiFeature) feature).getFeatures().stream()
-                        .map(singleFeature -> convert(singleFeature)).collect(Collectors.toList());
+                        .map(FeatureUtilities::convert).collect(Collectors.toList());
                 constellationFeature = new ConstellationMultiFeature(ConstellationFeatureType.MULTI, constellationFeatures);
                 break;
             default:

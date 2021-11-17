@@ -73,10 +73,17 @@ public class CopyCustomMarkersToGraphPlugin extends SimpleEditPlugin {
             graph.setFloatValue(vertexPrecisionAttributeId, vertexId, (float) marker.getRadius());
 
             try {
-                final Shape.GeometryType geometryType = marker instanceof ConstellationMultiMarker ? Shape.GeometryType.MULTI_POLYGON
-                        : marker instanceof ConstellationPolygonMarker ? Shape.GeometryType.POLYGON
-                                : marker instanceof ConstellationLineMarker ? Shape.GeometryType.LINE
-                                        : Shape.GeometryType.POINT;
+                final Shape.GeometryType geometryType;
+                if(marker instanceof ConstellationMultiMarker){
+                    geometryType=Shape.GeometryType.MULTI_POLYGON;
+                }else if(marker instanceof ConstellationPolygonMarker){
+                    geometryType=Shape.GeometryType.POLYGON;
+                }else if(marker instanceof ConstellationLineMarker){
+                    geometryType=Shape.GeometryType.LINE;
+                }else{
+                    geometryType=Shape.GeometryType.POINT;
+                }
+                
                 final List<Tuple<Double, Double>> coordinates = marker.getLocations().stream()
                         .map(location -> Tuple.create((double) location.getLon(), (double) location.getLat()))
                         .collect(Collectors.toList());

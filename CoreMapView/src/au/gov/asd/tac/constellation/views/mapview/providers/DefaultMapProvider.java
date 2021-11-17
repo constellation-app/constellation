@@ -65,6 +65,6 @@ public class DefaultMapProvider extends MapProvider {
 
     @Override
     public String[] getTileUrls(final Coordinate coordinate) {
-        return null;
+        return new String[0];  
     }
 }

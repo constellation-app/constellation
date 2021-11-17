@@ -42,6 +42,10 @@ public class MarkerUtilities {
     private static final int G_MASK = 255 << 8;
     private static final int R_MASK = 255 << 16;
     private static final int A_MASK = 255 << 24;
+    
+    private MarkerUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Generate an integer representing a color for use in Processing from ARGB
@@ -69,10 +73,10 @@ public class MarkerUtilities {
      * @return an integer representing a color
      */
     public static final int color(final ConstellationColor colorValue) {
-        final int a = (int) (colorValue.getAlpha() * 255f);
-        final int r = (int) (colorValue.getRed() * 255f);
-        final int g = (int) (colorValue.getGreen() * 255f);
-        final int b = (int) (colorValue.getBlue() * 255f);
+        final int a = (int) (colorValue.getAlpha() * 255F);
+        final int r = (int) (colorValue.getRed() * 255F);
+        final int g = (int) (colorValue.getGreen() * 255F);
+        final int b = (int) (colorValue.getBlue() * 255F);
         return color(a, r, g, b);
     }
 
@@ -125,8 +129,8 @@ public class MarkerUtilities {
      */
     public static final ConstellationColor value(final int color) {
         final int[] argb = argb(color);
-        return ConstellationColor.getColorValue(argb[1] / 255f,
-                argb[2] / 255f, argb[3] / 255f, argb[0] / 255f);
+        return ConstellationColor.getColorValue(argb[1] / 255F,
+                argb[2] / 255F, argb[3] / 255F, argb[0] / 255F);
     }
 
     /**

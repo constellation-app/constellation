@@ -36,12 +36,11 @@ public class DayNightLayer extends MapLayer {
 
     private static final int STROKE_COLOR = MarkerUtilities.color(255, 0, 0, 0);
     private static final int SUN_COLOR = MarkerUtilities.color(127, 255, 255, 0);
-    private static final int SHADOW_COLOR = MarkerUtilities.color(127, 0, 0, 0);
     private static final int TWIGHLIGHT_CIVIL_COLOR = MarkerUtilities.color(31, 0, 0, 0);
     private static final int TWIGHLIGHT_NAUTICAL_COLOR = MarkerUtilities.color(63, 0, 0, 0);
     private static final int TWIGHLIGHT_ASTRONOMICAL_COLOR = MarkerUtilities.color(95, 0, 0, 0);
     private static final int NIGHT_COLOR = MarkerUtilities.color(127, 0, 0, 0);
-    private static final int EARTH_RADIUS_M = 6371008;
+    private static final int EARTH_RADIUS_M = 6_371_008;
 
     @Override
     public String getName() {
@@ -88,9 +87,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_CIVIL_COLOR);
         dayNightImage.beginShape();
-        leftTwighlightCivilPositions.forEach(position -> {
-            dayNightImage.vertex(position.x, position.y);
-        });
+        leftTwighlightCivilPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
 
         // left twilight nautical
@@ -104,9 +101,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_NAUTICAL_COLOR);
         dayNightImage.beginShape();
-        leftTwighlightNauticalPositions.forEach(position -> {
-            dayNightImage.vertex(position.x, position.y);
-        });
+        leftTwighlightNauticalPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
 
         // left twilight astronomical
@@ -120,9 +115,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_ASTRONOMICAL_COLOR);
         dayNightImage.beginShape();
-        leftTwighlightAstronomicalPositions.forEach(position -> {
-            dayNightImage.vertex(position.x, position.y);
-        });
+        leftTwighlightAstronomicalPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
 
         // left night
@@ -136,9 +129,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.noStroke();
         dayNightImage.fill(NIGHT_COLOR);
         dayNightImage.beginShape();
-        leftNightPositions.forEach(position -> {
-            dayNightImage.vertex(position.x, position.y);
-        });
+        leftNightPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
 
         // right twilight civil
@@ -152,9 +143,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_CIVIL_COLOR);
         dayNightImage.beginShape();
-        rightTwighlightCivilPositions.forEach(position -> {
-            dayNightImage.vertex(position.x, position.y);
-        });
+        rightTwighlightCivilPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
 
         // right twilight nautical
@@ -168,9 +157,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_NAUTICAL_COLOR);
         dayNightImage.beginShape();
-        rightTwighlightNauticalPositions.forEach(position -> {
-            dayNightImage.vertex(position.x, position.y);
-        });
+        rightTwighlightNauticalPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
 
         // right twilight astronomical
@@ -184,9 +171,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_ASTRONOMICAL_COLOR);
         dayNightImage.beginShape();
-        rightTwighlightAstronomicalPositions.forEach(position -> {
-            dayNightImage.vertex(position.x, position.y);
-        });
+        rightTwighlightAstronomicalPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
 
         // right night
@@ -200,11 +185,8 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.noStroke();
         dayNightImage.fill(NIGHT_COLOR);
         dayNightImage.beginShape();
-        rightNightPositions.forEach(position -> {
-            dayNightImage.vertex(position.x, position.y);
-        });
+        rightNightPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
-
         dayNightImage.endDraw();
 
         return dayNightImage;
@@ -232,7 +214,7 @@ public class DayNightLayer extends MapLayer {
 
     private Location getSunPosition(final long currentTime) {
         final double rad = 0.017453292519943295;
-        final double jc = (getJDay(currentTime) - 2451545) / 36525;
+        final double jc = (getJDay(currentTime) - 2_451_545) / 36525;
         final double meanLongSun = (280.46646 + jc * (36000.76983 + jc * 0.0003032)) % 360;
         final double meanAnomSun = 357.52911 + jc * (35999.05029 - 0.0001537 * jc);
         final double sunEq = Math.sin(rad * meanAnomSun) * (1.914602 - jc * (0.004817 + 0.000014 * jc))
@@ -252,12 +234,12 @@ public class DayNightLayer extends MapLayer {
                 + 4 * eccent * y * Math.sin(rad * meanAnomSun) * Math.cos(2 * rad * meanLongSun)
                 - 0.5 * y * y * Math.sin(4 * rad * meanLongSun)
                 - 1.25 * eccent * eccent * Math.sin(2 * rad * meanAnomSun)) / rad);
-        final double trueSolarTimeInDeg = ((currentTime + rqOfTime * 60000) % 86400000) / 240000;
+        final double trueSolarTimeInDeg = ((currentTime + rqOfTime * 60000) % 86_400_000) / 240_000;
         final double lon = -((trueSolarTimeInDeg < 0) ? trueSolarTimeInDeg + 180 : trueSolarTimeInDeg - 180);
         return new Location(lat, lon);
     }
 
     private double getJDay(final long currentTime) {
-        return (currentTime / 86400000.0) + 2440587.5;
+        return (currentTime / 86_400_000.0) + 2_440_587.5;
     }
 }
