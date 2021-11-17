@@ -47,6 +47,7 @@ public class IconDataNGTest {
     private static MockedStatic<ImageIO> imageIOStaticMock;
     private static InputStream inputStreamMock;
     private static BufferedImage bufferedImageMock;
+    private static IOException IOExceptionMock;
 
     public IconDataNGTest() {
     }
@@ -57,6 +58,7 @@ public class IconDataNGTest {
         imageIOStaticMock = Mockito.mockStatic(ImageIO.class);
         inputStreamMock = Mockito.mock(InputStream.class);
         bufferedImageMock = Mockito.mock(BufferedImage.class);
+        IOExceptionMock = Mockito.mock(IOException.class);
     }
 
     @AfterClass
@@ -215,6 +217,31 @@ public class IconDataNGTest {
     }
 
     /**
+     * Test of createData method, of class IconData, when the output returned
+     * from createInputStream() throws IOException.
+     *
+     * @throws java.io.IOException
+     */
+    @Test
+    public void testCreateData_inputStreamThrowsException() throws IOException {
+        System.out.println("testCreateData_inputStreamThrowsException");
+
+        final IconData instance = spy(new IconDataImpl());
+        when(instance.createInputStream()).thenThrow(IOExceptionMock);
+
+        final int size = 0;
+        final Color color = null;
+
+        final byte[] expResult = new byte[0];
+        final byte[] result = instance.createData(size, color);
+
+        imageIOStaticMock.verifyNoInteractions();
+        iconDataStaticMock.verifyNoInteractions();
+
+        assertEquals(result, expResult);
+    }
+
+    /**
      * Test of colorImage method, of class IconData.
      */
     @Test
@@ -337,22 +364,35 @@ public class IconDataNGTest {
 
     /**
      * Test of scaleImage method, of class IconData, when size equals the
-     * image's current size.
+     * image's current sizes for width or height.
      */
     @Test
-    public void testScaleImage_sizeEqualsNewSize() {
-        System.out.println("testScaleImage_sizeEqualsNewSize");
+    public void testScaleImage_sizeEqualsCurrentWidthOrHeight() {
+        System.out.println("testScaleImage_sizeEqualsCurrentWidthOrHeight");
 
-        final BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
-        final int size = 1;
+        // When image's current width is 2 and current height equals new size.
+        final BufferedImage image1 = new BufferedImage(2, 1, BufferedImage.TYPE_4BYTE_ABGR);
+        final int size1 = 1;
 
-        iconDataStaticMock.when(() -> IconData.scaleImage(Mockito.eq(image), Mockito.eq(size))).thenCallRealMethod();
-        final BufferedImage scaledImage = IconData.scaleImage(image, size);
+        iconDataStaticMock.when(() -> IconData.scaleImage(Mockito.eq(image1), Mockito.eq(size1))).thenCallRealMethod();
+        final BufferedImage scaledImage1 = IconData.scaleImage(image1, size1);
 
-        final int expResult = size * size;
-        final int result = scaledImage.getWidth() * scaledImage.getHeight();
+        final int expResult1 = 2;
+        final int result1 = scaledImage1.getWidth();
 
-        assertEquals(result, expResult);
+        assertEquals(result1, expResult1);
+
+        // When image's current height is 2 and current width equals new size.
+        final BufferedImage image2 = new BufferedImage(1, 2, BufferedImage.TYPE_4BYTE_ABGR);
+        final int size2 = 1;
+
+        iconDataStaticMock.when(() -> IconData.scaleImage(Mockito.eq(image2), Mockito.eq(size2))).thenCallRealMethod();
+        final BufferedImage scaledImage2 = IconData.scaleImage(image2, size2);
+
+        final int expResult2 = 2;
+        final int result2 = scaledImage2.getHeight();
+
+        assertEquals(result2, expResult2);
     }
 
     /**

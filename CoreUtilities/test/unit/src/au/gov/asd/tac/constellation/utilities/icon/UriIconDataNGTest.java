@@ -28,6 +28,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -43,6 +44,7 @@ public class UriIconDataNGTest {
 
     private static MockedStatic<HttpsUtilities> httpsUtilitiesStaticMock;
     private static MockedStatic<HttpsConnection> httpsConnectionStaticMock;
+    private static MockedStatic<URI> uriStaticMock;
     private static URI uriMock;
     private static HttpsConnection httpsConnectionMock;
     private static HttpsURLConnection httpsURLConnectionMock;
@@ -57,6 +59,7 @@ public class UriIconDataNGTest {
     public static void setUpClass() throws Exception {
         httpsUtilitiesStaticMock = Mockito.mockStatic(HttpsUtilities.class);
         httpsConnectionStaticMock = Mockito.mockStatic(HttpsConnection.class);
+        uriStaticMock = Mockito.mockStatic(URI.class);
         uriMock = Mockito.mock(URI.class);
         httpsConnectionMock = Mockito.mock(HttpsConnection.class);
         httpsURLConnectionMock = Mockito.mock(HttpsURLConnection.class);
@@ -69,16 +72,74 @@ public class UriIconDataNGTest {
     public static void tearDownClass() throws Exception {
         httpsUtilitiesStaticMock.close();
         httpsConnectionStaticMock.close();
+        uriStaticMock.close();
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         httpsUtilitiesStaticMock.reset();
         httpsConnectionStaticMock.reset();
+        uriStaticMock.reset();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+    }
+
+    /**
+     * Test of constructor method with String, of class UriIconData.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testUriIconData_withString() throws Exception {
+        System.out.println("testUriIconData_withString");
+
+        uriStaticMock.when(() -> URI.create(Mockito.any(String.class))).thenReturn(uriMock);
+
+        // If the URI is absolute and has a scheme component.
+        when(uriMock.isAbsolute()).thenReturn(true);
+
+        final UriIconData expResult = new UriIconData("");
+        final UriIconData result = new UriIconData("");
+
+        assertEquals(result, expResult);
+
+        // If the URI is not absolute and does not have a scheme component.
+        when(uriMock.isAbsolute()).thenReturn(false);
+
+        try {
+            final UriIconData instance = new UriIconData("");
+            fail("AssertionError was not thrown.");
+        } catch (final AssertionError er) {
+        }
+    }
+
+    /**
+     * Test of constructor method with URI, of class UriIconData.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testUriIconData_withURI() throws Exception {
+        System.out.println("testUriIconData_withURI");
+
+        // If the URI is absolute and has a scheme component.
+        when(uriMock.isAbsolute()).thenReturn(true);
+
+        final UriIconData expResult = new UriIconData(uriMock);
+        final UriIconData result = new UriIconData(uriMock);
+
+        assertEquals(result, expResult);
+
+        // If the URI is not absolute and does not have a scheme component.
+        when(uriMock.isAbsolute()).thenReturn(false);
+
+        try {
+            final UriIconData instance = new UriIconData(uriMock);
+            fail("IllegalArgumentException was not thrown.");
+        } catch (final IllegalArgumentException ex) {
+        }
     }
 
     /**
