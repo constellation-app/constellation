@@ -1,10 +1,16 @@
 # Constellation Changes
 
 ## Changes in October 2021
+-   Added `PluginTags` class to hold all tags as constants for `PluginInfo`.
 
 -   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
     can be used to configure the required plugin parameters to mark as `*required`
-	in the swagger.
+  	in the swagger.
+
+-   Removed the `keepAlive` method from `HttpsConnection` as it is not the 
+    method to enable HTTP keep-alive for `HttpURLConnection`. `keepAlive` is 
+    turned on by default and is controlled using the `http.keepalive` VM
+    argument.
 
 -   Added a file chooser utility to core utilities. This provides a template
     for opening file choosers. It protects against common mistakes that may
@@ -12,39 +18,55 @@
 
 -   Changed `DataAccessPluginType` from an abstract class to an interface.
 
--   Removed `RecentFilesWelcomePage` and moved functionality between 
+-   Changed the access of some of the constants in `DirectedShortestPathsPlugin` 
+    to private since they weren't being used elsewhere. 
+
+-   Renamed `au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys`
+    to `au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities`
+
+-   Renamed `tableview2` package to `tableview` now that it is the primary table
+
+-   Removed `RecentFilesWelcomePage` and moved functionality between
     `RecentFiles` and `WelcomeViewPane`
 
--   Renamed tableview2 package to tableview now that it is the primary table
-    code being used.
+-   Renamed `ShortestPathsFollowDirectionAction` to `DirectedShortestPathsAction`
+    to align with the plugin it calls.
+
+-   Renamed constants in `DirectedShortestPathsPlugin` with VERTEX in name to 
+    have NODE instead.
 
 ## Changes in September 2021
 
+-   Added a preference to choose between viewing the help documentation offline,
+    or online.
+
 -   Fixed `setRotationMatrix` in `Matrix44d` as it was previously placing 
     rotation values in the wrong value positions.
-
+    
 -   Moved `DataAccessPlugin`, `DataAccessPluginCoreType`, `DataAccessPluginRegistry
     and `DataAccessPluginType` from `au.gov.asd.tac.constellation.views.dataaccess`
     to `au.gov.asd.tac.constellation.views.dataaccess.plugins`.
 
+-   Removed JavaHelp and replaced it with the new help system.
+
 -   Removed unused `localized` parameter from the signature of the `locate()`
     method in `ConstellationInstalledFileLocator`.
 
--   Removed all the unused `*Action.java` classes from 
+-   Removed all the unused `*Action.java` classes from
     `au.gov.asd.tac.constellation.plugins.algorithms.sna`.
 
 -   Renamed `PreferenceUtilites` to `PreferenceUtilities` to fix the typo.
 
 -   Updated Core Import Export summary text to provide more information. To
     achieve this, added `definitionName` parameter to `ImportDefinition`
-    constructor and paneName parameter to `RunPane` constructor. Updated 
+    constructor and paneName parameter to `RunPane` constructor. Updated
     displaySummaryAlert` within `ImportDelimitedPlugin` class to take additional
     parameters. The combination of these changes allows a more meaningful
     summary dialog post delimited file import.
 
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
-    
+
 ## Changes in August 2021
 
 -   Added `updateTagsFiltersAvailable`, `updateSelectedTagsCombo`,

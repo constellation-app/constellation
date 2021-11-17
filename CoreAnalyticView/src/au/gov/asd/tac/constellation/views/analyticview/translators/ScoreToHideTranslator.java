@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
@@ -66,7 +67,7 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
-    @PluginInfo(tags = {"MODIFY"})
+    @PluginInfo(tags = {PluginTags.MODIFY})
     private class HideElementsPlugin extends SimpleEditPlugin {
 
         protected static final String RESET_PARAMETER_ID = "HideElementsPlugin.reset";

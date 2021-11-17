@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewConcept;
@@ -89,7 +90,7 @@ public class NotesViewController {
     /**
      * Read the current state from the graph.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
     public static final class NotesViewStateReader extends SimpleReadPlugin {
 
         private final NotesViewPane pane;
@@ -134,7 +135,7 @@ public class NotesViewController {
     /**
      * Write the current state to the graph.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
     private static final class NotesViewStateWriter extends SimpleEditPlugin {
 
         private final List<NotesViewEntry> notes;

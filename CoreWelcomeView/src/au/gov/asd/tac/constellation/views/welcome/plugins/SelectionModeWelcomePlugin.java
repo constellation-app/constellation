@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -39,7 +40,7 @@ import org.openide.util.NbBundle;
  *
  * @author Delphinus8821
  */
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"WELCOME"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.WELCOME})
 @NbBundle.Messages("SelectionModeWelcomePlugin=Selection Mode Welcome Plugin")
 public class SelectionModeWelcomePlugin implements WelcomePluginInterface {
 

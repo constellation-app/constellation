@@ -15,6 +15,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.help</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.preferences</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -46,15 +54,6 @@
                     <run-dependency>
                         <release-version>1</release-version>
                         <specification-version>1.47.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.netbeans.modules.javahelp</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>2.41.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -182,6 +181,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.text</package>
                 <package>au.gov.asd.tac.constellation.utilities.timer</package>
                 <package>au.gov.asd.tac.constellation.utilities.tooltip</package>
+                <package>au.gov.asd.tac.constellation.utilities.tooltip.handlers</package>
                 <package>au.gov.asd.tac.constellation.utilities.video</package>
                 <package>au.gov.asd.tac.constellation.utilities.visual</package>
                 <package>au.gov.asd.tac.constellation.utilities.xml</package>

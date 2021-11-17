@@ -17,16 +17,15 @@ package au.gov.asd.tac.constellation.plugins;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.MissingResourceException;
-import org.netbeans.api.javahelp.Help;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -110,7 +109,7 @@ public abstract class AbstractPlugin implements Plugin {
         return null;
     }
 
-    private static final String[] DEFAULT_TAGS = new String[]{"GENERAL"};
+    private static final String[] DEFAULT_TAGS = new String[]{PluginTags.GENERAL};
 
     @Override
     public String[] getTags() {
@@ -139,15 +138,7 @@ public abstract class AbstractPlugin implements Plugin {
      */
     @Override
     public HelpCtx getHelpCtx() {
-        final Help help = Lookup.getDefault().lookup(Help.class);
-        if (help != null) {
-            final String helpId = getClass().getName();
-            if (help.isValidID(helpId, true)) {
-                return new HelpCtx(helpId);
-            }
-        }
-
-        return null;
+        return new HelpCtx(getClass().getName());
     }
 
     @Override

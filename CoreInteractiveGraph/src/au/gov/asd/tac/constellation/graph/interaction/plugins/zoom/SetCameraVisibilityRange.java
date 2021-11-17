@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import org.openide.util.NbBundle.Messages;
@@ -38,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {"VIEW"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
 @Messages("SetCameraVisibilityRange=Set Camera Visibility Range")
 public final class SetCameraVisibilityRange extends SimpleEditPlugin {
 

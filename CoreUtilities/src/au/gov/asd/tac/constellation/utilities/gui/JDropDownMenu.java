@@ -173,6 +173,11 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
         button.setToolTipText(text);
     }
 
+    @Override
+    public final String getToolTipText() {
+        return button.getToolTipText();
+    }
+
     public static class OpenAction implements ActionListener {
 
         private final JPopupMenu menu;

@@ -1,0 +1,25 @@
+name: Trigger GHPages to update documentation
+# When documentation needs an update, a push to documentation_update branch will trigger
+# this action to send a request to the GHPages repository to update the online documentation.
+
+# Workflow
+# When a commit occurs online to GitHub on the documentation_update branch,
+# This job will send a ping to the website repository - hinting that a refresh
+# is needed for the online documentation.
+
+on:
+  push:
+    branches:
+      - documentation_update
+
+jobs:
+  trigger-doco-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: trigger repository event
+        if: github.event.action != 'pong'
+        run: |
+          curl -X POST https://api.github.com/repos/constellation-app/constellation-app.github.io/dispatches \
+          -H 'Accept: application/vnd.github.v3+json' \
+          -u ${{ secrets.ACCESS_TOKEN }} \
+          --data '{"event_type": "ping", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'

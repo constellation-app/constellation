@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
@@ -45,6 +44,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -70,7 +70,7 @@ import org.openide.windows.OutputWriter;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("CompareGraphPlugin=Compare Graph")
-@PluginInfo(pluginType = PluginType.SEARCH, tags = {"SEARCH"})
+@PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
 public class CompareGraphPlugin extends SimpleReadPlugin {
     
     private static final Logger LOGGER = Logger.getLogger(CompareGraphPlugin.class.getName());
@@ -155,7 +155,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
     }
 
     @Override
-    public void updateParameters(Graph graph, PluginParameters parameters) {
+    public void updateParameters(final Graph graph, final PluginParameters parameters) {
         final List<String> graphNames = new ArrayList<>();
         final Map<String, Graph> allGraphs = GraphNode.getAllGraphs();
         if (allGraphs != null) {
@@ -168,10 +168,9 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         graphNames.sort(String::compareTo);
 
         // make a list of attributes that should be ignored.
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        final ReadableGraph rg = activeGraph.getReadableGraph();
-        Set<String> registeredVertexAttributes = new TreeSet<>();
-        Set<String> registeredTransactionAttributes = new TreeSet<>();
+        final ReadableGraph rg = graph.getReadableGraph();
+        final Set<String> registeredVertexAttributes;
+        final Set<String> registeredTransactionAttributes;
         try {
             registeredVertexAttributes = AttributeUtilities.getRegisteredAttributeIdsFromGraph(rg, GraphElementType.VERTEX).keySet();
             registeredTransactionAttributes = AttributeUtilities.getRegisteredAttributeIdsFromGraph(rg, GraphElementType.TRANSACTION).keySet();
@@ -197,7 +196,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         @SuppressWarnings("unchecked") //ORIGINAL_GRAPH_PARAMETER will always be of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> originalGraph = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ORIGINAL_GRAPH_PARAMETER_ID);
         SingleChoiceParameterType.setOptions(originalGraph, graphNames);
-        SingleChoiceParameterType.setChoice(originalGraph, GraphNode.getGraphNode(activeGraph.getId()).getDisplayName());
+        SingleChoiceParameterType.setChoice(originalGraph, GraphNode.getGraphNode(graph.getId()).getDisplayName());
 
         @SuppressWarnings("unchecked") //COMPARE_GRAPH_PARAMETER will always be of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> compareGraph = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(COMPARE_GRAPH_PARAMETER_ID);
@@ -220,7 +219,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
     }
 
     @Override
-    protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final String originalGraphName = parameters.getParameters().get(ORIGINAL_GRAPH_PARAMETER_ID).getStringValue();
         final String compareGraphName = parameters.getParameters().get(COMPARE_GRAPH_PARAMETER_ID).getStringValue();
 
@@ -257,8 +256,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final GraphRecordStore compareAll;
 //        final Map<String, Integer> originalStatistics, compareStatistics;
 
-        Set<String> vertexPrimaryKeys = new HashSet<>();
-        Set<String> transactionPrimaryKeys = new HashSet<>();
+        final Set<String> vertexPrimaryKeys;
+        final Set<String> transactionPrimaryKeys;
 
         // get a copy of the graph's record store and statistical info
         rg = originalGraph.getReadableGraph();

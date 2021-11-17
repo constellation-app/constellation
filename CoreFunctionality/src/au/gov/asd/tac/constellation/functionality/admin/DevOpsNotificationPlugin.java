@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -40,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages({"DevOpsNotificationPlugin=DevOps Notification"})
-@PluginInfo(pluginType = PluginType.NONE, tags = {"DEVELOPER"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.DEVELOPER})
 public class DevOpsNotificationPlugin extends SimplePlugin {
 
     @Override

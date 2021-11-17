@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 
 /**
@@ -28,7 +29,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
  *
  * @author antares
  */
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
 public class ScatterPlotStateWriter extends SimpleEditPlugin {
 
     private final ScatterPlotState scatterPlotState;

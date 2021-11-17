@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +47,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = AnalyticPlugin.class),
     @ServiceProvider(service = Plugin.class)
 })
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 @AnalyticInfo(analyticCategory = "Similarity")
 @NbBundle.Messages("LevenshteinDistanceAnalytic=Levenshtein Distance Analytic")
 public class LevenshteinDistanceAnalytic extends ScoreAnalyticPlugin {
@@ -55,7 +56,7 @@ public class LevenshteinDistanceAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-levenshtein-distance.html";
+        return getHelpPath() + "analytic-levenshtein-distance.md";
     }
 
     @Override

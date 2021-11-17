@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle;
 
@@ -36,7 +37,7 @@ import org.openide.util.NbBundle;
  * @see SimpleEditPlugin
  */
 @NbBundle.Messages({"CTL_API=Named Selection Operation API"})
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
 
     /**

@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.Desktop;
@@ -46,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author arcturus
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.NONE, tags = {"UTILITY"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.UTILITY})
 @NbBundle.Messages("SendToEmailClientPlugin=Send To Email Client")
 public class SendToEmailClientPlugin extends SimplePlugin {
     

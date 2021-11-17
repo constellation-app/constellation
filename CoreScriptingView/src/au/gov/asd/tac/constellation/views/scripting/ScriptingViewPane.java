@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegis
 import au.gov.asd.tac.constellation.plugins.importexport.text.ExportToTextPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -190,7 +191,7 @@ public class ScriptingViewPane extends JPanel {
 
         final JMenuItem apiItem = new JMenuItem("API Documentation");
         apiItem.addActionListener(e -> {
-            new HelpCtx(ScriptingViewPane.class.getPackageName()).display();
+            new HelpCtx(this.getClass().getPackage().getName()).display();
         });
         optionsMenu.add(apiItem);
 
@@ -419,7 +420,7 @@ public class ScriptingViewPane extends JPanel {
         }
     }
 
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     public static class LoadScriptPlugin extends SimplePlugin {
 
         final JFileChooser fileChooser;

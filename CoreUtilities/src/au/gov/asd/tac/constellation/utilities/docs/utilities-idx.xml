@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE index PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 2.0//EN" "http://java.sun.com/products/javahelp/index_2_0.dtd">
-<index version="2.0">
-    <indexitem text="Icons" target="au.gov.asd.tac.constellation.utilities.icons"/>
-    <indexitem text="Decorators" target="au.gov.asd.tac.constellation.utilities.decorators"/>
-    <indexitem text="About The Jupyter Notebook Server" target="au.gov.asd.tac.constellation.utilities.jupyter"/>
-    <indexitem text="About The Constellation REST Server" target="au.gov.asd.tac.constellation.utilities.rest"/>
-</index>

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.pluginreporter.panes;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -46,9 +47,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.CheckComboBox;
-import org.netbeans.api.javahelp.Help;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
 /**
@@ -95,7 +94,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);
-        String filteredTagString = prefs.get(FILTERED_TAGS_KEY, "LOW LEVEL");
+        String filteredTagString = prefs.get(FILTERED_TAGS_KEY, PluginTags.LOW_LEVEL);
         filteredTags.addAll(Arrays.asList(filteredTagString.split(SeparatorConstants.TAB, 0)));
 
         // The filter drop down
@@ -124,15 +123,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         Button helpButton = new Button("", helpImage);
-        helpButton.setOnAction((ActionEvent event) -> {
-            final Help help = Lookup.getDefault().lookup(Help.class);
-            if (help != null) {
-                final String helpId = this.getClass().getPackage().getName();
-                if (help.isValidID(helpId, true)) {
-                    new HelpCtx(helpId).display();
-                }
-            }
-        });
+        helpButton.setOnAction((ActionEvent event)
+                -> new HelpCtx(getClass().getPackage().getName()).display());
 
         controlToolbar.getItems().addAll(
                 filterBox,

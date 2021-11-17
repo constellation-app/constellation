@@ -174,6 +174,11 @@ public class JSingleChoiceComboBoxMenu<E> extends JComponent implements ListSele
         button.setToolTipText(text);
     }
 
+    @Override
+    public final String getToolTipText() {
+        return button.getToolTipText();
+    }
+
     public static class OpenAction implements ActionListener {
 
         private final JPopupMenu menu;

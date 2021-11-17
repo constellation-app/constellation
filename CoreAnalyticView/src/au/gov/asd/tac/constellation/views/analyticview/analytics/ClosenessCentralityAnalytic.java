@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.ClosenessCentralityPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,14 +39,14 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = AnalyticPlugin.class),
     @ServiceProvider(service = Plugin.class)
 })
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 @AnalyticInfo(analyticCategory = "Centrality")
 @NbBundle.Messages("ClosenessCentralityAnalytic=Closeness Centrality Analytic")
 public class ClosenessCentralityAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-closeness-centrality.html";
+        return getHelpPath() + "analytic-closeness-centrality.md";
     }
 
     @Override

@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,7 +46,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
  *
  * @author formalhaunt
  */
-@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 public class ExportToExcelFilePlugin extends SimplePlugin {
 
     private static final Logger LOGGER = Logger.getLogger(ExportToExcelFilePlugin.class.getName());

@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
@@ -181,7 +182,7 @@ public final class VisualGraphOpener extends GraphOpener {
                 HandleIoProgress ioProgressHandler = new HandleIoProgress(String.format("Reading %s...", graphFile.getName()));
                 try {
                     final long t0 = System.currentTimeMillis();
-                    LOGGER.log(Level.INFO, String.format("Attempting to open %s", graphFile.toString()));
+                    LOGGER.log(Level.INFO, "Attempting to open {0}", graphFile);
                     graph = new GraphJsonReader().readGraphZip(graphFile, ioProgressHandler);
                     time = System.currentTimeMillis() - t0;
                 } catch (final GraphParseException | IOException | RuntimeException ex) {
@@ -203,7 +204,7 @@ public final class VisualGraphOpener extends GraphOpener {
                             // Try to load backup file that was located, if it loads then clear previous exception, if not the
                             // original exception is kept to be handled in the done method
                             final long t0 = System.currentTimeMillis();
-                            LOGGER.log(Level.WARNING, String.format("Unable to open requested file, attempting to open backup %s", backupFile.toString()));
+                            LOGGER.log(Level.WARNING, "Unable to open requested file, attempting to open backup {0}", backupFile);
                             graph = new GraphJsonReader().readGraphZip(backupFile, ioProgressHandler);
                             time = System.currentTimeMillis() - t0;
                             gex = null;
@@ -211,11 +212,12 @@ public final class VisualGraphOpener extends GraphOpener {
                             // Backup file successfully loaded, copy it over top of corrupt actual file - theres no reason to keep the corrupted file.
                             // Don't do a move, rather perform the move in two stages, a copy, then a delete to ensure there
                             // is always going to be a valid file somewhere as only the copy or the delete can fail in a given run.
+                            LOGGER.log(Level.INFO, "Successfully opened backup file: {0}, replacing star file", backupFile);
                             FileUtils.copyFile(new File(backupFile.toString()), new File(graphFile.toString()));
                         }
                     }
                 } catch (final GraphParseException | IOException | RuntimeException ex) {
-                    LOGGER.log(Level.WARNING, String.format("Unable to open requested file or any associated backup", graphFile.toString()));
+                    LOGGER.log(Level.WARNING, "Unable to open requested file ({0}) or any associated backup", graphFile);
                     gex = ex;
                     // Clear previous progress message and reset to indicate we are trying to use backup.
                     ioProgressHandler.finish();
@@ -269,7 +271,7 @@ public final class VisualGraphOpener extends GraphOpener {
     /**
      * Plugin to open graph file.
      */
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     private static class OpenGraphFile extends SimplePlugin {
 
         private final File graphFile;

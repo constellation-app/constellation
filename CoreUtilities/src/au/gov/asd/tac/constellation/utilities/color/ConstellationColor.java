@@ -301,7 +301,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return a ColorValue instance
      */
     public static ConstellationColor fromJavaColor(final Color color) {
-        return ConstellationColor.getColorValue(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+        return color == null ? null : ConstellationColor.getColorValue(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
     }
 
     /**
@@ -311,7 +311,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return A new ColorValue.
      */
     public static ConstellationColor fromFXColor(final javafx.scene.paint.Color color) {
-        return ConstellationColor.getColorValue((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), 1f);
+        return color == null ? null : ConstellationColor.getColorValue((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), 1f);
     }
 
     /**
@@ -340,7 +340,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return the ConstellationColor which contrasts with color.
      */
     public static ConstellationColor getContrastHtmlColor(final String color) {
-        return getContrastColor(fromHtmlColor(color));
+        return getContrastColor(color == null ? null : fromHtmlColor(color));
     }
 
     /**
@@ -351,7 +351,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return the ConstellationColor which contrasts with color.
      */
     public static ConstellationColor getContrastRGBColor(final String color) {
-        return getContrastColor(fromRgbColor(color));
+        return getContrastColor(color == null ? null : fromRgbColor(color));
     }
 
     /**
@@ -373,7 +373,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return the ConstellationColor which contrasts with color.
      */
     public static ConstellationColor getContrastfromRgbWithCommaColor(final String color) {
-        return getContrastColor(fromRgbWithCommaColor(color));
+        return getContrastColor(color == null ? null : fromRgbWithCommaColor(color));
     }
 
     /**
@@ -398,6 +398,10 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return A new ColorValue.
      */
     public static ConstellationColor fromRgbColor(final String color) {
+        if (color == null) {
+            return null;
+        }
+        
         final float red = Integer.parseInt(color.substring(3, 6), 10);
         final float green = Integer.parseInt(color.substring(6, 9), 10);
         final float blue = Integer.parseInt(color.substring(9, 12), 10);
@@ -415,6 +419,10 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return A new ColorValue.
      */
     public static ConstellationColor fromRgbWithCommaColor(final String color) {
+        if (color == null) {
+            return null;
+        }
+        
         // If the color string has surrounding "[]", remove them.
         final String fixedColor = color.startsWith("[") && color.endsWith("]") ? color.substring(1, color.length() - 1) : color;
         final String[] fields = split(fixedColor, 4, ',');
@@ -423,6 +431,37 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         final float blue = Float.parseFloat(fields[2]);
         final float alpha = fields[3] != null ? Float.parseFloat(fields[3]) : 1f;
         return new ConstellationColor(null, red, green, blue, alpha);
+    }
+    
+    /**
+     * A fast split method (slightly faster than String.split()).
+     *
+     * The maximum size of the resulting String[] must be known beforehand. The
+     * actual size may be less.
+     *
+     * @param s The string to split.
+     * @param size The expected size of the resulting array.
+     * @param separator The separator character to split on.
+     *
+     * @return A String[] containing the fields that have been split out of the
+     * string.
+     */
+    private static String[] split(final String s, final int size, final char separator) {
+        final String[] a = new String[size];
+        final int length = s.length();
+        int pos = -1;
+        int i = 0;
+        while (pos < length) {
+            int ixSep = s.indexOf(separator, pos + 1);
+            if (ixSep == -1) {
+                // If there are no more separators, there is still one more field to split.
+                ixSep = s.length();
+            }
+            a[i++] = s.substring(pos + 1, ixSep);
+            pos = ixSep;
+        }
+
+        return a;
     }
 
     @Override
@@ -463,11 +502,25 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         } else if (o.name != null) {
             return -1;
         } else {
-            return redColorValue != o.redColorValue ? (int) (redColorValue - o.redColorValue)
-                    : greenColorValue != o.greenColorValue ? (int) (greenColorValue - o.greenColorValue)
-                            : blueColorValue != o.blueColorValue ? (int) (blueColorValue - o.blueColorValue)
-                                    : (int) (alpha - o.alpha);
+            return redColorValue != o.redColorValue ? compareColourComponents(redColorValue, o.redColorValue)
+                    : greenColorValue != o.greenColorValue ? compareColourComponents(greenColorValue, o.greenColorValue)
+                            : blueColorValue != o.blueColorValue ? compareColourComponents(blueColorValue, o.blueColorValue)
+                                    : compareColourComponents(alpha, o.alpha);
         }
+    }
+    
+    /**
+     * Compare two colour components and return the result. 
+     * 1 if colour1Compoment has higher value.
+     * -1 if colour2Compoment has higher value.
+     * 0 if values are the same.
+     * 
+     * @param colour1Component the first colour component value to compare
+     * @param colour2Component the second colour component value to compare
+     * @return integer representing the result of the comparison
+     */
+    private int compareColourComponents(final float colour1Component, final float colour2Component) {
+        return colour1Component == colour2Component ? 0 : (int) ((colour1Component - colour2Component) / Math.abs(colour1Component - colour2Component)); 
     }
 
     /**
@@ -611,36 +664,5 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         public void remove() {
             throw new UnsupportedOperationException("Not supported.");
         }
-    }
-
-    /**
-     * A fast split method (slightly faster than String.split()).
-     *
-     * The maximum size of the resulting String[] must be known beforehand. The
-     * actual size may be less.
-     *
-     * @param s The string to split.
-     * @param size The expected size of the resulting array.
-     * @param separator The separator character to split on.
-     *
-     * @return A String[] containing the fields that have been split out of the
-     * string.
-     */
-    private static String[] split(final String s, final int size, final char separator) {
-        final String[] a = new String[size];
-        final int length = s.length();
-        int pos = -1;
-        int i = 0;
-        while (pos < length) {
-            int ixSep = s.indexOf(separator, pos + 1);
-            if (ixSep == -1) {
-                // If there are no more separators, there is still one more field to split.
-                ixSep = s.length();
-            }
-            a[i++] = s.substring(pos + 1, ixSep);
-            pos = ixSep;
-        }
-
-        return a;
     }
 }

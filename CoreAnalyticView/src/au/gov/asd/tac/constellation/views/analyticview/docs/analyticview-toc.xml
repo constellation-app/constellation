@@ -27,7 +27,7 @@
                     <tocitem text="Average Degree" target="au.gov.asd.tac.constellation.views.analyticview.analytics.AverageDegreeAnalytic"/>
                     <tocitem text="Component Count" target="au.gov.asd.tac.constellation.views.analyticview.analytics.ComponentCountAnalytic"/>
                     <tocitem text="Global Clustering Coefficient" target="au.gov.asd.tac.constellation.views.analyticview.analytics.GlobalClusteringCoefficientAnalytic"/>
-                    <tocitem text="Graph Density" target="au.gov.asd.tac.constellation.views.analyticview.analyticsGraphDensityAnalytic"/>
+                    <tocitem text="Graph Density" target="au.gov.asd.tac.constellation.views.analyticview.analytics.GraphDensityAnalytic"/>
                     <tocitem text="Graph Distance" target="au.gov.asd.tac.constellation.views.analyticview.analytics.GraphDistanceAnalytic"/>
                 </tocitem>
                 <tocitem text="Metrics" mergetype="javax.help.SortMerge">

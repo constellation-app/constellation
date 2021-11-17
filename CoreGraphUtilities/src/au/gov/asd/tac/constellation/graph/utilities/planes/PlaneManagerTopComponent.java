@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -512,7 +513,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to update the plane visibility on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
     private static class UpdatePlaneVisibilityPlugin extends SimpleEditPlugin {
 
         private final BitSet visibleLayers;
@@ -543,7 +544,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to import the plane on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.IMPORT})
     private static class ImportPlanePlugin extends SimpleEditPlugin {
 
         private static final Logger LOGGER = Logger.getLogger(ImportPlanePlugin.class.getName());
@@ -607,7 +608,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to remove the plane from the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"DELETE"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.DELETE})
     private static class RemovePlanePlugin extends SimpleEditPlugin {
 
         final List<Integer> toRemove;
@@ -641,7 +642,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to set the plane position on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
     private static class SetPlanePositionPlugin extends SimpleEditPlugin {
 
         final PlanePositionPanel ppp;
@@ -720,7 +721,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to scale the plane on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
     private static class ScalePlanesPlugin extends SimpleEditPlugin {
 
         final List<Integer> selectedPlanes;

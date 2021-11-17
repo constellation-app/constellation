@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
@@ -35,7 +36,7 @@ import org.openide.windows.WindowManager;
  *
  * @author Atlas139mkm
  */
-@PluginInfo(tags = {"WELCOME"})
+@PluginInfo(tags = {PluginTags.WELCOME})
 @NbBundle.Messages("DataAcessViewWelcomePluging=Data Acess View Welcome Plugin")
 public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
 

@@ -695,9 +695,9 @@ public class NotesViewPane extends BorderPane {
                 final BitSet elementIdsTx = new BitSet();
                 final BitSet elementIdsVx = new BitSet();
 
+                final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (newNote.isGraphAttribute()) {
                     // Select all elements with right click menu if the user note is applied to the whole graph.
-                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                     final ReadableGraph rg = activeGraph.getReadableGraph();
                     try {
                         final int vxCount = rg.getVertexCount();
@@ -734,13 +734,13 @@ public class NotesViewPane extends BorderPane {
                         .withParameter(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIdsTx)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID, new ElementTypeParameterValue(GraphElementType.TRANSACTION))
                         .withParameter(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REPLACE)
-                        .executeLater(GraphManager.getDefault().getActiveGraph());
+                        .executeLater(activeGraph);
 
                 PluginExecution.withPlugin(VisualGraphPluginRegistry.CHANGE_SELECTION)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIdsVx)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID, new ElementTypeParameterValue(GraphElementType.VERTEX))
                         .withParameter(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REPLACE)
-                        .executeLater(GraphManager.getDefault().getActiveGraph());
+                        .executeLater(activeGraph);
             });
             final MenuItem addOnGraphMenuItem = new MenuItem("Add Selected");
             addOnGraphMenuItem.setOnAction(event -> {

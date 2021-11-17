@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.layers.shortcut;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
@@ -58,9 +59,9 @@ public class LayersViewShortcuts extends AbstractAction {
     
     private static final Logger LOGGER = Logger.getLogger(LayersViewShortcuts.class.getName());
 
-    private void triggerLayerSelection(final int layerId) {
-        BitMaskQueryCollection vxCollection = LayersViewController.getDefault().getVxQueryCollection();
-        BitMaskQueryCollection txCollection = LayersViewController.getDefault().getTxQueryCollection();
+    private void triggerLayerSelection(final Graph graph, final int layerId) {
+        final BitMaskQueryCollection vxCollection = LayersViewController.getDefault().getVxQueryCollection();
+        final BitMaskQueryCollection txCollection = LayersViewController.getDefault().getTxQueryCollection();
 
         if (vxCollection.getQuery(layerId) != null) {
             vxCollection.getQuery(layerId).setVisibility(!vxCollection.getQuery(layerId).getVisibility());
@@ -72,7 +73,7 @@ public class LayersViewShortcuts extends AbstractAction {
         final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(vxCollection, txCollection);
 
         PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
-                .executeLater(GraphManager.getDefault().getActiveGraph());
+                .executeLater(graph);
 
         final Future<?> future = LayersViewController.getDefault().writeState();
 
@@ -89,19 +90,20 @@ public class LayersViewShortcuts extends AbstractAction {
 
         if (!LayersViewController.getDefault().getParentVisibility()) {
             LayersViewController.getDefault().readStateFuture();
-            LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getActiveGraph());
+            LayersViewController.getDefault().updateQueries(graph);
         }
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         final String hotkey = e.getActionCommand();
+        final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
         switch (hotkey) {
             case "CA-L":
-                PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+                PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(currentGraph);
                 break;
             case "CA-D":
-                final Future<?> deselectFuture = PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+                final Future<?> deselectFuture = PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(currentGraph);
                 try {
                     deselectFuture.get();
                 } catch (final InterruptedException ex) {
@@ -110,34 +112,34 @@ public class LayersViewShortcuts extends AbstractAction {
                 } catch (final ExecutionException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
-                LayersViewController.getDefault().updateQueriesFuture(GraphManager.getDefault().getActiveGraph());
+                LayersViewController.getDefault().updateQueriesFuture(currentGraph);
                 break;
             case "CA-1":
-                triggerLayerSelection(1);
+                triggerLayerSelection(currentGraph, 1);
                 break;
             case "CA-2":
-                triggerLayerSelection(2);
+                triggerLayerSelection(currentGraph, 2);
                 break;
             case "CA-3":
-                triggerLayerSelection(3);
+                triggerLayerSelection(currentGraph, 3);
                 break;
             case "CA-4":
-                triggerLayerSelection(4);
+                triggerLayerSelection(currentGraph, 4);
                 break;
             case "CA-5":
-                triggerLayerSelection(5);
+                triggerLayerSelection(currentGraph, 5);
                 break;
             case "CA-6":
-                triggerLayerSelection(6);
+                triggerLayerSelection(currentGraph, 6);
                 break;
             case "CA-7":
-                triggerLayerSelection(7);
+                triggerLayerSelection(currentGraph, 7);
                 break;
             case "CA-8":
-                triggerLayerSelection(8);
+                triggerLayerSelection(currentGraph, 8);
                 break;
             case "CA-9":
-                triggerLayerSelection(9);
+                triggerLayerSelection(currentGraph, 9);
                 break;
             default:
                 break;

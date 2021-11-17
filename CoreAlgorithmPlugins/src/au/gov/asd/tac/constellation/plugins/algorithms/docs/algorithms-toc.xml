@@ -6,8 +6,8 @@
     </tocitem>
     <tocitem text="Tools" mergetype="javax.help.SortMerge">
         <tocitem text="Cluster" mergetype="javax.help.SortMerge">
-            <tocitem text="Chinese Whispers" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers"/>
-            <tocitem text="K-Truss" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss"/>
+            <tocitem text="Chinese Whispers" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispers"/>
+            <tocitem text="K-Truss" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss"/>
         </tocitem>
     </tocitem>
 </toc>

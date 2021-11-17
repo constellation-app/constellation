@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
-    <tocitem text="Selection">
+    <tocitem text="Selection" mergetype="javax.help.SortMerge">
         <tocitem text="General Selection" target="au.gov.asd.tac.constellation.graph.visual.generalSelection"/>
         <tocitem text="Blaze Selection" target="au.gov.asd.tac.constellation.graph.visual.blazeSelection"/>
         <tocitem text="Dimmed Selection" target="au.gov.asd.tac.constellation.graph.visual.dimmedSelection"/>
@@ -10,6 +10,7 @@
         <tocitem text="Hop Out" target="au.gov.asd.tac.constellation.graph.visual.hopOut" />
     </tocitem>
     <tocitem text="Tools" mergetype="javax.help.SortMerge">
+        <tocitem text="Compare Graph" target="au.gov.asd.tac.constellation.graph.visual.compare"/>
         <tocitem text="Merge Nodes" target="au.gov.asd.tac.constellation.graph.visual.mergeNodes"/>
     </tocitem>
 </toc>

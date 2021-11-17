@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -33,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("CopyToClipboardPlugin=Copy To Clipboard")
-@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 public final class CopyToClipboardPlugin extends SimpleReadPlugin {
 
     @Override

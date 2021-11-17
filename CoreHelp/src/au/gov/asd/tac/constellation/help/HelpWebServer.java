@@ -1,0 +1,109 @@
+/*
+ * Copyright 2010-2021 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.help;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.eclipse.jetty.server.RequestLog;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.openide.util.Lookup;
+
+/**
+ *
+ * @author Delphinus8821
+ */
+public class HelpWebServer {
+
+    private static final Logger LOGGER = Logger.getLogger(HelpWebServer.class.getName());
+
+    private static boolean running = false;
+    private static int port = 0;
+    private static final String WEB_SERVER_THREAD_NAME = "Help Web Server";
+
+    private HelpWebServer() {
+        // Intentionally left blank 
+    }
+
+    public static boolean isRunning() {
+        return running;
+    }
+
+    public static int getPort() {
+        return port;
+    }
+
+    public static synchronized int start() {
+        if (!running) {
+            try {
+                final InetAddress loopback = InetAddress.getLoopbackAddress();
+                port = 1517;
+
+                // Build the server.
+                final Server server = new Server(new InetSocketAddress(loopback, port));
+                final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+                context.setContextPath("/");
+                server.setHandler(context);
+
+                // Gather the servlets and add them to the server.
+                Lookup.getDefault().lookupAll(HttpServlet.class).forEach(servlet -> {
+                    if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
+                        for (final String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
+                            Logger.getGlobal().info(String.format("urlpattern %s %s", servlet, urlPattern));
+                            context.addServlet(new ServletHolder(servlet), urlPattern);
+                        }
+                    }
+                });
+
+                // Make our own handler so we can log requests with the CONSTELLATION logs.
+                final RequestLog requestLog = (request, response) -> {
+                    final String log = String.format("Request at %s from %s %s, status %d", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus());
+                    LOGGER.info(log);
+                };
+                server.setRequestLog(requestLog);
+
+                final String loggingMessage = String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback.toString(), port);
+                LOGGER.log(Level.INFO, loggingMessage);
+                server.start();
+
+                // Wait for the server to stop (if it ever does).
+                final Thread webserver = new Thread(() -> {
+                    try {
+                        server.join();
+                    } catch (final InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(ex);
+                    }
+                });
+                webserver.setName(WEB_SERVER_THREAD_NAME);
+                webserver.start();
+
+                running = true;
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return port;
+    }
+}

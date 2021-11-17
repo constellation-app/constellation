@@ -73,7 +73,7 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
                         
                         // Register that this plugin has been added under favourites for when
                         // overriden plugins are being dealt with
-                        pluginNameToType.put(plugin.getName(), DataAccessPluginCoreType.FAVOURITES);
+                        pluginNameToType.put(plugin.getClass().getName(), DataAccessPluginCoreType.FAVOURITES);
                     }
                     
                     // If plugin type is valid, add the plugin to the Data Access View.
@@ -84,7 +84,7 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
                         // If plugin overrides another, record which plugin should be removed
                         // for later processing. Also record name to type so that it doesn't
                         // need to loop through every type to find it
-                        pluginNameToType.put(plugin.getName(), plugin.getType());
+                        pluginNameToType.put(plugin.getClass().getName(), plugin.getType());
                         pluginOverrides.addAll(plugin.getOverriddenPlugins());
                     }
                 });
@@ -99,7 +99,7 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
                                 // For the given plugin name and type get the list that the plugin will be in
                                 final List<DataAccessPlugin> pluginList = plugins.get(pluginToRemoveType);
                                 IntStream.range(0, pluginList.size())
-                                        .filter(index -> pluginList.get(index).getName()
+                                        .filter(index -> pluginList.get(index).getClass().getName()
                                                 .equals(pluginToRemoveName))
                                         .findFirst()
                                         .ifPresent(index -> {
