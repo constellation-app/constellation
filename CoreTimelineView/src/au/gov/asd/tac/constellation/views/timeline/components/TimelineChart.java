@@ -244,7 +244,7 @@ public class TimelineChart extends XYChart<Number, Number> {
         // Create the selection box:
         selection = createSelectionRectange();
         selection.setStroke(Color.SILVER);
-        selection.setStrokeWidth(2d);
+        selection.setStrokeWidth(2D);
         final LinearGradient gradient
                 = new LinearGradient(0.0, 0.0, 0.0, 0.75, true, CycleMethod.NO_CYCLE, new Stop[]{
             new Stop(0, Color.LIGHTGREY),
@@ -299,7 +299,7 @@ public class TimelineChart extends XYChart<Number, Number> {
             final double msMouse = lowerTimeExtent + ((mouseX * (upperTimeExtent - lowerTimeExtent)) / width);
 
             // We are zooming in:
-            if (se.getDeltaY() > 0d) {
+            if (se.getDeltaY() > 0D) {
                 // Only zoom in if we haven't reached the minimum size:
                 if (quantum >= 0.5) {
                     lowerTimeExtent = (msMouse - ((msMouse - lowerTimeExtent) * 0.9)); // Zoom in by 10%
@@ -309,7 +309,7 @@ public class TimelineChart extends XYChart<Number, Number> {
                     parent.coordinator.setExtents(lowerTimeExtent, upperTimeExtent);
                 }
             } else { // We are zooming out:
-                if (quantum <= YEAR * 10d) {
+                if (quantum <= YEAR * 10D) {
                     lowerTimeExtent = (long) (msMouse - ((msMouse - lowerTimeExtent) * 1.1)); // Zoom out by 10%
                     upperTimeExtent = (long) (msMouse + ((upperTimeExtent - msMouse) * 1.1));
 
@@ -341,8 +341,8 @@ public class TimelineChart extends XYChart<Number, Number> {
         xAxis.setAutoRanging(false);
         xAxis.setMinorTickVisible(false);
         xAxis.setTickMarkVisible(true);
-        xAxis.setLowerBound(0d);
-        xAxis.setUpperBound(1d);
+        xAxis.setLowerBound(0D);
+        xAxis.setUpperBound(1D);
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override
             public String toString(final Number object) {

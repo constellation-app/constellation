@@ -379,7 +379,7 @@ public class GlyphsFrame extends JFrame {
         fontsInfo[0] = new FontInfo(fontName, fontStyle, fontSize, fi.mustHave, fi.mustNotHave);
 
         glyphManager.setFonts(fontsInfo);
-        glyphManager.createBackgroundGlyph(0.5f);
+        glyphManager.createBackgroundGlyph(0.5F);
 
         showTextureBuffer();
         final String line = getLine();

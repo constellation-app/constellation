@@ -366,16 +366,16 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         CameraUtilities.changeMixRatio(camera, false, isCtrl);
                         eventState.addEventName(MIX_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_A) {
-                        CameraUtilities.pan(camera, -0.5f * (isShift ? 10 : 1), 0);
+                        CameraUtilities.pan(camera, -0.5F * (isShift ? 10 : 1), 0);
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_D) {
-                        CameraUtilities.pan(camera, 0.5f * (isShift ? 10 : 1), 0);
+                        CameraUtilities.pan(camera, 0.5F * (isShift ? 10 : 1), 0);
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_S) {
-                        CameraUtilities.pan(camera, 0, -0.5f * (isShift ? 10 : 1));
+                        CameraUtilities.pan(camera, 0, -0.5F * (isShift ? 10 : 1));
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_W) {
-                        CameraUtilities.pan(camera, 0, 0.5f * (isShift ? 10 : 1));
+                        CameraUtilities.pan(camera, 0, 0.5F * (isShift ? 10 : 1));
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else {
                         // Do nothing
@@ -429,7 +429,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             if (zAxisRotation) {
                                 CameraUtilities.spin(camera, visualInteraction.convertTranslationToSpin(from, to));
                             } else {
-                                CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : (from.y - to.y) / 2.0f, event.isControlDown() ? 0 : (from.x - to.x) / 2.0f);
+                                CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : (from.y - to.y) / 2.0F, event.isControlDown() ? 0 : (from.x - to.x) / 2.0F);
                             }
                             cameraChange = true;
                             break;

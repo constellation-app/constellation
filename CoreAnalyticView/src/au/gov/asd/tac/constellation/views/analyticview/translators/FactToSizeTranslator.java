@@ -102,10 +102,10 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                     final int elementId = factResult.getElementId();
                     switch (elementType) {
                         case VERTEX:
-                            graph.setFloatValue(vertexSizeAttribute, elementId, 1.0f);
+                            graph.setFloatValue(vertexSizeAttribute, elementId, 1.0F);
                             break;
                         case TRANSACTION:
-                            graph.setFloatValue(transactionSizeAttribute, elementId, 1.0f);
+                            graph.setFloatValue(transactionSizeAttribute, elementId, 1.0F);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Size Elements' is not supported "
@@ -125,14 +125,14 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                 for (final ElementFact factResult : factResults.get()) {
                     final GraphElementType elementType = factResult.getElementType();
                     final int elementId = factResult.getElementId();
-                    final float elementValue = factResult.getFactValue() ? 1f : 0f;
+                    final float elementValue = factResult.getFactValue() ? 1F : 0F;
                     final float sizeIntensity = (float) Math.log((double) (elementValue * graphEstimatedDiameter));
                     switch (elementType) {
                         case VERTEX:
-                            graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0f ? sizeIntensity : 1.0f);
+                            graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
                             break;
                         case TRANSACTION:
-                            graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0f ? sizeIntensity : 1.0f);
+                            graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Size Elements' is not supported "

@@ -365,7 +365,7 @@ public final class QualityControlViewPane extends BorderPane {
      * @return a javafx style based on the given quality value.
      */
     public static String qualityStyle(final QualityCategory category) {
-        return qualityStyle(category, 0.75f);
+        return qualityStyle(category, 0.75F);
     }
 
     /**

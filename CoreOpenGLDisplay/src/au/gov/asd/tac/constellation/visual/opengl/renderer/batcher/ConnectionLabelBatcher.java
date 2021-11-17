@@ -230,7 +230,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
     public GLRenderableUpdateTask setBackgroundColor(final VisualAccess access) {
         final ConstellationColor color = access.getBackgroundColor();
         return gl -> {
-            backgroundColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 0.25f};
+            backgroundColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 0.25F};
         };
     }
 

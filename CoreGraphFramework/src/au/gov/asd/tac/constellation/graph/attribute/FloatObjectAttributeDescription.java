@@ -43,7 +43,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
             if (object instanceof Number) {
                 return ((Number) object).floatValue();
             } else if (object instanceof Boolean) {
-                return ((Boolean) object) ? 1.0f : 0.0f;
+                return ((Boolean) object) ? 1.0F : 0.0F;
             } else if (object instanceof Character) {
                 return (float) object;
             } else {
@@ -103,7 +103,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
 
     @Override
     public float getFloat(final int id) {
-        return data[id] != null ? (Float) data[id] : 0.0f;
+        return data[id] != null ? (Float) data[id] : 0.0F;
     }
 
     @Override
@@ -123,12 +123,12 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
 
     @Override
     public boolean getBoolean(final int id) {
-        return data[id] != null && !data[id].equals(0.0f);
+        return data[id] != null && !data[id].equals(0.0F);
     }
 
     @Override
     public void setBoolean(final int id, final boolean value) {
-        data[id] = value ? 1.0f : 0.0f;
+        data[id] = value ? 1.0F : 0.0F;
     }
 
     @Override

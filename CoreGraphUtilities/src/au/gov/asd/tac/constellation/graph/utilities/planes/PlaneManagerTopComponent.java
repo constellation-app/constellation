@@ -556,7 +556,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 final float width = bi.getWidth() * sizeFactor;
                 final float height = bi.getHeight() * sizeFactor;
                 final float[] centre = box.getCentre();
-                final Plane plane = new Plane(label, centre[0] - width / 2f, centre[1] - height / 2f, 0, width, height, bi, bi.getWidth(), bi.getHeight());
+                final Plane plane = new Plane(label, centre[0] - width / 2F, centre[1] - height / 2F, 0, width, height, bi, bi.getWidth(), bi.getHeight());
                 int planesAttr = wg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
                 if (planesAttr == Graph.NOT_FOUND) {
                     planesAttr = wg.addAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, null, null);
@@ -721,12 +721,12 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
             final PlaneState state = new PlaneState(oldState);
             for (int ix : selectedPlanes) {
                 final Plane plane = state.getPlane(ix);
-                final float centrex = plane.getX() + plane.getWidth() / 2f;
-                final float centrey = plane.getY() + plane.getHeight() / 2f;
+                final float centrex = plane.getX() + plane.getWidth() / 2F;
+                final float centrey = plane.getY() + plane.getHeight() / 2F;
                 final float w = plane.getImageWidth() * newScale;
                 final float h = plane.getImageHeight() * newScale;
-                plane.setX(centrex - w / 2f);
-                plane.setY(centrey - h / 2f);
+                plane.setX(centrex - w / 2F);
+                plane.setY(centrey - h / 2F);
                 plane.setWidth(w);
                 plane.setHeight(h);
             }

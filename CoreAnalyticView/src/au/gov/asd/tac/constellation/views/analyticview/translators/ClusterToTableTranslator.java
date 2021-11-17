@@ -100,6 +100,6 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
 
     @Override
     public ConstellationColor getCellColor(final ClusterData cellValue, final Object cellItem, final String columnName) {
-        return ConstellationColor.getColorValue(0f, 0f, 0f, 0.3f);
+        return ConstellationColor.getColorValue(0F, 0F, 0F, 0.3F);
     }
 }

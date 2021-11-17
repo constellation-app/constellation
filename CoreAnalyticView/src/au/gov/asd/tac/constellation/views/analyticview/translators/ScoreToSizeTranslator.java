@@ -103,10 +103,10 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                     final int elementId = scoreResult.getElementId();
                     switch (elementType) {
                         case VERTEX:
-                            graph.setFloatValue(vertexSizeAttribute, elementId, 1.0f);
+                            graph.setFloatValue(vertexSizeAttribute, elementId, 1.0F);
                             break;
                         case TRANSACTION:
-                            graph.setFloatValue(transactionSizeAttribute, elementId, 1.0f);
+                            graph.setFloatValue(transactionSizeAttribute, elementId, 1.0F);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Size Elements' is not supported "
@@ -116,15 +116,15 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
             } else {
                 // estimate size of graph
                 final BBoxf graphBoundingBox = BBoxf.getGraphBoundingBox(graph);
-                float graphEstimatedDiameter = 0.0f;
+                float graphEstimatedDiameter = 0.0F;
                 graphEstimatedDiameter = Math.max(graphBoundingBox.getMax()[BBoxf.X] - graphBoundingBox.getMin()[BBoxf.X],
                         graphBoundingBox.getMax()[BBoxf.Y] - graphBoundingBox.getMin()[BBoxf.Y]);
                 graphEstimatedDiameter = Math.max(graphEstimatedDiameter,
                         graphBoundingBox.getMax()[BBoxf.Z] - graphBoundingBox.getMin()[BBoxf.Z]);
 
                 // find highest and lowest mean scores among available analytic results
-                float highestMeanScore = 0.0f;
-                float lowestMeanScore = 0.0f;
+                float highestMeanScore = 0.0F;
+                float lowestMeanScore = 0.0F;
                 for (final ElementScore scoreResult : scoreResults.get()) {
                     final float elementMeanScore = scoreResult.getNamedScores().values().stream()
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
@@ -146,10 +146,10 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                     final float sizeIntensity = (float) Math.log((double) (elementMeanScore * (graphEstimatedDiameter / meanScoreRange)));
                     switch (elementType) {
                         case VERTEX:
-                            graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0f ? sizeIntensity : 1.0f);
+                            graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
                             break;
                         case TRANSACTION:
-                            graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0f ? sizeIntensity : 1.0f);
+                            graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Size Elements' is not supported "

@@ -181,8 +181,8 @@ public final class GLRenderer implements GLEventListener {
         // If JOGL is ever fixed or another solution is found, either change
         // needsManualDPIScaling to return false (so there is effectively no
         // DPI scaling here) or remove the scaled height and width below.         
-        float dpiScaleX = 1.0f;
-        float dpiScaleY = 1.0f;
+        float dpiScaleX = 1.0F;
+        float dpiScaleY = 1.0F;
         if (GLTools.needsManualDPIScaling()) {
             dpiScaleX = (float) ((Graphics2D) (parent.canvas).getGraphics()).getTransform().getScaleX();
             dpiScaleY = (float) ((Graphics2D) (parent.canvas).getGraphics()).getTransform().getScaleY();

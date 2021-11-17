@@ -85,12 +85,12 @@ public class AnaglyphCamera {
     }
 
     public Matrix44f applyLeftFrustum(final Matrix44f mv) {
-        final float sep = eyeSeparation / 2f;
+        final float sep = eyeSeparation / 2F;
 
-        final float top = nearClippingDistance * (float) Math.tan(fovRadians / 2f);
+        final float top = nearClippingDistance * (float) Math.tan(fovRadians / 2F);
         final float bottom = -top;
 
-        final float a = aspectRatio * (float) Math.tan(fovRadians / 2f) * convergence;
+        final float a = aspectRatio * (float) Math.tan(fovRadians / 2F) * convergence;
 
         final float b = a - sep;
         final float c = a + sep;
@@ -112,12 +112,12 @@ public class AnaglyphCamera {
     }
 
     public Matrix44f applyRightFrustum(final Matrix44f mv) {
-        final float sep = eyeSeparation / 2f;
+        final float sep = eyeSeparation / 2F;
 
-        final float top = nearClippingDistance * (float) Math.tan(fovRadians / 2f);
+        final float top = nearClippingDistance * (float) Math.tan(fovRadians / 2F);
         final float bottom = -top;
 
-        final float a = aspectRatio * (float) Math.tan(fovRadians / 2f) * convergence;
+        final float a = aspectRatio * (float) Math.tan(fovRadians / 2F) * convergence;
 
         final float b = a - sep;
         final float c = a + sep;

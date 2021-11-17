@@ -59,9 +59,9 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.QueryNameValidator;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -237,8 +237,8 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
                     protected void updateItem(final ParameterValue item, final boolean empty) {
                         super.updateItem(item, empty);
                         this.setText(empty ? "" : item.toString());
-                        final float f = empty ? 0 : item.toString().length() / 11f;
-                        final Color c = Color.color(1 - f / 2f, 0, 0);
+                        final float f = empty ? 0 : item.toString().length() / 11F;
+                        final Color c = Color.color(1 - f / 2F, 0, 0);
                         setTextFill(c);
                         setGraphic(new ImageView(img));
                     }
@@ -282,10 +282,10 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<FloatParameterValue> probability = FloatParameterType.build(PROBABILITY_PARAMETER_ID);
         probability.setName("Probability");
         probability.setDescription("0 <= p <= 1");
-        FloatParameterType.setMinimum(probability, 0f);
-        FloatParameterType.setMaximum(probability, 1f);
-        FloatParameterType.setStep(probability, 0.1f);
-        probability.setFloatValue(1f);
+        FloatParameterType.setMinimum(probability, 0F);
+        FloatParameterType.setMaximum(probability, 1F);
+        FloatParameterType.setStep(probability, 0.1F);
+        probability.setFloatValue(1F);
         params.addParameter(probability);
 
         final PluginParameter<FileParameterValue> openFileParam = FileParameterType.build(INPUT_FILE_PARAMETER_ID);

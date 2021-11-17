@@ -256,7 +256,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final int vxCountry1Attr = SpatialConcept.VertexAttribute.COUNTRY.ensure(graph);
         final int vxCountry2Attr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Geo.Country2", null, null, null);
         final int vxDecoratorAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Custom Decorator", null, null, null);
-        final int vxNormalisedAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "Normalised", null, 0.0f, null);
+        final int vxNormalisedAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "Normalised", null, 0.0F, null);
 
         final int txIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         final int txDirectedAttr = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
@@ -273,9 +273,9 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final List<GraphLabel> transactionLabels = new ArrayList<>();
         if (useLabels) {
             bottomLabels.add(new GraphLabel(VisualConcept.VertexAttribute.IDENTIFIER.getName(), ConstellationColor.WHITE));
-            bottomLabels.add(new GraphLabel(VisualConcept.VertexAttribute.FOREGROUND_ICON.getName(), ConstellationColor.DARK_GREEN, 0.5f));
-            topLabels.add(new GraphLabel(AnalyticConcept.VertexAttribute.TYPE.getName(), ConstellationColor.MAGENTA, 0.5f));
-            topLabels.add(new GraphLabel(SpatialConcept.VertexAttribute.COUNTRY.getName(), ConstellationColor.DARK_ORANGE, 0.5f));
+            bottomLabels.add(new GraphLabel(VisualConcept.VertexAttribute.FOREGROUND_ICON.getName(), ConstellationColor.DARK_GREEN, 0.5F));
+            topLabels.add(new GraphLabel(AnalyticConcept.VertexAttribute.TYPE.getName(), ConstellationColor.MAGENTA, 0.5F));
+            topLabels.add(new GraphLabel(SpatialConcept.VertexAttribute.COUNTRY.getName(), ConstellationColor.DARK_ORANGE, 0.5F));
             transactionLabels.add(new GraphLabel(VisualConcept.TransactionAttribute.VISIBILITY.getName(), ConstellationColor.LIGHT_GREEN));
         }
 
@@ -296,7 +296,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
         graph.setObjectValue(decoratorsAttr, 0, decorators);
 
-        final ConstellationColor.PalettePhiIterator palette = new ConstellationColor.PalettePhiIterator(0, 0.75f, 0.75f);
+        final ConstellationColor.PalettePhiIterator palette = new ConstellationColor.PalettePhiIterator(0, 0.75F, 0.75F);
 
         // Displayable characters for type.
         int c = 33;
@@ -306,7 +306,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final int[] vxIds = new int[nVx];
         int vx = 0;
         while (vx < nVx) {
-            final float v = nVx > 1 ? vx / (float) (nVx - 1) : 1f;
+            final float v = nVx > 1 ? vx / (float) (nVx - 1) : 1F;
             final int vxId = graph.addVertex();
 
             // A label with a random CJK glyph.
@@ -384,7 +384,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                 for (int i = 0; i < nTx; i++) {
                     // Choose random positions, convert to correct vxIds.
                     // Concentrate most sources to just a few vertices; it looks a bit nicer than plain random.
-                    int fromPosition = vertexCount + (random.nextFloat() < 0.9f ? random.nextInt((int) (Math.log10(nVx) * 5) + 1) : random.nextInt(nVx));
+                    int fromPosition = vertexCount + (random.nextFloat() < 0.9F ? random.nextInt((int) (Math.log10(nVx) * 5) + 1) : random.nextInt(nVx));
                     int toPosition;
                     do {
                         toPosition = vertexCount + random.nextInt(nVx);
@@ -576,7 +576,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         // Too many transactions to draw; different colors.
         final int lim1 = 16;
         for (int i = 0; i < lim1; i++) {
-            final ConstellationColor rgb = ConstellationColor.getColorValue((float) i / lim1, 0, 1.0f - (float) i / lim1, 1f);
+            final ConstellationColor rgb = ConstellationColor.getColorValue((float) i / lim1, 0, 1.0F - (float) i / lim1, 1F);
             if (i % 2 == 0) {
                 txId = graph.addTransaction(vx0, vx1, true);
             } else {
@@ -590,7 +590,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         // Not too many transactions to draw; different colors.
         final int lim2 = 8;
         for (int i = 0; i < lim2; i++) {
-            final ConstellationColor rgb = ConstellationColor.getColorValue(0.25f, 1.0f - (float) i / lim2, (float) i / lim2, 1f);
+            final ConstellationColor rgb = ConstellationColor.getColorValue(0.25F, 1.0F - (float) i / lim2, (float) i / lim2, 1F);
             if (i % 2 == 0) {
                 txId = graph.addTransaction(vx1, vx2, true);
             } else {
@@ -599,7 +599,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
             graph.setIntValue(txIdAttr, txId, txId);
             graph.setObjectValue(txColorAttr, txId, rgb);
             graph.setFloatValue(txVisibilityAttr, txId, (i + 1) / (float) lim2);
-            graph.setFloatValue(txWidthAttr, txId, 2f);
+            graph.setFloatValue(txWidthAttr, txId, 2F);
         }
 
         // Too many transactions to draw: same color.
@@ -608,13 +608,13 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         for (int i = 0; i < lim3; i++) {
             if (i == 0) {
                 txId = graph.addTransaction(vx3, vx4, true);
-                graph.setFloatValue(txVisibilityAttr, txId, 0.3f);
+                graph.setFloatValue(txVisibilityAttr, txId, 0.3F);
             } else if (i < 4) {
                 txId = graph.addTransaction(vx3, vx4, false);
-                graph.setFloatValue(txVisibilityAttr, txId, 0.6f);
+                graph.setFloatValue(txVisibilityAttr, txId, 0.6F);
             } else {
                 txId = graph.addTransaction(vx4, vx3, true);
-                graph.setFloatValue(txVisibilityAttr, txId, 0.9f);
+                graph.setFloatValue(txVisibilityAttr, txId, 0.9F);
             }
             graph.setIntValue(txIdAttr, txId, txId);
             graph.setObjectValue(txColorAttr, txId, rgb3);
@@ -623,13 +623,13 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         // Undirected transactions.
         txId = graph.addTransaction(vx4, vx5, false);
         graph.setIntValue(txIdAttr, txId, txId);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.getColorValue(1f, 0f, 1f, 1f));
+        graph.setObjectValue(txColorAttr, txId, ConstellationColor.getColorValue(1F, 0F, 1F, 1F));
         graph.setBooleanValue(txDirectedAttr, txId, false);
         graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DASHED);
 
         txId = graph.addTransaction(vx5, vx4, false);
         graph.setIntValue(txIdAttr, txId, txId);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.getColorValue(1f, 1f, 0f, 1f));
+        graph.setObjectValue(txColorAttr, txId, ConstellationColor.getColorValue(1F, 1F, 0F, 1F));
         graph.setBooleanValue(txDirectedAttr, txId, false);
         graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DOTTED);
 
@@ -681,6 +681,6 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
      * @return A random RGB color.
      */
     private static ConstellationColor randomColor3(SecureRandom r) {
-        return ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
+        return ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1F);
     }
 }

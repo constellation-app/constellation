@@ -91,15 +91,15 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
     public ConstellationColor getCellColor(final ElementFact cellValue, final Object cellItem, final String columnName) {
         final float intensity;
         if (cellValue == null) {
-            intensity = 0f;
+            intensity = 0F;
         } else if (IDENTIFIER_COLUMN_NAME.equals(columnName)) {
-            intensity = cellValue.getFactValue() ? 1f : 0f;
+            intensity = cellValue.getFactValue() ? 1F : 0F;
         } else if (cellValue.getFactName().equals(columnName)) {
-            intensity = (boolean) cellItem ? 1f : 0f;
+            intensity = (boolean) cellItem ? 1F : 0F;
         } else {
             throw new UnrecognisedColumnException(columnName);
         }
 
-        return ConstellationColor.getColorValue(intensity, intensity, 0f, 0.3f);
+        return ConstellationColor.getColorValue(intensity, intensity, 0F, 0.3F);
     }
 }

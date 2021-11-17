@@ -168,7 +168,7 @@ public class FR3DArranger implements Arranger {
                     BORDER + r.nextInt(height - BORDER * 2),
                     BORDER + r.nextInt(depth - BORDER * 2));
             points.set(node, p);
-            offsets.set(node, new Point3D.Float(0.0f, 0.0f, 0.0f));
+            offsets.set(node, new Point3D.Float(0.0F, 0.0F, 0.0F));
         });
     }
 

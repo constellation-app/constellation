@@ -517,7 +517,7 @@ public class AttributeEditorPanel extends BorderPane {
             if (hidden) {
                 final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR));
                 final ConstellationColor keyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR));
-                colour = (ConstellationColor.getColorValue(hiddenColour.getRed() * 0.5f + keyColour.getRed() * 0.5f, hiddenColour.getGreen() * 0.5f + keyColour.getGreen() * 0.5f, hiddenColour.getBlue() * 0.5f + keyColour.getBlue() * 0.5f, 1f)).getHtmlColor();
+                colour = (ConstellationColor.getColorValue(hiddenColour.getRed() * 0.5F + keyColour.getRed() * 0.5F, hiddenColour.getGreen() * 0.5F + keyColour.getGreen() * 0.5F, hiddenColour.getBlue() * 0.5F + keyColour.getBlue() * 0.5F, 1F)).getHtmlColor();
             } else {
                 colour = prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR);
             }
@@ -527,7 +527,7 @@ public class AttributeEditorPanel extends BorderPane {
             if (hidden) {
                 final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR));
                 final ConstellationColor customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR));
-                colour = (ConstellationColor.getColorValue(hiddenColour.getRed() * 0.5f + customColour.getRed() * 0.5f, hiddenColour.getGreen() * 0.5f + customColour.getGreen() * 0.5f, hiddenColour.getBlue() * 0.5f + customColour.getBlue() * 0.5f, 1f)).getHtmlColor();
+                colour = (ConstellationColor.getColorValue(hiddenColour.getRed() * 0.5F + customColour.getRed() * 0.5F, hiddenColour.getGreen() * 0.5F + customColour.getGreen() * 0.5F, hiddenColour.getBlue() * 0.5F + customColour.getBlue() * 0.5F, 1F)).getHtmlColor();
             } else {
                 colour = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR);
             }

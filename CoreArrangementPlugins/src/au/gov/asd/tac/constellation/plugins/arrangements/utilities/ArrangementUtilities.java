@@ -118,7 +118,7 @@ public final class ArrangementUtilities {
                     // Get the source vertex of this incoming edge.
                     final int childVxId = graph.getEdgeSourceVertex(edgeId);
                     if (distancesToVertices[childVxId] == NO_DISTANCE) {
-                        final float childRadius = 1.5f * (nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
+                        final float childRadius = 1.5F * (nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
                         final float childDistance = parentDistance + childRadius;
                         vxQueue.add(childVxId);
                         distancesToVertices[childVxId] = childDistance;

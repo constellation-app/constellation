@@ -381,12 +381,12 @@ public final class GlyphManagerBI implements GlyphManager {
         //   ConnectionLabelBatcher and NodeLabelBatcher).
         // * cy centers the top and bottom vertically.
         //
-        final float centre = (ligature.left + ligature.right) / 2f;
+        final float centre = (ligature.left + ligature.right) / 2F;
         for (final GlyphRectangle gr : ligature.glyphRectangles) {
-            final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1f;
+            final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1F;
 //            final float cy = (gr.rect.y-top+((maxFontHeight-(bottom-top))/2f))/(float)maxFontHeight;
 //            final float cy = (2*gr.rect.y-top+maxFontHeight-bottom)/(2f*maxFontHeight);
-            final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2f) / (float) (maxFontHeight) + 0.5f;
+            final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2F) / (float) (maxFontHeight) + 0.5F;
             glyphStream.addGlyph(gr.position, cx, cy, context);
         }
     }

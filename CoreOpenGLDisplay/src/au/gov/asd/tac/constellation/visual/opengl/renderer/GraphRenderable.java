@@ -448,7 +448,7 @@ public final class GraphRenderable implements GLRenderable {
                     motion = 0;
                 }
             } else if (DirectionIndicatorsAction.isShowIndicators()) {
-                motion = (System.currentTimeMillis() - initialMotion) / 100f;
+                motion = (System.currentTimeMillis() - initialMotion) / 100F;
             } else {
                 motion = -1;
             }
@@ -496,7 +496,7 @@ public final class GraphRenderable implements GLRenderable {
 
                 final float convergence = Camera.PERSPECTIVE_NEAR + distanceToCentre;
 
-                final float eyeSeparation = 0.25f; // This is an arbitrary value, arrived at by experimentation.
+                final float eyeSeparation = 0.25F; // This is an arbitrary value, arrived at by experimentation.
                 final float aspect = (float)graphDisplayer.getWidth()/(float)graphDisplayer.getHeight();
                 final AnaglyphCamera anaglyphCam = new AnaglyphCamera(convergence, eyeSeparation, aspect, Camera.FIELD_OF_VIEW, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
 
@@ -543,7 +543,7 @@ public final class GraphRenderable implements GLRenderable {
                     gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, hitTestFboName);
 
                     // Explicitly clear the color to black: we need the default color to be 0 so elements drawn as non-zero are recognised.
-                    gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                    gl.glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
 
                     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
                     gl.glDisable(GL.GL_LINE_SMOOTH);
