@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.Component;
@@ -779,7 +780,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         PluginExecution.withPlugin(select).interactively(true).executeLater(graph);
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class RemoveOverlayColors extends SimpleEditPlugin {
 
         @Override
@@ -800,7 +801,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class ColorTrusses extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -850,7 +851,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.SELECT})
     public static final class Select extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -900,7 +901,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class Update extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -1016,7 +1017,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         // Required for @ConvertAsProperties, intentionally left blank
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static class KTrussCalculatePlugin extends SimpleEditPlugin {
 
         final boolean isInteractiveButtonSelected;

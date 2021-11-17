@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -41,7 +42,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @NbBundle.Messages("RemoveUnusedAttributesPlugin=Remove Unused Attributes")
-@PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE"})
+@PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
 public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements DataAccessPlugin {
 
     @Override

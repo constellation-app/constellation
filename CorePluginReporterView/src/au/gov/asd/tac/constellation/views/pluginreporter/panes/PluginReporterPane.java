@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.pluginreporter.panes;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -93,7 +94,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);
-        String filteredTagString = prefs.get(FILTERED_TAGS_KEY, "LOW LEVEL");
+        String filteredTagString = prefs.get(FILTERED_TAGS_KEY, PluginTags.LOW_LEVEL);
         filteredTags.addAll(Arrays.asList(filteredTagString.split(SeparatorConstants.TAB, 0)));
 
         // The filter drop down

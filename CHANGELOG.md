@@ -1,6 +1,7 @@
 # Constellation Changes
 
 ## Changes in October 2021
+-   Added `PluginTags` class to hold all tags as constants for `PluginInfo`.
 
 -   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
     can be used to configure the required plugin parameters to mark as `*required`

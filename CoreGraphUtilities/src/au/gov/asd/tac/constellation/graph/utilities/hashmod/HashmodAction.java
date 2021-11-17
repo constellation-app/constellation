@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -269,7 +270,7 @@ public final class HashmodAction implements ActionListener {
     /**
      * Plugin to create and add a hashmod to the graph
      */
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
     public static class AddHashmodPlugin extends SimpleEditPlugin {
 
         final boolean isChainedHashmods;

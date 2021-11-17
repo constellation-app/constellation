@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConc
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.FastNewman.Group;
 import au.gov.asd.tac.constellation.plugins.algorithms.paths.DijkstraServices;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.Component;
@@ -670,7 +671,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         setGroups(false);
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class ColorClusters extends SimpleEditPlugin {
 
         private final boolean setColors;
@@ -695,7 +696,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class Update extends SimpleEditPlugin {
 
         private final HierarchicalState state;
@@ -806,7 +807,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     /**
      * Recluster using hierarchical algorithm fast newman
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static class HierarchicalReclusterPlugin extends SimpleEditPlugin {
 
         final boolean interactiveButtonSelected;
@@ -830,7 +831,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     /**
      * Finds the shortest paths between clusters
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static class HierarchicalShortestPathsPlugin extends SimpleEditPlugin {
 
         final HierarchicalState state;
