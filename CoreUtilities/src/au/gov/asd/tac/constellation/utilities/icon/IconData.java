@@ -44,7 +44,7 @@ public abstract class IconData {
      * @param data
      */
     protected void setData(final byte[] data) {
-        this.data = data.clone();
+        this.data = data;
     }
 
     /**
@@ -84,7 +84,7 @@ public abstract class IconData {
             data = createData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
         }
 
-        return data.clone();
+        return data;
     }
 
     /**
