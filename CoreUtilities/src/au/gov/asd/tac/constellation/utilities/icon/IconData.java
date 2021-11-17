@@ -39,6 +39,15 @@ public abstract class IconData {
     private byte[] data = null;
 
     /**
+     * Setter used only for testing.
+     *
+     * @param data
+     */
+    protected void setData(final byte[] data) {
+        this.data = data;
+    }
+
+    /**
      * Get an array of bytes representing the data of a
      * {@link ConstellationIcon} of default size, specified by
      * {@link ConstellationIcon#DEFAULT_ICON_SIZE}, and original color. This
@@ -114,7 +123,7 @@ public abstract class IconData {
         return os.toByteArray();
     }
 
-    private static BufferedImage colorImage(final BufferedImage image, final Color color) {
+    protected static BufferedImage colorImage(final BufferedImage image, final Color color) {
         if (image == null || color == null) {
             return image;
         } else {
@@ -144,7 +153,7 @@ public abstract class IconData {
      * @return A {@link BufferedImage} which is identical to the provided image,
      * only resized.
      */
-    private static BufferedImage scaleImage(final BufferedImage image, final int size) {
+    protected static BufferedImage scaleImage(final BufferedImage image, final int size) {
         if (image == null || image.getType() == BufferedImage.TYPE_4BYTE_ABGR
                 && (image.getWidth() == size || image.getHeight() == size)) {
             return image;
@@ -179,17 +188,15 @@ public abstract class IconData {
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        } else if (obj == null) {
+        if (obj == null) {
             return false;
-        } else if (getClass() != obj.getClass()) {
-            return false;
-        } else {
-            // Do nothing
         }
-        final IconData other = (IconData) obj;
-        return Arrays.equals(this.data, other.data);
+
+        if (!(obj instanceof IconData)) {
+            return false;
+        }
+
+        return Arrays.equals(this.data, ((IconData) obj).data);
     }
 
     @Override

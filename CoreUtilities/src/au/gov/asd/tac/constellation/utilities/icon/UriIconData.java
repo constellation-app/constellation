@@ -51,15 +51,15 @@ public class UriIconData extends IconData {
     @Override
     protected InputStream createInputStream() throws IOException {
         InputStream stream;
-        HttpsURLConnection connection = null;
+
         try {
             if (uri.getScheme().equalsIgnoreCase("HTTPS")) {
-                connection = HttpsConnection.withUrl(uri.toURL().toString()).get();
+                final HttpsURLConnection connection = HttpsConnection.withUrl(uri.toURL().toString()).get();
                 stream = HttpsUtilities.getInputStream(connection);
             } else {
                 stream = uri.toURL().openStream();
             }
-        } catch (FileNotFoundException ex) {
+        } catch (final FileNotFoundException ex) {
             LOGGER.log(Level.WARNING, "UriIconData: file not found at {0}", uri);
             stream = null;
         }
