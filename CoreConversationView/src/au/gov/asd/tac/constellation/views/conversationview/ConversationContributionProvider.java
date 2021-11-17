@@ -39,8 +39,8 @@ import org.openide.util.Lookup;
  */
 public abstract class ConversationContributionProvider implements Comparable<ConversationContributionProvider> {
 
-    private static List<ConversationContributionProvider> PROVIDERS = null;
-    private static List<ConversationContributionProvider> U_PROVIDERS = null;
+    private static List<ConversationContributionProvider> providers = null;
+    private static List<ConversationContributionProvider> uProviders = null;
 
     private final String name;
     private final int priority;
@@ -53,7 +53,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      * for priority will appear earlier in the bubble for a message that has
      * multiple Contributions.
      */
-    public ConversationContributionProvider(String name, int priority) {
+    protected ConversationContributionProvider(String name, int priority) {
         this.name = name;
         this.priority = priority;
     }
@@ -114,12 +114,12 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      * @return A list of all providers.
      */
     public static final synchronized List<ConversationContributionProvider> getProviders() {
-        if (PROVIDERS == null) {
-            PROVIDERS = new ArrayList<>(Lookup.getDefault().lookupAll(ConversationContributionProvider.class));
-            PROVIDERS.sort((ConversationContributionProvider o1, ConversationContributionProvider o2) -> Integer.compare(o1.priority, o2.priority));
-            U_PROVIDERS = Collections.unmodifiableList(PROVIDERS);
+        if (providers == null) {
+            providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConversationContributionProvider.class));
+            providers.sort((ConversationContributionProvider o1, ConversationContributionProvider o2) -> Integer.compare(o1.priority, o2.priority));
+            uProviders = Collections.unmodifiableList(providers);
         }
-        return U_PROVIDERS;
+        return uProviders;
     }
 
     /**
