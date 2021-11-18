@@ -50,7 +50,7 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
 
     private static final Logger LOGGER = Logger.getLogger(JMultiChoiceComboBoxMenu.class.getName());
 
-    private final JButton button;
+    private JButton button;
     private final JPopupMenu menu;
     private final Map<JMenuItem, E> menuItems;
     private final Set<E> selectedItems;
@@ -224,10 +224,6 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
         });
     }
 
-    public Set<ListSelectionListener> getListeners() {
-        return listeners;
-    }
-
     @Override
     public void setToolTipText(final String text) {
         button.setToolTipText(text);
@@ -236,6 +232,22 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
     @Override
     public final String getToolTipText() {
         return button.getToolTipText();
+    }
+
+    protected Set<ListSelectionListener> getListeners() {
+        return listeners;
+    }
+
+    protected JButton getButton() {
+        return button;
+    }
+
+    protected void setButton(JButton button) {
+        this.button = button;
+    }
+
+    protected JPopupMenu getMenu() {
+        return menu;
     }
 
     public static class OpenAction implements ActionListener {

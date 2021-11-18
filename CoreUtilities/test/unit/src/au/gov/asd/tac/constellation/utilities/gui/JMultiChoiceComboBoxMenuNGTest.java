@@ -15,24 +15,35 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui;
 
+import java.awt.Point;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPopupMenu;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.util.Utilities;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertEqualsNoOrder;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -97,7 +108,7 @@ public class JMultiChoiceComboBoxMenuNGTest {
         System.out.println("constructor_WithText");
         final File iconFile = new File("non_existing_icon.png");
         installedFileLocatorMockedStatic.when(() -> InstalledFileLocator.getDefault()
-                .locate("modules/ext/icons/drop_down_arrow.png", "au.gov.asd.tac.constellation.utilities", false))
+                .locate(anyString(), anyString(), anyBoolean()))
                 .thenReturn(iconFile);
 
         JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
@@ -122,6 +133,48 @@ public class JMultiChoiceComboBoxMenuNGTest {
         icons.add(result.getIcon(0));
         icons.add(result.getIcon(1));
         assertTrue(icons.contains(icon));
+    }
+
+    /**
+     * Test the constructor Triggers Assertion Error when the arrow icon cannot
+     * be generated.
+     */
+    @Test(expectedExceptions = AssertionError.class)
+    public void testConstructor_WithIcon_ThrowsMalformedURLExceptionTriggersAssertionError() throws MalformedURLException {
+        System.out.println("constructor_WithIcon_ThrowsMalformedURLExceptionTriggersAssertionError");
+        try (final MockedStatic<Utilities> utilitiesMockStatic = Mockito.mockStatic(Utilities.class);) {
+            final Icon icon = new ImageIcon(COOKIE_ICON_PATH);
+            final URI uriMock = mock(URI.class);
+            utilitiesMockStatic.when(() -> Utilities.toURI(any(File.class)))
+                    .thenReturn(uriMock);
+            when(uriMock.toURL()).thenThrow(MalformedURLException.class);
+            new JMultiChoiceComboBoxMenu(icon, items);
+        }
+    }
+
+    /**
+     * Test the button.addActionListener in the constructor
+     */
+    @Test
+    public void testConstructor_buttonAddActionListener() {
+        System.out.println("constructor_buttonAddActionListener");
+        JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
+        JButton button = instance.getButton();
+        JPopupMenu menu = instance.getMenu();
+
+        JButton spyJButton = spy(button);
+        Point p = mock(Point.class);
+
+        doReturn(p).when(spyJButton).getLocationOnScreen();
+        instance.setButton(spyJButton);
+
+        menu.setVisible(false);
+        spyJButton.doClick();
+        assertTrue(menu.isVisible());
+
+        menu.setVisible(true);
+        spyJButton.doClick();
+        assertFalse(menu.isVisible());
     }
 
     /**
