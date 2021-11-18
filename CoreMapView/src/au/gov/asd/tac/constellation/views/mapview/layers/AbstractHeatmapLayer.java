@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.image.GaussianBlur;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import processing.core.PConstants;
@@ -35,9 +34,8 @@ public abstract class AbstractHeatmapLayer extends MapLayer {
     private static final int RADIUS = 16;
     private static final int PASSES = 3;
     private static final int THRESHOLD = 20;
-    private static final float SEVERITY = 2f;
+    private static final float SEVERITY = 2F;
 
-    private List<Marker> onScreenMarkers = new ArrayList<>();
     private int onScreenMarkerCount = 0;
 
     @Override
@@ -58,11 +56,10 @@ public abstract class AbstractHeatmapLayer extends MapLayer {
 
     @Override
     public PImage update() {
-
         // update on screen markers
         final ScreenPosition topLeft = map.getScreenPosition(map.getTopLeftBorder());
         final ScreenPosition bottomRight = map.getScreenPosition(map.getBottomRightBorder());
-        onScreenMarkers = renderer.getMarkerCache().keys().stream()
+        final List<Marker> onScreenMarkers = renderer.getMarkerCache().keys().stream()
                 .filter(marker -> {
                     final ScreenPosition markerPosition = map.getScreenPosition(marker.getLocation());
                     return !marker.isHidden()

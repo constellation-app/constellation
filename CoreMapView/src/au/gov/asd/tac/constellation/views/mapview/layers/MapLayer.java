@@ -43,7 +43,7 @@ public abstract class MapLayer {
     private boolean mouseIsScrolling = false;
     private int scrollTime = 0;
 
-    public MapLayer() {
+    protected MapLayer() {
         this.enabled = false;
         this.graph = null;
         this.layer = null;
