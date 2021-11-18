@@ -104,13 +104,9 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
         containsRb.setToggleGroup(tg);
         containsRb.setPadding(new Insets(0, 0, 0, 5));
 
-        tg.selectedToggleProperty().addListener((ov, oldValue, newValue) -> {
-            filter(table, filterText.getText(), startsWithRb.isSelected());
-        });
+        tg.selectedToggleProperty().addListener((ov, oldValue, newValue) -> filter(table, filterText.getText(), startsWithRb.isSelected()));
 
-        filterText.textProperty().addListener((ov, oldValue, newValue) -> {
-            filter(table, newValue, startsWithRb.isSelected());
-        });
+        filterText.textProperty().addListener((ov, oldValue, newValue) -> filter(table, newValue, startsWithRb.isSelected()));
 
         final HBox headerBox = new HBox(new Label("Filter: "), filterText, startsWithRb, containsRb);
         headerBox.setAlignment(Pos.CENTER_LEFT);
@@ -119,9 +115,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
         final VBox box = new VBox(schemaLabel, headerBox, table);
         VBox.setVgrow(table, Priority.ALWAYS);
 
-        Platform.runLater(() -> {
-            tab.setContent(box);
-        });
+        Platform.runLater(() -> tab.setContent(box));
     }
 
     private void filter(final TableView<AttributeEntry> table, final String newValue, final boolean st) {

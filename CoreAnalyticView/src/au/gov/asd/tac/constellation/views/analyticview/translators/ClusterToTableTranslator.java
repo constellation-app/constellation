@@ -63,9 +63,7 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
         }
         tableVisualisation.populateTable(displayResult);
         result.addResultListener(tableVisualisation);
-        tableVisualisation.setSelectionModelListener(change -> {
-            result.setSelectionOnGraph(tableVisualisation.getSelectedItems());
-        });
+        tableVisualisation.setSelectionModelListener(change -> result.setSelectionOnGraph(tableVisualisation.getSelectedItems()));
         return tableVisualisation;
     }
 

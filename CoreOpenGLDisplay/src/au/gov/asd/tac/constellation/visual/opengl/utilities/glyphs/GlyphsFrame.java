@@ -443,9 +443,7 @@ public class GlyphsFrame extends JFrame {
         }
 
         /* Create and display the form */
-        EventQueue.invokeLater(() -> {
-            new GlyphsFrame(pfi.fontsInfo, text).setVisible(true);
-        });
+        EventQueue.invokeLater(() -> new GlyphsFrame(pfi.fontsInfo, text).setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

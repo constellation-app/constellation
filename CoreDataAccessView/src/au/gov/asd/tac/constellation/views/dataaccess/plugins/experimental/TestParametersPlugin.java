@@ -231,8 +231,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             @SuppressWarnings("unchecked") //control will be of type ComboBox<ParameterValue> which extends from Region
             final ComboBox<ParameterValue> field = (ComboBox<ParameterValue>) control;
             final Image img = new Image(ALIEN_ICON);
-            field.setCellFactory((ListView<ParameterValue> param) -> {
-                return new ListCell<ParameterValue>() {
+            field.setCellFactory((ListView<ParameterValue> param) -> new ListCell<ParameterValue>() {
                     @Override
                     protected void updateItem(final ParameterValue item, final boolean empty) {
                         super.updateItem(item, empty);
@@ -242,7 +241,6 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
                         setTextFill(c);
                         setGraphic(new ImageView(img));
                     }
-                };
             });
         });
         final PluginParameter<SingleChoiceParameterValue> robotOptions = SingleChoiceParameterType.build(ROBOT_PARAMETER_ID, robotpv);
@@ -401,14 +399,11 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         }
 
         final MultiChoiceParameterValue planets = parameters.getMultiChoiceValue(PLANETS_PARAMETER_ID);
-        planets.getChoices().stream().forEach(planet -> {
-            LOGGER.log(Level.INFO, "Planet: {0}", planet);
-        });
+        planets.getChoices().stream().forEach(planet -> LOGGER.log(Level.INFO, "Planet: {0}", planet));
 
         LOGGER.log(Level.INFO, "==== begin string values");
-        parameters.getParameters().values().stream().forEach(param -> {
-            LOGGER.log(Level.INFO, "String {0}: \"{1}\"", new Object[]{param.getName(), param.getStringValue()});
-        });
+        parameters.getParameters().values().stream().forEach(param ->
+                LOGGER.log(Level.INFO, "String {0}: \"{1}\"", new Object[]{param.getName(), param.getStringValue()}));
         LOGGER.log(Level.INFO, "==== end string values");
 
         final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDir();
@@ -424,9 +419,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         final List<String> keys = query.keys();
         while (query.next()) {
-            keys.stream().forEach(key -> {
-                LOGGER.log(Level.INFO, String.format("%-20s: %s", key, query.get(key)));
-            });
+            keys.stream().forEach(key -> LOGGER.log(Level.INFO, String.format("%-20s: %s", key, query.get(key))));
 
             LOGGER.log(Level.INFO, "--");
         }

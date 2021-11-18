@@ -511,9 +511,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
                 if (drawCombined) {
                     g2d.setColor(Color.MAGENTA);
-                    merged.forEach(r -> {
-                        g2d.drawRect(r.x, r.y, r.width, r.height);
-                    });
+                    merged.forEach(r -> g2d.drawRect(r.x, r.y, r.width, r.height));
                 }
 
                 if (drawRuns || drawIndividual || drawCombined) {

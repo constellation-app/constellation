@@ -123,23 +123,18 @@ public abstract class SchemaFactory {
             if (concept.getSchemaVertexTypes() != null) {
                 registeredVertexTypes.addAll(concept.getSchemaVertexTypes());
             }
-            registeredVertexTypes.forEach(vertexType -> {
-                vertexType.buildHierarchy();
-            });
+            registeredVertexTypes.forEach(vertexType -> vertexType.buildHierarchy());
 
             // register concept transaction types to this schema factory
             if (concept.getSchemaTransactionTypes() != null) {
                 registeredTransactionTypes.addAll(concept.getSchemaTransactionTypes());
             }
-            registeredTransactionTypes.forEach(transactonType -> {
-                transactonType.buildHierarchy();
-            });
+            registeredTransactionTypes.forEach(transactonType -> transactonType.buildHierarchy());
         });
 
         REGISTERED_ATTRIBUTES = new EnumMap<>(GraphElementType.class);
-        registeredAttributes.keySet().forEach(elementType -> {
-            REGISTERED_ATTRIBUTES.put(elementType, Collections.unmodifiableMap(registeredAttributes.get(elementType)));
-        });
+        registeredAttributes.keySet().forEach(elementType
+                -> REGISTERED_ATTRIBUTES.put(elementType, Collections.unmodifiableMap(registeredAttributes.get(elementType))));
         REGISTERED_VERTEX_TYPES = Collections.unmodifiableList(registeredVertexTypes);
         REGISTERED_TRANSACTION_TYPES = Collections.unmodifiableList(registeredTransactionTypes);
     }

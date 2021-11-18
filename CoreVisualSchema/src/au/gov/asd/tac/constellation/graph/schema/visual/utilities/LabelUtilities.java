@@ -43,9 +43,7 @@ public class LabelUtilities {
     public static List<Integer> getAttributeIdsFromGraphLabels(final GraphLabels labels, final GraphReadMethods rg, final GraphElementType elementType) {
         final ArrayList<Integer> attributes = new ArrayList<>();
         if (labels != null) {
-            labels.getLabels().forEach(label -> {
-                attributes.add(rg.getAttribute(elementType, label.getAttributeName()));
-            });
+            labels.getLabels().forEach(label -> attributes.add(rg.getAttribute(elementType, label.getAttributeName())));
         }
 
         return attributes;

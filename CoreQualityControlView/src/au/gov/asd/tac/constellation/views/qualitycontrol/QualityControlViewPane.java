@@ -137,9 +137,7 @@ public final class QualityControlViewPane extends BorderPane {
 
         qualityColumn = new TableColumn<>("Category");
         qualityColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.15));
-        qualityColumn.setComparator((qce1, qce2) -> {
-            return QualityControlRule.testPriority(qce1.getCategory(), qce2.getCategory());
-        });
+        qualityColumn.setComparator((qce1, qce2) -> QualityControlRule.testPriority(qce1.getCategory(), qce2.getCategory()));
         qualityColumn.setSortType(TableColumn.SortType.DESCENDING);
 
         reasonColumn = new TableColumn<>("Reasons");
@@ -193,17 +191,13 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button priorityButton = new Button("Category Priority");
-        priorityButton.setOnAction(event -> {
-            showPriorityDialog();
-        });
+        priorityButton.setOnAction(event -> showPriorityDialog());
 
         // create help button
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Quality Control View"));
-        helpButton.setOnAction(event -> {
-            new HelpCtx(QualityControlViewTopComponent.class.getName()).display();
-        });
+        helpButton.setOnAction(event -> new HelpCtx(QualityControlViewTopComponent.class.getName()).display());
         // Get rid of the ugly button look so the icon stands alone.
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 

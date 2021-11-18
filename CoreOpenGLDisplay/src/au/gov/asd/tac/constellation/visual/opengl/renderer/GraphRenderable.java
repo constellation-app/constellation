@@ -184,13 +184,9 @@ public final class GraphRenderable implements GLRenderable {
                     }
                     addTask(blazeBatcher.disposeBatch());
                     addTask(blazeBatcher.createBatch(access));
-                    addTask(gl -> {
-                        iconTextureArray = iconBatcher.updateIconTexture(gl);
-                    });
+                    addTask(gl -> iconTextureArray = iconBatcher.updateIconTexture(gl));
                     final DrawFlags updatedDrawFlags = access.getDrawFlags();
-                    addTask(gl -> {
-                        drawFlags = updatedDrawFlags;
-                    });
+                    addTask(gl -> drawFlags = updatedDrawFlags);
                 };
             case CONNECTIONS_REBUILD:
                 return (change, access) -> {
@@ -211,9 +207,8 @@ public final class GraphRenderable implements GLRenderable {
             case BACKGROUND_COLOR:
                 return (change, access) -> {
                     final ConstellationColor backgroundColor = access.getBackgroundColor();
-                    addTask(gl -> {
-                        graphBackgroundColor = new float[]{backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 1};
-                    });
+                    addTask(gl
+                            -> graphBackgroundColor = new float[]{backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 1});
                     addTask(connectionLabelBatcher.setBackgroundColor(access));
                     addTask(nodeLabelBatcher.setBackgroundColor(access));
                 };
@@ -227,22 +222,14 @@ public final class GraphRenderable implements GLRenderable {
             case DRAW_FLAGS:
                 return (change, access) -> {
                     final DrawFlags updatedDrawFlags = access.getDrawFlags();
-                    addTask(gl -> {
-                        drawFlags = updatedDrawFlags;
-                    });
+                    addTask(gl -> drawFlags = updatedDrawFlags);
                 };
             case BLAZE_SIZE:
-                return (change, access) -> {
-                    addTask(blazeBatcher.updateSizeAndOpacity(access));
-                };
+                return (change, access) -> addTask(blazeBatcher.updateSizeAndOpacity(access));
             case CONNECTIONS_OPACITY:
-                return (change, access) -> {
-                    addTask(lineBatcher.updateOpacity(access));
-                };
+                return (change, access) -> addTask(lineBatcher.updateOpacity(access));
             case BOTTOM_LABEL_COLOR:
-                return (change, access) -> {
-                    addTask(nodeLabelBatcher.setBottomLabelColors(access));
-                };
+                return (change, access) -> addTask(nodeLabelBatcher.setBottomLabelColors(access));
             case BOTTOM_LABELS_REBUILD:
                 return (change, access) -> {
                     addTask(nodeLabelBatcher.setBottomLabelColors(access));
@@ -281,9 +268,7 @@ public final class GraphRenderable implements GLRenderable {
                     }
                 };
             case TOP_LABEL_COLOR:
-                return (change, access) -> {
-                    addTask(nodeLabelBatcher.setTopLabelColors(access));
-                };
+                return (change, access) -> addTask(nodeLabelBatcher.setTopLabelColors(access));
             case TOP_LABELS_REBUILD:
                 return (change, access) -> {
                     addTask(nodeLabelBatcher.setTopLabelColors(access));
@@ -307,20 +292,15 @@ public final class GraphRenderable implements GLRenderable {
                     addTaskIfReady(lineBatcher.updateInfo(access, change), lineBatcher);
                 };
             case VERTEX_BLAZED:
-                return (change, access) -> {
+                return (change, access) -> 
                     // Note that updating blazes always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
                     addTask(blazeBatcher.updateBlazes(access, change));
-                };
             case VERTEX_COLOR:
-                return (change, access) -> {
-                    addTaskIfReady(iconBatcher.updateColors(access, change), iconBatcher);
-                };
+                return (change, access) -> addTaskIfReady(iconBatcher.updateColors(access, change), iconBatcher);
             case VERTEX_FOREGROUND_ICON:
                 return (change, access) -> {
                     addTaskIfReady(iconBatcher.updateIcons(access, change), iconBatcher);
-                    addTask(gl -> {
-                        iconTextureArray = iconBatcher.updateIconTexture(gl);
-                    });
+                    addTask(gl -> iconTextureArray = iconBatcher.updateIconTexture(gl));
                 };
             case VERTEX_SELECTED:
                 return (change, access) -> {
@@ -414,9 +394,7 @@ public final class GraphRenderable implements GLRenderable {
                 skipRedraw = true;
             }
             taskQueue.drainTo(tasks);
-            tasks.forEach(task -> {
-                task.run(gl);
-            });
+            tasks.forEach(task -> task.run(gl));
         }
     }
 

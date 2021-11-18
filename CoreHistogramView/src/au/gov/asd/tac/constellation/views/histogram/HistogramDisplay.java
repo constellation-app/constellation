@@ -120,15 +120,11 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         initializeListeners();
 
         final JMenuItem copyValuesMenuItem = new JMenuItem("Copy Selected Property Values");
-        copyValuesMenuItem.addActionListener(e -> {
-            copySelectedToClipboard(false);
-        });
+        copyValuesMenuItem.addActionListener(e -> copySelectedToClipboard(false));
         copyMenu.add(copyValuesMenuItem);
 
         final JMenuItem copyValuesAndCountsMenuItem = new JMenuItem("Copy Selected Property Values & Counts");
-        copyValuesAndCountsMenuItem.addActionListener(e -> {
-            copySelectedToClipboard(true);
-        });
+        copyValuesAndCountsMenuItem.addActionListener(e -> copySelectedToClipboard(true));
         copyMenu.add(copyValuesAndCountsMenuItem);
     }
 

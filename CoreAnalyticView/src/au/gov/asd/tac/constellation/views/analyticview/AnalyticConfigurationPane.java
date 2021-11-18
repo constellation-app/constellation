@@ -123,9 +123,8 @@ public class AnalyticConfigurationPane extends VBox {
             PLUGIN_TO_SELECTABLE_PLUGIN_MAP.put(plugin, selectablePlugin);
             NAME_TO_SELECTABLE_PLUGIN_MAP.put(plugin.getName(), selectablePlugin);
         });
-        Collections.sort(SELECTABLE_PLUGINS, (selectablePlugin1, selectablePlugin2) -> {
-            return selectablePlugin1.plugin.getName().compareToIgnoreCase(selectablePlugin2.plugin.getName());
-        });
+        Collections.sort(SELECTABLE_PLUGINS, (selectablePlugin1, selectablePlugin2)
+                -> selectablePlugin1.plugin.getName().compareToIgnoreCase(selectablePlugin2.plugin.getName()));
 
         // build the pane which allows selection of analytics
         this.analyticSelectionPane = new GridPane();
@@ -157,9 +156,7 @@ public class AnalyticConfigurationPane extends VBox {
                 "A category should be populated only with analytics of the same result type.";
         this.categoryList = new ListView<>();
         final List<String> categories = new ArrayList<>(categoryToPluginsMap.keySet());
-        Collections.sort(categories, (category1, category2) -> {
-            return category1.compareToIgnoreCase(category2);
-        });
+        Collections.sort(categories, (category1, category2) -> category1.compareToIgnoreCase(category2));
         categoryList.getItems().addAll(categories);
         categoryList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             currentQuestion = null;
@@ -192,19 +189,15 @@ public class AnalyticConfigurationPane extends VBox {
         });
         this.questionList = new ListView<>();
         final List<AnalyticQuestionDescription<?>> questions = new ArrayList<>(questionToPluginsMap.keySet());
-        Collections.sort(questions, (question1, question2) -> {
-            return question1.getName().compareToIgnoreCase(question2.getName());
-        });
+        Collections.sort(questions, (question1, question2) -> question1.getName().compareToIgnoreCase(question2.getName()));
         questionList.getItems().addAll(questions);
-        questionList.setCellFactory(list -> {
-            return new ListCell<AnalyticQuestionDescription<?>>() {
+        questionList.setCellFactory(list -> new ListCell<AnalyticQuestionDescription<?>>() {
 
                 @Override
                 protected void updateItem(final AnalyticQuestionDescription<?> item, final boolean empty) {
                     super.updateItem(item, empty);
                     setText(item == null ? "" : item.getName());
                 }
-            };
         });
         questionList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             currentQuestion = newValue;
@@ -247,8 +240,7 @@ public class AnalyticConfigurationPane extends VBox {
 
         // set up the list of analytic plugins
         this.pluginList = new ListView<>();
-        pluginList.setCellFactory(selectableAnalytics -> {
-            return new ListCell<SelectableAnalyticPlugin>() {
+        pluginList.setCellFactory(selectableAnalytics -> new ListCell<SelectableAnalyticPlugin>() {
 
                 @Override
                 protected void updateItem(final SelectableAnalyticPlugin item, final boolean empty) {
@@ -260,10 +252,10 @@ public class AnalyticConfigurationPane extends VBox {
                         item.setParent(this);
                         setGraphic(item.checkbox);
                         setText(item.plugin.getName());
-                    }
                 }
-            };
+            }
         });
+
         pluginList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!selectionSuppressed) {
                 if (newValue != null) {
@@ -477,9 +469,8 @@ public class AnalyticConfigurationPane extends VBox {
         } else {
             // Do nothing
         }
-        pluginList.getItems().forEach(selectablePlugin -> {
-            selectablePlugin.setUpdatedParameter(aggregatorParameter.getId(), aggregatorParameter.getStringValue());
-        });
+        pluginList.getItems().forEach(selectablePlugin
+                -> selectablePlugin.setUpdatedParameter(aggregatorParameter.getId(), aggregatorParameter.getStringValue()));
     }
 
     private void populateParameterPane(final PluginParameters pluginParameters) {
@@ -583,14 +574,10 @@ public class AnalyticConfigurationPane extends VBox {
             this.plugin = plugin;
             this.parameters = new PluginParameters();
             parameters.addGroup(GLOBAL_PARAMS_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout(GLOBAL_PARAMS_GROUP, 14, false));
-            globalAnalyticParameters.getParameters().values().forEach(parameter -> {
-                parameters.addParameter(parameter, GLOBAL_PARAMS_GROUP);
-            });
+            globalAnalyticParameters.getParameters().values().forEach(parameter -> parameters.addParameter(parameter, GLOBAL_PARAMS_GROUP));
             final String parameterSpecificGroupName = plugin.getName() + " Parameters";
             parameters.addGroup(parameterSpecificGroupName, new PluginParametersPane.TitledSeparatedParameterLayout(parameterSpecificGroupName, 14, false));
-            plugin.createParameters().getParameters().values().forEach(parameter -> {
-                parameters.addParameter(parameter, parameterSpecificGroupName);
-            });
+            plugin.createParameters().getParameters().values().forEach(parameter -> parameters.addParameter(parameter, parameterSpecificGroupName));
             plugin.onPrerequisiteAttributeChange(GraphManager.getDefault().getActiveGraph(), parameters);
             this.updatedParameters = parameters.copy();
         }
@@ -713,10 +700,8 @@ public class AnalyticConfigurationPane extends VBox {
             // Utilized for Question pane - TODO: when multiple tabs + saving of
             // questions is supported, link this currentquestion variable with
             // the saved/loaded question
-            Platform.runLater(() -> {
-                analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null
-                        : currentState.getActiveAnalyticQuestions().get(currentState.getCurrentAnalyticQuestionIndex());
-            });
+            Platform.runLater(() -> analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null
+                    : currentState.getActiveAnalyticQuestions().get(currentState.getCurrentAnalyticQuestionIndex()));
             if (!currentState.getActiveSelectablePlugins().isEmpty()) {
                 for (final SelectableAnalyticPlugin selectedPlugin : currentState.getActiveSelectablePlugins().get(currentState.getCurrentAnalyticQuestionIndex())) {
                     if (currentCategory.equals(selectedPlugin.plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())) {

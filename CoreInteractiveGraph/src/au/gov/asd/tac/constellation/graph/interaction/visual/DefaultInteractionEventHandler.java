@@ -251,9 +251,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             if (interactionGraph != null) {
                                 interactionGraph = interactionGraph.flush(announceNextFlush);
                             }
-                            operations.forEach(op -> {
-                                manager.addOperation(op);
-                            });
+                            operations.forEach(op -> manager.addOperation(op));
                             announceNextFlush = false;
                         }
                         final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION));

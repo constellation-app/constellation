@@ -179,9 +179,7 @@ public class AttributeEditorPanel extends BorderPane {
 
     private void addCopyHandlersToListView(final ListView<Object> newList, final AttributeData attribute) {
         final MenuItem copyItem = new MenuItem("Copy");
-        copyItem.setOnAction((ActionEvent event) -> {
-            copySelectedItems(newList, attribute.getDataType());
-        });
+        copyItem.setOnAction((ActionEvent event) -> copySelectedItems(newList, attribute.getDataType()));
 
         copyItem.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
         final ContextMenu ctxMenu = new ContextMenu(copyItem);
@@ -246,9 +244,7 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     void rebuildColourMenu() {
-        Platform.runLater(() -> {
-            optionsMenu.getItems().set(0, createColoursMenu());
-        });
+        Platform.runLater(() -> optionsMenu.getItems().set(0, createColoursMenu()));
     }
 
     private MenuItem createColourMenuItem(final String itemName, final String correspondingPreference, final Color color) {
@@ -261,9 +257,7 @@ public class AttributeEditorPanel extends BorderPane {
         schemaMenuRect.setFill(color);
         schemaMenuRect.setStroke(Color.LIGHTGREY);
         schemaMenuItem.setOnAction(e -> {
-            final EditOperation editOperation = value -> {
-                prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
-            };
+            final EditOperation editOperation = value -> prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
             @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
             final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(editOperation, String.format("for %s", itemName), ConstellationColor.fromFXColor(color));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
@@ -339,9 +333,8 @@ public class AttributeEditorPanel extends BorderPane {
                 elementType = null;
                 break;
         }
-        showAllToggle.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            prefs.putBoolean(key, newValue);
-        });
+        showAllToggle.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) 
+                -> prefs.putBoolean(key, newValue));
         showAllToggle.setSelected(prefs.getBoolean(key, false));
 
         final Button addMenu = new Button(null, new ImageView(UserInterfaceIconProvider.ADD.buildImage(16)));
@@ -391,9 +384,8 @@ public class AttributeEditorPanel extends BorderPane {
                         submenu.setStyle("-fx-text-fill: white;");
                         for (final SchemaAttribute attribute : entry.getValue()) {
                             final MenuItem item = new MenuItem(attribute.getName());
-                            item.setOnAction((ActionEvent event1) -> {
-                                PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph);
-                            });
+                            item.setOnAction((ActionEvent event1)
+                                    -> PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph));
                             submenu.getItems().add(item);
                         }
                         addContextMenu.getItems().add(submenu);
@@ -403,9 +395,8 @@ public class AttributeEditorPanel extends BorderPane {
                         final Menu otherSubmenu = new Menu("Other");
                         for (final SchemaAttribute attribute : otherAttributes) {
                             final MenuItem item = new MenuItem(attribute.getName());
-                            item.setOnAction((ActionEvent event1) -> {
-                                PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph);
-                            });
+                            item.setOnAction((ActionEvent event1)
+                                    -> PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph));
                             otherSubmenu.getItems().add(item);
                         }
                         addContextMenu.getItems().add(otherSubmenu);
@@ -413,9 +404,7 @@ public class AttributeEditorPanel extends BorderPane {
 
                     final MenuItem customAttribute = new MenuItem("Custom");
                     customAttribute.setStyle("-fx-text-fill: white;");
-                    customAttribute.setOnAction(ev -> {
-                        createAttributeAction(elementType);
-                    });
+                    customAttribute.setOnAction(ev -> createAttributeAction(elementType));
                     addContextMenu.getItems().add(customAttribute);
                 }
             }
@@ -491,12 +480,8 @@ public class AttributeEditorPanel extends BorderPane {
         final AttributeTitledPane attributePane;
         if (!attribute.isKey()) {
             attributePane = new AttributeTitledPane(
-                    e -> {
-                        deleteAttributeAction(attribute.getElementType(), attributeTitle);
-                    },
-                    e -> {
-                        modifyAttributeAction(attribute);
-                    }
+                    e -> deleteAttributeAction(attribute.getElementType(), attributeTitle),
+                    e -> modifyAttributeAction(attribute)
             );
         } else {
             attributePane = new AttributeTitledPane();
@@ -505,9 +490,7 @@ public class AttributeEditorPanel extends BorderPane {
         gridPane.prefWidthProperty().bind(attributePane.widthProperty());
 
         if (attribute.getDataType().equals(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME)) {
-            attributePane.addMenuItem("Update time-zone of selection", e -> {
-                updateTimeZoneAction(attribute);
-            });
+            attributePane.addMenuItem("Update time-zone of selection", e -> updateTimeZoneAction(attribute));
         }
 
         final boolean multiValue = values != null && values.length > 1;
@@ -816,9 +799,8 @@ public class AttributeEditorPanel extends BorderPane {
     private void createAttributeAction(final GraphElementType elementType) {
         final EditOperation editOperation = new CreateAttributeEditOperation();
         final List<String> extantAttributeNames = currentAttributeNames.get(elementType);
-        final ValueValidator<AttributePrototype> validator = v -> {
-            return extantAttributeNames.contains(v.getAttributeName()) ? "An attribute with that name already exists." : null;
-        };
+        final ValueValidator<AttributePrototype> validator = v
+                -> extantAttributeNames.contains(v.getAttributeName()) ? "An attribute with that name already exists." : null;
         final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Create %s attribute", elementType.getShortLabel()), AttributePrototype.getBlankPrototype(elementType));
 
         ((AttributeEditor) editor).setGraphElementType(elementType);
@@ -830,9 +812,8 @@ public class AttributeEditorPanel extends BorderPane {
     private void modifyAttributeAction(final AttributeData attr) {
         final EditOperation editOperation = new ModifyAttributeEditOperation(attr);
         final List<String> extantAttributeNames = currentAttributeNames.get(attr.getElementType());
-        final ValueValidator<AttributePrototype> validator = v -> {
-            return extantAttributeNames.contains(v.getAttributeName()) && !attr.getAttributeName().equals(v.getAttributeName()) ? "An attribute with that name already exists." : null;
-        };
+        final ValueValidator<AttributePrototype> validator = v
+                -> extantAttributeNames.contains(v.getAttributeName()) && !attr.getAttributeName().equals(v.getAttributeName()) ? "An attribute with that name already exists." : null;
         final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Modify %s attribute %s", attr.getElementType().getShortLabel(), attr.getAttributeName()), attr);
 
         ((AttributeEditor) editor).setGraphElementType(attr.getElementType());

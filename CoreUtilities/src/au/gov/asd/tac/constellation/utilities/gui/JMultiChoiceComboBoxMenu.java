@@ -208,9 +208,7 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
 
     public final void clearSelection() {
         selectedItems.clear();
-        menuItems.forEach((mi, i) -> {
-            mi.setSelected(false);
-        });
+        menuItems.forEach((mi, i) -> mi.setSelected(false));
     }
 
     public final void addSelectionListener(final ListSelectionListener listener) {
@@ -219,9 +217,7 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
 
     @Override
     public final void valueChanged(final ListSelectionEvent event) {
-        listeners.forEach(listener -> {
-            listener.valueChanged(event);
-        });
+        listeners.forEach(listener -> listener.valueChanged(event));
     }
 
     @Override

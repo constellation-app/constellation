@@ -74,8 +74,7 @@ public class UpdateProviderManager {
      * all providers.
      */
     private static void validateUpdateProviders() {
-        UPDATE_PROVIDER_REGISTRY.values().forEach(itemProviders -> {
-            itemProviders.forEach((fromVersion, provider) -> {
+        UPDATE_PROVIDER_REGISTRY.values().forEach(itemProviders -> itemProviders.forEach((fromVersion, provider) -> {
                 final String itemName = provider.getVersionedItem().getName();
                 final int toVersion = provider.getToVersionNumber();
                 if (fromVersion >= toVersion) {
@@ -85,8 +84,7 @@ public class UpdateProviderManager {
                 } else {
                     // Do nothing
                 }
-            });
-        });
+        }));
     }
 
     private static class UpdateProviderException extends RuntimeException {

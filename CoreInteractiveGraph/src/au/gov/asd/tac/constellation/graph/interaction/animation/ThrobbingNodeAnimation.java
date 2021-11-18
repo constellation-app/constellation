@@ -75,9 +75,7 @@ public class ThrobbingNodeAnimation extends Animation {
 
     @Override
     public void reset(GraphWriteMethods wg) {
-        originalNodeRadii.forEach((vxId, radius) -> {
-            wg.setObjectValue(nodeRadiusAttribute, vxId, radius);
-        });
+        originalNodeRadii.forEach((vxId, radius) -> wg.setObjectValue(nodeRadiusAttribute, vxId, radius));
     }
 
     @Override

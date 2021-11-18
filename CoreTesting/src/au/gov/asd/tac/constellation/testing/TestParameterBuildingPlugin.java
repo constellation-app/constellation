@@ -70,9 +70,8 @@ public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) { //    protected void query(final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException
         final Map<String, PluginParameter<?>> pmap = parameters.getParameters();
-        pmap.entrySet().stream().forEach(entry -> {
-            LOGGER.log(Level.INFO, "{0}: {1}", new Object[]{entry.getKey(), entry.getValue().getStringValue()});
-        });
+        pmap.entrySet().stream().forEach(entry
+                -> LOGGER.log(Level.INFO, "{0}: {1}", new Object[]{entry.getKey(), entry.getValue().getStringValue()}));
     }
 
     @Override

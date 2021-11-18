@@ -176,40 +176,34 @@ public class FR3DArranger implements Arranger {
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             interaction.setProgress(i + 1, MAX_ITERATIONS, ARRANGING_INTERACTION, true);
 
-            wg.vertexStream().parallel().forEach(vertexId -> {
-                repulse(vertexId);
-
+            wg.vertexStream().parallel().forEach(vertexId -> repulse(vertexId)
 //                if(Thread.interrupted())
 //                {
 //                    throw new InterruptedException();
 //                }
-            });
+            );
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
 
-            wg.linkStream().parallel().forEach(txId -> {
-                attract(txId);
-
+            wg.linkStream().parallel().forEach(txId -> attract(txId)
 //                if(Thread.interrupted())
 //                {
 //                    throw new InterruptedException();
 //                }
-            });
+            );
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
 
-            wg.vertexStream().parallel().forEach(vertexId -> {
-                position(vertexId);
-
+            wg.vertexStream().parallel().forEach(vertexId -> position(vertexId)
 //                if(Thread.interrupted())
 //                {
 //                    throw new InterruptedException();
 //                }
-            });
+            );
 
             cool(i);
         }

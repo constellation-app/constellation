@@ -24,15 +24,12 @@ package au.gov.asd.tac.constellation.graph.attribute.interaction;
 public interface ValueValidator<V> {
 
     public static <T> ValueValidator<T> getAlwaysSucceedValidator() {
-        return v -> {
-            return null;
-        };
+        return v -> null;
+
     }
 
     public static <T> ValueValidator<T> getAlwaysFailValidator(final String error) {
-        return v -> {
-            return error;
-        };
+        return v -> error;
     }
 
     public String validateValue(final V value);
