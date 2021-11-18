@@ -84,19 +84,18 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
         column.setCellValueFactory(cellData -> new SimpleObjectProperty<>(translator.getCellData(cellData.getValue(), columnName)));
 
         column.setCellFactory(columnData -> new TableCell<C, Object>() {
-                @Override
-                public void updateItem(final Object item, final boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item != null) {
-                        this.setText(translator.getCellText(this.getTableRow().getItem(), item, columnName));
-                        final ConstellationColor color = translator.getCellColor(this.getTableRow().getItem(), item, columnName);
-                        this.setBackground(new Background(new BackgroundFill(color.getJavaFXColor(), CornerRadii.EMPTY, Insets.EMPTY)));
-                    }
+            @Override
+            public void updateItem(final Object item, final boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    this.setText(translator.getCellText(this.getTableRow().getItem(), item, columnName));
+                    final ConstellationColor color = translator.getCellColor(this.getTableRow().getItem(), item, columnName);
+                    this.setBackground(new Background(new BackgroundFill(color.getJavaFXColor(), CornerRadii.EMPTY, Insets.EMPTY)));
                 }
+            }
         });
 
         column.setSortable(true);
-
         table.getColumns().add(column);
     }
 
@@ -106,12 +105,12 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
         final FilteredList<C> filteredData = new FilteredList<>(tableData, predicate -> true);
         filteredData.addListener((Change<? extends C> change) -> table.refresh());
         tableFilter.textProperty().addListener((observable, oldValue, newValue) -> filteredData.setPredicate(item -> {
-                if (StringUtils.isBlank(newValue)) {
-                    return true;
-                }
+            if (StringUtils.isBlank(newValue)) {
+                return true;
+            }
 
-                final String lowerCaseFilter = newValue.toLowerCase();
-                return item.getIdentifier().toLowerCase().contains(lowerCaseFilter);
+            final String lowerCaseFilter = newValue.toLowerCase();
+            return item.getIdentifier().toLowerCase().contains(lowerCaseFilter);
         }));
 
         final SortedList<C> sortedData = new SortedList<>(filteredData);

@@ -192,12 +192,11 @@ public class AnalyticConfigurationPane extends VBox {
         Collections.sort(questions, (question1, question2) -> question1.getName().compareToIgnoreCase(question2.getName()));
         questionList.getItems().addAll(questions);
         questionList.setCellFactory(list -> new ListCell<AnalyticQuestionDescription<?>>() {
-
-                @Override
-                protected void updateItem(final AnalyticQuestionDescription<?> item, final boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(item == null ? "" : item.getName());
-                }
+            @Override
+            protected void updateItem(final AnalyticQuestionDescription<?> item, final boolean empty) {
+                super.updateItem(item, empty);
+                setText(item == null ? "" : item.getName());
+            }
         });
         questionList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             currentQuestion = newValue;
@@ -241,17 +240,16 @@ public class AnalyticConfigurationPane extends VBox {
         // set up the list of analytic plugins
         this.pluginList = new ListView<>();
         pluginList.setCellFactory(selectableAnalytics -> new ListCell<SelectableAnalyticPlugin>() {
-
-                @Override
-                protected void updateItem(final SelectableAnalyticPlugin item, final boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null) {
-                        setGraphic(null);
-                        setText(null);
-                    } else {
-                        item.setParent(this);
-                        setGraphic(item.checkbox);
-                        setText(item.plugin.getName());
+            @Override
+            protected void updateItem(final SelectableAnalyticPlugin item, final boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    item.setParent(this);
+                    setGraphic(item.checkbox);
+                    setText(item.plugin.getName());
                 }
             }
         });

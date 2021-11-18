@@ -50,57 +50,57 @@ public class Assign {
         final OperatorRegistry registry = operators.getRegistry(NAME);
 
         registry.register(DoubleWritable.class, DoubleReadable.class, DoubleReadable.class, (p1, p2) -> () -> {
-                final double result = p2.readDouble();
-                p1.writeDouble(result);
-                return result;
+            final double result = p2.readDouble();
+            p1.writeDouble(result);
+            return result;
         });
 
         registry.register(FloatWritable.class, FloatReadable.class, FloatReadable.class, (p1, p2) -> () -> {
-                final float result = p2.readFloat();
-                p1.writeFloat(result);
-                return result;
+            final float result = p2.readFloat();
+            p1.writeFloat(result);
+            return result;
         });
 
         registry.register(LongWritable.class, LongReadable.class, LongReadable.class, (p1, p2) -> () -> {
-                final long result = p2.readLong();
-                p1.writeLong(result);
-                return result;
+            final long result = p2.readLong();
+            p1.writeLong(result);
+            return result;
         });
 
         registry.register(IntWritable.class, IntReadable.class, IntReadable.class, (p1, p2) -> () -> {
-                final int result = p2.readInt();
-                p1.writeInt(result);
-                return result;
+            final int result = p2.readInt();
+            p1.writeInt(result);
+            return result;
         });
 
         registry.register(BooleanWritable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> () -> {
-                final boolean result = p2.readBoolean();
-                p1.writeBoolean(result);
-                return result;
+            final boolean result = p2.readBoolean();
+            p1.writeBoolean(result);
+            return result;
         });
 
         registry.register(StringWritable.class, StringReadable.class, StringReadable.class, (p1, p2) -> () -> {
-                final String result = p2.readString();
-                p1.writeString(result);
-                return result;
+            final String result = p2.readString();
+            p1.writeString(result);
+            return result;
         });
 
         registry.register(ObjectWritable.class, ObjectReadable.class, ObjectReadable.class, (p1, p2) -> () -> {
-                final Object result = p2.readObject();
-                p1.writeObject(result);
-                return result;
+            final Object result = p2.readObject();
+            p1.writeObject(result);
+            return result;
         });
 
         registry.register(StringWritable.class, LongReadable.class, StringReadable.class, (p1, p2) -> () -> {
-                final String result = String.valueOf(p2.readLong());
-                p1.writeString(result);
-                return result;
+            final String result = String.valueOf(p2.readLong());
+            p1.writeString(result);
+            return result;
         });
 
         registry.register(StringWritable.class, DoubleReadable.class, StringReadable.class, (p1, p2) -> () -> {
-                final String result = String.valueOf(p2.readDouble());
-                p1.writeString(result);
-                return result;
+            final String result = String.valueOf(p2.readDouble());
+            p1.writeString(result);
+            return result;
         });
     }
 

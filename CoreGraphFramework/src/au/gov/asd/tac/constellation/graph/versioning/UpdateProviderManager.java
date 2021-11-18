@@ -68,22 +68,20 @@ public class UpdateProviderManager {
     }
 
     /**
-     * Ensure that every provider for a given item has a to version strictly
-     * greater than its from version, and that there is another provider whose
-     * from version matches its to version, or its to version is the highest of
-     * all providers.
+     * Ensure that every provider for a given item has a to version strictly greater than its from version, and that there is another provider whose
+     * from version matches its to version, or its to version is the highest of all providers.
      */
     private static void validateUpdateProviders() {
         UPDATE_PROVIDER_REGISTRY.values().forEach(itemProviders -> itemProviders.forEach((fromVersion, provider) -> {
-                final String itemName = provider.getVersionedItem().getName();
-                final int toVersion = provider.getToVersionNumber();
-                if (fromVersion >= toVersion) {
-                    throw new UpdateProviderException(String.format("Found update provider %s with to-version %d not strictly greater than from-version %d.", itemName, toVersion, fromVersion));
-                } else if (!itemProviders.containsKey(toVersion) && LATEST_VERSIONS.get(itemName) != toVersion) {
-                    throw new UpdateProviderException(String.format("Found update provider %s with to-version %d that is not the latest (%d), but no update provider with the corresponding from version.", itemName, toVersion, LATEST_VERSIONS.get(itemName)));
-                } else {
-                    // Do nothing
-                }
+            final String itemName = provider.getVersionedItem().getName();
+            final int toVersion = provider.getToVersionNumber();
+            if (fromVersion >= toVersion) {
+                throw new UpdateProviderException(String.format("Found update provider %s with to-version %d not strictly greater than from-version %d.", itemName, toVersion, fromVersion));
+            } else if (!itemProviders.containsKey(toVersion) && LATEST_VERSIONS.get(itemName) != toVersion) {
+                throw new UpdateProviderException(String.format("Found update provider %s with to-version %d that is not the latest (%d), but no update provider with the corresponding from version.", itemName, toVersion, LATEST_VERSIONS.get(itemName)));
+            } else {
+                // Do nothing
+            }
         }));
     }
 

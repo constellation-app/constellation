@@ -95,20 +95,20 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
                 item.setToolTipText(schemaFactory.getDescription());
                 item.setActionCommand(schemaFactory.getName());
                 item.addActionListener((final ActionEvent e) -> new Thread() {
-                        @Override
-                        public void run() {
-                            setName(GRAPH_ACTION_THREAD_NAME);
-                            final Graph graph = new DualGraph(schemaFactory.createSchema());
-                            final WritableGraph wg = graph.getWritableGraphNow("New " + schemaFactory.getName(), false);
-                            try {
-                                graph.getSchema().newGraph(wg);
-                            } finally {
-                                wg.commit();
-                            }
-
-                            final String graphName = schemaFactory.getLabel().replace(" ", "").toLowerCase();
-                            GraphOpener.getDefault().openGraph(graph, graphName);
+                    @Override
+                    public void run() {
+                        setName(GRAPH_ACTION_THREAD_NAME);
+                        final Graph graph = new DualGraph(schemaFactory.createSchema());
+                        final WritableGraph wg = graph.getWritableGraphNow("New " + schemaFactory.getName(), false);
+                        try {
+                            graph.getSchema().newGraph(wg);
+                        } finally {
+                            wg.commit();
                         }
+
+                        final String graphName = schemaFactory.getLabel().replace(" ", "").toLowerCase();
+                        GraphOpener.getDefault().openGraph(graph, graphName);
+                    }
                 }.start());
 
                 menu.add(item);

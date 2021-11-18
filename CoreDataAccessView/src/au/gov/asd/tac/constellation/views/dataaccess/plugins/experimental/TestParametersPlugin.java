@@ -232,15 +232,15 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             final ComboBox<ParameterValue> field = (ComboBox<ParameterValue>) control;
             final Image img = new Image(ALIEN_ICON);
             field.setCellFactory((ListView<ParameterValue> param) -> new ListCell<ParameterValue>() {
-                    @Override
-                    protected void updateItem(final ParameterValue item, final boolean empty) {
-                        super.updateItem(item, empty);
-                        this.setText(empty ? "" : item.toString());
-                        final float f = empty ? 0 : item.toString().length() / 11F;
-                        final Color c = Color.color(1 - f / 2F, 0, 0);
-                        setTextFill(c);
-                        setGraphic(new ImageView(img));
-                    }
+                @Override
+                protected void updateItem(final ParameterValue item, final boolean empty) {
+                    super.updateItem(item, empty);
+                    this.setText(empty ? "" : item.toString());
+                    final float f = empty ? 0 : item.toString().length() / 11F;
+                    final Color c = Color.color(1 - f / 2F, 0, 0);
+                    setTextFill(c);
+                    setGraphic(new ImageView(img));
+                }
             });
         });
         final PluginParameter<SingleChoiceParameterValue> robotOptions = SingleChoiceParameterType.build(ROBOT_PARAMETER_ID, robotpv);
