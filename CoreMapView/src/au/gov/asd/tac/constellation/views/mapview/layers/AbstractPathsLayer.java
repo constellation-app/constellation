@@ -26,7 +26,6 @@ import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -103,7 +102,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
         if (graph == null) {
             return null;
         }
-        
+
         final Set<Marker> onScreenMarkers;
 
         final List<Tuple<GraphElement, GraphElement>> paths = new ArrayList<>();
@@ -227,6 +226,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
             image.line(x0, y0, x1, y1);
         }
     }
+
     public abstract List<Tuple<GraphElement, GraphElement>> getPathsForElement(final ReadableGraph graph, final GraphElement element);
 
     public abstract boolean drawPathsToOffscreenMarkers();

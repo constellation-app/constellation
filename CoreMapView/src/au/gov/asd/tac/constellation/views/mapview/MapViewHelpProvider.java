@@ -34,7 +34,8 @@ public class MapViewHelpProvider extends HelpPageProvider {
     private static final String CODEBASE_NAME = "constellation";
 
     /**
-     * Provides a map of all the help files Maps the file name to the md file name
+     * Provides a map of all the help files Maps the file name to the md file
+     * name
      *
      * @return Map of the file names vs md file names
      */

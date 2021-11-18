@@ -38,7 +38,7 @@ import processing.core.PImage;
  * @author cygnus_x-1
  */
 public class ConstellationPointMarker extends ConstellationAbstractMarker {
-    
+
     private static final Logger LOGGER = Logger.getLogger(ConstellationPointMarker.class.getName());
 
     // image file path

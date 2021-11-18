@@ -166,24 +166,24 @@ public class OverviewOverlay extends MapOverlay {
 
             final float viewportX = Math.min(Math.max(x, getX()), getX() + getWidth());
             final float viewportY = Math.min(Math.max(y, getY()), getY() + getHeight());
-            
+
             final float viewportWidth;
             final float viewportHeight;
-            if(x < getX()){
+            if (x < getX()) {
                 viewportWidth = Math.max(width - (getX() - x), 0);
-            }else{
-                if(x + width > getX() + getWidth()){
+            } else {
+                if (x + width > getX() + getWidth()) {
                     viewportWidth = Math.max(width - ((x + width) - (getX() + getWidth())), 0);
-                }else{
+                } else {
                     viewportWidth = width;
                 }
             }
-            if(y < getY()){
+            if (y < getY()) {
                 viewportHeight = Math.max(height - (getY() - y), 0);
-            }else{
-                if(y + height > getY() + getHeight()){
+            } else {
+                if (y + height > getY() + getHeight()) {
                     viewportHeight = Math.max(height - ((y + height) - (getY() + getHeight())), 0);
-                }else{
+                } else {
                     viewportHeight = height;
                 }
             }
@@ -195,13 +195,13 @@ public class OverviewOverlay extends MapOverlay {
             final Location newLocation = overviewMap.mapDisplay.getLocation(
                     viewport.x + viewport.width / 2, viewport.y + viewport.height / 2);
             final int newZoomLevel;
-            if(zoom > 0) {
+            if (zoom > 0) {
                 newZoomLevel = map.getZoomLevel() - 1;
-            }else{
-                if(zoom < 0){
-                    newZoomLevel=map.getZoomLevel() + 1;
-                }else{
-                    newZoomLevel=map.getZoomLevel();
+            } else {
+                if (zoom < 0) {
+                    newZoomLevel = map.getZoomLevel() + 1;
+                } else {
+                    newZoomLevel = map.getZoomLevel();
                 }
             }
             map.setTweening(false);

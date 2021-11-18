@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerUtilities;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class ThiessenPolygonsLayer extends MapLayer {
         // update on screen markers
         final ScreenPosition topLeft = map.getScreenPosition(map.getTopLeftBorder());
         final ScreenPosition bottomRight = map.getScreenPosition(map.getBottomRightBorder());
-        
+
         final List<Marker> onScreenMarkers = map.getMarkers().stream()
                 .filter(marker -> {
                     final ScreenPosition markerPosition = map.getScreenPosition(marker.getLocation());

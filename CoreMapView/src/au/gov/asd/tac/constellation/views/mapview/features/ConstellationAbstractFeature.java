@@ -35,7 +35,7 @@ public class ConstellationAbstractFeature {
 
     public ConstellationAbstractFeature(Feature feature) {
         this.id = feature.getId();
-        switch(feature.getType()) {
+        switch (feature.getType()) {
             case POINT:
                 this.type = ConstellationFeatureType.POINT;
                 break;

@@ -853,7 +853,7 @@ public class MapViewTileRenderer extends PApplet {
                     }
                 });
             }
-            
+
             return edgeCounters.values().stream().anyMatch(
                     counter -> counter.get() % 2 == 1)
                     || pairedCounters.entrySet().stream().anyMatch(

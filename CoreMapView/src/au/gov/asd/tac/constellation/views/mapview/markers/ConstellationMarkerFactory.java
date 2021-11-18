@@ -131,7 +131,7 @@ public class ConstellationMarkerFactory {
         featureTypeMap.put(ConstellationFeatureType.CLUSTER, multiMarkerClass);
     }
 
-    public List<ConstellationAbstractMarker> createMarkers(final Iterable<ConstellationAbstractFeature> features) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException{
+    public List<ConstellationAbstractMarker> createMarkers(final Iterable<ConstellationAbstractFeature> features) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final List<ConstellationAbstractMarker> markers = new ArrayList<>();
         for (final ConstellationAbstractFeature feature : features) {
             markers.add(createMarker(feature));
@@ -139,7 +139,7 @@ public class ConstellationMarkerFactory {
         return markers;
     }
 
-    public ConstellationAbstractMarker createMarker(final ConstellationAbstractFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException{
+    public ConstellationAbstractMarker createMarker(final ConstellationAbstractFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final ConstellationAbstractMarker marker;
         final FeatureKey key = new FeatureKey(feature);
         if (featureCache.contains(key)) {
@@ -169,7 +169,7 @@ public class ConstellationMarkerFactory {
         return marker;
     }
 
-    protected ConstellationAbstractMarker createPointMarker(final ConstellationPointFeature feature) throws InstantiationException, IllegalAccessException, 
+    protected ConstellationAbstractMarker createPointMarker(final ConstellationPointFeature feature) throws InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         ConstellationAbstractMarker marker;
@@ -190,7 +190,7 @@ public class ConstellationMarkerFactory {
         return marker;
     }
 
-    protected ConstellationAbstractMarker createLineMarker(final ConstellationShapeFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException{
+    protected ConstellationAbstractMarker createLineMarker(final ConstellationShapeFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         ConstellationAbstractMarker marker;
         try {
@@ -210,7 +210,7 @@ public class ConstellationMarkerFactory {
         return marker;
     }
 
-    protected ConstellationAbstractMarker createPolygonMarker(final ConstellationShapeFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException{
+    protected ConstellationAbstractMarker createPolygonMarker(final ConstellationShapeFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         ConstellationAbstractMarker marker;
         try {
@@ -238,7 +238,7 @@ public class ConstellationMarkerFactory {
         return multiMarker;
     }
 
-    protected ConstellationAbstractMarker createClusterMarker(final ConstellationMultiFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException{
+    protected ConstellationAbstractMarker createClusterMarker(final ConstellationMultiFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor();
         final ConstellationClusterMarker clusterMarker = (ConstellationClusterMarker) markerConstructor.newInstance();

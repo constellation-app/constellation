@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @author cygnus_x-1
  */
 public class FeatureUtilities {
-    
+
     private FeatureUtilities() {
         throw new IllegalStateException("Utility Class");
     }

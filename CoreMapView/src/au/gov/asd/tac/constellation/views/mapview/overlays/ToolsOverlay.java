@@ -77,7 +77,6 @@ public class ToolsOverlay extends MapOverlay {
         }
     }
 
-
     private MeasurementSystem measureSystem = MeasurementSystem.METRIC;
     private boolean mouseLeftMeasureSystemRegion = true;
     private boolean mouseLeftMeasureToolRegion = true;

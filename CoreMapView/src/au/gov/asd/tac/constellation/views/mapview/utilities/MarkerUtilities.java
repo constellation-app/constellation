@@ -42,7 +42,7 @@ public class MarkerUtilities {
     private static final int G_MASK = 255 << 8;
     private static final int R_MASK = 255 << 16;
     private static final int A_MASK = 255 << 24;
-    
+
     private MarkerUtilities() {
         throw new IllegalStateException("Utility class");
     }

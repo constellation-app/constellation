@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ObjectCache;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationAbstractFeature;
-import au.gov.asd.tac.constellation.views.mapview.features.ConstellationMultiFeature;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationPointFeature;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationClusterMarker;
@@ -244,38 +243,38 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                             for (final GraphElement element : elementList) {
                                 switch (element.getType()) {
                                     case VERTEX:
-                                        if(markerState.getLabel() == null){
+                                        if (markerState.getLabel() == null) {
                                             elementLabelAttributeId = GraphConstants.NOT_FOUND;
-                                        }else{
+                                        } else {
                                             elementLabelAttributeId = markerState.getLabel().getVertexAttribute() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getLabel().getVertexAttribute().get(readableGraph);
+                                                    : markerState.getLabel().getVertexAttribute().get(readableGraph);
                                         }
-                                        
-                                        if(markerState.getColorScheme() == null){
+
+                                        if (markerState.getColorScheme() == null) {
                                             elementColorAttributeId = GraphConstants.NOT_FOUND;
-                                        }else{
+                                        } else {
                                             elementColorAttributeId = markerState.getColorScheme().getVertexAttribute() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getColorScheme().getVertexAttribute().get(readableGraph);
+                                                    : markerState.getColorScheme().getVertexAttribute().get(readableGraph);
                                         }
                                         elementSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
                                         elementDimmedAttributeId = VisualConcept.VertexAttribute.DIMMED.get(readableGraph);
                                         elementVisibilityAttributeId = VisualConcept.VertexAttribute.VISIBILITY.get(readableGraph);
                                         break;
                                     case TRANSACTION:
-                                        if(markerState.getLabel() == null){
+                                        if (markerState.getLabel() == null) {
                                             elementLabelAttributeId = GraphConstants.NOT_FOUND;
-                                        }else{
+                                        } else {
                                             elementLabelAttributeId = markerState.getLabel().getTransactionAttribute() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getLabel().getTransactionAttribute().get(readableGraph);
+                                                    : markerState.getLabel().getTransactionAttribute().get(readableGraph);
                                         }
-                                        
-                                        if(markerState.getColorScheme() == null){
+
+                                        if (markerState.getColorScheme() == null) {
                                             elementColorAttributeId = GraphConstants.NOT_FOUND;
-                                        }else{
+                                        } else {
                                             elementColorAttributeId = markerState.getColorScheme().getTransactionAttribute() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getColorScheme().getTransactionAttribute().get(readableGraph);
+                                                    : markerState.getColorScheme().getTransactionAttribute().get(readableGraph);
                                         }
-                                        
+
                                         elementSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
                                         elementDimmedAttributeId = VisualConcept.TransactionAttribute.DIMMED.get(readableGraph);
                                         elementVisibilityAttributeId = VisualConcept.TransactionAttribute.VISIBILITY.get(readableGraph);
