@@ -78,7 +78,7 @@ public final class Matrix33f {
         final float xs = x * s;
         final float ys = y * s;
         final float zs = z * s;
-        final float one_c = 1.0f - c;
+        final float one_c = 1.0F - c;
 
         a[index33(0, 0)] = (one_c * xx) + c;
         a[index33(0, 1)] = (one_c * xy) - zs;
