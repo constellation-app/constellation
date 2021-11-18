@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -67,7 +68,7 @@ public final class InfoMapGeneralAction implements ActionListener {
     /**
      * Color the clusters and arrange graph after clustering has been performed.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static class InfoMapGeneralPlugin extends SimpleEditPlugin {
 
         @Override

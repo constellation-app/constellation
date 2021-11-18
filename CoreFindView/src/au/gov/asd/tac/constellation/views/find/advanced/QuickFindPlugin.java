@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import org.openide.util.NbBundle.Messages;
  * @author betelgeuse
  * @see SimpleReadPlugin
  */
-@PluginInfo(pluginType = PluginType.SEARCH, tags = {"SEARCH"})
+@PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
 @Messages("QuickFindPlugin=Find: Quick Search")
 public class QuickFindPlugin extends SimplePlugin {
 

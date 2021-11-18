@@ -540,6 +540,14 @@ public final class Frame implements Serializable {
 
         return array;
     }
+    
+    
+    public boolean areSame(final Frame frame) {
+        return origin.areSame(frame.origin)
+                && forward.areSame(frame.forward)
+                && up.areSame(frame.up)
+                && absm == frame.absm;
+    }
 
     @Override
     public String toString() {

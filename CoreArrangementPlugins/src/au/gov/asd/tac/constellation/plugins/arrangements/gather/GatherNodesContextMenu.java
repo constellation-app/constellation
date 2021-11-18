@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
@@ -100,7 +101,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
         return vertexBits;
     }
 
-    @PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
     public static class GatherNodesForGraphContextMenuPlugin extends SimpleEditPlugin {
 
         final Vector3f unprojected;
@@ -126,7 +127,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
 
     }
 
-    @PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
     public static class GatherNodesForVertexContextMenuPlugin extends SimpleEditPlugin {
 
         private final int element;

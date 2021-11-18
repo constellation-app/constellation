@@ -44,6 +44,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -69,7 +70,7 @@ import org.openide.windows.OutputWriter;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("CompareGraphPlugin=Compare Graph")
-@PluginInfo(pluginType = PluginType.SEARCH, tags = {"SEARCH"})
+@PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
 public class CompareGraphPlugin extends SimpleReadPlugin {
     
     private static final Logger LOGGER = Logger.getLogger(CompareGraphPlugin.class.getName());

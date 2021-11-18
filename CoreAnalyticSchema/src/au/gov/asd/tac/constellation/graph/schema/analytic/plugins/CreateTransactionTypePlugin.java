@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
@@ -41,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
 @Messages("CreateTransactionTypePlugin=Create Transaction Type")
 public class CreateTransactionTypePlugin extends SimpleEditPlugin {
 

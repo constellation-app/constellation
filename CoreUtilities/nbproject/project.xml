@@ -181,6 +181,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.text</package>
                 <package>au.gov.asd.tac.constellation.utilities.timer</package>
                 <package>au.gov.asd.tac.constellation.utilities.tooltip</package>
+                <package>au.gov.asd.tac.constellation.utilities.tooltip.handlers</package>
                 <package>au.gov.asd.tac.constellation.utilities.video</package>
                 <package>au.gov.asd.tac.constellation.utilities.visual</package>
                 <package>au.gov.asd.tac.constellation.utilities.xml</package>

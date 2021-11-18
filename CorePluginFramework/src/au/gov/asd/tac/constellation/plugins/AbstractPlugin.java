@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -108,7 +109,7 @@ public abstract class AbstractPlugin implements Plugin {
         return null;
     }
 
-    private static final String[] DEFAULT_TAGS = new String[]{"GENERAL"};
+    private static final String[] DEFAULT_TAGS = new String[]{PluginTags.GENERAL};
 
     @Override
     public String[] getTags() {

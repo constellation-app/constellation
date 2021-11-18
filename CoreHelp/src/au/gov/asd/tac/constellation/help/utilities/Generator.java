@@ -46,8 +46,8 @@ import org.openide.windows.OnShowing;
 public class Generator implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
-    public static String baseDirectory = "";
-    public static String tocDirectory = "";
+    private static String baseDirectory = "";
+    private static String tocDirectory = "";
     public static final String TOC_FILE_NAME = "toc.md";
     public static final String ROOT_NODE_NAME = "Constellation Documentation";
 
@@ -121,9 +121,9 @@ public class Generator implements Runnable {
             final String sep = File.separator;
 
             // Get the current directory and make the file within the base project directory.
-            final String userDir = getResource(Generator.class);
+            final String userDir = getResource();
             String[] splitUserDir = userDir.split(Pattern.quote(sep));
-            while (!splitUserDir[splitUserDir.length - 1].equals("constellation")) {
+            while (!"constellation".equals(splitUserDir[splitUserDir.length - 1])) {
                 splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
             }
             // split once more
@@ -136,7 +136,7 @@ public class Generator implements Runnable {
         return baseDirectory;
     }
 
-    protected static String getResource(final Class clazz) throws MalformedURLException, URISyntaxException {
+    protected static String getResource() throws MalformedURLException, URISyntaxException {
         final URL sourceLocation = Generator.class.getProtectionDomain().getCodeSource().getLocation();
         final String pathLoc = sourceLocation.getPath();
         final URL url = new URL(pathLoc);

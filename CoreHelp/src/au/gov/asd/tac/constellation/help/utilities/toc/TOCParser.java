@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.help.utilities.toc;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -36,7 +35,9 @@ import org.xml.sax.SAXException;
  */
 public class TOCParser {
 
-    private static final Logger LOGGER = Logger.getLogger(TOCParser.class.getName());
+    private TOCParser() {
+        // Intentionally left blank 
+    }
 
     /**
      * Parse the XML file into the tree data structure.
@@ -49,6 +50,7 @@ public class TOCParser {
             return;
         }
 
+        final String targetAttribute = "target";
         TreeNode currentParent = root;
         final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -61,7 +63,7 @@ public class TOCParser {
             final Node nNode = nList.item(temp);
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 final Element eElement = (Element) nNode;
-                final TOCItem currentTocItem = new TOCItem(eElement.getAttribute("text"), eElement.getAttribute("target"));
+                final TOCItem currentTocItem = new TOCItem(eElement.getAttribute("text"), eElement.getAttribute(targetAttribute));
                 final TreeNode current = new TreeNode(currentTocItem);
                 // when has children, then set parent
                 if (nNode.hasChildNodes()) {
@@ -74,7 +76,7 @@ public class TOCParser {
                     } else {
                         // Get parent node in xml, and add it to that node as a child
                         final Element parentElement = (Element) eElement.getParentNode();
-                        final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute("target"));
+                        final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute(targetAttribute));
 
                         final TreeNode parentDuplicate = TreeNode.search(parentTocItem, root);
 
@@ -92,7 +94,7 @@ public class TOCParser {
                     }
                 } else {
                     final Element parentElement = (Element) eElement.getParentNode();
-                    final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute("target"));
+                    final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute(targetAttribute));
                     final TreeNode parentDuplicate = TreeNode.search(parentTocItem, root);
                     if (parentDuplicate != null) {
                         currentParent.addChild(current);

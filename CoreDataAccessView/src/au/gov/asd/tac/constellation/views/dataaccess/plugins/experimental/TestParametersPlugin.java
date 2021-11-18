@@ -54,6 +54,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -109,7 +110,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("TestParametersPlugin=Test Parameters")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"DEVELOPER", "MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.DEVELOPER, PluginTags.MODIFY})
 public class TestParametersPlugin extends RecordStoreQueryPlugin implements DataAccessPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(TestParametersPlugin.class.getName());
@@ -526,7 +527,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         return results;
     }
 
-    public class GraphElementTypeParameterValue extends ParameterValue {
+    public static class GraphElementTypeParameterValue extends ParameterValue {
 
         private GraphElementType elementType;
 

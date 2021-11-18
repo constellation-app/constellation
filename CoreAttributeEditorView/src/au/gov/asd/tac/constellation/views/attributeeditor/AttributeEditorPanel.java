@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
@@ -1035,7 +1036,7 @@ public class AttributeEditorPanel extends BorderPane {
     /**
      * Delete the attribute on the element type.
      */
-    @PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE"})
+    @PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
     public static class DeleteAttributePlugin extends SimpleEditPlugin {
 
         final GraphElementType elementType;

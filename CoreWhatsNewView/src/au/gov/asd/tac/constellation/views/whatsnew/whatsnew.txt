@@ -1,6 +1,8 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-11-02 Data Access View Templates
+<p>A bug relating to the Data Access View template structure has been resolved. Unfortunately this change means that existing DAV templates will no longer work and therefore they will need to be re-created.</p>
 
 == 2021-10-29 New Online & Offline Help
 <p>The help documentation is now able to be viewed both online through the constellation-app.com website and offline through a local server.</p>

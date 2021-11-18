@@ -140,7 +140,7 @@ public class HelpOptionsPanelControllerNGTest {
         PropertyChangeSupport pcs = mock(PropertyChangeSupport.class);
         doNothing().when(pcs).firePropertyChange(Mockito.any(), Mockito.any(), Mockito.any());
 
-        when(panel.getOnlineHelpOption()).thenReturn(true);
+        when(panel.isOnlineHelpSelected()).thenReturn(true);
         when(instance.getPanel()).thenReturn(panel);
         when(instance.isChanged()).thenReturn(changedValue);
         when(instance.isValid()).thenReturn(validValue);
@@ -165,7 +165,7 @@ public class HelpOptionsPanelControllerNGTest {
             // verify that the preference was put with the correct value
             verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(returnValue));
             // verify that the panel method get help option was called
-            verify(panel, times(1)).getOnlineHelpOption();
+            verify(panel, times(1)).isOnlineHelpSelected();
 
             // valid value but unchanged
             when(instance.isChanged()).thenReturn(!changedValue);
@@ -181,7 +181,7 @@ public class HelpOptionsPanelControllerNGTest {
             // verify that the preference was not called again
             verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(returnValue));
             // verify that the panel method was not called again
-            verify(panel, times(1)).getOnlineHelpOption();
+            verify(panel, times(1)).isOnlineHelpSelected();
 
             // Test invalid value - should not change or interact
             when(instance.isValid()).thenReturn(!validValue);
@@ -197,9 +197,9 @@ public class HelpOptionsPanelControllerNGTest {
             // verify that the preference was not called again
             verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(returnValue));
             // verify that the panel method was not called again
-            verify(panel, times(1)).getOnlineHelpOption();
+            verify(panel, times(1)).isOnlineHelpSelected();
 
-            when(panel.getOnlineHelpOption()).thenReturn(false);
+            when(panel.isOnlineHelpSelected()).thenReturn(false);
             when(instance.getPanel()).thenReturn(panel);
             // valid value and changed
             when(instance.isChanged()).thenReturn(changedValue);
@@ -221,7 +221,7 @@ public class HelpOptionsPanelControllerNGTest {
             verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(!returnValue));
             verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(returnValue));
             // verify that the panel method was not called again
-            verify(panel, times(2)).getOnlineHelpOption();
+            verify(panel, times(2)).isOnlineHelpSelected();
 
         }
     }
@@ -239,7 +239,7 @@ public class HelpOptionsPanelControllerNGTest {
         final String key = HelpPreferenceKeys.HELP_KEY;
         HelpOptionsPanelController instance = mock(HelpOptionsPanelController.class);
         HelpOptionsPanel panel = mock(HelpOptionsPanel.class);
-        when(panel.getOnlineHelpOption()).thenReturn(panelReturnValue);
+        when(panel.isOnlineHelpSelected()).thenReturn(panelReturnValue);
         when(instance.getPanel()).thenReturn(panel);
         doCallRealMethod().when(instance).isChanged();
 
@@ -251,44 +251,44 @@ public class HelpOptionsPanelControllerNGTest {
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(HelpPreferenceKeys.class))).thenReturn(prefs);
 
             // TEST VALUES UNCHANGED
-            assertEquals(panelReturnValue, panel.getOnlineHelpOption());
+            assertEquals(panelReturnValue, panel.isOnlineHelpSelected());
             assertEquals(panelReturnValue != returnValue, instance.isChanged());
 
             //check value unmodified
-            assertEquals(panelReturnValue, panel.getOnlineHelpOption());
-            verify(panel, times(3)).getOnlineHelpOption();
+            assertEquals(panelReturnValue, panel.isOnlineHelpSelected());
+            verify(panel, times(3)).isOnlineHelpSelected();
             verify(instance, times(1)).getPanel();
 
             // TEST VALUES UNCHANGED TRUE
             // flip operands to give alternate boolean values
-            when(panel.getOnlineHelpOption()).thenReturn(!panelReturnValue);
+            when(panel.isOnlineHelpSelected()).thenReturn(!panelReturnValue);
             when(instance.getPanel()).thenReturn(panel);
 
             when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(!returnValue);
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(HelpPreferenceKeys.class))).thenReturn(prefs);
 
-            assertEquals(!panelReturnValue, panel.getOnlineHelpOption());
+            assertEquals(!panelReturnValue, panel.isOnlineHelpSelected());
             assertEquals(!panelReturnValue != !returnValue, instance.isChanged());
 
             //check value unmodified
-            assertEquals(!panelReturnValue, panel.getOnlineHelpOption());
-            verify(panel, times(6)).getOnlineHelpOption();
+            assertEquals(!panelReturnValue, panel.isOnlineHelpSelected());
+            verify(panel, times(6)).isOnlineHelpSelected();
             verify(instance, times(2)).getPanel();
 
             // TEST VALUES CHANGED
             // flip operands of online help value
-            when(panel.getOnlineHelpOption()).thenReturn(panelReturnValue);
+            when(panel.isOnlineHelpSelected()).thenReturn(panelReturnValue);
             when(instance.getPanel()).thenReturn(panel);
 
             when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(!returnValue);
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(HelpPreferenceKeys.class))).thenReturn(prefs);
 
-            assertEquals(panelReturnValue, panel.getOnlineHelpOption());
+            assertEquals(panelReturnValue, panel.isOnlineHelpSelected());
             assertEquals(panelReturnValue != !returnValue, instance.isChanged());
 
             //check value unmodified
-            assertEquals(panelReturnValue, panel.getOnlineHelpOption());
-            verify(panel, times(9)).getOnlineHelpOption();
+            assertEquals(panelReturnValue, panel.isOnlineHelpSelected());
+            verify(panel, times(9)).isOnlineHelpSelected();
             verify(instance, times(3)).getPanel();
         }
     }

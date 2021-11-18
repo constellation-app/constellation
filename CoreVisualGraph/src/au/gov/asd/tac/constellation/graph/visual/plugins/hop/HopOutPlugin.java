@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -37,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("HopOutPlugin=Hop Out")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 public class HopOutPlugin extends SimpleEditPlugin {
 
     public static final String HOPS_PARAMETER_ID = PluginParameter.buildId(HopOutPlugin.class, "hops");

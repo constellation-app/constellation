@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import java.io.File;
@@ -45,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twilight_sparkle
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"UTILITY"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.UTILITY})
 @NbBundle.Messages("LoadTemplatePlugin=Load Template")
 public class LoadTemplatePlugin extends SimplePlugin {
 
