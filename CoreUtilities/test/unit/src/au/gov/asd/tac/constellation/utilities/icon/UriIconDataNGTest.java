@@ -86,30 +86,47 @@ public class UriIconDataNGTest {
     }
 
     /**
-     * Test of constructor method with String, of class UriIconData.
+     * Test of constructor method with String, of class UriIconData, when
+     * URI.create() throws IllegalArgumentException.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testUriIconData_withStringThrowsException() throws Exception {
+        System.out.println("testUriIconData_withStringThrowsException");
+
+        uriStaticMock.when(() -> URI.create(Mockito.any(String.class))).thenCallRealMethod();
+
+        final UriIconData instance = new UriIconData("someURIString");
+    }
+
+    /**
+     * Test of constructor method with String, of class UriIconData, when
+     * isAbsolute() throws AssertionError.
      *
      * @throws java.lang.Exception
      */
     @Test(expectedExceptions = AssertionError.class)
-    public void testUriIconData_withString() throws Exception {
-        System.out.println("testUriIconData_withString");
+    public void testUriIconData_withStringThrowsError() throws Exception {
+        System.out.println("testUriIconData_withStringThrowsError");
 
         uriStaticMock.when(() -> URI.create(Mockito.any(String.class))).thenReturn(uriMock);
 
         // If the URI is not absolute and does not have a scheme component.
         when(uriMock.isAbsolute()).thenReturn(false);
 
-        final UriIconData instance = new UriIconData("");
+        final UriIconData instance = new UriIconData("someURIString");
     }
 
     /**
-     * Test of constructor method with URI, of class UriIconData.
+     * Test of constructor method with URI, of class UriIconData, when
+     * isAbsolute() throws IllegalArgumentException.
      *
      * @throws java.lang.Exception
      */
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testUriIconData_withURI() throws Exception {
-        System.out.println("testUriIconData_withURI");
+    public void testUriIconData_withURIThrowsException() throws Exception {
+        System.out.println("testUriIconData_withURIThrowsException");
 
         // If the URI is not absolute and does not have a scheme component.
         when(uriMock.isAbsolute()).thenReturn(false);
@@ -157,7 +174,7 @@ public class UriIconDataNGTest {
         System.out.println("testCreateInputStream_schemeNotHTTPS");
 
         when(uriMock.isAbsolute()).thenReturn(true);
-        when(uriMock.getScheme()).thenReturn("HTTP");
+        when(uriMock.getScheme()).thenReturn("notHTTPS");
         when(uriMock.toURL()).thenReturn(urlMock);
 
         final UriIconData instance = new UriIconData(uriMock);
