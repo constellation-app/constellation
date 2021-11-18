@@ -171,21 +171,17 @@ public class OverviewOverlay extends MapOverlay {
             final float viewportHeight;
             if (x < getX()) {
                 viewportWidth = Math.max(width - (getX() - x), 0);
+            } else if (x + width > getX() + getWidth()) {
+                viewportWidth = Math.max(width - ((x + width) - (getX() + getWidth())), 0);
             } else {
-                if (x + width > getX() + getWidth()) {
-                    viewportWidth = Math.max(width - ((x + width) - (getX() + getWidth())), 0);
-                } else {
-                    viewportWidth = width;
-                }
+                viewportWidth = width;
             }
             if (y < getY()) {
                 viewportHeight = Math.max(height - (getY() - y), 0);
+            } else if (y + height > getY() + getHeight()) {
+                viewportHeight = Math.max(height - ((y + height) - (getY() + getHeight())), 0);
             } else {
-                if (y + height > getY() + getHeight()) {
-                    viewportHeight = Math.max(height - ((y + height) - (getY() + getHeight())), 0);
-                } else {
-                    viewportHeight = height;
-                }
+                viewportHeight = height;
             }
 
             renderer.rect(viewportX, viewportY, viewportWidth, viewportHeight);
@@ -197,12 +193,10 @@ public class OverviewOverlay extends MapOverlay {
             final int newZoomLevel;
             if (zoom > 0) {
                 newZoomLevel = map.getZoomLevel() - 1;
+            } else if (zoom < 0) {
+                newZoomLevel = map.getZoomLevel() + 1;
             } else {
-                if (zoom < 0) {
-                    newZoomLevel = map.getZoomLevel() + 1;
-                } else {
-                    newZoomLevel = map.getZoomLevel();
-                }
+                newZoomLevel = map.getZoomLevel();
             }
             map.setTweening(false);
             map.zoomAndPanTo(newZoomLevel, newLocation);
