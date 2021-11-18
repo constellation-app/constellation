@@ -165,9 +165,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         this.cachedWidth = getWidth();
         this.cachedHeight = getHeight();
 
-        updateMarkers = (graph) -> {
-            renderer.updateMarkers(graph, markerState);
-        };
+        updateMarkers = graph -> renderer.updateMarkers(graph, markerState);
 
         // lookup map providers
         this.defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
@@ -249,9 +247,9 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                                 } catch (NumberFormatException ex) {
                                     throw new AssertionError("Invalid coordinate data provided, latitude and longitude should be numbers");
                                 }
-                                assert latitude > -90f && latitude < 90f : "Invalid coordinate data provided, latitude should be in the range [-90. 90]";
-                                assert longitude > -180f && longitude < 180f : "Invalid coordinate data provided, longitude should be in the range [-180, 180]";
-                                assert radius >= 0f : "Invalid coordinate data provided, radius should be greater than or equal to 0";
+                                assert latitude > -90F && latitude < 90F : "Invalid coordinate data provided, latitude should be in the range [-90. 90]";
+                                assert longitude > -180F && longitude < 180F : "Invalid coordinate data provided, longitude should be in the range [-180, 180]";
+                                assert radius >= 0F : "Invalid coordinate data provided, radius should be greater than or equal to 0";
                                 final Location coordinateLocation = new Location(latitude, longitude);
                                 if (radius > 0) {
                                     final float radiusDD = (float) Distance.Haversine.kilometersToDecimalDegrees(radius);
@@ -318,14 +316,10 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             markerState.setColorScheme(colorScheme);
 
             if (colorScheme.getVertexAttribute() != null) {
-                addAttributeValueChangeHandler(colorScheme.getVertexAttribute(), graph -> {
-                    renderer.updateMarkers(graph, markerState);
-                });
+                addAttributeValueChangeHandler(colorScheme.getVertexAttribute(), graph -> renderer.updateMarkers(graph, markerState));
             }
             if (colorScheme.getTransactionAttribute() != null) {
-                addAttributeValueChangeHandler(colorScheme.getTransactionAttribute(), graph -> {
-                    renderer.updateMarkers(graph, markerState);
-                });
+                addAttributeValueChangeHandler(colorScheme.getTransactionAttribute(), graph -> renderer.updateMarkers(graph, markerState));
             }
 
             renderer.updateMarkers(currentGraph, markerState);
@@ -340,14 +334,10 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             markerState.setLabel(label);
 
             if (label.getVertexAttribute() != null) {
-                addAttributeValueChangeHandler(label.getVertexAttribute(), graph -> {
-                    renderer.updateMarkers(graph, markerState);
-                });
+                addAttributeValueChangeHandler(label.getVertexAttribute(), graph -> renderer.updateMarkers(graph, markerState));
             }
             if (label.getTransactionAttribute() != null) {
-                addAttributeValueChangeHandler(label.getTransactionAttribute(), graph -> {
-                    renderer.updateMarkers(graph, markerState);
-                });
+                addAttributeValueChangeHandler(label.getTransactionAttribute(), graph -> renderer.updateMarkers(graph, markerState));
             }
 
             renderer.updateMarkers(currentGraph, markerState);
@@ -368,9 +358,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         toolBar.add(exportMenu);
 
         this.helpButton = new JButton("", UserInterfaceIconProvider.HELP.buildIcon(16, ConstellationColor.AZURE.getJavaColor()));
-        helpButton.addActionListener(event -> {
-            new HelpCtx(this.getClass().getName()).display();
-        });
+        helpButton.addActionListener(event -> new HelpCtx(this.getClass().getName()).display());
         helpButton.setToolTipText("Help on using the Map View");
         toolBar.add(helpButton);
 
@@ -380,7 +368,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         addComponentListener(new ComponentAdapter() {
             ScheduledExecutorService scheduledExecutorService
                     = Executors.newScheduledThreadPool(1);
-            ScheduledFuture scheduledFuture;
+            ScheduledFuture<?> scheduledFuture;
 
             @Override
             //Cancels the previous resize (future) and then performs the latest one every half second
