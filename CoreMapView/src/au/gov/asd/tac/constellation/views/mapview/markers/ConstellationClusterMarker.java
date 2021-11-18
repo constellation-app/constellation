@@ -34,7 +34,7 @@ import processing.core.PGraphics;
  */
 public class ConstellationClusterMarker extends ConstellationAbstractMarker {
 
-    private static final float MIN_RADIUS = 30f;
+    private static final float MIN_RADIUS = 30F;
 
     private MapPosition clusterCenter = new MapPosition();
     private float clusterRadius = 0;
@@ -79,9 +79,7 @@ public class ConstellationClusterMarker extends ConstellationAbstractMarker {
     @Override
     public Location getLocation() {
         final Location center = new Location(0, 0);
-        markers.forEach(marker -> {
-            center.add(marker.getLocation());
-        });
+        markers.forEach(marker -> center.add(marker.getLocation()));
         center.div((float) markers.size());
         return center;
     }
@@ -118,18 +116,14 @@ public class ConstellationClusterMarker extends ConstellationAbstractMarker {
 
     public List<Location> getCentroidLocations() {
         final List<Location> markerCentroids = new ArrayList<>();
-        markers.forEach(marker -> {
-            markerCentroids.add(marker.getLocation());
-        });
+        markers.forEach(marker -> markerCentroids.add(marker.getLocation()));
         return markerCentroids;
     }
 
     @Override
     public List<Location> getLocations() {
         final List<Location> markerLocations = new ArrayList<>();
-        markers.forEach(marker -> {
-            markerLocations.addAll(marker.getLocations());
-        });
+        markers.forEach(marker -> markerLocations.addAll(marker.getLocations()));
         return markerLocations;
     }
 
@@ -208,8 +202,8 @@ public class ConstellationClusterMarker extends ConstellationAbstractMarker {
         graphics.fill(FONT_COLOR);
         graphics.textSize(FONT_SIZE);
         graphics.text(clusterLabel,
-                clusterCenter.x - (CHAR_WIDTH * clusterLabel.length() * 0.6f),
-                clusterCenter.y + (FONT_SIZE * 0.35f));
+                clusterCenter.x - (CHAR_WIDTH * clusterLabel.length() * 0.6F),
+                clusterCenter.y + (FONT_SIZE * 0.35F));
 
         return true;
     }
