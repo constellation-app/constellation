@@ -192,7 +192,7 @@ public abstract class IconData {
             return false;
         }
 
-        if (!(obj instanceof IconData)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
 

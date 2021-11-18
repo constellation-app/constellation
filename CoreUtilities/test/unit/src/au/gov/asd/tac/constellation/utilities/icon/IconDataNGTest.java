@@ -78,59 +78,109 @@ public class IconDataNGTest {
     }
 
     /**
-     * Test of getData method, of class IconData.
+     * Test of getData method, of class IconData, when size not default and
+     * color not null.
      */
     @Test
     public void testGetData() {
         System.out.println("testGetData");
 
-        // When niether size is the default (256) or color is null.
-        final IconData instance1 = spy(new IconDataImpl());
+        final IconData instance = spy(new IconDataImpl());
 
-        final int size1 = 256;
-        final Color color1 = new Color(1, 1, 1);
+        final int size = 1;
+        final Color color = new Color(1, 1, 1);
 
-        final byte[] expResult1 = new byte[0];
-        final byte[] result1 = instance1.getData(size1, color1);
+        final byte[] expResult = new byte[0];
+        final byte[] result = instance.getData(size, color);
 
-        verify(instance1, times(1)).createData(Mockito.eq(size1), Mockito.eq(color1));
-        assertEquals(result1, expResult1);
+        verify(instance, times(1)).createData(Mockito.eq(size), Mockito.eq(color));
 
-        // When color is null.
-        final IconData instance2 = spy(new IconDataImpl());
+        assertEquals(result, expResult);
+    }
 
-        final int size2 = 0;
-        final Color color2 = null;
+    /**
+     * Test of getData method, of class IconData, when size is default and color
+     * not null.
+     */
+    @Test
+    public void testGetData_sizeIsDefault() {
+        System.out.println("testGetData_sizeIsDefault");
 
-        final byte[] expResult2 = new byte[0];
-        final byte[] result2 = instance2.getData(size2, color2);
+        final IconData instance = spy(new IconDataImpl());
 
-        verify(instance2, times(1)).createData(Mockito.eq(size2), Mockito.eq(color2));
-        assertEquals(result2, expResult2);
+        final int size = ConstellationIcon.DEFAULT_ICON_SIZE;
+        final Color color = new Color(1, 1, 1);
 
-        // When size is the default (256).
-        final int size3 = 256;
-        final Color color3 = null;
+        final byte[] expResult = new byte[0];
+        final byte[] result = instance.getData(size, color);
 
-        // When data is null.
-        final IconData instance3 = spy(new IconDataImpl());
-        instance3.setData(null);
+        verify(instance, times(1)).createData(Mockito.eq(size), Mockito.eq(color));
 
-        final byte[] expResult3 = new byte[0];
-        final byte[] result3 = instance3.getData(size3, color3);
+        assertEquals(result, expResult);
+    }
 
-        verify(instance3, times(1)).createData(Mockito.eq(size3), Mockito.eq(color3));
-        assertEquals(result3, expResult3);
+    /**
+     * Test of getData method, of class IconData, when size not default and
+     * color is null.
+     */
+    @Test
+    public void testGetData_colorIsNull() {
+        System.out.println("testGetData_colorIsNull");
 
-        // When data is not null.
-        final IconData instance4 = spy(new IconDataImpl());
-        instance4.setData(new byte[1]);
+        final IconData instance = spy(new IconDataImpl());
 
-        final byte[] expResult4 = new byte[1];
-        final byte[] result4 = instance4.getData(size3, color3);
+        final int size = 1;
+        final Color color = null;
 
-        verify(instance4, times(0)).createData(Mockito.eq(size3), Mockito.eq(color3));
-        assertEquals(result4, expResult4);
+        final byte[] expResult = new byte[0];
+        final byte[] result = instance.getData(size, color);
+
+        verify(instance, times(1)).createData(Mockito.eq(size), Mockito.eq(color));
+
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getData method, of class IconData, when data is null.
+     */
+    @Test
+    public void testGetData_dataIsNull() {
+        System.out.println("testGetData_dataIsNull");
+
+        final IconData instance = spy(new IconDataImpl());
+
+        final int size = ConstellationIcon.DEFAULT_ICON_SIZE;
+        final Color color = null;
+
+        final byte[] expResult = new byte[0];
+        final byte[] result = instance.getData(size, color);
+
+        verify(instance, times(1)).createData(Mockito.eq(size), Mockito.eq(color));
+
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getData method, of class IconData, when data not null.
+     */
+    @Test
+    public void testGetData_dataNotNull() {
+        System.out.println("testGetData_dataNotNull");
+
+        final IconData instance = spy(new IconDataImpl());
+
+        final int size = ConstellationIcon.DEFAULT_ICON_SIZE;
+        final Color color = null;
+
+        // Data not null.
+        instance.setData(new byte[1]);
+
+        final byte[] expResult = new byte[1];
+        final byte[] result = instance.getData(size, color);
+
+        verify(instance, times(0)).createData(Mockito.eq(size), Mockito.eq(color));
+
+        assertEquals(result, expResult);
     }
 
     /**
@@ -168,8 +218,8 @@ public class IconDataNGTest {
      * null.
      */
     @Test
-    public void testCreateData_0AndNull() {
-        System.out.println("testCreateData_0AndNull");
+    public void testCreateData_sizeIs0AndColorIsNull() {
+        System.out.println("testCreateData_sizeIs0AndColorIsNull");
 
         final IconData instance = new IconDataImpl();
 
@@ -311,16 +361,53 @@ public class IconDataNGTest {
     public void testScaleImage() {
         System.out.println("testScaleImage");
 
-        final BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
-        final int size = 2;
+        // Scale up.
+        final BufferedImage image1 = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
+        final int size1 = 2;
 
-        iconDataStaticMock.when(() -> IconData.scaleImage(Mockito.eq(image), Mockito.eq(size))).thenCallRealMethod();
-        final BufferedImage scaledImage = IconData.scaleImage(image, size);
+        iconDataStaticMock.when(() -> IconData.scaleImage(Mockito.eq(image1), Mockito.eq(size1))).thenCallRealMethod();
+        final BufferedImage scaledImage1 = IconData.scaleImage(image1, size1);
 
-        final int expResult = size * size;
-        final int result = scaledImage.getHeight() * scaledImage.getWidth();
+        final int expResult1 = size1 * size1;
+        final int result1 = scaledImage1.getWidth() * scaledImage1.getHeight();
 
-        assertEquals(result, expResult);
+        assertEquals(result1, expResult1);
+
+        // Scale down.
+        final BufferedImage image2 = new BufferedImage(2, 2, BufferedImage.TYPE_4BYTE_ABGR);
+        final int size2 = 1;
+
+        iconDataStaticMock.when(() -> IconData.scaleImage(Mockito.eq(image2), Mockito.eq(size2))).thenCallRealMethod();
+        final BufferedImage scaledImage2 = IconData.scaleImage(image2, size2);
+
+        final int expResult2 = size2 * size2;
+        final int result2 = scaledImage2.getWidth() * scaledImage2.getHeight();
+
+        assertEquals(result2, expResult2);
+
+        // When image's current width is 2 and current height equals size.
+        final BufferedImage image3 = new BufferedImage(2, 1, BufferedImage.TYPE_4BYTE_ABGR);
+        final int size3 = 1;
+
+        iconDataStaticMock.when(() -> IconData.scaleImage(Mockito.eq(image3), Mockito.eq(size3))).thenCallRealMethod();
+        final BufferedImage scaledImage3 = IconData.scaleImage(image3, size3);
+
+        final int expResult3 = 2;
+        final int result3 = scaledImage3.getWidth();
+
+        assertEquals(result3, expResult3);
+
+        // When image's current height is 2 and current width equals size.
+        final BufferedImage image4 = new BufferedImage(1, 2, BufferedImage.TYPE_4BYTE_ABGR);
+        final int size4 = 1;
+
+        iconDataStaticMock.when(() -> IconData.scaleImage(Mockito.eq(image4), Mockito.eq(size4))).thenCallRealMethod();
+        final BufferedImage scaledImage4 = IconData.scaleImage(image4, size4);
+
+        final int expResult4 = 2;
+        final int result4 = scaledImage4.getHeight();
+
+        assertEquals(result4, expResult4);
     }
 
     /**
@@ -343,12 +430,12 @@ public class IconDataNGTest {
     }
 
     /**
-     * Test of scaleImage method, of class IconData, when image type is not
+     * Test of scaleImage method, of class IconData, when image type not
      * TYPE_4BYTE_ABGR.
      */
     @Test
-    public void testScaleImage_imageIsNotTYPE_4BYTE_ABGR() {
-        System.out.println("testScaleImage_imageIsNotTYPE_4BYTE_ABGR");
+    public void testScaleImage_imageNotTYPE_4BYTE_ABGR() {
+        System.out.println("testScaleImage_imageNotTYPE_4BYTE_ABGR");
 
         final BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR);
         final int size = 2;
@@ -360,39 +447,6 @@ public class IconDataNGTest {
         final int result = scaledImage.getType();
 
         assertEquals(result, expResult);
-    }
-
-    /**
-     * Test of scaleImage method, of class IconData, when size equals the
-     * image's current sizes for width or height.
-     */
-    @Test
-    public void testScaleImage_sizeEqualsCurrentWidthOrHeight() {
-        System.out.println("testScaleImage_sizeEqualsCurrentWidthOrHeight");
-
-        // When image's current width is 2 and current height equals new size.
-        final BufferedImage image1 = new BufferedImage(2, 1, BufferedImage.TYPE_4BYTE_ABGR);
-        final int size1 = 1;
-
-        iconDataStaticMock.when(() -> IconData.scaleImage(Mockito.eq(image1), Mockito.eq(size1))).thenCallRealMethod();
-        final BufferedImage scaledImage1 = IconData.scaleImage(image1, size1);
-
-        final int expResult1 = 2;
-        final int result1 = scaledImage1.getWidth();
-
-        assertEquals(result1, expResult1);
-
-        // When image's current height is 2 and current width equals new size.
-        final BufferedImage image2 = new BufferedImage(1, 2, BufferedImage.TYPE_4BYTE_ABGR);
-        final int size2 = 1;
-
-        iconDataStaticMock.when(() -> IconData.scaleImage(Mockito.eq(image2), Mockito.eq(size2))).thenCallRealMethod();
-        final BufferedImage scaledImage2 = IconData.scaleImage(image2, size2);
-
-        final int expResult2 = 2;
-        final int result2 = scaledImage2.getHeight();
-
-        assertEquals(result2, expResult2);
     }
 
     /**
@@ -455,6 +509,7 @@ public class IconDataNGTest {
         assertEquals(result2, expResult2);
     }
 
+    // Class implementation for tests because IconData is abstract.
     private class IconDataImpl extends IconData {
 
         @Override
