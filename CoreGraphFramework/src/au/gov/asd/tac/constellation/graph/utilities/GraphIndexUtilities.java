@@ -24,12 +24,16 @@ import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author sirius
  */
 public class GraphIndexUtilities {
+
+    private static final Logger LOGGER = Logger.getLogger(GraphIndexUtilities.class.getName());
 
     private static final boolean VERBOSE = false;
     
@@ -48,7 +52,7 @@ public class GraphIndexUtilities {
             GraphElementType elementType = attributeObject.getElementType();
 
             if (VERBOSE) {
-                System.out.println("NOT USING INDEX: " + attributeObject.getName() + ": " + attribute);
+                LOGGER.log(Level.INFO, "NOT USING INDEX: " + attributeObject.getName() + ": " + attribute);
             }
 
             return new GraphIndexResult() {
@@ -90,7 +94,7 @@ public class GraphIndexUtilities {
 
             if (VERBOSE) {
                 Attribute attributeObject = new GraphAttribute(graph, attribute);
-                System.out.println("USING INDEX: " + attributeObject.getName() + ": " + attribute);
+                LOGGER.log(Level.INFO, "USING INDEX: " + attributeObject.getName() + ": " + attribute);
             }
 
             return graph.getElementsWithAttributeValue(attribute, value);

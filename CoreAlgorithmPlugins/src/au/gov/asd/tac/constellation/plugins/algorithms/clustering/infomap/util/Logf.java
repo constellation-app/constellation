@@ -15,17 +15,26 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author algol
  */
 public final class Logf {
+    
+    private Logf(){
+        throw new IllegalStateException("Utility Class");
+    }
 
     public static final boolean DEBUGF = false;
+    private static final Logger LOGGER = Logger.getLogger(Logf.class.getName());
 
     public static void printf(final String format, final Object... args) {
         if (DEBUGF) {
-            System.out.printf(format, args);
+            final String formattedString = String.format(format, args);
+            LOGGER.log(Level.INFO, formattedString);
         }
     }
 }

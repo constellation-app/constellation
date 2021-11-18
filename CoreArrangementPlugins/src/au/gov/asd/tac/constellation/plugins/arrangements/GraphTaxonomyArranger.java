@@ -24,6 +24,8 @@ import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.SubgraphFactor
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The GraphTaxonomy arranger.
@@ -41,6 +43,8 @@ import java.util.Set;
  * @author algol
  */
 public abstract class GraphTaxonomyArranger implements Arranger {
+
+    private static final Logger LOGGER = Logger.getLogger(GraphTaxonomyArranger.class.getName());
 
     private final Arranger inner;
     private final Arranger outer;
@@ -127,7 +131,6 @@ public abstract class GraphTaxonomyArranger implements Arranger {
         }
 
         final GraphTaxonomy taxonomy = getTaxonomy(wg);
-//        System.out.printf("@GTA tax size %d\n", taxonomy.size());
 
         if (taxonomy.size() == 1) {
             final int k = taxonomy.getTaxa().keySet().iterator().next();
@@ -177,7 +180,6 @@ public abstract class GraphTaxonomyArranger implements Arranger {
                 step++;
             }
 
-//            System.out.printf("@GTA taxon count: %d\n", taxonomy.size());
             if (interaction != null) {
                 final String msg = String.format("Arrange outer (%s)...", outer.getClass().getSimpleName());
                 interaction.setProgress(step, steps, msg, true);
@@ -225,7 +227,8 @@ public abstract class GraphTaxonomyArranger implements Arranger {
 
     public static void dump(final Map<Integer, Set<Integer>> taxa) {
         for (final Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
-            System.out.printf("tax %d: size %d%n", entry.getKey(), entry.getValue().size());
+            final String log = String.format("tax %d: size %d%n", entry.getKey(), entry.getValue().size());
+            LOGGER.log(Level.INFO, log);
         }
     }
 }

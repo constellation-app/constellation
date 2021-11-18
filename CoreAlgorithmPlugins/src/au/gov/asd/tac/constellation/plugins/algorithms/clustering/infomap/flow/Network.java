@@ -117,13 +117,11 @@ public class Network {
 
         Logf.printf("done! Found %d nodes and %d connections. ", rg.getVertexCount(), connectionMap.size());
         if (numDoubleLinks > 0) {
-            Logf.printf("%d connections was aggregated to existing connections. ", numDoubleLinks);
+            Logf.printf("%d connections was aggregated to existing connections. %n", numDoubleLinks);
         }
         if (numSelfLinks > 0 && !config.isIncludeSelfLinks()) {
-            Logf.printf("%d self-connections was ignored. ");
+            Logf.printf("%d self-connections was ignored. %n");
         }
-
-        System.out.printf("%n");
     }
 
     public int getNumNodes() {

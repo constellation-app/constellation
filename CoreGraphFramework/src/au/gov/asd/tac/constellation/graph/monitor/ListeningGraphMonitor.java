@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,6 +31,7 @@ public class ListeningGraphMonitor extends ManualGraphMonitor implements GraphCh
 
     private final AtomicInteger manageCount = new AtomicInteger(0);
     private final int requiredManageCount;
+    private static final Logger LOGGER = Logger.getLogger(ListeningGraphMonitor.class.getName());
 
     // The currently active graph
     private Graph activeGraph;
@@ -69,7 +72,7 @@ public class ListeningGraphMonitor extends ManualGraphMonitor implements GraphCh
         if (graph != activeGraph) {
 
             if (VERBOSE) {
-                System.out.println("Graph Monitor: activeGraphChanged()");
+                LOGGER.log(Level.INFO,"Graph Monitor: activeGraphChanged()");
             }
 
             if (activeGraph != null) {
@@ -115,7 +118,7 @@ public class ListeningGraphMonitor extends ManualGraphMonitor implements GraphCh
     public void graphChanged(final GraphChangeEvent event) {
 
         if (VERBOSE) {
-            System.out.println("GRAPH MONITOR: graphChanged()");
+            LOGGER.log(Level.INFO,"Graph Monitor: graphChanged()");
         }
 
         final GraphChangeEvent latestEvent = event.getLatest();

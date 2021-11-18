@@ -461,8 +461,6 @@ public class QueryServices {
                 }
 
             } finally {
-                //System.out.println(Thread.currentThread().getName() + ": lbound: "
-                //        + workloadLBound + " - ubound: " + workloadUBound);
                 // This thread is now done, so wait for all others to finish:
                 try {
                     barrier.await();

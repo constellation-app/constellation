@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.CannotRedoException;
@@ -40,6 +42,8 @@ import javax.swing.undo.UndoableEdit;
  * @param <T>
  */
 public class LockingManager<T extends LockingTarget> implements Serializable {
+
+    private static final Logger LOGGER = Logger.getLogger(LockingManager.class.getName());
 
     public static final boolean VERBOSE = false;
     private final ReentrantLock globalWriteLock = new ReentrantLock(true);
@@ -91,7 +95,8 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         currentEdit.setModificationCounter(writeContext.target.getModificationCounter());
 
         if (VERBOSE) {
-            System.out.println("Write lock acquired for " + name + " by " + Thread.currentThread());
+            final String log = String.format("Write lock acquired for " + name + " by " + Thread.currentThread());
+            LOGGER.log(Level.INFO, log);
         }
 
         return writeContext.target;
@@ -117,7 +122,8 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                 currentEdit.setModificationCounter(writeContext.target.getModificationCounter());
 
                 if (VERBOSE) {
-                    System.out.println("Write lock acquired for " + name + " by " + Thread.currentThread());
+                    final String log = String.format("Write lock acquired for " + name + " by " + Thread.currentThread());
+                    LOGGER.log(Level.INFO, log);
                 }
 
                 return writeContext.target;
@@ -135,7 +141,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         c.lock.readLock().lock();
 
         if (VERBOSE) {
-            System.out.println("Read lock aquired by " + Thread.currentThread());
+            LOGGER.log(Level.INFO,"Read lock aquired by {0}",Thread.currentThread());
         }
 
         return c.target;

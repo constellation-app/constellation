@@ -111,7 +111,6 @@ public final class CircTreeArranger implements Arranger {
 
             final float[] oldCentre = maintainMean ? ArrangementUtilities.getXyzMean(graph) : null;
 
-//            System.out.printf("@AICT Tree arranging %d vertices, root=%d\n", verticesToArrange.cardinality(), rootVxId);
             // Gather the vxIds into a BitSet for faster checking.
             BitSet vxsToGo = (BitSet) verticesToArrange.clone();
             vxsToGo.clear(rootVxId);

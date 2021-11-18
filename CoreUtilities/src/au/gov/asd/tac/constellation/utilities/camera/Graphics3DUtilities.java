@@ -230,7 +230,6 @@ public class Graphics3DUtilities {
         float winz = (tr[2] + 1.0f) / 2.0f;
 
         // Now we're projected to the window.
-        //        System.out.printf("@@(win) %s -> x=%f, y=%f, z=%f w=%f: %d %d\n", position, winx, viewport[3]-winy, winz, w, xdelta, ydelta);
         // Add the delta from the before and after mouse movement.
         // Note that the ydelta is substracted: OpenGL and Windows have opposite y axes.
         winx += deltaX;

@@ -55,8 +55,6 @@ public final class AutosaveStartup implements Runnable {
     @Override
     public void run() {
         synchronized (String.class) {
-//            System.out.printf("@OnShowing %s %s\n", this.getClass(), this.getClass().getClassLoader());
-
             // Look for existing autosaved in-memory graphs.
             final File[] saveFiles = AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT);
             final long now = new Date().getTime();

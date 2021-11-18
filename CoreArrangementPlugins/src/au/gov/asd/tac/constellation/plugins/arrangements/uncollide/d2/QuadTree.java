@@ -231,7 +231,6 @@ public class QuadTree {
                     y *= nudge;
                     y += perturbation;
                     perturbation = -perturbation;
-//                    System.out.printf("-Collided %f %f %f x=%f y=%f\n  %s <> %s\n", l, r, nudge, x, y, circle, possible);
                     orb.setX(orb.getX() - x);
                     orb.setY(orb.getY() - y);
                     possible.setX(possible.getX() + x);

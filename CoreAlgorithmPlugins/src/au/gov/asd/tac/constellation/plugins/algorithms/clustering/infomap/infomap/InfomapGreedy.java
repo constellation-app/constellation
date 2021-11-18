@@ -34,12 +34,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author algol
  */
 public abstract class InfomapGreedy extends InfomapBase {
+
+    private static final Logger LOGGER = Logger.getLogger(InfomapGreedy.class.getName());
 
     protected FlowBase[] moduleFlowData;
     protected int[] moduleMembers;
@@ -65,7 +69,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     public void initEnterExitFlow() {
         if (DEBUG) {
-            System.out.printf("%s.initEnterExitFlow()%n", getClass().getSimpleName());
+            LOGGER.log(Level.INFO, "initEnterExitFlow() {0}", getClass().getSimpleName());
         }
 
         for (final NodeBase node : treeData.getLeaves()) {
@@ -115,7 +119,8 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     void calculateCodelengthFromActiveNetwork(final boolean detailedBalance) {
         if (DEBUG) {
-            System.out.printf("%s.calculateCodelengthFromActiveNetwork(%s)%n", getClass().getSimpleName(), detailedBalance);
+            final String log = String.format("%s.calculateCodelengthFromActiveNetwork(%s)%n", getClass().getSimpleName(), detailedBalance);
+            LOGGER.log(Level.INFO, log);
         }
 
         flow_log_flow = 0;
@@ -342,7 +347,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected void generateNetworkFromChildren(final NodeBase parent) {
         if (DEBUG) {
-            System.out.printf("%s.generateNetworkFromChildren%n", getClass().getSimpleName());
+            LOGGER.log(Level.INFO, "{0}.generateNetworkFromChildren", getClass().getSimpleName());
         }
 
         exitNetworkFlow = 0;
@@ -394,7 +399,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected void moveNodesToPredefinedModules() {
         if (DEBUG) {
-            System.out.printf("%s.moveNodesToPredefinedModules%n", getClass().getSimpleName());
+            LOGGER.log(Level.INFO, "{0}.moveNodesToPredefinedModules", getClass().getSimpleName());
         }
 
         // Size of active network and cluster array should match.
@@ -403,8 +408,9 @@ public abstract class InfomapGreedy extends InfomapBase {
         final int numNodes = activeNetwork.size();
 
         if (DEBUG) {
-            System.out.printf("Begin moving %d nodes to predefined modules, starting with codelength %f...\n",
+            final String log = String.format("Begin moving %d nodes to predefined modules, starting with codelength %f...\n",
                     numNodes, codelength);
+            LOGGER.log(Level.INFO, log);
         }
 
         int numMoved = 0;
@@ -474,8 +480,9 @@ public abstract class InfomapGreedy extends InfomapBase {
         }
 
         if (DEBUG) {
-            System.out.printf("Done! Moved %d nodes into %d modules to codelength: %.5f\n",
+            final String log = String.format("Done! Moved %d nodes into %d modules to codelength: %.5f\n",
                     numMoved, getNumActiveModules(), codelength);
+            LOGGER.log(Level.INFO, log);
         }
     }
 
@@ -496,7 +503,7 @@ public abstract class InfomapGreedy extends InfomapBase {
      */
     int tryMoveEachNodeIntoBestModule() {
         if (DEBUG) {
-            System.out.printf("%s.tryMoveEachNodeIntoBestModule%n", getClass().getSimpleName());
+            LOGGER.log(Level.INFO, "{0}.tryMoveEachNodeIntoBestModule", getClass().getSimpleName());
         }
 
         final int numNodes = activeNetwork.size();
@@ -673,7 +680,8 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected int consolidateModules(final boolean replaceExistingStructure, final boolean asSubModules) {
         if (DEBUG) {
-            System.out.printf("%s.consolidateModules(%s,%s)%n", getClass().getSimpleName(), replaceExistingStructure, asSubModules);
+            final String log = String.format("%s.consolidateModules(%s,%s)%n", getClass().getSimpleName(), replaceExistingStructure, asSubModules);
+            LOGGER.log(Level.INFO, log);
         }
 
         final int numNodes = activeNetwork.size();
@@ -693,8 +701,9 @@ public abstract class InfomapGreedy extends InfomapBase {
             // Happens after optimizing fine-tune and when moving leaf nodes to super clusters.
             if (activeNetworkAlreadyHaveModuleLevel) {
                 if (DEBUG) {
-                    System.out.printf("Replace existing %d modules with its children before consolidating the %d dynamic modules...\n",
+                    final String log = String.format("Replace existing %d modules with its children before consolidating the %d dynamic modules...\n",
                             getNumTopModules(), getNumActiveModules());
+                    LOGGER.log(Level.INFO, log);
                 }
                 getRoot().replaceChildrenWithGrandChildren();
                 assert activeNetwork.get(0).getParent() == getRoot();
@@ -718,8 +727,9 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         if (asSubModules) {
             if (DEBUG) {
-                System.out.printf("Consolidated %d submodules under %d modules, store module structure before releasing it...\n",
+                final String log = String.format("Consolidated %d submodules under %d modules, store module structure before releasing it...\n",
                         getNumActiveModules(), getNumTopModules());
+                LOGGER.log(Level.INFO, log);
             }
 
             // Store the module structure on the submodules.

@@ -430,7 +430,8 @@ public class GlyphsFrame extends JFrame {
         final ParsedFontInfo pfi = FontInfo.parseFontInfo(fontNames, GlyphManagerBI.DEFAULT_FONT_SIZE);
 
         if (!pfi.messages.isEmpty()) {
-            System.out.printf("ParsedFontInfo message: %s\n", pfi.getMessages());
+            final String log = String.format("ParsedFontInfo message: %s\n", pfi.getMessages());
+            LOGGER.log(Level.INFO, log);
         }
 
         try {

@@ -840,7 +840,6 @@ class PQNode {
             // Check parent metrics
             assert node.children.getSize() == 2;
             assert node.parent == null;
-//            System.out.println(node.numLeafDescendants);
             assert node.numLeafDescendants == 6;
 
             // Check lists of children
@@ -1343,8 +1342,6 @@ class PQNode {
             iter = node.children.iterator();
             assert iter.next() == emptyChild;
             PQNode next = iter.next();
-//            System.out.println(next.label);
-//            System.out.println(next == gChild4);
             assert next == gChild3;
             assert iter.next() == gChild4;
             assert iter.next() == fullChild;

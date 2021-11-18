@@ -148,7 +148,6 @@ public class FR3DArranger implements Arranger {
         forceConstant = Math.pow(height * width * depth / (double) wg.getVertexCount(), 1.0 / 3.0);
         attractionConstant = attraction_multiplier * forceConstant;
         repulsionConstant = repulsionMultiplier * forceConstant;
-//            System.out.printf("@FR force=%f att=%f rep=%f temp=%f\n", forceConstant, attractionConstant, repulsionConstant, temperature);
 
         // Create an array of points to match the array of nodes.
         // This means we have to allow for gaps in the array where nodes have been removed.

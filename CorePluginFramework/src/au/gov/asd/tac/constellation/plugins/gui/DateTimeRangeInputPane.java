@@ -225,7 +225,6 @@ public final class DateTimeRangeInputPane extends Pane {
         final EventHandler<ActionEvent> toggleHandler = (final ActionEvent event) -> {
             if (!isAdjusting) {
                 final Period period = ((TimeRangeToggleButton) event.getSource()).getPeriod();
-//                System.out.printf("!!DTRIP rel %s\n", period);
 
                 isAdjusting = true;
                 try {

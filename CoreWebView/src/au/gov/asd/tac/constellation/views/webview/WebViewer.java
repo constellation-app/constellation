@@ -68,7 +68,6 @@ public class WebViewer extends JFXPanel {
             WebView webView = new WebView();
             webView.setMaxWidth(Double.MAX_VALUE);
             webView.setMaxHeight(Double.MAX_VALUE);
-            //                System.out.println("WEB VIEWER: " + System.identityHashCode(webView.getClass()));
             root.setCenter(webView);
             webView.setContextMenuEnabled(false);
             final WebEngine webEngine = webView.getEngine();

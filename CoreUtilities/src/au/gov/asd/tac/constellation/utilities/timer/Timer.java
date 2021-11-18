@@ -15,12 +15,17 @@
  */
 package au.gov.asd.tac.constellation.utilities.timer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * A utility class to allow easy timing of sections of code.
  *
  * @author sirius
  */
 public class Timer {
+
+    private static final Logger LOGGER = Logger.getLogger(Timer.class.getName());
 
     private long startTime;
 
@@ -50,6 +55,7 @@ public class Timer {
         final long endTime = System.nanoTime();
         final long difference = endTime - startTime;
         startTime = endTime;
-        System.out.println(message + ": " + ((double) difference / 1000000000.0));
+        final String log = String.format("%s: %d", message, (difference / 1000000000.0));
+        LOGGER.log(Level.INFO, log);
     }
 }

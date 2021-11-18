@@ -466,16 +466,6 @@ public class PluginParameter<V extends ParameterValue> {
      * @param objectValue The object value to set.
      */
     public final void setObjectValue(final Object objectValue) {
-//        if(value!=null && value.getObjectValue()!=null && objectValue!=null)
-//        {
-//            System.out.printf("@@PP sov1 [%s] [%s]\n", value.getObjectValue().getClass(), objectValue.getClass());
-//            System.out.printf("@@PP sov2 [%s] [%s] %s\n", value.getObjectValue(), objectValue, equals(value.getObjectValue(), objectValue));
-//        }
-//        if (!equals(value.getObjectValue(), objectValue)) {
-////            value = objectValue;
-//            value.setObjectValue(objectValue);
-//            fireChangeEvent(ParameterChange.VALUE);
-//        }
         if (value.setObjectValue(objectValue)) {
             fireChangeEvent(ParameterChange.VALUE);
         }

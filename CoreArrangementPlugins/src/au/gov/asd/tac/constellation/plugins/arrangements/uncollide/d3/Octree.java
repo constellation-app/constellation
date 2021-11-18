@@ -250,7 +250,6 @@ public class Octree {
                     z *= nudge;
                     z += perturbation;
                     perturbation = -perturbation;
-//                    System.out.printf("-Collided %f %f %f x=%f y=%f z=%f\n  %s <> %s\n", l, r, nudge, x, y, z, orb, possible);
                     orb.setX(orb.getX() - x);
                     orb.setY(orb.getY() - y);
                     orb.setZ(orb.getZ() - z);
