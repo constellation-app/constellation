@@ -1,5 +1,13 @@
 # Constellation Changes
 
+## Changes in November 2021
+
+-   Changed public constructors in 'ConversationProvider' and
+    'ConversationContributionProvider' to protected to fix code smell that
+    abstract classes should not have public constructors. 
+
+-   Removed unused methods in 'SelectableLabel' in 'ConversationView'.
+
 ## Changes in October 2021
 
 -   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
