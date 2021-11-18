@@ -30,6 +30,10 @@ import java.util.logging.Logger;
 public class Graphics3DUtilities {
 
     private static final Logger LOGGER = Logger.getLogger(Graphics3DUtilities.class.getName());
+    
+    private Graphics3DUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Converts the supplied point from screen coordinates to world coordinates,

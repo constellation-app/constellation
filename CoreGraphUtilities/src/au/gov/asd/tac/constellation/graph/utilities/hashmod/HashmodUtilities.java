@@ -23,6 +23,10 @@ import java.util.BitSet;
  * @author CrucisGamma
  */
 public class HashmodUtilities {
+    
+    private HashmodUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Gather a Graph's vxIds into a BitSet for faster checking.

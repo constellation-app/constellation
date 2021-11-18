@@ -25,6 +25,10 @@ import java.util.BitSet;
  */
 public class TriangleUtilities {
 
+    private TriangleUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /*
      This method counts the number of triangles each vertex is in
      Returning a tuple where the first entry is a list of neighbours each node

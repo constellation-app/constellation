@@ -23,4 +23,8 @@ package au.gov.asd.tac.constellation.utilities;
 public class BrandingUtilities {
 
     public static final String APPLICATION_NAME = "Constellation";
+    
+    private BrandingUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 }

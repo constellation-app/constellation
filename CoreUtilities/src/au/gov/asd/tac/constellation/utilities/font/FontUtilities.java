@@ -46,6 +46,10 @@ public class FontUtilities {
     // and shared amongst everything.
     private static final Map<String, Font> FONTS = new HashMap<>();
     private static final Map<String, Font> OUTPUT_FONTS = new HashMap<>();
+    
+    private FontUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Set the default font size and family preferences if they are not already defined.

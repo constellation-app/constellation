@@ -24,9 +24,9 @@ import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
  * @author aldebaran30701
  */
 public class LayersUtilities {
-
+    
     private LayersUtilities() {
-        // added private constructor to hide implicit public constructor - S1118.
+        throw new IllegalStateException("Utility class");
     }
 
     public static int calculateCurrentLayerSelectionBitMask(final BitMaskQueryCollection vxQueriesCollection, final BitMaskQueryCollection txQueriesCollection) {

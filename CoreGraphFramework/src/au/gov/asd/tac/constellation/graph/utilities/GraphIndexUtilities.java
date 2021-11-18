@@ -32,6 +32,10 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 public class GraphIndexUtilities {
 
     private static final boolean VERBOSE = false;
+    
+    private GraphIndexUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static GraphIndexResult filterElements(final GraphReadMethods graph, final int attribute, Object value) {
 

@@ -41,6 +41,10 @@ import java.util.Set;
 public final class ArrangementUtilities {
 
     public static final int FUNDAMENTAL_SIZE = 2; //20;
+    
+    private ArrangementUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Find the minimum sum of weighted edges that must be traversed to reach

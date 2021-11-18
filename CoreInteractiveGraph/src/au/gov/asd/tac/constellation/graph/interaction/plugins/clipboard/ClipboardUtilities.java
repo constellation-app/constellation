@@ -34,6 +34,10 @@ import javafx.scene.input.ClipboardContent;
  * @author arcturus
  */
 public class ClipboardUtilities {
+    
+    private ClipboardUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void copyToClipboard(final String text) {
         final Clipboard clipboard = Clipboard.getSystemClipboard();

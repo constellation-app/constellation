@@ -37,6 +37,10 @@ import java.util.Arrays;
  * @author arcturus
  */
 public class SaveGraphUtilities {
+    
+    private SaveGraphUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Save the graph to the temporary directory for debugging.

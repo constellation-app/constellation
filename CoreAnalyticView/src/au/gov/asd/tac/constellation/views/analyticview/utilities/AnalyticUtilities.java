@@ -53,6 +53,10 @@ public class AnalyticUtilities {
         });
     }
 
+    private AnalyticUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     public static Collection<AnalyticQuestionDescription> getAnalyticQuestionDescriptions() {
         return Collections.unmodifiableCollection(ANALYTIC_QUESTION_DESCRIPTIONS.values());
     }
