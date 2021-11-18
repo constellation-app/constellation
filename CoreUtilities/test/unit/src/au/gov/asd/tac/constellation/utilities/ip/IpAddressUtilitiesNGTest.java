@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -51,6 +52,15 @@ public class IpAddressUtilitiesNGTest {
     public void tearDownMethod() throws Exception {
     }
 
+    /**
+     * Test of withPadding method, of class IpAddressUtilities. Null parameter
+     */
+    @Test
+    public void testToWithPaddingNull() {       
+        final String result = IpAddressUtilities.withPadding(null);
+        assertNull(result);
+    }
+    
     /**
      * Test of withPadding method, of class IpAddressUtilities.
      */

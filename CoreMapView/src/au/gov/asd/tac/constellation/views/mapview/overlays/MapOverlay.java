@@ -43,32 +43,32 @@ public abstract class MapOverlay {
     protected float y;
     protected float width;
     protected float height;
-    protected final float padding = 4;
-    protected final float margin = 14;
-    protected final int valueBoxLongWidth = 120;
-    protected final float valueBoxMediumWidth = (valueBoxLongWidth - padding) / 2;
-    protected final float valueBoxShortWidth = (valueBoxMediumWidth - padding) / 2;
-    protected final int valueBoxHeight = 15;
-    protected final int eventBoxHeight = 12;
-    protected final int stepBarWidth = 90;
-    protected final int maxLabelLength = 40;
-    protected final int maxValueLength = 100;
+    protected static final float PADDING = 4;
+    protected static final float MARGIN = 14;
+    protected static final int VALUE_BOX_LONG_WIDTH = 120;
+    protected static final float VALUE_BOX_MEDIUM_WIDTH = (VALUE_BOX_LONG_WIDTH - PADDING) / 2;
+    protected static final float VALUE_BOX_SHORT_WIDTH = (VALUE_BOX_MEDIUM_WIDTH - PADDING) / 2;
+    protected static final int VALUE_BOX_HEIGHT = 15;
+    protected static final int EVENT_BOX_HEIGHT = 12;
+    protected static final int STEP_BAR_WIDTH = 90;
+    protected static final int MAX_LABEL_LENGTH = 40;
+    protected static final int MAX_VALUE_LENGTH = 100;
 
     // labels and images
     protected PFont font;
     protected PFont titleFont;
-    protected final int textSize = 12;
-    protected final int textColor = 0xFFFFFFFF;
+    protected static final int TEXT_SIZE = 12;
+    protected static final int TEXT_COLOUR = 0xFFFFFFFF;
 
-    // colors
-    protected final int backgroundColor = 0xF0222222;
-    protected final int highlightColor = 0xF0DE2446;
-    protected final int separatorColor = 0x32FFFFFF;
-    protected final int stepOffColor = 0xFF666666;
-    protected final int stepOnColor = 0xFFFFFFFF;
-    protected final int valueBoxColor = 0x7F000000;
+    // colours
+    protected static final int BACKGROUND_COLOUR = 0xF0222222;
+    protected static final int HIGHLIGHT_COLOUR = 0xF0DE2446;
+    protected static final int SEPARATOR_COLOUR = 0x32FFFFFF;
+    protected static final int STEP_OFF_COLOUR = 0xFF666666;
+    protected static final int STEP_ON_COLOUR = 0xFFFFFFFF;
+    protected static final int VALUE_BOX_COLOUR = 0x7F000000;
 
-    public MapOverlay() {
+    protected MapOverlay() {
         this.enabled = false;
         this.active = false;
         this.debug = false;
@@ -133,11 +133,11 @@ public abstract class MapOverlay {
     public abstract float getY();
 
     public float getWidth() {
-        return (margin * 2) + maxLabelLength + valueBoxLongWidth + (padding * 2);
+        return (MARGIN * 2) + MAX_LABEL_LENGTH + VALUE_BOX_LONG_WIDTH + (PADDING * 2);
     }
 
     public float getHeight() {
-        return (margin * 2) + (valueBoxHeight * 2) + (padding * 4) + 1;
+        return (MARGIN * 2) + (VALUE_BOX_HEIGHT * 2) + (PADDING * 4) + 1;
     }
 
     public abstract void overlay();
@@ -162,10 +162,10 @@ public abstract class MapOverlay {
     }
 
     protected final void drawLabel(final String label, final float x, final float y) {
-        final float labelX = x - padding - Math.min(renderer.textWidth(label), maxLabelLength);
-        final float labelY = y + textSize - 1;
+        final float labelX = x - PADDING - Math.min(renderer.textWidth(label), MAX_LABEL_LENGTH);
+        final float labelY = y + TEXT_SIZE - 1;
         renderer.noStroke();
-        renderer.fill(textColor);
+        renderer.fill(TEXT_COLOUR);
         renderer.text(label, labelX, labelY);
     }
 
@@ -174,26 +174,26 @@ public abstract class MapOverlay {
             renderer.noStroke();
         }
 
-        final float valueBoxX = x + padding;
+        final float valueBoxX = x + PADDING;
         final float valueBoxY = y;
-        renderer.fill(valueBoxColor);
-        renderer.rect(valueBoxX, valueBoxY, valueBoxWidth, valueBoxHeight);
+        renderer.fill(VALUE_BOX_COLOUR);
+        renderer.rect(valueBoxX, valueBoxY, valueBoxWidth, VALUE_BOX_HEIGHT);
 
         if (highlight) {
-            renderer.stroke(highlightColor);
+            renderer.stroke(HIGHLIGHT_COLOUR);
             renderer.strokeWeight(2);
-            renderer.rect(valueBoxX, valueBoxY, valueBoxWidth, valueBoxHeight);
+            renderer.rect(valueBoxX, valueBoxY, valueBoxWidth, VALUE_BOX_HEIGHT);
         }
 
-        final float valueX = leftAlign ? x + (padding * 2)
-                : (valueBoxX + valueBoxWidth) - (padding * 2) - Math.min(renderer.textWidth(value), maxValueLength);
-        final float valueY = y + (textSize - 1);
-        renderer.fill(textColor);
+        final float valueX = leftAlign ? x + (PADDING * 2)
+                : (valueBoxX + valueBoxWidth) - (PADDING * 2) - Math.min(renderer.textWidth(value), MAX_VALUE_LENGTH);
+        final float valueY = y + (TEXT_SIZE - 1);
+        renderer.fill(TEXT_COLOUR);
         renderer.text(value, valueX, valueY);
     }
 
     protected final void drawInfo(final String info, final float y, final float infoBoxWidth, final boolean leftAlign) {
-        final float maxInfoLength = infoBoxWidth - (padding * 4);
+        final float maxInfoLength = infoBoxWidth - (PADDING * 4);
 
         renderer.noStroke();
 
@@ -202,10 +202,10 @@ public abstract class MapOverlay {
         String buffer = info;
 
         while (!buffer.isEmpty()) {
-            final float infoBoxX = x + margin + padding;
-            final float infoBoxY = y + (row * valueBoxHeight);
-            renderer.fill(valueBoxColor);
-            renderer.rect(infoBoxX, infoBoxY, infoBoxWidth, valueBoxHeight);
+            final float infoBoxX = x + MARGIN + PADDING;
+            final float infoBoxY = y + (row * VALUE_BOX_HEIGHT);
+            renderer.fill(VALUE_BOX_COLOUR);
+            renderer.rect(infoBoxX, infoBoxY, infoBoxWidth, VALUE_BOX_HEIGHT);
 
             int bufferIndex = buffer.length();
             while (renderer.textWidth(buffer) > maxInfoLength) {
@@ -218,10 +218,10 @@ public abstract class MapOverlay {
                 buffer = buffer.substring(0, bufferIndex);
             }
 
-            final float valueX = leftAlign ? x + margin + (padding * 2)
-                    : (infoBoxX + infoBoxWidth) - (padding * 2) - Math.min(renderer.textWidth(buffer), maxInfoLength);
-            final float valueY = y + (textSize - 1) + (row * valueBoxHeight);
-            renderer.fill(textColor);
+            final float valueX = leftAlign ? x + MARGIN + (PADDING * 2)
+                    : (infoBoxX + infoBoxWidth) - (PADDING * 2) - Math.min(renderer.textWidth(buffer), maxInfoLength);
+            final float valueY = y + (TEXT_SIZE - 1) + (row * VALUE_BOX_HEIGHT);
+            renderer.fill(TEXT_COLOUR);
             renderer.text(buffer, valueX, valueY);
 
             infoIndex += bufferIndex;
@@ -231,17 +231,17 @@ public abstract class MapOverlay {
     }
 
     protected final void drawStepBar(final int stepLevel, final float x, final float y, final int maxStepLevel) {
-        final int stepWidth = PApplet.floor((stepBarWidth / maxStepLevel));
+        final int stepWidth = PApplet.floor((STEP_BAR_WIDTH / maxStepLevel));
         renderer.noStroke();
         for (int i = 0; i < maxStepLevel; i++) {
-            renderer.fill(i < stepLevel ? stepOnColor : stepOffColor);
+            renderer.fill(i < stepLevel ? STEP_ON_COLOUR : STEP_OFF_COLOUR);
             renderer.rect(x + i * stepWidth, y, stepWidth - 1, 6);
         }
     }
 
     protected final void drawSeparator(final float y) {
         renderer.noStroke();
-        renderer.fill(separatorColor);
-        renderer.rect(x + margin, y, width - (margin * 2), 1);
+        renderer.fill(SEPARATOR_COLOUR);
+        renderer.rect(x + MARGIN, y, width - (MARGIN * 2), 1);
     }
 }

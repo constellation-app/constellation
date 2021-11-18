@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.views.mapview.utilities.FeatureKey;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerUtilities;
 import de.fhpotsdam.unfolding.geo.Location;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,7 +131,7 @@ public class ConstellationMarkerFactory {
         featureTypeMap.put(ConstellationFeatureType.CLUSTER, multiMarkerClass);
     }
 
-    public List<ConstellationAbstractMarker> createMarkers(final List<ConstellationAbstractFeature> features) throws Exception {
+    public List<ConstellationAbstractMarker> createMarkers(final Iterable<ConstellationAbstractFeature> features) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final List<ConstellationAbstractMarker> markers = new ArrayList<>();
         for (final ConstellationAbstractFeature feature : features) {
             markers.add(createMarker(feature));
@@ -138,7 +139,7 @@ public class ConstellationMarkerFactory {
         return markers;
     }
 
-    public ConstellationAbstractMarker createMarker(final ConstellationAbstractFeature feature) throws Exception {
+    public ConstellationAbstractMarker createMarker(final ConstellationAbstractFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final ConstellationAbstractMarker marker;
         final FeatureKey key = new FeatureKey(feature);
         if (featureCache.contains(key)) {
@@ -168,13 +169,14 @@ public class ConstellationMarkerFactory {
         return marker;
     }
 
-    protected ConstellationAbstractMarker createPointMarker(final ConstellationPointFeature feature) throws Exception {
+    protected ConstellationAbstractMarker createPointMarker(final ConstellationPointFeature feature) throws InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         ConstellationAbstractMarker marker;
         try {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(Location.class, HashMap.class);
             marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocation(), feature.getProperties());
-        } catch (NoSuchMethodException ex) {
+        } catch (final NoSuchMethodException ex) {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(Location.class);
             marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocation());
             marker.setProperties(feature.getProperties());
@@ -188,7 +190,27 @@ public class ConstellationMarkerFactory {
         return marker;
     }
 
-    protected ConstellationAbstractMarker createLineMarker(final ConstellationShapeFeature feature) throws Exception {
+    protected ConstellationAbstractMarker createLineMarker(final ConstellationShapeFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+        final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
+        ConstellationAbstractMarker marker;
+        try {
+            final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
+            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
+        } catch (final NoSuchMethodException ex) {
+            final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class);
+            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations());
+            marker.setProperties(feature.getProperties());
+        }
+        marker.setColor(defaultColor);
+        marker.setCustomColor(defaultCustomColor);
+        marker.setHighlightColor(defaultHighlightColor);
+        marker.setSelectColor(defaultSelectColor);
+        marker.setStrokeColor(defaultStrokeColor);
+        marker.setStrokeWeight(defaultStrokeWeight);
+        return marker;
+    }
+
+    protected ConstellationAbstractMarker createPolygonMarker(final ConstellationShapeFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         ConstellationAbstractMarker marker;
         try {
@@ -208,27 +230,7 @@ public class ConstellationMarkerFactory {
         return marker;
     }
 
-    protected ConstellationAbstractMarker createPolygonMarker(final ConstellationShapeFeature feature) throws Exception {
-        final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
-        ConstellationAbstractMarker marker;
-        try {
-            final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
-        } catch (NoSuchMethodException ex) {
-            final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations());
-            marker.setProperties(feature.getProperties());
-        }
-        marker.setColor(defaultColor);
-        marker.setCustomColor(defaultCustomColor);
-        marker.setHighlightColor(defaultHighlightColor);
-        marker.setSelectColor(defaultSelectColor);
-        marker.setStrokeColor(defaultStrokeColor);
-        marker.setStrokeWeight(defaultStrokeWeight);
-        return marker;
-    }
-
-    protected ConstellationAbstractMarker createMultiMarker(final ConstellationMultiFeature feature) throws Exception {
+    protected ConstellationAbstractMarker createMultiMarker(final ConstellationMultiFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor();
         final ConstellationMultiMarker multiMarker = (ConstellationMultiMarker) markerConstructor.newInstance();
@@ -236,7 +238,7 @@ public class ConstellationMarkerFactory {
         return multiMarker;
     }
 
-    protected ConstellationAbstractMarker createClusterMarker(final ConstellationMultiFeature feature) throws Exception {
+    protected ConstellationAbstractMarker createClusterMarker(final ConstellationMultiFeature feature) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor();
         final ConstellationClusterMarker clusterMarker = (ConstellationClusterMarker) markerConstructor.newInstance();

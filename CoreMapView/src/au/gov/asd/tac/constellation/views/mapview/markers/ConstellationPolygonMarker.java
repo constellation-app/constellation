@@ -56,9 +56,7 @@ public class ConstellationPolygonMarker extends ConstellationAbstractMarker {
         graphics.stroke(strokeColor);
         graphics.fill(getFillColor());
         graphics.beginShape();
-        positions.forEach(position -> {
-            graphics.vertex(position.x, position.y);
-        });
+        positions.forEach(position -> graphics.vertex(position.x, position.y));
         graphics.endShape(PConstants.CLOSE);
         graphics.popStyle();
 
