@@ -235,7 +235,7 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
     }
 
     protected Set<ListSelectionListener> getListeners() {
-        return listeners;
+        return Collections.unmodifiableSet(listeners);
     }
 
     protected JButton getButton() {
