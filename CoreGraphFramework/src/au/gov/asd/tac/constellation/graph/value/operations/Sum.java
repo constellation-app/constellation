@@ -61,12 +61,8 @@ public class Sum {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         ARITHMETIC_OPERATION.register(registry);
 
-        registry.register(StringReadable.class, StringReadable.class, StringReadable.class, (p1, p2) -> {
-            return () -> p1.readString() + p2.readString();
-        });
-        registry.register(StringConstant.class, StringConstant.class, StringConstant.class, (p1, p2) -> {
-            return () -> p1.readString() + p2.readString();
-        });
+        registry.register(StringReadable.class, StringReadable.class, StringReadable.class, (p1, p2) -> () -> p1.readString() + p2.readString());
+        registry.register(StringConstant.class, StringConstant.class, StringConstant.class, (p1, p2) -> () -> p1.readString() + p2.readString());
     }
 
     static {

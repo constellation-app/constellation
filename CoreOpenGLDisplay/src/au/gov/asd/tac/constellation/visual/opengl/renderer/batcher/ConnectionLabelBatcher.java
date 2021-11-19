@@ -205,9 +205,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
             final ConstellationColor labelColor = access.getConnectionLabelColor(i);
             attributeLabelInfoReference.setRow(labelColor.getRed(), labelColor.getGreen(), labelColor.getBlue(), attributeLabelInfoReference.get(i, 3), i);
         }
-        return gl -> {
-            attributeLabelInfo.set(attributeLabelInfoReference);
-        };
+        return gl -> attributeLabelInfo.set(attributeLabelInfoReference);
     }
 
     public GLRenderableUpdateTask setLabelSizes(final VisualAccess access) {
@@ -215,30 +213,22 @@ public class ConnectionLabelBatcher implements SceneBatcher {
         for (int i = 0; i < numConnectionLabels; i++) {
             attributeLabelInfoReference.set(i, 3, (int) (LabelUtilities.NRADIUS_TO_LABEL_UNITS * Math.min(access.getConnectionLabelSize(i), LabelUtilities.MAX_LABEL_SIZE)));
         }
-        return gl -> {
-            attributeLabelInfo.set(attributeLabelInfoReference);
-        };
+        return gl -> attributeLabelInfo.set(attributeLabelInfoReference);
     }
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor color = access.getHighlightColor();
-        return gl -> {
-            highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
-        };
+        return gl -> highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
     }
 
     public GLRenderableUpdateTask setBackgroundColor(final VisualAccess access) {
         final ConstellationColor color = access.getBackgroundColor();
-        return gl -> {
-            backgroundColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 0.25f};
-        };
+        return gl -> backgroundColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 0.25F};
     }
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-        return gl -> {
-            labelBatch.dispose(gl);
-        };
+        return gl -> labelBatch.dispose(gl);
     }
 
     @Override

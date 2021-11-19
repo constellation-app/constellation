@@ -175,7 +175,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
         // Otherwise, create a random color for this nebula.
         if (c == null) {
             final float h = new SecureRandom().nextFloat();
-            c = Color.getHSBColor(h, 0.5f, 0.95f);
+            c = Color.getHSBColor(h, 0.5F, 0.95F);
             NEBULA_COLOR.put(getPrimaryFile().getPath(), c);
         }
 

@@ -452,9 +452,7 @@ public class ExpressionParser {
         @Override
         protected void print(String prefix, StringBuilder out) {
             out.append(prefix).append("(\n");
-            children.forEach(child -> {
-                child.print(prefix + "  ", out);
-            });
+            children.forEach(child -> child.print(prefix + "  ", out));
             out.append(prefix).append(")\n");
         }
     }

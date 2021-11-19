@@ -124,9 +124,8 @@ public class ScriptingExecutePlugin extends SimplePlugin {
 
             // add custom objects to scripting engine
             engine.getContext().setAttribute("graph", sGraph, ScriptContext.ENGINE_SCOPE);
-            Lookup.getDefault().lookupAll(ScriptingModule.class).iterator().forEachRemaining(module -> {
-                engine.getContext().setAttribute(module.getName(), module, ScriptContext.ENGINE_SCOPE);
-            });
+            Lookup.getDefault().lookupAll(ScriptingModule.class).iterator().forEachRemaining(module
+                    -> engine.getContext().setAttribute(module.getName(), module, ScriptContext.ENGINE_SCOPE));
 
             try {
                 // Jython caches modules - force it to reload all modules in case the user has changed something in their local PythonLib.

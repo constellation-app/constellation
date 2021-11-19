@@ -73,12 +73,9 @@ public class SingleChoiceInputPane extends HBox {
             parameter.getParameterValue().getGuiInit().init(field);
         }
 
-        field.setOnAction((final ActionEvent t) -> {
-            SingleChoiceParameterType.setChoiceData(parameter, field.getSelectionModel().getSelectedItem());
-        });
+        field.setOnAction((final ActionEvent t) -> SingleChoiceParameterType.setChoiceData(parameter, field.getSelectionModel().getSelectedItem()));
 
-        parameter.addListener((final PluginParameter<?> scParameter, final ParameterChange change) -> {
-            Platform.runLater(() -> {
+        parameter.addListener((final PluginParameter<?> scParameter, final ParameterChange change) -> Platform.runLater(() -> {
                 assert (scParameter.getParameterValue() instanceof SingleChoiceParameterValue);
                 final SingleChoiceParameterValue scParameterValue = (SingleChoiceParameterValue) scParameter.getParameterValue();
                 switch (change) {
@@ -134,8 +131,7 @@ public class SingleChoiceInputPane extends HBox {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            }));
 
         getChildren().add(field);
     }

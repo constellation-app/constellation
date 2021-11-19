@@ -94,27 +94,19 @@ public class HistogramControls extends JPanel {
         }
 
         final JMenuItem saveBinsToGraphMenuItem = new JMenuItem("Save Bins to Graph");
-        saveBinsToGraphMenuItem.addActionListener(e -> {
-            saveBinsToGraph();
-        });
+        saveBinsToGraphMenuItem.addActionListener(e -> saveBinsToGraph());
         actionsMenu.add(saveBinsToGraphMenuItem);
 
         final JMenuItem saveBinsToClipboardMenuItem = new JMenuItem("Save Bins to Clipboard");
-        saveBinsToClipboardMenuItem.addActionListener((final ActionEvent e) -> {
-            topComponent.saveBinsToClipboard();
-        });
+        saveBinsToClipboardMenuItem.addActionListener((final ActionEvent e) -> topComponent.saveBinsToClipboard());
         actionsMenu.add(saveBinsToClipboardMenuItem);
 
         final JMenuItem decreaseHeightBarMenuItem = new JMenuItem("Decrease Height of Each Bin");
-        decreaseHeightBarMenuItem.addActionListener((final ActionEvent e) -> {
-            topComponent.modifyBinHeight(-1);
-        });
+        decreaseHeightBarMenuItem.addActionListener((final ActionEvent e) -> topComponent.modifyBinHeight(-1));
         actionsMenu.add(decreaseHeightBarMenuItem);
 
         final JMenuItem increaseHeightBarMenuItem = new JMenuItem("Increase Height of Each Bin");
-        increaseHeightBarMenuItem.addActionListener((final ActionEvent e) -> {
-            topComponent.modifyBinHeight(1);
-        });
+        increaseHeightBarMenuItem.addActionListener((final ActionEvent e) -> topComponent.modifyBinHeight(1));
         actionsMenu.add(increaseHeightBarMenuItem);
 
         setHistogramState(null, null);
@@ -129,9 +121,7 @@ public class HistogramControls extends JPanel {
             if (histogramState == null) {
 
                 vertexToggle.setSelected(true);
-                etToggles.values().stream().forEach(toggle -> {
-                    toggle.setEnabled(false);
-                });
+                etToggles.values().stream().forEach(toggle -> toggle.setEnabled(false));
 
                 attributeTypeChoice.setSelectedIndex(0);
                 attributeTypeChoice.setEnabled(false);
@@ -163,9 +153,7 @@ public class HistogramControls extends JPanel {
             } else {
 
                 if (currentHistogramState == null) {
-                    etToggles.values().stream().forEach(toggle -> {
-                        toggle.setEnabled(true);
-                    });
+                    etToggles.values().stream().forEach(toggle -> toggle.setEnabled(true));
                     attributeTypeChoice.setEnabled(true);
                     attributeChoice.setEnabled(true);
                     binFormatterCombo.setEnabled(true);
@@ -185,9 +173,7 @@ public class HistogramControls extends JPanel {
                 attributeTypeChoice.setSelectedItem(histogramState.getAttributeType());
 
                 attributeChoiceModel.removeAllElements();
-                attributes.keySet().stream().forEach(attribute -> {
-                    attributeChoiceModel.addElement(attribute);
-                });
+                attributes.keySet().stream().forEach(attribute -> attributeChoiceModel.addElement(attribute));
                 attributeChoice.setSelectedItem(histogramState.getAttribute());
 
                 binFormatterChoiceModel.removeAllElements();
@@ -206,9 +192,7 @@ public class HistogramControls extends JPanel {
                             rg.release();
                         }
                     }
-                    BinFormatter.getFormatters(checkBin).stream().forEach(formatter -> {
-                        binFormatterChoiceModel.addElement(formatter);
-                    });
+                    BinFormatter.getFormatters(checkBin).stream().forEach(formatter -> binFormatterChoiceModel.addElement(formatter));
                     binFormatterCombo.setSelectedItem(histogramState.getBinFormatter());
                 }
 
@@ -234,9 +218,7 @@ public class HistogramControls extends JPanel {
 
             attributeChoiceModel.removeAllElements();
             if (attributes != null) {
-                attributes.keySet().stream().forEach(attribute -> {
-                    attributeChoiceModel.addElement(attribute);
-                });
+                attributes.keySet().stream().forEach(attribute -> attributeChoiceModel.addElement(attribute));
                 if (currentHistogramState != null) {
                     attributeChoice.setSelectedItem(currentHistogramState.getAttribute());
                 } else {

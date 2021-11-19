@@ -62,9 +62,9 @@ public class MostInfluentialQuestion implements AnalyticQuestionDescription<Scor
     @Override
     public void initialiseParameters(final AnalyticPlugin<ScoreResult> plugin, final PluginParameters parameters) {
         parameters.setBooleanValue(PagerankCentralityPlugin.TREAT_UNDIRECTED_BIDIRECTIONAL_PARAMETER_ID, true);
-        parameters.setFloatValue(PagerankCentralityPlugin.DAMPING_FACTOR_PARAMETER_ID, 0.85f);
+        parameters.setFloatValue(PagerankCentralityPlugin.DAMPING_FACTOR_PARAMETER_ID, 0.85F);
         parameters.setIntegerValue(PagerankCentralityPlugin.ITERATIONS_PARAMETER_ID, 100);
-        parameters.setFloatValue(PagerankCentralityPlugin.EPSILON_PARAMETER_ID, 1E-8f);
+        parameters.setFloatValue(PagerankCentralityPlugin.EPSILON_PARAMETER_ID, 1E-8F);
         parameters.setBooleanValue(PagerankCentralityPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, false);
     }
 }

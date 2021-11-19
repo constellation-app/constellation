@@ -68,28 +68,19 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.filesystems.FileUtil;
 import org.openide.loaders.SaveAsCapable;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
-import org.openide.util.Mutex;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
-import org.openide.util.WeakListeners;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  * Action to save document under a different file name and/or extension. The
@@ -190,8 +181,21 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
             FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
                 savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+                // take a screenshot in a separate thread in parrallel
+                new Thread(() -> RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName()), "Take Graph Screenshot").start();
+            } catch (final IOException ioE) {
+                    Exceptions.attachLocalizedMessage(ioE,
+                            Bundle.MSG_SaveAsFailed(
+                                    newFile.getName(),
+                                    ioE.getLocalizedMessage()));
+                    LOGGER.log(Level.SEVERE, null, ioE);
+                }
+            isSaved = true;
+        }
+    }
+}
 
-                try {
+try {
                     saveAs.saveAs(FileUtil.toFileObject(selectedFile.getParentFile()), selectedFile.getName());
 
                     // Take a screenshot in a separate thread in parallel.
@@ -207,18 +211,18 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     }
 
     @Override
-    public Action createContextAwareInstance(final Lookup actionContext) {
+        public Action createContextAwareInstance(final Lookup actionContext) {
         return new au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction(actionContext, false);
     }
 
     @Override
-    public synchronized void addPropertyChangeListener(final PropertyChangeListener listener) {
+        public synchronized void addPropertyChangeListener(final PropertyChangeListener listener) {
         super.addPropertyChangeListener(listener);
         refreshListeners();
     }
 
     @Override
-    public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
+        public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
         super.removePropertyChangeListener(listener);
         Mutex.EVENT.readAccess(this::refreshListeners // Might be called off EQ by WeakListeners.
         );
@@ -229,15 +233,23 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     }
 
     private LookupListener createLookupListener() {
-        return WeakListeners.create(LookupListener.class, (LookupListener) (final LookupEvent ev) -> {
-            isDirty = true;
-        }, lkpInfo);
+        return WeakListeners.create(LookupListener
+
+.class
+
+
+, (LookupListener) (final LookupEvent ev) -> isDirty = true, lkpInfo);
     }
 
     private void refreshEnabled() {
         if (lkpInfo == null) {
             // The thing we want to listen for the presence or absence of on the global selection.
-            Lookup.Template<SaveAsCapable> tpl = new Lookup.Template<>(SaveAsCapable.class);
+            Lookup.Template<SaveAsCapable> tpl = new Lookup.Template<>(SaveAsCapable
+
+.class
+
+
+);
             lkpInfo = context.lookup(tpl);
         }
 
@@ -252,7 +264,12 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
         if (lkpInfo == null) {
             // The thing we want to listen for the presence or absence of on the global selection.
-            Lookup.Template<SaveAsCapable> tpl = new Lookup.Template<>(SaveAsCapable.class);
+            Lookup.Template<SaveAsCapable> tpl = new Lookup.Template<>(SaveAsCapable
+
+.class
+
+
+);
             lkpInfo = context.lookup(tpl);
         }
 

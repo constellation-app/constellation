@@ -50,9 +50,7 @@ public class SchemaViewPane extends BorderPane {
                 final Tab tab = new Tab(provider.getText());
                 schemaViewTabPane.getTabs().add(tab);
 
-                pool.execute(() -> {
-                    provider.setContent(tab);
-                });
+                pool.execute(() -> provider.setContent(tab));
             });
         });
     }
@@ -62,9 +60,7 @@ public class SchemaViewPane extends BorderPane {
             schemaViewTabPane.getTabs().clear();
 
             if (schemaViewProviders != null) {
-                schemaViewProviders.stream().forEach(provider -> {
-                    provider.discardNode();
-                });
+                schemaViewProviders.stream().forEach(provider -> provider.discardNode());
                 schemaViewProviders = null;
             }
         });

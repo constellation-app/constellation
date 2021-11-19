@@ -300,9 +300,7 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
          */
         public List<String> getOptions() {
             final List<String> optionStrings = new ArrayList<>();
-            options.stream().forEach(option -> {
-                optionStrings.add(option.toString());
-            });
+            options.stream().forEach(option -> optionStrings.add(option.toString()));
 
             return Collections.unmodifiableList(optionStrings);
         }
@@ -351,9 +349,7 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
          */
         public List<String> getChoices() {
             final List<String> choiceStrings = new ArrayList<>();
-            choices.stream().forEach(choice -> {
-                choiceStrings.add(choice.toString());
-            });
+            choices.stream().forEach(choice -> choiceStrings.add(choice.toString()));
 
             return Collections.unmodifiableList(choiceStrings);
         }

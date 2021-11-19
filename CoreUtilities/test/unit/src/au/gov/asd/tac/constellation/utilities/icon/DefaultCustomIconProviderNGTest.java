@@ -62,11 +62,13 @@ public class DefaultCustomIconProviderNGTest {
 
     /**
      * Runner for tests
+     *
      * @throws java.net.URISyntaxException
      */
     @Test(expectedExceptions = NullPointerException.class)
     public void runTests() throws URISyntaxException {
-        try ( MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class);  MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class)) {
+        try (MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class);
+                MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class)) {
             // Get a test directory location for the getIconDirectory call
             URL exampleIcon = DefaultCustomIconProviderNGTest.class.getResource("resources/");
             File testFile = new File(exampleIcon.toURI());
@@ -142,7 +144,9 @@ public class DefaultCustomIconProviderNGTest {
     }
 
     /**
-     * Test of addIcon method, of class DefaultCustomIconProvider using an icon file that does exist.
+     * Test of addIcon method, of class DefaultCustomIconProvider using an icon
+     * file that does exist.
+     *
      * @param icon
      */
     public void testAddIconFileDoesExist(final ConstellationIcon icon) {
@@ -155,6 +159,7 @@ public class DefaultCustomIconProviderNGTest {
 
     /**
      * Test of removeIcon method, of class DefaultCustomIconProvider.
+     *
      * @param iconManager
      * @param icon
      */
@@ -167,7 +172,8 @@ public class DefaultCustomIconProviderNGTest {
     }
 
     /**
-     * Test of removeIcon method, of class DefaultCustomIconProvider, using an icon that does not exist.
+     * Test of removeIcon method, of class DefaultCustomIconProvider, using an
+     * icon that does not exist.
      */
     public void testRemoveIconDoesNotExist() {
         // Test remove icon

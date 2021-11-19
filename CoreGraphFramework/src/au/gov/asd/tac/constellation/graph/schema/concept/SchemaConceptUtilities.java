@@ -103,9 +103,7 @@ public class SchemaConceptUtilities {
     public static final Set<SchemaConcept> getChildConcepts(final Set<Class<? extends SchemaConcept>> schemaConceptClasses) {
         final Set<SchemaConcept> childConcepts = new HashSet<>();
         if (schemaConceptClasses != null) {
-            schemaConceptClasses.forEach(schemaConceptClass -> {
-                childConcepts.addAll(getChildConcepts(schemaConceptClass));
-            });
+            schemaConceptClasses.forEach(schemaConceptClass -> childConcepts.addAll(getChildConcepts(schemaConceptClass)));
         }
 
         return childConcepts;

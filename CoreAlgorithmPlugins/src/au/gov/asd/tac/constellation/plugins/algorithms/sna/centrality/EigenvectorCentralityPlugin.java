@@ -67,7 +67,7 @@ public class EigenvectorCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> epsilonParameter = FloatParameterType.build(EPSILON_PARAMETER_ID);
         epsilonParameter.setName("Epsilon");
         epsilonParameter.setDescription("The change threshold at which equilibrium can be considered reached");
-        epsilonParameter.setFloatValue(1E-8f);
+        epsilonParameter.setFloatValue(1E-8F);
         parameters.addParameter(epsilonParameter);
 
         final PluginParameter<BooleanParameterValue> normaliseByPossibleParameter = BooleanParameterType.build(NORMALISE_POSSIBLE_PARAMETER_ID);

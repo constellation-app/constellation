@@ -425,9 +425,7 @@ public class JSONImportFileParser extends ImportFileParser {
                 // number.
                 ArrayList<String> columns = extractAllColNames(selectedList, null, "");
                 Map<String, Integer> columnMap = new HashMap<>();
-                columns.forEach(column -> {
-                    columnMap.put(column, columnMap.size());
-                });
+                columns.forEach(column -> columnMap.put(column, columnMap.size()));
 
                 // Add a heading row to the return data
                 String[] headings = new String[columns.size()];

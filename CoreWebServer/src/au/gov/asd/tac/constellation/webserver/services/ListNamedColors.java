@@ -56,9 +56,7 @@ public class ListNamedColors extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         ConstellationColor.NAMED_COLOR_LIST
-                .forEach(cocol -> {
-                    root.put(cocol.getName(), cocol.getHtmlColor());
-                });
+                .forEach(cocol -> root.put(cocol.getName(), cocol.getHtmlColor()));
 
         mapper.writeValue(out, root);
     }

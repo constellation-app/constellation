@@ -192,7 +192,7 @@ public final class FlyingAnimation extends Animation {
         }
 
         final float r = rAttr != Graph.NOT_FOUND ? rg.getFloatValue(rAttr, currentVxId) : 1;
-        xyz = new Vector3f(x + r * 1.5f, y + r * 1.5f, z + r * 1.5f);
+        xyz = new Vector3f(x + r * 1.5F, y + r * 1.5F, z + r * 1.5F);
 
         return xyz;
     }

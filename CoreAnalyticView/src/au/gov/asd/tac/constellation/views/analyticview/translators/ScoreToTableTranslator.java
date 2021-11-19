@@ -90,17 +90,17 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
     public ConstellationColor getCellColor(final ElementScore cellValue, final Object cellItem, final String columnName) {
         final float intensity;
         if (cellValue == null) {
-            intensity = 0f;
+            intensity = 0F;
         } else if (IDENTIFIER_COLUMN_NAME.equals(columnName)) {
-            intensity = Math.max(0f, Math.min(1f, cellValue.getNamedScores().values().stream()
+            intensity = Math.max(0F, Math.min(1F, cellValue.getNamedScores().values().stream()
                     .reduce((x, y) -> x + y).get()
                     / cellValue.getNamedScores().size()));
         } else if (cellValue.getNames().contains(columnName)) {
-            intensity = Math.max(0f, Math.min(1f, (float) cellItem));
+            intensity = Math.max(0F, Math.min(1F, (float) cellItem));
         } else {
             throw new UnrecognisedColumnException(columnName);
         }
 
-        return ConstellationColor.getColorValue(intensity, intensity, 0f, 0.3f);
+        return ConstellationColor.getColorValue(intensity, intensity, 0F, 0.3F);
     }
 }

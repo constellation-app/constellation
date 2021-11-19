@@ -99,13 +99,9 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
-            datePicker.getEditor().textProperty().addListener((v, o, n) -> {
-                update();
-            });
+            datePicker.getEditor().textProperty().addListener((v, o, n) -> update());
             datePicker.setValue(LocalDate.now());
-            datePicker.valueProperty().addListener((v, o, n) -> {
-                update();
-            });
+            datePicker.valueProperty().addListener((v, o, n) -> update());
 
             controls.addRow(0, datePicker);
             controls.addRow(1, noValueCheckBox);

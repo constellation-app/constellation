@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.utilities.tooltip;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider.TooltipDefinition;
 import java.util.List;
 import javafx.geometry.Insets;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 /**
