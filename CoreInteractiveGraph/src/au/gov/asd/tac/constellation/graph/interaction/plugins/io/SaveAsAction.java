@@ -59,28 +59,33 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
  * made subject to such option by the copyright holder.
  */
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.SwingUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.filesystems.FileUtil;
 import org.openide.loaders.SaveAsCapable;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
+import org.openide.util.Mutex;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
+import org.openide.util.WeakListeners;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * Action to save document under a different file name and/or extension. The
@@ -113,10 +118,7 @@ import org.openide.util.Utilities;
 })
 public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File savedDirectory = DEFAULT_DIRECTORY;
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Save As";
 
@@ -180,22 +182,9 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             final FileChooserBuilder fileChooser = getSaveAsFileChooser();
 
             FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-                savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
-                // take a screenshot in a separate thread in parrallel
-                new Thread(() -> RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName()), "Take Graph Screenshot").start();
-            } catch (final IOException ioE) {
-                    Exceptions.attachLocalizedMessage(ioE,
-                            Bundle.MSG_SaveAsFailed(
-                                    newFile.getName(),
-                                    ioE.getLocalizedMessage()));
-                    LOGGER.log(Level.SEVERE, null, ioE);
-                }
-            isSaved = true;
-        }
-    }
-}
+                savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
 
-try {
+                try {
                     saveAs.saveAs(FileUtil.toFileObject(selectedFile.getParentFile()), selectedFile.getName());
 
                     // Take a screenshot in a separate thread in parallel.
@@ -211,21 +200,20 @@ try {
     }
 
     @Override
-        public Action createContextAwareInstance(final Lookup actionContext) {
+    public Action createContextAwareInstance(final Lookup actionContext) {
         return new au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction(actionContext, false);
     }
 
     @Override
-        public synchronized void addPropertyChangeListener(final PropertyChangeListener listener) {
+    public synchronized void addPropertyChangeListener(final PropertyChangeListener listener) {
         super.addPropertyChangeListener(listener);
         refreshListeners();
     }
 
     @Override
-        public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
+    public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
         super.removePropertyChangeListener(listener);
-        Mutex.EVENT.readAccess(this::refreshListeners // Might be called off EQ by WeakListeners.
-        );
+        Mutex.EVENT.readAccess(this::refreshListeners); // Might be called off EQ by WeakListeners.
     }
 
     private PropertyChangeListener createRegistryListener() {
@@ -233,23 +221,13 @@ try {
     }
 
     private LookupListener createLookupListener() {
-        return WeakListeners.create(LookupListener
-
-.class
-
-
-, (LookupListener) (final LookupEvent ev) -> isDirty = true, lkpInfo);
+        return WeakListeners.create(LookupListener.class, (LookupListener) (final LookupEvent ev) -> isDirty = true, lkpInfo);
     }
 
     private void refreshEnabled() {
         if (lkpInfo == null) {
             // The thing we want to listen for the presence or absence of on the global selection.
-            Lookup.Template<SaveAsCapable> tpl = new Lookup.Template<>(SaveAsCapable
-
-.class
-
-
-);
+            Lookup.Template<SaveAsCapable> tpl = new Lookup.Template<>(SaveAsCapable.class);
             lkpInfo = context.lookup(tpl);
         }
 
@@ -264,12 +242,7 @@ try {
 
         if (lkpInfo == null) {
             // The thing we want to listen for the presence or absence of on the global selection.
-            Lookup.Template<SaveAsCapable> tpl = new Lookup.Template<>(SaveAsCapable
-
-.class
-
-
-);
+            Lookup.Template<SaveAsCapable> tpl = new Lookup.Template<>(SaveAsCapable.class);
             lkpInfo = context.lookup(tpl);
         }
 
@@ -307,10 +280,7 @@ try {
      * @return the created file chooser.
      */
     public FileChooserBuilder getSaveAsFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
-                .setDefaultWorkingDirectory(savedDirectory)
-                .setFileFilter(new FileNameExtensionFilter("Star files (.star)", "star"))
+        return FileChooser.getBaseFileChooserBuilder(TITLE, savedDirectory, FileChooser.STAR_FILE_FILTER)
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);
     }
