@@ -66,14 +66,11 @@ public class FR3DArranger implements Arranger {
     private static final int BORDER = 1;
     private double forceConstant;
     private double temperature;
-    //    private int currentIteration;
-    private final double attraction_multiplier = 0.75 / 0.67;
-    private final double repulsionMultiplier = 0.75 * 0.67;
+    private static final double ATTRACTION_MULTIPLIER = 0.75 / 0.67;
+    private static final double REPULSION_MULTIPLIER = 0.75 * 0.67;
     private double attractionConstant;
     private double repulsionConstant;
-    //    private double max_dimension;
-    private final double EPSILON = 0.000001;
-//    private final GraphWriteMethods graph;
+    private static final double EPSILON = 0.000001;
     private ArrayList<Point3D.Float> points;
     private ArrayList<Point3D.Float> offsets;
     private volatile boolean stopWork;
@@ -146,8 +143,8 @@ public class FR3DArranger implements Arranger {
         temperature = width / 10.0;
         //            forceConstant = (float)Math.pow(height*width*depth/(double)Math.min(graph.getVertexCount(), MAX_PSEUDO_SIZE), 1.0/3.0);
         forceConstant = Math.pow(height * width * depth / (double) wg.getVertexCount(), 1.0 / 3.0);
-        attractionConstant = attraction_multiplier * forceConstant;
-        repulsionConstant = repulsionMultiplier * forceConstant;
+        attractionConstant = ATTRACTION_MULTIPLIER * forceConstant;
+        repulsionConstant = REPULSION_MULTIPLIER * forceConstant;
 
         // Create an array of points to match the array of nodes.
         // This means we have to allow for gaps in the array where nodes have been removed.

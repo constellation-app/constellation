@@ -728,7 +728,6 @@ public class TimelineChart extends XYChart<Number, Number> {
         final double timeExtentDifference = upperTimeExtent - lowerTimeExtent;
         final double amountX = timeExtentDifference == 0 ? this.getWidth() : this.getWidth() / (upperTimeExtent - lowerTimeExtent);
 
-        shiftYAxis = yAxis.getLayoutY();
         // Update all node positions:
         for (int seriesIndex = 0; seriesIndex < getData().size(); seriesIndex++) {
             final Series<Number, Number> series = getData().get(seriesIndex);
@@ -807,8 +806,6 @@ public class TimelineChart extends XYChart<Number, Number> {
             final Axis<Number> ya = getYAxis();
             List<Number> xData = null;
             List<Number> yData = null;
-
-            shiftYAxis = this.getHeight() - yAxis.getHeight();
 
             if (xa.isAutoRanging()) {
                 xData = new ArrayList<>();

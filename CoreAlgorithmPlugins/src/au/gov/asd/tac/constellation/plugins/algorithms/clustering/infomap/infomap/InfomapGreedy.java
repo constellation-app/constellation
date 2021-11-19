@@ -49,16 +49,16 @@ public abstract class InfomapGreedy extends InfomapBase {
     protected int[] moduleMembers;
     protected ArrayList<Integer> emptyModules;
 
-    protected double nodeFlow_log_nodeFlow; // Constant while the leaf network is the same.
-    protected double flow_log_flow; // node.(flow + exitFlow)
-    protected double exit_log_exit;
-    protected double enter_log_enter;
+    protected double nodeFlowLogNodeFlow; // Constant while the leaf network is the same.
+    protected double flowLogFlow; // node.(flow + exitFlow)
+    protected double exitLogExit;
+    protected double enterLogEnter;
     protected double enterFlow;
-    protected double enterFlow_log_enterFlow;
+    protected double enterFlowLogEnterFlow;
 
     // For hierarchical.
     protected double exitNetworkFlow;
-    protected double exitNetworkFlow_log_exitNetworkFlow;
+    protected double exitNetworkFlowLogExitNetworkFlow;
 
     public InfomapGreedy(final Config config, final NodeFactoryBase nodeFactory, final GraphReadMethods rg) {
         super(config, nodeFactory, rg);
@@ -88,12 +88,12 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     @Override
     protected void initConstantInfomapTerms() {
-        nodeFlow_log_nodeFlow = 0;
+        nodeFlowLogNodeFlow = 0;
 
         // For each module...
         for (final NodeBase nodeBase : activeNetwork) {
             final Node node = getNode(nodeBase);
-            nodeFlow_log_nodeFlow += plogp(node.getData().getFlow());
+            nodeFlowLogNodeFlow += plogp(node.getData().getFlow());
         }
     }
 
@@ -123,8 +123,8 @@ public abstract class InfomapGreedy extends InfomapBase {
             LOGGER.log(Level.INFO, log);
         }
 
-        flow_log_flow = 0;
-        exit_log_exit = 0;
+        flowLogFlow = 0;
+        exitLogExit = 0;
         enterFlow = 0;
 
         if (detailedBalance) {
@@ -133,40 +133,40 @@ public abstract class InfomapGreedy extends InfomapBase {
                 final Node node = getNode(nodeBase);
 
                 // Own node/module codebook.
-                flow_log_flow += plogp(node.getData().getFlow() + node.getData().getExitFlow());
+                flowLogFlow += plogp(node.getData().getFlow() + node.getData().getExitFlow());
 
                 // Use of index codebook.
                 enterFlow += node.getData().getExitFlow();
-                exit_log_exit += plogp(node.getData().getExitFlow());
+                exitLogExit += plogp(node.getData().getExitFlow());
             }
 
             enterFlow += exitNetworkFlow;
-            enterFlow_log_enterFlow = plogp(enterFlow);
+            enterFlowLogEnterFlow = plogp(enterFlow);
 
-            indexCodelength = enterFlow_log_enterFlow - exit_log_exit - exitNetworkFlow_log_exitNetworkFlow;
-            moduleCodelength = -exit_log_exit + flow_log_flow - nodeFlow_log_nodeFlow;
+            indexCodelength = enterFlowLogEnterFlow - exitLogExit - exitNetworkFlowLogExitNetworkFlow;
+            moduleCodelength = -exitLogExit + flowLogFlow - nodeFlowLogNodeFlow;
             codelength = indexCodelength + moduleCodelength;
         } else {
-            enter_log_enter = 0;
+            enterLogEnter = 0;
 
             // For each module...
             for (final NodeBase nodeBase : activeNetwork) {
                 final Node node = getNode(nodeBase);
 
                 // Own node/module codebook.
-                flow_log_flow += plogp(node.getData().getFlow() + node.getData().getExitFlow());
+                flowLogFlow += plogp(node.getData().getFlow() + node.getData().getExitFlow());
 
                 // Use of index codebook.
-                enter_log_enter += plogp(node.getData().getEnterFlow());
-                exit_log_exit += plogp(node.getData().getExitFlow());
+                enterLogEnter += plogp(node.getData().getEnterFlow());
+                exitLogExit += plogp(node.getData().getExitFlow());
                 enterFlow += node.getData().getEnterFlow();
             }
 
             enterFlow += exitNetworkFlow;
-            enterFlow_log_enterFlow = plogp(enterFlow);
+            enterFlowLogEnterFlow = plogp(enterFlow);
 
-            indexCodelength = enterFlow_log_enterFlow - enter_log_enter - exitNetworkFlow_log_exitNetworkFlow;
-            moduleCodelength = -exit_log_exit + flow_log_flow - nodeFlow_log_nodeFlow;
+            indexCodelength = enterFlowLogEnterFlow - enterLogEnter - exitNetworkFlowLogExitNetworkFlow;
+            moduleCodelength = -exitLogExit + flowLogFlow - nodeFlowLogNodeFlow;
             codelength = indexCodelength + moduleCodelength;
         }
     }
@@ -213,7 +213,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
         double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
 
-        final double delta_enter = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlow_log_enterFlow;
+        final double delta_enter = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlowLogEnterFlow;
 
         final double delta_enter_log_enter
                 = -plogp(moduleFlowData[oldModule].getEnterFlow())
@@ -256,13 +256,13 @@ public abstract class InfomapGreedy extends InfomapBase {
         enterFlow
                 -= moduleFlowData[oldModule].getEnterFlow()
                 + moduleFlowData[newModule].getEnterFlow();
-        enter_log_enter
+        enterLogEnter
                 -= plogp(moduleFlowData[oldModule].getEnterFlow())
                 + plogp(moduleFlowData[newModule].getEnterFlow());
-        exit_log_exit
+        exitLogExit
                 -= plogp(moduleFlowData[oldModule].getExitFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow());
-        flow_log_flow
+        flowLogFlow
                 -= plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow());
 
@@ -277,20 +277,20 @@ public abstract class InfomapGreedy extends InfomapBase {
         enterFlow
                 += moduleFlowData[oldModule].getEnterFlow()
                 + moduleFlowData[newModule].getEnterFlow();
-        enter_log_enter
+        enterLogEnter
                 += plogp(moduleFlowData[oldModule].getEnterFlow())
                 + plogp(moduleFlowData[newModule].getEnterFlow());
-        exit_log_exit
+        exitLogExit
                 += plogp(moduleFlowData[oldModule].getExitFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow());
-        flow_log_flow
+        flowLogFlow
                 += plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow());
 
-        enterFlow_log_enterFlow = plogp(enterFlow);
+        enterFlowLogEnterFlow = plogp(enterFlow);
 
-        indexCodelength = enterFlow_log_enterFlow - enter_log_enter - exitNetworkFlow_log_exitNetworkFlow;
-        moduleCodelength = -exit_log_exit + flow_log_flow - nodeFlow_log_nodeFlow;
+        indexCodelength = enterFlowLogEnterFlow - enterLogEnter - exitNetworkFlowLogExitNetworkFlow;
+        moduleCodelength = -exitLogExit + flowLogFlow - nodeFlowLogNodeFlow;
         codelength = indexCodelength + moduleCodelength;
     }
 
@@ -380,7 +380,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         final double parentExit = getNode(parent).getData().getExitFlow();
 
         exitNetworkFlow = parentExit;
-        exitNetworkFlow_log_exitNetworkFlow = plogp(exitNetworkFlow);
+        exitNetworkFlowLogExitNetworkFlow = plogp(exitNetworkFlow);
     }
 
     @Override

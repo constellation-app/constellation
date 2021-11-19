@@ -28,7 +28,7 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
 
     private Class<?>[] headerClass;
     private Graph graph;
-    private ArrayList<Attribute> vertex_attributes = new ArrayList<>();
+    private ArrayList<Attribute> vertexAttributes = new ArrayList<>();
 
     /**
      * Initializes the table model.
@@ -38,7 +38,7 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
      */
     public void initialise(final Graph graph, final ArrayList<Attribute> attributes) {
         this.graph = graph;
-        vertex_attributes = attributes;
+        vertexAttributes = attributes;
         setupAttributeHeaders();
         getDataVector().clear();
     }
@@ -47,10 +47,10 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
      * setup the header names for the table.
      */
     public void setupAttributeHeaders() {
-        headerClass = new Class<?>[vertex_attributes.size() + 1];
+        headerClass = new Class<?>[vertexAttributes.size() + 1];
 
         headerClass[0] = Boolean.class;
-        for (int i = 0; i < (vertex_attributes.size()); i++) {
+        for (int i = 0; i < (vertexAttributes.size()); i++) {
             headerClass[i + 1] = String.class;
         }
         fireTableStructureChanged();
@@ -61,7 +61,7 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
      * otherwise
      */
     public boolean headerExists() {
-        return vertex_attributes != null && vertex_attributes.size() > 0;
+        return vertexAttributes != null && vertexAttributes.size() > 0;
     }
 
     /**
@@ -69,7 +69,7 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
      */
     @Override
     public int getColumnCount() {
-        return vertex_attributes.size();
+        return vertexAttributes.size();
     }
 
     /**
@@ -81,7 +81,7 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
         if (index == 0) {
             return "";
         } else {
-            return vertex_attributes.get(index).getName();
+            return vertexAttributes.get(index).getName();
         }
     }
 
