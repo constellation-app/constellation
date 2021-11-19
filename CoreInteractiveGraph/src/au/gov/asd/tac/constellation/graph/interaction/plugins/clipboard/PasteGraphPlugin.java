@@ -57,8 +57,6 @@ public final class PasteGraphPlugin extends SimpleEditPlugin {
     public static final String OUT_VX_PASTED_PARAMETER_ID = PluginParameter.buildId(PasteGraphPlugin.class, "vertex_pasted");
     public static final String OUT_TX_PASTED_PARAMETER_ID = PluginParameter.buildId(PasteGraphPlugin.class, "transaction_pasted");
 
-    // Only one instance of the paste plugin should have access to a single record store object.
-    private final Object recordStoreLock = new Object();
 
     @Override
     public PluginParameters createParameters() {

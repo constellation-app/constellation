@@ -15,23 +15,21 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
-import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar.ExecuteButtonState;
+import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.components.OptionsMenuBar;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
@@ -47,7 +45,6 @@ import javafx.scene.layout.VBox;
  * @author antares
  */
 public class DataAccessPane extends AnchorPane implements PluginParametersPaneListener, QualityControlAutoVetterListener {
-    private static final Logger LOGGER = Logger.getLogger(DataAccessPane.class.getName());
   
     private final DataAccessViewTopComponent parentComponent;
     private final DataAccessTabPane dataAccessTabPane;

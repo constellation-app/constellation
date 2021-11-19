@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.quicksearch.SearchProvider;
@@ -37,7 +35,6 @@ import org.netbeans.spi.quicksearch.SearchResponse;
  * @author algol
  */
 public class DataAccessSearchProvider implements SearchProvider {
-    private static final Logger LOGGER = Logger.getLogger(DataAccessSearchProvider.class.getName());
 
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {

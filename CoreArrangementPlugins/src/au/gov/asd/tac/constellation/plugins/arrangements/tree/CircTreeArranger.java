@@ -44,7 +44,6 @@ import org.apache.commons.collections4.CollectionUtils;
 public final class CircTreeArranger implements Arranger {
     // Vertex radii are measured in square sides, visible radii are measured in circle radii.
 
-    private static final float CIRC_RADIUS = (float) Math.sqrt(2);
     private static final int MAX_IN_ONE_CIRCLE = 16;
     private static final float TWO_PI = (float) (2 * Math.PI);
     private GraphWriteMethods graph;
