@@ -142,8 +142,8 @@ public class AttributeFillBuilder extends GraphBuilder {
 
     private static class FloatAttributeValueGenerator implements AttributeValueGenerator<Float> {
 
-        private static final float DEFAULT_START = 0f;
-        private static final float DEFAULT_END = 10f;
+        private static final float DEFAULT_START = 0F;
+        private static final float DEFAULT_END = 10F;
 
         @Override
         public List<Object> createValues(final Float low, final Float high, final int numberOfValues) {
@@ -188,8 +188,8 @@ public class AttributeFillBuilder extends GraphBuilder {
 
     private static class ColorValueAttributeValueGenerator implements AttributeValueGenerator<ConstellationColor> {
 
-        private static final ConstellationColor DEFAULT_START = ConstellationColor.getColorValue(0f, 0f, 0f, 1f);
-        private static final ConstellationColor DEFAULT_END = ConstellationColor.getColorValue(1f, 1f, 1f, 1f);
+        private static final ConstellationColor DEFAULT_START = ConstellationColor.getColorValue(0F, 0F, 0F, 1F);
+        private static final ConstellationColor DEFAULT_END = ConstellationColor.getColorValue(1F, 1F, 1F, 1F);
 
         @Override
         public List<Object> createValues(final ConstellationColor low, final ConstellationColor high, final int numberOfValues) {
@@ -204,7 +204,7 @@ public class AttributeFillBuilder extends GraphBuilder {
             final float blueDiff = high.getBlue() - blueLow;
 
             for (int i = 0; i < numberOfValues; i++) {
-                values.add(ConstellationColor.getColorValue(redLow + ((redDiff * i) / numberOfValues), greenLow + ((greenDiff * i) / numberOfValues), blueLow + ((blueDiff * i) / numberOfValues), 1f));
+                values.add(ConstellationColor.getColorValue(redLow + ((redDiff * i) / numberOfValues), greenLow + ((greenDiff * i) / numberOfValues), blueLow + ((blueDiff * i) / numberOfValues), 1F));
             }
             return values;
         }

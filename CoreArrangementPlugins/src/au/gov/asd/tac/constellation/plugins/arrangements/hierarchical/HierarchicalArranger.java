@@ -304,7 +304,7 @@ public class HierarchicalArranger implements Arranger {
         for (int level = 0; level < vxLevels.size(); level++) {
             final ArrayList<Integer> vxLevel = vxLevels.get(level);
             final int levelVertices = vxLevel.size();
-            final float startxgap = (maxLevelVertices - levelVertices) * xgap / 2f;
+            final float startxgap = (maxLevelVertices - levelVertices) * xgap / 2F;
             for (int i = 0; i < vxLevel.size(); i++) {
                 final int vxId = vxLevel.get(i);
                 wg.setFloatValue(xId, vxId, startxgap + i * xgap);

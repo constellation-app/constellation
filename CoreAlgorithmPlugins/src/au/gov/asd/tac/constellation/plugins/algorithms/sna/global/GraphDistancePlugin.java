@@ -56,7 +56,7 @@ public class GraphDistancePlugin extends SimpleEditPlugin {
         // calculate the maximum eccentricity
         float maxEccentricity = Float.MIN_VALUE;
         float minEccentricity = Float.MAX_VALUE;
-        float sum = 0f;
+        float sum = 0F;
         for (float eccentricity : ecc) {
             if (minEccentricity > eccentricity) {
                 minEccentricity = eccentricity;

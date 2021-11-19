@@ -139,18 +139,14 @@ public class ItemsDialog<T> extends ConstellationDialog {
         buttonPane.getChildren().add(copyToClipboardButton);
 
         final Button selectAllButton = new Button("Select All");
-        selectAllButton.setOnAction((ActionEvent event) -> {
-            table.getSelectionModel().selectAll();
-        });
+        selectAllButton.setOnAction((ActionEvent event) -> table.getSelectionModel().selectAll());
         buttonPane.getChildren().add(selectAllButton);
 
         okButton = new Button("Continue");
         buttonPane.getChildren().add(okButton);
 
         cancelButton = new Button("Cancel");
-        cancelButton.setOnAction((ActionEvent event) -> {
-            hideDialog();
-        });
+        cancelButton.setOnAction((ActionEvent event) -> hideDialog());
         buttonPane.getChildren().add(cancelButton);
 
         final Scene scene = new Scene(root);

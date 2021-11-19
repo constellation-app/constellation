@@ -97,9 +97,7 @@ public class TypeDropper implements GraphDropper {
                 }
 
                 if (data != null) {
-                    return (graph, dropInfo) -> {
-                        PluginExecution.withPlugin(new TypeDropperPlugin(data, dropInfo, graph)).executeLater(graph);
-                    };
+                    return (graph, dropInfo) -> PluginExecution.withPlugin(new TypeDropperPlugin(data, dropInfo, graph)).executeLater(graph);
                 }
             } catch (final UnsupportedFlavorException | IOException | ClassNotFoundException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);

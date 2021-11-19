@@ -133,9 +133,7 @@ public class FpsBatcher implements SceneBatcher {
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-        return gl -> {
-            batch.dispose(gl);
-        };
+        return gl -> batch.dispose(gl);
     }
 
     @Override

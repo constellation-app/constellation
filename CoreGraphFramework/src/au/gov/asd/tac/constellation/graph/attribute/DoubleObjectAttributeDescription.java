@@ -103,7 +103,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
 
     @Override
     public float getFloat(final int id) {
-        return data[id] != null ? ((Double) data[id]).floatValue() : 0.0f;
+        return data[id] != null ? ((Double) data[id]).floatValue() : 0.0F;
     }
 
     @Override

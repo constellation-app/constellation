@@ -70,8 +70,8 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
             }
         }
 
-        final float centreX = (minx + maxx) / 2f;
-        final float centreY = (miny + maxy) / 2f;
+        final float centreX = (minx + maxx) / 2F;
+        final float centreY = (miny + maxy) / 2F;
 
         final Comparator<Blob> sorter = (o1, o2) -> {
             final float d1 = o1.distanceFrom(centreX, centreY);
@@ -182,7 +182,7 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
      */
     private static class Blob {
 
-        private static final float MIN_DISTANCE = 0.01f;
+        private static final float MIN_DISTANCE = 0.01F;
         private final int vxId;
         private float x;
         private float y;

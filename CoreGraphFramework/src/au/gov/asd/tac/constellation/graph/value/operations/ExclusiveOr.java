@@ -36,9 +36,7 @@ public class ExclusiveOr {
     public static void register(Operators operators) {
         final OperatorRegistry registry = operators.getRegistry(NAME);
 
-        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> p1.readBoolean() ^ p2.readBoolean();
-        });
+        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> () -> p1.readBoolean() ^ p2.readBoolean());
     }
 
     static {

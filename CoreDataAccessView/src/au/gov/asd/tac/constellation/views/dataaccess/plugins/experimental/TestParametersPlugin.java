@@ -59,9 +59,9 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.QueryNameValidator;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -231,18 +231,16 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             @SuppressWarnings("unchecked") //control will be of type ComboBox<ParameterValue> which extends from Region
             final ComboBox<ParameterValue> field = (ComboBox<ParameterValue>) control;
             final Image img = new Image(ALIEN_ICON);
-            field.setCellFactory((ListView<ParameterValue> param) -> {
-                return new ListCell<ParameterValue>() {
-                    @Override
-                    protected void updateItem(final ParameterValue item, final boolean empty) {
-                        super.updateItem(item, empty);
-                        this.setText(empty ? "" : item.toString());
-                        final float f = empty ? 0 : item.toString().length() / 11f;
-                        final Color c = Color.color(1 - f / 2f, 0, 0);
-                        setTextFill(c);
-                        setGraphic(new ImageView(img));
-                    }
-                };
+            field.setCellFactory((ListView<ParameterValue> param) -> new ListCell<ParameterValue>() {
+                @Override
+                protected void updateItem(final ParameterValue item, final boolean empty) {
+                    super.updateItem(item, empty);
+                    this.setText(empty ? "" : item.toString());
+                    final float f = empty ? 0 : item.toString().length() / 11F;
+                    final Color c = Color.color(1 - f / 2F, 0, 0);
+                    setTextFill(c);
+                    setGraphic(new ImageView(img));
+                }
             });
         });
         final PluginParameter<SingleChoiceParameterValue> robotOptions = SingleChoiceParameterType.build(ROBOT_PARAMETER_ID, robotpv);
@@ -282,10 +280,10 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<FloatParameterValue> probability = FloatParameterType.build(PROBABILITY_PARAMETER_ID);
         probability.setName("Probability");
         probability.setDescription("0 <= p <= 1");
-        FloatParameterType.setMinimum(probability, 0f);
-        FloatParameterType.setMaximum(probability, 1f);
-        FloatParameterType.setStep(probability, 0.1f);
-        probability.setFloatValue(1f);
+        FloatParameterType.setMinimum(probability, 0F);
+        FloatParameterType.setMaximum(probability, 1F);
+        FloatParameterType.setStep(probability, 0.1F);
+        probability.setFloatValue(1F);
         params.addParameter(probability);
 
         final PluginParameter<FileParameterValue> openFileParam = FileParameterType.build(INPUT_FILE_PARAMETER_ID);
@@ -401,14 +399,11 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         }
 
         final MultiChoiceParameterValue planets = parameters.getMultiChoiceValue(PLANETS_PARAMETER_ID);
-        planets.getChoices().stream().forEach(planet -> {
-            LOGGER.log(Level.INFO, "Planet: {0}", planet);
-        });
+        planets.getChoices().stream().forEach(planet -> LOGGER.log(Level.INFO, "Planet: {0}", planet));
 
         LOGGER.log(Level.INFO, "==== begin string values");
-        parameters.getParameters().values().stream().forEach(param -> {
-            LOGGER.log(Level.INFO, "String {0}: \"{1}\"", new Object[]{param.getName(), param.getStringValue()});
-        });
+        parameters.getParameters().values().stream().forEach(param ->
+                LOGGER.log(Level.INFO, "String {0}: \"{1}\"", new Object[]{param.getName(), param.getStringValue()}));
         LOGGER.log(Level.INFO, "==== end string values");
 
         final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDir();
@@ -424,9 +419,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         final List<String> keys = query.keys();
         while (query.next()) {
-            keys.stream().forEach(key -> {
-                LOGGER.log(Level.INFO, String.format("%-20s: %s", key, query.get(key)));
-            });
+            keys.stream().forEach(key -> LOGGER.log(Level.INFO, String.format("%-20s: %s", key, query.get(key))));
 
             LOGGER.log(Level.INFO, "--");
         }

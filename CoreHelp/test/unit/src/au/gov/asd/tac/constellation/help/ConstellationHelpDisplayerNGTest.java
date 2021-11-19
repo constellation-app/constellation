@@ -283,45 +283,41 @@ public class ConstellationHelpDisplayerNGTest {
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(onlineReturnValue);
 
         // Create static mock of NbPreferences to return the preferences mock
-        try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
+        try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class);
+                MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
+                MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class);
+                MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class);
+                MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(HelpPreferenceKeys.class))).thenReturn(prefs);
 
-            try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
-                mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
+            mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
 
-                try (MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class)) {
-                    final String sep = File.separator;
-                    final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                            + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
-                    mockedHelpMapperStatic.when(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId))).thenReturn(helpModulePath + "help-options.md");
+            final String sep = File.separator;
+            final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
+            mockedHelpMapperStatic.when(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId))).thenReturn(helpModulePath + "help-options.md");
 
-                    try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class)) {
-                        generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenReturn("C://Users/anyperson");
+            generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenReturn("C://Users/anyperson");
 
-                        try (MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
-                            final Desktop mockDesktop = mock(Desktop.class);
-                            when(mockDesktop.isSupported(Mockito.eq(Desktop.Action.BROWSE))).thenReturn(true);
+            final Desktop mockDesktop = mock(Desktop.class);
+            when(mockDesktop.isSupported(Mockito.eq(Desktop.Action.BROWSE))).thenReturn(true);
 
-                            desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(true);
-                            desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
+            desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(true);
+            desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
 
-                            boolean expResult = true;
-                            boolean result = instance.display(helpCtx);
+            boolean expResult = true;
+            boolean result = instance.display(helpCtx);
 
-                            assertEquals(result, expResult);
+            assertEquals(result, expResult);
 
-                            // verify mock interactions
-                            verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
-                            mockedHelpMapperStatic.verify(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId)), times(1));
-                            verify(mockDesktop, times(1)).isSupported(Mockito.eq(Desktop.Action.BROWSE));
-                            desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
-                            desktopStaticMock.verify(() -> Desktop.getDesktop(), times(1));
-                            mockedHelpDisplayerStatic.verify(() -> ConstellationHelpDisplayer.browse(Mockito.any()), times(1));
+            // verify mock interactions
+            verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
+            mockedHelpMapperStatic.verify(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId)), times(1));
+            verify(mockDesktop, times(1)).isSupported(Mockito.eq(Desktop.Action.BROWSE));
+            desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
+            desktopStaticMock.verify(() -> Desktop.getDesktop(), times(1));
+            mockedHelpDisplayerStatic.verify(() -> ConstellationHelpDisplayer.browse(Mockito.any()), times(1));
 
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -347,45 +343,40 @@ public class ConstellationHelpDisplayerNGTest {
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(onlineReturnValue);
 
         // Create static mock of NbPreferences to return the preferences mock
-        try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
+        try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class);
+                MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
+                MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class);
+                MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class);
+                MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(HelpPreferenceKeys.class))).thenReturn(prefs);
 
-            try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
-                mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
+            mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
 
-                try (MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class)) {
-                    final String sep = File.separator;
-                    final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                            + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
-                    mockedHelpMapperStatic.when(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId))).thenReturn(helpModulePath + "help-options.md");
+            final String sep = File.separator;
+            final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
+            mockedHelpMapperStatic.when(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId))).thenReturn(helpModulePath + "help-options.md");
 
-                    try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class)) {
-                        generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenReturn("C://Users/anyperson");
+            generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenReturn("C://Users/anyperson");
 
-                        try (MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
-                            final Desktop mockDesktop = mock(Desktop.class);
-                            when(mockDesktop.isSupported(Mockito.eq(Desktop.Action.BROWSE))).thenReturn(false);
+            final Desktop mockDesktop = mock(Desktop.class);
+            when(mockDesktop.isSupported(Mockito.eq(Desktop.Action.BROWSE))).thenReturn(false);
 
-                            desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(false);
-                            desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
+            desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(false);
+            desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
 
-                            boolean expResult = false;
-                            boolean result = instance.display(helpCtx);
+            boolean expResult = false;
+            boolean result = instance.display(helpCtx);
 
-                            assertEquals(result, expResult);
+            assertEquals(result, expResult);
 
-                            // verify mock interactions
-                            verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
-                            mockedHelpMapperStatic.verify(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId)), times(1));
-                            verify(mockDesktop, times(0)).isSupported(Mockito.eq(Desktop.Action.BROWSE));
-                            desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
-                            desktopStaticMock.verify(() -> Desktop.getDesktop(), times(0)); // lazy check within if statement never hits this
-                            mockedHelpDisplayerStatic.verifyNoInteractions();
-
-                        }
-                    }
-                }
-            }
+            // verify mock interactions
+            verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
+            mockedHelpMapperStatic.verify(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId)), times(1));
+            verify(mockDesktop, times(0)).isSupported(Mockito.eq(Desktop.Action.BROWSE));
+            desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
+            desktopStaticMock.verify(() -> Desktop.getDesktop(), times(0)); // lazy check within if statement never hits this
+            mockedHelpDisplayerStatic.verifyNoInteractions();
         }
     }
 
@@ -411,53 +402,49 @@ public class ConstellationHelpDisplayerNGTest {
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(onlineReturnValue);
 
         // Create static mock of NbPreferences to return the preferences mock
-        try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
+        try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class);
+                MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
+                MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class);
+                MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class);
+                MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class);
+                MockedStatic<HelpWebServer> webServerStaticMock = Mockito.mockStatic(HelpWebServer.class)) {
+
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(HelpPreferenceKeys.class))).thenReturn(prefs);
 
-            try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
-                mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
+            mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
 
-                try (MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class)) {
-                    final String sep = File.separator;
-                    final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                            + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
-                    mockedHelpMapperStatic.when(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId))).thenReturn(helpModulePath + "help-options.md");
+            final String sep = File.separator;
+            final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
+                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
+            mockedHelpMapperStatic.when(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId))).thenReturn(helpModulePath + "help-options.md");
 
-                    try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class)) {
-                        for (final File file : File.listRoots()) {
-                            final String expectedFileLocation = file.getPath() + "Users/anyperson";//
-                            generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenReturn(expectedFileLocation);
+            for (final File file : File.listRoots()) {
+                final String expectedFileLocation = file.getPath() + "Users/anyperson";//
+                generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenReturn(expectedFileLocation);
 
-                            try (MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
-                                final Desktop mockDesktop = mock(Desktop.class);
-                                when(mockDesktop.isSupported(Mockito.eq(Desktop.Action.BROWSE))).thenReturn(true);
+                final Desktop mockDesktop = mock(Desktop.class);
+                when(mockDesktop.isSupported(Mockito.eq(Desktop.Action.BROWSE))).thenReturn(true);
 
-                                desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(true);
-                                desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
+                desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(true);
+                desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
 
-                                try (MockedStatic<HelpWebServer> webServerStaticMock = Mockito.mockStatic(HelpWebServer.class)) {
-                                    final int expectedPort = 8888;
-                                    webServerStaticMock.when(() -> HelpWebServer.start()).thenReturn(expectedPort);
+                final int expectedPort = 8888;
+                webServerStaticMock.when(() -> HelpWebServer.start()).thenReturn(expectedPort);
 
-                                    boolean expResult = true;
-                                    boolean result = instance.display(helpCtx);
+                boolean expResult = true;
+                boolean result = instance.display(helpCtx);
 
-                                    assertEquals(result, expResult);
+                assertEquals(result, expResult);
 
-                                    // verify mock interactions
-                                    verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
-                                    mockedHelpMapperStatic.verify(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId)), times(1));
-                                    verify(mockDesktop, times(1)).isSupported(Mockito.eq(Desktop.Action.BROWSE));
-                                    desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
-                                    desktopStaticMock.verify(() -> Desktop.getDesktop(), times(1));
-                                    final String expectedNavigationURL = String.format("http://localhost:%d/%s", expectedPort,
-                                            ("file:/" + file.getPath() + "Users/anyperson/constellation/CoreHelp/src/au/gov/asd/tac/constellation/help/docs/help-options.md").replace("//", "/").replace("\\", "/"));
-                                    mockedHelpDisplayerStatic.verify(() -> ConstellationHelpDisplayer.browse(Mockito.eq(new URI(expectedNavigationURL))), times(1));
-                                }
-                            }
-                        }
-                    }
-                }
+                // verify mock interactions
+                verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
+                mockedHelpMapperStatic.verify(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId)), times(1));
+                verify(mockDesktop, times(1)).isSupported(Mockito.eq(Desktop.Action.BROWSE));
+                desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
+                desktopStaticMock.verify(() -> Desktop.getDesktop(), times(1));
+                final String expectedNavigationURL = String.format("http://localhost:%d/%s", expectedPort,
+                        ("file:/" + file.getPath() + "Users/anyperson/constellation/CoreHelp/src/au/gov/asd/tac/constellation/help/docs/help-options.md").replace("//", "/").replace("\\", "/"));
+                mockedHelpDisplayerStatic.verify(() -> ConstellationHelpDisplayer.browse(Mockito.eq(new URI(expectedNavigationURL))), times(1));
             }
         }
     }

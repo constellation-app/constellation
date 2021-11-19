@@ -72,9 +72,7 @@ public class ScriptingUtilities implements ScriptingModule {
      */
     public Map<String, SGraph> getOpenGraphs() {
         final Map<String, SGraph> openGraphs = new HashMap<>();
-        GraphNode.getAllGraphs().forEach((graphId, graph) -> {
-            openGraphs.put(GraphNode.getGraphNode(graphId).getDisplayName(), new SGraph(graph));
-        });
+        GraphNode.getAllGraphs().forEach((graphId, graph) -> openGraphs.put(GraphNode.getGraphNode(graphId).getDisplayName(), new SGraph(graph)));
         return openGraphs;
     }
 

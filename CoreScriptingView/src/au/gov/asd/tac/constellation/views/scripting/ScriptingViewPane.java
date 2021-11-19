@@ -152,9 +152,7 @@ public class ScriptingViewPane extends JPanel {
             }
             try (final BufferedReader reader = new BufferedReader(new FileReader(new File(GET_STARTED_FILE.getPath())))) {
                 StringBuilder getStartedText = new StringBuilder();
-                reader.lines().forEach(line -> {
-                    getStartedText.append(line).append(SeparatorConstants.NEWLINE);
-                });
+                reader.lines().forEach(line -> getStartedText.append(line).append(SeparatorConstants.NEWLINE));
                 scriptEditor.setText(getStartedText.toString());
             } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -184,23 +182,17 @@ public class ScriptingViewPane extends JPanel {
 
         final JMenuItem newOutputItem = new JCheckBoxMenuItem("New Output Window", newOutput);
         newOutputItem.setSelected(newOutput);
-        newOutputItem.addActionListener(e -> {
-            newOutput = newOutputItem.isSelected();
-        });
+        newOutputItem.addActionListener(e -> newOutput = newOutputItem.isSelected());
         optionsMenu.add(newOutputItem);
 
         final JMenuItem apiItem = new JMenuItem("API Documentation");
-        apiItem.addActionListener(e -> {
-            new HelpCtx(this.getClass().getPackage().getName()).display();
-        });
+        apiItem.addActionListener(e -> new HelpCtx(this.getClass().getPackage().getName()).display());
         optionsMenu.add(apiItem);
 
         final Collection<? extends ScriptingAbstractAction> scriptingActions = Lookup.getDefault().lookupAll(ScriptingAbstractAction.class);
         scriptingActions.forEach(action -> {
             final JMenuItem item = new JMenuItem(action.getLabel());
-            item.addActionListener(e -> {
-                action.performAction(this);
-            });
+            item.addActionListener(e -> action.performAction(this));
             optionsMenu.add(item);
         });
 

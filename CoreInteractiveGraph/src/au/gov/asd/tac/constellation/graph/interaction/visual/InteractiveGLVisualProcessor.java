@@ -244,10 +244,10 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
 
     @Override
     public float convertTranslationToSpin(final Point from, final Point to) {
-        final float xDist = (getCanvas().getWidth() / 2.0f - to.x) / (getCanvas().getWidth() / 2.0f);
-        final float yDist = (getCanvas().getHeight() / 2.0f - to.y) / (getCanvas().getHeight() / 2.0f);
-        final float xDelta = (from.x - to.x) / 2.0f;
-        final float yDelta = (from.y - to.y) / 2.0f;
+        final float xDist = (getCanvas().getWidth() / 2.0F - to.x) / (getCanvas().getWidth() / 2.0F);
+        final float yDist = (getCanvas().getHeight() / 2.0F - to.y) / (getCanvas().getHeight() / 2.0F);
+        final float xDelta = (from.x - to.x) / 2.0F;
+        final float yDelta = (from.y - to.y) / 2.0F;
         return yDist * xDelta - xDist * yDelta;
     }
 
@@ -304,10 +304,10 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         final float verticalScale = (float) (Math.tan(Math.toRadians(Camera.FIELD_OF_VIEW / 2.0)));
         final float horizontalScale = verticalScale * getCanvas().getWidth() / getCanvas().getHeight();
         final int[] viewport = getViewport();
-        final float leftScale = (((float) left / (float) viewport[2]) - 0.5f) * horizontalScale * 2;
-        final float rightScale = (((float) right / (float) viewport[2]) - 0.5f) * horizontalScale * 2;
-        final float topScale = (((float) (viewport[3] - top) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
-        final float bottomScale = (((float) (viewport[3] - bottom) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
+        final float leftScale = (((float) left / (float) viewport[2]) - 0.5F) * horizontalScale * 2;
+        final float rightScale = (((float) right / (float) viewport[2]) - 0.5F) * horizontalScale * 2;
+        final float topScale = (((float) (viewport[3] - top) / (float) viewport[3]) - 0.5F) * verticalScale * 2;
+        final float bottomScale = (((float) (viewport[3] - bottom) / (float) viewport[3]) - 0.5F) * verticalScale * 2;
         return new float[]{leftScale, rightScale, topScale, bottomScale};
     }
 
@@ -320,7 +320,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
             return (float) ((Graphics2D) getCanvas().getGraphics()).getTransform().getScaleX();
         } catch (Exception ex) {
             LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
-            return 1.0f;
+            return 1.0F;
         }
     }
 

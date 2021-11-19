@@ -99,8 +99,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             l.setWrapText(true);
             l.setPrefWidth(defaultWidth);
             getChildren().add(l);
-            parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> {
-                Platform.runLater(() -> {
+            parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> Platform.runLater(() -> {
                     switch (change) {
                         case VALUE:
                             // Don't change the value if it isn't necessary.
@@ -120,8 +119,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                         default:
                             break;
                     }
-                });
-            });
+                }));
         } else {
             final boolean isPassword = PasswordParameterType.ID.equals(parameter.getType().getId());
             if (isPassword) {
@@ -159,9 +157,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 ((TextArea) field).setPrefRowCount(suggestedHeight);
             } else {
                 field = new TextField();
-                Platform.runLater(() -> {
-                    TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.getItems());
-                });
+                Platform.runLater(() -> TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.getItems()));
             }
 
             field.setPromptText(parameter.getDescription());
@@ -251,8 +247,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 parameter.setStringValue(field.getText());
             });
 
-            parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> {
-                Platform.runLater(() -> {
+            parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> Platform.runLater(() -> {
                     switch (change) {
                         case VALUE:
                             // Don't change the value if it isn't necessary.
@@ -283,8 +278,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                             LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                             break;
                     }
-                });
-            });
+                }));
 
             HBox fieldAndRecentValues = new HBox();
             fieldAndRecentValues.setSpacing(2);

@@ -157,9 +157,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             });
 
             final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
-            ZoneId.getAvailableZoneIds().forEach(id -> {
-                timeZones.add(ZoneId.of(id));
-            });
+            ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
             timeZoneComboBox = new ComboBox<>();
             timeZoneComboBox.setItems(timeZones.sorted(zoneIdComparator));
             final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<ZoneId>() {

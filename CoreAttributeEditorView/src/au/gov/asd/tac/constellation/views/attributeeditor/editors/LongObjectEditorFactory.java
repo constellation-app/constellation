@@ -79,9 +79,7 @@ public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             numberField = new TextField();
-            numberField.textProperty().addListener((o, n, v) -> {
-                update();
-            });
+            numberField.textProperty().addListener((o, n, v) -> update());
 
             noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
             noValueCheckBox.setAlignment(Pos.CENTER);

@@ -104,8 +104,8 @@ public final class VisualGraphDefaults {
     /*
      * Blaze defaults
      */
-    public static final float DEFAULT_BLAZE_OPACITY = 1.0f;
-    public static final float DEFAULT_BLAZE_SIZE = 0.3f;
+    public static final float DEFAULT_BLAZE_OPACITY = 1.0F;
+    public static final float DEFAULT_BLAZE_SIZE = 0.3F;
     public static final int DEFAULT_BLAZE_ANGLE = 45;
     public static final ConstellationColor DEFAULT_BLAZE_COLOR = ConstellationColor.LIGHT_BLUE;
 }

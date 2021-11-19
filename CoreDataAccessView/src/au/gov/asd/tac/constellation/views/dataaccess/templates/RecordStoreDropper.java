@@ -86,9 +86,8 @@ public class RecordStoreDropper implements GraphDropper {
                             final RecordStore recordStore = RecordStoreUtilities.fromJson(in);
 
                             if (recordStore != null) {
-                                return (graph, dropInfo) -> {
-                                    PluginExecution.withPlugin(new RecordStoreDropperToGraphPlugin(recordStore)).executeLater(graph);
-                                };
+                                return (graph, dropInfo)
+                                        -> PluginExecution.withPlugin(new RecordStoreDropperToGraphPlugin(recordStore)).executeLater(graph);
                             }
                         }
                     }

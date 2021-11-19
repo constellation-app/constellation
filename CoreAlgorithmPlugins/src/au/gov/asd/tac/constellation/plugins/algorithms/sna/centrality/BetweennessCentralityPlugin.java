@@ -159,7 +159,7 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
                     final float subgraphVertexCount = subgraphs[vertexPosition].cardinality();
                     betweennessAttributeValue = betweennesses[vertexPosition] / (((subgraphVertexCount - 1) * (subgraphVertexCount - 2)) / 2);
                 } else {
-                    betweennessAttributeValue = betweennesses[vertexPosition] / (((vertexCount - 1) * (vertexCount - 2)) / 2f);
+                    betweennessAttributeValue = betweennesses[vertexPosition] / (((vertexCount - 1) * (vertexCount - 2)) / 2F);
                 }
             } else if (normaliseByAvailable && maxBetweenness > 0) {
                 if (normaliseConnectedComponents) {

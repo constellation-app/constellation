@@ -116,7 +116,7 @@ public final class SharedDrawable {
 
             glyphTextureController = new GlyphManagerOpenGLController(glyphManager);
 
-            labelBackgroundGlyphPosition = glyphManager != null ? glyphManager.createBackgroundGlyph(0.5f) : 0;
+            labelBackgroundGlyphPosition = glyphManager != null ? glyphManager.createBackgroundGlyph(0.5F) : 0;
             glyphTextureController.init(gl);
         } finally {
             sharedDrawable.getContext().release();

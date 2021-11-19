@@ -140,13 +140,9 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
-            datePicker.getEditor().textProperty().addListener((v, o, n) -> {
-                update();
-            });
+            datePicker.getEditor().textProperty().addListener((v, o, n) -> update());
             datePicker.setValue(LocalDate.now());
-            datePicker.valueProperty().addListener((v, o, n) -> {
-                update();
-            });
+            datePicker.valueProperty().addListener((v, o, n) -> update());
 
             hourSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23));
             minSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
@@ -189,18 +185,10 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             secSpinner.setEditable(true);
             milliSpinner.setEditable(true);
 
-            hourSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
-            minSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
-            secSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
-            milliSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
+            hourSpinner.valueProperty().addListener((o, n, v) -> update());
+            minSpinner.valueProperty().addListener((o, n, v) -> update());
+            secSpinner.valueProperty().addListener((o, n, v) -> update());
+            milliSpinner.valueProperty().addListener((o, n, v) -> update());
 
             final VBox dateLabelNode = new VBox(5);
             dateLabelNode.getChildren().addAll(dateLabel, datePicker);

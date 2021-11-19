@@ -29,8 +29,8 @@ import java.awt.Color;
 public class FloatCriteriaPanel extends javax.swing.JPanel {
 
     private final FindCriteriaPanel parentPanel;
-    private float validFloat1 = 0.0f;
-    private float validFloat2 = 0.0f;
+    private float validFloat1 = 0.0F;
+    private float validFloat2 = 0.0F;
 
     /**
      * Creates a new form <code>FloatCriteriaPanel</code> with no prefilled

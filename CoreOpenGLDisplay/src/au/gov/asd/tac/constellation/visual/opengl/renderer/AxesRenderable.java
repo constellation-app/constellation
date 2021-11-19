@@ -49,12 +49,12 @@ public class AxesRenderable implements GLRenderable {
     
     private static final Logger LOGGER = Logger.getLogger(AxesRenderable.class.getName());
 
-    private static final float LEN = 0.5f;
-    private static final float HEAD = 0.05f;
+    private static final float LEN = 0.5F;
+    private static final float HEAD = 0.05F;
     private static final int AXES_OFFSET = 50;
-    private static final Vector4f XCOLOR = new Vector4f(1, 0.5f, 0.5f, 0.75f);
-    private static final Vector4f YCOLOR = new Vector4f(0.5f, 1, 0.5f, 0.75f);
-    private static final Vector4f ZCOLOR = new Vector4f(0, 0.5f, 1, 0.75f);
+    private static final Vector4f XCOLOR = new Vector4f(1, 0.5F, 0.5F, 0.75f);
+    private static final Vector4f YCOLOR = new Vector4f(0.5F, 1, 0.5F, 0.75f);
+    private static final Vector4f ZCOLOR = new Vector4f(0, 0.5F, 1, 0.75F);
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private static final Matrix44f IDENTITY_44F = Matrix44f.identity();
 
@@ -200,7 +200,7 @@ public class AxesRenderable implements GLRenderable {
         Graphics3DUtilities.project(unitPosition, IDENTITY_44F, viewport, proj2);
         final float yScale = proj2.a[1] - proj1.a[1];
 
-        return 25.0f / yScale;
+        return 25.0F / yScale;
     }
 
     @Override

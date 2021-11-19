@@ -125,8 +125,8 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
             } else {
                 // find highest and lowest mean scores among available analytic events
-                float highestMeanScore = 0.0f;
-                float lowestMeanScore = 0.0f;
+                float highestMeanScore = 0.0F;
+                float lowestMeanScore = 0.0F;
                 for (final ElementScore scoreResult : scoreResults.get()) {
                     final float elementMeanScore = scoreResult.getNamedScores().values().stream()
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
@@ -148,11 +148,11 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                     final float colorIntensity = meanScoreRange != 0 ? (elementMeanScore + lowestMeanScore) / meanScoreRange : elementMeanScore + lowestMeanScore;
                     switch (elementType) {
                         case VERTEX:
-                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1f, 1f));
+                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
                             graph.setObjectValue(vertexIconAttribute, elementId, "transparent");
                             break;
                         case TRANSACTION:
-                            graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1f, 1f));
+                            graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
                             break;
                         default:
                             throw new InvalidElementTypeException("'Color Elements' is not supported "
