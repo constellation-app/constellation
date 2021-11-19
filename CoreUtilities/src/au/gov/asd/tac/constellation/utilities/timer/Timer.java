@@ -55,7 +55,7 @@ public class Timer {
         final long endTime = System.nanoTime();
         final long difference = endTime - startTime;
         startTime = endTime;
-        final String log = String.format("%s: %d", message, (difference / 1000000000.0));
-        LOGGER.log(Level.INFO, log);
+        final double time = (difference / 1000000000.0);
+        LOGGER.log(Level.INFO, message, time);
     }
 }
