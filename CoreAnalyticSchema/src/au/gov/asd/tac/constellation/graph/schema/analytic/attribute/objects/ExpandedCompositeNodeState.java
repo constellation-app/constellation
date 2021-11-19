@@ -183,9 +183,8 @@ public class ExpandedCompositeNodeState {
         addToGraphStore.add(compositeNodeStore);
 
         // Add the transactions from the expanded nodes to non-constituent nodes to the contraction record store
-        idToCopiedId.entrySet().forEach(entry -> {
-            GraphRecordStoreUtilities.copyTransactionsToComposite(wg, addToGraphStore, entry.getKey(), entry.getValue(), idToCopiedId.keySet(), compositeId, new GraphAttribute(wg, uniqueIdAttr));
-        });
+        idToCopiedId.entrySet().forEach(entry
+                -> GraphRecordStoreUtilities.copyTransactionsToComposite(wg, addToGraphStore, entry.getKey(), entry.getValue(), idToCopiedId.keySet(), compositeId, new GraphAttribute(wg, uniqueIdAttr)));
         // Remove each expanded vertex from the graph
         idToCopiedId.keySet().forEach(wg::removeVertex);
 

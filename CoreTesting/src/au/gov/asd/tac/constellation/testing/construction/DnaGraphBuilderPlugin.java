@@ -60,9 +60,9 @@ public class DnaGraphBuilderPlugin extends SimpleEditPlugin {
         final float NPAIRS = 360 * N;
         final float RADIUS_BIG = 100;
         final float RADIUS_STRAND = 10;
-        final float RADIUS_SMALL = 0.5f;
+        final float RADIUS_SMALL = 0.5F;
 
-        final float maxColor = 255f;
+        final float maxColor = 255F;
 
         final int vxNameAttr = VisualConcept.VertexAttribute.LABEL.ensure(graph);
         final int vxIdentifierAttr = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
@@ -82,7 +82,7 @@ public class DnaGraphBuilderPlugin extends SimpleEditPlugin {
 
             final float ry = (float) (RADIUS_BIG * Math.sin(Math.toRadians(theta)));
             final float rz = (float) (RADIUS_BIG * Math.cos(Math.toRadians(theta)));
-            final Color vc = new Color(Color.HSBtoRGB((float) i / NPAIRS, 0.5f, 1));
+            final Color vc = new Color(Color.HSBtoRGB((float) i / NPAIRS, 0.5F, 1));
 
             final int n0 = graph.addVertex();
             graph.setStringValue(vxNameAttr, n0, String.valueOf(i * 2));
@@ -90,7 +90,7 @@ public class DnaGraphBuilderPlugin extends SimpleEditPlugin {
 
             graph.setStringValue(vxBackgroundIconAttr, n0, "Background.Round Circle" + ((i % 2 == 0) ? "" : "_64"));
             graph.setFloatValue(vxRadiusAttr, n0, RADIUS_SMALL);
-            graph.setObjectValue(vxColorAttr, n0, ConstellationColor.getColorValue(vc.getRed() / maxColor, vc.getGreen() / maxColor, vc.getBlue() / maxColor, 1f));
+            graph.setObjectValue(vxColorAttr, n0, ConstellationColor.getColorValue(vc.getRed() / maxColor, vc.getGreen() / maxColor, vc.getBlue() / maxColor, 1F));
             final float x0 = RADIUS_STRAND * (float) Math.sin(Math.toRadians(i * 4.0));
             final float y0 = RADIUS_STRAND * (float) Math.cos(Math.toRadians(i * 4.0));
             ConstructionUtilities.setxyz(graph, n0, vxXAttr, vxYAttr, vxZAttr, x0, ry + y0, rz);
@@ -101,7 +101,7 @@ public class DnaGraphBuilderPlugin extends SimpleEditPlugin {
 
             graph.setStringValue(vxBackgroundIconAttr, n1, "Background.Round Circle" + ((i % 2 == 1) ? "" : "_64"));
             graph.setFloatValue(vxRadiusAttr, n1, RADIUS_SMALL);
-            graph.setObjectValue(vxColorAttr, n1, ConstellationColor.getColorValue(1 - vc.getRed() / maxColor, 1 - vc.getGreen() / maxColor, 1 - vc.getBlue() / maxColor, 1f));
+            graph.setObjectValue(vxColorAttr, n1, ConstellationColor.getColorValue(1 - vc.getRed() / maxColor, 1 - vc.getGreen() / maxColor, 1 - vc.getBlue() / maxColor, 1F));
             final float x1 = -x0;
             final float y1 = -y0;
             ConstructionUtilities.setxyz(graph, n1, vxXAttr, vxYAttr, vxZAttr, x1, ry + y1, rz);

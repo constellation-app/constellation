@@ -231,7 +231,7 @@ public class ScatterChartPane extends BorderPane {
         selection.setOpacity(0.4);
         selection.setMouseTransparent(true);
         selection.setStroke(Color.SILVER);
-        selection.setStrokeWidth(2d);
+        selection.setStrokeWidth(2D);
         selection.setFill(gradient);
         selection.setSmooth(true);
         selection.setArcWidth(5.0);

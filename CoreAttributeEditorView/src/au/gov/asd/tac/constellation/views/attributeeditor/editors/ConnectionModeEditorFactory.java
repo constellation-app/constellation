@@ -94,9 +94,7 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
             connectionModeComboBox.setCellFactory(cellFactory);
             connectionModeComboBox.setButtonCell(cellFactory.call(null));
             connectionModeLabel.setLabelFor(connectionModeComboBox);
-            connectionModeComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                update();
-            });
+            connectionModeComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
             controls.addRow(0, connectionModeLabel, connectionModeComboBox);
             return controls;

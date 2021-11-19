@@ -308,9 +308,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                             LinkedHashMap::new
                     ));
 
-            sortedMap.keySet().stream().limit(limit).forEach(id -> {
-                graph.setBooleanValue(vertexSelectedAttribute, id, true);
-            });
+            sortedMap.keySet().stream().limit(limit).forEach(id -> graph.setBooleanValue(vertexSelectedAttribute, id, true));
 
             interaction.setProgress(1, 0, "Selected " + sortedMap.size() + " nodes.", true);
         }

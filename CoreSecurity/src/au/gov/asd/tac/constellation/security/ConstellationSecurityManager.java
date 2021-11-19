@@ -68,9 +68,7 @@ public class ConstellationSecurityManager {
 
             final List<ConstellationSecurityProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationSecurityProvider.class));
             LOGGER.log(LEVEL, "Found {0} security provider{1}", new Object[]{providers.size(), providers.size() == 1 ? "" : "s"});
-            providers.stream().forEach(provider -> {
-                LOGGER.log(LEVEL, "  {0}", provider);
-            });
+            providers.stream().forEach(provider -> LOGGER.log(LEVEL, "  {0}", provider));
 
             // Check for a preferred provider, if the preferred provider is present move it to the top of the list
             final String preferredProvider = System.getProperty(PREFERRED_PROVIDER_PROPERTY);

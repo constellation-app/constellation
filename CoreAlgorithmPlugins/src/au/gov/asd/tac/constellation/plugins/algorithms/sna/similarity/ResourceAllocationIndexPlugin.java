@@ -172,9 +172,9 @@ public class ResourceAllocationIndexPlugin extends SimpleEditPlugin {
 
                     final int vertexOneId = graph.getVertex(vertexOnePosition);
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
-                    float sum = 0f;
+                    float sum = 0F;
                     for (int commonNeighbour = intersection.nextSetBit(0); commonNeighbour >= 0; commonNeighbour = intersection.nextSetBit(commonNeighbour + 1)) {
-                        sum += (1f / graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour)));
+                        sum += (1F / graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour)));
                     }
                     SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, sum);
                 }

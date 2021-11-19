@@ -62,13 +62,13 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> alphaParameter = FloatParameterType.build(ALPHA_PARAMETER_ID);
         alphaParameter.setName("Alpha");
         alphaParameter.setDescription("The attenuation factor");
-        alphaParameter.setFloatValue(0.1f);
+        alphaParameter.setFloatValue(0.1F);
         parameters.addParameter(alphaParameter);
 
         final PluginParameter<FloatParameterValue> betaParameter = FloatParameterType.build(BETA_PARAMETER_ID);
         betaParameter.setName("Beta");
         betaParameter.setDescription("The weight attributed to the immediate neighbourhood");
-        betaParameter.setFloatValue(1.0f);
+        betaParameter.setFloatValue(1.0F);
         parameters.addParameter(betaParameter);
 
         final PluginParameter<IntegerParameterValue> iterationsParameter = IntegerParameterType.build(ITERATIONS_PARAMETER_ID);
@@ -80,7 +80,7 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> epsilonParameter = FloatParameterType.build(EPSILON_PARAMETER_ID);
         epsilonParameter.setName("Epsilon");
         epsilonParameter.setDescription("The change threshold at which equilibrium can be considered reached");
-        epsilonParameter.setFloatValue(1E-8f);
+        epsilonParameter.setFloatValue(1E-8F);
         parameters.addParameter(epsilonParameter);
 
         final PluginParameter<BooleanParameterValue> normaliseByPossibleParameter = BooleanParameterType.build(NORMALISE_POSSIBLE_PARAMETER_ID);

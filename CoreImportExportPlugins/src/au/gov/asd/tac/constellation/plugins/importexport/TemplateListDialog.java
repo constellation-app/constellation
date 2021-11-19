@@ -52,9 +52,7 @@ public class TemplateListDialog {
     private static String[] getFileLabels(final File delimIoDir) {
         final String[] names;
         if (delimIoDir.isDirectory()) {
-            names = delimIoDir.list((final File dir, final String name) -> {
-                return name.toLowerCase(Locale.ENGLISH).endsWith(".json");
-            });
+            names = delimIoDir.list((final File dir, final String name) -> name.toLowerCase(Locale.ENGLISH).endsWith(".json"));
         } else {
             names = new String[0];
         }

@@ -632,7 +632,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
                         rule.addTimeBasedRule(new GregorianCalendar(), new GregorianCalendar());
                         rule.setOperator(FindTypeOperators.Operator.OCCURRED_ON);
                     } else if (attr.getAttributeType().equalsIgnoreCase("float")) {
-                        rule.addFloatBasedRule(0.0f, 0.0f);
+                        rule.addFloatBasedRule(0.0F, 0.0F);
                         rule.setOperator(FindTypeOperators.Operator.IS);
                     } else if (attr.getAttributeType().equalsIgnoreCase("integer")) {
                         rule.addIntegerBasedRule(0, 0);

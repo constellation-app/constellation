@@ -97,7 +97,7 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
             // Colour the taxonomies so we can see what's going on.
             if (tax != null) {
                 for (Integer subvxId : tax.getTaxa().keySet()) {
-                    final ConstellationColor color = ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
+                    final ConstellationColor color = ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1F);
                     final Set<Integer> subgraph = tax.getTaxa().get(subvxId);
                     for (int vxId : subgraph) {
                         graph.setStringValue(bgiconAttr, vxId, "Background.Round Circle");

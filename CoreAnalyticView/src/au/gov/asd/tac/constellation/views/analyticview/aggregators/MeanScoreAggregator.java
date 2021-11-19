@@ -48,7 +48,7 @@ public class MeanScoreAggregator implements AnalyticAggregator<ScoreResult> {
         results.forEach(scoreResult -> combinedResults.combine(scoreResult));
         combinedResults.getResult().forEach((key, value) -> {
             final Map<String, Float> aggregateScores = new HashMap<>();
-            aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce((x, y) -> x + y).orElse(0.0f) / value.getNamedScores().size());
+            aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce((x, y) -> x + y).orElse(0.0F) / value.getNamedScores().size());
             aggregateResult.add(new ElementScore(key.getElementType(), key.getElementId(), key.getIdentifier(), false, aggregateScores));
         });
 

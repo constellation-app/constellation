@@ -144,9 +144,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
                 if (!newLabel.equals(p.label)) {
                     perspectiveModel.removeElementAt(pix);
                     final int ix = perspectiveModel.addElement(new Perspective(newLabel, p));
-                    SwingUtilities.invokeLater(() -> {
-                        perspectivesList.setSelectedIndex(ix);
-                    });
+                    SwingUtilities.invokeLater(() -> perspectivesList.setSelectedIndex(ix));
 
                     final Graph graph = GraphManager.getDefault().getActiveGraph();
                     if (graph != null) {
@@ -465,9 +463,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
 
             final Perspective p = new Perspective(perspectiveModel.getNewLabel(), Graph.NOT_FOUND, camera.lookAtCentre, camera.lookAtEye, camera.lookAtUp, camera.lookAtRotation);
             final int ix = perspectiveModel.addElement(p);
-            SwingUtilities.invokeLater(() -> {
-                perspectivesList.setSelectedIndex(ix);
-            });
+            SwingUtilities.invokeLater(() -> perspectivesList.setSelectedIndex(ix));
         }
     }
 }

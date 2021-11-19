@@ -88,9 +88,7 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             controls.setAlignment(Pos.CENTER);
 
             final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
-            ZoneId.getAvailableZoneIds().forEach(id -> {
-                timeZones.add(ZoneId.of(id));
-            });
+            ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
             timeZoneComboBox = new ComboBox<>();
             timeZoneComboBox.setItems(timeZones.sorted(zoneIdComparator));
             final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<ZoneId>() {
@@ -105,9 +103,7 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             timeZoneComboBox.setCellFactory(cellFactory);
             timeZoneComboBox.setButtonCell(cellFactory.call(null));
             timeZoneComboBox.getSelectionModel().select(TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
-            timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                update();
-            });
+            timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
             controls.getChildren().addAll(timeZoneComboBox);
             return controls;

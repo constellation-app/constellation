@@ -160,12 +160,12 @@ public class DiceSimilarityPlugin extends SimpleEditPlugin {
                     }
 
                     final float halfSumDegree = (neighbours[vertexOnePosition].cardinality()
-                            + neighbours[vertexTwoPosition].cardinality()) / 2f;
+                            + neighbours[vertexTwoPosition].cardinality()) / 2F;
 
                     final int vertexOneId = graph.getVertex(vertexOnePosition);
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
 
-                    final float diceSimilarity = halfSumDegree == 0 ? 0f : (float) intersection.cardinality() / halfSumDegree;
+                    final float diceSimilarity = halfSumDegree == 0 ? 0F : (float) intersection.cardinality() / halfSumDegree;
                     SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, diceSimilarity);
                 }
             }

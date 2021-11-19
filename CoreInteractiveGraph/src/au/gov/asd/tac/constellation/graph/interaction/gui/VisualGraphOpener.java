@@ -251,7 +251,7 @@ public final class VisualGraphOpener extends GraphOpener {
                         NotificationDisplayer.Priority.HIGH
                 );
             } else if (graph != null) {
-                final String msg = String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000f);
+                final String msg = String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000F);
                 StatusDisplayer.getDefault().setStatusText(msg);
                 LOGGER.info(msg);
 

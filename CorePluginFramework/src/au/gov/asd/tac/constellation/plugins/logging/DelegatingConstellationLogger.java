@@ -50,81 +50,61 @@ public class DelegatingConstellationLogger implements ConstellationLogger {
     @Override
     public void applicationStarted() {
         init();
-        loggers.forEach(logger -> {
-            logger.applicationStarted();
-        });
+        loggers.forEach(logger -> logger.applicationStarted());
     }
 
     @Override
     public void applicationStopped() {
         init();
-        loggers.forEach(logger -> {
-            logger.applicationStopped();
-        });
+        loggers.forEach(logger -> logger.applicationStopped());
     }
 
     @Override
     public void viewStarted(final TopComponent view) {
         init();
-        loggers.forEach(logger -> {
-            logger.viewStarted(view);
-        });
+        loggers.forEach(logger -> logger.viewStarted(view));
     }
 
     @Override
     public void viewStopped(final TopComponent view) {
         init();
-        loggers.forEach(logger -> {
-            logger.viewStopped(view);
-        });
+        loggers.forEach(logger -> logger.viewStopped(view));
     }
 
     @Override
     public void viewInfo(final TopComponent view, final String info) {
         init();
-        loggers.forEach(logger -> {
-            logger.viewInfo(view, info);
-        });
+        loggers.forEach(logger -> logger.viewInfo(view, info));
     }
 
     @Override
     public void pluginStarted(final Plugin plugin, final PluginParameters parameters, final Graph graph) {
         init();
-        loggers.forEach(logger -> {
-            logger.pluginStarted(plugin, sanitiseParameters(parameters), graph);
-        });
+        loggers.forEach(logger -> logger.pluginStarted(plugin, sanitiseParameters(parameters), graph));
     }
 
     @Override
     public void pluginStopped(final Plugin plugin, final PluginParameters parameters) {
         init();
-        loggers.forEach(logger -> {
-            logger.pluginStopped(plugin, sanitiseParameters(parameters));
-        });
+        loggers.forEach(logger -> logger.pluginStopped(plugin, sanitiseParameters(parameters)));
     }
 
     @Override
     public void pluginInfo(final Plugin plugin, final String info) {
         init();
-        loggers.forEach(logger -> {
-            logger.pluginInfo(plugin, info);
-        });
+        loggers.forEach(logger -> logger.pluginInfo(plugin, info));
     }
 
     @Override
     public void pluginError(final Plugin plugin, final Throwable error) {
         init();
-        loggers.forEach(logger -> {
-            logger.pluginError(plugin, error);
-        });
+        loggers.forEach(logger -> logger.pluginError(plugin, error));
     }
 
     @Override
     public void pluginProperties(final Plugin plugin, final Properties properties) {
         init();
-        loggers.forEach(logger -> {
-            logger.pluginProperties(plugin, properties);
-        });
+        loggers.forEach(logger -> logger.pluginProperties(plugin, properties));
     }
 
     /**

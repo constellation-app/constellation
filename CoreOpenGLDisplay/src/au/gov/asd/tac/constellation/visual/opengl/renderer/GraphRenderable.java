@@ -184,13 +184,9 @@ public final class GraphRenderable implements GLRenderable {
                     }
                     addTask(blazeBatcher.disposeBatch());
                     addTask(blazeBatcher.createBatch(access));
-                    addTask(gl -> {
-                        iconTextureArray = iconBatcher.updateIconTexture(gl);
-                    });
+                    addTask(gl -> iconTextureArray = iconBatcher.updateIconTexture(gl));
                     final DrawFlags updatedDrawFlags = access.getDrawFlags();
-                    addTask(gl -> {
-                        drawFlags = updatedDrawFlags;
-                    });
+                    addTask(gl -> drawFlags = updatedDrawFlags);
                 };
             case CONNECTIONS_REBUILD:
                 return (change, access) -> {
@@ -211,9 +207,8 @@ public final class GraphRenderable implements GLRenderable {
             case BACKGROUND_COLOR:
                 return (change, access) -> {
                     final ConstellationColor backgroundColor = access.getBackgroundColor();
-                    addTask(gl -> {
-                        graphBackgroundColor = new float[]{backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 1};
-                    });
+                    addTask(gl
+                            -> graphBackgroundColor = new float[]{backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 1});
                     addTask(connectionLabelBatcher.setBackgroundColor(access));
                     addTask(nodeLabelBatcher.setBackgroundColor(access));
                 };
@@ -227,22 +222,14 @@ public final class GraphRenderable implements GLRenderable {
             case DRAW_FLAGS:
                 return (change, access) -> {
                     final DrawFlags updatedDrawFlags = access.getDrawFlags();
-                    addTask(gl -> {
-                        drawFlags = updatedDrawFlags;
-                    });
+                    addTask(gl -> drawFlags = updatedDrawFlags);
                 };
             case BLAZE_SIZE:
-                return (change, access) -> {
-                    addTask(blazeBatcher.updateSizeAndOpacity(access));
-                };
+                return (change, access) -> addTask(blazeBatcher.updateSizeAndOpacity(access));
             case CONNECTIONS_OPACITY:
-                return (change, access) -> {
-                    addTask(lineBatcher.updateOpacity(access));
-                };
+                return (change, access) -> addTask(lineBatcher.updateOpacity(access));
             case BOTTOM_LABEL_COLOR:
-                return (change, access) -> {
-                    addTask(nodeLabelBatcher.setBottomLabelColors(access));
-                };
+                return (change, access) -> addTask(nodeLabelBatcher.setBottomLabelColors(access));
             case BOTTOM_LABELS_REBUILD:
                 return (change, access) -> {
                     addTask(nodeLabelBatcher.setBottomLabelColors(access));
@@ -281,9 +268,7 @@ public final class GraphRenderable implements GLRenderable {
                     }
                 };
             case TOP_LABEL_COLOR:
-                return (change, access) -> {
-                    addTask(nodeLabelBatcher.setTopLabelColors(access));
-                };
+                return (change, access) -> addTask(nodeLabelBatcher.setTopLabelColors(access));
             case TOP_LABELS_REBUILD:
                 return (change, access) -> {
                     addTask(nodeLabelBatcher.setTopLabelColors(access));
@@ -307,20 +292,15 @@ public final class GraphRenderable implements GLRenderable {
                     addTaskIfReady(lineBatcher.updateInfo(access, change), lineBatcher);
                 };
             case VERTEX_BLAZED:
-                return (change, access) -> {
+                return (change, access) -> 
                     // Note that updating blazes always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
                     addTask(blazeBatcher.updateBlazes(access, change));
-                };
             case VERTEX_COLOR:
-                return (change, access) -> {
-                    addTaskIfReady(iconBatcher.updateColors(access, change), iconBatcher);
-                };
+                return (change, access) -> addTaskIfReady(iconBatcher.updateColors(access, change), iconBatcher);
             case VERTEX_FOREGROUND_ICON:
                 return (change, access) -> {
                     addTaskIfReady(iconBatcher.updateIcons(access, change), iconBatcher);
-                    addTask(gl -> {
-                        iconTextureArray = iconBatcher.updateIconTexture(gl);
-                    });
+                    addTask(gl -> iconTextureArray = iconBatcher.updateIconTexture(gl));
                 };
             case VERTEX_SELECTED:
                 return (change, access) -> {
@@ -414,9 +394,7 @@ public final class GraphRenderable implements GLRenderable {
                 skipRedraw = true;
             }
             taskQueue.drainTo(tasks);
-            tasks.forEach(task -> {
-                task.run(gl);
-            });
+            tasks.forEach(task -> task.run(gl));
         }
     }
 
@@ -448,7 +426,7 @@ public final class GraphRenderable implements GLRenderable {
                     motion = 0;
                 }
             } else if (DirectionIndicatorsAction.isShowIndicators()) {
-                motion = (System.currentTimeMillis() - initialMotion) / 100f;
+                motion = (System.currentTimeMillis() - initialMotion) / 100F;
             } else {
                 motion = -1;
             }
@@ -496,7 +474,7 @@ public final class GraphRenderable implements GLRenderable {
 
                 final float convergence = Camera.PERSPECTIVE_NEAR + distanceToCentre;
 
-                final float eyeSeparation = 0.25f; // This is an arbitrary value, arrived at by experimentation.
+                final float eyeSeparation = 0.25F; // This is an arbitrary value, arrived at by experimentation.
                 final float aspect = (float)graphDisplayer.getWidth()/(float)graphDisplayer.getHeight();
                 final AnaglyphCamera anaglyphCam = new AnaglyphCamera(convergence, eyeSeparation, aspect, Camera.FIELD_OF_VIEW, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
 
@@ -543,7 +521,7 @@ public final class GraphRenderable implements GLRenderable {
                     gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, hitTestFboName);
 
                     // Explicitly clear the color to black: we need the default color to be 0 so elements drawn as non-zero are recognised.
-                    gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                    gl.glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
 
                     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
                     gl.glDisable(GL.GL_LINE_SMOOTH);

@@ -47,7 +47,7 @@ public class SelectionBoxRenderable implements GLRenderable {
 
     // How many vertices do we need to draw a rectangle?
     // What color is the selection rectangle?
-    private static final Vector4f SELECTION_COLOR = new Vector4f(0, 0.5f, 1, 0.375f);
+    private static final Vector4f SELECTION_COLOR = new Vector4f(0, 0.5F, 1, 0.375F);
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private int shader;
     private int shaderMvp;
@@ -143,17 +143,17 @@ public class SelectionBoxRenderable implements GLRenderable {
             assert fbuf.limit() == NUMBER_OF_VERTICES * 3;
 
             // Find the location of the box in projected coordinates
-            float left = ((float) begin.x / width) * 2 - 1f;
-            float right = ((float) end.x / width) * 2 - 1f;
-            float top = ((float) (height - begin.y) / height) * 2 - 1f;
-            float bottom = ((float) (height - end.y) / height) * 2 - 1f;
+            float left = ((float) begin.x / width) * 2 - 1F;
+            float right = ((float) end.x / width) * 2 - 1F;
+            float top = ((float) (height - begin.y) / height) * 2 - 1F;
+            float bottom = ((float) (height - end.y) / height) * 2 - 1F;
 
             // Update the four TRIANGLE_FAN coordinates in the vertex buffer.
             float[] v = new float[]{
-                right, bottom, 0f,
-                left, bottom, 0f,
-                left, top, 0f,
-                right, top, 0f
+                right, bottom, 0F,
+                left, bottom, 0F,
+                left, top, 0F,
+                right, top, 0F
             };
 
             fbuf.put(v);

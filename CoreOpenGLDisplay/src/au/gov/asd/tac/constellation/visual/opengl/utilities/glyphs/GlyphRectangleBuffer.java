@@ -63,7 +63,7 @@ final class GlyphRectangleBuffer {
 
     // An identity operation (unchanged copy) for copying image buffers.
     //
-    private static final BufferedImageOp IDENTITY_OP = new RescaleOp(1f, 0f, null);
+    private static final BufferedImageOp IDENTITY_OP = new RescaleOp(1F, 0F, null);
 
     // The next position to draw a rectangle at.
     //

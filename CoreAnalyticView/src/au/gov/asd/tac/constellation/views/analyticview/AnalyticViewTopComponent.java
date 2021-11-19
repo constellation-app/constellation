@@ -124,19 +124,16 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                 prerequisiteAttributes.get(attribute).add(plugin);
             });
         });
-        prerequisiteAttributes.forEach((attribute, plugins) -> {
-            addAttributeValueChangeHandler(attribute, graph -> {
-                if (needsUpdate() && !suppressed) {
-                    plugins.forEach(plugin -> {
-                        final PluginParameters updatedParameters = plugin.createParameters().copy();
-                        plugin.onPrerequisiteAttributeChange(graph, updatedParameters);
-                        analyticViewPane.getConfigurationPane().lookupSelectablePlugin(plugin).setUpdatedParameters(updatedParameters);
-                    });
-                    analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
-                }
-
-            });
-        });
+        prerequisiteAttributes.forEach((attribute, plugins) -> addAttributeValueChangeHandler(attribute, graph -> {
+            if (needsUpdate() && !suppressed) {
+                plugins.forEach(plugin -> {
+                    final PluginParameters updatedParameters = plugin.createParameters().copy();
+                    plugin.onPrerequisiteAttributeChange(graph, updatedParameters);
+                    analyticViewPane.getConfigurationPane().lookupSelectablePlugin(plugin).setUpdatedParameters(updatedParameters);
+                });
+                analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
+            }
+        }));
     }
 
     /**

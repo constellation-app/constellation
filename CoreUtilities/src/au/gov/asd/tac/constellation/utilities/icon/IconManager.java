@@ -79,11 +79,8 @@ public class IconManager {
      * @return A {@link Set} of {@link String} objects representing icon names.
      */
     public static Set<String> getIconNames(final Boolean editable) {
-        return getCache().values().stream().filter(icon -> {
-            return editable == null || editable == icon.isEditable();
-        }).map(icon -> {
-            return icon.getExtendedName();
-        }).collect(Collectors.toSet());
+        return getCache().values().stream().filter(icon -> editable == null || editable == icon.isEditable()).map(icon -> icon.getExtendedName()
+        ).collect(Collectors.toSet());
     }
 
     /**

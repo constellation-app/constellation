@@ -78,12 +78,9 @@ public class LocalDateInputPane extends Pane {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
 
-        field.setOnAction(event -> {
-            parameter.setLocalDateValue(field.getValue());
-        });
+        field.setOnAction(event -> parameter.setLocalDateValue(field.getValue()));
 
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> {
-            Platform.runLater(() -> {
+        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
@@ -106,8 +103,7 @@ public class LocalDateInputPane extends Pane {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            }));
 
         getChildren().add(field);
     }

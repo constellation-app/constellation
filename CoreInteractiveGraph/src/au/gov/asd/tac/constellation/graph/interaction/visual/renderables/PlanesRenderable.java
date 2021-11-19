@@ -239,8 +239,8 @@ public final class PlanesRenderable implements GLRenderable {
             for (int i = 0; i < nVertices; i++) {
                 final int base = i * verticesPerPlane;
 
-                fbuf.put(base + 2, visibleLayers.get(i) ? 1f : 0f);
-                fbuf.put(base + verticesPerPlane / 2 + 2, visibleLayers.get(i) ? 1f : 0f);
+                fbuf.put(base + 2, visibleLayers.get(i) ? 1F : 0F);
+                fbuf.put(base + verticesPerPlane / 2 + 2, visibleLayers.get(i) ? 1F : 0F);
             }
 
             // Unmap the buffer range.

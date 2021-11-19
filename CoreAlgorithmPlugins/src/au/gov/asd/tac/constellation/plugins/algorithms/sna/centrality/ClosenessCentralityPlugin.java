@@ -146,7 +146,7 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         }
 
         // calculate the maximum closeness
-        float maxCloseness = 0f;
+        float maxCloseness = 0F;
         final Map<BitSet, Float> maxClosenessConnectedComponents = new HashMap<>();
         final Map<BitSet, Integer> connectedComponentSize = new HashMap<>();
         final int vertexCount = graph.getVertexCount();

@@ -123,9 +123,7 @@ public class TSVDropper implements GraphDropper {
                 }
 
                 if (!badData && recordStore.size() > 0) {
-                    return (graph, dropInfo) -> {
-                        PluginExecution.withPlugin(new TSVDropperToGraphPlugin(recordStore, files)).executeLater(graph);
-                    };
+                    return (graph, dropInfo) -> PluginExecution.withPlugin(new TSVDropperToGraphPlugin(recordStore, files)).executeLater(graph);
                 }
             } catch (final UnsupportedFlavorException | IOException ex) {
                 Exceptions.printStackTrace(ex);
