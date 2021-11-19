@@ -67,7 +67,7 @@ restored.
 ## Global Parameters
 
 Refer to the [Global
-Parameters]../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/datetime-range.md)
+Parameters](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/datetime-range.md)
 page for more details on the global parameters section.
 
 ## Filtering
