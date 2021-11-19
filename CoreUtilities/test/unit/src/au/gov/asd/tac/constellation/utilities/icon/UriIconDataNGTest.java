@@ -56,9 +56,18 @@ public class UriIconDataNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
         httpsUtilitiesStaticMock = Mockito.mockStatic(HttpsUtilities.class);
         httpsConnectionStaticMock = Mockito.mockStatic(HttpsConnection.class);
         uriStaticMock = Mockito.mockStatic(URI.class);
+
         uriMock = Mockito.mock(URI.class);
         httpsConnectionMock = Mockito.mock(HttpsConnection.class);
         httpsURLConnectionMock = Mockito.mock(HttpsURLConnection.class);
@@ -67,22 +76,11 @@ public class UriIconDataNGTest {
         inputStreamMock = Mockito.mock(InputStream.class);
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
         httpsUtilitiesStaticMock.close();
         httpsConnectionStaticMock.close();
         uriStaticMock.close();
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-        httpsUtilitiesStaticMock.reset();
-        httpsConnectionStaticMock.reset();
-        uriStaticMock.reset();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     /**
@@ -135,14 +133,45 @@ public class UriIconDataNGTest {
     }
 
     /**
-     * Test of createInputStream method, of class UriIconData, when the URI
-     * scheme is HTTPS.
+     * Test of createInputStream method, of class UriIconData, when the String
+     * constructor is invoked.
      *
      * @throws java.lang.Exception
      */
     @Test
-    public void testCreateInputStream() throws Exception {
-        System.out.println("testCreateInputStream");
+    public void testCreateInputStream_withStringConstructor() throws Exception {
+        System.out.println("testCreateInputStream_withStringConstructor");
+
+        uriStaticMock.when(() -> URI.create(Mockito.any(String.class))).thenReturn(uriMock);
+
+        when(uriMock.isAbsolute()).thenReturn(true);
+        when(uriMock.getScheme()).thenReturn("HTTPS");
+        when(uriMock.toURL()).thenReturn(urlMock);
+
+        final UriIconData instance = new UriIconData("someURIString");
+
+        httpsConnectionStaticMock.when(() -> HttpsConnection.withUrl(Mockito.any(String.class))).thenReturn(httpsConnectionMock);
+        when(httpsConnectionMock.get()).thenReturn(httpsURLConnectionMock);
+
+        httpsUtilitiesStaticMock.when(() -> HttpsUtilities.getInputStream(httpsURLConnectionMock)).thenReturn(inputStreamMock);
+
+        final InputStream expResult = inputStreamMock;
+        final InputStream result = instance.createInputStream();
+
+        httpsUtilitiesStaticMock.verify(() -> HttpsUtilities.getInputStream(Mockito.any(HttpsURLConnection.class)), times(1));
+
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of createInputStream method, of class UriIconData, when the URI
+     * constructor is invoked.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testCreateInputStream_withURIConstructor() throws Exception {
+        System.out.println("testCreateInputStream_withURIConstructor");
 
         when(uriMock.isAbsolute()).thenReturn(true);
         when(uriMock.getScheme()).thenReturn("HTTPS");
