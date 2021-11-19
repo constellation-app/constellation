@@ -40,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class ContractGraphPlugin extends SimpleEditPlugin {
 
-    private static final float SCALE = 10f / 11f;
+    private static final float SCALE = 10F / 11F;
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {

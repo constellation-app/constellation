@@ -34,7 +34,7 @@ public class CompoundIcon implements Icon {
         Z_AXIS;
     }
 
-    private static final float CENTER = 0.5f;
+    private static final float CENTER = 0.5F;
     private Icon[] icons;
     private Axis axis;
     private int gap;
@@ -56,8 +56,8 @@ public class CompoundIcon implements Icon {
     public CompoundIcon(final Axis axis, final int gap, final float alignmentX, final float alignmentY, final Icon... icons) {
         this.axis = axis;
         this.gap = gap;
-        this.alignmentX = alignmentX > 1.0f ? 1.0f : alignmentX < 0.0f ? 0.0f : alignmentX;
-        this.alignmentY = alignmentY > 1.0f ? 1.0f : alignmentY < 0.0f ? 0.0f : alignmentY;
+        this.alignmentX = alignmentX > 1.0F ? 1.0F : alignmentX < 0.0F ? 0.0F : alignmentX;
+        this.alignmentY = alignmentY > 1.0F ? 1.0F : alignmentY < 0.0F ? 0.0F : alignmentY;
 
         for (int index = 0; index < icons.length; index++) {
             if (icons[index] == null) {

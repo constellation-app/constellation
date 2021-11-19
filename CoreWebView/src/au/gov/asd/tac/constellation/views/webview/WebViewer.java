@@ -72,14 +72,10 @@ public class WebViewer extends JFXPanel {
             webView.setContextMenuEnabled(false);
             final WebEngine webEngine = webView.getEngine();
             webEngine.load(url);
-            webEngine.locationProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
-                webEngine.load(newValue);
-            });
-            EventHandler<ActionEvent> goAction = (final ActionEvent event) -> {
-                webEngine.load(url.startsWith("http://")
-                        ? url
-                        : "http://" + url);
-            };
+            webEngine.locationProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue)
+                    -> webEngine.load(newValue));
+            EventHandler<ActionEvent> goAction = (final ActionEvent event) -> webEngine.load(url.startsWith("http://")                        ? url
+                    : "http://" + url);
         });
     }
 }

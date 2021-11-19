@@ -44,9 +44,7 @@ public class HideVisualisation<C> extends GraphVisualisation {
         this.hideSlider = new Slider(0.0, 1.0, 0.0);
         hideSlider.setId("hide-visualisation-slider");
         hideSlider.setDisable(true);
-        hideSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            translator.executePlugin(false, newValue.floatValue());
-        });
+        hideSlider.valueProperty().addListener((observable, oldValue, newValue) -> translator.executePlugin(false, newValue.floatValue()));
 
         this.hideButton = new ToggleButton("Hide");
         hideButton.setId("hide-visualisation-button");

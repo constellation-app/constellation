@@ -129,9 +129,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             listView = new ListView<>();
             listView.setCellFactory(param -> new IconNodeCell());
             listView.getStyleClass().add("rounded");
-            listView.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
-                update();
-            });
+            listView.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> update());
 
             treeRoot = new TreeItem<>(new IconNode("Icons", new HashSet<>()));
             treeRoot.setExpanded(true);
@@ -140,9 +138,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             treeView.setShowRoot(true);
             treeView.setRoot(treeRoot);
             treeView.getStyleClass().add("rounded");
-            treeView.setOnMouseClicked((MouseEvent event) -> {
-                refreshIconList();
-            });
+            treeView.setOnMouseClicked((MouseEvent event) -> refreshIconList());
 
             final SplitPane splitPane = new SplitPane();
             splitPane.setId("hiddenSplitter");

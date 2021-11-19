@@ -467,9 +467,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                     final List<ExtractedVertexType> extractedTypes = SchemaVertexTypeUtilities.extractVertexTypes(content);
 
                     final Map<String, SchemaVertexType> identifiers = new HashMap<>();
-                    extractedTypes.forEach(extractedType -> {
-                        identifiers.put(extractedType.getIdentifier(), extractedType.getType());
-                    });
+                    extractedTypes.forEach(extractedType -> identifiers.put(extractedType.getIdentifier(), extractedType.getType()));
 
                     for (String identifier : identifiers.keySet()) {
                         final int newVertexId = wg.addVertex();

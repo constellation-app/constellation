@@ -53,8 +53,8 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
         if (streamContext instanceof ConnectionGlyphStreamContext) {
             final ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
             synchronized (addLock) {
-                currentWidth = -width / 2.0f - 0.2f;
-                currentFloats.add(currentWidth, currentWidth, 0.0f, context.visibility);
+                currentWidth = -width / 2.0F - 0.2F;
+                currentFloats.add(currentWidth, currentWidth, 0.0F, context.visibility);
                 currentInts.add(context.currentLowNodeId, context.currentHighNodeId, (context.currentOffset << 16) + (context.totalScale << 2) + context.labelNumber, (SharedDrawable.getLabelBackgroundGlyphPosition() << 8) + context.currentStagger * 256 / (Math.min(context.currentLinkLabelCount, MAX_STAGGERS) + 1));
             }
         }

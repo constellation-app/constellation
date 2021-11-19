@@ -107,8 +107,8 @@ public class TriangleUtilities {
         final int vxCount = graph.getVertexCount();
         final BitSet[] allNeighbours = new BitSet[vxCount];
         final BitSet update = new BitSet(vxCount);
-        Float triangles = 0f;
-        Float triplets = 0f;
+        Float triangles = 0F;
+        Float triplets = 0F;
 
         // initialise variables
         for (int vxPosition = 0; vxPosition < vxCount; vxPosition++) {

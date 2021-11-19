@@ -199,9 +199,8 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
             } else {
                 // create subgraph
                 final Set<SchemaTransactionType> transactionTypes = new HashSet<>();
-                chosenTransactionTypes.forEach(parameterValue -> {
-                    transactionTypes.add((SchemaTransactionType) ((TransactionTypeParameterValue) parameterValue).getObjectValue());
-                });
+                chosenTransactionTypes.forEach(parameterValue
+                        -> transactionTypes.add((SchemaTransactionType) ((TransactionTypeParameterValue) parameterValue).getObjectValue()));
                 assert transactionTypes.size() > 0 : "You must select at least one transaction type";
                 final StoreGraph subgraph = getSubgraph(graph, SchemaFactoryUtilities.getDefaultSchemaFactory(), transactionTypes);
 

@@ -27,8 +27,8 @@ public class CameraUtilities {
 
     // Enforce a minimum distance so the user isn't overwhelmed,
     // and the label is probably visible.
-    private static final float MIN_ZOOM_DISTANCE = 16f;
-    
+    private static final float MIN_ZOOM_DISTANCE = 16F;
+
     private CameraUtilities() {
         throw new IllegalStateException("Utility class");
     }
@@ -179,13 +179,13 @@ public class CameraUtilities {
         frame.worldToLocal(camera.lookAtEye, localEye);
 
         if (xDegrees != 0) {
-            frame.rotateLocal((float) Mathf.degToRad(xDegrees), 1.0f, 0.0f, 0.0f);
+            frame.rotateLocal((float) Mathf.degToRad(xDegrees), 1.0F, 0.0F, 0.0F);
         }
         if (yDegrees != 0) {
-            frame.rotateLocal((float) Mathf.degToRad(yDegrees), 0.0f, 1.0f, 0.0f);
+            frame.rotateLocal((float) Mathf.degToRad(yDegrees), 0.0F, 1.0F, 0.0F);
         }
         if (zDegrees != 0) {
-            frame.rotateLocal((float) Mathf.degToRad(zDegrees), 0.0f, 0.0f, 1.0f);
+            frame.rotateLocal((float) Mathf.degToRad(zDegrees), 0.0F, 0.0F, 1.0F);
         }
 
         // Retrieve the rotated points from the frame.
@@ -199,9 +199,9 @@ public class CameraUtilities {
 
         if (distanceToClosestNode < Float.MAX_VALUE) {
             if (zoomAmount > 0) {
-                zoomDirection.scale(Math.max(zoomAmount, zoomAmount * distanceToClosestNode * 0.1f));
+                zoomDirection.scale(Math.max(zoomAmount, zoomAmount * distanceToClosestNode * 0.1F));
             } else {
-                zoomDirection.scale(Math.min(zoomAmount, zoomAmount * distanceToClosestNode * 0.1f));
+                zoomDirection.scale(Math.min(zoomAmount, zoomAmount * distanceToClosestNode * 0.1F));
             }
         } else {
             zoomDirection.scale(zoomAmount);

@@ -164,17 +164,13 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
 
         ContextMenu contextMenu = new ContextMenu();
         MenuItem saveToClipboardItem = new MenuItem("Save Details To Clipboard");
-        saveToClipboardItem.setOnAction((ActionEvent event) -> {
-            saveToClipboard();
-        });
+        saveToClipboardItem.setOnAction((ActionEvent event) -> saveToClipboard());
         contextMenu.getItems().addAll(saveToClipboardItem);
         setOnContextMenuRequested((ContextMenuEvent event) -> {
             contextMenu.show(PluginReportPane.this, event.getScreenX(), event.getScreenY());
             event.consume();
         });
-        setOnMouseClicked((MouseEvent event) -> {
-            contextMenu.hide();
-        });
+        setOnMouseClicked((MouseEvent event) -> contextMenu.hide());
 
         if (pluginReport.getStopTime() < 0) {
             PluginReportTimeUpdater.addPluginReport(this);

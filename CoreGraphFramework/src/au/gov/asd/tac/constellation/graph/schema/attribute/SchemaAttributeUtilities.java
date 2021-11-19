@@ -44,8 +44,7 @@ public class SchemaAttributeUtilities {
 
     private static synchronized void buildAttributes() {
         if (SCHEMA_VERTEX_ATTRIBUTES.isEmpty() || SCHEMA_TRANSACTION_ATTRIBUTES.isEmpty()) {
-            SchemaConceptUtilities.getAttributes().forEach((conceptClass, schemaAttributes) -> {
-                schemaAttributes.forEach(schemaAttribute -> {
+            SchemaConceptUtilities.getAttributes().forEach((conceptClass, schemaAttributes) -> schemaAttributes.forEach(schemaAttribute -> {
                     switch (schemaAttribute.getElementType()) {
                         case VERTEX:
                             SCHEMA_VERTEX_ATTRIBUTES.add(schemaAttribute);
@@ -56,8 +55,7 @@ public class SchemaAttributeUtilities {
                         default:
                             break;
                     }
-                });
-            });
+                }));
         }
     }
 

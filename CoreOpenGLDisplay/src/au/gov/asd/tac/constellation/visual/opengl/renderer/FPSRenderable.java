@@ -112,7 +112,7 @@ public class FPSRenderable implements GLRenderable {
         final Vector3f unitPosition = new Vector3f(1, 0, 0);
         Graphics3DUtilities.project(unitPosition, IDENTITY_44F, viewport, proj2);
         final float xScale = proj2.getX() - proj1.getX();
-        return (256.0f / 64) / xScale;
+        return (256.0F / 64) / xScale;
     }
 
     private float calculateYProjectionScale(final int[] viewport) {
@@ -123,7 +123,7 @@ public class FPSRenderable implements GLRenderable {
         final Vector3f unitPosition = new Vector3f(0, 1, 0);
         Graphics3DUtilities.project(unitPosition, IDENTITY_44F, viewport, proj2);
         final float yScale = proj2.getY() - proj1.getY();
-        return (256.0f / 64) / yScale;
+        return (256.0F / 64) / yScale;
     }
 
     @Override

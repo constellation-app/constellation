@@ -54,11 +54,11 @@ public class DataAccessSearchProvider implements SearchProvider {
                     + "Data Access View cannot be created.");
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-            
+
             throw new IllegalStateException("Failed to load data access plugins. "
                     + "Data Access View cannot be created.");
         }
-        
+
         // Find all matching plugin names
         final List<String> pluginNames = plugins.values().stream()
                 // Flatten everything to a single stream of plugins

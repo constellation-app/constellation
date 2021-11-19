@@ -45,14 +45,14 @@ import javafx.scene.layout.VBox;
  * @author antares
  */
 public class DataAccessPane extends AnchorPane implements PluginParametersPaneListener, QualityControlAutoVetterListener {
-  
+
     private final DataAccessViewTopComponent parentComponent;
     private final DataAccessTabPane dataAccessTabPane;
     private final OptionsMenuBar optionsMenuBar;
     private final ButtonToolbar buttonToolbar;
 
     private final TextField searchPluginTextField;
-    
+
     /**
      * Creates a new data access pane.
      *
@@ -60,21 +60,21 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      */
     public DataAccessPane(final DataAccessViewTopComponent parentComponent) {
         this.parentComponent = parentComponent;
-        
+
         // Pointless call but will initialize the data acces pane state which
         // will cause the plugin load to start and then continue initializing
         // the UI components here while it does that
         DataAccessPaneState.getCurrentGraphId();
-        
+
         this.optionsMenuBar = new OptionsMenuBar(this);
         this.optionsMenuBar.init();
 
         this.buttonToolbar = new ButtonToolbar(this);
         this.buttonToolbar.init();
-        
+
         searchPluginTextField = new TextField();
         searchPluginTextField.setPromptText("Type to search for a plugin");
-        searchPluginTextField.textProperty().addListener((observable, oldValue, newValue) -> 
+        searchPluginTextField.textProperty().addListener((observable, oldValue, newValue) ->
             getDataAccessTabPane().getQueryPhasePaneOfCurrentTab()
                     .showMatchingPlugins(newValue)
         );
@@ -88,11 +88,11 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                     + "Data Access View cannot be created.");
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
-            
+
             throw new IllegalStateException("Failed to load data access plugins. "
                     + "Data Access View cannot be created.");
         }
-        
+
         this.dataAccessTabPane = new DataAccessTabPane(this, plugins);
         this.dataAccessTabPane.newTab();
 
@@ -129,37 +129,37 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 getButtonToolbar().getRabRegionExectueHBoxBottom()
         );
         VBox.setVgrow(getDataAccessTabPane().getTabPane(), Priority.ALWAYS);
-        
+
         AnchorPane.setTopAnchor(vbox, 0.0);
         AnchorPane.setBottomAnchor(vbox, 0.0);
         AnchorPane.setLeftAnchor(vbox, 0.0);
         AnchorPane.setRightAnchor(vbox, 0.0);
-        
+
         getChildren().add(vbox);
-        
+
         AnchorPane.setTopAnchor(getButtonToolbar().getOptionsToolbar(), 5.0);
         AnchorPane.setRightAnchor(getButtonToolbar().getOptionsToolbar(), 5.0);
-        
+
         getChildren().add(getButtonToolbar().getOptionsToolbar());
-        
+
         // Modifies the menu sizes and positions as the overall pane size is
         // either shrunk or grown
         widthProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.intValue() <= 460) {
                 getButtonToolbar().handleShrinkingPane();
-                
+
                 getOptionsMenuBar().getMenuBar().setMinHeight(60);
             } else {
                 getButtonToolbar().handleGrowingPane();
-                
+
                 getOptionsMenuBar().getMenuBar().setMinHeight(36);
             }
         });
     }
-    
+
     /**
      * Update executeButton, tab contextual menus, etc base on the current graph.
-     * This will allow the user to run plugins if 
+     * This will allow the user to run plugins if
      * <ul>
      * <li>There is a graph open</li>
      * <li>Plugins are enabled/selected and have valid properties</li>
@@ -195,7 +195,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             }
         }
     }
-    
+
     /**
      * Update executeButton, tab contextual menus, etc based on the passed graph ID.
      * This will allow the user to run plugins on that graph provided the requirements
@@ -206,13 +206,13 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      */
     public final void update(final String newGraphId) {
         DataAccessPaneState.setCurrentGraphId(newGraphId);
-        
+
         // Validates the tab pane and determines if the execute button should
         // be enabled or disabled
         final boolean disable = determineExecuteButtonDisableState(
                 getDataAccessTabPane().isTabPaneExecutable()
         );
-        
+
         // Determine the text that should be applied to the execute button
         if (DataAccessPaneState.getCurrentGraphId() == null) {
             setExecuteButtonToGo(disable);
@@ -227,7 +227,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         // Update the tab menus now that the state above has been updated
         getDataAccessTabPane().updateTabMenus();
     }
-    
+
     /**
      * Get the top level component for the Data Access view.
      *
@@ -265,7 +265,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     public TextField getSearchPluginTextField() {
         return searchPluginTextField;
     }
-    
+
     /**
      * Get the {@link DataAccessTabPane} representing the tabs on the Data
      * Access view.
@@ -275,12 +275,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     public DataAccessTabPane getDataAccessTabPane() {
         return dataAccessTabPane;
     }
-    
+
     /**
      * Set executeButton to function as "Go". Updates the current graph
      * state for the executeButtonIsGo property to true, then changes the text
      * and style of the execute button.
-     * 
+     *
      * @param disable true if the execute button should be disabled, false otherwise
      */
     public void setExecuteButtonToGo(final boolean disable) {
@@ -293,12 +293,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      * Set executeButton to function as "Stop". Updates the current graph
      * state for the executeButtonIsGo property to false, then changes the text
      * and style of the execute button.
-     * 
+     *
      * @param disable true if the execute button should be disabled, false otherwise
      */
     public void setExecuteButtonToStop(final boolean disable) {
         DataAccessPaneState.updateExecuteButtonIsGo(false);
-        
+
         getButtonToolbar().changeExecuteButtonState(ExecuteButtonState.STOP, disable);
     }
 
@@ -311,10 +311,10 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      */
     public void setExecuteButtonToContinue(final boolean disable) {
         DataAccessPaneState.updateExecuteButtonIsGo(false);
-        
+
         getButtonToolbar().changeExecuteButtonState(ExecuteButtonState.CONTINUE, disable);
     }
-    
+
     /**
      * Called when a field is enabling it's parent plugin, to enable
      * executeButton, etc., if there is an open graph.

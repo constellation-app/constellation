@@ -196,7 +196,7 @@ public class GaussianBlur {
 
     private static void boxBlurFFH(final float[] sourceChannel, final float[] targetChannel,
             final int width, final int height, final int radius) {
-        float iarr = 1f / (radius + radius + 1);
+        float iarr = 1F / (radius + radius + 1);
         for (int i = 0; i < height; i++) {
             int ti = i * width;
             int li = ti;
@@ -224,7 +224,7 @@ public class GaussianBlur {
 
     private static void boxBlurFFT(final float[] sourceChannel, final float[] targetChannel,
             final int width, final int height, final int radius) {
-        float iarr = 1f / (radius + radius + 1);
+        float iarr = 1F / (radius + radius + 1);
         for (int i = 0; i < width; i++) {
             int ti = i;
             int li = ti;

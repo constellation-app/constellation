@@ -87,20 +87,14 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     public void removeValueHandlers(final List<AttributeValueMonitor> valueMonitors) {
         // remove all monitors before re-adding updated ones
-        valueMonitors.forEach(monitor -> {
-            removeAttributeValueChangeHandler(monitor);
-        });
+        valueMonitors.forEach(monitor -> removeAttributeValueChangeHandler(monitor));
     }
 
     public synchronized List<AttributeValueMonitor> setChangeListeners(final List<SchemaAttribute> changeListeners) {
         final List<AttributeValueMonitor> valueMonitors = new ArrayList<>();
-        changeListeners.forEach(attribute -> {
-            valueMonitors.add(
-                    addAttributeValueChangeHandler(attribute, changedGraph -> {
-                        layersViewController.updateQueries(changedGraph);
-                    })
-            );
-        });
+        changeListeners.forEach(attribute -> valueMonitors.add(
+                addAttributeValueChangeHandler(attribute, changedGraph -> layersViewController.updateQueries(changedGraph))
+        ));
         return List.copyOf(valueMonitors);
     }
 

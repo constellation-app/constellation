@@ -70,9 +70,8 @@ public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) { //    protected void query(final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException
         final Map<String, PluginParameter<?>> pmap = parameters.getParameters();
-        pmap.entrySet().stream().forEach(entry -> {
-            LOGGER.log(Level.INFO, "{0}: {1}", new Object[]{entry.getKey(), entry.getValue().getStringValue()});
-        });
+        pmap.entrySet().stream().forEach(entry
+                -> LOGGER.log(Level.INFO, "{0}: {1}", new Object[]{entry.getKey(), entry.getValue().getStringValue()}));
     }
 
     @Override
@@ -100,10 +99,10 @@ public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
         final PluginParameter<FloatParameterValue> thresholdParam = FloatParameterType.build(FLOAT_PARAMETER_ID);
         thresholdParam.setName(FLOAT_NAME);
         thresholdParam.setDescription(FLOAT_DESCRIPTION);
-        thresholdParam.setFloatValue(0f);
+        thresholdParam.setFloatValue(0F);
         FloatParameterType.setMinimum(thresholdParam, 0);
         FloatParameterType.setMaximum(thresholdParam, 1);
-        FloatParameterType.setStep(thresholdParam, 0.1f);
+        FloatParameterType.setStep(thresholdParam, 0.1F);
         params.addParameter(thresholdParam);
 
         final PluginParameter<BooleanParameterValue> caseParam = BooleanParameterType.build(BOOLEAN_PARAMETER_ID);

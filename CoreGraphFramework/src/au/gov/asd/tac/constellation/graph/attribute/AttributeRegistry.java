@@ -50,12 +50,8 @@ public final class AttributeRegistry implements Serializable {
     public static AttributeRegistry copyWithRegsitrations(final AttributeRegistry other,
             final Collection<Class<? extends AttributeDescription>> registrations) {
         final AttributeRegistry copy = new AttributeRegistry();
-        other.attributes.values().forEach(ad -> {
-            copy.registerAttribute(ad);
-        });
-        registrations.forEach(ad -> {
-            copy.registerAttribute(ad);
-        });
+        other.attributes.values().forEach(ad -> copy.registerAttribute(ad));
+        registrations.forEach(ad -> copy.registerAttribute(ad));
         return copy;
     }
 

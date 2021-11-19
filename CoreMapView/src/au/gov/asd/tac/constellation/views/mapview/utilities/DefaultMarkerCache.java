@@ -45,7 +45,7 @@ public class DefaultMarkerCache extends MarkerCache {
 
     @Override
     public void clearSelectedMarkers() {
-        synchronized (MarkerCache.getDefault().LOCK) {
+        synchronized (MarkerCache.getDefault().lock) {
             getSelectedMarkers().forEach(marker -> remove(marker));
         }
     }
@@ -57,7 +57,7 @@ public class DefaultMarkerCache extends MarkerCache {
 
     @Override
     public void clearCustomMarkers() {
-        synchronized (MarkerCache.getDefault().LOCK) {
+        synchronized (MarkerCache.getDefault().lock) {
             getCustomMarkers().forEach(marker -> remove(marker));
         }
     }

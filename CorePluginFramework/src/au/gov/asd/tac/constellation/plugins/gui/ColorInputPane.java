@@ -98,12 +98,9 @@ public class ColorInputPane extends Pane {
             }
         });
 
-        field.setOnAction(event -> {
-            parameter.setColorValue(ConstellationColor.fromFXColor(field.getValue()));
-        });
+        field.setOnAction(event -> parameter.setColorValue(ConstellationColor.fromFXColor(field.getValue())));
 
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> {
-            Platform.runLater(() -> {
+        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
@@ -125,8 +122,7 @@ public class ColorInputPane extends Pane {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            }));
 
         getChildren().add(hbox);
     }

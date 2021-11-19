@@ -283,10 +283,10 @@ public final class GLTools {
      */
     public static void makeSphere(final GL3 gl, final TriangleBatch sphereBatch, final float fRadius, final int iSlices, final int iStacks) {
         float drho = (float) Math.PI / (float) iStacks;
-        float dtheta = 2.0f * (float) Math.PI / (float) iSlices;
-        float ds = 1.0f / (float) iSlices;
-        float dt = 1.0f / (float) iStacks;
-        float t = 1.0f;
+        float dtheta = 2.0F * (float) Math.PI / (float) iSlices;
+        float ds = 1.0F / (float) iSlices;
+        float dt = 1.0F / (float) iStacks;
+        float t = 1.0F;
         float s;
 
         sphereBatch.beginMesh(iSlices * iStacks * 6);
@@ -300,7 +300,7 @@ public final class GLTools {
             // Many sources of OpenGL sphere drawing code uses a triangle fan
             // for the caps of the sphere. This however introduces texturing
             // artifacts at the poles on some OpenGL implementations.
-            s = 0.0f;
+            s = 0.0F;
             Vector3f[] vVertex = Vector3f.createArray(4);
             Vector3f[] vNormal = Vector3f.createArray(4);
             Vector2f[] vTexture = Vector2f.createArray(4);
@@ -336,7 +336,7 @@ public final class GLTools {
                 vVertex[1].a[1] = y * fRadius;
                 vVertex[1].a[2] = z * fRadius;
 
-                theta = ((j + 1) == iSlices) ? 0.0f : (j + 1) * dtheta;
+                theta = ((j + 1) == iSlices) ? 0.0F : (j + 1) * dtheta;
                 stheta = (float) (-Math.sin(theta));
                 ctheta = (float) (Math.cos(theta));
 
@@ -397,8 +397,8 @@ public final class GLTools {
      * @param numMinor the number of slices around the minor radius.
      */
     public static void makeTorus(final GL3 gl, final TriangleBatch torusBatch, final float majorRadius, final float minorRadius, final int numMajor, final int numMinor) {
-        final double majorStep = 2.0f * Math.PI / numMajor;
-        final double minorStep = 2.0f * Math.PI / numMinor;
+        final double majorStep = 2.0F * Math.PI / numMajor;
+        final double minorStep = 2.0F * Math.PI / numMinor;
 
         torusBatch.beginMesh(numMajor * (numMinor + 1) * 6);
         for (int i = 0; i < numMajor; i++) {

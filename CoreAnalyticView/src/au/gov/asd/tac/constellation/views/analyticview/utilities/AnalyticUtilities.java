@@ -39,18 +39,14 @@ public class AnalyticUtilities {
     private static final Map<String, GraphVisualisationTranslator> GRAPH_VISUALISATION_TRANSLATORS = new HashMap<>();
 
     static {
-        Lookup.getDefault().lookupAll(AnalyticQuestionDescription.class).forEach(analyticQuestionDescription -> {
-            ANALYTIC_QUESTION_DESCRIPTIONS.put(analyticQuestionDescription.getName(), analyticQuestionDescription);
-        });
-        Lookup.getDefault().lookupAll(AnalyticAggregator.class).forEach(aggregator -> {
-            ANALYTIC_AGGREGATORS.put(aggregator.getName(), aggregator);
-        });
-        Lookup.getDefault().lookupAll(InternalVisualisationTranslator.class).forEach(internalVisualisationTranslator -> {
-            INTERNAL_VISUALISATION_TRANSLATORS.put(internalVisualisationTranslator.getName(), internalVisualisationTranslator);
-        });
-        Lookup.getDefault().lookupAll(GraphVisualisationTranslator.class).forEach(graphVisualisationTranslator -> {
-            GRAPH_VISUALISATION_TRANSLATORS.put(graphVisualisationTranslator.getName(), graphVisualisationTranslator);
-        });
+        Lookup.getDefault().lookupAll(AnalyticQuestionDescription.class).forEach(analyticQuestionDescription
+                -> ANALYTIC_QUESTION_DESCRIPTIONS.put(analyticQuestionDescription.getName(), analyticQuestionDescription));
+        Lookup.getDefault().lookupAll(AnalyticAggregator.class).forEach(aggregator
+                -> ANALYTIC_AGGREGATORS.put(aggregator.getName(), aggregator));
+        Lookup.getDefault().lookupAll(InternalVisualisationTranslator.class).forEach(internalVisualisationTranslator
+                -> INTERNAL_VISUALISATION_TRANSLATORS.put(internalVisualisationTranslator.getName(), internalVisualisationTranslator));
+        Lookup.getDefault().lookupAll(GraphVisualisationTranslator.class).forEach(graphVisualisationTranslator
+                -> GRAPH_VISUALISATION_TRANSLATORS.put(graphVisualisationTranslator.getName(), graphVisualisationTranslator));
     }
 
     private AnalyticUtilities() {
