@@ -53,7 +53,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      * for priority will appear earlier in the bubble for a message that has
      * multiple Contributions.
      */
-    public ConversationContributionProvider(String name, int priority) {
+    protected ConversationContributionProvider(String name, int priority) {
         this.name = name;
         this.priority = priority;
     }

@@ -86,7 +86,7 @@ public abstract class UpdateComponent<U> implements Comparable<UpdateComponent<U
     /**
      * Creates a new UpdateComponent.
      */
-    public UpdateComponent() {
+    protected UpdateComponent() {
         this(null, 0);
     }
 
@@ -95,7 +95,7 @@ public abstract class UpdateComponent<U> implements Comparable<UpdateComponent<U
      *
      * @param name A String representing the name of this UpdateComponent.
      */
-    public UpdateComponent(String name) {
+    protected UpdateComponent(String name) {
         this(name, 0);
     }
 
@@ -107,7 +107,7 @@ public abstract class UpdateComponent<U> implements Comparable<UpdateComponent<U
      * UpdateController's update cycle. This component will be guaranteed to be
      * processed after all UpdateComponents in earlier stages.
      */
-    public UpdateComponent(int stage) {
+    protected UpdateComponent(int stage) {
         this(null, stage);
     }
 
@@ -120,7 +120,7 @@ public abstract class UpdateComponent<U> implements Comparable<UpdateComponent<U
      * UpdateController's update cycle. This component will be guaranteed to be
      * processed after all UpdateComponents in earlier stages.
      */
-    public UpdateComponent(String name, int stage) {
+    protected UpdateComponent(String name, int stage) {
         this.name = name;
         this.stage = stage;
     }

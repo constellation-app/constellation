@@ -70,7 +70,7 @@ public abstract class SchemaFactory {
      * {@link SchemaTransactionType} objects to register to {@link Schema}
      * objects it creates.
      */
-    public SchemaFactory() {
+    protected SchemaFactory() {
         allRegisteredConcepts = new HashMap<>();
 
         // collect registered concepts in local cache

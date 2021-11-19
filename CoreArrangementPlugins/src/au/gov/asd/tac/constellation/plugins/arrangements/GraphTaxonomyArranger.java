@@ -67,7 +67,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
      * @param connectionType the connection type.
      * @param subgraphFactory the subgraphFactory.
      */
-    public GraphTaxonomyArranger(final Arranger inner, final Arranger outer, SelectedInclusionGraph.Connections connectionType, final SubgraphFactory subgraphFactory) {
+    protected GraphTaxonomyArranger(final Arranger inner, final Arranger outer, SelectedInclusionGraph.Connections connectionType, final SubgraphFactory subgraphFactory) {
         this.inner = inner;
         this.outer = outer;
         this.connectionType = connectionType;

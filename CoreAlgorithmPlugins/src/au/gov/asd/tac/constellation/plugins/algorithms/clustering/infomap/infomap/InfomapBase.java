@@ -84,7 +84,7 @@ public abstract class InfomapBase {
     // Use a custom random number generator so we can compare the results to the C++ code.
     protected Lcg rand;
 
-    public InfomapBase(final Config config, final NodeFactoryBase nodeFactory, final GraphReadMethods rg) {
+    protected InfomapBase(final Config config, final NodeFactoryBase nodeFactory, final GraphReadMethods rg) {
         this.config = config;
         this.rg = rg;
 

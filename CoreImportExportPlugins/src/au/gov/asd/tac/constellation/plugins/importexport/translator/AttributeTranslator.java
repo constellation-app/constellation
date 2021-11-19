@@ -90,7 +90,7 @@ public abstract class AttributeTranslator implements Comparable<AttributeTransla
      * @param attributeTypes the types of attribute that this
      * AttributeTranslator supports.
      */
-    public AttributeTranslator(final String label, final int priority, final String... attributeTypes) {
+    protected AttributeTranslator(final String label, final int priority, final String... attributeTypes) {
         this.label = label;
         this.priority = priority;
 
@@ -105,7 +105,7 @@ public abstract class AttributeTranslator implements Comparable<AttributeTransla
      * @param label the label of the new AttributeTranslator.
      * @param priority the priority of the new AttributeTranslator.
      */
-    public AttributeTranslator(final String label, final int priority) {
+    protected AttributeTranslator(final String label, final int priority) {
         this.label = label;
         this.priority = priority;
         attributeTypes = null;

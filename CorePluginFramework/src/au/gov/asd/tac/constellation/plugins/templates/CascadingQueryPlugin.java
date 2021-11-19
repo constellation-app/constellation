@@ -64,11 +64,6 @@ import java.util.Map.Entry;
  *
  * @author sirius
  */
-//@Messages({
-//    "# {0} - graph",
-//    "# {1} - name",
-//    "MSG_Query_Failed=Action failed: {0}; {1}"
-//})
 public abstract class CascadingQueryPlugin extends AbstractPlugin {
 
     /**

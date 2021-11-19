@@ -60,7 +60,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     protected double exitNetworkFlow;
     protected double exitNetworkFlowLogExitNetworkFlow;
 
-    public InfomapGreedy(final Config config, final NodeFactoryBase nodeFactory, final GraphReadMethods rg) {
+    protected InfomapGreedy(final Config config, final NodeFactoryBase nodeFactory, final GraphReadMethods rg) {
         super(config, nodeFactory, rg);
 
         moduleFlowData = new FlowBase[0];
