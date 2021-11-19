@@ -84,8 +84,8 @@ Icon](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views
 which will allow you to add or remove plugins you have selected from the
 favourites category.
 
-## Options Menu
+## Workflow Options
 
 Refer to the
 [Options](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/data-access-options.md)
-page for more details on the options menu.
+page for more details on the Workflow Options menu.
