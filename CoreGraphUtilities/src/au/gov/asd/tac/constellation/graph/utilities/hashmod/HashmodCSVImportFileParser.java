@@ -16,12 +16,13 @@
 package au.gov.asd.tac.constellation.graph.utilities.hashmod;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -70,7 +71,7 @@ public class HashmodCSVImportFileParser {
         return results;
     }
 
-    public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("CSV Files", "*.csv");
+    public FileNameExtensionFilter getExtensionFilter() {
+        return FileChooser.CSV_FILE_FILTER;
     }
 }

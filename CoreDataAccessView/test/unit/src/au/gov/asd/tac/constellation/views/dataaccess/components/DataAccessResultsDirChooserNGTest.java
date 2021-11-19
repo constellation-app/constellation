@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,8 +44,9 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessResultsDirChooserNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(DataAccessResultsDirChooserNGTest.class.getName());
-    
+
     @BeforeClass
     public void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -61,28 +62,28 @@ public class DataAccessResultsDirChooserNGTest {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
-    
+
     @Test
     public void init() {
         final DataAccessResultsDirChooser chooser = spy(new DataAccessResultsDirChooser());
-        assertNotNull(chooser.getFileChooser());
-        
+        assertNotNull(chooser.getDataAccesssResultsFileChooser());
+
         final FileChooserBuilder fileChooser = mock(FileChooserBuilder.class);
-        doReturn(fileChooser).when(chooser).getFileChooser();
-        
+        doReturn(fileChooser).when(chooser).getDataAccesssResultsFileChooser();
+
         final File expectedSelectedDir = new File("/tmp");
         when(fileChooser.showSaveDialog()).thenReturn(expectedSelectedDir);
-        
-        try (final MockedStatic<DataAccessPreferenceUtilities> prefUtilsMockedStatic =
-                Mockito.mockStatic(DataAccessPreferenceUtilities.class)) {
-                final File selectedDir = chooser.openAndSaveToPreferences();
-                
-                assertEquals(selectedDir, expectedSelectedDir);
-                prefUtilsMockedStatic.verify(() -> DataAccessPreferenceUtilities
-                        .setDataAccessResultsDir(expectedSelectedDir));
+
+        try (final MockedStatic<DataAccessPreferenceUtilities> prefUtilsMockedStatic
+                = Mockito.mockStatic(DataAccessPreferenceUtilities.class)) {
+            final File selectedDir = chooser.openAndSaveToPreferences();
+
+            assertEquals(selectedDir, expectedSelectedDir);
+            prefUtilsMockedStatic.verify(() -> DataAccessPreferenceUtilities
+                    .setDataAccessResultsDir(expectedSelectedDir));
         }
     }
-    
+
     @Test
     public void open_called_on_fx_ui_thread() {
         Platform.runLater(() -> {
@@ -93,10 +94,10 @@ public class DataAccessResultsDirChooserNGTest {
                 // Do Nothing
             }
         });
-        
+
         WaitForAsyncUtils.waitForFxEvents();
     }
-    
+
     @Test
     public void open_called_on_awt_ui_thread() throws InterruptedException, InvocationTargetException {
         SwingUtilities.invokeAndWait(() -> {

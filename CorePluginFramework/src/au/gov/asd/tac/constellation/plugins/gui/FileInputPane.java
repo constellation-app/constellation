@@ -19,14 +19,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
@@ -40,7 +38,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.NbPreferences;
 
 /**
  * A text-box and file chooser that together allows the selection or manual
@@ -57,10 +54,7 @@ import org.openide.util.NbPreferences;
  */
 public class FileInputPane extends HBox {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File savedDirectory = DEFAULT_DIRECTORY;
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Open file";
 
@@ -106,20 +100,20 @@ public class FileInputPane extends HBox {
             switch (paramaterValue.getKind()) {
                 case OPEN:
                     FileChooser.openOpenDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-                        savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+                        savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
                         files.add(selectedFile);
                     }));
                     break;
                 case OPEN_MULTIPLE:
                     FileChooser.openMultiDialog(fileChooser).thenAccept(optionalFiles -> optionalFiles.ifPresent(selectedFiles -> {
-                        savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
+                        savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : FileChooser.DEFAULT_DIRECTORY;
                         files.addAll(selectedFiles);
                     }));
                     break;
                 case SAVE:
 
                     FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-                        savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+                        savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
                         files.add(selectedFile);
                     }));
                     break;
@@ -250,10 +244,7 @@ public class FileInputPane extends HBox {
      * @return the created file chooser.
      */
     public FileChooserBuilder getFileInputPaneFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
-                .setDefaultWorkingDirectory(savedDirectory)
-                .setAcceptAllFileFilterUsed(false)
+        return FileChooser.getBaseFileChooserBuilder(TITLE, savedDirectory, null)
                 .setFilesOnly(true);
     }
 }

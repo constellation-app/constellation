@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -76,6 +77,6 @@ public class TSVImportFileParser extends ImportFileParser {
 
     @Override
     public FileNameExtensionFilter getExtensionFilter() {
-        return new FileNameExtensionFilter("Tab Separated files (.tsv)", "tsv");
+        return FileChooser.TSV_FILE_FILTER;
     }
 }

@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class ExportToGeoJsonPlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected FileNameExtensionFilter getExportType() {
-        return new FileNameExtensionFilter("JSON files (.json)", "json");
+        return FileChooser.JSON_FILE_FILTER;
     }
 
     @Override

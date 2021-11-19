@@ -19,19 +19,15 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.json.ExportToJsonPlugin;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.prefs.Preferences;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.NbPreferences;
 
 /**
  * Export current graph as an image.
@@ -42,10 +38,7 @@ import org.openide.util.NbPreferences;
 @Messages("CTL_ExportToImage=To Screenshot Image...")
 public final class ExportToImageAction implements ActionListener {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File savedDirectory = DEFAULT_DIRECTORY;
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Export to Image";
 
@@ -61,9 +54,11 @@ public final class ExportToImageAction implements ActionListener {
         final FileChooserBuilder fileChooser = getExportToImageFileChooser();
 
         FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+            savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
 
             String fileName = selectedFile.getAbsolutePath();
+
+            selectedFile.renameTo(new File("potato.png"));
 
             if (!fileName.toLowerCase().endsWith(EXT)) {
                 fileName += EXT;
@@ -82,10 +77,7 @@ public final class ExportToImageAction implements ActionListener {
      * @return the created file chooser.
      */
     public FileChooserBuilder getExportToImageFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
-                .setDefaultWorkingDirectory(savedDirectory)
-                .setFileFilter(new FileNameExtensionFilter("Image files (.png)", "png"))
+        return FileChooser.getBaseFileChooserBuilder(TITLE, savedDirectory, FileChooser.PNG_FILE_FILTER)
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);
     }

@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.components;
 
-import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.views.tableview.plugins.ExportToCsvFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview.plugins.ExportToExcelFilePlugin;
 import java.io.File;
@@ -35,7 +35,7 @@ import javafx.geometry.Side;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.filesystems.FileChooserBuilder;
 
 /**
@@ -46,6 +46,8 @@ import org.openide.filesystems.FileChooserBuilder;
  */
 public class ExportMenu {
 
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
+
     private static final Logger LOGGER = Logger.getLogger(ExportMenu.class.getName());
 
     private static final String EXPORT_CSV = "Export to CSV";
@@ -55,11 +57,9 @@ public class ExportMenu {
 
     private static final String EXPORT_CSV_FILE_CHOOSER_TITLE = "Export To CSV";
     private static final String EXPORT_XLSX_FILE_CHOOSER_TITLE = "Export To XLSX";
-    private static final String CSV_EXT = ".csv";
-    private static final String XLSX_EXT = ".xlsx";
 
-    private static final String EXPORT_CSV_FILE_CHOOSER_DESCRIPTION = "CSV files (*" + CSV_EXT + ")";
-    private static final String EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION = "Excel files (*" + XLSX_EXT + ")";
+    public static final FileNameExtensionFilter CSV_FILE_FILTER = FileChooser.CSV_FILE_FILTER;
+    public static final FileNameExtensionFilter XLSX_FILE_FILTER = FileChooser.EXCEL_FILE_FILTER;
 
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
 
@@ -92,8 +92,7 @@ public class ExportMenu {
         exportCsvMenu = createExportMenu(
                 EXPORT_CSV,
                 EXPORT_CSV_FILE_CHOOSER_TITLE,
-                CSV_EXT,
-                EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
+                CSV_FILE_FILTER,
                 file -> new ExportToCsvFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
@@ -105,8 +104,7 @@ public class ExportMenu {
         exportCsvSelectionMenu = createExportMenu(
                 EXPORT_CSV_SELECTION,
                 EXPORT_CSV_FILE_CHOOSER_TITLE,
-                CSV_EXT,
-                EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
+                CSV_FILE_FILTER,
                 file -> new ExportToCsvFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
@@ -115,11 +113,9 @@ public class ExportMenu {
                 )
         );
 
-        exportExcelMenu = createExportMenu(
-                EXPORT_XLSX,
+        exportExcelMenu = createExportMenu(EXPORT_XLSX,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                XLSX_EXT,
-                EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
+                XLSX_FILE_FILTER,
                 file -> new ExportToExcelFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
@@ -130,11 +126,9 @@ public class ExportMenu {
                 )
         );
 
-        exportExcelSelectionMenu = createExportMenu(
-                EXPORT_XLSX_SELECTION,
+        exportExcelSelectionMenu = createExportMenu(EXPORT_XLSX_SELECTION,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                XLSX_EXT,
-                EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
+                XLSX_FILE_FILTER,
                 file -> new ExportToExcelFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
@@ -219,8 +213,8 @@ public class ExportMenu {
      * @param menuTitle the title to put on the menu item
      * @param fileChooserTitle the title that will be on the export file chooser
      * dialog
-     * @param expectedFileExtension the file extension the file chooser will
-     * save
+     * @param expectedFileExtensionFilter the file extension the file chooser
+     * will save
      * @param fileChooserDescription the description that will be on the export
      * file chooser dialog
      * @param exportPluginCreator a function that creates an export plugin that
@@ -229,13 +223,12 @@ public class ExportMenu {
      */
     private MenuItem createExportMenu(final String menuTitle,
             final String fileChooserTitle,
-            final String expectedFileExtension,
-            final String fileChooserDescription,
+            final FileNameExtensionFilter expectedFileExtensionFilter,
             final Function<File, Plugin> exportPluginCreator) {
         final MenuItem menuItem = new MenuItem(menuTitle);
 
         menuItem.setOnAction(new ExportMenuItemActionHandler(
-                fileChooserTitle, expectedFileExtension, fileChooserDescription, exportPluginCreator));
+                fileChooserTitle, expectedFileExtensionFilter, exportPluginCreator));
 
         return menuItem;
     }
@@ -247,10 +240,9 @@ public class ExportMenu {
     class ExportMenuItemActionHandler implements EventHandler<ActionEvent> {
 
         private final String fileChooserTitle;
-        private final String expectedFileExtension;
-        private final String fileChooserDescription;
+        private final FileNameExtensionFilter expectedFileExtensionFilter;
         private final Function<File, Plugin> exportPluginCreator;
-        
+
         private CompletableFuture<Void> lastExport;
 
         /**
@@ -258,20 +250,18 @@ public class ExportMenu {
          *
          * @param fileChooserTitle the title that will be on the export file
          * chooser dialog
-         * @param expectedFileExtension the file extension the file chooser will
-         * save
+         * @param expectedFileExtensionFilter the file extension the file
+         * chooser will save
          * @param fileChooserDescription the description that will be on the
          * export file chooser dialog
          * @param exportPluginCreator a function that creates an export plugin
          * that will write to the passed file
          */
         public ExportMenuItemActionHandler(final String fileChooserTitle,
-                final String expectedFileExtension,
-                final String fileChooserDescription,
+                final FileNameExtensionFilter expectedFileExtensionFilter,
                 final Function<File, Plugin> exportPluginCreator) {
             this.fileChooserTitle = fileChooserTitle;
-            this.expectedFileExtension = expectedFileExtension;
-            this.fileChooserDescription = fileChooserDescription;
+            this.expectedFileExtensionFilter = expectedFileExtensionFilter;
             this.exportPluginCreator = exportPluginCreator;
         }
 
@@ -291,23 +281,21 @@ public class ExportMenu {
 
                 // Open the file chooser and get the user to select a file
                 // Use the function to create the required export plugin and
-                // then execute it
-                lastExport = FileChooser.openSaveDialog(exportFileChooser)
-                        .thenAccept(optionalFile ->
-                            optionalFile.ifPresent(file -> {
-                                try {
-                                    PluginExecution.withPlugin(
-                                            exportPluginCreator.apply(file)
-                                    ).executeNow((Graph) null);
-                                } catch (final InterruptedException ex) {
-                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                                    Thread.currentThread().interrupt();
-                                } catch (final PluginException ex) {
-                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                                }
-                            })
-                        );
+                // then execute it.
+                lastExport = FileChooser.openSaveDialog(exportFileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
+                    savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
+
+                    try {
+                        PluginExecution.withPlugin(exportPluginCreator.apply(selectedFile)).executeNow((Graph) null);
+                    } catch (final InterruptedException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                        Thread.currentThread().interrupt();
+                    } catch (final PluginException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                    }
+                }));
             }
+
             event.consume();
         }
 
@@ -319,30 +307,16 @@ public class ExportMenu {
         public CompletableFuture<Void> getLastExport() {
             return lastExport;
         }
-        
+
         /**
          * Creates a new file chooser.
          *
          * @return the created file chooser
          */
         public FileChooserBuilder getExportFileChooser() {
-            return new FileChooserBuilder(fileChooserTitle)
-                    .setTitle(fileChooserTitle)
-                    .setFileFilter(new FileFilter() {
-                        @Override
-                        public boolean accept(final File file) {
-                            final String name = file.getName();
-                            // if it is an actual file and it ends with the expected extension
-                            return file.isFile() && name.toLowerCase()
-                                    .endsWith(expectedFileExtension.toLowerCase());
-                        }
-
-                        @Override
-                        public String getDescription() {
-                            return fileChooserDescription;
-                        }
-                    });
+            return FileChooser.getBaseFileChooserBuilder(fileChooserTitle, savedDirectory, expectedFileExtensionFilter)
+                    .setAcceptAllFileFilterUsed(false)
+                    .setFilesOnly(true);
         }
     }
-
 }

@@ -35,7 +35,6 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -48,12 +47,10 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -67,7 +64,6 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
@@ -106,10 +102,7 @@ import org.openide.windows.TopComponent;
 })
 public final class PlaneManagerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File savedDirectory = DEFAULT_DIRECTORY;
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Import plane";
 
@@ -182,7 +175,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         final FileChooserBuilder fileChooser = getPlaneManagerFileChooser();
 
         FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+            savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
             PluginExecution.withPlugin(new ImportPlanePlugin(selectedFile)).executeLater(graph);
         }));
     }
@@ -502,10 +495,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
      * @return the created file chooser.
      */
     public FileChooserBuilder getPlaneManagerFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
-                .setDefaultWorkingDirectory(savedDirectory)
-                .setFileFilter(new FileNameExtensionFilter("Image files (.png, .jpg)", "png", "jpg"))
+        return FileChooser.getBaseFileChooserBuilder(TITLE, savedDirectory, FileChooser.PNG_JPG_FILE_FILTER)
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);
     }

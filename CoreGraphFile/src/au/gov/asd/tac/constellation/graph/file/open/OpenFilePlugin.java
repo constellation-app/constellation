@@ -24,15 +24,11 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
-import java.util.prefs.Preferences;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,10 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.LOW_LEVEL})
 public class OpenFilePlugin extends SimpleReadPlugin {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File savedDirectory = DEFAULT_DIRECTORY;
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Open";
 
@@ -63,7 +56,7 @@ public class OpenFilePlugin extends SimpleReadPlugin {
         final FileChooserBuilder fileChooser = getOpenFileChooser();
 
         FileChooser.openMultiDialog(fileChooser).thenAccept(optionalFiles -> optionalFiles.ifPresent(selectedFiles -> {
-            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
+            savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : FileChooser.DEFAULT_DIRECTORY;
             selectedFiles.forEach(file -> OpenFile.openFile(file, -1));
         }));
     }
@@ -74,10 +67,7 @@ public class OpenFilePlugin extends SimpleReadPlugin {
      * @return the created file chooser.
      */
     public FileChooserBuilder getOpenFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
-                .setDefaultWorkingDirectory(savedDirectory)
-                .setFileFilter(new FileNameExtensionFilter("Constellation files (.star, .nebula)", "star", "nebula"))
+        return FileChooser.getBaseFileChooserBuilder(TITLE, savedDirectory, FileChooser.CONSTELLATION_FILE_FILTER)
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);
     }

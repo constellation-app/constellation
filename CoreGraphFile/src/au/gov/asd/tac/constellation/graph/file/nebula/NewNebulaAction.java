@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -33,7 +34,6 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -56,7 +56,7 @@ public final class NewNebulaAction implements ActionListener {
 
         final PluginParameter<FileParameterValue> fileParam = FileParameterType.build(NEBULA_FILE_PARAMETER_ID);
         fileParam.setName("Nebula file");
-        FileParameterType.setFileFilters(fileParam, new FileNameExtensionFilter("Nebula files (.nebula)", "nebula"));
+        FileParameterType.setFileFilters(fileParam, FileChooser.NEBULA_FILE_FILTER);
         fileParam.getParameterValue().setKind(FileParameterKind.SAVE);
         fileParam.setHelpID("au.gov.asd.tac.constellation.file.nebula");
         params.addParameter(fileParam);

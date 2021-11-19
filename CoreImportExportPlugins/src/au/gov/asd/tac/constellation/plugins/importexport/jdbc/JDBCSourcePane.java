@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -58,16 +56,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.NbPreferences;
 
 public class JDBCSourcePane extends SourcePane {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File savedDirectory = DEFAULT_DIRECTORY;
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Add JAR";
 
@@ -260,7 +253,7 @@ public class JDBCSourcePane extends SourcePane {
                 chooser.setOnAction((final ActionEvent t2) -> {
                     final FileChooserBuilder fileChooser = getJDBCImportFileChooser();
                     FileChooser.openOpenDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-                        savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+                        savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
                         try {
                             j.setText(selectedFile.getCanonicalPath());
                             driverName.getItems().clear();
@@ -551,10 +544,7 @@ public class JDBCSourcePane extends SourcePane {
      * @return the created file chooser.
      */
     public FileChooserBuilder getJDBCImportFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
-                .setDefaultWorkingDirectory(savedDirectory)
-                .setFileFilter(new FileNameExtensionFilter("JAR files (.jar)", "jar"))
+        return FileChooser.getBaseFileChooserBuilder(TITLE, savedDirectory, FileChooser.JAR_FILE_FILTER)
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);
     }

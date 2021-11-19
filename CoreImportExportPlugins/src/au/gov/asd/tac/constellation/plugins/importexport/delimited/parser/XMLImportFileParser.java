@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.xml.XmlUtilities;
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,7 +91,7 @@ public class XMLImportFileParser extends ImportFileParser {
 
     @Override
     public FileNameExtensionFilter getExtensionFilter() {
-        return new FileNameExtensionFilter("XML files (.xml)", "xml");
+        return FileChooser.XML_FILE_FILTER;
     }
 
     private void exploreElement(final Element element, final List<String> path, final Map<List<String>, Counter> counts) {

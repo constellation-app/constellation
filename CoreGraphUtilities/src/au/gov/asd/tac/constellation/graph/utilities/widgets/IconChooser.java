@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
@@ -31,7 +30,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -44,14 +42,12 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.NbPreferences;
 
 /**
  *
@@ -59,10 +55,7 @@ import org.openide.util.NbPreferences;
  */
 public final class IconChooser extends javax.swing.JPanel implements TreeSelectionListener, ListSelectionListener {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File savedDirectory = DEFAULT_DIRECTORY;
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Add/Save Icon";
     private static final String TITLE_OPEN = "Add Icons";
@@ -273,7 +266,7 @@ private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         final FileChooserBuilder fileChooser = getIconFileChooser();
 
         FileChooser.openMultiDialog(fileChooser.setTitle(TITLE_OPEN)).thenAccept(optionalFiles -> optionalFiles.ifPresent(selectedFiles -> {
-            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
+            savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : FileChooser.DEFAULT_DIRECTORY;
 
             String addedIcon = null;
 
@@ -324,7 +317,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         final FileChooserBuilder fileChooser = getIconFileChooser();
 
         FileChooser.openSaveDialog(fileChooser.setTitle(TITLE_SAVE)).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+            savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
 
             // Save an icon from the icon list.
             final String iconName = getSelectedIconName();
@@ -385,9 +378,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
      * @return the created file chooser.
      */
     public FileChooserBuilder getIconFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setDefaultWorkingDirectory(savedDirectory)
-                .setFileFilter(new FileNameExtensionFilter("Graph Icon files (.png, .jpg)", "png", "jpg"))
+        return FileChooser.getBaseFileChooserBuilder(TITLE, savedDirectory, FileChooser.PNG_JPG_FILE_FILTER)
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);
     }

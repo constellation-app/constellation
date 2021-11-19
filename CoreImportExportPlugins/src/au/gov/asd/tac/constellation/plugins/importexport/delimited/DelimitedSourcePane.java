@@ -19,16 +19,17 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -51,7 +52,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.NbPreferences;
 
 /**
  * The SourcePane provides the UI necessary to allow the user to specify where
@@ -62,10 +62,7 @@ import org.openide.util.NbPreferences;
  */
 public class DelimitedSourcePane extends SourcePane {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File savedDirectory = DEFAULT_DIRECTORY;
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Import From File";
 
@@ -124,7 +121,7 @@ public class DelimitedSourcePane extends SourcePane {
 
         fileButtonBox.getChildren().addAll(fileAddBtn, fileRemBtn);
 
-        getChildren().addAll(fileLabel, fileScrollPane, fileButtonBox);
+        DelimitedSourcePane.this.getChildren().addAll(fileLabel, fileScrollPane, fileButtonBox);
 
         fileListView.setOnMouseClicked((MouseEvent t) -> fileRemBtn.setDisable(fileListView.getSelectionModel().getSelectedItems().isEmpty()));
 
@@ -143,6 +140,7 @@ public class DelimitedSourcePane extends SourcePane {
             files.removeAll(selectedFiles);
             fileListView.setItems(files);
             importController.setFiles(files, null);
+            DelimitedSourcePane.this.importFileParserComboBox.setDisable(!files.isEmpty());
         });
 
         final Label destinationLabel = new Label("Destination:");
@@ -175,7 +173,7 @@ public class DelimitedSourcePane extends SourcePane {
         optionsBox.setMinWidth(0);
         GridPane.setConstraints(optionsBox, 0, 0, 3, 1);
         optionsBox.getItems().addAll(destinationLabel, graphComboBox, importFileParserLabel, importFileParserComboBox, schemaLabel, schemaCheckBox, insertHeadersLabel, filesIncludeHeadersCheckBox);
-        getChildren().add(optionsBox);
+        DelimitedSourcePane.this.getChildren().add(optionsBox);
     }
 
     private void addFile(final DelimitedImportController importController) {
@@ -184,8 +182,27 @@ public class DelimitedSourcePane extends SourcePane {
 
         final FileChooserBuilder fileChooser = getDelimitedImportFileChooser();
 
-        FileChooser.openMultiDialog(fileChooser.setFileFilter(extensionFilter)).thenAccept(optionalFiles -> optionalFiles.ifPresent(newFiles -> {
-            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? newFiles.get(0) : DEFAULT_DIRECTORY;
+        final List<File> newFiles = new ArrayList<>();
+        final CountDownLatch cdl = new CountDownLatch(1);
+
+        FileChooser.openMultiDialog(fileChooser.setFileFilter(extensionFilter)).thenAccept(optionalFiles -> {
+            optionalFiles.ifPresent(selectedFiles -> {
+                savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : FileChooser.DEFAULT_DIRECTORY;
+                newFiles.addAll(selectedFiles);
+
+            });
+
+            cdl.countDown();
+        });
+
+        try {
+            cdl.await();
+        } catch (InterruptedException ex) {
+            LOGGER.log(Level.WARNING, ex.toString());
+        }
+
+        if (!newFiles.isEmpty()) {
+            DelimitedSourcePane.this.importFileParserComboBox.setDisable(true);
 
             final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
             final StringBuilder sb = new StringBuilder();
@@ -195,10 +212,8 @@ public class DelimitedSourcePane extends SourcePane {
             newFiles.forEach(file -> {
                 // Iterate over files and attempt to parse/preview, if a failure is detected don't add the file to the set of files to import.
                 try {
-                    if (parser != null) {
-                        parser.preview(new InputSource(file), null, PREVIEW_LIMIT);
-                        files.add(file);
-                    }
+                    parser.preview(new InputSource(file), null, PREVIEW_LIMIT);
+                    files.add(file);
                 } catch (final IOException ex) {
                     // Append the name of each file that could not be imported.
                     sb.append("\n");
@@ -222,7 +237,7 @@ public class DelimitedSourcePane extends SourcePane {
 
             final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
             importController.setFiles(files, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
-        }));
+        }
     }
 
     /**
@@ -262,9 +277,7 @@ public class DelimitedSourcePane extends SourcePane {
      * @return the created file chooser.
      */
     public FileChooserBuilder getDelimitedImportFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
-                .setDefaultWorkingDirectory(savedDirectory)
+        return FileChooser.getBaseFileChooserBuilder(TITLE, savedDirectory, null)
                 .setAcceptAllFileFilterUsed(false)
                 .setFilesOnly(true);
     }

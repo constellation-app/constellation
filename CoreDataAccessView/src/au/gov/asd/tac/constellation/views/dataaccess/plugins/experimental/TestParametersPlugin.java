@@ -56,6 +56,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -90,7 +91,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
@@ -295,7 +295,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         saveFileParam.setName("Output file");
         saveFileParam.setDescription("A file to write stuff to");
         FileParameterType.setKind(saveFileParam, FileParameterType.FileParameterKind.SAVE);
-        FileParameterType.setFileFilters(saveFileParam, new FileNameExtensionFilter("Text files (.txt)", "txt"));
+        FileParameterType.setFileFilters(saveFileParam, FileChooser.TXT_FILE_FILTER);
         params.addParameter(saveFileParam);
 
         final PluginParameter<ColorParameterValue> color = ColorParameterType.build(COLOR_PARAMETER_ID);

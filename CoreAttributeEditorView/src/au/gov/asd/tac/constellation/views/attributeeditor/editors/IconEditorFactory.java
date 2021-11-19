@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
@@ -55,10 +53,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -68,10 +64,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeValueEditorFactory.class)
 public class IconEditorFactory extends AttributeValueEditorFactory<ConstellationIcon> {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File savedDirectory = DEFAULT_DIRECTORY;
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Add New Icons";
 
@@ -239,14 +232,14 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             addFilesButton.setOnAction(event
                     -> FileChooser.openMultiDialog(getIconEditorFileChooser().setFilesOnly(true)).thenAccept(optionalFiles
                             -> optionalFiles.ifPresent(selectedFiles -> {
-                        savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : DEFAULT_DIRECTORY;
+                        savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFiles.get(0) : FileChooser.DEFAULT_DIRECTORY;
                         addIcons(selectedFiles);
                     })));
 
             addDirButton.setOnAction(event
                     -> FileChooser.openOpenDialog(getIconEditorFileChooser().setDirectoriesOnly(true)).thenAccept(optionalFolder
                             -> optionalFolder.ifPresent(selectedFolder -> {
-                        savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFolder : DEFAULT_DIRECTORY;
+                        savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFolder : FileChooser.DEFAULT_DIRECTORY;
                         addIcons(IconEditorUtilities.pngWalk(selectedFolder));
                     })));
 
@@ -291,10 +284,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
          * @return the created file chooser.
          */
         public FileChooserBuilder getIconEditorFileChooser() {
-            return new FileChooserBuilder(TITLE)
-                    .setTitle(TITLE)
-                    .setDefaultWorkingDirectory(savedDirectory)
-                    .setFileFilter(new FileNameExtensionFilter("Image files (.png)", "png"))
+            return FileChooser.getBaseFileChooserBuilder(TITLE, savedDirectory, FileChooser.PNG_FILE_FILTER)
                     .setAcceptAllFileFilterUsed(false);
         }
     }

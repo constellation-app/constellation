@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.GeometryType;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.SpatialReference;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected FileNameExtensionFilter getExportType() {
-        return new FileNameExtensionFilter("Shapefile files (.shp)", "shp");
+        return FileChooser.SHAPEFILE_FILE_FILTER;
     }
 
     @Override

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.support;
 
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
@@ -25,14 +24,12 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.prefs.Preferences;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.NbPreferences;
 
 @ActionID(
         category = "Help",
@@ -49,10 +46,7 @@ import org.openide.util.NbPreferences;
 })
 public final class SupportPackageAction implements ActionListener {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-    private static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    private static File savedDirectory = DEFAULT_DIRECTORY;
+    private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = Bundle.MSG_SaveAsTitle();
 
@@ -62,7 +56,7 @@ public final class SupportPackageAction implements ActionListener {
         final FileChooserBuilder fileChooser = getSupportPackageFileChooser();
 
         FileChooser.openOpenDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
-            savedDirectory = REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : DEFAULT_DIRECTORY;
+            savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
 
             final Date now = new Date();
             final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
@@ -78,9 +72,9 @@ public final class SupportPackageAction implements ActionListener {
                     NotifyDisplayer.display("Failed to save support package. The error was " + ex.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
                 }
             });
+
             supportPackageThread.setName("Support Package Thread");
             supportPackageThread.start();
-
         }));
     }
 
@@ -90,10 +84,7 @@ public final class SupportPackageAction implements ActionListener {
      * @return the created file chooser.
      */
     public FileChooserBuilder getSupportPackageFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
-                .setDefaultWorkingDirectory(savedDirectory)
-                .setAcceptAllFileFilterUsed(false)
+        return FileChooser.getBaseFileChooserBuilder(TITLE, savedDirectory, null)
                 .setDirectoriesOnly(true);
     }
 }
