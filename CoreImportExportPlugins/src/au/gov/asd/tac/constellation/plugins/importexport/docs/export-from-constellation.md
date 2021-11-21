@@ -108,5 +108,5 @@ this page:
 
 Constellation also provides options to export to CSV and Excel (XLSX)
 via the Table View. Refer
-[here](../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview2/docs/table-view.md)
+[here](../constellation/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/docs/table-view.md)
 for details.

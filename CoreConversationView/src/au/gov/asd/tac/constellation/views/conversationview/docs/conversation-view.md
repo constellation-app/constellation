@@ -73,4 +73,5 @@ search term and the view will highlight all the matches found as well as
 present a count of how many matches there are. It will only search the
 visible parts of a bubble (i.e. the parts toggled on using the buttons
 at the top of the window). If you change what parts of the bubble are
-shown, the search will update with the new results.
+shown, the search will update with the new results. You can jump to each match 
+by pressing the Previous and Next buttons.
