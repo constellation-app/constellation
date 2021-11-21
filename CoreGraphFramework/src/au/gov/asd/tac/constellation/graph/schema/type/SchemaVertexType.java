@@ -47,10 +47,10 @@ public final class SchemaVertexType extends SchemaElementType<SchemaVertexType> 
         return UNKNOWN;
     }
 
-    protected final ConstellationIcon foregroundIcon;
-    protected final ConstellationIcon backgroundIcon;
-    protected final Pattern detectionRegex;
-    protected final Pattern validationRegex;
+    private final ConstellationIcon foregroundIcon;
+    private final ConstellationIcon backgroundIcon;
+    private final Pattern detectionRegex;
+    private final Pattern validationRegex;
 
     /**
      * Constructor for SchemaVertexType. All properties of a SchemaVertexType

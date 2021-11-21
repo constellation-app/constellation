@@ -133,7 +133,7 @@ public class PlaceholderUtilities {
                     .filter(transaction -> transaction.getTypeValue().equals(SchemaTransactionTypeUtilities.getDefaultType()))
                     .forEach(GraphTransaction::deferRemove);
             g.streamVertices()
-                    .filter(vertex -> vertex.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER).equals("unknown"))
+                    .filter(vertex -> "unknown".equals(vertex.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER)))
                     .forEach(GraphVertex::deferRemove);
             g.completeDeferred();
         }

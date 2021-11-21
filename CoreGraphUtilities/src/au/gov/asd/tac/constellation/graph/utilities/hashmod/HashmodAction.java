@@ -71,7 +71,7 @@ public final class HashmodAction implements ActionListener {
 
         final HashmodPanel hashmodPanel = new HashmodPanel(hashmod);
         final DialogDescriptor dialog = new DialogDescriptor(hashmodPanel, Bundle.MSG_Title(), true, e -> {
-            if (e.getActionCommand().equals("OK")) {
+            if ("OK".equals(e.getActionCommand())) {
                 final Hashmod hashmod1 = hashmodPanel.getHashmod();
                 final Boolean isChainedHashmods = hashmodPanel.isChainedHashmods();
                 final boolean createAttributes = hashmodPanel.getCreateAttributes();

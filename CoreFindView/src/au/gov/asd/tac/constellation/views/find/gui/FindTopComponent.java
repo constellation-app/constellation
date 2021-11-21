@@ -616,28 +616,28 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
                     Attribute attr = new GraphAttribute(rg, keys[i]);
                     FindRule rule = new FindRule();
                     rule.setAttribute(attr);
-                    if (attr.getAttributeType().equalsIgnoreCase("boolean")) {
+                    if ("boolean".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addBooleanBasedRule(true);
                         rule.setOperator(FindTypeOperators.Operator.IS);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("color")) {
+                    } else if ("color".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addColorBasedRule(Color.BLACK);
                         rule.setOperator(FindTypeOperators.Operator.IS);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("date")) {
+                    } else if ("date".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addDateBasedRule(new Date(), new Date());
                         rule.setOperator(FindTypeOperators.Operator.OCCURRED_ON);
                     } else if (attr.getAttributeType().equalsIgnoreCase(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME)) {
                         rule.addDateTimeBasedRule(new GregorianCalendar(), new GregorianCalendar());
                         rule.setOperator(FindTypeOperators.Operator.OCCURRED_ON);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("time")) {
+                    } else if ("time".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addTimeBasedRule(new GregorianCalendar(), new GregorianCalendar());
                         rule.setOperator(FindTypeOperators.Operator.OCCURRED_ON);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("float")) {
+                    } else if ("float".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addFloatBasedRule(0.0f, 0.0f);
                         rule.setOperator(FindTypeOperators.Operator.IS);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("integer")) {
+                    } else if ("integer".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addIntegerBasedRule(0, 0);
                         rule.setOperator(FindTypeOperators.Operator.IS);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("icon")) {
+                    } else if ("icon".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addIconBasedRule("");
                         rule.setOperator(FindTypeOperators.Operator.IS);
                     } else { // string

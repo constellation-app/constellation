@@ -141,10 +141,10 @@ public class QueryEvaluator {
      * @return 0, 1 or 2 depending on the operator.
      */
     private static int getPrecedence(final String operator) {
-        if (operator.equals("||")) {
+        if ("||".equals(operator)) {
             return 1;
         }
-        return operator.equals("&&") ? 2 : 0;
+        return "&&".equals(operator) ? 2 : 0;
     }
 
     /**
@@ -178,16 +178,16 @@ public class QueryEvaluator {
                 if (StringUtils.isNotBlank(trimmedToken)) {
                     orderedInPostfix.add(trimmedToken);
                 }
-            } else if (token.contains("(")) {
+            } else if ("(".contains(token)) {
                 // If the scanned character is an '(', push it to the operatorStack.
                 operatorStack.push(token);
-            } else if (token.contains(")")) {
+            } else if (")".contains(token)) {
                 // If the scanned character is an ')', pop and output from the operatorStack
-                while (!operatorStack.isEmpty() && !operatorStack.peek().equals("(")) {
+                while (!operatorStack.isEmpty() && !"(".equals(operatorStack.peek())) {
                     // until an '(' is encountered.
                     orderedInPostfix.add(operatorStack.pop());
                 }
-                if (!operatorStack.isEmpty() && !operatorStack.peek().equals("(")) {
+                if (!operatorStack.isEmpty() && !"(".equals(operatorStack.peek())) {
                     return Collections.emptyList();
                 } else if (StringUtils.isNotBlank(operatorStack.peek())) {
                     orderedInPostfix.add(operatorStack.pop());
@@ -197,7 +197,7 @@ public class QueryEvaluator {
             } else { // operator encountered
                 while (!operatorStack.isEmpty() && getPrecedence(token)
                         <= getPrecedence(operatorStack.peek())) {
-                    if (operatorStack.peek().equals("(")) {
+                    if ("(".equals(operatorStack.peek())) {
                         return Collections.emptyList();
                     } else if (StringUtils.isNotBlank(operatorStack.peek())) {
                         orderedInPostfix.add(operatorStack.pop());
@@ -211,7 +211,7 @@ public class QueryEvaluator {
 
         // pop all the operators from operatorStack
         while (!operatorStack.isEmpty()) {
-            if (operatorStack.peek().equals("(")) {
+            if ("(".equals(operatorStack.peek())) {
                 return Collections.emptyList();
             } else if (StringUtils.isNotBlank(operatorStack.peek())) {
                 orderedInPostfix.add(operatorStack.pop());
@@ -220,7 +220,7 @@ public class QueryEvaluator {
             }
         }
         // remove unnecessary braces
-        orderedInPostfix.removeIf(query -> query.equals("(") || query.equals(")"));
+        orderedInPostfix.removeIf(query -> "(".equals(query) || ")".equals(query));
         return orderedInPostfix;
     }
 

@@ -116,7 +116,7 @@ public class WhatsNewViewPane extends BorderPane {
                     // An <a> without an href doesn't get underlined, so use href="" in addition to helpId="...".
                     final EventListener listener = event -> {
                         final String eventType = event.getType();
-                        if (eventType.equals("click")) {
+                        if ("click".equals(eventType)) {
                             event.preventDefault();
 
                             final String href = ((Element) event.getTarget()).getAttribute("href");

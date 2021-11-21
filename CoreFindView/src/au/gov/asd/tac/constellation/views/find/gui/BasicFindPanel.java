@@ -284,7 +284,7 @@ public class BasicFindPanel extends javax.swing.JPanel {
         selectedAttributes.clear();
 
         for (Attribute a : attributes) {
-            if (a.getAttributeType().equals("string")) {
+            if ("string".equals(a.getAttributeType())) {
                 stringAttributes.add(a);
             }
 

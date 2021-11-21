@@ -379,7 +379,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
             // Create transactions between the nodes.
             final Date d = new Date();
             final int fourDays = 4 * 24 * 60 * 60 * 1000;
-            if (option.equals("Random vertices")) {
+            if ("Random vertices".equals(option)) {
                 // Draw some lines between random nodes, but don't draw multiple lines between the same two nodes.
                 for (int i = 0; i < nTx; i++) {
                     // Choose random positions, convert to correct vxIds.
@@ -413,7 +413,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                     }
                 }
             } else {
-                if (option.equals("1 path, random vertices")) {
+                if ("1 path, random vertices".equals(option)) {
                     // Shuffle the vertices.
                     for (int i = nVx - 1; i > 0; i--) {
                         final int ix = random.nextInt(i);

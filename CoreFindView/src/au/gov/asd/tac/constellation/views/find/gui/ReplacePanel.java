@@ -286,7 +286,7 @@ public class ReplacePanel extends javax.swing.JPanel {
         ArrayList<Attribute> stringAttributes = new ArrayList<>();
 
         for (Attribute a : attributes) {
-            if (a.getAttributeType().equals("string")) {
+            if ("string".equals(a.getAttributeType())) {
                 stringAttributes.add(a);
             }
 

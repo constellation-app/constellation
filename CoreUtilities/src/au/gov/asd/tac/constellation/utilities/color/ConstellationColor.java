@@ -142,7 +142,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         }
 
         String ucName = name.toUpperCase();
-        if (ucName.equals("GRAY")) {
+        if ("GRAY".equals(ucName)) {
             ucName = "GREY";
         }
         if (NAMED_COLOR_MAP.containsKey(ucName)) {

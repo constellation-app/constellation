@@ -22,19 +22,19 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical;
  */
 public final class HierarchicalState {
 
-    protected int steps;
-    protected int currentStep;
-    protected int optimumStep = 1;
-    protected FastNewman.Group[] groups;
-    protected boolean excludeSingleVertices;
-    protected boolean excludedElementsDimmed;
-    protected int[] clusterNumbers;
-    protected int[] clusterSeenBefore;
-    protected int redrawCount = 0;
-    protected transient long modificationCounter = -1;
-    protected transient long strucModificationCount = -1;
-    protected boolean interactive = true;
-    protected boolean colored = true;
+    private int steps;
+    private int currentStep;
+    private int optimumStep = 1;
+    private FastNewman.Group[] groups;
+    private boolean excludeSingleVertices;
+    private boolean excludedElementsDimmed;
+    private int[] clusterNumbers;
+    private int[] clusterSeenBefore;
+    private int redrawCount = 0;
+    private transient long modificationCounter = -1;
+    private transient long strucModificationCount = -1;
+    private boolean interactive = true;
+    private boolean colored = true;
 
     /**
      * Required for AbstractGraphIOProvider.
@@ -55,6 +55,110 @@ public final class HierarchicalState {
 
         // This is used by the HierarchicalTopComponent to keep track of the current graph.
         modificationCounter = -1;
+    }
+
+    public int getCurrentStep() {
+        return currentStep;
+    }
+
+    public void setCurrentStep(int currentStep) {
+        this.currentStep = currentStep;
+    }
+
+    public int getOptimumStep() {
+        return optimumStep;
+    }
+
+    public void setOptimumStep(int optimumStep) {
+        this.optimumStep = optimumStep;
+    }
+
+    public boolean isExcludeSingleVertices() {
+        return excludeSingleVertices;
+    }
+
+    public void setExcludeSingleVertices(boolean excludeSingleVertices) {
+        this.excludeSingleVertices = excludeSingleVertices;
+    }
+
+    public boolean isExcludedElementsDimmed() {
+        return excludedElementsDimmed;
+    }
+
+    public void setExcludedElementsDimmed(boolean excludedElementsDimmed) {
+        this.excludedElementsDimmed = excludedElementsDimmed;
+    }
+
+    public int[] getClusterNumbers() {
+        return clusterNumbers;
+    }
+
+    public void setClusterNumbers(int[] clusterNumbers) {
+        this.clusterNumbers = clusterNumbers;
+    }
+
+    public int[] getClusterSeenBefore() {
+        return clusterSeenBefore;
+    }
+
+    public void setClusterSeenBefore(int[] clusterSeenBefore) {
+        this.clusterSeenBefore = clusterSeenBefore;
+    }
+
+    public int getRedrawCount() {
+        return redrawCount;
+    }
+
+    public void setRedrawCount(int redrawCount) {
+        this.redrawCount = redrawCount;
+    }
+
+    public long getModificationCounter() {
+        return modificationCounter;
+    }
+
+    public void setModificationCounter(long modificationCounter) {
+        this.modificationCounter = modificationCounter;
+    }
+
+    public long getStrucModificationCount() {
+        return strucModificationCount;
+    }
+
+    public void setStrucModificationCount(long strucModificationCount) {
+        this.strucModificationCount = strucModificationCount;
+    }
+
+    public boolean isInteractive() {
+        return interactive;
+    }
+
+    public void setInteractive(boolean interactive) {
+        this.interactive = interactive;
+    }
+
+    public int getSteps() {
+        return steps;
+    }
+
+    public void setSteps(int steps) {
+        this.steps = steps;
+    }
+
+    public FastNewman.Group[] getGroups() {
+        return groups;
+    }
+
+    public void setGroups(FastNewman.Group[] groups) {
+        this.groups = groups;
+    }
+
+    public boolean isColored() {
+        return colored;
+    }
+
+    public void setColored(boolean colored) {
+        this.colored = colored;
     }
 
     public int getCurrentNumOfClusters() {

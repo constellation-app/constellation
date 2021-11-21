@@ -365,40 +365,40 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }// </editor-fold>//GEN-END:initComponents
 
     private void excludeSingleVerticesCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_excludeSingleVerticesCheckBoxItemStateChanged
-        state.excludeSingleVertices = excludeSingleVerticesCheckBox.isSelected();
+        state.setExcludeSingleVertices(excludeSingleVerticesCheckBox.isSelected());
         updateGraph();
     }//GEN-LAST:event_excludeSingleVerticesCheckBoxItemStateChanged
 
     private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downButtonActionPerformed
-        if (state.currentStep > 0) {
+        if (state.getCurrentStep() > 0) {
 //            stepSlider.setValue(--state.currentStep);
-            state.currentStep--;
+            state.setCurrentStep(state.getCurrentStep() - 1);
             updateSlider();
 //            updateGraph();
         }
     }//GEN-LAST:event_downButtonActionPerformed
 
     private void upButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upButtonActionPerformed
-        if (state.currentStep < state.steps) {
+        if (state.getCurrentStep() < state.getSteps()) {
 //            stepSlider.setValue(++state.currentStep);
-            state.currentStep++;
+            state.setCurrentStep(state.getCurrentStep() + 1);
             updateSlider();
 //            updateGraph();
         }
     }//GEN-LAST:event_upButtonActionPerformed
 
     private void hiddenRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hiddenRadioButtonActionPerformed
-        state.excludedElementsDimmed = false;
+        state.setExcludedElementsDimmed(false);
         updateGraph();
     }//GEN-LAST:event_hiddenRadioButtonActionPerformed
 
     private void dimmedRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dimmedRadioButtonActionPerformed
-        state.excludedElementsDimmed = true;
+        state.setExcludedElementsDimmed(true);
         updateGraph();
     }//GEN-LAST:event_dimmedRadioButtonActionPerformed
 
     private void returnToOptimumButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnToOptimumButtonActionPerformed
-        state.currentStep = state.optimumStep;
+        state.setCurrentStep(state.getOptimumStep());
         updateSlider();
     }//GEN-LAST:event_returnToOptimumButtonActionPerformed
 
@@ -425,21 +425,21 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             return;
         }
 
-        final boolean wasColored = state.colored;
-        state.colored = !state.colored;
+        final boolean wasColored = state.isColored();
+        state.setColored(!state.isColored());
 
         final ColorClusters colourPlugin = new ColorClusters(!wasColored);
         PluginExecution.withPlugin(colourPlugin).interactively(true).executeLater(graph);
     }
 
     private void updateInteractivity() {
-        state.interactive = !state.interactive;
-        state.colored = this.colorClustersCheckBox.isSelected();
-        if (!state.interactive) {
+        state.setInteractive(!state.isInteractive());
+        state.setColored(this.colorClustersCheckBox.isSelected());
+        if (!state.isInteractive()) {
             interactiveButton.setText(INTERACTIVE_DISABLED);
             nestedDiagramScrollPane.setViewportView(null);
             nestedDiagramScrollPane.repaint();
-            if (state.colored) {
+            if (state.isColored()) {
                 final ColorClusters uncolor = new ColorClusters(false);
                 PluginExecution.withPlugin(uncolor).interactively(true).executeLater(graph);
             }
@@ -447,7 +447,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             interactiveButton.setText(INTERACTIVE_ENABLED);
             nestedDiagramScrollPane.setViewportView(dp);
             nestedDiagramScrollPane.repaint();
-            if (state.colored) {
+            if (state.isColored()) {
                 final ColorClusters color = new ColorClusters(true);
                 PluginExecution.withPlugin(color).interactively(true).executeLater(graph);
             }
@@ -482,7 +482,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     @Override
     public void componentClosed() {
         result.removeLookupListener(this);
-        if (state != null && state.interactive) {
+        if (state != null && state.isInteractive()) {
             updateInteractivity();
         }
         setNode(null);
@@ -508,7 +508,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
     private void setGroups(final boolean doUpdate) {
         interactiveButton.setEnabled(interactivityPermitted);
-        if (state != null && state.interactive) {
+        if (state != null && state.isInteractive()) {
             final Component[] children = getComponents();
             for (final Component c : children) {
                 if (!c.equals(reclusterButton) || c.equals(interactiveButton) || c.equals(reclusterLabel)) {
@@ -518,9 +518,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
             isAdjusting = true;
             infoLabel.setText(String.format(INFO_STRING, state.getCurrentNumOfClusters()));
-            excludeSingleVerticesCheckBox.setSelected(state.excludeSingleVertices);
-            dimmedRadioButton.setSelected(state.excludedElementsDimmed);
-            hiddenRadioButton.setSelected(!state.excludedElementsDimmed);
+            excludeSingleVerticesCheckBox.setSelected(state.isExcludeSingleVertices());
+            dimmedRadioButton.setSelected(state.isExcludedElementsDimmed());
+            hiddenRadioButton.setSelected(!state.isExcludedElementsDimmed());
 
             dp.setState(state);
             revalidateParents(dp);
@@ -551,7 +551,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             if (state != null && doUpdate) {
                 updateGraph();
             }
-            interactiveButton.setText((state != null && state.interactive) ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
+            interactiveButton.setText((state != null && state.isInteractive()) ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
         }
         interactiveButton.setEnabled(state != null);
         interactiveButton.setSelected(false);
@@ -564,11 +564,11 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         final Update update = new Update(state);
         final Future<?> f = PluginExecution.withPlugin(update).interactively(true).executeLater(graph);
-        if (state.colored && state.interactive) {
+        if (state.isColored() && state.isInteractive()) {
             final ColorClusters color = new ColorClusters(true);
             PluginExecution.withPlugin(color).interactively(true).waitingFor(f).executeLater(graph);
         }
-        if (state.colored && !state.interactive) {
+        if (state.isColored() && !state.isInteractive()) {
             final ColorClusters color = new ColorClusters(false);
             PluginExecution.withPlugin(color).interactively(true).waitingFor(f).executeLater(graph);
         }
@@ -598,7 +598,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             }
 
             // If the COI state on the controller is null, or has a different modcount to the state on the graph, update this controller's state.
-            if (state == null || mc != state.modificationCounter) {
+            if (state == null || mc != state.getModificationCounter()) {
                 state = stateAttr != Graph.NOT_FOUND ? (HierarchicalState) rg.getObjectValue(stateAttr, 0) : null;
                 setGroups(true);
             }
@@ -609,10 +609,10 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         // Update the controller state's modcount, and make the recluster button active if the srtuctual mod count does not match the graph.
         if (state != null) {
-            state.modificationCounter = mc;
-            reclusterButton.setEnabled(smc != state.strucModificationCount);
-            reclusterLabel.setVisible(smc != state.strucModificationCount);
-            reclusterLabel.setEnabled(smc != state.strucModificationCount);
+            state.setModificationCounter(mc);
+            reclusterButton.setEnabled(smc != state.getStrucModificationCount());
+            reclusterLabel.setVisible(smc != state.getStrucModificationCount());
+            reclusterLabel.setEnabled(smc != state.getStrucModificationCount());
         }
         // Interactive button should only be available if clustering has been done
         // and a state exists for the current graph
@@ -620,7 +620,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         // state exists and graph not changed - enable interactive,
         // graph changed - disable interactive,
         // graph changed and state exists - disable interactive
-        interactiveButton.setEnabled(state != null && smc == state.strucModificationCount);
+        interactiveButton.setEnabled(state != null && smc == state.getStrucModificationCount());
     }
 
     /**
@@ -647,9 +647,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                     interactiveButton.setText(INTERACTIVE_ENABLED);
                     interactivityPermitted = false;
                 } else if (state != null) {
-                    interactiveButton.setText(state.interactive ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
-                    interactiveButton.setSelected(state.interactive);
-                    colorClustersCheckBox.setSelected(state.colored);
+                    interactiveButton.setText(state.isInteractive() ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
+                    interactiveButton.setSelected(state.isInteractive());
+                    colorClustersCheckBox.setSelected(state.isColored());
                     interactivityPermitted = true;
                 } else {
                     interactiveButton.setText(INTERACTIVE_DISABLED);
@@ -712,7 +712,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            state.redrawCount++;
+            state.setRedrawCount(state.getRedrawCount() + 1);
 
             final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOUR.ensure(graph);
             final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOUR.ensure(graph);
@@ -726,16 +726,16 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             final int vertexCount = graph.getVertexCount();
             for (int pos = 0; pos < vertexCount; pos++) {
                 final int vertex = graph.getVertex(pos);
-                Group group = state.groups[pos];
+                Group group = state.getGroups()[pos];
                 if (group == null) {
                     continue;
                 }
                 // When excluding single vertices
-                if (state.excludeSingleVertices && group.getSingleStep() > state.currentStep) {
+                if (state.isExcludeSingleVertices() && group.getSingleStep() > state.getCurrentStep()) {
                     graph.setIntValue(vertexClusterAttribute, vertex, -1);
-                    if (state.interactive) {
+                    if (state.isInteractive()) {
                         graph.setBooleanValue(vertexDimmedAttribute, vertex, true);
-                        graph.setFloatValue(vertexVisibilityAttribute, vertex, state.excludedElementsDimmed ? 2.0f : -2.0f);
+                        graph.setFloatValue(vertexVisibilityAttribute, vertex, state.isExcludedElementsDimmed() ? 2.0f : -2.0f);
                     } else {
                         graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
                         graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
@@ -743,18 +743,18 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 } else {
                     // when keeping all vertices, do not dim, and show all.
                     // assign all nodes to a group/cluster
-                    while (group.getMergeStep() <= state.currentStep) {
+                    while (group.getMergeStep() <= state.getCurrentStep()) {
                         group = group.getParent();
                     }
                     graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
                     graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
                     graph.setObjectValue(vxOverlayColorAttr, vertex, group.getColor());
 
-                    if (state.clusterSeenBefore[group.getVertex()] < state.redrawCount) {
-                        state.clusterSeenBefore[group.getVertex()] = state.redrawCount;
-                        state.clusterNumbers[group.getVertex()] = nextCluster++;
+                    if (state.getClusterSeenBefore()[group.getVertex()] < state.getRedrawCount()) {
+                        state.getClusterSeenBefore()[group.getVertex()] = state.getRedrawCount();
+                        state.getClusterNumbers()[group.getVertex()] = nextCluster++;
                     }
-                    graph.setIntValue(vertexClusterAttribute, vertex, state.clusterNumbers[group.getVertex()]);
+                    graph.setIntValue(vertexClusterAttribute, vertex, state.getClusterNumbers()[group.getVertex()]);
                 }
             }
 
@@ -768,7 +768,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 final boolean highDimmed = graph.getBooleanValue(vertexDimmedAttribute, highVertex);
                 final boolean lowDimmed = graph.getBooleanValue(vertexDimmedAttribute, lowVertex);
 
-                if (state.interactive) {
+                if (state.isInteractive()) {
                     // if transaction is between a cluster, do not dim or hide
                     if (highVertexColor == lowVertexColor && !highDimmed && !lowDimmed) {
                         final int transactionCount = graph.getLinkTransactionCount(link);
@@ -782,7 +782,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                         final int transactionCount = graph.getLinkTransactionCount(link);
                         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                             final int transaction = graph.getLinkTransaction(link, transactionPosition);
-                            if (state.excludedElementsDimmed) {
+                            if (state.isExcludedElementsDimmed()) {
                                 graph.setBooleanValue(transactionDimmedAttribute, transaction, true);
                                 graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
                             } else {
@@ -849,11 +849,11 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
             final Set<Integer> verticesToPath = new HashSet<>();
             for (int pos = 0; pos < graph.getVertexCount(); pos++) {
-                Group group = state.groups[pos];
+                Group group = state.getGroups()[pos];
                 if (group == null) {
                     continue;
                 }
-                while (group.getMergeStep() <= state.currentStep) {
+                while (group.getMergeStep() <= state.getCurrentStep()) {
                     group = group.getParent();
                 }
                 verticesToPath.add(group.getVertex());

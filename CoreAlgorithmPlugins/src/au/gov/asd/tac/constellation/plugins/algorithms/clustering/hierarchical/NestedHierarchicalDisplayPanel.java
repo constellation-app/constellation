@@ -66,7 +66,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     public void setState(final HierarchicalState state) {
         this.state = state;
         if (state != null) {
-            stepLimit = state.steps > 10 ? (int) Math.floor(state.steps * 1.1) : state.steps + 1;
+            stepLimit = state.getSteps() > 10 ? (int) Math.floor(state.getSteps() * 1.1) : state.getSteps() + 1;
             if (getMouseListeners().length == 0) {
                 addMouseListener(this);
                 addMouseMotionListener(this);
@@ -81,11 +81,11 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     }
 
     public void updateColorsAndBar() {
-        progress_x = (state.currentStep * getWidth()) / (stepLimit == 0 ? 1 : stepLimit);
+        progress_x = (state.getCurrentStep() * getWidth()) / (stepLimit == 0 ? 1 : stepLimit);
 
         for (final LinePositioning line : lines) {
             GroupTreeNode node = line.n;
-            while (node != null && node.mergeStep <= state.currentStep) {
+            while (node != null && node.mergeStep <= state.getCurrentStep()) {
                 node = node.parent;
             }
             if (node == null) {
@@ -171,14 +171,14 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
             return;
         }
 
-        final int numOfVerts = state.groups.length;
+        final int numOfVerts = state.getGroups().length;
 
         final List<GroupTreeNode> treeRoots = new LinkedList<>();
         final Map<Integer, GroupTreeNode> treeNodes = new HashMap<>();
 
         // Build a tree of children, calculating nodes' x positions
         for (int i = 0; i < numOfVerts; i++) {
-            final FastNewman.Group node = state.groups[i];
+            final FastNewman.Group node = state.getGroups()[i];
             if (node == null) {
                 continue;
             }
@@ -319,7 +319,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftClickDown = true;
             final int x = Math.max(0, e.getX());
-            state.currentStep = Math.min(state.steps, (x * stepLimit) / getWidth());
+            state.setCurrentStep(Math.min(state.getSteps(), (x * stepLimit) / getWidth()));
             controller.updateSlider();
         }
     }
@@ -328,7 +328,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     public void mouseDragged(MouseEvent e) {
         if (leftClickDown) {
             final int x = Math.max(0, e.getPoint().x);
-            state.currentStep = Math.min(state.steps, (x * stepLimit) / getWidth());
+            state.setCurrentStep(Math.min(state.getSteps(), (x * stepLimit) / getWidth()));
             controller.updateSlider();
         }
     }

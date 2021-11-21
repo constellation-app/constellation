@@ -200,7 +200,7 @@ public class DeveloperOptionsPanel extends JPanel {
 
         for (UpdateUnit unit : UpdateManager.getDefault().getUpdateUnits()) {
             String codeName = unit.getCodeName();
-            if (!codeName.equals("au.gov.asd.tac.constellation.autoupdate")
+            if (!"au.gov.asd.tac.constellation.autoupdate".equals(codeName)
                     && !codeName.startsWith("org.netbeans.")
                     && !codeName.startsWith("org.openide.")
                     && !codeName.startsWith("org.jdesktop.")) {

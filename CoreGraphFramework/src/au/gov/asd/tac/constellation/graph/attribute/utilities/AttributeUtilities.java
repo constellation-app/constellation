@@ -44,7 +44,7 @@ public class AttributeUtilities {
     public static List<String> getAttributeNames(final GraphElementType graphElementType, String attributeDescription) {
         final List<String> attributeNames = new ArrayList<>();
         for (Attribute attribute : getAttributes(graphElementType)) {
-            if (attribute.getAttributeType().equals(attributeDescription) || attributeDescription.equals("")) {
+            if (attribute.getAttributeType().equals(attributeDescription) || "".equals(attributeDescription)) {
                 attributeNames.add(attribute.getName());
             }
         }
