@@ -21,13 +21,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import org.apache.commons.lang3.StringUtils;
-import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
@@ -506,8 +506,52 @@ public class JsonUtilitiesNGTest {
             // This would throw generating the JSON, which is not under test
         }       
     }
+
+    /**
+     * Test calls to JsonUtilities.getGetTextValue.
+     */
+    @Test
+    public void testGetChildNode() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();   
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
+     
+            assertEquals(JsonUtilities.getTextValue("missing", testJson), null, "Missing node");
+            
+            JsonNode childNode = JsonUtilities.getChildNode(testJson, "1.k4");
+            assertEquals(JsonUtilities.getTextValue("2.k1", childNode), "nest1", "Get text value of string");
+            int i = 1;
+            
+            
+        } catch (JsonProcessingException e) {
+            // This would throw generating the JSON, which is not under test
+        }        
+    }
     
-    
+    /**
+     * Test calls to JsonUtilities.getGetTextValue.
+     */
+    @Test
+    public void testGetTextValue() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();   
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
+            assertEquals(JsonUtilities.getTextValue("1.k1", testJson), "aaa", "Get text value of string");
+            assertEquals(JsonUtilities.getTextValue("1.k2", testJson), "false", "Get text value of boolean");
+            assertEquals(JsonUtilities.getTextValue("1.k3", testJson), "1.1", "Get text value of numerical");
+        } catch (JsonProcessingException e) {
+            // This would throw generating the JSON, which is not under test
+        }        
+    }
+
+    /**
+     * Test calls to JsonUtilities.PrettyPrint.
+     */
+    @Test
+    public void testPrettyPrint() {
+        String expected = "{\n  \"1.k1\" : \"aaa\",\n  \"1.k2\" : 12,\n  \"1.k3\" : {\n    \"2.k1\" : false\n  }\n}".replace("\n", System.lineSeparator());
+        assertEquals(JsonUtilities.prettyPrint("{\"1.k1\":\"aaa\",\"1.k2\":12,\"1.k3\":{\"2.k1\":false}}"), expected, "Pretty print");
+    }
     
     /**
      * Test of getMapAsString method, of class JsonUtilities.

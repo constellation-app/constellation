@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.json;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 
 /**
  * JSON Utilities
@@ -249,6 +251,25 @@ public class JsonUtilities {
     }
 
     /**
+     * Return the {@code JsonNode} found after traversing through nodes with supplied
+     * keys from starting {@code JsonNode} - or null if path doesn't return a valid
+     * node.
+     * @param node Node to start iteration from.
+     * @param keys Text names of nodes to traverse through.
+     * @return {@code JsonNode} at end of traversal.
+     */
+    public static JsonNode getChildNode(JsonNode node, String... keys) {
+        JsonNode current = node;
+        for (final String key : keys) {
+            if (!current.hasNonNull(key)) {
+                return null;
+            }
+            current = current.get(key);
+        }
+        return current;
+    }
+    
+    /**
      * Return the {@code textValue()} of a {@code JsonNode} if it exists
      * <p>
      * Example: root.get("thing").textValue()
@@ -259,10 +280,15 @@ public class JsonUtilities {
      */
     public static String getTextValue(String attribute, JsonNode node) {
         if (node.has(attribute)) {
-            return node.get(attribute).textValue();
-        } else {
-            return null;
+            JsonNode attributeNode = node.get(attribute);
+            
+            // node.textValue() only works on textual values and returns null for all others.
+            if (attributeNode.isTextual()) {
+                return attributeNode.textValue();
+            }
+            return attributeNode.toString();            
         }
+        return null;
     }
 
     /**
@@ -291,6 +317,7 @@ public class JsonUtilities {
             return null;
         }
     }
+
 
     /**
      * Return the {@code textValue()} of a {@code JsonNode} which is inside
