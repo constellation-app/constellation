@@ -33,7 +33,6 @@ public class DefaultConversationBackgroundProvider implements ConversationBackgr
     @Override
     public void updateMessageBackgrounds(GraphReadMethods graph, List<ConversationMessage> messages) {
 
-        //Background bg = new Background(new BackgroundFill(Color.RED, null, null));
         String[] colors = new String[]{"transparent", "rgb(60, 60, 60)"};
         int currentColor = 1;
         int currentDay = -1;
