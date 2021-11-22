@@ -205,7 +205,7 @@ See below for an example.
 Type == 'Machine Identifier'
 
 Will show a Vertex which is either Vertex #0\<Unknown> or Vertex
-#1\<Unknown> and has a "Type" of 'Machine Identifier'.
+\#1\<Unknown> and has a "Type" of 'Machine Identifier'.
 
 ## Restricted Characters
 

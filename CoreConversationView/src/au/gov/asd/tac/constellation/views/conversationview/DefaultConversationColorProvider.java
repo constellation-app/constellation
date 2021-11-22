@@ -38,7 +38,7 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
             return; // Nothing to do.
         }
 
-        final DefaultConversationColor color = new DefaultConversationColor(0.3f, 0.8f);
+        final DefaultConversationColor color = new DefaultConversationColor(0.3F, 0.8F);
 
         // The position in the vertexColors array of each vertex (by position)
         // Each value is 1 greater than the true value to allow 0 to indicate no value.
@@ -105,7 +105,7 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
 
         @Override
         public Color createColor() {
-            final Color color = Color.hsb(365.0 * (double) hue / (double) total, saturation, brightness);
+            final Color color = Color.hsb(365.0 * hue / total, saturation, brightness);
             hue += 2;
             if (hue >= total) {
                 hue = 1;
