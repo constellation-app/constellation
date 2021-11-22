@@ -502,10 +502,13 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         } else if (o.name != null) {
             return -1;
         } else {
-            return redColorValue != o.redColorValue ? compareColourComponents(redColorValue, o.redColorValue)
-                    : greenColorValue != o.greenColorValue ? compareColourComponents(greenColorValue, o.greenColorValue)
-                            : blueColorValue != o.blueColorValue ? compareColourComponents(blueColorValue, o.blueColorValue)
-                                    : compareColourComponents(alpha, o.alpha);
+            if (redColorValue != o.redColorValue) {
+                return compareColourComponents(redColorValue, o.redColorValue);
+            } else if (greenColorValue != o.greenColorValue) {
+                return compareColourComponents(greenColorValue, o.greenColorValue);
+            }
+            return blueColorValue != o.blueColorValue ? compareColourComponents(blueColorValue, o.blueColorValue)
+                    : compareColourComponents(alpha, o.alpha);
         }
     }
     

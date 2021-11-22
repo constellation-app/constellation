@@ -532,11 +532,15 @@ public final class GraphJsonReader {
             final String attrType = node.get("type").textValue();
             final String attrDesc = node.has("descr") ? node.get("descr").textValue() : null;
             final JsonNode dv = node.get("default");
-            final Object attrDefault
-                    = (dv == null || dv.isNull()) ? null
-                    : dv.isNumber() ? dv.numberValue()
-                    : dv.isBoolean() ? dv.booleanValue()
-                    : dv.textValue();
+            Object attrDefault;
+            if (dv == null || dv.isNull()) {
+                attrDefault = null;
+            } else if (dv.isNumber()) {
+                attrDefault = dv.numberValue();
+            } else {
+                attrDefault = dv.isBoolean() ? dv.booleanValue()
+                        : dv.textValue();
+            }
 
             final String attributeMergerId = node.has("merger") ? node.get("merger").textValue() : null;
 

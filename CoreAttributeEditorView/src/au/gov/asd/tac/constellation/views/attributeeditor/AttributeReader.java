@@ -344,7 +344,19 @@ public class AttributeReader {
             if (o instanceof Comparable) {
                 final Comparable<Object>[] valuesArray = new Comparable[values.size()];
                 values.toArray(valuesArray);
-                Arrays.sort(valuesArray, (a, b) -> a == null ? (b == null ? 0 : -1) : (b == null ? 1 : a.compareTo(b)));
+                Arrays.sort(valuesArray, (a, b) -> {
+                    if (a == null) {
+                        if (b == null) {
+                            return 0;
+                        }
+                        return -1;
+                    } else {
+                        if (b == null) {
+                            return 1;
+                        }
+                        return a.compareTo(b);
+                    }
+                });
 
                 return valuesArray;
             }

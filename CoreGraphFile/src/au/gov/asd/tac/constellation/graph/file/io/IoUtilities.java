@@ -87,7 +87,18 @@ public final class IoUtilities {
         int begin = 0;
         for (int i = 0; i < length; i++) {
             final char c = s.charAt(i);
-            final char replacement = c == 9 ? 't' : (c == 10 ? 'n' : (c == 13 ? 'r' : (c == '\\' ? '\\' : 0)));
+
+            char replacement;
+            if (c == 9) {
+                replacement = 't';
+            } else if (c == 10) {
+                replacement = 'n';
+            } else if (c == 13) {
+                replacement = 'r';
+            } else {
+                replacement = c == '\\' ? '\\' : 0;
+            }
+
             if (replacement != 0) {
                 t.append(s.substring(begin, i)).append('\\').append(replacement);
                 begin = i + 1;

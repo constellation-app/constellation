@@ -57,7 +57,13 @@ public class ColorAttributeInteraction extends AbstractAttributeInteraction<Cons
     @Override
     public List<Node> getDisplayNodes(final Object attrVal, final double width, final double height) {
         ConstellationColor colorValue = (ConstellationColor) attrVal;
-        final double rectWidth = width == -1 ? height == -1 ? DEFAULT_NODE_SIZE : height : width;
+        double rectWidth;
+        if (width == -1) {
+            rectWidth = height == -1 ? DEFAULT_NODE_SIZE : height;
+        } else {
+            rectWidth = width;
+        }
+
         final double rectHeight = height == -1 ? rectWidth : height;
         final Rectangle rect = new Rectangle(rectWidth, rectHeight);
         rect.setFill(colorValue.getJavaFXColor());

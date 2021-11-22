@@ -148,8 +148,10 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
     @Override
     public int hashCode(final int id) {
-        return data[id] == null ? nullHash
-                : (Boolean) data[id] ? trueHash : falseHash;
+        if (data[id] == null) {
+            return nullHash;
+        }
+        return (Boolean) data[id] ? trueHash : falseHash;
     }
 
     @Override

@@ -61,9 +61,12 @@ public class DegreeCentralityAnalytic extends ScoreAnalyticPlugin {
         final boolean includeConnectionsIn = parameters.getBooleanValue(DegreeCentralityPlugin.INCLUDE_CONNECTIONS_IN_PARAMETER_ID);
         final boolean includeConnectionsOut = parameters.getBooleanValue(DegreeCentralityPlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID);
         final Set<SchemaAttribute> analyticAttributes = new HashSet<>();
-        analyticAttributes.add(includeConnectionsIn && !includeConnectionsOut ? SnaConcept.VertexAttribute.IN_DEGREE_CENTRALITY
-                : !includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_DEGREE_CENTRALITY
-                        : SnaConcept.VertexAttribute.DEGREE_CENTRALITY);
+        if (includeConnectionsIn && !includeConnectionsOut) {
+            analyticAttributes.add(SnaConcept.VertexAttribute.IN_DEGREE_CENTRALITY);
+        } else {
+            analyticAttributes.add(!includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_DEGREE_CENTRALITY
+                    : SnaConcept.VertexAttribute.DEGREE_CENTRALITY);
+        }
         return Collections.unmodifiableSet(analyticAttributes);
     }
 

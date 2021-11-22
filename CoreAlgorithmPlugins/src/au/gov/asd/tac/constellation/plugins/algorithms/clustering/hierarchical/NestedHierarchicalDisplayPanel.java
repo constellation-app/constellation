@@ -149,7 +149,10 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
         // TODO: copied from JDK1.7 so compareTo() will work in JDK1.6 - fix when possible.
         public static int compare(final int x, final int y) {
-            return (x < y) ? -1 : ((x == y) ? 0 : 1);
+            if (x < y) {
+                return -1;
+            }
+            return (x == y) ? 0 : 1;
         }
     }
 

@@ -346,7 +346,12 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.setStringValue(vxForegroundIconAttr, vxId, DEFAULT_ICON);
                 graph.setStringValue(vxDecoratorAttr, vxId, null);
             }
-            graph.setStringValue(vxBackgroundIconAttr, vxId, useRandomIcons ? (random.nextBoolean() ? "Background.Flat Square" : "Background.Flat Circle") : "Background.Flat Circle");
+
+            if (useRandomIcons) {
+                graph.setStringValue(vxBackgroundIconAttr, vxId, (random.nextBoolean() ? "Background.Flat Square" : "Background.Flat Circle"));
+            } else {
+                graph.setStringValue(vxBackgroundIconAttr, vxId, "Background.Flat Circle");
+            }
 
             if (vx == 0) {
                 graph.setStringValue(vxForegroundIconAttr, vxId, null);

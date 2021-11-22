@@ -64,9 +64,11 @@ public final class ElementGraphLabelsV0 {
     }
 
     public ElementGraphLabelsV0(final List<ElementGraphLabelV0> labels) {
-        this.labels = labels == null ? Collections.emptyList()
-                : labels.size() > MAX_LABELS ? labels.subList(0, MAX_LABELS)
-                : labels;
+        if (labels == null) {
+            this.labels = Collections.emptyList();
+        } else {
+            this.labels = labels.size() > MAX_LABELS ? labels.subList(0, MAX_LABELS) : labels;
+        }
     }
 
     public List<ElementGraphLabelV0> getLabels() {

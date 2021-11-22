@@ -703,7 +703,13 @@ public final class GraphVisualAccess implements VisualAccess {
     private void rebuildConnections(final ReadableGraph readGraph) {
         final int linkCount = readGraph.getLinkCount();
         final int maxTransactions = graphMaxTransactions != Graph.NOT_FOUND ? readGraph.getIntValue(graphMaxTransactions, 0) : VisualGraphDefaults.DEFAULT_MAX_TRANSACTION_TO_DRAW;
-        final int connectionUpperBound = connectionMode == ConnectionMode.LINK ? linkCount : connectionMode == ConnectionMode.EDGE ? readGraph.getEdgeCount() : readGraph.getTransactionCount();
+
+        int connectionUpperBound;
+        if (connectionMode == ConnectionMode.LINK) {
+            connectionUpperBound = linkCount;
+        } else {
+            connectionUpperBound = connectionMode == ConnectionMode.EDGE ? readGraph.getEdgeCount() : readGraph.getTransactionCount();
+        }
         connectionElementTypes = new GraphElementType[connectionUpperBound];
         connectionElementIds = new int[connectionUpperBound];
         linkStartingPositions = new int[linkCount];
@@ -756,9 +762,10 @@ public final class GraphVisualAccess implements VisualAccess {
     public DrawFlags getDrawFlags() {
         final boolean visibilityThresholdExceeded = graphVisibleAboveThreshold != Graph.NOT_FOUND && !accessGraph.getBooleanValue(graphVisibleAboveThreshold, 0)
                 && graphVisibilityThreshold != Graph.NOT_FOUND && accessGraph.getVertexCount() > accessGraph.getIntValue(graphVisibilityThreshold, 0);
-        return graphDrawFlags != Graph.NOT_FOUND
-                ? visibilityThresholdExceeded ? DrawFlags.NONE
-                        : accessGraph.getObjectValue(graphDrawFlags, 0) : VisualGraphDefaults.DEFAULT_DRAW_FLAGS;
+        if (graphDrawFlags != Graph.NOT_FOUND) {
+            return visibilityThresholdExceeded ? DrawFlags.NONE : accessGraph.getObjectValue(graphDrawFlags, 0);
+        }
+        return VisualGraphDefaults.DEFAULT_DRAW_FLAGS;
     }
 
     @Override

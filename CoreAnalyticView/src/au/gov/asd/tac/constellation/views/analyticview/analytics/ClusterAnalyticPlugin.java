@@ -81,9 +81,12 @@ public abstract class ClusterAnalyticPlugin extends AnalyticPlugin<ClusterResult
             }
 
             for (int graphElementPosition = 0; graphElementPosition < graphElementCount; graphElementPosition++) {
-                final int graphElementId = graphElementType == GraphElementType.VERTEX
-                        ? graph.getVertex(graphElementPosition) : graphElementType == GraphElementType.TRANSACTION
-                        ? graph.getTransaction(graphElementPosition) : Graph.NOT_FOUND;
+                int graphElementId;
+                if (graphElementType == GraphElementType.VERTEX) {
+                    graphElementId = graph.getVertex(graphElementPosition);
+                } else {
+                    graphElementId = graphElementType == GraphElementType.TRANSACTION ? graph.getTransaction(graphElementPosition) : Graph.NOT_FOUND;
+                }
                 final String identifier = graph.getStringValue(identifierAttributeId, graphElementId);
                 final int clusterNumber = graph.getIntValue(clusterNumberAtributeId, graphElementId);
                 final int defaultNumber = (int) graph.getAttributeDefaultValue(clusterNumberAtributeId);

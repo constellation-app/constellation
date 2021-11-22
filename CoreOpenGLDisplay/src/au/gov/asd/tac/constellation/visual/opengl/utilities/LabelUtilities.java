@@ -68,7 +68,12 @@ public final class LabelUtilities {
 
                 final int space = remaining.indexOf(' ', prevSpace);
                 final int newLine = remaining.indexOf('\n');
-                final int pos = space == -1 ? newLine : (newLine == -1 ? space : Math.min(space, newLine));
+                int pos;
+                if (space == -1) {
+                    pos = newLine;
+                } else {
+                    pos = newLine == -1 ? space : Math.min(space, newLine);
+                }
                 final boolean isNewLine = pos == newLine;
 
                 if (pos > MAX_LINE_LENGTH_PER_ATTRIBUTE || pos == -1) {

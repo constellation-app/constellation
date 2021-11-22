@@ -268,15 +268,24 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
         }
 
         public SchemaTransactionType build() {
+            if (color == null) {
+                color = superType != null ? superType.color : UNKNOWN.color;
+            }
+
+            if (style == null) {
+                style = superType != null ? superType.style : UNKNOWN.style;
+            }
+
+            if (directed == null) {
+                directed = superType != null ? superType.directed : UNKNOWN.directed;
+            }
+
             return new SchemaTransactionType(
                     name,
                     description,
-                    color != null ? color : superType != null
-                                    ? superType.color : UNKNOWN.color,
-                    style != null ? style : superType != null
-                                    ? superType.style : UNKNOWN.style,
-                    directed != null ? directed : superType != null
-                                    ? superType.directed : UNKNOWN.directed,
+                    color,
+                    style,
+                    directed,
                     superType,
                     overridenType,
                     properties,

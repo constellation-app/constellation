@@ -66,9 +66,11 @@ public final class GraphLabels {
     }
 
     public GraphLabels(final List<GraphLabel> labels) {
-        this.labels = labels == null ? Collections.emptyList()
-                : labels.size() > MAX_LABELS ? labels.subList(0, MAX_LABELS)
-                : labels;
+        if (labels == null) {
+            this.labels = Collections.emptyList();
+        } else {
+            this.labels = labels.size() > MAX_LABELS ? labels.subList(0, MAX_LABELS) : labels;
+        }
     }
 
     public List<GraphLabel> getLabels() {
