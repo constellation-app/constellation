@@ -140,8 +140,8 @@ public class LoopBatcher implements SceneBatcher {
     private int bufferLoopInfo(final int pos, final IntBuffer dataBuffer, final VisualAccess access) {
         if (loopPosToBufferPos.containsKey(pos)) {
             final int representativeTransactionId = access.getConnectionId(pos);
-            final int loopIconIndex = access.getConnectionDirected(pos) ? GLTools.LOOP_DIRECTED_ICON_INDEX : GLTools.LOOP_UNDIRECTED_ICON_INDEX;
-            final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);
+            final int loopIconIndex = access.isConnectionDirected(pos) ? GLTools.LOOP_DIRECTED_ICON_INDEX : GLTools.LOOP_UNDIRECTED_ICON_INDEX;
+            final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int xyzTexturePosition = access.getConnectionLowVertex(pos);
 
             dataBuffer.put(representativeTransactionId);

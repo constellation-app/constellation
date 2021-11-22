@@ -56,7 +56,7 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
                     .filter(clusterData -> clusterData.getElementType() != GraphElementType.TRANSACTION)
                     .collect(Collectors.toList());
         }
-        if (result.getIgnoreNullResults()) {
+        if (result.isIgnoreNullResults()) {
             displayResult = displayResult.stream()
                     .filter(clusterData -> !clusterData.isNull())
                     .collect(Collectors.toList());

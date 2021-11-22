@@ -374,7 +374,7 @@ public class ReplacePanel extends javax.swing.JPanel {
         }
     }
 
-    public boolean getValidity() {
+    public boolean isValidity() {
         return currValidity;
     }
 

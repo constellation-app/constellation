@@ -37,9 +37,9 @@ public class LayersUtilities {
             final BitMaskQuery txQuery = txQueriesCollection.getQuery(position);
 
             if (vxQuery != null) {// can use vx
-                newBitmask |= vxQuery.getVisibility() ? (1 << vxQuery.getIndex()) : 0;
+                newBitmask |= vxQuery.isVisible() ? (1 << vxQuery.getIndex()) : 0;
             } else if (txQuery != null) {// have to use tx
-                newBitmask |= txQuery.getVisibility() ? (1 << txQuery.getIndex()) : 0;
+                newBitmask |= txQuery.isVisible() ? (1 << txQuery.getIndex()) : 0;
             } else {
                 // cannot use any.
             }

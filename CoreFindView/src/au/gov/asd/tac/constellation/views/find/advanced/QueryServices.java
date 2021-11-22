@@ -864,7 +864,7 @@ public class QueryServices {
             boolean queryResult = false;
 
             String[] terms;
-            if (rule.getStringUsingList()
+            if (rule.isStringUsingList()
                     && !rule.getOperator().equals(FindTypeOperators.Operator.REGEX)) {
                 terms = rule.getStringContent().split(",");
             } else {
@@ -879,27 +879,27 @@ public class QueryServices {
                 switch (rule.getOperator()) {
                     case IS:
                         queryResult = FindComparisons.StringComparisons.evaluateIs(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case IS_NOT:
                         queryResult = FindComparisons.StringComparisons.evaluateIsNot(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case CONTAINS:
                         queryResult = FindComparisons.StringComparisons.evaluateContains(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case NOT_CONTAINS:
                         queryResult = FindComparisons.StringComparisons.evaluateNotContains(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case BEGINS_WITH:
                         queryResult = FindComparisons.StringComparisons.evaluateBeginsWith(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case ENDS_WITH:
                         queryResult = FindComparisons.StringComparisons.evaluateEndsWith(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case REGEX:
                         queryResult = FindComparisons.StringComparisons.evaluateRegex(item,

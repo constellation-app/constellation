@@ -78,7 +78,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     @Override
     public void paintComponent(Graphics g) {
 
-        if (!state.getNestedTrussesVisible()) {
+        if (!state.isNestedTrussesVisible()) {
             return;
         }
 

@@ -1,5 +1,18 @@
 # Constellation Changes
 
+## Changes in November 2021
+
+-   Renamed methods returning a boolean value to start with "is" or "has". This 
+    includes methods in `KTrussState` in `CoreAlgorithmPlugins`, `AnalyticResult`
+    in `CoreAnalyticView`; `GraphTaxonomy` & `Scatter3dChoiceParameters` in
+    `CoreArrangementPlugins`; `FindRule`, `BasicFindPanel` & `ReplacePanel` in
+    `CoreFindView`; `HashmodPanel` in `CoreGraphUtilities`; `ToggleGraphVisibilityAction`
+    in `CoreInteractiveGraph`; `LayersViewController` & `BitMaskQuerry` in 
+    `CoreLayersView`; `LabelFontsOptionsPanel` & `ConstellationLabelFonts` in 
+    `CoreOpenGLDisplay`; `ApplicationOptionsPanel` & `DeveloperOptionsPanel` in
+    `CorePreferences`; `ProxyOptionsPanel` in `CoreSecuirty`, `VisualAccess` in 
+    `CoreUtilities` and `VisualGraphUtilities` in `CoreVisualGraph`.
+
 ## Changes in October 2021
 -   Added `PluginTags` class to hold all tags as constants for `PluginInfo`.
 

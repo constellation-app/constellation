@@ -334,15 +334,15 @@ public class BasicFindPanel extends javax.swing.JPanel {
         return findTextField.getText().trim();
     }
 
-    public boolean getRegex() {
+    public boolean hasRegex() {
         return regexRadioButton.isSelected();
     }
 
-    public boolean getIgnorecase() {
+    public boolean isIgnorecase() {
         return ignorecaseCheckbox.isSelected();
     }
 
-    public boolean getExactMatch() {
+    public boolean isExactMatch() {
         return exactMatch.isSelected();
     }
 
@@ -378,7 +378,7 @@ public class BasicFindPanel extends javax.swing.JPanel {
         }
     }
 
-    public boolean getValidity() {
+    public boolean isValidity() {
         return currValidity;
     }
 

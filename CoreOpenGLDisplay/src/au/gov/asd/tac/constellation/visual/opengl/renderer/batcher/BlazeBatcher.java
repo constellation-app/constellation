@@ -152,7 +152,7 @@ public class BlazeBatcher implements SceneBatcher {
     }
 
     private void bufferBlaze(final int pos, final FloatArray colorBuffer, final IntArray infoBuffer, final VisualAccess access) {
-        if (access.getBlazed(pos)) {
+        if (access.isBlazed(pos)) {
             final ConstellationColor blazeColor = access.getBlazeColor(pos);
             final int blazeAngle = access.getBlazeAngle(pos);
             final float visibility = access.getVertexVisibility(pos);

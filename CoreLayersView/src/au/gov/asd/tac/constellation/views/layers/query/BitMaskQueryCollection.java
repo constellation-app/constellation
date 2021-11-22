@@ -70,7 +70,7 @@ public class BitMaskQueryCollection {
         this.activeQueriesBitMask = activeQueriesBitMask;
         activeQueries.clear();
         for (final BitMaskQuery query : queries) {
-            if (query != null && query.getVisibility()) {
+            if (query != null && query.isVisible()) {
                 activeQueries.add(query);
             }
         }
@@ -177,7 +177,7 @@ public class BitMaskQueryCollection {
         activeQueriesBitMask = currentBitMask;
         final List<SchemaAttribute> attributes = new ArrayList<>();
         for (final BitMaskQuery query : queries) {
-            if (query == null || !query.getVisibility() || query.getIndex() == 0 || StringUtils.isEmpty(query.getQueryString())) {
+            if (query == null || !query.isVisible() || query.getIndex() == 0 || StringUtils.isEmpty(query.getQueryString())) {
                 continue;
             }
             if (query.getQuery() != null && query.getQuery().getAttributeIds() != null) {

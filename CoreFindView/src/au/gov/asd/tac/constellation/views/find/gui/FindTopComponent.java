@@ -776,9 +776,9 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
     public void performBasicSearch() {
         final ArrayList<Attribute> selectedAttributes = basicFindPanel.getSelectedAttributes();
         final String findString = basicFindPanel.getFindString();
-        final boolean regex = basicFindPanel.getRegex();
-        final boolean ignoreCase = basicFindPanel.getIgnorecase();
-        final boolean matchWholeWord = basicFindPanel.getExactMatch();
+        final boolean regex = basicFindPanel.hasRegex();
+        final boolean ignoreCase = basicFindPanel.isIgnorecase();
+        final boolean matchWholeWord = basicFindPanel.isExactMatch();
         final BasicFindPlugin basicfindPlugin = new BasicFindPlugin(type, selectedAttributes, findString, regex, ignoreCase, matchWholeWord, chkAddToSelection.isSelected());
         PluginExecution.withPlugin(basicfindPlugin).executeLater(graphNode.getGraph());
     }
@@ -952,7 +952,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
                 lblMatchPB.setEnabled(false);
                 chkAddToSelection.setVisible(true);
                 chkAddToSelection.setEnabled(true);
-                btnFind.setEnabled(basicFindPanel.getValidity());
+                btnFind.setEnabled(basicFindPanel.isValidity());
                 lblSelect.setText("Find");
                 btnFind.setText("Find");
                 break;
@@ -966,7 +966,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
                 lblMatchPB.setEnabled(false);
                 chkAddToSelection.setVisible(false);
                 chkAddToSelection.setEnabled(false);
-                btnFind.setEnabled(replacePanel.getValidity());
+                btnFind.setEnabled(replacePanel.isValidity());
                 lblSelect.setText("Replace");
                 btnFind.setText("Replace");
                 break;

@@ -297,7 +297,7 @@ public class LayersViewPane extends BorderPane {
                 }
 
                 final int queryIndex = vxQuery != null ? vxQuery.getIndex() : txQuery.getIndex();
-                final boolean queryVisibility = vxQuery != null ? vxQuery.getVisibility() : txQuery.getVisibility();
+                final boolean queryVisibility = vxQuery != null ? vxQuery.isVisible() : txQuery.isVisible();
                 final String vxqueryString = vxQuery != null ? vxQuery.getQueryString() : StringUtils.EMPTY;
                 final String txqueryString = txQuery != null ? txQuery.getQueryString() : StringUtils.EMPTY;
                 final String queryDescription = vxQuery != null ? vxQuery.getDescription() : txQuery.getDescription();
