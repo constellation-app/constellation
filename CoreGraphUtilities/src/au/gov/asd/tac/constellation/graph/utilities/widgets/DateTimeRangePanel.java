@@ -46,8 +46,6 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
     private static final Logger LOGGER = Logger.getLogger(DateTimeRangePanel.class.getName());
 
     private final DateTimeListenerInterface parentPanel;
-    private JSpinner.DateEditor de1;
-    private JSpinner.DateEditor de2;
     private Calendar firstDate = null;
     private Calendar secondDate = null;
     private Date minDate = null;
@@ -72,10 +70,10 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
         }
         initComponents();
 
-        de1 = new JSpinner.DateEditor(spnDateTime1, Bundle.DateTimeFormat());
+        JSpinner.DateEditor de1 = new JSpinner.DateEditor(spnDateTime1, Bundle.DateTimeFormat());
         spnDateTime1.setEditor(de1);
 
-        de2 = new JSpinner.DateEditor(spnDateTime2, Bundle.DateTimeFormat());
+        JSpinner.DateEditor de2 = new JSpinner.DateEditor(spnDateTime2, Bundle.DateTimeFormat());
         spnDateTime2.setEditor(de2);
 
         presetDateRanges.removeAllItems();

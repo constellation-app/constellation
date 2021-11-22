@@ -41,7 +41,6 @@ public class Network {
 
     private final double[] nodeWeights;
     private final double sumNodeWeights;
-    private int numSelfLinks;
     private double totalWeight;
 
     public Network(final Config config, final GraphReadMethods rg) {
@@ -71,6 +70,7 @@ public class Network {
     }
 
     public void read() {
+        int numSelfLinks;
         connectionMap.clear();
         numSelfLinks = 0;
 

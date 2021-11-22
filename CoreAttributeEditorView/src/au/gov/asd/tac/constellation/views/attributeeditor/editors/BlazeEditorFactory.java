@@ -66,7 +66,6 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         private CheckBox noValueCheckBox;
         private TextField angleTextField;
-        private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
 
         protected BlazeEditor(final EditOperation editOperation, final DefaultGetter<Blaze> defaultGetter, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
@@ -101,6 +100,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         @Override
         protected Node createEditorControls() {
+            ComboBox<ConstellationColor> colorCombo;
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);

@@ -29,15 +29,15 @@ import java.util.TreeMap;
  */
 public class FlowNetwork {
 
-    private int[] nodeOutDegree;
-    private double[] sumLinkOutWeight; // Per leaf nodes
-
     private double[] nodeFlow;
     private double[] nodeTeleportRates;
     private Connection[] flowConns;
 
     public void calculateFlow(final Network network, final Config config) {
         Logf.printf("Calculating global flow... ");
+
+        int[] nodeOutDegree;
+        double[] sumLinkOutWeight; // Per leaf nodes
 
         // Prepare data in sequence containers for fast access of individual elements.
         final int numNodes = network.getNumNodes();

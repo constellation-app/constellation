@@ -64,7 +64,6 @@ public final class GraphJsonReader {
 
     // Track classes that know how to read particular types from JSON.
     private final Map<String, AbstractGraphIOProvider> providers;
-    private Map<String, Integer> versionedItems;
     private JsonParser jp;
     private Graph graph;
     private int version;
@@ -261,7 +260,7 @@ public final class GraphJsonReader {
             throw new GraphParseException(msg);
         }
 
-        versionedItems = new HashMap<>();
+        Map<String, Integer> versionedItems = new HashMap<>();
 
         // Get the versions of various items in this graph (if the graph supports it)
         if (version >= 2) {

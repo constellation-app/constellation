@@ -51,7 +51,6 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     private final int progressBarThickness = 3;
     private int neededHeight = 0;
     private int stepLimit = 0;
-    private double xseparation;
     private final int minimum_yseparation = 3;
     private int progress_x;
     private final JScrollPane scrollManager;
@@ -225,6 +224,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
     // Calculate the relative positioning of the lines in the diagram
     public void positionLines() {
+        double xseparation;
         if (sortedNodes == null) {
             return;
         }

@@ -65,7 +65,6 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     private static final int PREFERRED_HEIGHT = 500;
     private final Set<Integer> selectedRectangles;
     private Map<Integer, List<Integer>> childMapper;
-    private Map<Integer, Integer> numDescendants;
 
     public NestedKTrussDisplayPanel(final KTrussState state, final Graph graph) {
         this.state = state;
@@ -137,6 +136,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     // KTrussState. Note that this method does not calculate actual pixel values, but the relative information stored in the
     // rectangles field. See the declaration for more information
     public void calculateRectangles() {
+        Map<Integer, Integer> numDescendants;
         childMapper = new HashMap<>();
         numDescendants = new HashMap<>();
 

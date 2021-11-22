@@ -57,7 +57,6 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
         private GraphElementType elementType;
         private ComboBox<String> typeCombo;
         private TextField nameText;
-        private Button setDefaultButton;
         private Button clearDefaultButton;
         TextField descText;
         private Object defaultValue;
@@ -106,6 +105,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             controls.setHgap(5);
             controls.setVgap(CONTROLPANE_SPACING);
 
+            Button setDefaultButton;
             Label nameLabel = new Label("Attribute Name:");
             Label typeLabel = new Label("Attribute Type:");
             Label descLabel = new Label("Attribute Description:");
