@@ -16,15 +16,19 @@
 package au.gov.asd.tac.constellation.utilities.gui;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -181,6 +185,72 @@ public class JMultiChoiceComboBoxMenuNGTest {
         assertFalse(spyMenu.isVisible());
     }
 
+    /**
+     * Test of addMenuItemActionListener method, of class
+     * JMultiChoiceComboBoxMenu when the selectedItem contains.
+     */
+    @Test
+    public void testAddMenuItemActionListener_selectedItem_contains() {
+        System.out.println("addMenuItemActionListener_selectedItem_contains");
+
+        final JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
+        final ActionEvent actionEventMock = mock(ActionEvent.class);
+        final Map<JMenuItem, String> menuItems = instance.getMenuItems();
+        final String itemSelected = "Item 3";
+        final JMenuItem manuItem = getKey(menuItems, itemSelected);
+        final ListSelectionListener listSelectionListenerMock1 = mock(ListSelectionListener.class);
+
+        doReturn(manuItem).when(actionEventMock).getSource();
+
+        instance.addSelectionListener(listSelectionListenerMock1);
+        instance.setSelectedItem(itemSelected);
+
+        final Set<String> resultSet = instance.getSelectedItems();
+        assertEquals(resultSet.size(), 1);
+
+        manuItem.getActionListeners()[0].actionPerformed(actionEventMock);
+
+        verify(listSelectionListenerMock1, times(1)).valueChanged(any(ListSelectionEvent.class));
+        assertEquals(resultSet.size(), 0);
+    }
+
+    /**
+     * Test of addMenuItemActionListener method, of class
+     * JMultiChoiceComboBoxMenu when the selectedItem does not contain.
+     */
+    @Test
+    public void testAddMenuItemActionListener_selectedItem_does_not_contain() {
+        System.out.println("addMenuItemActionListener_selectedItem_does_not_contain");
+
+        final JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
+        final ActionEvent actionEventMock = mock(ActionEvent.class);
+        final Map<JMenuItem, String> menuItems = instance.getMenuItems();
+        final String itemSelected = "Item 1";
+        final JMenuItem manuItem = getKey(menuItems, "Item 4");
+        final ListSelectionListener listSelectionListenerMock1 = mock(ListSelectionListener.class);
+
+        doReturn(manuItem).when(actionEventMock).getSource();
+
+        instance.addSelectionListener(listSelectionListenerMock1);
+        instance.setSelectedItem(itemSelected);
+
+        final Set<String> resultSet = instance.getSelectedItems();
+        assertEquals(resultSet.size(), 1);
+
+        manuItem.getActionListeners()[0].actionPerformed(actionEventMock);
+
+        verify(listSelectionListenerMock1, times(1)).valueChanged(any(ListSelectionEvent.class));
+        assertEquals(resultSet.size(), 2);
+    }
+
+    public <K, V> K getKey(Map<K, V> map, V value) {
+        for (Entry<K, V> entry : map.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 
     /**
      * Test of getText method, of class JMultiChoiceComboBoxMenu.
