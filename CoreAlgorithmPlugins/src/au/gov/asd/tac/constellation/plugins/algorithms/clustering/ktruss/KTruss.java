@@ -21,11 +21,12 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConc
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 /**
  * Execute a k-truss action
@@ -275,11 +276,11 @@ public class KTruss {
     // until it reaches a link with no adjacent links that haven't already been cleared.
     private static void getComponentsHopper(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final int currentComponentNum, final int initialLinkPosition) {
 
-        final Stack<Integer> linksToHopFrom = new Stack<>();
+        final Deque<Integer> linksToHopFrom = new LinkedList<>();
         linksToHopFrom.add(initialLinkPosition);
         links.clear(initialLinkPosition);
 
-        while (!linksToHopFrom.empty()) {
+        while (!linksToHopFrom.isEmpty()) {
 
             final int linkPosition = linksToHopFrom.pop();
             final int link = graph.getLink(linkPosition);

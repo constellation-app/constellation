@@ -274,7 +274,7 @@ public class RecordStoreUtilities {
             if (!columnsWritten) {
                 line.setLength(0);
                 for (final String key : recordStore.keys()) {
-                    final String columnValue = key == null ? "" : key.replaceAll("(\n|\")", "");
+                    final String columnValue = key == null ? "" : key.replaceAll("[\n\"]", "");
                     if (columnValue.contains(",")) {
                         line.append("\"");
                         line.append(columnValue);

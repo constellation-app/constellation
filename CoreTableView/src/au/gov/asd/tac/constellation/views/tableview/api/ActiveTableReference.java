@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview.components.Table;
-import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.views.tableview.factory.TableViewPageFactory;
+import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.views.tableview.plugins.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
 import java.util.ArrayList;
@@ -203,6 +203,7 @@ public class ActiveTableReference {
      * @param columnAttributes the column attributes to update the state with
      * @param updateState the manner in which the state will be updated with the
      * column attributes
+     * @return a {@link Future<?>} object of the plugin execution.
      */
     public Future<?> updateVisibleColumns(final Graph graph,
             final TableViewState state,

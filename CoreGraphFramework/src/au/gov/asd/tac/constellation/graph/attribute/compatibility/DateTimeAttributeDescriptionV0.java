@@ -240,7 +240,7 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
             final int da;
             final int ho;
             final int mi;
-            TimeZone tzp = tz;
+            TimeZone tzp = (tz == null) ? UTC : tz;
             int p = 16;
             int se = 0;
             int ms = 0;
@@ -265,10 +265,6 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
 
                 if (dt.length() > p) {
                     tzp = TimeZone.getTimeZone("GMT" + dt.substring(p));
-                } else if (tz == null) {
-                    tzp = UTC;
-                } else {
-                    tzp = tz;
                 }
             } else {
                 ye = Integer.parseInt(dt.substring(0, 4), 10);
@@ -300,13 +296,8 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
             final int mi = Integer.parseInt(dt.substring(10, 12), 10);
             final int se = Integer.parseInt(dt.substring(12, 14), 10);
             final int ms = 0;
-
-            final TimeZone tzp;
-            if (tz == null) {
-                tzp = UTC;
-            } else {
-                tzp = tz;
-            }
+            
+            final TimeZone tzp = (tz == null) ? UTC : tz;
 
             final Calendar cal = new GregorianCalendar(tzp);
             cal.set(Calendar.YEAR, ye);
