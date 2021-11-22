@@ -41,7 +41,7 @@ public abstract class ConversationContribution {
      * @param provider The provider that created this contribution.
      * @param message The message that this contribution belongs to.
      */
-    public ConversationContribution(final ConversationContributionProvider provider, final ConversationMessage message) {
+    protected ConversationContribution(final ConversationContributionProvider provider, final ConversationMessage message) {
         this.provider = provider;
         this.message = message;
     }

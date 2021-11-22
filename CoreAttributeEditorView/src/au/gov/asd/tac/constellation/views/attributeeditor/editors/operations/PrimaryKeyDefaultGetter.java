@@ -47,8 +47,6 @@ public class PrimaryKeyDefaultGetter implements DefaultGetter {
         } finally {
             rg.release();
         }
-        return keys.stream().map(s -> {
-            return s.getName();
-        }).collect(Collectors.toList());
+        return keys.stream().map(s -> s.getName()).collect(Collectors.toList());
     }
 }

@@ -189,7 +189,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
                 int[][] vertexIds = new int[w][h];
 
-                final float zlen = multipleFrames ? 0 : Math.min(w, h) / 4f;
+                final float zlen = multipleFrames ? 0 : Math.min(w, h) / 4F;
                 final float vis = frame / (float) (images.size() - 1);
 
                 for (int x = 0; x < w; x++) {
@@ -207,10 +207,10 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                         graph.setStringValue(vertexIdentifierAttributeId, vxId, String.format("%d,%d", x, y));
 
                         final int yinv = h - y;
-                        ConstructionUtilities.setxyz(graph, vxId, vertexXAttributeId, vertexYAttributeId, vertexZAttributeId, x * 2, yinv * 2, -gray * zlen / 255f);
+                        ConstructionUtilities.setxyz(graph, vxId, vertexXAttributeId, vertexYAttributeId, vertexZAttributeId, x * 2, yinv * 2, -gray * zlen / 255F);
                         ConstructionUtilities.setxyz(graph, vxId, vertexX2AttributeId, vertexY2AttributeId, vertexZ2AttributeId, x * 2, yinv * 2, 0);
                         graph.setStringValue(vertexBackgroundIconAttributeId, vxId, "Background.Flat Square");
-                        ConstellationColor color = ConstellationColor.getColorValue(r / 255f, g / 255f, b / 255f, a / 255f);
+                        ConstellationColor color = ConstellationColor.getColorValue(r / 255F, g / 255F, b / 255F, a / 255F);
                         graph.setObjectValue(vertexColorAttributeId, vxId, color);
 
                         if (multipleFrames) {
@@ -263,8 +263,8 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
     }
 
     private static float calculateWeight(final ConstellationColor a, final ConstellationColor b) {
-        float aGray = a.getRed() * 0.21f + a.getGreen() * 0.71f + a.getBlue() * 0.08f;
-        float bGray = b.getRed() * 0.21f + b.getGreen() * 0.71f + b.getBlue() * 0.08f;
+        float aGray = a.getRed() * 0.21F + a.getGreen() * 0.71F + a.getBlue() * 0.08F;
+        float bGray = b.getRed() * 0.21F + b.getGreen() * 0.71F + b.getBlue() * 0.08F;
         float weight = Math.abs(aGray - bGray);
         weight = (float) Math.exp(-weight);
 

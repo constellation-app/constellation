@@ -67,9 +67,7 @@ public class CompositeNodeStateAttributeInteraction extends AbstractAttributeInt
     @Override
     public AttributeValueTranslator toEditTranslator(String dataType) {
         if (dataType.equals(StringAttributeDescription.ATTRIBUTE_NAME)) {
-            return v -> {
-                return v == null ? v : getDisplayText(v);
-            };
+            return v -> v == null ? v : getDisplayText(v);
         }
         return super.toEditTranslator(dataType);
     }

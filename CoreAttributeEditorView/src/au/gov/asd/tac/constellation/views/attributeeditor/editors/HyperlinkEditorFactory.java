@@ -81,9 +81,7 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             textField = new TextField();
-            textField.textProperty().addListener((o, n, v) -> {
-                update();
-            });
+            textField.textProperty().addListener((o, n, v) -> update());
 
             noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
             noValueCheckBox.setAlignment(Pos.CENTER);

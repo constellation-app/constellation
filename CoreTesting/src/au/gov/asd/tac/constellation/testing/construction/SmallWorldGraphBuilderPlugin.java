@@ -116,9 +116,9 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> p = FloatParameterType.build(P_PARAMETER_ID);
         p.setName("Rewiring probability");
         p.setDescription("Probability of re-wiring each edge (low for a long shortest paths lattice structure, high for higher clustering coefficient random graph)");
-        p.setFloatValue(0.5f);
-        FloatParameterType.setMinimum(p, 0f);
-        FloatParameterType.setMaximum(p, 1f);
+        p.setFloatValue(0.5F);
+        FloatParameterType.setMinimum(p, 0F);
+        FloatParameterType.setMaximum(p, 1F);
         params.addParameter(p);
 
         final List<String> modes = new ArrayList<>();

@@ -94,9 +94,7 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
             lineStyleComboBox.setCellFactory(cellFactory);
             lineStyleComboBox.setButtonCell(cellFactory.call(null));
             lineStyleLabel.setLabelFor(lineStyleComboBox);
-            lineStyleComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                update();
-            });
+            lineStyleComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
             controls.addRow(0, lineStyleLabel, lineStyleComboBox);
             return controls;

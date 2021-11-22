@@ -50,10 +50,10 @@ public final class ColorAttributeDescription extends AbstractObjectAttributeDesc
     }
 
     private ConstellationColor fromInt(final Integer integer) {
-        final float red = (integer >>> 24) / 255.0f;
-        final float green = ((integer >>> 16) & 0xFF) / 255.0f;
-        final float blue = ((integer >>> 8) & 0xFF) / 255.0f;
-        final float alpha = (integer & 0xFF) / 255.0f;
+        final float red = (integer >>> 24) / 255.0F;
+        final float green = ((integer >>> 16) & 0xFF) / 255.0F;
+        final float blue = ((integer >>> 8) & 0xFF) / 255.0F;
+        final float alpha = (integer & 0xFF) / 255.0F;
         return ConstellationColor.getColorValue(red, green, blue, alpha);
     }
 

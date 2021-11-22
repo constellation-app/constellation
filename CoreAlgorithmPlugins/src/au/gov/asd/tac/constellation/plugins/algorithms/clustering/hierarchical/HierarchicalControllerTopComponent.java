@@ -736,9 +736,10 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                     if (state.isInteractive()) {
                         graph.setBooleanValue(vertexDimmedAttribute, vertex, true);
                         graph.setFloatValue(vertexVisibilityAttribute, vertex, state.isExcludedElementsDimmed() ? 2.0f : -2.0f);
+
                     } else {
                         graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
-                        graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
+                        graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0F);
                     }
                 } else {
                     // when keeping all vertices, do not dim, and show all.
@@ -746,7 +747,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                     while (group.getMergeStep() <= state.getCurrentStep()) {
                         group = group.getParent();
                     }
-                    graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
+                    graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0F);
                     graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
                     graph.setObjectValue(vxOverlayColorAttr, vertex, group.getColor());
 
@@ -776,7 +777,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                             final int transaction = graph.getLinkTransaction(link, transactionPosition);
                             graph.setObjectValue(txOverlayColorAttr, transaction, highVertexColor);
                             graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
-                            graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
+                            graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0F);
                         }
                     } else { // dim or hide transaction depending on state selected.
                         final int transactionCount = graph.getLinkTransactionCount(link);
@@ -784,10 +785,10 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                             final int transaction = graph.getLinkTransaction(link, transactionPosition);
                             if (state.isExcludedElementsDimmed()) {
                                 graph.setBooleanValue(transactionDimmedAttribute, transaction, true);
-                                graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
+                                graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0F);
                             } else {
                                 graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
-                                graph.setFloatValue(transactionVisibilityAttribute, transaction, -2.0f);
+                                graph.setFloatValue(transactionVisibilityAttribute, transaction, -2.0F);
                             }
                         }
                     }
@@ -797,7 +798,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                         final int transaction = graph.getLinkTransaction(link, transactionPosition);
                         graph.setObjectValue(txOverlayColorAttr, transaction, highVertexColor);
                         graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
-                        graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
+                        graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0F);
                     }
                 }
             }

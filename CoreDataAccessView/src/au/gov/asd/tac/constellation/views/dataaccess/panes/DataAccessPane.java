@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAu
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;

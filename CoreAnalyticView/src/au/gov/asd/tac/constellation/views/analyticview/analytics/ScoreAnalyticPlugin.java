@@ -215,9 +215,8 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
             } else {
                 // create subgraph
                 final Set<SchemaTransactionType> transactionTypes = new HashSet<>();
-                parameters.getMultiChoiceValue(TRANSACTION_TYPES_PARAMETER_ID).getChoicesData().forEach(parameterValue -> {
-                    transactionTypes.add((SchemaTransactionType) ((TransactionTypeParameterValue) parameterValue).getObjectValue());
-                });
+                parameters.getMultiChoiceValue(TRANSACTION_TYPES_PARAMETER_ID).getChoicesData().forEach(parameterValue
+                        -> transactionTypes.add((SchemaTransactionType) ((TransactionTypeParameterValue) parameterValue).getObjectValue()));
                 assert transactionTypes.size() > 0 : "You must select at least one transaction type";
                 final StoreGraph subgraph = getSubgraph(graph, SchemaFactoryUtilities.getDefaultSchemaFactory(), transactionTypes);
 

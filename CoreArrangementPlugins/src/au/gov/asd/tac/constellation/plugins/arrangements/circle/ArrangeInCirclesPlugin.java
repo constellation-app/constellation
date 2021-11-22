@@ -165,7 +165,7 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
             }
 
         } else {
-            totalRadius = 0f;
+            totalRadius = 0F;
         }
         radii[vertex] = totalRadius + 2;
         return radii[vertex];

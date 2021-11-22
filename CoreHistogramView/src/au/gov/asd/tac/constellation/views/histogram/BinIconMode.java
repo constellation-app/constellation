@@ -35,7 +35,7 @@ public enum BinIconMode {
     /**
      * No icon is added to the bin when it is rendered.
      */
-    NONE(0.0f) {
+    NONE(0.0F) {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
         }
@@ -44,7 +44,7 @@ public enum BinIconMode {
      * An standard icon is added to the bin when it is rendered. This typically
      * comes from an attribute on the element.
      */
-    ICON(1.5f) {
+    ICON(1.5F) {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
             if (bin instanceof ObjectBin) {
@@ -72,7 +72,7 @@ public enum BinIconMode {
      * with that color. The color typically comes from a color attribute on the
      * element.
      */
-    COLOR(1.5f) {
+    COLOR(1.5F) {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
             if (bin instanceof ObjectBin) {

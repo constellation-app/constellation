@@ -50,7 +50,7 @@ public class FastNewman {
         final int linkCount = graph.getLinkCount();
         final int transactionCount = graph.getTransactionCount();
 
-        final ConstellationColor[] colors = ConstellationColor.createPalette(vertexCount, 0.5f, 0.95f);
+        final ConstellationColor[] colors = ConstellationColor.createPalette(vertexCount, 0.5F, 0.95F);
         int nextColor = vertexCount - 1;
 
         final Group[] groups = new Group[graph.getVertexCapacity()];
@@ -115,7 +115,7 @@ public class FastNewman {
                     }
                     link.weight /= totalWeight;
                 }
-                link.deltaQ = 2f * (link.weight - link.highGroup.weight * link.lowGroup.weight);
+                link.deltaQ = 2F * (link.weight - link.highGroup.weight * link.lowGroup.weight);
 
                 link.initial = initialLinkIds.contains(linkId);
                 links.add(link);
@@ -246,7 +246,7 @@ public class FastNewman {
     public static class Group {
 
         private int vertex;
-        private float weight = 0.0f;
+        private float weight = 0.0F;
         private Group parent = null;
         private int mergeStep = Integer.MAX_VALUE;
         private Map<Group, Link> links = new HashMap<>();
@@ -298,7 +298,7 @@ public class FastNewman {
 
         private Group highGroup;
         private Group lowGroup;
-        private float weight = 0.0f;
+        private float weight = 0.0F;
         private float deltaQ;
         private boolean initial = false;
 

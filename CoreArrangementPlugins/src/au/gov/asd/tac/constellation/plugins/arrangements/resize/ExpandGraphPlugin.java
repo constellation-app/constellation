@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class ExpandGraphPlugin extends SimpleEditPlugin {
 
-    private static final float SCALE = 11f / 10f;
+    private static final float SCALE = 11F / 10F;
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {

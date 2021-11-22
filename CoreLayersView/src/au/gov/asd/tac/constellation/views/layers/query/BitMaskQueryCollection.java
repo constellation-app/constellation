@@ -125,7 +125,7 @@ public class BitMaskQueryCollection {
                 index.writeInt(elementId);
                 final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
                 final long updatedBitMask = updateBitMask(bitMask);
-                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0f : 1.0f);
+                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0F : 1.0F);
             }
         }
     }

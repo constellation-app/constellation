@@ -100,7 +100,7 @@ public class Shape {
         SHAPEFILE_ATTRIBUTE_TYPES.put(String.class, "");
         SHAPEFILE_ATTRIBUTE_TYPES.put(Integer.class, 0);
         SHAPEFILE_ATTRIBUTE_TYPES.put(Long.class, 0L);
-        SHAPEFILE_ATTRIBUTE_TYPES.put(Float.class, 0f);
+        SHAPEFILE_ATTRIBUTE_TYPES.put(Float.class, 0F);
         SHAPEFILE_ATTRIBUTE_TYPES.put(Double.class, 0.0);
         SHAPEFILE_ATTRIBUTE_TYPES.put(Boolean.class, false);
         SHAPEFILE_ATTRIBUTE_TYPES.put(Date.class, Date.from(Instant.EPOCH));

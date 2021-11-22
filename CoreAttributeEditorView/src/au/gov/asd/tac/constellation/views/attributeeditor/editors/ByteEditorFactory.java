@@ -76,9 +76,7 @@ public class ByteEditorFactory extends AttributeValueEditorFactory<Byte> {
             controls.setAlignment(Pos.CENTER);
 
             numberField = new TextField();
-            numberField.textProperty().addListener((o, n, v) -> {
-                update();
-            });
+            numberField.textProperty().addListener((o, n, v) -> update());
 
             controls.getChildren().add(numberField);
             return controls;

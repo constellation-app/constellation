@@ -47,7 +47,7 @@ import org.testng.annotations.Test;
  */
 public class JDropDownMenuNGTest {
 
-    private List<String> items = new ArrayList<String>();
+    private final List<String> items = new ArrayList<>();
     private static MockedStatic<InstalledFileLocator> installedFileLocatorMockedStatic;
     private static InstalledFileLocator installedFileLocatorMocked;
 

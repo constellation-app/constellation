@@ -182,14 +182,14 @@ public class Scatter3dArranger implements Arranger {
             if (value != 0.0) {
                 return (float) Math.log10(Math.abs(value)) * Math.signum(value);
             }
-            return 0.0f;
+            return 0.0F;
         }
         return value;
     }
 
     private float getFloatValueFromObject(Object attributeValue, boolean logarithmic) {
         if (attributeValue == null) {
-            return 0.0f;
+            return 0.0F;
         }
 
         if (attributeValue instanceof Float) {
@@ -202,7 +202,7 @@ public class Scatter3dArranger implements Arranger {
 
         if (attributeValue instanceof String) {
             String val = (String) attributeValue;
-            float finalVal = 0.0f;
+            float finalVal = 0.0F;
             float multiplier = 1;
             for (int i = 0; i < val.length(); i++) {
                 char ch = val.charAt(i);
@@ -241,6 +241,6 @@ public class Scatter3dArranger implements Arranger {
             return getFloatValueFromObject(s, logarithmic);
         }
 
-        return 0.0f;
+        return 0.0F;
     }
 }

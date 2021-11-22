@@ -101,9 +101,7 @@ public class BlazeBatcher implements SceneBatcher {
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-        return gl -> {
-            batch.dispose(gl);
-        };
+        return gl -> batch.dispose(gl);
     }
 
     public GLRenderableUpdateTask updateBlazes(final VisualAccess access, final VisualChange change) {

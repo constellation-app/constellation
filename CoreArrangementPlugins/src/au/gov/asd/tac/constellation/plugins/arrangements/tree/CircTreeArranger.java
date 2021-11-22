@@ -223,7 +223,7 @@ public final class CircTreeArranger implements Arranger {
         // Get the radius of the starting vertex.
         // We don't want a radius of zero; this will break things higher up and result in NaN values for x,y,z.
         // Instead, we'll use a minimum radius (pulled out of a hat).
-        final float minRadius = 0.1f;
+        final float minRadius = 0.1F;
 //        final float selfRadius = scale * (radiusAttr!=Graph.NOT_FOUND ? graph.getFloatValue(radiusAttr, vxId) : 1);
         final float selfRadius = scale * (radiusAttr != Graph.NOT_FOUND ? Math.max(graph.getFloatValue(radiusAttr, vxId), minRadius) : 1);
 
@@ -444,7 +444,7 @@ public final class CircTreeArranger implements Arranger {
                 }
 
                 // Starting orientation is perpendicular to parent's.
-                float accumCircle = neededCircumference * (0.25f + parentAngle / TWO_PI);
+                float accumCircle = neededCircumference * (0.25F + parentAngle / TWO_PI);
 
                 // Loop through each child, positioning it and its satellites.
                 float oldRadiusIncrement = 0;
@@ -496,7 +496,7 @@ public final class CircTreeArranger implements Arranger {
 
                     // The outermost annulus starts perpendicular to its parent's angle.
                     if (lastAnnulus != 0 && lastAnnulus != childAnnulusRadius && outermostAnnulus == childAnnulusRadius) {
-                        cumAngle += TWO_PI * (parentAngle / TWO_PI + 0.25f);
+                        cumAngle += TWO_PI * (parentAngle / TWO_PI + 0.25F);
                     }
 
                     lastAnnulus = childAnnulusRadius;

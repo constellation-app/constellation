@@ -72,9 +72,7 @@ public class LayersViewPane extends BorderPane {
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Layers View"));
-        helpButton.setOnAction(event -> {
-            new HelpCtx(LayersViewTopComponent.class.getName()).display();
-        });
+        helpButton.setOnAction(event -> new HelpCtx(LayersViewTopComponent.class.getName()).display());
 
         // Get rid of the ugly button look so the icon stands alone.
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
@@ -409,8 +407,6 @@ public class LayersViewPane extends BorderPane {
      * @param enable true if there is a graph
      */
     protected void setEnabled(final boolean enable) {
-        Platform.runLater(()->{
-            this.setCenter(enable ? layersViewPane : noGraphPane);
-        });
+        Platform.runLater(() -> this.setCenter(enable ? layersViewPane : noGraphPane));
     }
 }

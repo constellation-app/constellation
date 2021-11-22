@@ -200,9 +200,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                     saveAs.saveAs(FileUtil.toFileObject(newFile.getParentFile()), newFile.getName());
 
                     // take a screenshot in a separate thread in parrallel
-                    new Thread(() -> {
-                        RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName());
-                    }, "Take Graph Screenshot").start();
+                    new Thread(() -> RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName()), "Take Graph Screenshot").start();
                 } catch (final IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(
@@ -398,9 +396,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     }
 
     private LookupListener createLookupListener() {
-        return WeakListeners.create(LookupListener.class, (LookupListener) (final LookupEvent ev) -> {
-            isDirty = true;
-        }, lkpInfo);
+        return WeakListeners.create(LookupListener.class, (LookupListener) (final LookupEvent ev) -> isDirty = true, lkpInfo);
     }
 
     private void refreshEnabled() {

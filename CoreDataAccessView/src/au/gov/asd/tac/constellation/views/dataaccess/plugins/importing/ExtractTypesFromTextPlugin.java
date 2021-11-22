@@ -105,9 +105,7 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
         final List<ExtractedVertexType> extractedTypes = SchemaVertexTypeUtilities.extractVertexTypes(text);
 
         final Map<String, SchemaVertexType> identifiers = new HashMap<>();
-        extractedTypes.forEach(extractedType -> {
-            identifiers.put(extractedType.getIdentifier(), extractedType.getType());
-        });
+        extractedTypes.forEach(extractedType -> identifiers.put(extractedType.getIdentifier(), extractedType.getType()));
 
         for (final String identifier : identifiers.keySet()) {
             result.add();

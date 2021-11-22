@@ -210,7 +210,9 @@ Histogram.
 
 The Arrow Button will toggle Ascending/Descending values.
 
--   *Label* - Will sort the rows of the Histogram alphabetically by
+-   *Label (Number)* - Will sort the rows of the Histogram numerically by
+    Property Value label.
+-   *Label (Text)* - Will sort the rows of the Histogram alphabetically by
     Property Value label.
 -   *Total Count* - Will sort the rows of the Histogram in order of
     Count values.
@@ -281,3 +283,7 @@ and Save Bins To Clipboard
 -   *Save Bins to Clipboard* - Will copy the Property Values and Counts
     displayed in the Histogram View to the clipboard, which can be
     pasted into a text editor in a tab delimited format.
+-   *Decrease Height of Each Bin* - Decreases the height of the bar for each 
+    Count bin.
+-   *Increase Height of Each Bin* - Increases the height of the bar for each 
+    Count bin.

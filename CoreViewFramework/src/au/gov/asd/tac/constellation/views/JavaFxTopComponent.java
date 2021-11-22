@@ -99,18 +99,16 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
             if (getHorizontalScrollPolicy() == ScrollBarPolicy.NEVER) {
                 scrollPane.setFitToWidth(true);
             } else {
-                scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue) -> {
-                    // TODO: fix a bug where the width of the scroll can grow infinitely
-                    scrollPane.setFitToWidth(content.prefWidth(-1) <= newValue.getWidth());
-                });
+                scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue)
+                        ->                    // TODO: fix a bug where the width of the scroll can grow infinitely
+                    scrollPane.setFitToWidth(content.prefWidth(-1) <= newValue.getWidth()));
             }
             scrollPane.setVbarPolicy(getVerticalScrollPolicy());
             if (getVerticalScrollPolicy() == ScrollBarPolicy.NEVER) {
                 scrollPane.setFitToHeight(true);
             } else {
-                scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue) -> {
-                    scrollPane.setFitToHeight(content.prefHeight(-1) <= newValue.getHeight());
-                });
+                scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue)
+                        -> scrollPane.setFitToHeight(content.prefHeight(-1) <= newValue.getHeight()));
             }
 
             // set the font on initialise

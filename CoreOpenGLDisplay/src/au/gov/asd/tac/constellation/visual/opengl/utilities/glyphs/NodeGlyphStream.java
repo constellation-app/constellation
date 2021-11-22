@@ -49,7 +49,7 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
     public void newLine(float width, final GlyphStreamContext streamContext) {
         if (streamContext instanceof NodeGlyphStreamContext) {
             final NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;
-            currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0f - 0.2f, 0.0f, streamContext.visibility);
+            currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0F - 0.2F, 0.0F, streamContext.visibility);
             currentInts.add(context.currentNodeID, streamContext.totalScale, streamContext.labelNumber, 0);
         } else {
             throw new IllegalArgumentException("Provided context lacks Node information, please use a NodeGlyphStreamContext");

@@ -34,11 +34,11 @@ public class CompoundIcon implements Icon {
         Z_AXIS;
     }
 
-    private static final float TOP = 0.0f;
-    private static final float LEFT = 0.0f;
-    private static final float CENTER = 0.5f;
-    private static final float BOTTOM = 1.0f;
-    private static final float RIGHT = 1.0f;
+    private static final float TOP = 0.0F;
+    private static final float LEFT = 0.0F;
+    private static final float CENTER = 0.5F;
+    private static final float BOTTOM = 1.0F;
+    private static final float RIGHT = 1.0F;
     private Icon[] icons;
     private Axis axis;
     private int gap;
@@ -61,16 +61,16 @@ public class CompoundIcon implements Icon {
         this.axis = axis;
         this.gap = gap;
 
-        if (alignmentX > 1.0f) {
-            this.alignmentX = 1.0f;
+        if (alignmentX > 1.0F) {
+            this.alignmentX = 1.0F;
         } else {
-            this.alignmentX = alignmentX < 0.0f ? 0.0f : alignmentX;
+            this.alignmentX = alignmentX < 0.0F ? 0.0F : alignmentX;
         }
 
-        if (alignmentY > 1.0f) {
-            this.alignmentY = 1.0f;
+        if (alignmentY > 1.0F) {
+            this.alignmentY = 1.0F;
         } else {
-            this.alignmentY = alignmentY < 0.0f ? 0.0f : alignmentY;
+            this.alignmentY = alignmentY < 0.0F ? 0.0F : alignmentY;
         }
 
         for (int index = 0; index < icons.length; index++) {

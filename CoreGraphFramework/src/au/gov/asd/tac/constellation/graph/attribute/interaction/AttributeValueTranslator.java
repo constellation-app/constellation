@@ -37,9 +37,7 @@ public interface AttributeValueTranslator {
 
     static final Logger LOGGER = Logger.getLogger(AttributeValueTranslator.class.getName());
 
-    public static AttributeValueTranslator IDENTITY = val -> {
-        return val;
-    };
+    public static AttributeValueTranslator IDENTITY = val -> val;
 
     public static AttributeValueTranslator getNativeTranslator(final String attrType) {
         try {

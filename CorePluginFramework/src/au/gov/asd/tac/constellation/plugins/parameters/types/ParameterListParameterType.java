@@ -257,9 +257,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
         }
 
         public Pane append(final PluginParameters newParams) {
-            newParams.getParameters().values().forEach((PluginParameter<?> param) -> {
-                linkToEnclosing(param);
-            });
+            newParams.getParameters().values().forEach((PluginParameter<?> param) -> linkToEnclosing(param));
             parametersList.add(newParams);
             final Pane newPane = paneFactory.getNewPane(newParams);
             parameterPanes.add(newPane);
@@ -270,9 +268,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
         public Pane remove(final Pane parameterPane) {
             final int index = parameterPanes.indexOf(parameterPane);
             PluginParameters oldParams = parametersList.get(index);
-            oldParams.getParameters().values().forEach((PluginParameter<?> param) -> {
-                unlinkFromEnclosing(param);
-            });
+            oldParams.getParameters().values().forEach((PluginParameter<?> param) -> unlinkFromEnclosing(param));
             parametersList.remove(index);
             enclosingParameter.fireChangeEvent(ParameterChange.VALUE);
             return parameterPanes.remove(index);

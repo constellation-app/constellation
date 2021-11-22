@@ -65,8 +65,8 @@ public class BoundingCircle {
     public static BoundingCircle enclosingCircle(final List<BoundingCircle> circles) {
         final BBoxf box = new BBoxf();
         for (final BoundingCircle c : circles) {
-            box.add((float) (c.x + c.radius), (float) (c.y + c.radius), 0f);
-            box.add((float) (c.x - c.radius), (float) (c.y - c.radius), 0f);
+            box.add((float) (c.x + c.radius), (float) (c.y + c.radius), 0F);
+            box.add((float) (c.x - c.radius), (float) (c.y - c.radius), 0F);
         }
 
         final float[] centre = box.getCentre();
