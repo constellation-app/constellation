@@ -153,29 +153,34 @@ public class JMultiChoiceComboBoxMenuNGTest {
     }
 
     /**
-     * Test the button.addActionListener in the constructor
+     * Test of addButtonActionListener method, of class
+     * JMultiChoiceComboBoxMenu.
      */
     @Test
-    public void testConstructor_buttonAddActionListener() {
-        System.out.println("constructor_buttonAddActionListener");
+    public void testaddButtonActionListener() {
+        System.out.println("addButtonActionListener");
         final JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
+
         final JButton button = instance.getButton();
         final JPopupMenu menu = instance.getMenu();
 
         final JButton spyJButton = spy(button);
+        final JPopupMenu spyMenu = spy(menu);
+
         final Point p = mock(Point.class);
-
         doReturn(p).when(spyJButton).getLocationOnScreen();
-        instance.setButton(spyJButton);
 
-        menu.setVisible(false);
-        spyJButton.doClick();
-        assertTrue(menu.isVisible());
+        instance.addButtonActionListener(spyJButton, spyMenu);
 
-        menu.setVisible(true);
-        spyJButton.doClick();
-        assertFalse(menu.isVisible());
+        spyMenu.setVisible(false);
+        spyJButton.getActionListeners()[0].actionPerformed(null);
+        assertTrue(spyMenu.isVisible());
+
+        spyMenu.setVisible(true);
+        spyJButton.getActionListeners()[0].actionPerformed(null);
+        assertFalse(spyMenu.isVisible());
     }
+
 
     /**
      * Test of getText method, of class JMultiChoiceComboBoxMenu.

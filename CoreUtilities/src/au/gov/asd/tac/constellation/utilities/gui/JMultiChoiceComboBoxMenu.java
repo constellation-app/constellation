@@ -89,16 +89,7 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
             this.button = new JButton(text, arrow);
         }
         button.setHorizontalTextPosition(SwingConstants.LEFT);
-        button.addActionListener(event -> {
-            if (!menu.isVisible()) {
-                final Point p = button.getLocationOnScreen();
-                menu.setInvoker(button);
-                menu.setLocation((int) p.getX(), (int) p.getY() + button.getHeight());
-                menu.setVisible(true);
-            } else {
-                menu.setVisible(false);
-            }
-        });
+        addButtonActionListener(button, menu);
         add(button);
 
         selectedItems = new HashSet<>();
@@ -123,6 +114,19 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
             });
             menuItems.put(menuItem, item);
             menu.add(menuItem);
+        });
+    }
+
+    protected final void addButtonActionListener(final JButton button, final JPopupMenu menu) {
+        button.addActionListener(event -> {
+            if (!menu.isVisible()) {
+                final Point p = button.getLocationOnScreen();
+                menu.setInvoker(button);
+                menu.setLocation((int) p.getX(), (int) p.getY() + button.getHeight());
+                menu.setVisible(true);
+            } else {
+                menu.setVisible(false);
+            }
         });
     }
 
@@ -241,10 +245,6 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
 
     protected JButton getButton() {
         return button;
-    }
-
-    protected void setButton(JButton button) {
-        this.button = button;
     }
 
     protected JPopupMenu getMenu() {
