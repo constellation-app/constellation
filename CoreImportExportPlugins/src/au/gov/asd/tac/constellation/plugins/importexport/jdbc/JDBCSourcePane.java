@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -57,6 +58,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.StringUtils;
 
 public class JDBCSourcePane extends SourcePane {
 
@@ -402,6 +404,35 @@ public class JDBCSourcePane extends SourcePane {
         graphComboBox.getSelectionModel().select(((JDBCImportController) importController).getDestination());
 
     }
+    
+    private boolean validateConnectionParams(final TextField cn, final TextField connectionStringF, final ComboBox<JDBCDriver> driversComboBox) {
+        final StringJoiner missingParamsMsgs = new StringJoiner(System.lineSeparator() + System.lineSeparator());
+
+        if (StringUtils.isBlank(cn.getText())) {
+            missingParamsMsgs.add("\tConnection Name - please enter a name before continuing, it can be any name of your choosing.");
+        }
+        if (StringUtils.isBlank(connectionStringF.getText())) {
+            missingParamsMsgs.add("\tConnection String - please enter a connection string before continuing. "
+                    + "The connection string will contain the database type, host, port, and database of the db in the format "
+                    + "\"jdbc:[database name]://[host]:[port]/[database name]\"" + System.lineSeparator()
+                    + "e.g. jdbc:mysql://localhost:3306/employees for mysql or jdbc:postgresql://localhost:5432/test for postgres.");
+        }
+        if (driversComboBox.getValue() == null) {
+            missingParamsMsgs.add("\tConnection Driver - please select a driver before continuing.");
+        }
+
+        if (missingParamsMsgs.length() > 0) {
+            NotifyDisplayer.displayAlert("Add Connection",
+                    "Missing connection parameters",
+                    "The connection name, driver, and connection string are all required fields, you are missing the following:"
+                    + System.lineSeparator()
+                    + System.lineSeparator()
+                    + missingParamsMsgs.toString(),
+                    AlertType.ERROR);
+            return false;
+        }
+        return true;
+    }
 
     private void addOrModifyConnection(TableView<JDBCConnection> connectionsTable, JDBCConnection connection) {
         final boolean add = (connection == null);
@@ -427,6 +458,12 @@ public class JDBCSourcePane extends SourcePane {
         cn.setPromptText("Enter a name for your connection");
         cn.setStyle(PROMT_TEXT_COLOUR);
         cn.setFocusTraversable(false);
+        cn.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            cn.setStyle(""); 
+            if (!newVal && StringUtils.isBlank(cn.getText())){
+                cn.setStyle("-fx-text-box-border: red;");  
+            }
+        });
         gp.add(cn, 1, 0, 2, 1);
         final Label driverLabel = new Label("Driver");
         gp.add(driverLabel, 0, 1, 1, 1);
@@ -445,6 +482,12 @@ public class JDBCSourcePane extends SourcePane {
         connectionStringF.setPromptText("Enter a URL to connect to, eg. jdbc:sqlite:C:/my_folder/database.sqlite");
         connectionStringF.setStyle(PROMT_TEXT_COLOUR);
         connectionStringF.setFocusTraversable(false);
+        connectionStringF.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            connectionStringF.setStyle(""); 
+            if (!newVal && StringUtils.isBlank(connectionStringF.getText())){
+                connectionStringF.setStyle("-fx-text-box-border: red;");  
+            }
+        });
         gp.add(connectionStringF, 1, 2, 2, 1);
         final Label usernameLabel = new Label("Username");
         gp.add(usernameLabel, 0, 3, 1, 1);
@@ -463,6 +506,9 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(password, 1, 4, 2, 1);
         final Button addConnection = new Button(add ? "Add" : "Save");
         addConnection.setOnAction((final ActionEvent t2) -> {
+            if (!validateConnectionParams(cn, connectionStringF, driversComboBox)){
+                return;
+            }
 
             if (add && connectionsTable.getItems().stream().anyMatch(v -> v.getConnectionName().equals(cn.getText()))) {
                 final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT, "Add Connection", "There exist another connection with this name "
@@ -496,6 +542,9 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(addConnection, 1, 5, 1, 1);
         final Button test = new Button("Test Connection");
         test.setOnAction(t -> {
+            if (!validateConnectionParams(cn, connectionStringF, driversComboBox)){
+                return;
+            }
             if (!cn.getText().isBlank()
                     && driversComboBox.getValue() != null
                     && !connectionStringF.getText().isBlank()
