@@ -516,13 +516,10 @@ public class JsonUtilitiesNGTest {
             ObjectMapper mapper = new ObjectMapper();   
             JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
      
-            assertEquals(JsonUtilities.getTextValue("missing", testJson), null, "Missing node");
-            
+            assertEquals(JsonUtilities.getChildNode(testJson, "missing"), null, "Missing node");
             JsonNode childNode = JsonUtilities.getChildNode(testJson, "1.k4");
             assertEquals(JsonUtilities.getTextValue("2.k1", childNode), "nest1", "Get text value of string");
-            int i = 1;
-            
-            
+
         } catch (JsonProcessingException e) {
             // This would throw generating the JSON, which is not under test
         }        
@@ -543,7 +540,45 @@ public class JsonUtilitiesNGTest {
             // This would throw generating the JSON, which is not under test
         }        
     }
+    
+    /**
+     * Test calls to JsonUtilities.getGetTextValues.
+     */
+    @Test
+    public void testGetTextValues() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();   
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
+            
+            assertEquals(JsonUtilities.getTextValues("1.k4", testJson, ":"), "nest1:nest2", "Print child dictionary");
+            assertEquals(JsonUtilities.getTextValues("1.k5", testJson, ":"), "{\"l1\":\"list1\"}:2:3:4", "Print child list");
 
+            assertEquals(JsonUtilities.getTextValues("missing", testJson, ":"), null, "Node doesn't exist");
+
+        } catch (JsonProcessingException e) {
+            // This would throw generating the JSON, which is not under test
+        }        
+    }
+     
+    /**
+     * Test calls to JsonUtilities.getGetTextValue., \"12\": 3
+     */
+    @Test
+    public void testGetTextValueOfFirstSubElement() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();   
+            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"1.sub\": \"subvalue\"}], \"1.k6\": [{\"1.sub\": 55}]}");  
+            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("missing", "1.sub", testJson), null, "Attribute doesnt exist");
+            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k3", "1.sub", testJson), null, "Attribute exists but holds numbert");
+            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k4", "1.sub", testJson), null, "Attribute exists but holds dictionary");
+            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k5", "1.sub", testJson), "subvalue", "1st element is a string");
+            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k6", "1.sub", testJson), "55", "1st element is numerical");
+
+        } catch (JsonProcessingException e) {
+            // This would throw generating the JSON, which is not under test
+        }        
+    }
+       
     /**
      * Test calls to JsonUtilities.PrettyPrint.
      */

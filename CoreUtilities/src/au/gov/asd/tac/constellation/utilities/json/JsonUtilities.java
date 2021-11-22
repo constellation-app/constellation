@@ -270,6 +270,20 @@ public class JsonUtilities {
     }
     
     /**
+     * Private helper method returning string value of node.
+     * No validation of node is performed, it is the responsibility of calling method to 
+     * ensure node is not null.
+     * @param node Node to extract string value from.
+     * @return  String representation of node.
+     */
+    public static String getNodeText(JsonNode node) {
+        if (node.isTextual()) {
+            return node.textValue();
+        }
+        return node.toString();     
+    }
+
+    /**
      * Return the {@code textValue()} of a {@code JsonNode} if it exists
      * <p>
      * Example: root.get("thing").textValue()
@@ -281,12 +295,7 @@ public class JsonUtilities {
     public static String getTextValue(String attribute, JsonNode node) {
         if (node.has(attribute)) {
             JsonNode attributeNode = node.get(attribute);
-            
-            // node.textValue() only works on textual values and returns null for all others.
-            if (attributeNode.isTextual()) {
-                return attributeNode.textValue();
-            }
-            return attributeNode.toString();            
+            return getNodeText(attributeNode);       
         }
         return null;
     }
@@ -308,16 +317,13 @@ public class JsonUtilities {
                 if (sb.length() > 0) {
                     sb.append(delimiter);
                 }
-
-                sb.append(entry.textValue());
+                sb.append(getNodeText(entry));
             }
-
             return sb.toString();
         } else {
             return null;
         }
     }
-
 
     /**
      * Return the {@code textValue()} of a {@code JsonNode} which is inside
@@ -332,9 +338,11 @@ public class JsonUtilities {
      * @return a {@code String} or null if not found
      */
     public static String getTextValueOfFirstSubElement(String attribute, String innerAttribute, JsonNode node) {
-        if (node.has(attribute)) {
+    
+        if (node.has(attribute)) {          
             if (node.get(attribute).has(0) && node.get(attribute).get(0).has(innerAttribute)) {
-                return node.get(attribute).get(0).get(innerAttribute).textValue();
+                JsonNode innerNode = node.get(attribute).get(0).get(innerAttribute);
+                return getNodeText(innerNode);
             } else {
                 return null;
             }
