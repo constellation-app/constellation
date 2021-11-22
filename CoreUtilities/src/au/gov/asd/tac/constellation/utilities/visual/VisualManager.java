@@ -76,9 +76,7 @@ public final class VisualManager {
     private boolean indigenousChanges = false;
     private boolean refreshProcessor = false;
     
-    protected final Runnable processTask = () -> {
-        process();
-    };
+    protected final Runnable processTask = () -> process();
 
     /**
      * Construct a VisualManager to delegate between the supplied
@@ -146,11 +144,11 @@ public final class VisualManager {
             while (true) {
                 try {
                     final VisualOperation operation = getOperations().take();
-                    if (operation == SIGNIFY_PROCESSOR_IDLE_OPERATION) {
+                    if (operation == signifyProcessorIdleOperation) {
                         rendererIdle = true;
-                    } else if (operation == INDIGENOUS_CHANGES_UPDATE_OPERATION) {
+                    } else if (operation == indigenousChangesUpdateOperation) {
                         indigenousChanges = true;
-                    } else if (operation == REFRESH_PROCESSOR_OPERATION) {
+                    } else if (operation == refreshProcessorOperation) {
                         refreshProcessor = true;
                     } else {
                         operation.apply();
@@ -293,7 +291,7 @@ public final class VisualManager {
      * implementation specific.
      */
     public void refreshVisualProcessor() {
-        addOperation(REFRESH_PROCESSOR_OPERATION);
+        addOperation(refreshProcessorOperation);
     }
 
     /**
@@ -306,11 +304,11 @@ public final class VisualManager {
      * the data underlying the {@link VisualAccess}.
      */
     public void updateFromIndigenousChanges() {
-        addOperation(INDIGENOUS_CHANGES_UPDATE_OPERATION);
+        addOperation(indigenousChangesUpdateOperation);
     }
     
     protected void signifyProcessorIdle() {
-        addOperation(SIGNIFY_PROCESSOR_IDLE_OPERATION);
+        addOperation(signifyProcessorIdleOperation);
     }
 
     /**
@@ -358,7 +356,7 @@ public final class VisualManager {
     }
 
 
-    protected static final VisualOperation SIGNIFY_PROCESSOR_IDLE_OPERATION = new VisualOperation() {
+    protected final VisualOperation signifyProcessorIdleOperation = new VisualOperation() {
 
         @Override
         public int getPriority() {
@@ -371,7 +369,7 @@ public final class VisualManager {
         }
     };
 
-    protected static final VisualOperation REFRESH_PROCESSOR_OPERATION = new VisualOperation() {
+    protected final VisualOperation refreshProcessorOperation = new VisualOperation() {
 
         @Override
         public int getPriority() {
@@ -384,6 +382,6 @@ public final class VisualManager {
         }
     };
 
-    protected static final VisualOperation INDIGENOUS_CHANGES_UPDATE_OPERATION
+    protected final VisualOperation indigenousChangesUpdateOperation
             = () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE).build());
 }

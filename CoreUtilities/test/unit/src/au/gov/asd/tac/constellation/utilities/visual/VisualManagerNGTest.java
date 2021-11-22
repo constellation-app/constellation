@@ -15,10 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.visual;
 
-import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
-import static au.gov.asd.tac.constellation.utilities.visual.VisualManager.INDIGENOUS_CHANGES_UPDATE_OPERATION;
-import static au.gov.asd.tac.constellation.utilities.visual.VisualManager.SIGNIFY_PROCESSOR_IDLE_OPERATION;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -40,8 +36,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.stubbing.Answer;
-import org.openide.modules.InstalledFileLocator;
-import org.openide.util.Exceptions;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -242,7 +236,7 @@ public class VisualManagerNGTest {
             changes2.add(vc);
             when(op.getVisualChanges()).thenReturn(changes2);
             doNothing().when(op).apply();
-            queue.add(INDIGENOUS_CHANGES_UPDATE_OPERATION);
+            queue.add(instance.indigenousChangesUpdateOperation);
             queue2.add(op);
             instance.setProcessing(true);
             when(instance.getOperations()).thenReturn(queue, queue2);
@@ -389,7 +383,7 @@ public class VisualManagerNGTest {
             final VisualManager instance = new VisualManager(access, processor);
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
-            final boolean containsOP = queueBefore.contains(VisualManager.REFRESH_PROCESSOR_OPERATION);
+            final boolean containsOP = queueBefore.contains(instance.refreshProcessorOperation);
             
             instance.refreshVisualProcessor();
             
@@ -397,7 +391,7 @@ public class VisualManagerNGTest {
             
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
-            assertTrue(queueAfter.contains(VisualManager.REFRESH_PROCESSOR_OPERATION));
+            assertTrue(queueAfter.contains(instance.refreshProcessorOperation));
         }
     }
 
@@ -416,7 +410,7 @@ public class VisualManagerNGTest {
             final VisualManager instance = new VisualManager(access, processor);
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
-            final boolean containsOP = queueBefore.contains(VisualManager.INDIGENOUS_CHANGES_UPDATE_OPERATION);
+            final boolean containsOP = queueBefore.contains(instance.indigenousChangesUpdateOperation);
             
             instance.updateFromIndigenousChanges();
             
@@ -424,7 +418,7 @@ public class VisualManagerNGTest {
             
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
-            assertTrue(queueAfter.contains(VisualManager.INDIGENOUS_CHANGES_UPDATE_OPERATION));
+            assertTrue(queueAfter.contains(instance.indigenousChangesUpdateOperation));
         }
     }
 
@@ -502,7 +496,7 @@ public class VisualManagerNGTest {
             final VisualManager instance = new VisualManager(access, processor);
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
-            final boolean containsOP = queueBefore.contains(VisualManager.SIGNIFY_PROCESSOR_IDLE_OPERATION);
+            final boolean containsOP = queueBefore.contains(instance.signifyProcessorIdleOperation);
             
             instance.signifyProcessorIdle();
             
@@ -510,7 +504,7 @@ public class VisualManagerNGTest {
             
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
-            assertTrue(queueAfter.contains(VisualManager.SIGNIFY_PROCESSOR_IDLE_OPERATION));
+            assertTrue(queueAfter.contains(instance.signifyProcessorIdleOperation));
         }
     } 
 }
