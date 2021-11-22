@@ -20,6 +20,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
@@ -75,6 +78,24 @@ public class JsonUtilitiesNGTest {
     public void tearDownMethod() throws Exception {
     }
 
+    
+    /**
+     * Test that the default (private) constructor throws an exception and does nothing.
+     * @throws Exception 
+     */
+    @Test
+    public void testDefaultconstructor() throws Exception {
+        
+        Constructor<JsonUtilities> constructor = JsonUtilities.class.getDeclaredConstructor();
+        constructor.setAccessible(true); 
+        try {
+            constructor.newInstance();
+        } catch (InvocationTargetException  e) {
+            // Found I couldnt add @Test(expectedExceptions=BLAH) doe to how reflection wrpas exceptions.
+            assertEquals(e.getCause().toString(), "java.lang.IllegalStateException: Utility class", "Correct exception");
+        }
+    }
+    
     /**
      * Test calls to JsonUtilities.getTextField for which no default is supplied.
      */
@@ -536,6 +557,7 @@ public class JsonUtilitiesNGTest {
             assertEquals(JsonUtilities.getTextValue("1.k1", testJson), "aaa", "Get text value of string");
             assertEquals(JsonUtilities.getTextValue("1.k2", testJson), "false", "Get text value of boolean");
             assertEquals(JsonUtilities.getTextValue("1.k3", testJson), "1.1", "Get text value of numerical");
+            assertEquals(JsonUtilities.getTextValue("missing", testJson), null, "Node doesn't have attribute");
         } catch (JsonProcessingException e) {
             // This would throw generating the JSON, which is not under test
         }        
@@ -573,19 +595,21 @@ public class JsonUtilitiesNGTest {
             assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k4", "1.sub", testJson), null, "Attribute exists but holds dictionary");
             assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k5", "1.sub", testJson), "subvalue", "1st element is a string");
             assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k6", "1.sub", testJson), "55", "1st element is numerical");
+            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k6", "missing", testJson), null, "1st element is missing");
 
         } catch (JsonProcessingException e) {
             // This would throw generating the JSON, which is not under test
         }        
     }
-       
+    
     /**
      * Test calls to JsonUtilities.PrettyPrint.
      */
     @Test
     public void testPrettyPrint() {
         String expected = "{\n  \"1.k1\" : \"aaa\",\n  \"1.k2\" : 12,\n  \"1.k3\" : {\n    \"2.k1\" : false\n  }\n}".replace("\n", System.lineSeparator());
-        assertEquals(JsonUtilities.prettyPrint("{\"1.k1\":\"aaa\",\"1.k2\":12,\"1.k3\":{\"2.k1\":false}}"), expected, "Pretty print");
+        assertEquals(JsonUtilities.prettyPrint("{\"1.k1\":\"aaa\",\"1.k2\":12,\"1.k3\":{\"2.k1\":false}}"), expected, "Pretty print JSON");
+        assertEquals(JsonUtilities.prettyPrint("This is not JSON"), "This is not JSON", "Pretty print non-JSON");
     }
     
     /**
