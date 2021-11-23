@@ -735,7 +735,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                     graph.setIntValue(vertexClusterAttribute, vertex, -1);
                     if (state.isInteractive()) {
                         graph.setBooleanValue(vertexDimmedAttribute, vertex, true);
-                        graph.setFloatValue(vertexVisibilityAttribute, vertex, state.isExcludedElementsDimmed() ? 2.0f : -2.0f);
+                        graph.setFloatValue(vertexVisibilityAttribute, vertex, state.isExcludedElementsDimmed() ? 2.0F : -2.0F);
 
                     } else {
                         graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
