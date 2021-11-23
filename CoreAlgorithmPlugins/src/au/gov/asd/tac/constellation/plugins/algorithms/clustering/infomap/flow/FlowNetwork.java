@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.flow;
 
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -134,9 +133,9 @@ public class FlowNetwork {
             }
 
             if (config.isOutdirdir()) {
-                Logf.printf("counting only ingoing links... done!\n");
+                LOGGER.log(Level.INFO, "counting only ingoing links... done!");
             } else {
-                Logf.printf("using undirected links%s\n", config.isUndirdir() ? ", switching to directed after steady state... done!"
+                LOGGER.log(Level.INFO, "using undirected links%s\n", config.isUndirdir() ? ", switching to directed after steady state... done!"
                         : "... done!");
             }
 

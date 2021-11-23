@@ -42,7 +42,7 @@ public class Lcg {
 
     public void seed(final long newSeed) {
         s = newSeed;
-        Logf.printf("{{seed %d}}\n", newSeed);
+        LOGGER.log(Level.INFO, "Seed: {0}", newSeed);
     }
 
     public int nextInt() {

@@ -24,11 +24,9 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Con
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.InfoMath;
 import static au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.InfoMath.plogp;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.MultiMap;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -539,7 +537,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                     || (config.isIncludeSelfLinks()
                     && (current.getOutDegree() == 1 && current.getInDegree() == 1)
                     && current.getOutEdges().get(0).getTarget().equals(current))) {
-                Logf.printf("SKIPPING isolated node %s\n", current);
+                LOGGER.log(Level.INFO, "SKIPPING isolated node {0}", current);
                 //TODO: if not skipping self-links, this yields different results from moveNodesToPredefinedModules!!
                 assert !config.isIncludeSelfLinks();
                 continue;
@@ -618,11 +616,10 @@ public abstract class InfomapGreedy extends InfomapBase {
             // Store the DeltaFlow of the current module.
             final DeltaFlow oldModuleDelta = new DeltaFlow(moduleDeltaEnterExit[redirect[current.getIndex()] - offset]);
 
-            if (Logf.DEBUGF) {
+            if (DEBUG) {
                 for (int j = 0; j < numModuleLinks - 1; ++j) {
-                    Logf.printf("%d ", moduleDeltaEnterExit[j].getModule());
+                    LOGGER.log(Level.INFO, "{0}", moduleDeltaEnterExit[j].getModule());
                 }
-                Logf.printf(SeparatorConstants.NEWLINE);
             }
 
             // Randomize link order for optimized search.
@@ -852,11 +849,10 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         final MultiMap<Double, NodeBase> sortedModules = new MultiMap<>((d1, d2) -> (int) Math.signum(d2 - d1));
 
-        if (Logf.DEBUGF && parent.getChildDegree() > 0) {
+        if (DEBUG && parent.getChildDegree() > 0) {
             for (final NodeBase child : parent.getChildren()) {
-                Logf.printf("[%d]", child.getId());
+                LOGGER.log(Level.INFO, "{0}", child.getId());
             }
-            Logf.printf(SeparatorConstants.NEWLINE);
         }
 
         for (final NodeBase child : parent.getChildren()) {
@@ -896,7 +892,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     private void dumpActiveNetwork(final String prefix) {
         for (final NodeBase node : activeNetwork) {
-            Logf.printf("  %s %s\n", prefix, node);
+            LOGGER.log(Level.INFO, prefix + " " + node);
         }
     }
 }
