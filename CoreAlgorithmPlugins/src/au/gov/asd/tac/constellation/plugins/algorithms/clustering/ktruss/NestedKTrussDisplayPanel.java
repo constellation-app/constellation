@@ -57,7 +57,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     // The size of the border on each side of the step slider with which this panel is aligned.
     private static final int BORDER_SIZE = 8;
     // The width in pixels of the rectangles representing connected components
-    private final int rectangleWidth = 5;
+    private static final int rectangleWidth = 5;
     // the distance to the left (in pixels) of the step slider tick marks which rectangles will be drawn. Ensures that rectangles are centred on tick marks
     private final int rectangleOffset;
     private int totalNeededHeight;

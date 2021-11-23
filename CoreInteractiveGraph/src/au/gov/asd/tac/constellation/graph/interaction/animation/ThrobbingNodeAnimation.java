@@ -32,8 +32,8 @@ import java.util.Map;
 public class ThrobbingNodeAnimation extends Animation {
 
     private int nodeRadiusAttribute;
-    private final float lowerLimit = 1;
-    private final float upperLimit = 4;
+    private static final float lowerLimit = 1;
+    private static final float upperLimit = 4;
     private float currentDirection = 0.1F;
     private float currentRadius = 1F;
     private final long throbbingNodeAnimationId = VisualChangeBuilder.generateNewId();

@@ -102,12 +102,12 @@ public class NotesViewPane extends BorderPane {
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
 
-    private final int DEFAULT_SPACING = 5;
-    private final int OPTIONS_SPACING = 150;
-    private final String PROMPT_COLOUR = "#909090";
-    private final String USER_COLOUR = "#942483";
-    private final String AUTO_COLOUR = "#1c5aa6";
-    private final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
+    private static final int DEFAULT_SPACING = 5;
+    private static final int OPTIONS_SPACING = 150;
+    private static final String PROMPT_COLOUR = "#909090";
+    private static final String USER_COLOUR = "#942483";
+    private static final String AUTO_COLOUR = "#1c5aa6";
+    private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
     private static final String USER_NOTES_FILTER = "User Notes";

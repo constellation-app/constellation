@@ -100,7 +100,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     private long currentStructureModificationCount = Long.MIN_VALUE;
     private long currentSelectedModificationCount = Long.MIN_VALUE;
     private long currentBinnedModificationCount = Long.MIN_VALUE;
-    private final int currentTimeZoneAttribute = Graph.NOT_FOUND;
+    private static final int currentTimeZoneAttribute = Graph.NOT_FOUND;
     private long currentTimeZoneModificationCount = Long.MIN_VALUE;
     private final Map<String, BinCreator> binCreators = new LinkedHashMap<>();
     private int histogramStateAttribute = Graph.NOT_FOUND;

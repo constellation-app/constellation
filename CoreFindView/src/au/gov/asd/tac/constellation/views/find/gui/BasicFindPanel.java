@@ -41,9 +41,9 @@ public class BasicFindPanel extends javax.swing.JPanel {
      */
     private final JPanel dropDownPanel;
     private final JScrollPane scrollPane;
-    private final int INITIAL_DROPDOWN_WIDTH = 150;
-    private final int INITIAL_DROPDOWN_HEIGHT = 200;
-    private final String ATTRIBUTE_COUNT = " Attribute(s) Selected";
+    private static final int INITIAL_DROPDOWN_WIDTH = 150;
+    private static final int INITIAL_DROPDOWN_HEIGHT = 200;
+    private static final String ATTRIBUTE_COUNT = " Attribute(s) Selected";
     private ArrayList<Attribute> attributes = new ArrayList<>();
     private final JCheckBox selectAll = new JCheckBox("All");
     private final HashSet<String> selectedAttributes = new HashSet<>();

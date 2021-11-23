@@ -29,9 +29,9 @@ public class SelectionFreeformModel {
 
     private List<Point> points = null;
 
-    private final int BIG_NUMBER = 1000000;
-    private final int BIG_NEGATIVE_NUMBER = -BIG_NUMBER;
-    private final int MAX_POINTS = 50;
+    private static final int BIG_NUMBER = 1000000;
+    private static final int BIG_NEGATIVE_NUMBER = -BIG_NUMBER;
+    private static final int MAX_POINTS = 50;
 
     private Point zeroPoint = new Point(0, 0);
     private int leftMost = BIG_NUMBER;

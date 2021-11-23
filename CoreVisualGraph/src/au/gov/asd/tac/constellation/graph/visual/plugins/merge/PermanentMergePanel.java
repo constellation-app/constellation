@@ -49,8 +49,8 @@ public final class PermanentMergePanel extends JPanel {
     private ArrayList<Attribute> node_attributes;
     private PermanentMergeTableModel tableModel;
     private HashMap<Integer, Integer> selected_attributes;
-    private final String SELECTED_COLUMN = "SELECTED_COLUMN_FLAG";
-    private final String NODE_ID_COLUMN = "ID_";
+    private static final String SELECTED_COLUMN = "SELECTED_COLUMN_FLAG";
+    private static final String NODE_ID_COLUMN = "ID_";
 
     /**
      * constructor

@@ -66,7 +66,7 @@ public final class HitTester implements GLRenderable {
     // The buffer to read from. This is hardcoded as their seems to be no real reason to change it,
     // but perhaps it should be looked up from the corersponding GraphRenderable. At the moment it simply
     // matches the buffer name used inside the if(doHitTesting) {} block of GraphRenderable's display method.
-    private final int hitTestBufferName = GL.GL_COLOR_ATTACHMENT0;
+    private static final int hitTestBufferName = GL.GL_COLOR_ATTACHMENT0;
     private final GLVisualProcessor parent;
 
     private HitTestRequest hitTestRequest;

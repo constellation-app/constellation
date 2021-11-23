@@ -47,11 +47,11 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     private static final int HORIZONTAL_BORDER_SIZE = 0;
     private static final int VERTICAL_GAP = 4;
     // The width in pixels of the rectangles representing connected components
-    private final int lineThickness = 1;
-    private final int progressBarThickness = 3;
+    private static final int lineThickness = 1;
+    private static final int progressBarThickness = 3;
     private int neededHeight = 0;
     private int stepLimit = 0;
-    private final int minimum_yseparation = 3;
+    private static final int minimum_yseparation = 3;
     private int progress_x;
     private final JScrollPane scrollManager;
     private final HierarchicalControllerTopComponent controller;

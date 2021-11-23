@@ -66,12 +66,12 @@ public class FR3DArranger implements Arranger {
     private static final int BORDER = 1;
     private double temperature;
     //    private int currentIteration;
-    private final double attraction_multiplier = 0.75 / 0.67;
-    private final double repulsionMultiplier = 0.75 * 0.67;
+    private static final double attraction_multiplier = 0.75 / 0.67;
+    private static final double repulsionMultiplier = 0.75 * 0.67;
     private double attractionConstant;
     private double repulsionConstant;
     //    private double max_dimension;
-    private final double EPSILON = 0.000001;
+    private static final double EPSILON = 0.000001;
 //    private final GraphWriteMethods graph;
     private ArrayList<Point3D.Float> points;
     private ArrayList<Point3D.Float> offsets;

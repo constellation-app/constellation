@@ -31,7 +31,7 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_MemoryAction=Memory")
 public final class MemoryAction implements ActionListener {
 
-    private final float divideBy = 1024;
+    private static final float divideBy = 1024;
 
     @Override
     public void actionPerformed(ActionEvent e) {

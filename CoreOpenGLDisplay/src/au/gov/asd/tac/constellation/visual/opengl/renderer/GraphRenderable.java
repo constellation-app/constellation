@@ -68,10 +68,10 @@ public final class GraphRenderable implements GLRenderable {
     // flat relative to the eye, therefore the lines slope across them.
     // (I tried playing with DepthRange(), but all lines were behind all nodes even in 3D, which looks really weird.
     // Maybe a different n,f would work there.
-    final float FURTHER_F = 0;
-    final float FURTHER_U = 1;
-    final float NEARER_F = 0;
-    final float NEARER_U = -1;
+    static final float FURTHER_F = 0;
+    static final float FURTHER_U = 1;
+    static final float NEARER_F = 0;
+    static final float NEARER_U = -1;
 
     private final XyzTexturiser xyzTexturiser = new XyzTexturiser();
     private final VertexFlagsTexturiser vertexFlagsTexturiser = new VertexFlagsTexturiser();

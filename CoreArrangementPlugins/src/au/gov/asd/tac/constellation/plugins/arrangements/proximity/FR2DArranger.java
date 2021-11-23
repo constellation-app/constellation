@@ -39,12 +39,12 @@ class FR2DArranger implements Arranger {
 
     private double temperature;
 //    private int currentIteration;
-    private final double attraction_multiplier = 0.75 / 0.67;
-    private final double repulsionMultiplier = 0.75 * 0.67;
+    private static final double attraction_multiplier = 0.75 / 0.67;
+    private static final double repulsionMultiplier = 0.75 * 0.67;
     private double attractionConstant;
     private double repulsionConstant;
 //    private double max_dimension;
-    private final double EPSILON = 0.000001;
+    private static final double EPSILON = 0.000001;
 
     private GraphWriteMethods graph;
     private int vxCount;

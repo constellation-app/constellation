@@ -93,8 +93,8 @@ public class TimelineChart extends XYChart<Number, Number> {
     private final Tooltip tooltip;
     private final Rectangle selection;
     // Attributes and Instance Variables:
-    private final long lowestObservedTime = Long.MAX_VALUE;
-    private final long highestObservedTime = Long.MIN_VALUE;
+    private static final long lowestObservedTime = Long.MAX_VALUE;
+    private static final long highestObservedTime = Long.MIN_VALUE;
     private long lowestObservedDisplayPos = Long.MAX_VALUE;
     private long highestObservedDisplayPos = Long.MIN_VALUE;
     private double shiftYAxis = 0.0;
