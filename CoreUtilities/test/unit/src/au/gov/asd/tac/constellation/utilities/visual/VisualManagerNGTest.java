@@ -196,7 +196,6 @@ public class VisualManagerNGTest {
             when(op.getVisualChanges()).thenReturn(changes);
             doNothing().when(op).apply();
             queue.add(op);
-            instance.setProcessing(true);
             when(instance.getOperations()).thenReturn(queue);
             when(instance.isRendererIdle()).thenReturn(true);    
             when(instance.isProcessing()).thenReturn(true, false, false);    
@@ -238,7 +237,6 @@ public class VisualManagerNGTest {
             doNothing().when(op).apply();
             queue.add(instance.indigenousChangesUpdateOperation);
             queue2.add(op);
-            instance.setProcessing(true);
             when(instance.getOperations()).thenReturn(queue, queue2);
             when(instance.isRendererIdle()).thenReturn(true);    
             when(instance.isProcessing()).thenReturn(true, false, false);    

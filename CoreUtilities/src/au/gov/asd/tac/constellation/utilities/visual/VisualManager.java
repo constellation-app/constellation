@@ -75,7 +75,7 @@ public final class VisualManager {
     private boolean rendererIdle = true;
     private boolean indigenousChanges = false;
     private boolean refreshProcessor = false;
-    
+
     protected final Runnable processTask = () -> process();
 
     /**
@@ -134,7 +134,7 @@ public final class VisualManager {
             rendererIdle = true;
         }
     }
-    
+
     public final void process() {
         while (isProcessing()) {
             final NavigableSet<VisualChange> changes = new TreeSet<>();
@@ -183,50 +183,43 @@ public final class VisualManager {
         isProcessing = false;
         cancelProcessing(true);
     }
-    
+
     protected final void cancelProcessing(final boolean cancel) {
         if (processingFuture != null) {
             processingFuture.cancel(cancel);
         }
     }
-    
+
     protected final boolean isProcessing() {
         return isProcessing;
     }
+
     protected final boolean isRefreshProcessor() {
         return refreshProcessor;
     }
+
     protected final boolean isIndigenousChanges() {
         return indigenousChanges;
     }
-    protected final void setProcessing(final boolean newVal) {
-        isProcessing = newVal;
-    }
-    
+
     protected final boolean isRendererIdle() {
         return rendererIdle;
     }
-    protected final void setRendererIdle(final boolean newVal) {
-        rendererIdle = newVal;
-    }
-    
-    protected PriorityBlockingQueue<VisualOperation> getOperations(){
+
+    protected PriorityBlockingQueue<VisualOperation> getOperations() {
         return operationQueue;
     }
-    protected void setOperations(final PriorityBlockingQueue<VisualOperation> queue){
-        operationQueue.addAll(queue);
-    }
-    
-    protected VisualProcessor getProcessor(){
+
+    protected VisualProcessor getProcessor() {
         return processor;
     }
-    
-    protected CompletableFuture<Void> getProcessingFuture(){
+
+    protected CompletableFuture<Void> getProcessingFuture() {
         return processingFuture;
     }
-    
+
     protected VisualAccess getAccess() {
-        return access;   
+        return access;
     }
 
     /**
@@ -306,7 +299,7 @@ public final class VisualManager {
     public void updateFromIndigenousChanges() {
         addOperation(indigenousChangesUpdateOperation);
     }
-    
+
     protected void signifyProcessorIdle() {
         addOperation(signifyProcessorIdleOperation);
     }
@@ -354,7 +347,6 @@ public final class VisualManager {
     public final void addMultiChangeOperation(final List<VisualChange> changes) {
         addOperation(constructMultiChangeOperation(changes));
     }
-
 
     protected final VisualOperation signifyProcessorIdleOperation = new VisualOperation() {
 
