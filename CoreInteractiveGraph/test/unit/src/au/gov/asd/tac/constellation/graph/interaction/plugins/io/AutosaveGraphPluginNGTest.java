@@ -126,7 +126,7 @@ public class AutosaveGraphPluginNGTest {
     @Test
     public void testExecute() throws Exception {
         final File saveDir = AutosaveUtilities.getAutosaveDir();
-        final File saveFile = new File(saveDir, graph.getId() + FileExtensionConstants.STAR_EXTENSION);
+        final File saveFile = new File(saveDir, graph.getId() + FileExtensionConstants.STAR);
 
         // check the autosave file doesn't exist before running the plugin
         assertEquals(saveFile.exists(), false);

@@ -251,7 +251,7 @@ public class JDBCSourcePane extends SourcePane {
                 final Button chooser = new Button(" ... ");
                 chooser.setOnAction((final ActionEvent t2) -> {
                     final FileChooser cho = new FileChooser();
-                    cho.getExtensionFilters().add(new ExtensionFilter(FileExtensionConstants.JAR_EXTENSION, "*.jar"));
+                    cho.getExtensionFilters().add(new ExtensionFilter(FileExtensionConstants.JAR, "*.jar"));
 
                     final File f = cho.showOpenDialog(d);
                     if (f != null) {

@@ -143,7 +143,7 @@ public final class SharedDrawable {
                 String baseFileName = baseFile.getAbsolutePath();
                 baseFileName = FilenameUtils.removeExtension(baseFileName);
                 for (int page = 0; page < glyphManager.getGlyphPageCount(); page++) {
-                    final File outputFile = new File(baseFileName + SeparatorConstants.UNDERSCORE + page + FileExtensionConstants.PNG_EXTENSION);
+                    final File outputFile = new File(baseFileName + SeparatorConstants.UNDERSCORE + page + FileExtensionConstants.PNG);
                     try (final OutputStream out = new FileOutputStream(outputFile)) {
                         glyphManager.writeGlyphBuffer(page, out);
                     } catch (IOException ex) {

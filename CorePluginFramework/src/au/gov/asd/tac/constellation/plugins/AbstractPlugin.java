@@ -91,7 +91,7 @@ public abstract class AbstractPlugin implements Plugin {
 
     @Override
     public String getDescription() {
-        final String helpFileResource = getClass().getSimpleName() + FileExtensionConstants.HTML_EXTENSION;
+        final String helpFileResource = getClass().getSimpleName() + FileExtensionConstants.HTML;
         final URL helpURL = getClass().getResource(helpFileResource);
         if (helpURL != null) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(helpURL.openStream(), StandardCharsets.UTF_8.name()))) {

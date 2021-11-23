@@ -102,9 +102,9 @@ public class FileChooser extends JFileChooser {
      */
     @Override
     public Icon getIcon(final File f) {
-        if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.STAR_EXTENSION)) {
+        if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.STAR)) {
             return SchemaFactoryUtilities.getDefaultSchemaFactory().getIcon().buildIcon(16);
-        } else if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.NEBULA_EXTENSION)) {
+        } else if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.NEBULA)) {
             return NEBULA_ICON;
         } else {
             // Do nothing
@@ -186,7 +186,7 @@ public class FileChooser extends JFileChooser {
 
         @Override
         public String[] getSuffixes() {
-            return new String[]{FileExtensionConstants.JAVA_EXTENSION};
+            return new String[]{FileExtensionConstants.JAVA};
         }
     }
 

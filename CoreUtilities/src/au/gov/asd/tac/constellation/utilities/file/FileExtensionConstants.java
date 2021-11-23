@@ -25,42 +25,46 @@ public class FileExtensionConstants {
         throw new IllegalStateException("Utility class");
     }
     
-    public static final String STAR_EXTENSION = ".star";
-    public static final String BACKUP_EXTENSION = ".bak";
-    public static final String STAR_AUTOSAVE_EXTENSION = ".star_auto";
+    // Constellation file formats
+    public static final String STAR = ".star";
+    public static final String NEBULA = ".nebula";
+    public static final String STAR_AUTOSAVE = ".star_auto";
     
-    public static final String NEBULA_EXTENSION = ".nebula";
+    // Infomap extensions
+    public static final String TREE = ".tree";
+    public static final String CLUSTER = ".clu";
+    public static final String RANK = ".rank";
+    public static final String FLOW = ".flow";
     
-    public static final String TREE_EXTENSION = ".tree";
-    public static final String CLU_EXTENSION = ".clu";
-    public static final String RANK_EXTENSION = ".rank";
-    public static final String FLOW_EXTENSION = ".flow";
+    // Value file extensions
+    public static final String TAB_SEPARATED_VALUE = ".tsv";
+    public static final String COMMA_SEPARATED_VALUE = ".csv";
+    public static final String XLSX = ".xlsx";
     
-    public static final String TSV_EXTENSION = ".tsv";
-    public static final String CSV_EXTENSION = ".csv";
-    public static final String XLSX_EXTENSION = ".xlsx";
+    // Font extensions
+    public static final String OPEN_TYPE_FONT = ".otf";
+    public static final String TRUE_TYPE_FONT = ".ttf";
     
-    public static final String TSV_GZ_EXTENSION = ".tsv.gz";
-    public static final String GZ_EXTENSION = ".gz";
-    public static final String OTF_EXTENSION = ".otf";
-    public static final String TTF_EXTENSION = ".ttf";
+    // Zip extensions
+    public static final String TSV_GZIP = ".tsv.gz";
+    public static final String GZIP = ".gz";
     
-    public static final String TEXT_EXTENSION = ".txt";
-    public static final String JAVA_EXTENSION = ".java";
-    public static final String JAR_EXTENSION = ".jar";
-    public static final String CLASS_EXTENSION = ".class";
-    public static final String JAVASCRIPT_EXTENSION = ".js";
-    public static final String JSON_EXTENSION = ".json";
-    public static final String MARKDOWN_EXTENSION = ".md";
-    public static final String HTML_EXTENSION = ".html";
-    public static final String PYTHON_EXTENSION = ".py";
-    public static final String CASCADING_STYLE_SHEET_EXTENSION = ".css";
+    // Common file extensions
+    public static final String TEXT = ".txt";
+    public static final String JAVA = ".java";
+    public static final String JAR = ".jar";
+    public static final String CLASS = ".class";
+    public static final String JAVASCRIPT = ".js";
+    public static final String JSON = ".json";
+    public static final String MARKDOWN = ".md";
+    public static final String HTML = ".html";
+    public static final String PYTHON = ".py";
+    public static final String CASCADING_STYLE_SHEET = ".css";
+    public static final String BINARY = ".bin";
+    public static final String BACKUP = ".bak";
     
-    public static final String BINARY_EXTENSION = ".bin";
-    
-    public static final String JPG_EXTENSION = ".jpg";
-    public static final String PNG_EXTENSION = ".png";
-    public static final String GIF_EXTENSION = ".gif";
-    
-    
+    // Image extensions
+    public static final String JPG = ".jpg";
+    public static final String PNG = ".png";
+    public static final String GIF = ".gif";
 }

@@ -54,7 +54,7 @@ public final class ExportToImageAction implements ActionListener {
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
-                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(FileExtensionConstants.PNG_EXTENSION, pathName.getName())) {
+                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(FileExtensionConstants.PNG, pathName.getName())) {
                             return true;
                         }
                         return pathName.isDirectory();
@@ -69,8 +69,8 @@ public final class ExportToImageAction implements ActionListener {
         final File file = fChooser.showSaveDialog();
         if (file != null) {
             String fnam = file.getAbsolutePath();
-            if (!fnam.toLowerCase().endsWith(FileExtensionConstants.PNG_EXTENSION)) {
-                fnam += FileExtensionConstants.PNG_EXTENSION;
+            if (!fnam.toLowerCase().endsWith(FileExtensionConstants.PNG)) {
+                fnam += FileExtensionConstants.PNG;
             }
 
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_IMAGE)

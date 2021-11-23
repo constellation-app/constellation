@@ -1115,7 +1115,7 @@ public abstract class InfomapBase {
         }
         // Print .tree.
         if (config.isPrintTree()) {
-            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.TREE_EXTENSION);
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.TREE);
             if (config.getVerbosity() == 0) {
                 Logf.printf("(Writing .tree file..");
             } else {
@@ -1138,7 +1138,7 @@ public abstract class InfomapBase {
 
         // Print .clu.
         if (config.isPrintClu()) {
-            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.CLU_EXTENSION);
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.CLUSTER);
             if (config.getVerbosity() == 0) {
                 Logf.printf("(Writing .clu file.. ) ");
             } else {
@@ -1155,7 +1155,7 @@ public abstract class InfomapBase {
         }
 
         if (config.isPrintNodeRanks()) {
-            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.RANK_EXTENSION);
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.RANK);
             if (config.getVerbosity() > 0) {
                 System.out.printf("Print node ranks to %s...", outName);
             }
@@ -1170,7 +1170,7 @@ public abstract class InfomapBase {
         }
 
         if (config.isPrintFlowNetwork()) {
-            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.FLOW_EXTENSION);
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.FLOW);
             if (config.getVerbosity() == 0) {
                 Logf.printf("(Writing .flow file.. ", outName);
             } else {

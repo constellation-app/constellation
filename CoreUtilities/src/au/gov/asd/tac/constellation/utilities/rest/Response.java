@@ -132,7 +132,7 @@ public abstract class Response {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
 
-            final File tmp = File.createTempFile(getSaveResponseFilename(), FileExtensionConstants.JSON_EXTENSION);
+            final File tmp = File.createTempFile(getSaveResponseFilename(), FileExtensionConstants.JSON);
             mapper.writeValue(tmp, root);
             LOGGER.log(Level.INFO, "Response saved to {0}", tmp);
         }

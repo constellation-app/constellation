@@ -73,7 +73,7 @@ public class JDBCDriver {
                             for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
                                 final JarEntry je = e.nextElement();
                                 final String classname = je.getName();
-                                if (StringUtils.endsWithIgnoreCase(classname, FileExtensionConstants.CLASS_EXTENSION)) {
+                                if (StringUtils.endsWithIgnoreCase(classname, FileExtensionConstants.CLASS)) {
                                     try {
                                         // Remove ".class", convert '/' to '.' to create a proper class name.
                                         final int len = classname.length();

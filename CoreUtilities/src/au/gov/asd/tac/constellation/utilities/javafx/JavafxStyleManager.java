@@ -69,7 +69,7 @@ public class JavafxStyleManager {
             currentFontFamily = FontUtilities.getApplicationFontFamily();
             try {
                 // create a new temp file that will be removed as the application exits
-                final File tempStyleClass = File.createTempFile("dynamic", FileExtensionConstants.CASCADING_STYLE_SHEET_EXTENSION);
+                final File tempStyleClass = File.createTempFile("dynamic", FileExtensionConstants.CASCADING_STYLE_SHEET);
                 tempStyleClass.deleteOnExit();
 
                 // dynamically write the style sheet

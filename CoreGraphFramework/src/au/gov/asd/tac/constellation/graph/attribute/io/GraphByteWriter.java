@@ -87,7 +87,7 @@ public final class GraphByteWriter {
         final String reference = UUID.randomUUID().toString();
 
         // Store the data in a temporary file.
-        final File temp = File.createTempFile(FILE_PREFIX, FileExtensionConstants.BINARY_EXTENSION);
+        final File temp = File.createTempFile(FILE_PREFIX, FileExtensionConstants.BINARY);
         try (OutputStream out = new FileOutputStream(temp)) {
             copy(in, out);
             fileMap.put(reference, temp);

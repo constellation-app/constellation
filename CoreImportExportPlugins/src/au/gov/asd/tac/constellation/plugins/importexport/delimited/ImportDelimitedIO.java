@@ -195,7 +195,7 @@ public final class ImportDelimitedIO {
 
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-            final File f = new File(delimIoDir, FilenameEncoder.encode(templName + FileExtensionConstants.JSON_EXTENSION));
+            final File f = new File(delimIoDir, FilenameEncoder.encode(templName + FileExtensionConstants.JSON));
             try {
                 mapper.writeValue(f, rootNode);
                 StatusDisplayer.getDefault().setStatusText(String.format("Import definition saved to %s.", f.getPath()));
@@ -213,7 +213,7 @@ public final class ImportDelimitedIO {
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
         final String templName = new TemplateListDialog(parentWindow, true).getName(delimIoDir);
         if (templName != null) {
-            final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON_EXTENSION);
+            final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON);
             if (!template.canRead()) {
                 NotifyDisplayer.display(String.format("Template %s does not exist", templName), NotifyDescriptor.ERROR_MESSAGE);
             } else {
@@ -226,7 +226,7 @@ public final class ImportDelimitedIO {
             final String templName) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
-            final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON_EXTENSION));
+            final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON));
             final JsonNode source = root.get(SOURCE);
             final String parser = source.get(PARSER).textValue();
             final ImportFileParser ifp = ImportFileParser.getParser(parser);

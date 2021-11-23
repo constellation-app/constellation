@@ -59,7 +59,7 @@ public final class AutosaveStartup implements Runnable {
 //            System.out.printf("@OnShowing %s %s\n", this.getClass(), this.getClass().getClassLoader());
 
             // Look for existing autosaved in-memory graphs.
-            final File[] saveFiles = AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE_EXTENSION);
+            final File[] saveFiles = AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE);
             final long now = new Date().getTime();
 
             for (final File f : saveFiles) {

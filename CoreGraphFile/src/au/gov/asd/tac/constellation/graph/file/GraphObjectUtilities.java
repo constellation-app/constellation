@@ -98,7 +98,7 @@ public class GraphObjectUtilities {
                         null,
                         fnam);
             }
-            fnam = String.format("%s%s", fnam, FileExtensionConstants.STAR_EXTENSION);
+            fnam = String.format("%s%s", fnam, FileExtensionConstants.STAR);
             final FileObject fo = FileUtil.createData(root, fnam);
             gdo = (GraphDataObject) DataObject.find(fo);
         } catch (final IOException ex) {

@@ -61,7 +61,7 @@ public class FontInfo {
 
     private static Font getFont(final String fontName, final int fontStyle, final int fontSize) {
         Font font = null;
-        if (StringUtils.endsWithIgnoreCase(fontName, FileExtensionConstants.OTF_EXTENSION) || StringUtils.endsWithIgnoreCase(fontName, FileExtensionConstants.TTF_EXTENSION)) {
+        if (StringUtils.endsWithIgnoreCase(fontName, FileExtensionConstants.OPEN_TYPE_FONT) || StringUtils.endsWithIgnoreCase(fontName, FileExtensionConstants.TRUE_TYPE_FONT)) {
             File otfFile = getOtfFont(fontName);
             if (otfFile != null) {
                 LOGGER.log(Level.INFO, "Reading font from {0}", otfFile);

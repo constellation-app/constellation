@@ -273,7 +273,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                         @SuppressWarnings("unchecked") //files will be list of file which extends from object type
                         final List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                         for (final File file : files) {
-                            try (final InputStream in = StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.GZ_EXTENSION) ? new GZIPInputStream(new FileInputStream(file)) : new FileInputStream(file)) {
+                            try (final InputStream in = StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.GZIP) ? new GZIPInputStream(new FileInputStream(file)) : new FileInputStream(file)) {
                                 final RecordStore recordStore = RecordStoreUtilities.fromTsv(in);
                                 PluginExecution.withPlugin(new ImportRecordFile(recordStore)).executeLater(graph);
                             }
@@ -1054,7 +1054,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 existing.delete();
             }
 
-            final String ext = FileExtensionConstants.STAR_EXTENSION;
+            final String ext = FileExtensionConstants.STAR;
             if (name.endsWith(ext)) {
                 name = name.substring(0, name.length() - ext.length());
             }
@@ -1129,7 +1129,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
                     // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
                     // already have been written.
-                    FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(FileExtensionConstants.BACKUP_EXTENSION)));
+                    FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(FileExtensionConstants.BACKUP)));
                 }
 
                 try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {

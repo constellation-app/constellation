@@ -158,7 +158,7 @@ public class JsonIO {
 
         final File preferenceFile = new File(
                 preferenceDirectory,
-                FilenameEncoder.encode(prefixedFileName + FileExtensionConstants.JSON_EXTENSION)
+                FilenameEncoder.encode(prefixedFileName + FileExtensionConstants.JSON)
         );
 
         boolean go = true;
@@ -397,7 +397,7 @@ public class JsonIO {
             // Re-add the prefix and extension
             final File fileToDelete = new File(
                     preferenceDirectory,
-                    FilenameEncoder.encode(filePrefix.orElse("").concat(filename)) + FileExtensionConstants.JSON_EXTENSION
+                    FilenameEncoder.encode(filePrefix.orElse("").concat(filename)) + FileExtensionConstants.JSON
             );
 
             // Attempt to delete
@@ -437,7 +437,7 @@ public class JsonIO {
         final String[] names;
         if (preferenceDirectory.isDirectory()) {
             names = preferenceDirectory.list((File dir, String name)
-                    -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON_EXTENSION)
+                    -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)
                     && (filePrefix.isEmpty() || StringUtils.startsWithIgnoreCase(name, filePrefix.get()))
             );
         } else {
@@ -463,7 +463,7 @@ public class JsonIO {
                     .concat(selectedFileName.get());
             return deserializationFunction.apply(new File(
                             preferenceDirectory,
-                            FilenameEncoder.encode(prefixedFilename) + FileExtensionConstants.JSON_EXTENSION
+                            FilenameEncoder.encode(prefixedFilename) + FileExtensionConstants.JSON
                     )
             );
         }

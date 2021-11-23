@@ -128,7 +128,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
     /**
      * Filename extension for nebula files.
      */
-    public static final String FILE_EXTENSION = FileExtensionConstants.NEBULA_EXTENSION;
+    public static final String FILE_EXTENSION = FileExtensionConstants.NEBULA;
 
     // Remember nebula colors.
     private static final Map<String, Color> NEBULA_COLOR = new HashMap<>();

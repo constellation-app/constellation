@@ -117,7 +117,7 @@ public final class VisualGraphOpener extends GraphOpener {
                     if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
                         // The user wants the more recent autosaved version.
                         // Backup the current actual file and replace it with the autosave file.
-                        final File autosaved = new File(AutosaveUtilities.getAutosaveDir(), props.getProperty(AutosaveUtilities.ID) + FileExtensionConstants.STAR_EXTENSION);
+                        final File autosaved = new File(AutosaveUtilities.getAutosaveDir(), props.getProperty(AutosaveUtilities.ID) + FileExtensionConstants.STAR);
                         try {
                             AutosaveUtilities.copyFile(autosaved, f);
                         } catch (final IOException ex) {
@@ -194,7 +194,7 @@ public final class VisualGraphOpener extends GraphOpener {
                         // An exception was thrown trying to read specified star file. The most likely reason for this is
                         // a corrupt star file. Check to see if there was a 'backup' star file generated before the star file
                         // was writtien - if so, attmept to load this.
-                        final File backupFile = new File(graphFile.toString().concat(FileExtensionConstants.BACKUP_EXTENSION));
+                        final File backupFile = new File(graphFile.toString().concat(FileExtensionConstants.BACKUP));
 
                         // Clear previous progress message and reset to indicate we are trying to use backup.
                         ioProgressHandler.finish();

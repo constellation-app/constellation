@@ -89,7 +89,7 @@ public final class AutosaveGraphPlugin extends SimplePlugin {
             final File saveDir = AutosaveUtilities.getAutosaveDir();
 
             try {
-                final String gname = graph.getId() + FileExtensionConstants.STAR_EXTENSION;
+                final String gname = graph.getId() + FileExtensionConstants.STAR;
                 StatusDisplayer.getDefault().setStatusText(String.format("Auto saving %s as %s at %s...", graphId, gname, new Date()));
                 final File saveFile = new File(saveDir, gname);
                 new GraphJsonWriter().writeGraphToZip(copy, saveFile.getPath(), new HandleIoProgress("Autosaving..."));

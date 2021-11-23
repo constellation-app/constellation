@@ -77,8 +77,8 @@ public final class NewNebulaAction implements ActionListener {
                 props.setProperty("colour", String.format("%f,%f,%f", c.getRed(), c.getGreen(), c.getBlue()));
 
                 File f = fpv.get().get(0);
-                if (!StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.NEBULA_EXTENSION)) {
-                    f = new File(f.getAbsoluteFile() + FileExtensionConstants.NEBULA_EXTENSION);
+                if (!StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.NEBULA)) {
+                    f = new File(f.getAbsoluteFile() + FileExtensionConstants.NEBULA);
                 }
 
                 try {

@@ -90,7 +90,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
         if (local != null) {
             final File fontDir = new File(local, "Microsoft/Windows/Fonts");
             if (fontDir.isDirectory()) {
-                final File[] files = fontDir.listFiles((dir, name) -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.OTF_EXTENSION));
+                final File[] files = fontDir.listFiles((dir, name) -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.OPEN_TYPE_FONT));
                 if (files.length > 0) {
                     final List<String> names = Arrays.stream(existing).collect(Collectors.toList());
                     for (final File f : files) {

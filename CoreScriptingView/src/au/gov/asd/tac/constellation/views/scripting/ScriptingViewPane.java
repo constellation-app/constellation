@@ -260,7 +260,7 @@ public class ScriptingViewPane extends JPanel {
                     @Override
                     public boolean accept(final File pathName) {
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() &&StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON_EXTENSION)) {
+                        if (pathName.isFile() &&StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON)) {
                             return true;
                         }
                         return pathName.isDirectory();
@@ -286,7 +286,7 @@ public class ScriptingViewPane extends JPanel {
                     @Override
                     public boolean accept(final File pathName) {
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON_EXTENSION)) {
+                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON)) {
                             return true;
                         }
                         return pathName.isDirectory();
@@ -306,8 +306,8 @@ public class ScriptingViewPane extends JPanel {
         final int state = fileChooser.showSaveDialog(this);
         if (state == JFileChooser.APPROVE_OPTION) {
             String fileName = fileChooser.getSelectedFile().getPath();
-            if (!StringUtils.endsWithIgnoreCase(fileName, FileExtensionConstants.PYTHON_EXTENSION)) {
-                fileName += FileExtensionConstants.PYTHON_EXTENSION;
+            if (!StringUtils.endsWithIgnoreCase(fileName, FileExtensionConstants.PYTHON)) {
+                fileName += FileExtensionConstants.PYTHON;
             }
             final String text = scriptEditor.getText();
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_TEXT)

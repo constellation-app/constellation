@@ -463,7 +463,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
          */
         @Override
         public Icon getIcon(final File f) {
-            if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.STAR_EXTENSION)) {
+            if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.STAR)) {
                 return SchemaFactoryUtilities.getDefaultSchemaFactory().getIcon().buildIcon(16);
             }
             return super.getIcon(f);

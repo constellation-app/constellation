@@ -51,7 +51,7 @@ public final class ExportToJsonAction implements ActionListener {
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
-                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(FileExtensionConstants.JSON_EXTENSION, pathName.getName())) {
+                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(FileExtensionConstants.JSON, pathName.getName())) {
                             return true;
                         }
                         return pathName.isDirectory();
@@ -66,8 +66,8 @@ public final class ExportToJsonAction implements ActionListener {
         final File file = fChooser.showSaveDialog();
         if (file != null) {
             String fnam = file.getAbsolutePath();
-            if (!StringUtils.endsWithIgnoreCase(fnam, FileExtensionConstants.JSON_EXTENSION)) {
-                fnam += FileExtensionConstants.JSON_EXTENSION;
+            if (!StringUtils.endsWithIgnoreCase(fnam, FileExtensionConstants.JSON)) {
+                fnam += FileExtensionConstants.JSON;
             }
 
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_JSON)

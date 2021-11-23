@@ -58,8 +58,8 @@ public class ExportMenu {
     private static final String EXPORT_CSV_FILE_CHOOSER_TITLE = "Export To CSV";
     private static final String EXPORT_XLSX_FILE_CHOOSER_TITLE = "Export To XLSX";
 
-    private static final String EXPORT_CSV_FILE_CHOOSER_DESCRIPTION = "CSV files (*" + FileExtensionConstants.CSV_EXTENSION + ")";
-    private static final String EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION = "Excel files (*" + FileExtensionConstants.XLSX_EXTENSION + ")";
+    private static final String EXPORT_CSV_FILE_CHOOSER_DESCRIPTION = "CSV files (*" + FileExtensionConstants.COMMA_SEPARATED_VALUE + ")";
+    private static final String EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION = "Excel files (*" + FileExtensionConstants.XLSX + ")";
 
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
 
@@ -92,7 +92,7 @@ public class ExportMenu {
         exportCsvMenu = createExportMenu(
                 EXPORT_CSV,
                 EXPORT_CSV_FILE_CHOOSER_TITLE,
-                FileExtensionConstants.CSV_EXTENSION,
+                FileExtensionConstants.COMMA_SEPARATED_VALUE,
                 EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToCsvFilePlugin(
                         file,
@@ -105,7 +105,7 @@ public class ExportMenu {
         exportCsvSelectionMenu = createExportMenu(
                 EXPORT_CSV_SELECTION,
                 EXPORT_CSV_FILE_CHOOSER_TITLE,
-                FileExtensionConstants.CSV_EXTENSION,
+                FileExtensionConstants.COMMA_SEPARATED_VALUE,
                 EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToCsvFilePlugin(
                         file,
@@ -118,7 +118,7 @@ public class ExportMenu {
         exportExcelMenu = createExportMenu(
                 EXPORT_XLSX,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                FileExtensionConstants.XLSX_EXTENSION,
+                FileExtensionConstants.XLSX,
                 EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToExcelFilePlugin(
                         file,
@@ -133,7 +133,7 @@ public class ExportMenu {
         exportExcelSelectionMenu = createExportMenu(
                 EXPORT_XLSX_SELECTION,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                FileExtensionConstants.XLSX_EXTENSION,
+                FileExtensionConstants.XLSX,
                 EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToExcelFilePlugin(
                         file,

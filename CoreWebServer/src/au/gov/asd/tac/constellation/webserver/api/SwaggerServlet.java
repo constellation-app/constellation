@@ -180,7 +180,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                 final OutputStream out = response.getOutputStream();
                 mapper.writeValue(out, root);
             } else {
-                if (fileName.endsWith(FileExtensionConstants.JAVASCRIPT_EXTENSION)) {
+                if (fileName.endsWith(FileExtensionConstants.JAVASCRIPT)) {
                     response.setContentType("text/javascript");
                 }
 

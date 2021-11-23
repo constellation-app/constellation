@@ -269,7 +269,7 @@ private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                     public boolean accept(final File pathName) {
                         final int extlen = 4;
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && StringUtils.endsWithAny(name, new String[]{FileExtensionConstants.JPG_EXTENSION, FileExtensionConstants.PNG_EXTENSION})) {
+                        if (pathName.isFile() && StringUtils.endsWithAny(name, (CharSequence[]) new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
                             final String label = name.substring(0, name.length() - extlen);
 
                             // The name must contain at least one category (a '.' in position 1 or greater).
@@ -339,7 +339,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             // We need to get a JFileChooser because FileChooserBuilder doesn't have setSelectedFile().
             final JFileChooser chooser = fChooser.createFileChooser();
 
-            chooser.setSelectedFile(new File(iconName + FileExtensionConstants.PNG_EXTENSION));
+            chooser.setSelectedFile(new File(iconName + FileExtensionConstants.PNG));
             final int result = chooser.showSaveDialog(this);
             final File file = result == JFileChooser.APPROVE_OPTION ? chooser.getSelectedFile() : null;
 

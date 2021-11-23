@@ -66,6 +66,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
             bypassProxyHosts = Arrays.asList(prefs.get(ProxyPreferenceKeys.BYPASS, ProxyPreferenceKeys.BYPASS_DEFAULT).split(ProxyUtilities.PROXY_SEPARATOR));
         }
 
+        // Iterate to remove whitespace and make lowercase
         for (int i = 0; i < bypassProxyHosts.size(); i++) {
             bypassProxyHosts.set(i, bypassProxyHosts.get(i).trim().toLowerCase());
         }
@@ -146,7 +147,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
      */
     private static boolean isLocalHost(final String host, final List<String> localHosts) {
         final String hostLowerCase = host.toLowerCase();
-        if (StringUtils.equalsAnyIgnoreCase(hostLowerCase, new String[]{"localhost", "127.0.0.1"})) {
+        if (StringUtils.equalsAnyIgnoreCase(hostLowerCase, (CharSequence[]) new String[]{"localhost", "127.0.0.1"})) {
             return true;
         }
 

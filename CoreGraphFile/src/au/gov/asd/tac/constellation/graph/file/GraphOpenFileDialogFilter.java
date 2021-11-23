@@ -39,6 +39,6 @@ public class GraphOpenFileDialogFilter extends OpenFileDialogFilter {
 
     @Override
     public String[] getSuffixes() {
-        return new String[]{FileExtensionConstants.STAR_EXTENSION, FileExtensionConstants.NEBULA_EXTENSION};
+        return new String[]{FileExtensionConstants.STAR, FileExtensionConstants.NEBULA};
     }
 }

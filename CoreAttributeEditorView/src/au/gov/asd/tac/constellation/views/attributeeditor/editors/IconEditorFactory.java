@@ -180,7 +180,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                     return true;
                 } else {
                     final String filename = pathname.getAbsolutePath();
-                    return StringUtils.endsWithIgnoreCase(filename, FileExtensionConstants.PNG_EXTENSION);
+                    return StringUtils.endsWithIgnoreCase(filename, FileExtensionConstants.PNG);
                 }
             });
             for (final File file : filesInPath) {

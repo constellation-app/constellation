@@ -53,7 +53,7 @@ public class SaveGraphUtilities {
      * @throws InterruptedException
      */
     public static void saveGraphToTemporaryDirectory(final Graph graph, final String filename, boolean makeInteractable) throws IOException, InterruptedException {
-        final File saveCreatedGraph = File.createTempFile(filename, FileExtensionConstants.STAR_EXTENSION);
+        final File saveCreatedGraph = File.createTempFile(filename, FileExtensionConstants.STAR);
         final WritableGraph wg = graph.getWritableGraph("make graph interactable", true);
         try {
             if (makeInteractable) {
@@ -117,7 +117,7 @@ public class SaveGraphUtilities {
      * @throws IOException
      */
     public static void saveGraphToTemporaryDirectory(final StoreGraph graph, final String filename) throws IOException {
-        final File saveCreatedGraph = File.createTempFile(filename, FileExtensionConstants.STAR_EXTENSION);
+        final File saveCreatedGraph = File.createTempFile(filename, FileExtensionConstants.STAR);
 
         makeGraphInteractable(graph);
 

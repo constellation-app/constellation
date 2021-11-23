@@ -89,7 +89,7 @@ public class RecentGraphScreenshotUtilities {
      * @param filename The filename of the graph
      */
     public static void takeScreenshot(final String filename) {
-        final String imageFile = getScreenshotsDir() + File.separator + filename + FileExtensionConstants.PNG_EXTENSION;
+        final String imageFile = getScreenshotsDir() + File.separator + filename + FileExtensionConstants.PNG;
         final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(GraphManager.getDefault().getActiveGraph());
         final VisualManager visualManager = graphNode.getVisualManager();
@@ -166,7 +166,7 @@ public class RecentGraphScreenshotUtilities {
             filesInDirectory.addAll(Arrays.asList(screenShotsDir.listFiles()));
         }
 
-        RecentFiles.getUniqueRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + FileExtensionConstants.PNG_EXTENSION));
+        RecentFiles.getUniqueRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + FileExtensionConstants.PNG));
 
         filesInDirectory.forEach(file -> {
             if (!filesInHistory.contains(file.getName())) {

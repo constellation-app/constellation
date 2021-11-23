@@ -32,7 +32,7 @@ public final class GraphFileConstants {
     /**
      * The file extensions for ZipEntry files.
      */
-    public static final String FILE_EXTENSION = FileExtensionConstants.TEXT_EXTENSION;
+    public static final String FILE_EXTENSION = FileExtensionConstants.TEXT;
     /**
      * The field separator in CSV files.
      */

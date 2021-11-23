@@ -104,7 +104,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
         for (final File imageFile : imageFiles) {
             final ArrayList<BufferedImage> images = new ArrayList<>();
-            if (StringUtils.endsWithIgnoreCase(imageFile.getName(), FileExtensionConstants.GIF_EXTENSION)) {
+            if (StringUtils.endsWithIgnoreCase(imageFile.getName(), FileExtensionConstants.GIF)) {
                 final ThreeTuple<List<BufferedImage>, List<Integer>, List<Integer>> loadedImageData;
                 try {
                     loadedImageData = loadImagesFromStream(imageFile);
