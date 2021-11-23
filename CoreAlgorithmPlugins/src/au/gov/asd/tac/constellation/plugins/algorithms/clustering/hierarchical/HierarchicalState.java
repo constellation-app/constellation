@@ -45,7 +45,7 @@ public final class HierarchicalState {
     public HierarchicalState(final int steps, final int currentStep, final FastNewman.Group[] groups, final int vxCapacity) {
         this.steps = steps;
         optimumStep = this.currentStep = currentStep;
-        this.groups = groups;
+        this.groups = groups.clone();
 
         excludeSingleVertices = false;
         excludedElementsDimmed = false;
@@ -90,19 +90,19 @@ public final class HierarchicalState {
     }
 
     public int[] getClusterNumbers() {
-        return clusterNumbers;
+        return clusterNumbers.clone();
     }
 
     public void setClusterNumbers(final int[] clusterNumbers) {
-        this.clusterNumbers = clusterNumbers;
+        this.clusterNumbers = clusterNumbers.clone();
     }
 
     public int[] getClusterSeenBefore() {
-        return clusterSeenBefore;
+        return clusterSeenBefore.clone();
     }
 
     public void setClusterSeenBefore(final int[] clusterSeenBefore) {
-        this.clusterSeenBefore = clusterSeenBefore;
+        this.clusterSeenBefore = clusterSeenBefore.clone();
     }
 
     public int getRedrawCount() {
@@ -146,11 +146,11 @@ public final class HierarchicalState {
     }
 
     public FastNewman.Group[] getGroups() {
-        return groups;
+        return groups.clone();
     }
 
     public void setGroups(final FastNewman.Group[] groups) {
-        this.groups = groups;
+        this.groups = groups.clone();
     }
 
     public boolean isColored() {

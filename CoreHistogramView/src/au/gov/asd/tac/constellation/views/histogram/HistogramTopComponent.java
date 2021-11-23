@@ -100,7 +100,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     private long currentStructureModificationCount = Long.MIN_VALUE;
     private long currentSelectedModificationCount = Long.MIN_VALUE;
     private long currentBinnedModificationCount = Long.MIN_VALUE;
-    private static final int currentTimeZoneAttribute = Graph.NOT_FOUND;
+    private static final int CURRENT_TIME_ZONE_ATTRIBUTE = Graph.NOT_FOUND;
     private long currentTimeZoneModificationCount = Long.MIN_VALUE;
     private final Map<String, BinCreator> binCreators = new LinkedHashMap<>();
     private int histogramStateAttribute = Graph.NOT_FOUND;
@@ -220,8 +220,8 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                             return;
                         }
 
-                        if (currentTimeZoneAttribute != Graph.NOT_FOUND && currentTimeZoneModificationCount != rg.getValueModificationCounter(currentTimeZoneAttribute)) {
-                            currentTimeZoneModificationCount = rg.getValueModificationCounter(currentTimeZoneAttribute);
+                        if (CURRENT_TIME_ZONE_ATTRIBUTE != Graph.NOT_FOUND && currentTimeZoneModificationCount != rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE)) {
+                            currentTimeZoneModificationCount = rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE);
                             reset(rg);
                             return;
                         }

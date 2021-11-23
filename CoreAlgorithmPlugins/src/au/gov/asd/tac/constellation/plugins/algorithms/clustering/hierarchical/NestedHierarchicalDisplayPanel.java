@@ -47,12 +47,11 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     private static final int HORIZONTAL_BORDER_SIZE = 0;
     private static final int VERTICAL_GAP = 4;
     // The width in pixels of the rectangles representing connected components
-    private static final int lineThickness = 1;
-    private static final int progressBarThickness = 3;
+    private static final int LINE_THICKNESS = 1;
+    private static final int PROGRESS_BAR_THICKNESS = 3;
     private int neededHeight = 0;
     private int stepLimit = 0;
-    private double xseparation;
-    private static final int minimumYseparation = 3;
+    private static final int MINIMUM_Y_SEPARATION = 3;
     private int progressX;
     private final JScrollPane scrollManager;
     private final HierarchicalControllerTopComponent controller;
@@ -110,9 +109,9 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         for (int i = 0; i < lines.size(); i++) {
             g2.setColor(lines.get(i).color);
             // horizontal line
-            g2.fillRect(HORIZONTAL_BORDER_SIZE, VERTICAL_GAP + lines.get(i).ystart, lines.get(i).xstop, lineThickness);
+            g2.fillRect(HORIZONTAL_BORDER_SIZE, VERTICAL_GAP + lines.get(i).ystart, lines.get(i).xstop, LINE_THICKNESS);
             // vertical line
-            g2.fillRect(HORIZONTAL_BORDER_SIZE + lines.get(i).xstop, VERTICAL_GAP + lines.get(i).ystop, lineThickness, lines.get(i).ystart - lines.get(i).ystop + lineThickness);
+            g2.fillRect(HORIZONTAL_BORDER_SIZE + lines.get(i).xstop, VERTICAL_GAP + lines.get(i).ystop, LINE_THICKNESS, lines.get(i).ystart - lines.get(i).ystop + LINE_THICKNESS);
         }
 
         g2.setColor(new Color(0xB0, 0xB0, 0xB0));
@@ -124,7 +123,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         g2.fillPolygon(xpoints, ypoints_top, 3);
         g2.fillPolygon(xpoints, ypoints_bottom, 3);
         g2.setColor(new Color(0xB0, 0xB0, 0xB0, 130));
-        g2.fillRect(progressX, 0, progressBarThickness, neededHeight);
+        g2.fillRect(progressX, 0, PROGRESS_BAR_THICKNESS, neededHeight);
     }
 
     private static class GroupTreeNode implements Comparable<GroupTreeNode> {
@@ -232,10 +231,10 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
         lines = new LinkedList<>();
         final int prefHeight = scrollManager.getHeight();
-        final boolean verticalScrolling = prefHeight < sortedNodes.size() * minimumYseparation + (VERTICAL_GAP * 2);
-        neededHeight = verticalScrolling ? sortedNodes.size() * minimumYseparation + (VERTICAL_GAP * 2) : prefHeight;
+        final boolean verticalScrolling = prefHeight < sortedNodes.size() * MINIMUM_Y_SEPARATION + (VERTICAL_GAP * 2);
+        neededHeight = verticalScrolling ? sortedNodes.size() * MINIMUM_Y_SEPARATION + (VERTICAL_GAP * 2) : prefHeight;
         setSize(getWidth(), neededHeight);
-        final int yseparation = verticalScrolling ? minimumYseparation : (int) Math.floor(prefHeight / ((double) sortedNodes.size() + 1));
+        final int yseparation = verticalScrolling ? MINIMUM_Y_SEPARATION : (int) Math.floor(prefHeight / ((double) sortedNodes.size() + 1));
         setPreferredSize(new Dimension(getWidth(), neededHeight));
 
         // We do not want to draw on the border around the step slider
