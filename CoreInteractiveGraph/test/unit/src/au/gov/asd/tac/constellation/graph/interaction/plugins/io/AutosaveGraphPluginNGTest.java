@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.TextIoProgress;
 import java.io.File;
 import org.openide.windows.TopComponent;
@@ -125,7 +126,7 @@ public class AutosaveGraphPluginNGTest {
     @Test
     public void testExecute() throws Exception {
         final File saveDir = AutosaveUtilities.getAutosaveDir();
-        final File saveFile = new File(saveDir, graph.getId() + GraphDataObject.FILE_EXTENSION);
+        final File saveFile = new File(saveDir, graph.getId() + FileExtensionConstants.STAR_EXTENSION);
 
         // check the autosave file doesn't exist before running the plugin
         assertEquals(saveFile.exists(), false);

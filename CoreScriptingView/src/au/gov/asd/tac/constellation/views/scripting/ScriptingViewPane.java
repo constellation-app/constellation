@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -69,6 +70,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.BadLocationException;
+import org.apache.commons.lang3.StringUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -95,7 +97,6 @@ public class ScriptingViewPane extends JPanel {
     private static final String SCRIPTING_VIEW_THREAD_NAME = "Scripting View";
 
     private static final String LANGUAGE = "Python";
-    private static final String EXTENSION = ".py";
 
     private final ScriptingViewTopComponent topComponent;
     private final ScriptingParser scriptParser;
@@ -259,10 +260,9 @@ public class ScriptingViewPane extends JPanel {
                     @Override
                     public boolean accept(final File pathName) {
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && name.toLowerCase().endsWith(EXTENSION)) {
+                        if (pathName.isFile() &&StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON_EXTENSION)) {
                             return true;
                         }
-
                         return pathName.isDirectory();
                     }
 
@@ -286,10 +286,9 @@ public class ScriptingViewPane extends JPanel {
                     @Override
                     public boolean accept(final File pathName) {
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && name.toLowerCase().endsWith(EXTENSION)) {
+                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON_EXTENSION)) {
                             return true;
                         }
-
                         return pathName.isDirectory();
                     }
 
@@ -307,8 +306,8 @@ public class ScriptingViewPane extends JPanel {
         final int state = fileChooser.showSaveDialog(this);
         if (state == JFileChooser.APPROVE_OPTION) {
             String fileName = fileChooser.getSelectedFile().getPath();
-            if (!fileName.toLowerCase().endsWith(EXTENSION)) {
-                fileName += EXTENSION;
+            if (!StringUtils.endsWithIgnoreCase(fileName, FileExtensionConstants.PYTHON_EXTENSION)) {
+                fileName += FileExtensionConstants.PYTHON_EXTENSION;
             }
             final String text = scriptEditor.getText();
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_TEXT)

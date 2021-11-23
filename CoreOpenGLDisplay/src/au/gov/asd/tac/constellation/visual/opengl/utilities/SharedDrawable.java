@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
@@ -142,7 +143,7 @@ public final class SharedDrawable {
                 String baseFileName = baseFile.getAbsolutePath();
                 baseFileName = FilenameUtils.removeExtension(baseFileName);
                 for (int page = 0; page < glyphManager.getGlyphPageCount(); page++) {
-                    final File outputFile = new File(baseFileName + SeparatorConstants.UNDERSCORE + page + ".png");
+                    final File outputFile = new File(baseFileName + SeparatorConstants.UNDERSCORE + page + FileExtensionConstants.PNG_EXTENSION);
                     try (final OutputStream out = new FileOutputStream(outputFile)) {
                         glyphManager.writeGlyphBuffer(page, out);
                     } catch (IOException ex) {

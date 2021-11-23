@@ -66,7 +66,7 @@ public class DataAccessSearchProvider implements SearchProvider {
                 // Flatten everything to a single stream of plugins
                 .flatMap(Collection::stream)
                 // Filter out plugins whose name do NOT contain the filter text
-                .filter(plugin -> plugin.getName().toLowerCase().contains(text))
+                .filter(plugin -> StringUtils.containsIgnoreCase(plugin.getName(), text))
                 .map(DataAccessPlugin::getName)
                 .sorted((a, b) -> a.compareToIgnoreCase(b))
                 .collect(Collectors.toList());

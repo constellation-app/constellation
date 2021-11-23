@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.GraphicsEnvironment;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -25,6 +26,7 @@ import java.util.Locale;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javax.swing.JComponent;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -66,7 +68,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] availableFonts = ge.getAvailableFontFamilyNames(Locale.getDefault());
         final String os = System.getProperty("os.name");
-        if (os.toLowerCase().contains("win")) {
+        if (StringUtils.containsIgnoreCase(os, "win")) {
             availableFonts = otfFontFilesWindows(availableFonts);
         }
 
@@ -88,7 +90,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
         if (local != null) {
             final File fontDir = new File(local, "Microsoft/Windows/Fonts");
             if (fontDir.isDirectory()) {
-                final File[] files = fontDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".otf"));
+                final File[] files = fontDir.listFiles((dir, name) -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.OTF_EXTENSION));
                 if (files.length > 0) {
                     final List<String> names = Arrays.stream(existing).collect(Collectors.toList());
                     for (final File f : files) {

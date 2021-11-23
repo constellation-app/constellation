@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.T
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Lcg;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1114,7 +1115,7 @@ public abstract class InfomapBase {
         }
         // Print .tree.
         if (config.isPrintTree()) {
-            final File outName = new File(config.getOutDirectory(), filename + ".tree");
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.TREE_EXTENSION);
             if (config.getVerbosity() == 0) {
                 Logf.printf("(Writing .tree file..");
             } else {
@@ -1137,7 +1138,7 @@ public abstract class InfomapBase {
 
         // Print .clu.
         if (config.isPrintClu()) {
-            final File outName = new File(config.getOutDirectory(), filename + ".clu");
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.CLU_EXTENSION);
             if (config.getVerbosity() == 0) {
                 Logf.printf("(Writing .clu file.. ) ");
             } else {
@@ -1154,7 +1155,7 @@ public abstract class InfomapBase {
         }
 
         if (config.isPrintNodeRanks()) {
-            final File outName = new File(config.getOutDirectory(), filename + ".rank");
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.RANK_EXTENSION);
             if (config.getVerbosity() > 0) {
                 System.out.printf("Print node ranks to %s...", outName);
             }
@@ -1169,7 +1170,7 @@ public abstract class InfomapBase {
         }
 
         if (config.isPrintFlowNetwork()) {
-            final File outName = new File(config.getOutDirectory(), filename + ".flow");
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.FLOW_EXTENSION);
             if (config.getVerbosity() == 0) {
                 Logf.printf("(Writing .flow file.. ", outName);
             } else {

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import java.io.File;
 import java.util.Locale;
@@ -52,7 +53,7 @@ public class TemplateListDialog {
     private static String[] getFileLabels(final File delimIoDir) {
         final String[] names;
         if (delimIoDir.isDirectory()) {
-            names = delimIoDir.list((final File dir, final String name) -> name.toLowerCase(Locale.ENGLISH).endsWith(".json"));
+            names = delimIoDir.list((final File dir, final String name) -> name.toLowerCase(Locale.ENGLISH).endsWith(FileExtensionConstants.JSON_EXTENSION));
         } else {
             names = new String[0];
         }
@@ -96,7 +97,7 @@ public class TemplateListDialog {
         final Optional<ButtonType> option = dialog.showAndWait();
         if (option.isPresent() && option.get() == ButtonType.OK) {
             final String name = label.getText();
-            final File f = new File(delimIoDir, FilenameEncoder.encode(name + ".json"));
+            final File f = new File(delimIoDir, FilenameEncoder.encode(name + FileExtensionConstants.JSON_EXTENSION));
             boolean go = true;
             if (!isLoading && f.exists()) {
                 final String msg = String.format("'%s' already exists. Do you want to overwrite it?", name);

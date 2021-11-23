@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A PluginParameter is the object that holds the current state of a single
@@ -131,7 +132,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public final void setName(final String name) {
         if (!Objects.equals(name, this.name)) {
-            this.name = name == null ? "" : name;
+            this.name = StringUtils.defaultString(name);
             fireChangeEvent(ParameterChange.NAME);
         }
     }

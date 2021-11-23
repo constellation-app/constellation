@@ -15,13 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.components;
 
-import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.views.tableview.plugins.ExportToCsvFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview.plugins.ExportToExcelFilePlugin;
 import java.io.File;
@@ -36,6 +37,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
 
 /**
@@ -55,11 +57,9 @@ public class ExportMenu {
 
     private static final String EXPORT_CSV_FILE_CHOOSER_TITLE = "Export To CSV";
     private static final String EXPORT_XLSX_FILE_CHOOSER_TITLE = "Export To XLSX";
-    private static final String CSV_EXT = ".csv";
-    private static final String XLSX_EXT = ".xlsx";
 
-    private static final String EXPORT_CSV_FILE_CHOOSER_DESCRIPTION = "CSV files (*" + CSV_EXT + ")";
-    private static final String EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION = "Excel files (*" + XLSX_EXT + ")";
+    private static final String EXPORT_CSV_FILE_CHOOSER_DESCRIPTION = "CSV files (*" + FileExtensionConstants.CSV_EXTENSION + ")";
+    private static final String EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION = "Excel files (*" + FileExtensionConstants.XLSX_EXTENSION + ")";
 
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
 
@@ -92,7 +92,7 @@ public class ExportMenu {
         exportCsvMenu = createExportMenu(
                 EXPORT_CSV,
                 EXPORT_CSV_FILE_CHOOSER_TITLE,
-                CSV_EXT,
+                FileExtensionConstants.CSV_EXTENSION,
                 EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToCsvFilePlugin(
                         file,
@@ -105,7 +105,7 @@ public class ExportMenu {
         exportCsvSelectionMenu = createExportMenu(
                 EXPORT_CSV_SELECTION,
                 EXPORT_CSV_FILE_CHOOSER_TITLE,
-                CSV_EXT,
+                FileExtensionConstants.CSV_EXTENSION,
                 EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToCsvFilePlugin(
                         file,
@@ -118,7 +118,7 @@ public class ExportMenu {
         exportExcelMenu = createExportMenu(
                 EXPORT_XLSX,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                XLSX_EXT,
+                FileExtensionConstants.XLSX_EXTENSION,
                 EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToExcelFilePlugin(
                         file,
@@ -133,7 +133,7 @@ public class ExportMenu {
         exportExcelSelectionMenu = createExportMenu(
                 EXPORT_XLSX_SELECTION,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                XLSX_EXT,
+                FileExtensionConstants.XLSX_EXTENSION,
                 EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
                 file -> new ExportToExcelFilePlugin(
                         file,
@@ -327,22 +327,20 @@ public class ExportMenu {
          */
         public FileChooserBuilder getExportFileChooser() {
             return new FileChooserBuilder(fileChooserTitle)
-                    .setTitle(fileChooserTitle)
-                    .setFileFilter(new FileFilter() {
-                        @Override
-                        public boolean accept(final File file) {
-                            final String name = file.getName();
-                            // if it is an actual file and it ends with the expected extension
-                            return file.isFile() && name.toLowerCase()
-                                    .endsWith(expectedFileExtension.toLowerCase());
-                        }
-
-                        @Override
-                        public String getDescription() {
-                            return fileChooserDescription;
-                        }
-                    });
+                .setTitle(fileChooserTitle)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        // if it is an actual file and it ends with the expected extension
+                        return file.isFile() && StringUtils.endsWithIgnoreCase(name, expectedFileExtension);
+                    }
+                    @Override
+                    public String getDescription() {
+                        return fileChooserDescription;
+                    }
+                }
+            );
         }
     }
-
 }

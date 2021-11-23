@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.rest;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -131,7 +132,7 @@ public abstract class Response {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
 
-            final File tmp = File.createTempFile(getSaveResponseFilename(), ".json");
+            final File tmp = File.createTempFile(getSaveResponseFilename(), FileExtensionConstants.JSON_EXTENSION);
             mapper.writeValue(tmp, root);
             LOGGER.log(Level.INFO, "Response saved to {0}", tmp);
         }

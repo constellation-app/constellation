@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -53,7 +54,6 @@ public class JsonIO {
 
     private static final Logger LOGGER = Logger.getLogger(JsonIO.class.getName());
 
-    private static final String FILE_EXT = ".json";
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.systemDefault());
 
@@ -158,7 +158,7 @@ public class JsonIO {
 
         final File preferenceFile = new File(
                 preferenceDirectory,
-                FilenameEncoder.encode(prefixedFileName + FILE_EXT)
+                FilenameEncoder.encode(prefixedFileName + FileExtensionConstants.JSON_EXTENSION)
         );
 
         boolean go = true;
@@ -397,7 +397,7 @@ public class JsonIO {
             // Re-add the prefix and extension
             final File fileToDelete = new File(
                     preferenceDirectory,
-                    FilenameEncoder.encode(filePrefix.orElse("").concat(filename)) + FILE_EXT
+                    FilenameEncoder.encode(filePrefix.orElse("").concat(filename)) + FileExtensionConstants.JSON_EXTENSION
             );
 
             // Attempt to delete
@@ -437,8 +437,8 @@ public class JsonIO {
         final String[] names;
         if (preferenceDirectory.isDirectory()) {
             names = preferenceDirectory.list((File dir, String name)
-                    -> name.toLowerCase().endsWith(FILE_EXT)
-                    && (filePrefix.isEmpty() || name.toLowerCase().startsWith(filePrefix.get()))
+                    -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON_EXTENSION)
+                    && (filePrefix.isEmpty() || StringUtils.startsWithIgnoreCase(name, filePrefix.get()))
             );
         } else {
             // Nothing to select from - return an empty array
@@ -461,10 +461,9 @@ public class JsonIO {
         if (selectedFileName.isPresent()) {
             final String prefixedFilename = filePrefix.orElse("")
                     .concat(selectedFileName.get());
-            return deserializationFunction.apply(
-                    new File(
+            return deserializationFunction.apply(new File(
                             preferenceDirectory,
-                            FilenameEncoder.encode(prefixedFilename) + FILE_EXT
+                            FilenameEncoder.encode(prefixedFilename) + FileExtensionConstants.JSON_EXTENSION
                     )
             );
         }

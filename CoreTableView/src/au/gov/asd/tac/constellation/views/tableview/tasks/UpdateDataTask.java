@@ -23,6 +23,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.table.TableFilter;
 
 /**
@@ -90,7 +91,7 @@ public class UpdateDataTask implements Runnable {
                 = TableFilter.forTableView(table.getTableView()).lazy(true).apply();
         filter.setSearchStrategy((filterTerm, cellText) -> {
             try {
-                return cellText.toLowerCase().startsWith(filterTerm.toLowerCase());
+                return StringUtils.startsWithIgnoreCase(cellText, filterTerm);
             } catch (final Exception ex) {
                 return false;
             }

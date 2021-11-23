@@ -106,7 +106,7 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
                             wg.commit();
                         }
 
-                        final String graphName = schemaFactory.getLabel().replace(" ", "").toLowerCase();
+                        final String graphName = schemaFactory.getLabel().trim().toLowerCase();
                         GraphOpener.getDefault().openGraph(graph, graphName);
                     }
                 }.start());

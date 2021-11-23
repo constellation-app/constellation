@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.Import
 import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -82,7 +83,6 @@ public final class ImportDelimitedIO {
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_ARGS = "translator_args";
     private static final String DEFAULT_VALUE = "default_value";
-    private static final String JSON_EXTENSION = ".json";
 
     private ImportDelimitedIO() {
         // private constructor to hide implicit public one - java:S1118
@@ -195,7 +195,7 @@ public final class ImportDelimitedIO {
 
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-            final File f = new File(delimIoDir, FilenameEncoder.encode(templName + JSON_EXTENSION));
+            final File f = new File(delimIoDir, FilenameEncoder.encode(templName + FileExtensionConstants.JSON_EXTENSION));
             try {
                 mapper.writeValue(f, rootNode);
                 StatusDisplayer.getDefault().setStatusText(String.format("Import definition saved to %s.", f.getPath()));
@@ -213,7 +213,7 @@ public final class ImportDelimitedIO {
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
         final String templName = new TemplateListDialog(parentWindow, true).getName(delimIoDir);
         if (templName != null) {
-            final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION);
+            final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON_EXTENSION);
             if (!template.canRead()) {
                 NotifyDisplayer.display(String.format("Template %s does not exist", templName), NotifyDescriptor.ERROR_MESSAGE);
             } else {
@@ -226,7 +226,7 @@ public final class ImportDelimitedIO {
             final String templName) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
-            final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION));
+            final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON_EXTENSION));
             final JsonNode source = root.get(SOURCE);
             final String parser = source.get(PARSER).textValue();
             final ImportFileParser ifp = ImportFileParser.getParser(parser);

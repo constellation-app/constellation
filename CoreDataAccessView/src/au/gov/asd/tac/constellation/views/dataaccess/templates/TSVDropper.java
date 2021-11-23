@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -45,6 +46,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.zip.GZIPInputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -85,9 +87,9 @@ public class TSVDropper implements GraphDropper {
                         // Only process files that have a .tsv or .tsv.gz extension
                         // If any file does not have this extension then reject all the files.
                         final InputStream in;
-                        if (file.getName().endsWith(".tsv.gz")) {
+                        if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TSV_GZ_EXTENSION)) {
                             in = new GZIPInputStream(new FileInputStream(file));
-                        } else if (file.getName().endsWith(".tsv")) {
+                        } else if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TSV_EXTENSION)) {
                             in = new FileInputStream(file);
                         } else {
                             badData = true;

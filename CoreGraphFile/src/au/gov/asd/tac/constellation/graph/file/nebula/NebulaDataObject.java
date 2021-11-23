@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileReader;
@@ -127,7 +128,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
     /**
      * Filename extension for nebula files.
      */
-    public static final String FILE_EXTENSION = ".nebula";
+    public static final String FILE_EXTENSION = FileExtensionConstants.NEBULA_EXTENSION;
 
     // Remember nebula colors.
     private static final Map<String, Color> NEBULA_COLOR = new HashMap<>();
