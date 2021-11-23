@@ -43,6 +43,10 @@ import org.apache.commons.csv.CSVRecord;
 public class RecordStoreUtilities {
 
     private static final Logger LOGGER = Logger.getLogger(RecordStoreUtilities.class.getName());
+    
+    private RecordStoreUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static String[] parseTsvRow(final String line) {
         final String[] fields = line.split(SeparatorConstants.TAB, -1);

@@ -113,7 +113,7 @@ public abstract class QualityControlRule {
     /**
      * Construct a Rule.
      */
-    public QualityControlRule() {
+    protected QualityControlRule() {
         results = new HashSet<>();
     }
 

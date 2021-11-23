@@ -36,6 +36,7 @@ import java.util.Locale;
 public class RestServiceUtilities {
 
     private RestServiceUtilities() {
+        throw new IllegalStateException("Utility class");
     }
 
     /**

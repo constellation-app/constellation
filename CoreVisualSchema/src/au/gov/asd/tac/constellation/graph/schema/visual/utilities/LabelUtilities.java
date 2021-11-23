@@ -26,6 +26,10 @@ import java.util.List;
  * @author twilight_sparkle
  */
 public class LabelUtilities {
+    
+    private LabelUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Return a list of attribute ids corresponding to the attribute names in

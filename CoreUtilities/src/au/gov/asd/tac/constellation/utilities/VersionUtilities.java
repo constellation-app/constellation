@@ -20,6 +20,10 @@ package au.gov.asd.tac.constellation.utilities;
  * @author aquila
  */
 public class VersionUtilities {
+    
+    private VersionUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Compare two decimal separated version numbers and return if the stated

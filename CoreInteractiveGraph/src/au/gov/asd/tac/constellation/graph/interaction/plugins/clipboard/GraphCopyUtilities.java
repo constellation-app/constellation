@@ -35,6 +35,10 @@ import java.util.BitSet;
  */
 public class GraphCopyUtilities {
 
+    private GraphCopyUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Copies the selected graph nodes and transactions, placing them on the
      * CONSTELLATION specific clipboard.

@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.views.scripting.graph.exceptions.NoSuchAttributeException;
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SAttributeIterator;
-import java.util.logging.Logger;
 
 /**
  * A representation of a transaction for use with scripting.
@@ -30,8 +29,6 @@ import java.util.logging.Logger;
  * @author cygnus_x-1
  */
 public class STransaction {
-
-    private static final Logger LOGGER = Logger.getLogger(STransaction.class.getName());
 
     private final GraphReadMethods readableGraph;
     private final int id;

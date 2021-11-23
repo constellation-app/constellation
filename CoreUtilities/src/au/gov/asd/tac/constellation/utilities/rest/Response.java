@@ -69,11 +69,11 @@ public abstract class Response {
 
     private static final Logger LOGGER = Logger.getLogger(Response.class.getName());
 
-    public Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes) throws IOException {
+    protected Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes) throws IOException {
         this(code, message, headers, bytes, true);
     }
 
-    public Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes, final boolean isJson) throws IOException {
+    protected Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes, final boolean isJson) throws IOException {
         this.code = code;
         this.message = message;
         this.headers = headers;

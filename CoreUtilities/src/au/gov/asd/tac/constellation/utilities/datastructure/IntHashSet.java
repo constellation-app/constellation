@@ -51,7 +51,7 @@ public abstract class IntHashSet implements Serializable {
     private final int[] prev;
     private final int[] hashCache;
 
-    public IntHashSet(final int capacity) {
+    protected IntHashSet(final int capacity) {
         buckets = new int[capacity];
         Arrays.fill(buckets, -1);
         next = new int[capacity];
@@ -59,7 +59,7 @@ public abstract class IntHashSet implements Serializable {
         hashCache = new int[capacity];
     }
 
-    public IntHashSet(final IntHashSet original) {
+    protected IntHashSet(final IntHashSet original) {
         this.buckets = Arrays.copyOf(original.buckets, original.buckets.length);
         this.next = Arrays.copyOf(original.next, original.next.length);
         this.prev = Arrays.copyOf(original.prev, original.prev.length);

@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -71,7 +70,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
 
-    private ObservableList<String> checkedIndices;
 
     // The height of the report box last time we looked
     // This allows us to see if a change in the vertical scroll
@@ -90,7 +88,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     // the JavaFX thread from running out of memory
     private static final int MAXIMUM_REPORT_PANES = 300;
 
-    public PluginReporterPane(final PluginReporterTopComponent topComponent) {
+    public PluginReporterPane() {
 
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);

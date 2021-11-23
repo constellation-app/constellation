@@ -20,9 +20,10 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config.ConnectionType;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import java.util.Arrays;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Parse graph connections into a map ordered by (end1, end2).
@@ -30,6 +31,8 @@ import java.util.TreeMap;
  * @author algol
  */
 public class Network {
+
+    private static final Logger LOGGER = Logger.getLogger(Network.class.getName());
 
     private final Config config;
     private final GraphReadMethods rg;
@@ -115,15 +118,14 @@ public class Network {
             }
         }
 
-        Logf.printf("done! Found %d nodes and %d connections. ", rg.getVertexCount(), connectionMap.size());
+        final String formattedString = String.format("done! Found %d nodes and %d connections. ", rg.getVertexCount(), connectionMap.size());
+        LOGGER.log(Level.INFO, formattedString);
         if (numDoubleLinks > 0) {
-            Logf.printf("%d connections was aggregated to existing connections. ", numDoubleLinks);
+            LOGGER.log(Level.INFO, "{0} connections was aggregated to existing connections.", numDoubleLinks);
         }
         if (numSelfLinks > 0 && !config.isIncludeSelfLinks()) {
-            Logf.printf("%d self-connections was ignored. ");
+            LOGGER.log(Level.INFO, "self-connections was ignored.");
         }
-
-        System.out.printf("%n");
     }
 
     public int getNumNodes() {

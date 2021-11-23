@@ -39,6 +39,10 @@ public class DownloadImageUtilities {
     @StaticResource
     private static final String DOWNLOAD_FAILED_ICON = "au/gov/asd/tac/constellation/utilities/file/resources/download_failed.png";
 
+    private DownloadImageUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Download a png file and return an {@code Image} instance of the image. If
      * the download failed for whatever reason, an image with

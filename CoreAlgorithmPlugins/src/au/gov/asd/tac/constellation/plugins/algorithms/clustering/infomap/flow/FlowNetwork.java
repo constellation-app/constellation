@@ -16,11 +16,12 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.flow;
 
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Flow Network
@@ -29,12 +30,14 @@ import java.util.TreeMap;
  */
 public class FlowNetwork {
 
+    private static final Logger LOGGER = Logger.getLogger(FlowNetwork.class.getName());
+
     private double[] nodeFlow;
     private double[] nodeTeleportRates;
     private Connection[] flowConns;
 
     public void calculateFlow(final Network network, final Config config) {
-        Logf.printf("Calculating global flow... ");
+        LOGGER.log(Level.INFO, "Calculating global flow... ");
 
         int[] nodeOutDegree;
         double[] sumLinkOutWeight; // Per leaf nodes
@@ -91,8 +94,8 @@ public class FlowNetwork {
                 }
             }
 
-            System.out.printf("using directed links with raw flow... done!%n");
-            System.out.printf("Total link weight: %f%n", totalConnWeight);
+            LOGGER.log(Level.INFO, "using directed links with raw flow... done!");
+            LOGGER.log(Level.INFO, "Total link weight: {0}", totalConnWeight);
 
             return;
         }
@@ -130,17 +133,17 @@ public class FlowNetwork {
             }
 
             if (config.isOutdirdir()) {
-                Logf.printf("counting only ingoing links... done!\n");
+                LOGGER.log(Level.INFO, "counting only ingoing links... done!");
             } else {
-                Logf.printf("using undirected links%s\n", config.isUndirdir() ? ", switching to directed after steady state... done!"
+                LOGGER.log(Level.INFO, "using undirected links%s\n", config.isUndirdir() ? ", switching to directed after steady state... done!"
                         : "... done!");
             }
 
             return;
         }
 
-        System.out.printf("using %s teleportation to %s... ", config.isRecordedTeleportation() ? "recorded" : "unrecorded",
-                config.isTeleportToNodes() ? "nodes" : "links");
+        LOGGER.log(Level.INFO, String.format("using %s teleportation to %s... ", config.isRecordedTeleportation() ? "recorded" : "unrecorded",
+                config.isTeleportToNodes() ? "nodes" : "links"));
 
         // Calculate the teleport rate distribution.
         if (config.isTeleportToNodes()) {
@@ -205,8 +208,10 @@ public class FlowNetwork {
             }
 
             // Normalize if needed.
-            if (sum != 0 && Math.abs(sum - 1.0) > 1.0e-10) {
-                System.out.printf("(Normalizing ranks after %d power iterations with error %e) ", numIterations, sum - 1.0);
+            final double adjustedSum =  sum - 1.0;
+            if (sum != 0 && Math.abs(adjustedSum) > 1.0e-10) {
+                final String logMsg = String.format("Normalizing ranks after %d power iterations with error %e ", numIterations, adjustedSum);
+                LOGGER.log(Level.INFO, logMsg);
                 for (int i = 0; i < numNodes; ++i) {
                     nodeFlow[i] /= sum;
                 }
@@ -239,7 +244,7 @@ public class FlowNetwork {
             conn.setFlow(conn.getFlow() * (beta * nodeFlowTmp[conn.getSource()] / sumNodeRank));
         }
 
-        System.out.printf("done in %d iterations!%n", numIterations);
+        LOGGER.log(Level.INFO, "done in {0} iterations!", numIterations);
     }
 
     public double[] getNodeFlow() {

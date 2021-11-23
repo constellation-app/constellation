@@ -38,17 +38,14 @@ class FR2DArranger implements Arranger {
     private static final int BORDER = 1;
 
     private double temperature;
-//    private int currentIteration;
-    private static final double attraction_multiplier = 0.75 / 0.67;
-    private static final double repulsionMultiplier = 0.75 * 0.67;
+    private static final double ATTRACTION_MULTIPLIER = 0.75 / 0.67;
+    private static final double REPULSION_MULTIPLIER = 0.75 * 0.67;
     private double attractionConstant;
     private double repulsionConstant;
-//    private double max_dimension;
     private static final double EPSILON = 0.000001;
 
     private GraphWriteMethods graph;
     private int vxCount;
-//    private final int radiusAttr;
     private ArrayList<Point2D.Float> points;
     private ArrayList<Point2D.Float> offsets;
     private boolean maintainMean;
@@ -91,8 +88,8 @@ class FR2DArranger implements Arranger {
         double forceConstant;
         temperature = width / 10.0;
         forceConstant = Math.pow(height * width / (double) vxCount, 1.0 / 2.0);
-        attractionConstant = attraction_multiplier * forceConstant;
-        repulsionConstant = repulsionMultiplier * forceConstant;
+        attractionConstant = ATTRACTION_MULTIPLIER * forceConstant;
+        repulsionConstant = REPULSION_MULTIPLIER * forceConstant;
 
         // Create an array of points to match the array of nodes.
         // This means we have to allow for gaps in the array where nodes have been removed.

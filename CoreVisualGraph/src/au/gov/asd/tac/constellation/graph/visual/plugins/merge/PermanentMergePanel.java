@@ -45,10 +45,10 @@ public final class PermanentMergePanel extends JPanel {
     final Graph graph;
     JPanel selectedPanel;
     private final int primaryNode;
-    private final ArrayList<Integer> node_list;
-    private ArrayList<Attribute> node_attributes;
+    private final ArrayList<Integer> nodeList;
+    private ArrayList<Attribute> nodeAttrbiutes;
     private PermanentMergeTableModel tableModel;
-    private HashMap<Integer, Integer> selected_attributes;
+    private HashMap<Integer, Integer> selectedAttributes;
     private static final String SELECTED_COLUMN = "SELECTED_COLUMN_FLAG";
     private static final String NODE_ID_COLUMN = "ID_";
 
@@ -56,15 +56,15 @@ public final class PermanentMergePanel extends JPanel {
      * constructor
      *
      * @param graph the graph that holds the vertices to be merged.
-     * @param node_selections a list of vertices to be merged.
+     * @param nodeSelections a list of vertices to be merged.
      * @param vxId the id of the vertex to be the surviving vertex.
      */
-    public PermanentMergePanel(final Graph graph, final ArrayList<Integer> node_selections, final int vxId) {
+    public PermanentMergePanel(final Graph graph, final ArrayList<Integer> nodeSelections, final int vxId) {
         initComponents();
         this.graph = graph;
-        node_list = node_selections;
+        nodeList = nodeSelections;
         primaryNode = vxId;
-        selected_attributes = new HashMap<>();
+        selectedAttributes = new HashMap<>();
         populateTable();
         nodeTable.setDefaultRenderer(String.class, new AttributeCellRenderer(this));
         nodeTable.getTableHeader().setPreferredSize(new Dimension(nodeTable.getColumnModel().getTotalColumnWidth(), 40));
@@ -87,7 +87,7 @@ public final class PermanentMergePanel extends JPanel {
     private void populateTable() {
         this.getVertexAttributes();
         tableModel = (PermanentMergeTableModel) nodeTable.getModel();
-        tableModel.initialise(graph, node_attributes);
+        tableModel.initialise(graph, nodeAttrbiutes);
         this.setupVertexData();
         this.includeAllVertices();
     }
@@ -97,7 +97,7 @@ public final class PermanentMergePanel extends JPanel {
      * for the merged node
      */
     private void setupSelectedAttributes() {
-        selected_attributes = new HashMap<>();
+        selectedAttributes = new HashMap<>();
         processCellSelection(0, 1);
     }
 
@@ -110,11 +110,11 @@ public final class PermanentMergePanel extends JPanel {
     private void processCellSelection(final int row, final int column) {
         if (column == 1) {
             for (int i = 2; i < tableModel.getColumnCount(); i++) {
-                selected_attributes.put(i, row);
+                selectedAttributes.put(i, row);
                 setColumnHeader(row, i);
             }
         } else if (column >= 2) {
-            selected_attributes.put(column, row);
+            selectedAttributes.put(column, row);
             setColumnHeader(row, column);
         } else {
             // Do nothing
@@ -130,7 +130,7 @@ public final class PermanentMergePanel extends JPanel {
      * @return boolean
      */
     public boolean isCellSelected(final int row, final int column) {
-        return (selected_attributes.containsKey(column) && (selected_attributes.get(column) == row));
+        return (selectedAttributes.containsKey(column) && (selectedAttributes.get(column) == row));
     }
 
     /**
@@ -162,19 +162,19 @@ public final class PermanentMergePanel extends JPanel {
         ReadableGraph rg = graph.getReadableGraph();
         try {
             int attrCount = rg.getAttributeCount(GraphElementType.VERTEX);
-            node_attributes = new ArrayList<>();
+            nodeAttrbiutes = new ArrayList<>();
 
             for (int i = 0; i < attrCount; i++) {
-                node_attributes.add(new GraphAttribute(rg, rg.getAttribute(GraphElementType.VERTEX, i)));
+                nodeAttrbiutes.add(new GraphAttribute(rg, rg.getAttribute(GraphElementType.VERTEX, i)));
             }
         } finally {
             rg.release();
         }
 
-        Collections.sort(node_attributes, new AttributeComparator());
+        Collections.sort(nodeAttrbiutes, new AttributeComparator());
 
-        node_attributes.add(0, new GraphAttribute(GraphElementType.VERTEX, NODE_ID_COLUMN, NODE_ID_COLUMN, NODE_ID_COLUMN));
-        node_attributes.add(0, new GraphAttribute(GraphElementType.VERTEX, SELECTED_COLUMN, SELECTED_COLUMN, SELECTED_COLUMN));
+        nodeAttrbiutes.add(0, new GraphAttribute(GraphElementType.VERTEX, NODE_ID_COLUMN, NODE_ID_COLUMN, NODE_ID_COLUMN));
+        nodeAttrbiutes.add(0, new GraphAttribute(GraphElementType.VERTEX, SELECTED_COLUMN, SELECTED_COLUMN, SELECTED_COLUMN));
     }
 
     /**
@@ -188,9 +188,9 @@ public final class PermanentMergePanel extends JPanel {
                 tableModel.addRow(populateTableRow(rg, primaryNode));
             }
 
-            for (int j = 0; j < node_list.size(); j++) {
-                if (primaryNode != node_list.get(j)) {
-                    tableModel.addRow(populateTableRow(rg, node_list.get(j)));
+            for (int j = 0; j < nodeList.size(); j++) {
+                if (primaryNode != nodeList.get(j)) {
+                    tableModel.addRow(populateTableRow(rg, nodeList.get(j)));
                 }
             }
         } finally {
@@ -205,12 +205,12 @@ public final class PermanentMergePanel extends JPanel {
      * @param vxId node id
      */
     private Object[] populateTableRow(final ReadableGraph graph, final int vxId) {
-        Object[] row = new Object[node_attributes.size() + 1];
+        Object[] row = new Object[nodeAttrbiutes.size() + 1];
         row[0] = true;
         row[1] = Integer.toString(vxId);
 
-        for (int i = 2; i < node_attributes.size(); i++) {
-            Attribute attr = node_attributes.get(i);
+        for (int i = 2; i < nodeAttrbiutes.size(); i++) {
+            Attribute attr = nodeAttrbiutes.get(i);
             if (!attr.getName().equalsIgnoreCase(SELECTED_COLUMN)) {
                 row[i] = graph.getStringValue(attr.getId(), vxId);
             }
@@ -266,11 +266,11 @@ public final class PermanentMergePanel extends JPanel {
     public HashMap<Integer, String> getAttributes() {
         HashMap<Integer, String> list = new HashMap<>();
         for (int i = 2; i < tableModel.getColumnCount(); i++) {
-            Object value = tableModel.getValueAt(selected_attributes.get(i), i);
+            Object value = tableModel.getValueAt(selectedAttributes.get(i), i);
             if (value == null) {
                 value = "";
             }
-            list.put(node_attributes.get(i).getId(), value.toString());
+            list.put(nodeAttrbiutes.get(i).getId(), value.toString());
         }
         return list;
     }

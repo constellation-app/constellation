@@ -33,13 +33,13 @@ import java.util.TimeZone;
  */
 public final class IoUtilities {
 
-    private final SimpleDateFormat SDF_DT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSSZ");
-    private final SimpleDateFormat SDF_D = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat simpleDateFormatDateTime = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSSZ");
+    private final SimpleDateFormat simpleDateFormatDate = new SimpleDateFormat("yyyy-MM-dd");
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
     public IoUtilities() {
-        SDF_DT.setTimeZone(UTC);
-        SDF_D.setTimeZone(UTC);
+        simpleDateFormatDateTime.setTimeZone(UTC);
+        simpleDateFormatDate.setTimeZone(UTC);
     }
 
     public static final Charset UTF8 = StandardCharsets.UTF_8;

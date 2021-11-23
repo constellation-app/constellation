@@ -339,25 +339,8 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         // Method intentionally left blank
     }
 
-//    /**
-//     * Listen to the TopComponent registry for node activations.
-//     *
-//     * @param listen
-//     */
-//    private void updateListener(boolean listen)
-//    {
-//        if(listen)
-//        {
-//            TopComponent.getRegistry().addPropertyChangeListener(activationListener);
-//        }
-//        else
-//        {
-//            TopComponent.getRegistry().removePropertyChangeListener(activationListener);
-//        }
-//    }
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
-//        System.out.printf("@PMTC gC %s\n", evt);
         boolean update = false;
         final ReadableGraph rg = graph.getReadableGraph();
         try {
@@ -367,7 +350,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                     planesAttr = pa;
                     planesModificationCounter = rg.getValueModificationCounter(planesAttr);
                     update = true;
-//                    System.out.printf("@PMTC %d %d\n", planesAttr, planesModificationCounter);
                 }
             } else {
                 final long pmc = rg.getValueModificationCounter(planesAttr);
@@ -398,14 +380,11 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         if (graphNode != null) {
             ((DragDropList) planeList).setPlanes(null, null);
             graph.removeGraphChangeListener(this);
-//            graphNode.removeNodeListener(changeListener);
-//            graphNode.getVisualisationManager().removePropertyChangeListener(this);
         }
 
         if (node != null) {
             graphNode = node;
             graph = graphNode.getGraph();
-//            final Visual visual = graphNode.getVisualisationManager();
 
             final ReadableGraph rg = graph.getReadableGraph();
             try {
@@ -422,66 +401,15 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 rg.release();
             }
 
-//            final List<Plane> planes = visual.getPlanes();
-//            final BitSet visiblePlanes = visual.getVisiblePlanes();
-//            ((DragDropList)planeList).setPlanes(planes, visiblePlanes);
             graph.addGraphChangeListener(this);
 
-//            graphNode.getVisualisationManager().addPropertyChangeListener(this);
         } else {
             graphNode = null;
             graph = null;
-            // state = null;
         }
         isAdjustingList = false;
     }
-//    /**
-//     * Listener for node activations.
-//     */
-//    private class NodeActivationListener implements Runnable, PropertyChangeListener
-//    {
-//        @Override
-//        public void propertyChange(PropertyChangeEvent ev)
-//        {
-//            if(TopComponent.Registry.PROP_ACTIVATED_NODES.equals(ev.getPropertyName()))
-//            {
-//                activate();
-//            }
-//        }
-//        @Override
-//        public void run()
-//        {
-//            activate();
-//        }
-//        public void activate()
-//        {
-//            final Node[] nodes = TopComponent.getRegistry().getActivatedNodes();
-//            if(nodes!=null && nodes.length==1 && nodes[0] instanceof GraphNode)
-//            {
-//                final GraphNode gnode = ((GraphNode)nodes[0]);
-//                if(gnode!=graphNode)
-//                {
-//                    setNode(gnode);
-//                }
-//            }
-//        }
-//    }
-//    /**
-//     * Listener for node changes, particularly nodes being destroyed.
-//     */
-//    private class NodeChangeListener extends NodeAdapter
-//    {
-//        @Override
-//        public void propertyChange(PropertyChangeEvent ev)
-//        {
-//            debug("property change %s %s\n", new Date(), ev);
-//        }
-//        @Override
-//        public void nodeDestroyed(NodeEvent ev)
-//        {
-//            setNode(null);
-//        }
-//    }
+
 
     /**
      * Plugin to update the plane visibility on the graph.
@@ -732,6 +660,5 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
             }
             wg.setObjectValue(planesAttr, 0, state);
         }
-
     }
 }

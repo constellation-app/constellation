@@ -113,7 +113,7 @@ public class NotesViewPane extends BorderPane {
     private static final String USER_NOTES_FILTER = "User Notes";
     private static final String SELECTED_FILTER = "Selected";
 
-    private final Object LOCK = new Object();
+    private static final Object LOCK = new Object();
 
     private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String BOLD_STYLE = "-fx-font-weight: bold;";
@@ -125,7 +125,7 @@ public class NotesViewPane extends BorderPane {
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
 
-    public final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
     /**
      * NotesViewPane constructor.

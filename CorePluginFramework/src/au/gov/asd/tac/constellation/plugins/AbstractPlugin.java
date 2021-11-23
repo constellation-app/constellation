@@ -40,11 +40,11 @@ public abstract class AbstractPlugin implements Plugin {
 
     private final String pluginName;
 
-    public AbstractPlugin() {
+    protected AbstractPlugin() {
         this.pluginName = null;
     }
 
-    public AbstractPlugin(String pluginName) {
+    protected AbstractPlugin(String pluginName) {
         this.pluginName = pluginName;
     }
 

@@ -48,8 +48,8 @@ public class ReplacePanel extends javax.swing.JPanel {
     private ArrayList<Attribute> attributes = new ArrayList<>();
     private final JCheckBox selectAll = new JCheckBox("All");
     private final HashSet<String> selectedAttributes = new HashSet<>();
-    private final Color RED_COLOR = Color.red.darker();
-    private final Color GREEN_COLOR = Color.green.darker();
+    private static final Color RED_COLOR = Color.red.darker();
+    private static final Color GREEN_COLOR = Color.green.darker();
     private ValidationListener validationListener;
     private boolean currValidity = false;
 

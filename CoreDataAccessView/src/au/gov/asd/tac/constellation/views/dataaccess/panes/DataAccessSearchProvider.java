@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.quicksearch.SearchProvider;
@@ -36,7 +35,6 @@ import org.netbeans.spi.quicksearch.SearchResponse;
  * @author algol
  */
 public class DataAccessSearchProvider implements SearchProvider {
-    private static final Logger LOGGER = Logger.getLogger(DataAccessSearchProvider.class.getName());
 
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
@@ -56,11 +54,11 @@ public class DataAccessSearchProvider implements SearchProvider {
                     + "Data Access View cannot be created.");
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-            
+
             throw new IllegalStateException("Failed to load data access plugins. "
                     + "Data Access View cannot be created.");
         }
-        
+
         // Find all matching plugin names
         final List<String> pluginNames = plugins.values().stream()
                 // Flatten everything to a single stream of plugins
