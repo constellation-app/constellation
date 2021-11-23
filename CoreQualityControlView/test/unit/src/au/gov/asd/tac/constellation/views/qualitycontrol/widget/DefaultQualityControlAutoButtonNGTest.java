@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
@@ -68,7 +69,7 @@ public class DefaultQualityControlAutoButtonNGTest {
         // My guess is that there is a test generating these files and not cleaning
         // up which is why this test is consistently failing when run on CI. Its that
         // file cleanup that should be fixed!!!
-        Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
+        Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE_EXTENSION))
                 .forEach(file -> file.delete());
 
         if (!FxToolkit.isFXApplicationThreadRunning()) {
