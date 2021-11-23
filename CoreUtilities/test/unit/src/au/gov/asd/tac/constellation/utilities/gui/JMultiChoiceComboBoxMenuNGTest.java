@@ -21,6 +21,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -197,21 +198,20 @@ public class JMultiChoiceComboBoxMenuNGTest {
         final ActionEvent actionEventMock = mock(ActionEvent.class);
         final Map<JMenuItem, String> menuItems = instance.getMenuItems();
         final String itemSelected = "Item 3";
-        final JMenuItem manuItem = getKey(menuItems, itemSelected);
+        final JMenuItem menuItem = getKey(menuItems, itemSelected).stream().findFirst().get();
         final ListSelectionListener listSelectionListenerMock1 = mock(ListSelectionListener.class);
 
-        doReturn(manuItem).when(actionEventMock).getSource();
+        doReturn(menuItem).when(actionEventMock).getSource();
 
         instance.addSelectionListener(listSelectionListenerMock1);
         instance.setSelectedItem(itemSelected);
 
-        final Set<String> resultSet = instance.getSelectedItems();
-        assertEquals(resultSet.size(), 1);
+        assertEquals(instance.getSelectedItems().size(), 1);
 
-        manuItem.getActionListeners()[0].actionPerformed(actionEventMock);
+        menuItem.getActionListeners()[0].actionPerformed(actionEventMock);
 
         verify(listSelectionListenerMock1, times(1)).valueChanged(any(ListSelectionEvent.class));
-        assertEquals(resultSet.size(), 0);
+        assertEquals(instance.getSelectedItems().size(), 0);
     }
 
     /**
@@ -226,30 +226,30 @@ public class JMultiChoiceComboBoxMenuNGTest {
         final ActionEvent actionEventMock = mock(ActionEvent.class);
         final Map<JMenuItem, String> menuItems = instance.getMenuItems();
         final String itemSelected = "Item 1";
-        final JMenuItem manuItem = getKey(menuItems, "Item 4");
+        final JMenuItem menuItem = getKey(menuItems, "Item 4").stream().findFirst().get();
         final ListSelectionListener listSelectionListenerMock1 = mock(ListSelectionListener.class);
 
-        doReturn(manuItem).when(actionEventMock).getSource();
+        doReturn(menuItem).when(actionEventMock).getSource();
 
         instance.addSelectionListener(listSelectionListenerMock1);
         instance.setSelectedItem(itemSelected);
 
-        final Set<String> resultSet = instance.getSelectedItems();
-        assertEquals(resultSet.size(), 1);
+        assertEquals(instance.getSelectedItems().size(), 1);
 
-        manuItem.getActionListeners()[0].actionPerformed(actionEventMock);
+        menuItem.getActionListeners()[0].actionPerformed(actionEventMock);
 
         verify(listSelectionListenerMock1, times(1)).valueChanged(any(ListSelectionEvent.class));
-        assertEquals(resultSet.size(), 2);
+        assertEquals(instance.getSelectedItems().size(), 2);
     }
 
-    public <K, V> K getKey(Map<K, V> map, V value) {
+    private <K, V> Set<K> getKey(Map<K, V> map, V value) {
+        Set<K> keys = new HashSet<>();
         for (Entry<K, V> entry : map.entrySet()) {
             if (entry.getValue().equals(value)) {
-                return entry.getKey();
+                keys.add(entry.getKey());
             }
         }
-        return null;
+        return keys;
     }
 
     /**
