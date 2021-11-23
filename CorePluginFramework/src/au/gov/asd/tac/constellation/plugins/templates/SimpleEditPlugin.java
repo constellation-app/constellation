@@ -57,7 +57,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
 
     private static final String WAITING_INTERACTION = "Waiting...";
 
-    public SimpleEditPlugin() {
+    protected SimpleEditPlugin() {
     }
 
     public SimpleEditPlugin(String pluginName) {

@@ -53,6 +53,10 @@ public class GraphObjectUtilities {
 
     private static final String CHOOSE_FILENAME = "Please enter a shorter filename:";
     private static final String FILENAME_TITLE = "Filename";
+    
+    private GraphObjectUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Create a new DataObject backed by an in-memory file.

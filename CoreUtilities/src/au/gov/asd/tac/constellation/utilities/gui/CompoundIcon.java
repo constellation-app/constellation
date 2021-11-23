@@ -34,11 +34,7 @@ public class CompoundIcon implements Icon {
         Z_AXIS;
     }
 
-    private static final float TOP = 0.0F;
-    private static final float LEFT = 0.0F;
     private static final float CENTER = 0.5F;
-    private static final float BOTTOM = 1.0F;
-    private static final float RIGHT = 1.0F;
     private Icon[] icons;
     private Axis axis;
     private int gap;

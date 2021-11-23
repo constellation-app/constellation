@@ -40,7 +40,7 @@ public abstract class ConstellationDialog {
     protected double mouseOrigX = 0;
     protected double mouseOrigY = 0;
 
-    public ConstellationDialog() {
+    protected ConstellationDialog() {
         fxPanel = new JFXPanel();
         final BoxLayout layout = new BoxLayout(fxPanel, BoxLayout.Y_AXIS);
         fxPanel.setLayout(layout);

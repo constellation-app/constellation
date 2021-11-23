@@ -49,7 +49,7 @@ public class AttributeTitledPane extends TitledPane {
     private AttributeData attributeData;
 
     private final CheckMenuItem hideAttributeMenuItem = new CheckMenuItem("Hide Attribute");
-    private final MenuItem CopyValueMenuItem = new MenuItem("Copy");
+    private final MenuItem copyValueMenuItem = new MenuItem("Copy");
     private final MenuItem modifyAttributeMenuItem = new MenuItem("Modify Attribute");
     private final MenuItem removeAttributeMenuItem = new MenuItem("Delete Attribute");
     private final SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
@@ -63,14 +63,14 @@ public class AttributeTitledPane extends TitledPane {
     public AttributeTitledPane(EventHandler<ActionEvent> removeEventHandler, EventHandler<ActionEvent> modifyEventHandler) {
 
         if (removeEventHandler == null) {
-            ctxMenu = new ContextMenu(CopyValueMenuItem, separatorMenuItem, hideAttributeMenuItem);
+            ctxMenu = new ContextMenu(copyValueMenuItem, separatorMenuItem, hideAttributeMenuItem);
         } else {
-            ctxMenu = new ContextMenu(CopyValueMenuItem, separatorMenuItem, hideAttributeMenuItem, modifyAttributeMenuItem, removeAttributeMenuItem);
+            ctxMenu = new ContextMenu(copyValueMenuItem, separatorMenuItem, hideAttributeMenuItem, modifyAttributeMenuItem, removeAttributeMenuItem);
             removeAttributeMenuItem.setOnAction(removeEventHandler);
             modifyAttributeMenuItem.setOnAction(modifyEventHandler);
         }
 
-        CopyValueMenuItem.setOnAction((ActionEvent event) -> {
+        copyValueMenuItem.setOnAction((ActionEvent event) -> {
             final StringSelection ss = new StringSelection(attributeValue);
             final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());

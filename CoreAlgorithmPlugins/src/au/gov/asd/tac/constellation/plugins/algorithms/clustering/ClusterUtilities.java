@@ -27,6 +27,10 @@ import java.util.Map;
  * @author algol
  */
 public class ClusterUtilities {
+    
+    private ClusterUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Set the color of the vertices and transactions in clusters such that each

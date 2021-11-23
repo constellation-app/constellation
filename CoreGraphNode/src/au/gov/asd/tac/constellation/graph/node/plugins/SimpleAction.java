@@ -35,7 +35,7 @@ public abstract class SimpleAction extends AbstractAction {
 
     protected final GraphNode context;
 
-    public SimpleAction(final GraphNode context) {
+    protected SimpleAction(final GraphNode context) {
         this.context = context;
     }
 

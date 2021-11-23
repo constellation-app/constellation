@@ -1155,15 +1155,11 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
                     // Delete the old DataObject and remove the old GDO from the lookup.
                     if (deleteOldGdo) {
-//                        System.out.printf("@VTC Delete %s\n", FileUtil.getFileDisplayName(gdo.getPrimaryFile()));
-//                        gdo.getPrimaryFile().delete();
                         gdo.delete();
-//                        System.out.printf("@VTX Exists %s\n", FileUtil.toFile(gdo.getPrimaryFile()).exists());
                     }
                     content.remove(gdo);
 
                     // Rename the new file and add the new GDO to the lookup.
-//                    System.out.printf("@VTC Rename %s -> %s\n", FileUtil.getFileDisplayName(freshGdo.getPrimaryFile()), name);
                     freshGdo.rename(name);
                     gdo = freshGdo;
                     content.add(gdo);

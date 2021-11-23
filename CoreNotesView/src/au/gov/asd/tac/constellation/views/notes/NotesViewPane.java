@@ -102,18 +102,18 @@ public class NotesViewPane extends BorderPane {
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
 
-    private final int DEFAULT_SPACING = 5;
-    private final int OPTIONS_SPACING = 150;
-    private final String PROMPT_COLOUR = "#909090";
-    private final String USER_COLOUR = "#942483";
-    private final String AUTO_COLOUR = "#1c5aa6";
-    private final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
+    private static final int DEFAULT_SPACING = 5;
+    private static final int OPTIONS_SPACING = 150;
+    private static final String PROMPT_COLOUR = "#909090";
+    private static final String USER_COLOUR = "#942483";
+    private static final String AUTO_COLOUR = "#1c5aa6";
+    private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
     private static final String USER_NOTES_FILTER = "User Notes";
     private static final String SELECTED_FILTER = "Selected";
 
-    private final Object LOCK = new Object();
+    private static final Object LOCK = new Object();
 
     private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String BOLD_STYLE = "-fx-font-weight: bold;";
@@ -125,7 +125,7 @@ public class NotesViewPane extends BorderPane {
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
 
-    public final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
     /**
      * NotesViewPane constructor.
