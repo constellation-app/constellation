@@ -61,7 +61,7 @@ public final class HierarchicalState {
         return currentStep;
     }
 
-    public void setCurrentStep(int currentStep) {
+    public void setCurrentStep(final int currentStep) {
         this.currentStep = currentStep;
     }
 
@@ -69,7 +69,7 @@ public final class HierarchicalState {
         return optimumStep;
     }
 
-    public void setOptimumStep(int optimumStep) {
+    public void setOptimumStep(final int optimumStep) {
         this.optimumStep = optimumStep;
     }
 
@@ -77,7 +77,7 @@ public final class HierarchicalState {
         return excludeSingleVertices;
     }
 
-    public void setExcludeSingleVertices(boolean excludeSingleVertices) {
+    public void setExcludeSingleVertices(final boolean excludeSingleVertices) {
         this.excludeSingleVertices = excludeSingleVertices;
     }
 
@@ -85,7 +85,7 @@ public final class HierarchicalState {
         return excludedElementsDimmed;
     }
 
-    public void setExcludedElementsDimmed(boolean excludedElementsDimmed) {
+    public void setExcludedElementsDimmed(final boolean excludedElementsDimmed) {
         this.excludedElementsDimmed = excludedElementsDimmed;
     }
 
@@ -93,7 +93,7 @@ public final class HierarchicalState {
         return clusterNumbers;
     }
 
-    public void setClusterNumbers(int[] clusterNumbers) {
+    public void setClusterNumbers(final int[] clusterNumbers) {
         this.clusterNumbers = clusterNumbers;
     }
 
@@ -101,7 +101,7 @@ public final class HierarchicalState {
         return clusterSeenBefore;
     }
 
-    public void setClusterSeenBefore(int[] clusterSeenBefore) {
+    public void setClusterSeenBefore(final int[] clusterSeenBefore) {
         this.clusterSeenBefore = clusterSeenBefore;
     }
 
@@ -109,7 +109,7 @@ public final class HierarchicalState {
         return redrawCount;
     }
 
-    public void setRedrawCount(int redrawCount) {
+    public void setRedrawCount(final int redrawCount) {
         this.redrawCount = redrawCount;
     }
 
@@ -117,7 +117,7 @@ public final class HierarchicalState {
         return modificationCounter;
     }
 
-    public void setModificationCounter(long modificationCounter) {
+    public void setModificationCounter(final long modificationCounter) {
         this.modificationCounter = modificationCounter;
     }
 
@@ -125,7 +125,7 @@ public final class HierarchicalState {
         return strucModificationCount;
     }
 
-    public void setStrucModificationCount(long strucModificationCount) {
+    public void setStrucModificationCount(final long strucModificationCount) {
         this.strucModificationCount = strucModificationCount;
     }
 
@@ -133,7 +133,7 @@ public final class HierarchicalState {
         return interactive;
     }
 
-    public void setInteractive(boolean interactive) {
+    public void setInteractive(final boolean interactive) {
         this.interactive = interactive;
     }
 
@@ -141,7 +141,7 @@ public final class HierarchicalState {
         return steps;
     }
 
-    public void setSteps(int steps) {
+    public void setSteps(final int steps) {
         this.steps = steps;
     }
 
@@ -149,7 +149,7 @@ public final class HierarchicalState {
         return groups;
     }
 
-    public void setGroups(FastNewman.Group[] groups) {
+    public void setGroups(final FastNewman.Group[] groups) {
         this.groups = groups;
     }
 
@@ -157,7 +157,7 @@ public final class HierarchicalState {
         return colored;
     }
 
-    public void setColored(boolean colored) {
+    public void setColored(final boolean colored) {
         this.colored = colored;
     }
 
