@@ -31,6 +31,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Present the user with a list of plugins and allow it to select one, then
@@ -165,9 +166,8 @@ public class PluginFinder {
                             final String oldValue,
                             final String newValue) {
             if (!newValue.isEmpty()) {
-                final String lower = newValue.toLowerCase();
                 final List<String> ls = texts.stream()
-                        .filter(a -> a.toLowerCase().contains(lower))
+                        .filter(a -> StringUtils.containsIgnoreCase(a, newValue))
                         .collect(Collectors.toList());
                 
                 final ObservableList<String> filtered = FXCollections.observableArrayList(ls);

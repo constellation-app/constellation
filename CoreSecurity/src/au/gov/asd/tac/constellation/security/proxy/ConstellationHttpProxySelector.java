@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.util.Pair;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -65,6 +66,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
             bypassProxyHosts = Arrays.asList(prefs.get(ProxyPreferenceKeys.BYPASS, ProxyPreferenceKeys.BYPASS_DEFAULT).split(ProxyUtilities.PROXY_SEPARATOR));
         }
 
+        // Iterate to remove whitespace and make lowercase
         for (int i = 0; i < bypassProxyHosts.size(); i++) {
             bypassProxyHosts.set(i, bypassProxyHosts.get(i).trim().toLowerCase());
         }
@@ -145,7 +147,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
      */
     private static boolean isLocalHost(final String host, final List<String> localHosts) {
         final String hostLowerCase = host.toLowerCase();
-        if ("localhost".equals(hostLowerCase) || "127.0.0.1".equals(hostLowerCase)) {
+        if (StringUtils.equalsAnyIgnoreCase(hostLowerCase, (CharSequence[]) new String[]{"localhost", "127.0.0.1"})) {
             return true;
         }
 

@@ -48,7 +48,7 @@ public class HashmodPanel extends javax.swing.JPanel {
 
     private static final String HASHMOD_CSV_FILE = "user.home";
     private String hashmodCSVFileStr = "";
-    private Boolean isChainedHashmods = false;
+    private boolean isChainedHashmods = false;
     private int numChainedHashmods = 0;
     private Hashmod[] chainedHashmods = new Hashmod[10];
 
@@ -68,7 +68,7 @@ public class HashmodPanel extends javax.swing.JPanel {
         return numChainedHashmods > 0 ? chainedHashmods[0] : null;
     }
 
-    public Boolean isChainedHashmods() {
+    public boolean isChainedHashmods() {
         return isChainedHashmods;
     }
 
@@ -90,9 +90,8 @@ public class HashmodPanel extends javax.swing.JPanel {
 
         final String[] fileList = filesList.split(",");
         for (final String file : fileList) {
-            final Hashmod hashmod = new Hashmod(file);
-            if (numChainedHashmods < 10 && hashmod != null) {
-                chainedHashmods[numChainedHashmods] = hashmod;
+            if (numChainedHashmods < 10) {
+                chainedHashmods[numChainedHashmods] = new Hashmod(file);
                 numChainedHashmods++;
                 isChainedHashmods = true;
             }
@@ -325,7 +324,8 @@ public class HashmodPanel extends javax.swing.JPanel {
         }
 
         if (isChainedHashmods()) {
-            final Hashmod firstHashmod = getChainedHashmods() == null ? null : getChainedHashmods()[0];
+            final Hashmod[] hashmods = getChainedHashmods();
+            final Hashmod firstHashmod = hashmods == null ? null : hashmods[0];
             if (firstHashmod != null) {
                 setAttributeNames(firstHashmod.getCSVKey(), firstHashmod.getCSVHeader(1), firstHashmod.getCSVHeader(2));
                 hashmodCSVFile.setText(firstHashmod.getCSVFileName());

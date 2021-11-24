@@ -808,7 +808,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      */
     private void orderHitTest(final Point point, final HitTestMode mode, final Consumer<EventState> resultConsumer) {
         final BlockingQueue<HitState> hitTestQueue = new ArrayBlockingQueue<>(1);
-        manager.addOperation(visualAnnotator.hitTestCursor(point.x, point.y, new EventState(eventState), !mode.equals(HitTestMode.REQUEST_ONLY) ? hitTestQueue : null));
+        manager.addOperation(visualAnnotator.hitTestCursor(point.x, point.y, new EventState(eventState), mode != HitTestMode.REQUEST_ONLY ? hitTestQueue : null));
 
         final Runnable handleResult = () -> {
             while (true) {
@@ -1195,7 +1195,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     }
                 } else {
                     JComponent currentMenu = popup;
-                    levelLoop:
                     for (final String level : menuPath) {
                         int childCount = currentMenu.getComponentCount();
                         for (int i = 0; i < childCount; i++) {
@@ -1204,7 +1203,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 JMenu childMenu = (JMenu) childComponent;
                                 if (childMenu.getText().equals(level)) {
                                     currentMenu = childComponent;
-                                    continue levelLoop;
+                                    break;
                                 }
                             }
                         }

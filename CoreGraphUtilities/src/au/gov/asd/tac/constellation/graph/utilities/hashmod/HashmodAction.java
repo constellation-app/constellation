@@ -32,7 +32,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.BitSet;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
@@ -44,7 +44,7 @@ import org.openide.util.NbBundle.Messages;
 
 
 /*
- * action to allow the user to set a hashmod for a graph window
+ * Action to allow the user to set a hashmod for a graph window
  */
 @ActionID(
         category = "Edit",
@@ -73,12 +73,13 @@ public final class HashmodAction implements ActionListener {
         final DialogDescriptor dialog = new DialogDescriptor(hashmodPanel, Bundle.MSG_Title(), true, e -> {
             if ("OK".equals(e.getActionCommand())) {
                 final Hashmod hashmod1 = hashmodPanel.getHashmod();
-                final Boolean isChainedHashmods = hashmodPanel.isChainedHashmods();
+                final boolean isChainedHashmods = hashmodPanel.isChainedHashmods();
                 final boolean createAttributes = hashmodPanel.isCreateAttributesSelected();
                 final Hashmod[] chainedHashmods = hashmodPanel.getChainedHashmods();
                 final int numChainedHashmods = hashmodPanel.numChainedHashmods();
-                final Boolean createVertices = hashmodPanel.isCreateVertexesSelected();
-                final Boolean createTransactions = hashmodPanel.isCreateTransactionsSelected();
+                final boolean createVertices = hashmodPanel.isCreateVertexesSelected();
+                final boolean createTransactions = hashmodPanel.isCreateTransactionsSelected();
+
                 hashmodPanel.setAttributeNames(hashmod1.getCSVKey(), hashmod1.getCSVHeader(1), hashmod1.getCSVHeader(2));
 
                 PluginExecution.withPlugin(
@@ -89,7 +90,7 @@ public final class HashmodAction implements ActionListener {
         DialogDisplayer.getDefault().notify(dialog);
     }
 
-    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final Boolean createVertices, final Boolean createTransactions, final Boolean setPrimary, final Boolean createAttributes) throws InterruptedException {
+    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final boolean createVertices, final boolean createTransactions, final boolean setPrimary, final boolean createAttributes) throws InterruptedException {
 
         if (wg != null && hashmod != null) {
             if (hashmod.getNumberCSVDataColumns() < 2) {
@@ -156,7 +157,7 @@ public final class HashmodAction implements ActionListener {
         }
 
         final int vxCount = wg.getVertexCount();
-        final HashMap<String, Integer> keys = hashmod.getCSVKeys();
+        final Map<String, Integer> keys = hashmod.getCSVKeys();
         String keyValue;
         int numberSuccessful = 0;
 

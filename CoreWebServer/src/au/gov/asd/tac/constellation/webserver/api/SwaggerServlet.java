@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.webserver.api;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
@@ -179,7 +180,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                 final OutputStream out = response.getOutputStream();
                 mapper.writeValue(out, root);
             } else {
-                if (fileName.endsWith(".js")) {
+                if (fileName.endsWith(FileExtensionConstants.JAVASCRIPT)) {
                     response.setContentType("text/javascript");
                 }
 

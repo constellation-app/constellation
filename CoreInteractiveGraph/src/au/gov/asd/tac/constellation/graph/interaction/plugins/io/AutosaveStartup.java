@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
 import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.io.File;
@@ -56,7 +57,7 @@ public final class AutosaveStartup implements Runnable {
     public void run() {
         synchronized (String.class) {
             // Look for existing autosaved in-memory graphs.
-            final File[] saveFiles = AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT);
+            final File[] saveFiles = AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE);
             final long now = new Date().getTime();
 
             for (final File f : saveFiles) {

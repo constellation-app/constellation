@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -29,6 +30,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Describes a font and all its properties.
@@ -59,7 +61,7 @@ public class FontInfo {
 
     private static Font getFont(final String fontName, final int fontStyle, final int fontSize) {
         Font font = null;
-        if (fontName.toLowerCase().endsWith(".otf") || fontName.toLowerCase().endsWith(".ttf")) {
+        if (StringUtils.endsWithIgnoreCase(fontName, FileExtensionConstants.OPEN_TYPE_FONT) || StringUtils.endsWithIgnoreCase(fontName, FileExtensionConstants.TRUE_TYPE_FONT)) {
             File otfFile = getOtfFont(fontName);
             if (otfFile != null) {
                 LOGGER.log(Level.INFO, "Reading font from {0}", otfFile);
@@ -149,7 +151,7 @@ public class FontInfo {
         } else {
             // If it is relative, look in operating system specific places for the font file.
             final String osName = System.getProperty("os.name");
-            if (osName.toLowerCase().contains("win")) {
+            if (StringUtils.containsIgnoreCase(osName, "win")) {
                 // Look in the user's local profile, then the system font directory.
                 final String lap = System.getenv("LOCALAPPDATA");
                 if (lap != null) {
