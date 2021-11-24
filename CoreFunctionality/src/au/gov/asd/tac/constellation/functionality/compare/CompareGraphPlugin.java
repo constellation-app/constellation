@@ -251,19 +251,16 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
             throw new PluginException(PluginNotificationLevel.ERROR, String.format(GRAPH_NOT_FOUND_ERROR, compareGraphName));
         }
 
-        ReadableGraph rg;
         final GraphRecordStore originalAll;
         final GraphRecordStore compareAll;
-//        final Map<String, Integer> originalStatistics, compareStatistics;
 
         final Set<String> vertexPrimaryKeys;
         final Set<String> transactionPrimaryKeys;
 
         // get a copy of the graph's record store and statistical info
-        rg = originalGraph.getReadableGraph();
+        ReadableGraph rg = originalGraph.getReadableGraph();
         try {
             originalAll = GraphRecordStoreUtilities.getAll(rg, false, true);
-//            originalStatistics = collectStatisticsFromGraph(rg);
             vertexPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg, GraphElementType.VERTEX);
             transactionPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg, GraphElementType.TRANSACTION);
         } finally {
@@ -273,7 +270,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         rg = compareGraph.getReadableGraph();
         try {
             compareAll = GraphRecordStoreUtilities.getAll(rg, false, true);
-//            compareStatistics = collectStatisticsFromGraph(rg);
         } finally {
             rg.release();
         }
@@ -282,9 +278,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         ignoreVertexAttributes.add("[id]");
         ignoreTransactionAttributes.add("[id]");
 
-        // statistics
-        // TODO: add statistics to the log output.
-//        final Map<String, Integer> statisticalDifferences = calculateStatisticalDifferences(originalStatistics, compareStatistics);
         // graph changes
         final String title = String.format("Compare: %s <> %s", originalGraphName, compareGraphName);
         final GraphRecordStore changes = compareGraphs(title, originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, addedColourValue, removedColourValue, changedColourValue, unchangedColourValue);
@@ -420,7 +413,10 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                                 }
                                 break;
                             case "destination":
+                                // Intentionally left blank
+                                break;
                             case "transaction":
+                                // Intentionally left blank
                                 break;
                             default:
                                 break;
@@ -484,6 +480,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
 
                         switch (keyType) {
                             case "source":
+                                break;
                             case "destination":
                                 break;
                             case "transaction":

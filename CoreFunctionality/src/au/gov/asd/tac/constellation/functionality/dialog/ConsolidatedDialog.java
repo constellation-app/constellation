@@ -82,11 +82,11 @@ public class ConsolidatedDialog<K, V> extends ConstellationDialog {
      * @param listItemHeight The height of each list item. If you have a single
      * row of text then set this to 24.
      */
-    public ConsolidatedDialog(String title, Map<String, ObservableList<Container<K, V>>> observableMap, String message, int listItemHeight) {
+    public ConsolidatedDialog(final String title, final Map<String, ObservableList<Container<K, V>>> observableMap, final String message, final int listItemHeight) {
         final BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #DDDDDD;-fx-border-color: #3a3e43;-fx-border-width: 4px;");
 
-        // add a title
+        // Create title
         final Label titleLabel = new Label();
         titleLabel.setText(title);
         titleLabel.setStyle("-fx-font-weight: bold;");
@@ -95,9 +95,9 @@ public class ConsolidatedDialog<K, V> extends ConstellationDialog {
         root.setTop(titleLabel);
 
         final Accordion accordion = new Accordion();
-        for (String identifier : observableMap.keySet()) {
+        for (final String identifier : observableMap.keySet()) {
             final ObservableList<Container<K, V>> objects = observableMap.get(identifier);
-            ListView<Container<K, V>> listView = new ListView<>(objects);
+            final ListView<Container<K, V>> listView = new ListView<>(objects);
             listView.setEditable(false);
             listView.setPrefHeight((listItemHeight * objects.size()));
             listView.getSelectionModel().selectedItemProperty().addListener(event -> {
@@ -107,7 +107,7 @@ public class ConsolidatedDialog<K, V> extends ConstellationDialog {
                     selectedObjects.add(new Pair<>(container.getKey(), container.getValue()));
                 } else {
                     // the object was unselected so go through the selected objects and remove them all because we don't know which one was unselected
-                    for (Container<K, V> object : listView.getItems()) {
+                    for (final Container<K, V> object : listView.getItems()) {
                         selectedObjects.remove(new Pair<>(object.getKey(), object.getValue()));
                     }
                 }
@@ -157,7 +157,7 @@ public class ConsolidatedDialog<K, V> extends ConstellationDialog {
         return selectedObjects;
     }
 
-    public void setUseButtonAction(EventHandler<ActionEvent> event) {
+    public void setUseButtonAction(final EventHandler<ActionEvent> event) {
         useButton.setOnAction(event);
     }
 }

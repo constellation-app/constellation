@@ -66,11 +66,9 @@ public class OpenInBrowserPlugin extends SimplePlugin {
     }
 
     @Override
-    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-        final String url = parameters.getStringValue(URL_PARAMETER_ID);
-
+    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         try {
-            Desktop.getDesktop().browse(new URI(url));
+            Desktop.getDesktop().browse(new URI(parameters.getStringValue(URL_PARAMETER_ID)));
         } catch (IOException | URISyntaxException ex) {
             throw new PluginException(PluginNotificationLevel.FATAL, ex);
         }
