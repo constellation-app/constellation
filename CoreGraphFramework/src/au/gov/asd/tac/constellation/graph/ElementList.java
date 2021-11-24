@@ -26,8 +26,6 @@ import java.util.Arrays;
  */
 public class ElementList {
 
-    private static final boolean VERBOSE = true;
-
     private int[] prev;
     private int[] next;
 

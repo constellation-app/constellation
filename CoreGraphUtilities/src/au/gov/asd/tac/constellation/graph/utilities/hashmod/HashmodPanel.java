@@ -48,7 +48,6 @@ public class HashmodPanel extends javax.swing.JPanel {
 
     private static final String HASHMOD_CSV_FILE = "user.home";
     private String hashmodCSVFileStr = "";
-    private String hashmodCSVChainStr = "";
     private boolean isChainedHashmods = false;
     private int numChainedHashmods = 0;
     private Hashmod[] chainedHashmods = new Hashmod[10];
@@ -91,9 +90,8 @@ public class HashmodPanel extends javax.swing.JPanel {
 
         final String[] fileList = filesList.split(",");
         for (final String file : fileList) {
-            final Hashmod hashmod = new Hashmod(file);
-            if (numChainedHashmods < 10 && hashmod != null) {
-                chainedHashmods[numChainedHashmods] = hashmod;
+            if (numChainedHashmods < 10) {
+                chainedHashmods[numChainedHashmods] = new Hashmod(file);
                 numChainedHashmods++;
                 isChainedHashmods = true;
             }

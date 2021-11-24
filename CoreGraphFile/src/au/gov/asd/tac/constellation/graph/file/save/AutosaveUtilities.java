@@ -48,6 +48,10 @@ public final class AutosaveUtilities {
     private static final Logger LOGGER = Logger.getLogger(AutosaveUtilities.class.getName());
     private static final String AUTOSAVE_DIR = "Autosave";
 
+    private AutosaveUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static File getAutosaveDir() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);

@@ -57,8 +57,6 @@ public final class CameraIOProviderV0 extends AbstractGraphIOProvider {
     private static final String BOUNDING_BOX = "bounding_box";
     private static final String VISIBILITY_LOW = "visibility_low";
     private static final String VISIBILITY_HIGH = "visibility_high";
-    private static final String VISIBILITY_VALUE = "visibility_value";
-    private static final String VISIBILITY_WIDTH = "visibility_width";
     private static final String MIX_RATIO = "mix_ratio";
 
     @Override

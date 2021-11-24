@@ -57,7 +57,6 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
     @Override
     public GraphTaxonomy getTaxonomy(final GraphWriteMethods graph) {
         final GraphTaxonomy taxByTrees = TaxFromTrees.getTaxonomy(graph, false);
-//        System.out.printf("~~ taxaA (%d)\n", taxByTrees.getTaxa().size());
 
         if (putSingletonTaxaWithSameNeighborsTogether) {
             // Remove all taxa with only one member and add all of the single members to a single new taxon.
@@ -73,52 +72,10 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
                 }
             }
 
-//            System.out.printf("~~ taxaB (%d) singletons (%d)\n", taxByTrees.size(), singletons.size());
             final GraphTaxonomy taxByNeighbours = TaxFromNeighbours.getTaxonomy(graph, singletons);
             taxByTrees.add(taxByNeighbours);
             taxByTrees.setArrangeRectangularly(taxByNeighbours.getTaxa().keySet());
-
-//            System.out.printf("~~ taxaC (%d) neighbours (%d)\n", taxByTrees.getTaxa().size(), taxByNeighbours.size());
-//            Debug.debug("rectangular");
-//            for(Integer k : taxByNeighbours.getTaxa().keySet())
-//            {
-//                Debug.debug(" %d(%d)", k, taxByNeighbours.getTaxa().get(k).size());
-//            }
-//            Debug.debug(SeparatorConstants.NEWLINE);
         }
-
-//        System.out.printf("Trees: %d\n", taxByTrees.getTaxa().size());
-//        // Debug: colour the taxonomies so we can see what's going on.
-//        //        graph.getWriteLock();
-//        try
-//        {
-//            if(VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph)==Graph.NOT_FOUND)
-//            {
-//                graph.addAttribute(GraphElementType.VERTEX, IconAttributeDescription.ATTRIBUTE_NAME, "background_icon", "background_icon");
-//            }
-//            final int bgiconAttr = VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph);
-//            if(VisualConcept.VertexAttribute.COLOR.get(graph)==Graph.NOT_FOUND)
-//            {
-//                graph.addAttribute(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "color", "color");
-//            }
-//            final int colorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
-//            final Random r = new Random();
-//            for(Integer subvxId : taxByTrees.getTaxa().keySet())
-//            {
-//                final ColorValue color = ColorValue.getNamedColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat());
-//                final Set<Integer> subgraph = taxByTrees.getTaxa().get(subvxId);
-//                final boolean rect = taxByTrees.getArrangeRectangularly(subvxId);
-//                for(int vxId : subgraph)
-//                {
-//                    graph.setStringValue(bgiconAttr, vxId, rect ? "Background.Flat Square" : "Background.Round Circle");
-//                    graph.setObjectValue(colorAttr, vxId, color);
-//                }
-//            }
-//        }
-//        finally
-//        {
-//            graph.releaseWriteLock();
-//        }
         return taxByTrees;
     }
 }

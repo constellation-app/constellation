@@ -31,6 +31,10 @@ import java.util.List;
  * @author formalhaut69
  */
 public class AttributeUtilities {
+    
+    private AttributeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Returns the names of the attributes that match the specified

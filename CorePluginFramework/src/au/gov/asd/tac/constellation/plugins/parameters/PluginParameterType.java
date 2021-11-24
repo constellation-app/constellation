@@ -48,7 +48,7 @@ public abstract class PluginParameterType<V extends ParameterValue> {
      *
      * @param id A String ID
      */
-    public PluginParameterType(final String id) {
+    protected PluginParameterType(final String id) {
         this.id = id;
     }
 

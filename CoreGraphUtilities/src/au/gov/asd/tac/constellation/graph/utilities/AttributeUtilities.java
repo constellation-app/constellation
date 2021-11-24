@@ -40,6 +40,10 @@ import java.util.TreeSet;
  * @author arcturus
  */
 public class AttributeUtilities {
+    
+    private AttributeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Return the attribute id's for a {@link GraphElementType} used by a graph

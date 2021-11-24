@@ -41,6 +41,10 @@ public class SchemaTransactionTypeUtilities {
 
     private static final Set<Class<? extends SchemaConcept>> GET_ALL_TYPES = null;
 
+    private SchemaTransactionTypeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     public static SchemaTransactionType getDefaultType() {
         return SchemaConceptUtilities.getDefaultTransactionType();
     }

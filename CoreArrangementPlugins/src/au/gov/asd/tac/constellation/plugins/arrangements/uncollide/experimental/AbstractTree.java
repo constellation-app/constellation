@@ -48,7 +48,7 @@ abstract class AbstractTree {
      *
      * @param graph The graph the QuadTree should be based on
      */
-    AbstractTree(final GraphReadMethods graph, final Dimensions d) {
+    protected AbstractTree(final GraphReadMethods graph, final Dimensions d) {
         this.level = 0;
         this.objects = new ArrayList<>();
         this.nodes = null;

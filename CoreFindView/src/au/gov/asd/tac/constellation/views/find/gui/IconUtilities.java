@@ -27,12 +27,12 @@ import java.util.Map;
  */
 public class IconUtilities {
 
-    private static final boolean ANTIALIAS = Boolean.getBoolean("nb.cellrenderer.antialiasing") // NOI18N
-            || Boolean.getBoolean("swing.aatext") // NOI18N
-            //        || (GTK && gtkShouldAntialias()) // NOI18N
-            //        || AQUA
-            ;
+    private static final boolean ANTIALIAS = Boolean.getBoolean("nb.cellrenderer.antialiasing") || Boolean.getBoolean("swing.aatext");
     private static Map<Object, Object> hintsMap;
+    
+    private IconUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     @SuppressWarnings("unchecked")
     public static Map<?, ?> getHints() {
@@ -45,7 +45,6 @@ public class IconUtilities {
                 }
             }
         }
-//        Boolean.getBoolean(null);
         return hintsMap;
     }
 }

@@ -44,6 +44,10 @@ public class SchemaConceptUtilities {
     private static Map<Class<? extends SchemaConcept>, Collection<SchemaVertexType>> SCHEMA_VERTEX_TYPES = null;
     private static Map<Class<? extends SchemaConcept>, Collection<SchemaTransactionType>> SCHEMA_TRANSACTION_TYPES = null;
 
+    private SchemaConceptUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Get the highest priority (ie. lowest {@link ServiceProvider} 'position'
      * value) SchemaConcept using {@link Lookup}.

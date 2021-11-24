@@ -62,7 +62,7 @@ public class FPSRenderable implements GLRenderable {
     private final boolean enabled;
     private long start = 0;
     private long fps = 0;
-    private long count_fps = 0;
+    private long countFps = 0;
 
     public FPSRenderable(final GLVisualProcessor parent) {
         this.parent = parent;
@@ -148,12 +148,12 @@ public class FPSRenderable implements GLRenderable {
         }
 
         if ((System.currentTimeMillis() - start) >= 500) {
-            fps = count_fps << 1;
+            fps = countFps << 1;
             start = 0;
-            count_fps = 0;
+            countFps = 0;
         }
 
-        count_fps++;
+        countFps++;
 
         if (enabled) {
             final GL3 gl = drawable.getGL().getGL3();

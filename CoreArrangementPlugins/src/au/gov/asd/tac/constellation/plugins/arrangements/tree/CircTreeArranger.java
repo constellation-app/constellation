@@ -44,7 +44,6 @@ import org.apache.commons.collections4.CollectionUtils;
 public final class CircTreeArranger implements Arranger {
     // Vertex radii are measured in square sides, visible radii are measured in circle radii.
 
-    private static final float CIRC_RADIUS = (float) Math.sqrt(2);
     private static final int MAX_IN_ONE_CIRCLE = 16;
     private static final float TWO_PI = (float) (2 * Math.PI);
     private GraphWriteMethods graph;
@@ -111,7 +110,6 @@ public final class CircTreeArranger implements Arranger {
 
             final float[] oldCentre = maintainMean ? ArrangementUtilities.getXyzMean(graph) : null;
 
-//            System.out.printf("@AICT Tree arranging %d vertices, root=%d\n", verticesToArrange.cardinality(), rootVxId);
             // Gather the vxIds into a BitSet for faster checking.
             BitSet vxsToGo = (BitSet) verticesToArrange.clone();
             vxsToGo.clear(rootVxId);

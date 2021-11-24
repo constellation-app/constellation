@@ -38,7 +38,7 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
      * @param gl the current OpenGL context.
      * @param buffer A Buffer to be wrapped in a texture.
      */
-    public TextureBuffer(final GL3 gl, final BufferType buffer) {
+    protected TextureBuffer(final GL3 gl, final BufferType buffer) {
         final int nItems = buffer.limit();
 
         // Generate a buffer object name.

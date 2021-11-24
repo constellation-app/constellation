@@ -338,15 +338,6 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sdf.setTimeZone(tz);
         String s = sdf.format(time);
-
-//        final Calendar calendar = GregorianCalendar.getInstance(UTC);
-//        calendar.setTime(new Date(time));
-//        String check = String.format("%4d-%02d-%02d %02d:%02d:%02d",
-//            calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH),
-//            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
-//        System.out.printf("@A %s\n@B %s\n\n", s, check);
-//        assert s.equals(check);
-//        final int ms = calendar.get(Calendar.MILLISECOND);
         final int ms = (int) (time % 1000);
         if (ms > 0) {
             s += String.format(".%03d", ms);

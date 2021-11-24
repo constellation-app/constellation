@@ -41,6 +41,10 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class JsonUtilities {
     
+    private JsonUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     private static final Logger LOGGER = Logger.getLogger(JsonUtilities.class.getName());
 
     public static String getTextField(JsonNode node, String... keys) {
