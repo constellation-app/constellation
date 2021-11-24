@@ -84,7 +84,7 @@ public class CompositeUtilities {
         final CompositeNodeState compositeState = (CompositeNodeState) graph.getObjectValue(compositeStateAttr, vxId);
         if (compositeState != null) {
             if (compositeState.isComposite()) {
-                ContractedCompositeNodeState contractedState = compositeState.contractedState;
+                final ContractedCompositeNodeState contractedState = compositeState.contractedState;
                 resultingNodes.addAll(contractedState.expand(graph, vxId));
                 while (true) {
                     try {
@@ -92,7 +92,7 @@ public class CompositeUtilities {
                         break;
                     } catch (final DuplicateKeyException ex) {
                         LOGGER.log(Level.INFO, "Duplicate Key has been found. Merging duplicate nodes");
-                        GraphElementMerger merger = new PrioritySurvivingGraphElementMerger();
+                        final GraphElementMerger merger = new PrioritySurvivingGraphElementMerger();
                         merger.mergeElement(graph, GraphElementType.VERTEX, ex.getNewId(), ex.getExistingId());
                     }
                 }
@@ -217,8 +217,7 @@ public class CompositeUtilities {
     public static int contractComposite(final GraphWriteMethods graph, final int compositeStateAttr, final int vxId) {
         final CompositeNodeState compositeState = (CompositeNodeState) graph.getObjectValue(compositeStateAttr, vxId);
         if (compositeState != null && compositeState.comprisesAComposite()) {
-            ExpandedCompositeNodeState expandedState = compositeState.expandedState;
-            return expandedState.contract(graph);
+            return compositeState.expandedState.contract(graph);
         }
         return Graph.NOT_FOUND;
     }

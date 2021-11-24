@@ -35,12 +35,12 @@ public class RawData implements Comparable<RawData> {
     private final String rawIdentifier;
     private final String rawType;
 
-    public RawData(String rawIdentifier, String rawType) {
+    public RawData(final String rawIdentifier, final String rawType) {
         this.rawIdentifier = rawIdentifier;
         this.rawType = rawType;
     }
 
-    public RawData(String rawData) {
+    public RawData(final String rawData) {
         if (rawData == null) {
             this.rawIdentifier = null;
             this.rawType = null;
@@ -144,7 +144,7 @@ public class RawData implements Comparable<RawData> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -164,20 +164,19 @@ public class RawData implements Comparable<RawData> {
     @Override
     public String toString() {
         final StringBuilder repr = new StringBuilder();
-
-        if (StringUtils.isNotBlank(rawIdentifier)) {
-            repr.append(rawIdentifier);
-        }
+        repr.append(StringUtils.defaultString(rawIdentifier));
 
         if (StringUtils.isNotBlank(rawType)) {
-            repr.append("<").append(rawType).append(">");
+            repr.append("<");
+            repr.append(rawType);
+            repr.append(">");
         }
 
         return repr.toString();
     }
 
     @Override
-    public int compareTo(RawData rawValue) {
+    public int compareTo(final RawData rawValue) {
         return this.toString().toLowerCase().compareTo(rawValue.toString().toLowerCase());
     }
 }

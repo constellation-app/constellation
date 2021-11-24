@@ -31,7 +31,7 @@ public class AnalyticDominanceCalculator extends VertexDominanceCalculator<Schem
 
     @Override
     public List<SchemaVertexType> getTypePriority() {
-        List<SchemaVertexType> priority = new ArrayList<>();
+        final List<SchemaVertexType> priority = new ArrayList<>();
         priority.add(AnalyticConcept.VertexType.TELEPHONE_IDENTIFIER);
         priority.add(AnalyticConcept.VertexType.EMAIL_ADDRESS);
         priority.add(AnalyticConcept.VertexType.USER_NAME);
