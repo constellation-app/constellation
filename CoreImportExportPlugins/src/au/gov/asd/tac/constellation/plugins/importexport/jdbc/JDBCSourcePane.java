@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.io.File;
@@ -250,7 +251,7 @@ public class JDBCSourcePane extends SourcePane {
                 final Button chooser = new Button(" ... ");
                 chooser.setOnAction((final ActionEvent t2) -> {
                     final FileChooser cho = new FileChooser();
-                    cho.getExtensionFilters().add(new ExtensionFilter(".jar", "*.jar"));
+                    cho.getExtensionFilters().add(new ExtensionFilter(FileExtensionConstants.JAR, "*.jar"));
 
                     final File f = cho.showOpenDialog(d);
                     if (f != null) {

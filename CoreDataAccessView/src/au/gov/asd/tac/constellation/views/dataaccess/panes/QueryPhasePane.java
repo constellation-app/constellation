@@ -202,7 +202,6 @@ public class QueryPhasePane extends VBox {
      */
     public void showMatchingPlugins(final String text) {
         if (text != null) {
-            final String textLowerCased = text.toLowerCase();
             
             for (final Node node : dataSourceList.getChildrenUnmodifiable()) {
                 final HeadingPane headingPane = (HeadingPane) node;
@@ -210,8 +209,7 @@ public class QueryPhasePane extends VBox {
                 
                 for (final DataSourceTitledPane titledPane : headingPane.getDataSources()) {
                     titledPane.getStyleClass().remove(DataSourceTitledPane.MATCHED_STYLE);
-                    if (StringUtils.isNotBlank(text) 
-                            && titledPane.getPlugin().getName().toLowerCase().contains(textLowerCased)) {
+                    if (StringUtils.isNotBlank(text) && StringUtils.containsIgnoreCase(titledPane.getPlugin().getName(), text)) {
                         titledPane.getStyleClass().add(DataSourceTitledPane.MATCHED_STYLE);
                         shouldExpand = true;
                     }
