@@ -39,16 +39,12 @@ public class FlowNetwork {
     public void calculateFlow(final Network network, final Config config) {
         LOGGER.log(Level.INFO, "Calculating global flow... ");
 
-        int[] nodeOutDegree;
-        double[] sumLinkOutWeight; // Per leaf nodes
-
         // Prepare data in sequence containers for fast access of individual elements.
         final int numNodes = network.getNumNodes();
-        nodeOutDegree = new int[numNodes];
-        sumLinkOutWeight = new double[numNodes];
+        final double[] sumLinkOutWeight = new double[numNodes];
         nodeFlow = new double[numNodes];
         nodeTeleportRates = new double[numNodes];
-
+        final int[] nodeOutDegree = new int[numNodes];
         final TreeMap<NodePair, Double> connMap = network.getMap();
         final int numConns = connMap.size();
         flowConns = new Connection[numConns];

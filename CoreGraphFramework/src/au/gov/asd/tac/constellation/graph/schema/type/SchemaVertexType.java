@@ -316,24 +316,28 @@ public final class SchemaVertexType extends SchemaElementType<SchemaVertexType> 
          * @return
          */
         public SchemaVertexType build() {
+            ConstellationColor newColor = color;
+            ConstellationIcon newForegroundIcon = foregroundIcon;
+            ConstellationIcon newBackgroundIcon = backgroundIcon;
+
             if (color == null) {
-                color = superType != null ? superType.color : UNKNOWN.color;
+                newColor = superType != null ? superType.color : UNKNOWN.color;
             }
 
             if (foregroundIcon == null) {
-                foregroundIcon = superType != null ? superType.foregroundIcon : UNKNOWN.getForegroundIcon();
+                newForegroundIcon = superType != null ? superType.foregroundIcon : UNKNOWN.getForegroundIcon();
             }
 
             if (backgroundIcon == null) {
-                backgroundIcon = superType != null ? superType.backgroundIcon : UNKNOWN.getBackgroundIcon();
+                newBackgroundIcon = superType != null ? superType.backgroundIcon : UNKNOWN.getBackgroundIcon();
             }
 
             return new SchemaVertexType(
                     name,
                     description,
-                    color,
-                    foregroundIcon,
-                    backgroundIcon,
+                    newColor,
+                    newForegroundIcon,
+                    newBackgroundIcon,
                     detectionRegex,
                     validationRegex,
                     superType,

@@ -347,11 +347,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.setStringValue(vxDecoratorAttr, vxId, null);
             }
 
-            if (useRandomIcons) {
-                graph.setStringValue(vxBackgroundIconAttr, vxId, (random.nextBoolean() ? "Background.Flat Square" : "Background.Flat Circle"));
-            } else {
-                graph.setStringValue(vxBackgroundIconAttr, vxId, "Background.Flat Circle");
-            }
+            graph.setStringValue(vxBackgroundIconAttr, vxId, (useRandomIcons && random.nextBoolean()) ? "Background.Flat Square" : "Background.Flat Circle");
 
             if (vx == 0) {
                 graph.setStringValue(vxForegroundIconAttr, vxId, null);

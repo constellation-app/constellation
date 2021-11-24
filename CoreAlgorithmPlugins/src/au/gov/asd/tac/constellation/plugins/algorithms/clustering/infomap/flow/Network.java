@@ -73,9 +73,8 @@ public class Network {
     }
 
     public void read() {
-        int numSelfLinks;
         connectionMap.clear();
-        numSelfLinks = 0;
+        int numSelfLinks = 0;
 
         int numDoubleLinks = 0;
         totalWeight = 0;

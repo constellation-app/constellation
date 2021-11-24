@@ -77,7 +77,7 @@ public final class HashmodAction implements ActionListener {
                 final boolean createAttributes = hashmodPanel.isCreateAttributesSelected();
                 final Hashmod[] chainedHashmods = hashmodPanel.getChainedHashmods();
                 final int numChainedHashmods = hashmodPanel.numChainedHashmods();
-                final boolean createVertices = hashmodPanel.isCreateVertexesSelected();
+                final boolean createVertices = hashmodPanel.isCreateVerticesSelected();
                 final boolean createTransactions = hashmodPanel.isCreateTransactionsSelected();
 
                 hashmodPanel.setAttributeNames(hashmod1.getCSVKey(), hashmod1.getCSVHeader(1), hashmod1.getCSVHeader(2));

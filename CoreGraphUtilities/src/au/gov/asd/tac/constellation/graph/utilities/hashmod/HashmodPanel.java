@@ -106,7 +106,7 @@ public class HashmodPanel extends javax.swing.JPanel {
         }
     }
 
-    public boolean isCreateVertexesSelected() {
+    public boolean isCreateVerticesSelected() {
         return createAllCheckbox.isSelected();
     }
 
