@@ -105,7 +105,7 @@ public final class ColorPropertyEditor extends PropertyEditorSupport implements 
     @Override
     public Component getCustomEditor() {
         final ConstellationColor cv = (ConstellationColor) getValue();
-        Color currentColor = cv != null ? new Color(cv.getRed(), cv.getGreen(), cv.getBlue(), cv.getAlpha()) : Color.BLUE;
+        final Color currentColor = cv != null ? new Color(cv.getRed(), cv.getGreen(), cv.getBlue(), cv.getAlpha()) : Color.BLUE;
         chooser.setColor(currentColor);
         final DialogDescriptor dd = new DialogDescriptor(chooser, NbBundle.getMessage(ColorPropertyEditor.class, "MSG_SelectColor"), true, this);
 

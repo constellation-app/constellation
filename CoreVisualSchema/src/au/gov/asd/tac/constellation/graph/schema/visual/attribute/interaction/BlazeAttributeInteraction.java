@@ -56,7 +56,7 @@ public class BlazeAttributeInteraction extends AbstractAttributeInteraction<Blaz
     @Override
     public List<Node> getDisplayNodes(final Object attrVal, final double width, final double height) {
         final Blaze blazeValue = ((Blaze) attrVal);
-        double rectWidth;
+        final double rectWidth;
         if (width == -1) {
             rectWidth = height == -1 ? DEFAULT_NODE_SIZE : height;
         } else {

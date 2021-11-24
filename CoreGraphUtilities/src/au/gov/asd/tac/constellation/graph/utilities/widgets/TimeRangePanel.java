@@ -58,10 +58,10 @@ public class TimeRangePanel extends javax.swing.JPanel {
         }
         initComponents();
 
-        JSpinner.DateEditor de1 = new JSpinner.DateEditor(spnTime1, Bundle.TimeFormat());
+        final JSpinner.DateEditor de1 = new JSpinner.DateEditor(spnTime1, Bundle.TimeFormat());
         spnTime1.setEditor(de1);
 
-        JSpinner.DateEditor de2 = new JSpinner.DateEditor(spnTime2, Bundle.TimeFormat());
+        final JSpinner.DateEditor de2 = new JSpinner.DateEditor(spnTime2, Bundle.TimeFormat());
         spnTime2.setEditor(de2);
     }
 

@@ -88,7 +88,7 @@ public final class IoUtilities {
         for (int i = 0; i < length; i++) {
             final char c = s.charAt(i);
 
-            char replacement;
+            final char replacement;
             if (c == 9) {
                 replacement = 't';
             } else if (c == 10) {

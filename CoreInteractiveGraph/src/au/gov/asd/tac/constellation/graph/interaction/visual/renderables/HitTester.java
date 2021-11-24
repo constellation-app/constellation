@@ -66,7 +66,7 @@ public final class HitTester implements GLRenderable {
     // The buffer to read from. This is hardcoded as their seems to be no real reason to change it,
     // but perhaps it should be looked up from the corersponding GraphRenderable. At the moment it simply
     // matches the buffer name used inside the if(doHitTesting) {} block of GraphRenderable's display method.
-    private static final int HIT_TEXT_BUFFER_NAME = GL.GL_COLOR_ATTACHMENT0;
+    private static final int HIT_TEST_BUFFER_NAME = GL.GL_COLOR_ATTACHMENT0;
     private final GLVisualProcessor parent;
 
     private HitTestRequest hitTestRequest;
@@ -179,7 +179,7 @@ public final class HitTester implements GLRenderable {
             FloatBuffer fbuf = Buffers.newDirectFloatBuffer(3);
 
             gl.glBindFramebuffer(GL.GL_READ_FRAMEBUFFER, hitTestFboName[0]);
-            gl.glReadBuffer(HIT_TEXT_BUFFER_NAME);
+            gl.glReadBuffer(HIT_TEST_BUFFER_NAME);
             gl.glReadPixels(x, surfaceHeight - y, 1, 1, GL.GL_RGB, GL.GL_FLOAT, fbuf);
 
             // There are enough colors in the buffer that we only need worry about

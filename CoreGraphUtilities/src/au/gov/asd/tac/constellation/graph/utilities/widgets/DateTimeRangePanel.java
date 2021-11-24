@@ -70,10 +70,10 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
         }
         initComponents();
 
-        JSpinner.DateEditor de1 = new JSpinner.DateEditor(spnDateTime1, Bundle.DateTimeFormat());
+        final JSpinner.DateEditor de1 = new JSpinner.DateEditor(spnDateTime1, Bundle.DateTimeFormat());
         spnDateTime1.setEditor(de1);
 
-        JSpinner.DateEditor de2 = new JSpinner.DateEditor(spnDateTime2, Bundle.DateTimeFormat());
+        final JSpinner.DateEditor de2 = new JSpinner.DateEditor(spnDateTime2, Bundle.DateTimeFormat());
         spnDateTime2.setEditor(de2);
 
         presetDateRanges.removeAllItems();

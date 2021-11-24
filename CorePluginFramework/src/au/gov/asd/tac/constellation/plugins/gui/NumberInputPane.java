@@ -97,7 +97,7 @@ public class NumberInputPane<T> extends Pane {
 
         if (shrinkWidth != null && shrinkWidth) {
             final int maxIntegers = max == null ? 10 : (int) Math.floor(Math.log10(max.doubleValue()) + 1);
-            int maxDecimals;
+            final int maxDecimals;
             if (step == null) {
                 maxDecimals = 3;
             } else {

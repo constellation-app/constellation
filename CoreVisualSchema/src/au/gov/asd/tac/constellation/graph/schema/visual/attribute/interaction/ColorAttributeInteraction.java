@@ -57,7 +57,7 @@ public class ColorAttributeInteraction extends AbstractAttributeInteraction<Cons
     @Override
     public List<Node> getDisplayNodes(final Object attrVal, final double width, final double height) {
         ConstellationColor colorValue = (ConstellationColor) attrVal;
-        double rectWidth;
+        final double rectWidth;
         if (width == -1) {
             rectWidth = height == -1 ? DEFAULT_NODE_SIZE : height;
         } else {

@@ -58,7 +58,7 @@ public class IconAttributeInteraction extends AbstractAttributeInteraction<Const
             iconImage = icon.buildImage();
         }
 
-        double rectWidth;
+        final double rectWidth;
         if (width == -1) {
             rectWidth = height == -1 ? DEFAULT_NODE_SIZE : height;
         } else {

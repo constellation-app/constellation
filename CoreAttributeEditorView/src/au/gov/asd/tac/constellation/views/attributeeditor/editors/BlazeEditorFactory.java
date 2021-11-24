@@ -100,7 +100,6 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         @Override
         protected Node createEditorControls() {
-            ComboBox<ConstellationColor> colorCombo;
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
@@ -139,7 +138,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
                 namedColors.add(c);
             }
-            colorCombo = new ComboBox<>(namedColors);
+            final ComboBox<ConstellationColor> colorCombo = new ComboBox<>(namedColors);
             final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
                 @Override
                 protected void updateItem(final ConstellationColor item, boolean empty) {

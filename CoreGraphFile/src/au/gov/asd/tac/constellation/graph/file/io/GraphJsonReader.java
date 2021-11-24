@@ -260,7 +260,7 @@ public final class GraphJsonReader {
             throw new GraphParseException(msg);
         }
 
-        Map<String, Integer> versionedItems = new HashMap<>();
+        final Map<String, Integer> versionedItems = new HashMap<>();
 
         // Get the versions of various items in this graph (if the graph supports it)
         if (version >= 2) {
@@ -531,7 +531,7 @@ public final class GraphJsonReader {
             final String attrType = node.get("type").textValue();
             final String attrDesc = node.has("descr") ? node.get("descr").textValue() : null;
             final JsonNode dv = node.get("default");
-            Object attrDefault;
+            final Object attrDefault;
             if (dv == null || dv.isNull()) {
                 attrDefault = null;
             } else if (dv.isNumber()) {

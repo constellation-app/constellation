@@ -704,7 +704,7 @@ public final class GraphVisualAccess implements VisualAccess {
         final int linkCount = readGraph.getLinkCount();
         final int maxTransactions = graphMaxTransactions != Graph.NOT_FOUND ? readGraph.getIntValue(graphMaxTransactions, 0) : VisualGraphDefaults.DEFAULT_MAX_TRANSACTION_TO_DRAW;
 
-        int connectionUpperBound;
+        final int connectionUpperBound;
         if (connectionMode == ConnectionMode.LINK) {
             connectionUpperBound = linkCount;
         } else {

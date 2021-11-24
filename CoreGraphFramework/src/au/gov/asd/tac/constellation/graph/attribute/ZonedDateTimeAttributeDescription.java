@@ -111,7 +111,7 @@ public final class ZonedDateTimeAttributeDescription extends AbstractObjectAttri
                 final String regionId = string.length() > TemporalFormatting.ZONE_OFFSET_DATE_TIME_FORMAT_LENGTH
                         ? string.substring(TemporalFormatting.ZONE_NAME_FORMAT_START_POSITION, string.length() - 1)
                         : null;
-                ZoneId zoneId;
+                final ZoneId zoneId;
                 if (regionId == null) {
                     zoneId = offsetId == null ? TimeZoneUtilities.UTC : ZoneOffset.of(offsetId);
                 } else {

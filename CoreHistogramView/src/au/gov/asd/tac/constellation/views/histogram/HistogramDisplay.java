@@ -313,7 +313,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
             if (maxCount > 0) {
 
                 // the scale factor from histogram count to bar length in pixels
-                float scaleFactor = barsWidth / (float) maxCount;
+                final float scaleFactor = barsWidth / (float) maxCount;
 
                 // Only draw the bars that are visible
                 JViewport viewPort = (JViewport) getParent();

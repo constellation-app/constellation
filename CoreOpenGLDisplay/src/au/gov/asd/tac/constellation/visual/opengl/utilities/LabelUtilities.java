@@ -72,7 +72,7 @@ public final class LabelUtilities {
 
                 final int space = remaining.indexOf(' ', prevSpace);
                 final int newLine = remaining.indexOf('\n');
-                int pos;
+                final int pos;
                 if (space == -1) {
                     pos = newLine;
                 } else {

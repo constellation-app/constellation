@@ -81,7 +81,7 @@ public abstract class ClusterAnalyticPlugin extends AnalyticPlugin<ClusterResult
             }
 
             for (int graphElementPosition = 0; graphElementPosition < graphElementCount; graphElementPosition++) {
-                int graphElementId;
+                final int graphElementId;
                 if (graphElementType == GraphElementType.VERTEX) {
                     graphElementId = graph.getVertex(graphElementPosition);
                 } else {

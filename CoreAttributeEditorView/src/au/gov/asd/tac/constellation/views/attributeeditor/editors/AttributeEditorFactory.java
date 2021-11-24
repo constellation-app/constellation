@@ -105,7 +105,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             controls.setHgap(5);
             controls.setVgap(CONTROLPANE_SPACING);
 
-            Button setDefaultButton;
+            final Button setDefaultButton = new Button("Set Default");
             Label nameLabel = new Label("Attribute Name:");
             Label typeLabel = new Label("Attribute Type:");
             Label descLabel = new Label("Attribute Description:");
@@ -118,7 +118,6 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             typeCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
             descText = new TextField();
             descText.textProperty().addListener((o, n, v) -> update());
-            setDefaultButton = new Button("Set Default");
             setDefaultButton.setOnAction(getSelectDefaultHandler());
             clearDefaultButton = new Button("Clear Default");
             clearDefaultButton.setOnAction(e -> {
