@@ -31,13 +31,13 @@ public class FindViewTabs extends TabPane {
 
     private final BasicFindTab basicFindTab;
     private final ReplaceTab replaceTab;
-    private final Tab advancedFindTab;
+    private final AdvancedFindTab advancedFindTab;
 
     public FindViewTabs(final FindViewPane parentComponent) {
         this.parentComponent = parentComponent;
         basicFindTab = new BasicFindTab(this);
         replaceTab = new ReplaceTab(this);
-        advancedFindTab = new Tab("Advanced Find");
+        advancedFindTab = new AdvancedFindTab(this);
         setTabContent();
 
         /**
@@ -50,7 +50,7 @@ public class FindViewTabs extends TabPane {
             } else if (newTab.equals(getReplaceTab())) {
                 getReplaceTab().updateButtons();
             } else {
-                // place holder for advanced tab
+                getAdvancedFindTab().updateButtons();
             }
         });
     }
@@ -62,12 +62,12 @@ public class FindViewTabs extends TabPane {
         // Ensure all 3 tabs can not be closed.
         getBasicFindTab().setClosable(false);
         getReplaceTab().setClosable(false);
-        advancedFindTab.setClosable(false);
+        getAdvancedFindTab().setClosable(false);
 
         // Add all 3 tabs to the tabPane
         getTabs().add(getBasicFindTab());
         getTabs().add(getReplaceTab());
-        getTabs().add(advancedFindTab);
+        getTabs().add(getAdvancedFindTab());
 
         // Update the buttons based on the currently selected tab
         switch (getSelectionModel().getSelectedIndex()) {
@@ -78,6 +78,7 @@ public class FindViewTabs extends TabPane {
                 getReplaceTab().updateButtons();
                 break;
             case 2:
+                getAdvancedFindTab().updateButtons();
                 break;
         }
 
@@ -117,6 +118,15 @@ public class FindViewTabs extends TabPane {
      */
     public ReplaceTab getReplaceTab() {
         return replaceTab;
+    }
+
+    /**
+     * Gets the advancedFindTab
+     *
+     * @return getAdvancedFindTab
+     */
+    public AdvancedFindTab getAdvancedFindTab() {
+        return advancedFindTab;
     }
 
 }

@@ -80,6 +80,46 @@ public class FindViewController {
         return instance;
     }
 
+    public List<Attribute> populateAllAttributes(final GraphElementType type, final long attributeModificationCounter) {
+        final List<Attribute> allAttributes = new ArrayList<>();
+        final List<String> allStringAttributes = new ArrayList<>();
+
+        for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+
+            //Call the plugin that retrieves all current attributes on the graph
+            final GraphAttributePlugin attrPlugin = new GraphAttributePlugin(type, allAttributes, attributeModificationCounter);
+            final Future<?> future = PluginExecution.withPlugin(attrPlugin).interactively(true).executeLater(graph);
+
+            // Wait for the search to find its results:
+            try {
+                future.get();
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+                Thread.currentThread().interrupt();
+            } catch (final ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+            }
+            // get all the current attributes based on the currently selcted type
+            allAttributes.addAll(attrPlugin.getAttributes());
+            for (Attribute a : allAttributes) {
+                allStringAttributes.add(a.getName());
+            }
+        }
+        final Set<Attribute> attributeSet = new LinkedHashSet<>();
+        attributeSet.addAll(allAttributes);
+        allAttributes.clear();
+        allAttributes.addAll(attributeSet);
+
+        // remove duplicate attributes from the list
+        final Set<String> stringSet = new LinkedHashSet<>();
+        stringSet.addAll(allStringAttributes);
+        allStringAttributes.clear();
+        allStringAttributes.addAll(stringSet);
+
+        return allAttributes;
+
+    }
+
     /**
      * This loops through all the attribute lists in each open graph adding all
      * unique attributes to the UI attribute list if they are of type string
