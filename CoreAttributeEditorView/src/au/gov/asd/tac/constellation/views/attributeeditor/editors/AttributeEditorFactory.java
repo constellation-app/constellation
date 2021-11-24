@@ -102,14 +102,14 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setHgap(5);
             controls.setVgap(CONTROLPANE_SPACING);
 
-            Label nameLabel = new Label("Attribute Name:");
-            Label typeLabel = new Label("Attribute Type:");
-            Label descLabel = new Label("Attribute Description:");
-            Label defaultLabel = new Label("Default Value:");
+            final Label nameLabel = new Label("Attribute Name:");
+            final Label typeLabel = new Label("Attribute Type:");
+            final Label descLabel = new Label("Attribute Description:");
+            final Label defaultLabel = new Label("Default Value:");
 
             nameText = new TextField();
             nameText.textProperty().addListener((o, n, v) -> update());
