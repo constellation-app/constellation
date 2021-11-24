@@ -16,12 +16,13 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * NodeBase
@@ -29,6 +30,8 @@ import java.util.NoSuchElementException;
  * @author algol
  */
 public class NodeBase {
+
+    private static final Logger LOGGER = Logger.getLogger(NodeBase.class.getName());
 
     private static int uid = 0;
 
@@ -281,7 +284,8 @@ public class NodeBase {
     }
 
     public void dumpEdges() {
-        Logf.printf("id %d; index %d; out> %d; in< %d\n", id, index, outEdges.size(), inEdges.size());
+        final String formattedString = String.format("id %d; index %d; out> %d; in< %d\n", id, index, outEdges.size(), inEdges.size());
+        LOGGER.log(Level.INFO, formattedString);
     }
 
     /**

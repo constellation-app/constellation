@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.schemaview.providers.VertexTypeNodeProvider;
 import java.awt.datatransfer.DataFlavor;
@@ -52,7 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class, position = 1)
 public class TypeDropper implements GraphDropper {
     
@@ -96,9 +97,7 @@ public class TypeDropper implements GraphDropper {
                 }
 
                 if (data != null) {
-                    return (graph, dropInfo) -> {
-                        PluginExecution.withPlugin(new TypeDropperPlugin(data, dropInfo, graph)).executeLater(graph);
-                    };
+                    return (graph, dropInfo) -> PluginExecution.withPlugin(new TypeDropperPlugin(data, dropInfo, graph)).executeLater(graph);
                 }
             } catch (final UnsupportedFlavorException | IOException | ClassNotFoundException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -110,7 +109,7 @@ public class TypeDropper implements GraphDropper {
     /**
      * Plugin to help once the type had been dropped on a vertex
      */
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     public static class TypeDropperPlugin extends SimpleEditPlugin {
 
         private final String data;

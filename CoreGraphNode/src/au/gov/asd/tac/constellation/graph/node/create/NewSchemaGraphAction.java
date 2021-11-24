@@ -94,24 +94,22 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
                 final JMenuItem item = new JMenuItem(schemaFactory.getLabel(), ICON_CACHE.get(schemaFactory.getName()));
                 item.setToolTipText(schemaFactory.getDescription());
                 item.setActionCommand(schemaFactory.getName());
-                item.addActionListener((final ActionEvent e) -> {
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            setName(GRAPH_ACTION_THREAD_NAME);
-                            final Graph graph = new DualGraph(schemaFactory.createSchema());
-                            final WritableGraph wg = graph.getWritableGraphNow("New " + schemaFactory.getName(), false);
-                            try {
-                                graph.getSchema().newGraph(wg);
-                            } finally {
-                                wg.commit();
-                            }
-
-                            final String graphName = schemaFactory.getLabel().replace(" ", "").toLowerCase();
-                            GraphOpener.getDefault().openGraph(graph, graphName);
+                item.addActionListener((final ActionEvent e) -> new Thread() {
+                    @Override
+                    public void run() {
+                        setName(GRAPH_ACTION_THREAD_NAME);
+                        final Graph graph = new DualGraph(schemaFactory.createSchema());
+                        final WritableGraph wg = graph.getWritableGraphNow("New " + schemaFactory.getName(), false);
+                        try {
+                            graph.getSchema().newGraph(wg);
+                        } finally {
+                            wg.commit();
                         }
-                    }.start();
-                });
+
+                        final String graphName = schemaFactory.getLabel().trim().toLowerCase();
+                        GraphOpener.getDefault().openGraph(graph, graphName);
+                    }
+                }.start());
 
                 menu.add(item);
             }
@@ -148,9 +146,7 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
     public static void recreateTemplateMenuItems() {
         SwingUtilities.invokeLater(() -> {
             final Map<String, String> templates = getTemplateNames();
-            TEMPLATES_MENU.forEach(item -> {
-                menu.remove(item);
-            });
+            TEMPLATES_MENU.forEach(item -> menu.remove(item));
             TEMPLATES_MENU.clear();
             templates.forEach((template, schema) -> {
                 SchemaFactory factory = SchemaFactoryUtilities.getSchemaFactory(schema);
@@ -159,15 +155,11 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
                         ICON_CACHE.put(factory.getName(), SchemaFactoryUtilities.getSchemaFactory(schema).getIcon().buildIcon(16));
                     }
                     JMenuItem item = new JMenuItem(template + " Graph", ICON_CACHE.get(factory.getName()));
-                    item.addActionListener((final ActionEvent e) -> {
-                        createTemplate(template);
-                    });
+                    item.addActionListener((final ActionEvent e) -> createTemplate(template));
                     TEMPLATES_MENU.add(item);
                 }
             });
-            TEMPLATES_MENU.forEach(item -> {
-                menu.add(item);
-            });
+            TEMPLATES_MENU.forEach(item -> menu.add(item));
         });
     }
 

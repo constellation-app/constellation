@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author procyon
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 @Messages("DirectedShortestPathsPlugin=Directed Shortest Paths")
 public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
 

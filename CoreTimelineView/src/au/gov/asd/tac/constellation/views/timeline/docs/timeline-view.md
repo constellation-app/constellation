@@ -49,8 +49,7 @@ selected, the block will be both red and blue with the proportion of red
 matching the ratio of selected / unselected.
 
 If the Timeline is zoomed in, this large temporal cluster will 'break'
-into smaller temporal clusters and potentially distinct events. (This
-effect can be seen in the image below.)
+into smaller temporal clusters and potentially distinct events.
 
 ## Events
 

@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,7 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
     "PermanentMergePlugin=Merge Nodes Plugin",
     "ErrorInsufficientItems=There must be at least 2 nodes selected to perform a merge."
 })
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Provider {
 
     public static final String PRIMARY_NODE_PARAMETER_ID = PluginParameter.buildId(PermanentMergePlugin.class, "primary_vertex_id");

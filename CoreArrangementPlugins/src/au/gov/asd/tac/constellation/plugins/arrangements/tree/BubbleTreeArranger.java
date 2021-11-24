@@ -240,7 +240,7 @@ public class BubbleTreeArranger implements Arranger {
                     }
                 }
 
-                sumRadius += 2f * maxRadius;
+                sumRadius += 2F * maxRadius;
             }
 
             for (int i = 0; i < nc; i++) {

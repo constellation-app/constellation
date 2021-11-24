@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +68,7 @@ import java.util.stream.Collectors;
  * @see RecordStore
  * @author sirius
  */
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.SEARCH, tags = {"SEARCH"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
 public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
 
     protected final String pluginName = getName();

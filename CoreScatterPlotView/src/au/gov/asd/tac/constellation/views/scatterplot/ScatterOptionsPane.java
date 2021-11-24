@@ -277,9 +277,7 @@ public class ScatterOptionsPane extends BorderPane {
                 readableGraph.release();
             }
 
-            FXCollections.sort(attributes, (attribute1, attribute2) -> {
-                return attribute1.getName().compareTo(attribute2.getName());
-            });
+            FXCollections.sort(attributes, (attribute1, attribute2) -> attribute1.getName().compareTo(attribute2.getName()));
 
             xAttributeComboBox.setItems(attributes);
             yAttributeComboBox.setItems(attributes);

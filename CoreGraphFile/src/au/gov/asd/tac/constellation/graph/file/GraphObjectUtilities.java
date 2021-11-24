@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.file;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +54,10 @@ public class GraphObjectUtilities {
 
     private static final String CHOOSE_FILENAME = "Please enter a shorter filename:";
     private static final String FILENAME_TITLE = "Filename";
+    
+    private GraphObjectUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Create a new DataObject backed by an in-memory file.
@@ -97,7 +102,7 @@ public class GraphObjectUtilities {
                         null,
                         fnam);
             }
-            fnam = String.format("%s%s", fnam, GraphDataObject.FILE_EXTENSION);
+            fnam = String.format("%s%s", fnam, FileExtensionConstants.STAR);
             final FileObject fo = FileUtil.createData(root, fnam);
             gdo = (GraphDataObject) DataObject.find(fo);
         } catch (final IOException ex) {

@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.BitSet;
 import org.openide.util.NbBundle;
@@ -45,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("JaccardIndexPlugin=Jaccard Index")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class JaccardIndexPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute JACCARD_INDEX_ATTRIBUTE = SnaConcept.TransactionAttribute.JACCARD_INDEX;
@@ -166,7 +167,7 @@ public class JaccardIndexPlugin extends SimpleEditPlugin {
                     final int vertexOneId = graph.getVertex(vertexOnePosition);
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
 
-                    final float jaccardIndex = union.cardinality() == 0 ? 0f : (float) intersection.cardinality() / union.cardinality();
+                    final float jaccardIndex = union.cardinality() == 0 ? 0F : (float) intersection.cardinality() / union.cardinality();
                     SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, jaccardIndex);
                 }
             }

@@ -28,6 +28,10 @@ public class IpAddressUtilities {
 
     private static final int IPV6_ADDRESS_LENGTH = 8 * 4 + 7;
 
+    private IpAddressUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * Return an IPv6 address with 0 padding
      *

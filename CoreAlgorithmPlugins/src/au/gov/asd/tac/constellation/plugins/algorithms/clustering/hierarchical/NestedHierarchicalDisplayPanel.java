@@ -52,8 +52,8 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     private int neededHeight = 0;
     private int stepLimit = 0;
     private double xseparation;
-    private final int minimum_yseparation = 3;
-    private int progress_x;
+    private final int minimumYseparation = 3;
+    private int progressX;
     private final JScrollPane scrollManager;
     private final HierarchicalControllerTopComponent controller;
 
@@ -81,7 +81,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     }
 
     public void updateColorsAndBar() {
-        progress_x = (state.currentStep * getWidth()) / (stepLimit == 0 ? 1 : stepLimit);
+        progressX = (state.currentStep * getWidth()) / (stepLimit == 0 ? 1 : stepLimit);
 
         for (final LinePositioning line : lines) {
             GroupTreeNode node = line.n;
@@ -118,13 +118,13 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         g2.setColor(new Color(0xB0, 0xB0, 0xB0));
         final int arrowTop = scrollManager.getViewport().getViewPosition().y;
         final int arrowBottom = arrowTop + Math.min(neededHeight, scrollManager.getViewport().getExtentSize().height);
-        final int[] xpoints = {progress_x - 6, progress_x + 8, progress_x + 1};
+        final int[] xpoints = {progressX - 6, progressX + 8, progressX + 1};
         final int[] ypoints_top = {arrowTop, arrowTop, arrowTop + 10};
         final int[] ypoints_bottom = {arrowBottom, arrowBottom, arrowBottom - 10};
         g2.fillPolygon(xpoints, ypoints_top, 3);
         g2.fillPolygon(xpoints, ypoints_bottom, 3);
         g2.setColor(new Color(0xB0, 0xB0, 0xB0, 130));
-        g2.fillRect(progress_x, 0, progressBarThickness, neededHeight);
+        g2.fillRect(progressX, 0, progressBarThickness, neededHeight);
     }
 
     private static class GroupTreeNode implements Comparable<GroupTreeNode> {
@@ -228,10 +228,10 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
         lines = new LinkedList<>();
         final int prefHeight = scrollManager.getHeight();
-        final boolean verticalScrolling = prefHeight < sortedNodes.size() * minimum_yseparation + (VERTICAL_GAP * 2);
-        neededHeight = verticalScrolling ? sortedNodes.size() * minimum_yseparation + (VERTICAL_GAP * 2) : prefHeight;
+        final boolean verticalScrolling = prefHeight < sortedNodes.size() * minimumYseparation + (VERTICAL_GAP * 2);
+        neededHeight = verticalScrolling ? sortedNodes.size() * minimumYseparation + (VERTICAL_GAP * 2) : prefHeight;
         setSize(getWidth(), neededHeight);
-        final int yseparation = verticalScrolling ? minimum_yseparation : (int) Math.floor(prefHeight / ((double) sortedNodes.size() + 1));
+        final int yseparation = verticalScrolling ? minimumYseparation : (int) Math.floor(prefHeight / ((double) sortedNodes.size() + 1));
         setPreferredSize(new Dimension(getWidth(), neededHeight));
 
         // We do not want to draw on the border around the step slider

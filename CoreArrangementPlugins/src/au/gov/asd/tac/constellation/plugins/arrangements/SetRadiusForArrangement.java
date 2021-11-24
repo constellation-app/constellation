@@ -40,7 +40,7 @@ public class SetRadiusForArrangement {
     private final int labelRadiusAttr;
     private final int nodeRadiusAttr;
     // There are approximately 8 characters in a label for each node radius unit
-    private static final float CHARACTERS_PER_NODE_RADIUS_UNIT = 8f;
+    private static final float CHARACTERS_PER_NODE_RADIUS_UNIT = 8F;
 
     public SetRadiusForArrangement(final GraphWriteMethods graph) {
         this.graph = graph;
@@ -81,7 +81,7 @@ public class SetRadiusForArrangement {
 
     private void setRadius(final int vxId) {
         // We require the width of the label to be at least 1.5f, which is the radius of the standard node with a little extra padding
-        float maxLabelWidth = 1.5f;
+        float maxLabelWidth = 1.5F;
         for (int i = 0; i < labelAttrArray.length; i++) {
             if (labelAttrArray[i] < 0) {
                 continue;

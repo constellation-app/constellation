@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.BitSet;
 import org.openide.util.NbBundle;
@@ -45,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("DiceSimilarityPlugin=Dice Index")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class DiceSimilarityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute DICE_SIMILARITY_ATTRIBUTE = SnaConcept.TransactionAttribute.DICE_SIMILARITY;
@@ -159,12 +160,12 @@ public class DiceSimilarityPlugin extends SimpleEditPlugin {
                     }
 
                     final float halfSumDegree = (neighbours[vertexOnePosition].cardinality()
-                            + neighbours[vertexTwoPosition].cardinality()) / 2f;
+                            + neighbours[vertexTwoPosition].cardinality()) / 2F;
 
                     final int vertexOneId = graph.getVertex(vertexOnePosition);
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
 
-                    final float diceSimilarity = halfSumDegree == 0 ? 0f : (float) intersection.cardinality() / halfSumDegree;
+                    final float diceSimilarity = halfSumDegree == 0 ? 0F : (float) intersection.cardinality() / halfSumDegree;
                     SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, diceSimilarity);
                 }
             }

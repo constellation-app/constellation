@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import static au.gov.asd.tac.constellation.graph.locking.LockingManager.VERBOSE;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A LockingStoreGraph extends StoreGraph to provide methods releasing a read or
@@ -29,6 +31,8 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
  * @author sirius
  */
 public class LockingStoreGraph extends StoreGraph implements ReadableGraph, WritableGraph {
+
+    private static final Logger LOGGER = Logger.getLogger(LockingStoreGraph.class.getName());
 
     private final LockingManager<?> lockingManager;
     private final int instance;
@@ -78,7 +82,7 @@ public class LockingStoreGraph extends StoreGraph implements ReadableGraph, Writ
         lockingManager.commit(description, commitName);
 
         if (VERBOSE) {
-            System.out.println("Write lock committed by " + Thread.currentThread());
+            LOGGER.log(Level.INFO,"Write lock committed by {0}", Thread.currentThread());
         }
     }
 

@@ -61,10 +61,10 @@ public class MostEasilyReachedQuestion implements AnalyticQuestionDescription<Sc
 
     @Override
     public void initialiseParameters(final AnalyticPlugin<ScoreResult> plugin, final PluginParameters parameters) {
-        parameters.setFloatValue(KatzCentralityPlugin.ALPHA_PARAMETER_ID, 0.1f);
-        parameters.setFloatValue(KatzCentralityPlugin.BETA_PARAMETER_ID, 1.0f);
+        parameters.setFloatValue(KatzCentralityPlugin.ALPHA_PARAMETER_ID, 0.1F);
+        parameters.setFloatValue(KatzCentralityPlugin.BETA_PARAMETER_ID, 1.0F);
         parameters.setIntegerValue(KatzCentralityPlugin.ITERATIONS_PARAMETER_ID, 100);
-        parameters.setFloatValue(KatzCentralityPlugin.EPSILON_PARAMETER_ID, 1E-8f);
+        parameters.setFloatValue(KatzCentralityPlugin.EPSILON_PARAMETER_ID, 1E-8F);
         parameters.setBooleanValue(KatzCentralityPlugin.NORMALISE_POSSIBLE_PARAMETER_ID, true);
         parameters.setBooleanValue(KatzCentralityPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, false);
     }

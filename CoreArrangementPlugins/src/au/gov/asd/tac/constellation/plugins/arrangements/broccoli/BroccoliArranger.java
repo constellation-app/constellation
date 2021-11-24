@@ -121,7 +121,7 @@ public final class BroccoliArranger implements Arranger {
             final int size = deg1.size();
 
             final int sideLen = (int) Math.floor(Math.sqrt(size - 1.0)) + 1;
-            final float sideLen1 = sideLen - 1f;
+            final float sideLen1 = sideLen - 1F;
 
             // Generate a suitable up vector for lookAt.
             final Vector3f tmpv = new Vector3f();

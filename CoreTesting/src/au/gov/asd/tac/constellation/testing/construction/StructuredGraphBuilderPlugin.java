@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
@@ -53,7 +54,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("StructuredGraphBuilderPlugin=Structured Graph Builder")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
 
     public static final String BACKBONE_SIZE_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_size");
@@ -141,7 +142,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
             graph.setStringValue(vxBackgroundIconAttr, nodeId, "Background.Round Circle");
             graph.setStringValue(vxForegroundIconAttr, nodeId, getRandomIconName(iconNames, r));
             graph.setObjectValue(vxColorAttr, nodeId, randomColorWithAlpha(r));
-            graph.setFloatValue(vxVisibilityAttr, nodeId, 1.0f);
+            graph.setFloatValue(vxVisibilityAttr, nodeId, 1.0F);
 
             float x;
             float y;
@@ -220,14 +221,14 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.setStringValue(vxBackgroundIconAttr, pendant, "Background.Round Circle_64");
                 graph.setStringValue(vxForegroundIconAttr, pendant, getRandomIconName(iconNames, r));
                 graph.setObjectValue(vxColorAttr, pendant, randomColorWithAlpha(r));
-                graph.setFloatValue(vxVisibilityAttr, pendant, 1.0f);
+                graph.setFloatValue(vxVisibilityAttr, pendant, 1.0F);
 
                 float x = r.nextFloat() * 2 - 1;
                 float y = r.nextFloat() * 2 - 1;
                 float z = r.nextFloat() * 2 - 1;
                 float length = (float) Math.sqrt(x * x + y * y + z * z);
 
-                float pendantRadius = minDistance * 0.7f * r.nextFloat();
+                float pendantRadius = minDistance * 0.7F * r.nextFloat();
                 graph.setFloatValue(vxXAttr, pendant, cx + x / length * pendantRadius);
                 graph.setFloatValue(vxYAttr, pendant, cy + y / length * pendantRadius);
                 graph.setFloatValue(vxZAttr, pendant, cz + z / length * pendantRadius);
@@ -277,6 +278,6 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
     }
 
     private static ConstellationColor randomColorWithAlpha(SecureRandom r) {
-        return ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1.0f);
+        return ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1.0F);
     }
 }

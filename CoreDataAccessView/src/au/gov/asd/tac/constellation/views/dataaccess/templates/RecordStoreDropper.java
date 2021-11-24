@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -48,7 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author sirius
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class, position = 1)
 public class RecordStoreDropper implements GraphDropper {
 
@@ -85,9 +86,8 @@ public class RecordStoreDropper implements GraphDropper {
                             final RecordStore recordStore = RecordStoreUtilities.fromJson(in);
 
                             if (recordStore != null) {
-                                return (graph, dropInfo) -> {
-                                    PluginExecution.withPlugin(new RecordStoreDropperToGraphPlugin(recordStore)).executeLater(graph);
-                                };
+                                return (graph, dropInfo)
+                                        -> PluginExecution.withPlugin(new RecordStoreDropperToGraphPlugin(recordStore)).executeLater(graph);
                             }
                         }
                     }
@@ -100,7 +100,7 @@ public class RecordStoreDropper implements GraphDropper {
         return null;
     }
 
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     public static class RecordStoreDropperToGraphPlugin extends RecordStoreQueryPlugin {
 
         private final RecordStore recordStore;

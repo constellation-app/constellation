@@ -57,9 +57,7 @@ attribute value toggled to 0.0 (invisible).
 Arrangements on graphs with a visual schema will be ran on the base
 layer 0.
 
-<img src../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-view-example.png" alt="Fig.1 - Layers view
-interface" />
-  
+<img src="../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/LayersView.png" alt="Layers View" />
 
 ## Creating and Using Layers
 
@@ -75,12 +73,13 @@ of all selected layers). Combining both query and manual layers will
 produce undefined results and should not be used when accuracy of
 results is needed.
 
+To delete a layer, simply press the Delete button next to the layer you want to 
+remove.
+
 ## Layer Types
 
-<img src="../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-context.png" alt="Fig.2 - Right-click context menu used for adding elements to a manual
-layer." />
-
-  
+<img src="../constellation/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/docs/resources/layers-context.png" alt="Right-click context menu used for adding elements to a manual
+layer." />  
 
 There are two main layer types within the Layers View. The
 differentiating factor of the two being the way elements are chosen to

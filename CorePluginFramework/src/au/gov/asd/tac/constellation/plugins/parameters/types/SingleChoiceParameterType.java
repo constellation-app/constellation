@@ -328,9 +328,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          */
         public List<String> getOptions() {
             final List<String> optionStrings = new ArrayList<>();
-            options.stream().forEach(option -> {
-                optionStrings.add(option.toString());
-            });
+            options.stream().forEach(option -> optionStrings.add(option.toString()));
 
             return Collections.unmodifiableList(optionStrings);
         }

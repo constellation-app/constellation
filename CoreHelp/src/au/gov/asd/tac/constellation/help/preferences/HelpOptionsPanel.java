@@ -30,7 +30,7 @@ public class HelpOptionsPanel extends javax.swing.JPanel {
 
     }
 
-    public boolean getOnlineHelpOption() {
+    public boolean isOnlineHelpSelected() {
         return onlineHelpCheckBox.isSelected();
     }
 

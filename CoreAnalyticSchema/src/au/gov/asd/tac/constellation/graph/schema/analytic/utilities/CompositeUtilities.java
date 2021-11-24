@@ -45,6 +45,10 @@ public class CompositeUtilities {
     
     private static final Logger LOGGER = Logger.getLogger(CompositeUtilities.class.getName());
 
+    private CompositeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     private static void simplifyCompositeTransactions(final GraphWriteMethods graph, final int uniqueIdAttr, final int vxId) {
         for (int t = 0; t < graph.getVertexTransactionCount(vxId); t++) {
             final int txId = graph.getVertexTransaction(vxId, t);

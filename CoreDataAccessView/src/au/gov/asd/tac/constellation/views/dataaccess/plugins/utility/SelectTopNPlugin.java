@@ -38,6 +38,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -64,7 +65,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @Messages("SelectTopNPlugin=Select Top N")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SelectTopNPlugin.class.getName());
@@ -307,9 +308,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                             LinkedHashMap::new
                     ));
 
-            sortedMap.keySet().stream().limit(limit).forEach(id -> {
-                graph.setBooleanValue(vertexSelectedAttribute, id, true);
-            });
+            sortedMap.keySet().stream().limit(limit).forEach(id -> graph.setBooleanValue(vertexSelectedAttribute, id, true));
 
             interaction.setProgress(1, 0, "Selected " + sortedMap.size() + " nodes.", true);
         }

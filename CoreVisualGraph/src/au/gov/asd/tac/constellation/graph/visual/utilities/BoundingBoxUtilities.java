@@ -41,6 +41,10 @@ import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
  * @author algol
  */
 public final class BoundingBoxUtilities {
+    
+    private BoundingBoxUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Recalculate the bounding box for the graph.

@@ -46,14 +46,10 @@ public final class AutosaveStop implements Runnable {
 
     @Override
     public void run() {
-//        System.out.printf("@AStop\n");
         final Map<String, Graph> graphs = GraphNode.getAllGraphs();
         for (final Map.Entry<String, Graph> entry : graphs.entrySet()) {
             final Graph graph = entry.getValue();
-
-//            System.out.printf("@AStop %s %s %s\n", name, graph.getId(), graph);
             AutosaveUtilities.deleteAutosave(graph.getId());
-
             LOGGER.info(Bundle.MSG_CleanedUp(graph.getId()));
         }
 

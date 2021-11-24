@@ -25,6 +25,10 @@ import java.util.BitSet;
  */
 public class TriangleUtilities {
 
+    private TriangleUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /*
      This method counts the number of triangles each vertex is in
      Returning a tuple where the first entry is a list of neighbours each node
@@ -103,8 +107,8 @@ public class TriangleUtilities {
         final int vxCount = graph.getVertexCount();
         final BitSet[] allNeighbours = new BitSet[vxCount];
         final BitSet update = new BitSet(vxCount);
-        Float triangles = 0f;
-        Float triplets = 0f;
+        Float triangles = 0F;
+        Float triplets = 0F;
 
         // initialise variables
         for (int vxPosition = 0; vxPosition < vxCount; vxPosition++) {

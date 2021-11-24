@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A PluginParameter is the object that holds the current state of a single
@@ -131,7 +132,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public final void setName(final String name) {
         if (!Objects.equals(name, this.name)) {
-            this.name = name == null ? "" : name;
+            this.name = StringUtils.defaultString(name);
             fireChangeEvent(ParameterChange.NAME);
         }
     }
@@ -466,16 +467,6 @@ public class PluginParameter<V extends ParameterValue> {
      * @param objectValue The object value to set.
      */
     public final void setObjectValue(final Object objectValue) {
-//        if(value!=null && value.getObjectValue()!=null && objectValue!=null)
-//        {
-//            System.out.printf("@@PP sov1 [%s] [%s]\n", value.getObjectValue().getClass(), objectValue.getClass());
-//            System.out.printf("@@PP sov2 [%s] [%s] %s\n", value.getObjectValue(), objectValue, equals(value.getObjectValue(), objectValue));
-//        }
-//        if (!equals(value.getObjectValue(), objectValue)) {
-////            value = objectValue;
-//            value.setObjectValue(objectValue);
-//            fireChangeEvent(ParameterChange.VALUE);
-//        }
         if (value.setObjectValue(objectValue)) {
             fireChangeEvent(ParameterChange.VALUE);
         }

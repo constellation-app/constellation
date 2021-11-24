@@ -60,7 +60,7 @@ import javax.swing.event.MouseInputListener;
 public class HistogramDisplay extends JPanel implements MouseInputListener, MouseWheelListener, KeyListener, PropertyChangeListener, ComponentListener {
 
     public static final Color BACKGROUND_COLOR = new Color(0x44, 0x44, 0x44);
-    public static final Color BAR_COLOR = new Color(0.1176f, 0.5647f, 1.0f);
+    public static final Color BAR_COLOR = new Color(0.1176F, 0.5647F, 1.0F);
     public static final Color SELECTED_COLOR = Color.RED.darker();
     public static final Color ACTIVE_COLOR = Color.YELLOW;
 
@@ -120,15 +120,11 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         initializeListeners();
 
         final JMenuItem copyValuesMenuItem = new JMenuItem("Copy Selected Property Values");
-        copyValuesMenuItem.addActionListener(e -> {
-            copySelectedToClipboard(false);
-        });
+        copyValuesMenuItem.addActionListener(e -> copySelectedToClipboard(false));
         copyMenu.add(copyValuesMenuItem);
 
         final JMenuItem copyValuesAndCountsMenuItem = new JMenuItem("Copy Selected Property Values & Counts");
-        copyValuesAndCountsMenuItem.addActionListener(e -> {
-            copySelectedToClipboard(true);
-        });
+        copyValuesAndCountsMenuItem.addActionListener(e -> copySelectedToClipboard(true));
         copyMenu.add(copyValuesAndCountsMenuItem);
     }
 
@@ -217,7 +213,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         } while (--fontSize > MIN_FONT_SIZE && size > barSize - 4);
 
         g.setFont(font);
-        return Math.round(size / 2f) - metrics.getMaxDescent();
+        return Math.round(size / 2F) - metrics.getMaxDescent();
     }
 
     private int getPreferredTextWidth(Graphics g) {
@@ -517,7 +513,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
      * bar doesn't exist.
      */
     private int getBarAtPoint(Point p, boolean bounded) {
-        int n = (int) ((p.y - 2 + GAP_BETWEEN_BARS / 2f) / (GAP_BETWEEN_BARS + barHeight)) - 1;
+        int n = (int) ((p.y - 2 + GAP_BETWEEN_BARS / 2F) / (GAP_BETWEEN_BARS + barHeight)) - 1;
         if (bounded) {
             n = Math.min(Math.max(n, 0), binCollection.getBins().length - 1);
         }

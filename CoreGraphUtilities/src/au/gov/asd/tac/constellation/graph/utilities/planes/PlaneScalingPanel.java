@@ -174,33 +174,33 @@ public class PlaneScalingPanel extends javax.swing.JPanel {
     private void iconSizeButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_iconSizeButtonActionPerformed
     {//GEN-HEADEREND:event_iconSizeButtonActionPerformed
         // Icon size is diameter 2.
-        final float scale = 2f / plane.getImageWidth();
+        final float scale = 2F / plane.getImageWidth();
         scaleText.setValue(scale);
     }//GEN-LAST:event_iconSizeButtonActionPerformed
 
     private void originalSizeButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_originalSizeButtonActionPerformed
     {//GEN-HEADEREND:event_originalSizeButtonActionPerformed
-        scaleText.setValue(1f);
+        scaleText.setValue(1F);
     }//GEN-LAST:event_originalSizeButtonActionPerformed
 
     private void timesBigButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_timesBigButtonActionPerformed
     {//GEN-HEADEREND:event_timesBigButtonActionPerformed
-        scaleText.setValue(getScale() * 2f);
+        scaleText.setValue(getScale() * 2F);
     }//GEN-LAST:event_timesBigButtonActionPerformed
 
     private void timesSmallButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_timesSmallButtonActionPerformed
     {//GEN-HEADEREND:event_timesSmallButtonActionPerformed
-        scaleText.setValue(getScale() * 1.1f);
+        scaleText.setValue(getScale() * 1.1F);
     }//GEN-LAST:event_timesSmallButtonActionPerformed
 
     private void divideSmallButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_divideSmallButtonActionPerformed
     {//GEN-HEADEREND:event_divideSmallButtonActionPerformed
-        scaleText.setValue(getScale() / 1.1f);
+        scaleText.setValue(getScale() / 1.1F);
     }//GEN-LAST:event_divideSmallButtonActionPerformed
 
     private void divideBigButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_divideBigButtonActionPerformed
     {//GEN-HEADEREND:event_divideBigButtonActionPerformed
-        scaleText.setValue(getScale() / 2f);
+        scaleText.setValue(getScale() / 2F);
     }//GEN-LAST:event_divideBigButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

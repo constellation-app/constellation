@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributePrototype;
 
@@ -44,7 +45,7 @@ public class CreateAttributeEditOperation implements EditOperation {
         PluginExecution.withPlugin(new CreateAttributePlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
     private final class CreateAttributePlugin extends SimpleEditPlugin {
 
         @Override

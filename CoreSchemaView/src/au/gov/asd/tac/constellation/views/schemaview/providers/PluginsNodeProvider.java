@@ -203,9 +203,7 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
         final Button exportPluginsButton = new Button();
         exportPluginsButton.setTooltip(new Tooltip("Export Plugin Details to CSV"));
         exportPluginsButton.setGraphic(new ImageView(UserInterfaceIconProvider.DOWNLOAD.buildImage(16, ConstellationColor.CLOUDS.getJavaColor())));
-        exportPluginsButton.setOnAction(action -> {
-            exportPluginsToCsv(tab.getContent().getScene().getWindow());
-        });
+        exportPluginsButton.setOnAction(action -> exportPluginsToCsv(tab.getContent().getScene().getWindow()));
 
         Platform.runLater(() -> {
             pane.setAlignment(Pos.TOP_RIGHT);
@@ -279,16 +277,13 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
 
                         Collections.sort(paramList, (a, b) -> a.getId().compareToIgnoreCase(b.getId()));
 
-                        paramList.stream().forEach(p -> {
-                            sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)
-                                    .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)
+                        paramList.stream().forEach(p -> sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)                                    .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)
                                     .append(p.getId()).append(SeparatorConstants.COMMA)
                                     .append(p.getType().getId()).append(SeparatorConstants.COMMA)
                                     .append(p.getName()).append(SeparatorConstants.COMMA)
                                     .append("\"").append(p.getDescription()).append("\"").append(SeparatorConstants.COMMA)
                                     .append("\"").append(p.getStringValue()).append("\"")
-                                    .append(SeparatorConstants.NEWLINE);
-                        });
+                                .append(SeparatorConstants.NEWLINE));
                     } else {
                         sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)
                                 .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)

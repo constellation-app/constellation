@@ -48,7 +48,7 @@ public class SumScoreAggregator implements AnalyticAggregator<ScoreResult> {
         results.forEach(scoreResult -> combinedResults.combine(scoreResult));
         combinedResults.getResult().forEach((key, value) -> {
             final Map<String, Float> aggregateScores = new HashMap<>();
-            aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce((x, y) -> x + y).orElse(0.0f));
+            aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce((x, y) -> x + y).orElse(0.0F));
             aggregateResult.add(new ElementScore(key.getElementType(), key.getElementId(), key.getIdentifier(), false, aggregateScores));
         });
 

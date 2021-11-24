@@ -183,7 +183,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
                 uihat[s] /= norm;
             }
 
-            final double ε = 0.001;
+            final double epsilon = 0.001;
             double dot = 1000;
             double prevDot;
             int counter = 100;
@@ -232,7 +232,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
                     uihat[r] /= norm;
                     dot += uihat[r] * ui[r];
                 }
-            } while ((dot < (1 - ε) && Math.abs(dot - prevDot) > ε) && --counter == 0);
+            } while ((dot < (1 - epsilon) && Math.abs(dot - prevDot) > epsilon) && --counter == 0);
 
             System.arraycopy(uihat, 0, U[u], 0, M);
         }

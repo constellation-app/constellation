@@ -102,18 +102,18 @@ public class NotesViewPane extends BorderPane {
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
 
-    private final int DEFAULT_SPACING = 5;
-    private final int OPTIONS_SPACING = 150;
-    private final String PROMPT_COLOUR = "#909090";
-    private final String USER_COLOUR = "#942483";
-    private final String AUTO_COLOUR = "#1c5aa6";
-    private final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
+    private static final int DEFAULT_SPACING = 5;
+    private static final int OPTIONS_SPACING = 150;
+    private static final String PROMPT_COLOUR = "#909090";
+    private static final String USER_COLOUR = "#942483";
+    private static final String AUTO_COLOUR = "#1c5aa6";
+    private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
     private static final String USER_NOTES_FILTER = "User Notes";
     private static final String SELECTED_FILTER = "Selected";
 
-    private final Object LOCK = new Object();
+    private static final Object LOCK = new Object();
 
     private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String BOLD_STYLE = "-fx-font-weight: bold;";
@@ -125,7 +125,7 @@ public class NotesViewPane extends BorderPane {
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
 
-    public final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
     /**
      * NotesViewPane constructor.
@@ -199,9 +199,7 @@ public class NotesViewPane extends BorderPane {
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Notes View"));
-        helpButton.setOnAction(event -> {
-            new HelpCtx(NotesViewTopComponent.class.getName()).display();
-        });
+        helpButton.setOnAction(event -> new HelpCtx(NotesViewTopComponent.class.getName()).display());
         // Get rid of the ugly button look so the icon stands alone.
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
@@ -219,9 +217,7 @@ public class NotesViewPane extends BorderPane {
         final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
         applyToSelection.setSelected(true);
         applySelected = true;
-        applyToSelection.selectedProperty().addListener((ov, oldVal, newVal) -> {
-            applySelected = applyToSelection.isSelected();
-        });
+        applyToSelection.selectedProperty().addListener((ov, oldVal, newVal) -> applySelected = applyToSelection.isSelected());
 
         // TextArea to enter new note content.
         final TextArea contentField = new TextArea();
@@ -425,9 +421,7 @@ public class NotesViewPane extends BorderPane {
             synchronized (LOCK) {
                 this.notesViewEntries.clear();
 
-                notesViewEntries.forEach(note -> {
-                    addNote(note);
-                });
+                notesViewEntries.forEach(note -> addNote(note));
             }
 
             updateNotesUI();
@@ -513,9 +507,7 @@ public class NotesViewPane extends BorderPane {
 
             if (CollectionUtils.isNotEmpty(notesToRender)) {
                 notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
-                notesToRender.forEach(note -> {
-                    createNote(note);
-                });
+                notesToRender.forEach(note -> createNote(note));
             }
             notesListScrollPane.applyCss();
             notesListScrollPane.layout();
@@ -533,9 +525,7 @@ public class NotesViewPane extends BorderPane {
 
             filterCheckComboBox.getCheckModel().clearChecks();
 
-            selectedFilters.forEach(filter -> {
-                filterCheckComboBox.getCheckModel().check(filter);
-            });
+            selectedFilters.forEach(filter -> filterCheckComboBox.getCheckModel().check(filter));
 
             isSelectedFiltersUpdating = false;
         });
@@ -569,9 +559,7 @@ public class NotesViewPane extends BorderPane {
      * Clears UI elements in the Notes View.
      */
     protected void clearNotes() {
-        Platform.runLater(() -> {
-            notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
-        });
+        Platform.runLater(() -> notesListVBox.getChildren().removeAll(notesListVBox.getChildren()));
         synchronized (LOCK) {
             notesViewEntries.clear();
             notesDateTimeCache.clear();
@@ -778,9 +766,7 @@ public class NotesViewPane extends BorderPane {
             final ContextMenu contextMenu = new ContextMenu();
             contextMenu.getItems().addAll(selectOnGraphMenuItem, addOnGraphMenuItem, removeOnGraphMenuItem);
 
-            noteBody.setOnContextMenuRequested(event -> {
-                contextMenu.show(this, event.getScreenX(), event.getScreenY());
-            });
+            noteBody.setOnContextMenuRequested(event -> contextMenu.show(this, event.getScreenX(), event.getScreenY()));
         }
 
         deleteButton.setOnAction(event -> {
@@ -975,10 +961,7 @@ public class NotesViewPane extends BorderPane {
         Platform.runLater(() -> {
 
             this.tagsSelectedFiltersList.clear();
-            selectedTagsFilters.forEach(filter -> {
-                this.tagsSelectedFiltersList.add(filter);
-
-            });
+            selectedTagsFilters.forEach(filter -> this.tagsSelectedFiltersList.add(filter));
         });
 
         updateTagFilters();
@@ -993,9 +976,7 @@ public class NotesViewPane extends BorderPane {
 
             autoFilterCheckComboBox.getCheckModel().clearChecks();
 
-            tagsSelectedFiltersList.forEach(filter -> {
-                autoFilterCheckComboBox.getCheckModel().check(filter);
-            });
+            tagsSelectedFiltersList.forEach(filter -> autoFilterCheckComboBox.getCheckModel().check(filter));
 
             isAutoSelectedFiltersUpdating = false;
         });

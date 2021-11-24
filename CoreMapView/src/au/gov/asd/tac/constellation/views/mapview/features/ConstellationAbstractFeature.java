@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.mapview.features;
 
 import de.fhpotsdam.unfolding.data.Feature;
-import de.fhpotsdam.unfolding.data.Feature.FeatureType;
 import java.util.HashMap;
 
 /**
@@ -36,10 +35,19 @@ public class ConstellationAbstractFeature {
 
     public ConstellationAbstractFeature(Feature feature) {
         this.id = feature.getId();
-        this.type = feature.getType() == FeatureType.POINT ? ConstellationFeatureType.POINT
-                : feature.getType() == FeatureType.LINES ? ConstellationFeatureType.LINE
-                : feature.getType() == FeatureType.POLYGON ? ConstellationFeatureType.POLYGON
-                : ConstellationFeatureType.MULTI;
+        switch (feature.getType()) {
+            case POINT:
+                this.type = ConstellationFeatureType.POINT;
+                break;
+            case LINES:
+                this.type = ConstellationFeatureType.LINE;
+                break;
+            case POLYGON:
+                this.type = ConstellationFeatureType.POLYGON;
+                break;
+            default:
+                this.type = ConstellationFeatureType.MULTI;
+        }
         this.properties = feature.getProperties();
     }
 

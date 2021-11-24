@@ -60,14 +60,14 @@ public class HelpServlet extends HttpServlet {
             ".txt", "text/plain",
             ".md", "text/html" // this allows a markdown file be converted to html on the fly
     );
-    private static boolean wasRedirect = false;
+    private static boolean redirect = false;
 
-    protected boolean getWasRedirect() {
-        return wasRedirect;
+    protected static boolean isRedirect() {
+        return redirect;
     }
 
-    protected void setWasRedirect(final boolean wasRedirect) {
-        this.wasRedirect = wasRedirect;
+    protected static void setWasRedirect(final boolean wasRedirect) {
+        HelpServlet.redirect = wasRedirect;
     }
 
     /**
@@ -89,11 +89,7 @@ public class HelpServlet extends HttpServlet {
             final URL fileUrl = redirectPath(requestPath, referer);
 
             if (fileUrl != null) {
-                try {
-                    response.sendRedirect("/" + fileUrl.toString());
-                } catch (final IOException ex) {
-                    LOGGER.log(Level.WARNING, ex, () -> "Failed to send redirect while navigating to {0}" + fileUrl.toString());
-                }
+                tryResponseRedirect(fileUrl, response);
             }
 
             final int extIx = requestPath.lastIndexOf('.');
@@ -102,13 +98,39 @@ public class HelpServlet extends HttpServlet {
             response.setContentType(mimeType);
             final String path = URLDecoder.decode(requestPath, StandardCharsets.UTF_8.name());
 
-            try {
-                ConstellationHelpDisplayer.copy(stripLeadingPath(path), response.getOutputStream());
-            } catch (final IOException ex) {
-                throw new ServletException(ex);
-            }
+            tryCopy(path, response);
+
         } catch (UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
+        }
+    }
+
+    /**
+     * Try to send a redirect to the response with the given fileUrl
+     *
+     * @param fileUrl
+     * @param response
+     */
+    private void tryResponseRedirect(final URL fileUrl, final HttpServletResponse response) {
+        try {
+            response.sendRedirect("/" + fileUrl.toString());
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, ex, () -> "Failed to send redirect while navigating to {0}" + fileUrl.toString());
+        }
+    }
+
+    /**
+     * Try to display the correct page
+     *
+     * @param path
+     * @param response
+     * @throws ServletException
+     */
+    private void tryCopy(final String path, final HttpServletResponse response) throws ServletException {
+        try {
+            ConstellationHelpDisplayer.copy(stripLeadingPath(path), response.getOutputStream());
+        } catch (final IOException ex) {
+            throw new ServletException(ex);
         }
     }
 
@@ -120,7 +142,7 @@ public class HelpServlet extends HttpServlet {
      * @param referer
      * @return new file path
      */
-    protected URL redirectPath(final String requestPath, final String referer) {
+    protected static URL redirectPath(final String requestPath, final String referer) {
         try {
             if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js")
                     || requestPath.contains(".ico"))) {
@@ -142,15 +164,15 @@ public class HelpServlet extends HttpServlet {
                         final String redirectURL = Generator.getBaseDirectory() + requestfrontHalfRemoved;
                         final File file2 = new File(redirectURL);
                         final URL fileUrl2 = file2.toURI().toURL();
-                        wasRedirect = true;
+                        HelpServlet.redirect = true;
                         return fileUrl2;
                     }
                 }
-            } else if (wasRedirect) {
-                wasRedirect = false;
+            } else if (HelpServlet.redirect) {
+                HelpServlet.redirect = false;
             }
         } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, "Redirect Failed! Could not navigate to: " + requestPath, ex);
+            LOGGER.log(Level.WARNING, String.format("Redirect Failed! Could not navigate to: %s", requestPath), ex);
         }
         return null;
     }
@@ -163,10 +185,12 @@ public class HelpServlet extends HttpServlet {
      */
     protected static String stripLeadingPath(final String fullPath) {
         String modifiedPath = fullPath;
-
-        modifiedPath = modifiedPath.replaceAll("\\/file:\\/[a-zA-Z]:", "");
-        modifiedPath = modifiedPath.replaceAll("\\/file:", "");
-        modifiedPath = modifiedPath.replaceAll("file:", "");
+        final String replace1 = "\\/file:\\/[a-zA-Z]:";
+        final String replace2 = "/file:";
+        final String replace3 = "file:";
+        modifiedPath = modifiedPath.replaceAll(replace1, "");
+        modifiedPath = modifiedPath.replace(replace2, "");
+        modifiedPath = modifiedPath.replace(replace3, "");
 
         return modifiedPath;
     }

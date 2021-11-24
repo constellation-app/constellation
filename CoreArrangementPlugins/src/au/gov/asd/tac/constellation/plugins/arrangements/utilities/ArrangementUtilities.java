@@ -41,6 +41,10 @@ import java.util.Set;
 public final class ArrangementUtilities {
 
     public static final int FUNDAMENTAL_SIZE = 2; //20;
+    
+    private ArrangementUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Find the minimum sum of weighted edges that must be traversed to reach
@@ -118,7 +122,7 @@ public final class ArrangementUtilities {
                     // Get the source vertex of this incoming edge.
                     final int childVxId = graph.getEdgeSourceVertex(edgeId);
                     if (distancesToVertices[childVxId] == NO_DISTANCE) {
-                        final float childRadius = 1.5f * (nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
+                        final float childRadius = 1.5F * (nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
                         final float childDistance = parentDistance + childRadius;
                         vxQueue.add(childVxId);
                         distancesToVertices[childVxId] = childDistance;

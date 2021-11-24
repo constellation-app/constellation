@@ -721,7 +721,7 @@ public class GraphRecordStoreUtilities {
         String copyId = "";
         for (int primarykeyAttr : graph.getPrimaryKey(GraphElementType.VERTEX)) {
             final String val = graph.getStringValue(primarykeyAttr, vxId);
-            copyId += graph.getAttributeName(primarykeyAttr) + "<" + (val == null ? "" : val) + ">";
+            copyId += graph.getAttributeName(primarykeyAttr) + "<" + (StringUtils.defaultString(val)) + ">";
         }
         copiedId[0] = COPY + copyId;
         recordStore.set(SOURCE + ID, copiedId[0]);

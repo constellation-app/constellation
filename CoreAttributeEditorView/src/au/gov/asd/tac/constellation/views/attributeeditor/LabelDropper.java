@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.datatransfer.DataFlavor;
@@ -55,7 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class)
 public class LabelDropper implements GraphDropper {
     
@@ -96,9 +97,7 @@ public class LabelDropper implements GraphDropper {
                     }
                 }
                 if (data != null) {
-                    return (graph, dropInfo) -> {
-                        PluginExecution.withPlugin(new SetTopLabelPlugin(data)).executeLater(graph);
-                    };
+                    return (graph, dropInfo) -> PluginExecution.withPlugin(new SetTopLabelPlugin(data)).executeLater(graph);
                 }
 
             } catch (final UnsupportedFlavorException | IOException | ClassNotFoundException ex) {
@@ -112,7 +111,7 @@ public class LabelDropper implements GraphDropper {
         return null;
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static class SetTopLabelPlugin extends SimpleEditPlugin {
 
         final String data;

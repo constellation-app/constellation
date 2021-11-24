@@ -112,18 +112,12 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             Label defaultLabel = new Label("Default Value:");
 
             nameText = new TextField();
-            nameText.textProperty().addListener((o, n, v) -> {
-                update();
-            });
+            nameText.textProperty().addListener((o, n, v) -> update());
             typeCombo = new ComboBox<>();
             typeCombo.setDisable(!isTypeModifiable);
-            typeCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                update();
-            });
+            typeCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
             descText = new TextField();
-            descText.textProperty().addListener((o, n, v) -> {
-                update();
-            });
+            descText.textProperty().addListener((o, n, v) -> update());
             setDefaultButton = new Button("Set Default");
             setDefaultButton.setOnAction(getSelectDefaultHandler());
             clearDefaultButton = new Button("Clear Default");

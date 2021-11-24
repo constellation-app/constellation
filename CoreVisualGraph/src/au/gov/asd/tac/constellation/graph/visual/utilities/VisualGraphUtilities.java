@@ -47,6 +47,10 @@ import java.util.stream.StreamSupport;
  * @author twilight_sparkle
  */
 public class VisualGraphUtilities {
+    
+    private VisualGraphUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void setCamera(final GraphWriteMethods graph, final Camera camera) {
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(graph);

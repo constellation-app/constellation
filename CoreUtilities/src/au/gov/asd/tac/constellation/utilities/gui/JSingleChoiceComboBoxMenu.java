@@ -164,14 +164,17 @@ public class JSingleChoiceComboBoxMenu<E> extends JComponent implements ListSele
 
     @Override
     public final void valueChanged(final ListSelectionEvent event) {
-        listeners.forEach(listener -> {
-            listener.valueChanged(event);
-        });
+        listeners.forEach(listener -> listener.valueChanged(event));
     }
 
     @Override
     public void setToolTipText(final String text) {
         button.setToolTipText(text);
+    }
+
+    @Override
+    public final String getToolTipText() {
+        return button.getToolTipText();
     }
 
     public static class OpenAction implements ActionListener {

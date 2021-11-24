@@ -89,13 +89,13 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      * Generate a String which represents the table of contents, the currently
      * displayed page, and the necessary html tags for formatting.
      *
+     * @param separator
      * @param tocInput
      * @param pageInput
      * @return
-     * @throws MalformedURLException
      * @throws IOException
      */
-    protected static String generateHTMLOutput(final String separator, final InputStream tocInput, final InputStream pageInput) throws MalformedURLException, IOException {
+    protected static String generateHTMLOutput(final String separator, final InputStream tocInput, final InputStream pageInput) throws IOException {
         final StringBuilder html = new StringBuilder();
 
         // HTML elements
@@ -103,19 +103,21 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String endDiv = "</div>";
         final String startColDiv = "<div class='col-4 col-sm-3'>";
         final String startInnerColDiv = "<div class='col-8 col-sm-9'>";
+        final String stylesheetLink = "<link href=\"\\%s\" rel='stylesheet'></link>";
+        final String javascriptText = "<script type=\"text/javascript\" src=\"\\%s\" ></script>";
 
-        final String css = String.format("<link href=\"\\%s\" rel='stylesheet'></link>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/css/app.css"));
-        final String noScript = String.format("<link href=\"\\%s\" rel='stylesheet'></link>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/css/noscript.css"));
-        final String cssBootstrap = String.format("<link href=\"\\%s\" rel='stylesheet'></link>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/css/bootstrap.css"));
-        final String jquery = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/js/jquery.min.js"));
-        final String dropotron = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/js/jquery.dropotron.min.js"));
-        final String scrolly = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/js/jquery.scrolly.min.js"));
-        final String scrollex = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/js/jquery.scrollex.min.js"));
-        final String browser = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/js/browser.min.js"));
-        final String breakpoints = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/js/breakpoints.min.js"));
-        final String appJS = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/assets/js/app.js"));
-        final String boostrapjs = String.format("<script type=\"text/javascript\" src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/js/bootstrap.js"));
-        final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.baseDirectory, "constellation/bootstrap/js/js.cookie.min.js"));
+        final String css = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/css/app.css"));
+        final String noScript = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/css/noscript.css"));
+        final String cssBootstrap = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/css/bootstrap.css"));
+        final String jquery = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.min.js"));
+        final String dropotron = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.dropotron.min.js"));
+        final String scrolly = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.scrolly.min.js"));
+        final String scrollex = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.scrollex.min.js"));
+        final String browser = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/browser.min.js"));
+        final String breakpoints = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/breakpoints.min.js"));
+        final String appJS = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/app.js"));
+        final String boostrapjs = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/js/bootstrap.js"));
+        final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/js/js.cookie.min.js"));
 
         final String scriptTag = "<script>\n"
                 + " // when a group is shown, save it as active\n"
@@ -263,13 +265,13 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
         // Run in a different thread, not the JavaFX thread
         final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
-        return pluginExecutor.submit(new Thread(() -> {
+        return pluginExecutor.submit(() -> {
             Thread.currentThread().setName("Browse Help");
             try {
                 Desktop.getDesktop().browse(uri);
             } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, String.format("Failed to load the help URI %s", uri), ex);
             }
-        }));
+        });
     }
 }

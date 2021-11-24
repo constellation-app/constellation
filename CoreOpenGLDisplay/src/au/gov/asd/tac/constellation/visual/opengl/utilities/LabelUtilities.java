@@ -41,6 +41,10 @@ public final class LabelUtilities {
     public static final int NRADIUS_TO_LABEL_UNITS = 16;
     public static final int NRADIUS_TO_LINE_WIDTH_UNITS = 16;
     public static final String ELLIPSIS = "…"; // \u2026
+    
+    private LabelUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Split the attribute values into lines of text that are no more than

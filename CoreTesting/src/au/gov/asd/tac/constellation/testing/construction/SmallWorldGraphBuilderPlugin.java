@@ -47,6 +47,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("SmallWorldGraphBuilderPlugin=Small World Graph Builder")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
     
     private static final Logger LOGGER = Logger.getLogger(SmallWorldGraphBuilderPlugin.class.getName());
@@ -115,9 +116,9 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> p = FloatParameterType.build(P_PARAMETER_ID);
         p.setName("Rewiring probability");
         p.setDescription("Probability of re-wiring each edge (low for a long shortest paths lattice structure, high for higher clustering coefficient random graph)");
-        p.setFloatValue(0.5f);
-        FloatParameterType.setMinimum(p, 0f);
-        FloatParameterType.setMaximum(p, 1f);
+        p.setFloatValue(0.5F);
+        FloatParameterType.setMinimum(p, 0F);
+        FloatParameterType.setMaximum(p, 1F);
         params.addParameter(p);
 
         final List<String> modes = new ArrayList<>();

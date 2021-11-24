@@ -80,7 +80,7 @@ public class GraphLabelsAndDecoratorsIOProviderV0 extends AbstractGraphIOProvide
                 final JsonNode lnode = it.next();
                 final String attr = lnode.get(GraphLabelsAndDecoratorsV0.FIELD_ATTR).textValue();
                 final String color = lnode.get(GraphLabelsAndDecoratorsV0.FIELD_COLOR).textValue();
-                final float radius = lnode.has(GraphLabelsAndDecoratorsV0.FIELD_RADIUS) ? (float) lnode.get(GraphLabelsAndDecoratorsV0.FIELD_RADIUS).asDouble() : 1f;
+                final float radius = lnode.has(GraphLabelsAndDecoratorsV0.FIELD_RADIUS) ? (float) lnode.get(GraphLabelsAndDecoratorsV0.FIELD_RADIUS).asDouble() : 1F;
 
                 final GraphLabelV0 label = new GraphLabelV0(attr, ConstellationColor.getColorValue(color), radius);
                 labelList.add(label);

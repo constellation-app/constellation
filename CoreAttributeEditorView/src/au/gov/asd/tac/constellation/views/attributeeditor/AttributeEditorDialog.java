@@ -63,13 +63,9 @@ public class AttributeEditorDialog extends ConstellationDialog {
             hideDialog();
         });
 
-        cancelButton.setOnAction(e -> {
-            hideDialog();
-        });
+        cancelButton.setOnAction(e -> hideDialog());
 
-        defaultButton.setOnAction(e -> {
-            editor.setDefaultValue();
-        });
+        defaultButton.setOnAction(e -> editor.setDefaultValue());
 
         okCancelHBox = new HBox(20);
         okCancelHBox.setPadding(new Insets(10));

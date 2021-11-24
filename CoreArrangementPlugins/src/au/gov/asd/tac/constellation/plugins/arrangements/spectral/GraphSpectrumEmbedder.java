@@ -68,14 +68,12 @@ public class GraphSpectrumEmbedder {
 
     private static class GraphMatrix {
 
-        private final Map<Integer, Integer> idToMatrixPosition;
         private final Map<Integer, Integer> matrixPositionToID;
         private final double[][] laplacianMatrix;
         private final int dimension;
 
-        private GraphMatrix(double[][] laplacianMatrix, Map<Integer, Integer> idToMatrixPosition, Map<Integer, Integer> matrixPositionToID) {
+        private GraphMatrix(double[][] laplacianMatrix, Map<Integer, Integer> matrixPositionToID) {
             this.laplacianMatrix = laplacianMatrix;
-            this.idToMatrixPosition = idToMatrixPosition;
             this.matrixPositionToID = matrixPositionToID;
             this.dimension = laplacianMatrix.length;
         }
@@ -152,7 +150,7 @@ public class GraphSpectrumEmbedder {
                 }
             }
 
-            return new GraphMatrix(matrixEntries, idToMatrixPosition, matrixPositionToID);
+            return new GraphMatrix(matrixEntries, matrixPositionToID);
         }
     }
 

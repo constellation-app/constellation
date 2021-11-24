@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
@@ -572,7 +573,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to update histogram state.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
     private class HistogramStateUpdaterPlugin extends SimpleEditPlugin {
 
         private final HistogramState state;
@@ -596,7 +597,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to only select bins.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class HistogramSelectOnlyBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -624,7 +625,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to select bins.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class SelectBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -654,7 +655,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to invert bins.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class InvertBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -682,7 +683,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to complete bins.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class CompleteBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -710,7 +711,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to filter selection.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class FilterSelection extends SimpleEditPlugin {
 
         @Override
@@ -732,7 +733,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to save bins to graph.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     private class SaveBinsToGraph extends SimpleEditPlugin {
 
         @Override
@@ -750,7 +751,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to save bins to clipboard.
      */
-    @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
     private class SaveBinsToClipboard extends SimpleReadPlugin {
 
         @Override
@@ -767,7 +768,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to expand selection.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class ExpandSelection extends SimpleEditPlugin {
 
         @Override

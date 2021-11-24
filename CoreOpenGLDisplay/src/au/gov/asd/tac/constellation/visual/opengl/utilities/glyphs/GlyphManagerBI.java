@@ -126,7 +126,7 @@ public final class GlyphManagerBI implements GlyphManager {
      * Cache the bulk of the work renderTextAsLigature does to greatly improve
      * performance.
      */
-    private static Map<String, LigatureContext> cache;
+    private static Map<String, LigatureContext> cache = new HashMap<>();;
 
     /**
      * A default no-op GlyphStream to use when the user specifies null.
@@ -182,8 +182,6 @@ public final class GlyphManagerBI implements GlyphManager {
         drawRuns = false;
         drawIndividual = false;
         drawCombined = false;
-
-        cache = new HashMap<>();
     }
 
     public BufferedImage getImage() {
@@ -381,12 +379,12 @@ public final class GlyphManagerBI implements GlyphManager {
         //   ConnectionLabelBatcher and NodeLabelBatcher).
         // * cy centers the top and bottom vertically.
         //
-        final float centre = (ligature.left + ligature.right) / 2f;
+        final float centre = (ligature.left + ligature.right) / 2F;
         for (final GlyphRectangle gr : ligature.glyphRectangles) {
-            final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1f;
+            final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1F;
 //            final float cy = (gr.rect.y-top+((maxFontHeight-(bottom-top))/2f))/(float)maxFontHeight;
 //            final float cy = (2*gr.rect.y-top+maxFontHeight-bottom)/(2f*maxFontHeight);
-            final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2f) / (float) (maxFontHeight) + 0.5f;
+            final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2F) / (float) (maxFontHeight) + 0.5F;
             glyphStream.addGlyph(gr.position, cx, cy, context);
         }
     }
@@ -511,9 +509,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
                 if (drawCombined) {
                     g2d.setColor(Color.MAGENTA);
-                    merged.forEach(r -> {
-                        g2d.drawRect(r.x, r.y, r.width, r.height);
-                    });
+                    merged.forEach(r -> g2d.drawRect(r.x, r.y, r.width, r.height));
                 }
 
                 if (drawRuns || drawIndividual || drawCombined) {

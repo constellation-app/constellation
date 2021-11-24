@@ -49,9 +49,7 @@ public interface ConstellationLabelFonts {
      */
     public default String getFontListString() {
         final StringBuilder fontList = new StringBuilder();
-        getFontList().forEach(font -> {
-            fontList.append(font).append(SeparatorConstants.NEWLINE);
-        });
+        getFontList().forEach(font -> fontList.append(font).append(SeparatorConstants.NEWLINE));
         return fontList.toString();
     }
 
