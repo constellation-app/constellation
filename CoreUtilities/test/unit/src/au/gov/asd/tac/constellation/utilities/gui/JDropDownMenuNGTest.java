@@ -319,7 +319,7 @@ public class JDropDownMenuNGTest {
         instance.addActionListener(listSelectionListenerMock1);
         instance.addActionListener(listSelectionListenerMock2);
         instance.actionPerformed(mockEvent);
-        Thread.sleep(500);
+        Thread.sleep(1000);
         verify(listSelectionListenerMock1, times(1)).actionPerformed(mockEvent);
         verify(listSelectionListenerMock2, times(1)).actionPerformed(mockEvent);
     }
