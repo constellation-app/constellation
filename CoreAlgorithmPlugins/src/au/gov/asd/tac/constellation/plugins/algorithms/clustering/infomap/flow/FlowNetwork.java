@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Con
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +48,7 @@ public class FlowNetwork {
         nodeFlow = new double[numNodes];
         nodeTeleportRates = new double[numNodes];
 
-        final TreeMap<NodePair, Double> connMap = network.getMap();
+        final Map<NodePair, Double> connMap = network.getMap();
         final int numConns = connMap.size();
         flowConns = new Connection[numConns];
         final double totalConnWeight = network.getTotalWeight();
@@ -199,7 +198,7 @@ public class FlowNetwork {
 
             // Update node flow from the power iteration above and check if converged.
             double sum = 0.0;
-            double sqdiff_old = sqdiff;
+            double sqdiffOld = sqdiff;
             sqdiff = 0.0;
             for (int i = 0; i < numNodes; ++i) {
                 sum += nodeFlowTmp[i];
@@ -218,7 +217,7 @@ public class FlowNetwork {
             }
 
             // Perturb the system if equilibrium.
-            if (sqdiff == sqdiff_old) {
+            if (sqdiff == sqdiffOld) {
                 alpha += 1.0e-10;
                 beta = 1.0 - alpha;
             }

@@ -132,22 +132,22 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         nestedDiagramScrollPane.addComponentListener(new ComponentListener() {
 
             @Override
-            public void componentResized(ComponentEvent e) {
+            public void componentResized(final ComponentEvent e) {
                 dp.componentResized(null);
             }
 
             @Override
-            public void componentMoved(ComponentEvent e) {
+            public void componentMoved(final ComponentEvent e) {
                 // Override required for ComponentListener, intentionally left blank
             }
 
             @Override
-            public void componentShown(ComponentEvent e) {
+            public void componentShown(final ComponentEvent e) {
                 // Override required for ComponentListener, intentionally left blank
             }
 
             @Override
-            public void componentHidden(ComponentEvent e) {
+            public void componentHidden(final ComponentEvent e) {
                 // Override required for ComponentListener, intentionally left blank
             }
         });
@@ -371,19 +371,15 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
     private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downButtonActionPerformed
         if (state.currentStep > 0) {
-//            stepSlider.setValue(--state.currentStep);
             state.currentStep--;
             updateSlider();
-//            updateGraph();
         }
     }//GEN-LAST:event_downButtonActionPerformed
 
     private void upButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upButtonActionPerformed
         if (state.currentStep < state.steps) {
-//            stepSlider.setValue(++state.currentStep);
             state.currentStep++;
             updateSlider();
-//            updateGraph();
         }
     }//GEN-LAST:event_upButtonActionPerformed
 
@@ -591,11 +587,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             // Retrieve the COI state attribute, attribute mod counter, and structural mod counter from the graph
             final int stateAttr = ClusteringConcept.MetaAttribute.HIERARCHICAL_CLUSTERING_STATE.get(rg);
             smc = rg.getStructureModificationCounter();
-            if (stateAttr != Graph.NOT_FOUND) {
-                mc = rg.getValueModificationCounter(stateAttr);
-            } else {
-                mc = Graph.NOT_FOUND;
-            }
+            mc = stateAttr != Graph.NOT_FOUND ? rg.getValueModificationCounter(stateAttr) : Graph.NOT_FOUND;
+            
 
             // If the COI state on the controller is null, or has a different modcount to the state on the graph, update this controller's state.
             if (state == null || mc != state.modificationCounter) {

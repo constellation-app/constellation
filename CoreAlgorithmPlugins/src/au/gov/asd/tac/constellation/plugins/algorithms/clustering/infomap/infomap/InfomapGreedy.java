@@ -115,7 +115,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         calculateCodelengthFromActiveNetwork(hasDetailedBalance());
     }
 
-    void calculateCodelengthFromActiveNetwork(final boolean detailedBalance) {
+    protected void calculateCodelengthFromActiveNetwork(final boolean detailedBalance) {
         if (DEBUG) {
             final String log = String.format("%s.calculateCodelengthFromActiveNetwork(%s)%n", getClass().getSimpleName(), detailedBalance);
             LOGGER.log(Level.INFO, log);
@@ -304,7 +304,6 @@ public abstract class InfomapGreedy extends InfomapBase {
                 node = node.getParent();
                 final double parentFlow = getNode(node).getData().getFlow();
                 getNode(node).getData().setFlow(parentFlow + flow);
-//                getNode(*node).data.flow += flow;
             }
         }
     }
@@ -650,7 +649,7 @@ public abstract class InfomapGreedy extends InfomapBase {
             // Make best possible move.
             if (bestDeltaModule.getModule() != current.getIndex()) {
                 final int bestModuleIndex = bestDeltaModule.getModule();
-                //Update empty module vector.
+                // Update empty module vector.
                 if (moduleMembers[bestModuleIndex] == 0) {
                     emptyModules.remove(emptyModules.size() - 1);
                 }
@@ -750,7 +749,7 @@ public abstract class InfomapGreedy extends InfomapBase {
          typedef std::map<NodePair, double> EdgeMap;
          EdgeMap moduleLinks;
          */
-        final TreeMap<Tuple<NodeBase, NodeBase>, Double> moduleLinks = new TreeMap<>((lhs, rhs) -> {
+        final Map<Tuple<NodeBase, NodeBase>, Double> moduleLinks = new TreeMap<>((lhs, rhs) -> {
             if (lhs.getFirst().getId() < rhs.getFirst().getId()) {
                 return -1;
             }
@@ -768,7 +767,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         for (final NodeBase node : activeNetwork) {
             final NodeBase parent = node.getParent();
 
-            for (Edge<NodeBase> edge : node.getOutEdges()) {
+            for (final Edge<NodeBase> edge : node.getOutEdges()) {
                 final NodeBase otherParent = edge.getTarget().getParent();
 
                 if (otherParent != parent) {
@@ -872,7 +871,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         }
     }
 
-    int getNumActiveModules() {
+    protected int getNumActiveModules() {
         return activeNetwork.size() - emptyModules.size();
     }
 

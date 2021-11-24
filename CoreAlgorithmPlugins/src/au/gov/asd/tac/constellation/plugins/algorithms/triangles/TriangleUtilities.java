@@ -38,7 +38,7 @@ public class TriangleUtilities {
     public static Tuple<Tuple<BitSet[], float[]>, Float> getTriangles(final GraphReadMethods graph) {
         final int vxCount = graph.getVertexCount();
         final BitSet[] allNeighbours = new BitSet[vxCount];
-        float[] scores = new float[vxCount];
+        final float[] scores = new float[vxCount];
         final BitSet update = new BitSet(vxCount);
         final BitSet[] triangleNeighbours = new BitSet[vxCount];
         float triangles = 0;

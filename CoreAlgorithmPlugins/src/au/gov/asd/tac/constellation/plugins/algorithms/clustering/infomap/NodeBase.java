@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * NodeBase
@@ -55,7 +56,7 @@ public class NodeBase {
     protected ArrayList<Edge<NodeBase>> outEdges;
 
     public NodeBase() {
-        this("");
+        this(StringUtils.EMPTY);
     }
 
     public NodeBase(final String name) {
@@ -261,7 +262,6 @@ public class NodeBase {
     }
 
     public Iterable<NodeBase> getChildren() {
-//        return new ChildrenIterable();
         return () -> new ChildrenIterator(NodeBase.this);
     }
 
@@ -304,7 +304,7 @@ public class NodeBase {
 
     @Override
     public String toString() {
-        if (true) { // (name.isEmpty())
+        if (true) {
             return String.format("[NodeBase %d index=%d original=%d] %s", id, index, originalIndex, getNeighbourhood());
         }
 

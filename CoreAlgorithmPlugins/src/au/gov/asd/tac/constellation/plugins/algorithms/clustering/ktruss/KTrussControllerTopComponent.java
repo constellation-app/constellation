@@ -600,11 +600,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             // Retrieve the k-truss state attribute, attribute mod counter, and structural mod counter from the graph
             final int stateAttr = ClusteringConcept.MetaAttribute.K_TRUSS_CLUSTERING_STATE.get(rg);
             smc = rg.getStructureModificationCounter();
-            if (stateAttr != Graph.NOT_FOUND) {
-                mc = rg.getValueModificationCounter(stateAttr);
-            } else {
-                mc = Graph.NOT_FOUND;
-            }
+            mc = stateAttr != Graph.NOT_FOUND ? rg.getValueModificationCounter(stateAttr) : Graph.NOT_FOUND;
 
             // If the k-truss state on the controller is null, or has a different modcount to the state on the graph, update this controller's state.
             if (state == null || mc != state.modificationCounter) {
@@ -680,23 +676,23 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
             nestedTrussPane.addComponentListener(new ComponentListener() {
                 @Override
-                public void componentResized(ComponentEvent e) {
+                public void componentResized(final ComponentEvent e) {
                     dp.setSize(stepSlider.getWidth(), dp.getHeight());
                     revalidateParents(dp.getParent());
                 }
 
                 @Override
-                public void componentMoved(ComponentEvent e) {
+                public void componentMoved(final ComponentEvent e) {
                     // Override required for ComponentListener, intentionally left blank
                 }
 
                 @Override
-                public void componentShown(ComponentEvent e) {
+                public void componentShown(final ComponentEvent e) {
                     // Override required for ComponentListener, intentionally left blank
                 }
 
                 @Override
-                public void componentHidden(ComponentEvent e) {
+                public void componentHidden(final ComponentEvent e) {
                     // Override required for ComponentListener, intentionally left blank
                 }
             });
@@ -986,26 +982,26 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     @Override
-    public void componentResized(ComponentEvent e) {
+    public void componentResized(final ComponentEvent e) {
         nestedTrussPane.setSize(stepSlider.getWidth(), nestedTrussPane.getHeight());
         dp.setSize(stepSlider.getWidth(), dp.getHeight());
         dp.repaint();
     }
 
     @Override
-    public void componentMoved(ComponentEvent e) {
+    public void componentMoved(final ComponentEvent e) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void componentShown(ComponentEvent e) {
+    public void componentShown(final ComponentEvent e) {
         nestedTrussPane.setSize(stepSlider.getWidth(), nestedTrussPane.getHeight());
         dp.setSize(stepSlider.getWidth(), dp.getHeight());
         dp.repaint();
     }
 
     @Override
-    public void componentHidden(ComponentEvent e) {
+    public void componentHidden(final ComponentEvent e) {
         throw new UnsupportedOperationException();
     }
 
@@ -1038,7 +1034,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
     }
 
-    public void updateInteractiveButton(boolean disableButton) {
+    public void updateInteractiveButton(final boolean disableButton) {
         if (disableButton) {
             interactiveButton.setText(TOGGLE_DISABLED);
             interactiveButton.setSelected(false);

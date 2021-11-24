@@ -267,7 +267,7 @@ public class KTrussState {
     public boolean isKTrussExtant(final int k) {
         try {
             return getExtantKTrusses()[k];
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        } catch (final ArrayIndexOutOfBoundsException ex) {
             return false;
         }
     }
