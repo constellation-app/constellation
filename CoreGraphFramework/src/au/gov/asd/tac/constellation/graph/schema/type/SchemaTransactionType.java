@@ -270,7 +270,7 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
         public SchemaTransactionType build() {
             ConstellationColor newColor = color;
             LineStyle newStyle = style;
-            boolean newDirected = directed;
+            boolean newDirected = false;
 
             if (color == null) {
                 newColor = superType != null ? superType.color : UNKNOWN.color;
