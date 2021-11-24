@@ -356,16 +356,13 @@ public class TimelineChart extends XYChart<Number, Number> {
                 lowerTimeExtentProperty.setValue(extentFormatter.format(new Date((long) lowerTimeExtent)));
                 upperTimeExtentProperty.setValue(extentFormatter.format(new Date((long) upperTimeExtent)));
 
-                // return the label
-                String formatted;
-                try {
+                if(tickDate != null) {
                     tickDate.setTimeZone(currentTimezone);
-                    formatted = tickDate.format(date);
-                } catch (NullPointerException npe) {
-                    formatted = ""; // We don't have a valid timeline;
+                    return tickDate.format(date);
                 }
 
-                return formatted;
+                // We don't have a valid timeline
+                return "";
             }
 
             @Override

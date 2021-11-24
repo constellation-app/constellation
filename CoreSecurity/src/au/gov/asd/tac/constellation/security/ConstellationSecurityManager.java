@@ -92,7 +92,6 @@ public class ConstellationSecurityManager {
             SECURITY_PROVIDERS = providers.toArray(new ConstellationSecurityProvider[providers.size()]);
             SECURITY_CONTEXTS = new ConstellationSecurityContext[SECURITY_PROVIDERS.length][];
 
-            finished:
             for (int i = 0; i < SECURITY_PROVIDERS.length; i++) {
                 LOGGER.log(LEVEL, "Getting contexts from {0}", SECURITY_PROVIDERS[i].getName());
 
@@ -109,7 +108,7 @@ public class ConstellationSecurityManager {
                                 LOGGER.log(LEVEL, "Setting current context {0} from provider {1}",
                                         new Object[]{CURRENT_CONTEXT.getName(), SECURITY_PROVIDERS[i].getName()});
 
-                                break finished;
+                                return;
                             }
                         } catch (final SecurityException ex) {
                             // TODO: Handle exceptions from getSSLContext()
