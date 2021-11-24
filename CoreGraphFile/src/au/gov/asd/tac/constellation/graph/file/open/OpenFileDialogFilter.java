@@ -129,7 +129,7 @@ public abstract class OpenFileDialogFilter extends FileFilter {
             if (file.isDirectory()) {
                 return true;
             }
-            for (String ext : getSuffixes()) {
+            for (final String ext : getSuffixes()) {
                 if (compareSuffixes(file.getName(), ext)) {
                     return true;
                 }
@@ -174,7 +174,7 @@ public abstract class OpenFileDialogFilter extends FileFilter {
      */
     @Override
     public final String getDescription() {
-        StringBuilder sb = new StringBuilder(getDescriptionString());
+        final StringBuilder sb = new StringBuilder(getDescriptionString());
         sb.append(" ");
         sb.append(getSuffixesList());
         return sb.toString();
@@ -287,8 +287,8 @@ public abstract class OpenFileDialogFilter extends FileFilter {
 
         @Override
         public String[] getSuffixes() {
-            ArrayList<String> suffixList = new ArrayList<>();
-            for (String extension : getFilter().getExtensions()) {
+            final ArrayList<String> suffixList = new ArrayList<>();
+            for (final String extension : getFilter().getExtensions()) {
                 suffixList.add(EXTENSION_SEPARATOR + extension);
             }
             return suffixList.toArray(new String[]{});

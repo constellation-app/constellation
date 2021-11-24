@@ -116,7 +116,7 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
      */
     public static final String FILE_EXTENSION = ".star";
 
-    private NebulaDataObject graphDataObject;
+    private NebulaDataObject gdo;
 
     /**
      * If this graph is part of a graph, assign a color to it.
@@ -134,7 +134,7 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
      */
     public GraphDataObject(final FileObject primaryFile, final MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(primaryFile, loader);
-        graphDataObject = null;
+        gdo = null;
         graphColor = null;
     }
 
@@ -183,19 +183,19 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
         }
 
         String s = FileUtil.getFileDisplayName(getPrimaryFile());
-        if (graphDataObject != null) {
-            s = String.format("%s - %s", graphDataObject.getName(), s);
+        if (gdo != null) {
+            s = String.format("%s - %s", gdo.getName(), s);
         }
 
         return s;
     }
 
     public NebulaDataObject getNebulaDataObject() {
-        return graphDataObject;
+        return gdo;
     }
 
     public void setNebulaDataObject(final NebulaDataObject graphDataObject) {
-        this.graphDataObject = graphDataObject;
+        this.gdo = graphDataObject;
     }
 
     public Color getNebulaColor() {

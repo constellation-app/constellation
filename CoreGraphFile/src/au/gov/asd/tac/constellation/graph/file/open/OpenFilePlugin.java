@@ -71,12 +71,10 @@ public class OpenFilePlugin extends SimpleReadPlugin {
      * @exception org.openide.util.UserCancelException if the user cancelled the
      * operation
      */
-    public static File[] chooseFilesToOpen(final JFileChooser chooser)
-            throws UserCancelException {
+    public static File[] chooseFilesToOpen(final JFileChooser chooser) throws UserCancelException {
         File[] files;
         do {
-            final int selectedOption = chooser.showOpenDialog(
-                    WindowManager.getDefault().getMainWindow());
+            final int selectedOption = chooser.showOpenDialog(WindowManager.getDefault().getMainWindow());
 
             if (selectedOption != JFileChooser.APPROVE_OPTION) {
                 throw new UserCancelException();

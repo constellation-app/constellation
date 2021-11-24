@@ -134,7 +134,6 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
 
     public NebulaDataObject(final FileObject pf, final MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(pf, loader);
-//        registerEditor("application/x-nebula", false);
     }
 
     @Override
@@ -193,8 +192,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
         // However, the recent files stuff works by watching for opening TopComponents (which is bad).
         // So, do it manually.
         // FileObject.getPath() returns a path containing "/"; we need to convert it to local separators for RecentFiles.
-        String path = getPrimaryFile().getPath();
-        path = new File(path).getAbsolutePath();
+        final String path = new File(getPrimaryFile().getPath()).getAbsolutePath();
         RecentFiles.addFile(path);
     }
 

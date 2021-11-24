@@ -31,7 +31,7 @@ public abstract class GraphOpener {
      *
      * @param gdo A GraphDataObject representing an existing graph file.
      */
-    public abstract void openGraph(GraphDataObject gdo);
+    public abstract void openGraph(final GraphDataObject gdo);
 
     /**
      * Open a graph using an existing graph and a name.
@@ -43,7 +43,7 @@ public abstract class GraphOpener {
      * @param name The name of the graph. This must be able to be used as a file
      * name.
      */
-    public abstract void openGraph(Graph graph, String name);
+    public abstract void openGraph(final Graph graph, final String name);
 
     /**
      * Open a graph using an existing graph and a name.
@@ -57,7 +57,7 @@ public abstract class GraphOpener {
      * @param doAfter this runnable will be executed on the EDT once the graph
      * has been opened.
      */
-    public abstract void openGraph(Graph graph, String name, Runnable doAfter);
+    public abstract void openGraph(final Graph graph, final String name, final Runnable doAfter);
 
     /**
      * Open a graph using an existing graph and a name.
@@ -71,7 +71,7 @@ public abstract class GraphOpener {
      * @param numbered If true, a monotonically increasing number will be
      * appended to the name.
      */
-    public abstract void openGraph(Graph graph, String name, boolean numbered);
+    public abstract void openGraph(final Graph graph, final String name, final boolean numbered);
 
     public static GraphOpener getDefault() {
         return Lookup.getDefault().lookup(GraphOpener.class);
