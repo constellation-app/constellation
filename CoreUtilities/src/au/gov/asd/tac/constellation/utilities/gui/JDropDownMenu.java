@@ -19,6 +19,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -84,6 +85,30 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
             this.button = new JButton(text, arrow);
         }
         button.setHorizontalTextPosition(SwingConstants.LEFT);
+        addButtonActionListener(button, menu);
+        add(button);
+
+        listeners = new HashSet<>();
+
+        items.forEach(item -> {
+            final JMenuItem menuItem = new JMenuItem(item.toString());
+            menuItem.addActionListener(new OpenAction(menu, button));
+            addMenuItemActionListener(menuItem);
+            menuItems.put(menuItem, item);
+            menu.add(menuItem);
+        });
+    }
+
+    protected final void addMenuItemActionListener(final JMenuItem menuItem) {
+        menuItem.addActionListener(event -> {
+            final JMenuItem changedMenuItem = (JMenuItem) event.getSource();
+            final E changedItem = menuItems.get(changedMenuItem);
+            final ActionEvent actionEvent = new ActionEvent(changedItem, ActionEvent.ACTION_PERFORMED, null);
+            actionPerformed(actionEvent);
+        });
+    }
+
+    protected final void addButtonActionListener(final JButton button, final JPopupMenu menu) {
         button.addActionListener(event -> {
             if (!menu.isVisible()) {
                 final Point p = button.getLocationOnScreen();
@@ -94,30 +119,10 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
                 menu.setVisible(false);
             }
         });
-        add(button);
+    }
 
-        listeners = new HashSet<>();
-
-        items.forEach(item -> {
-            final JMenuItem menuItem = new JMenuItem(item.toString());
-            menuItem.addActionListener(new OpenAction(menu, button));
-            menuItem.addActionListener(event -> {
-                final JMenuItem changedMenuItem = (JMenuItem) event.getSource();
-                final E changedItem = menuItems.get(changedMenuItem);
-                listeners.forEach(listener -> {
-                    final Thread thread = new Thread("JDropDownMenu Worker") {
-                        @Override
-                        public void run() {
-                            final ActionEvent actionEvent = new ActionEvent(changedItem, ActionEvent.ACTION_PERFORMED, null);
-                            listener.actionPerformed(actionEvent);
-                        }
-                    };
-                    thread.start();
-                });
-            });
-            menuItems.put(menuItem, item);
-            menu.add(menuItem);
-        });
+    protected Map<JMenuItem, E> getMenuItems() {
+        return menuItems;
     }
 
     public final String getText() {
@@ -153,6 +158,18 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
 
     public final void addActionListener(final ActionListener listener) {
         listeners.add(listener);
+    }
+
+    protected Set<ActionListener> getListeners() {
+        return Collections.unmodifiableSet(listeners);
+    }
+
+    protected JButton getButton() {
+        return button;
+    }
+
+    protected JPopupMenu getMenu() {
+        return menu;
     }
 
     @Override
