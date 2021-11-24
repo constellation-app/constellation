@@ -46,7 +46,6 @@ public class FileExtensionConstants {
     public static final String TRUE_TYPE_FONT = ".ttf";
     
     // Zip extensions
-    public static final String TSV_GZIP = ".tsv.gz";
     public static final String GZIP = ".gz";
     
     // Common file extensions

@@ -87,7 +87,7 @@ public class TSVDropper implements GraphDropper {
                         // Only process files that have a .tsv or .tsv.gz extension
                         // If any file does not have this extension then reject all the files.
                         final InputStream in;
-                        if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TSV_GZIP)) {
+                        if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TAB_SEPARATED_VALUE + FileExtensionConstants.GZIP)) {
                             in = new GZIPInputStream(new FileInputStream(file));
                         } else if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TAB_SEPARATED_VALUE)) {
                             in = new FileInputStream(file);
