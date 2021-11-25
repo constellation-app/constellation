@@ -459,7 +459,7 @@ public class FindRule {
      * @return <code>Boolean</code> representing the saved 'String Case
      * Sensitivity' value in this <code>FindRule</code>
      */
-    public boolean getStringCaseSensitivity() {
+    public boolean isStringCaseSensitivity() {
         return args.containsKey(STR_CASE) && (boolean) args.get(STR_CASE);
     }
 
@@ -470,7 +470,7 @@ public class FindRule {
      * @return <code>Boolean</code> representing the saved 'Use List' value in
      * this <code>FindRule</code>
      */
-    public boolean getStringUsingList() {
+    public boolean isStringUsingList() {
         return args.containsKey(STR_LIST) && (boolean) args.get(STR_LIST);
     }
 

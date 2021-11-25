@@ -64,7 +64,6 @@ public class FR3DArranger implements Arranger {
     private static final int MAX_PSEUDO_SIZE = 100;
     public static final int MAX_ITERATIONS = 10;
     private static final int BORDER = 1;
-    private double forceConstant;
     private double temperature;
     private static final double ATTRACTION_MULTIPLIER = 0.75 / 0.67;
     private static final double REPULSION_MULTIPLIER = 0.75 * 0.67;
@@ -140,9 +139,9 @@ public class FR3DArranger implements Arranger {
     }
 
     private void initialise(final int width, final int height, final int depth) {
+        final double forceConstant = Math.pow(height * width * depth / (double) wg.getVertexCount(), 1.0 / 3.0);
         temperature = width / 10.0;
         //            forceConstant = (float)Math.pow(height*width*depth/(double)Math.min(graph.getVertexCount(), MAX_PSEUDO_SIZE), 1.0/3.0);
-        forceConstant = Math.pow(height * width * depth / (double) wg.getVertexCount(), 1.0 / 3.0);
         attractionConstant = ATTRACTION_MULTIPLIER * forceConstant;
         repulsionConstant = REPULSION_MULTIPLIER * forceConstant;
 

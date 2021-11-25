@@ -37,7 +37,6 @@ class FR2DArranger implements Arranger {
     public static final int MAX_ITERATIONS = 10;
     private static final int BORDER = 1;
 
-    private double forceConstant;
     private double temperature;
     private static final double ATTRACTION_MULTIPLIER = 0.75 / 0.67;
     private static final double REPULSION_MULTIPLIER = 0.75 * 0.67;
@@ -86,8 +85,8 @@ class FR2DArranger implements Arranger {
     }
 
     private void initialise(final int width, final int height) {
+        final double forceConstant = Math.pow(height * width / (double) vxCount, 1.0 / 2.0);
         temperature = width / 10.0;
-        forceConstant = Math.pow(height * width / (double) vxCount, 1.0 / 2.0);
         attractionConstant = ATTRACTION_MULTIPLIER * forceConstant;
         repulsionConstant = REPULSION_MULTIPLIER * forceConstant;
 

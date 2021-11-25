@@ -168,7 +168,7 @@ public final class GraphTaxonomy {
         }
     }
 
-    public boolean getArrangeRectangularly(final int key) {
+    public boolean isArrangeRectangularly(final int key) {
         return arrangeRectangularly.contains(key);
     }
 
