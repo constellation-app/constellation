@@ -136,7 +136,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     // KTrussState. Note that this method does not calculate actual pixel values, but the relative information stored in the
     // rectangles field. See the declaration for more information
     public void calculateRectangles() {
-        Map<Integer, Integer> numDescendants = new HashMap<>();
+        final Map<Integer, Integer> numDescendants = new HashMap<>();
         childMapper = new HashMap<>();
 
         // Calculate the children of each component.

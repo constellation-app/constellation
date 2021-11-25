@@ -224,7 +224,6 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
     // Calculate the relative positioning of the lines in the diagram
     public void positionLines() {
-        double xseparation;
         if (sortedNodes == null) {
             return;
         }
@@ -239,7 +238,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
         // We do not want to draw on the border around the step slider
         final int sliderLabeledWidth = getWidth() - HORIZONTAL_BORDER_SIZE * 2;
-        xseparation = sliderLabeledWidth / (double) stepLimit;
+        final double xseparation = sliderLabeledWidth / (double) stepLimit;
 
         for (int i = 0; i < sortedNodes.size(); i++) {
             final GroupTreeNode node = sortedNodes.get(i);
