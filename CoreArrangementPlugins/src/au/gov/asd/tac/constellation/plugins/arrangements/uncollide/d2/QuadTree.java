@@ -116,8 +116,8 @@ public class QuadTree {
      */
     private int getIndex(final Orb2D orb) {
         int index = -1;
-        final double midx = box.minx + ((box.maxx - box.minx) / 2f);
-        final double midy = box.miny + ((box.maxy - box.miny) / 2f);
+        final double midx = box.minx + ((box.maxx - box.minx) / 2F);
+        final double midy = box.miny + ((box.maxy - box.miny) / 2F);
 
         // Object can completely fit within the top/bottom quadrants.
         final boolean topQuadrant = orb.getY() + orb.r < midy;
@@ -214,7 +214,7 @@ public class QuadTree {
         // We need to deal with pathological cases such as everything at the same x,y point,
         // or everything co-linear.
         // We add a perturbation so points go different ways at different stages.
-        float perturbation = 1e-4f;
+        float perturbation = 1e-4F;
         int collided = 0;
         for (final Orb2D possible : possibles) {
             if (orb != possible) {
@@ -225,13 +225,12 @@ public class QuadTree {
                 if (ll <= r * r) {
                     final double l = Math.sqrt(ll);
                     collided++;
-                    final float nudge = l != 0 ? (float) Math.min((l - r) / l * 0.5, -0.1) : -0.1f;
+                    final float nudge = l != 0 ? (float) Math.min((l - r) / l * 0.5, -0.1) : -0.1F;
                     x *= nudge;
                     x += perturbation;
                     y *= nudge;
                     y += perturbation;
                     perturbation = -perturbation;
-//                    System.out.printf("-Collided %f %f %f x=%f y=%f\n  %s <> %s\n", l, r, nudge, x, y, circle, possible);
                     orb.setX(orb.getX() - x);
                     orb.setY(orb.getY() - y);
                     possible.setX(possible.getX() + x);

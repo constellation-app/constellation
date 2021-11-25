@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -45,6 +46,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
@@ -267,7 +269,7 @@ private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                     public boolean accept(final File pathName) {
                         final int extlen = 4;
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && (name.endsWith(".png") || name.endsWith(".jpg"))) {
+                        if (pathName.isFile() && StringUtils.endsWithAny(name, (CharSequence[]) new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
                             final String label = name.substring(0, name.length() - extlen);
 
                             // The name must contain at least one category (a '.' in position 1 or greater).
@@ -337,7 +339,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             // We need to get a JFileChooser because FileChooserBuilder doesn't have setSelectedFile().
             final JFileChooser chooser = fChooser.createFileChooser();
 
-            chooser.setSelectedFile(new File(iconName + ".png"));
+            chooser.setSelectedFile(new File(iconName + FileExtensionConstants.PNG));
             final int result = chooser.showSaveDialog(this);
             final File file = result == JFileChooser.APPROVE_OPTION ? chooser.getSelectedFile() : null;
 

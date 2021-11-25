@@ -58,12 +58,12 @@ public class FloatRangeBinFormatter extends BinFormatter {
 
         final PluginParameter<FloatParameterValue> zeroParameter = FloatParameterType.build(ZERO_PARAMETER_ID);
         zeroParameter.setName("Zero Point");
-        zeroParameter.setFloatValue(0.0f);
+        zeroParameter.setFloatValue(0.0F);
         params.addParameter(zeroParameter);
 
         final PluginParameter<FloatParameterValue> bucketParameter = FloatParameterType.build(BUCKET_PARAMETER_ID);
         bucketParameter.setName("Bucket Size");
-        bucketParameter.setFloatValue(10.0f);
+        bucketParameter.setFloatValue(10.0F);
         params.addParameter(bucketParameter);
 
         return params;

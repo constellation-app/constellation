@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.event.ActionEvent;
@@ -83,7 +84,7 @@ public final class GraphConstructionDemoAction extends AbstractAction {
     /**
      * Plugin to demonstrate graph construction
      */
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {"DEVELOPER", "EXPERIMENTAL", "CREATE"})
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.DEVELOPER, PluginTags.EXPERIMENTAL, PluginTags.CREATE})
     public static class GraphConstructionPlugin extends SimpleEditPlugin {
 
         @Override
@@ -103,12 +104,12 @@ public final class GraphConstructionDemoAction extends AbstractAction {
             final int colorAttrID = VisualConcept.VertexAttribute.COLOR.get(graph);
 
             for (final int[] leftGraph : prod.leftGraphs) {
-                AttributeFillBuilder.fillAttribute(graph, xAttrID, leftGraph, 0f, 40f);
+                AttributeFillBuilder.fillAttribute(graph, xAttrID, leftGraph, 0F, 40F);
             }
             for (final int[] rightGraph : prod.rightGraphs) {
-                AttributeFillBuilder.fillAttribute(graph, yAttrID, rightGraph, 0f, 20f);
+                AttributeFillBuilder.fillAttribute(graph, yAttrID, rightGraph, 0F, 20F);
             }
-            AttributeFillBuilder.fillAttribute(graph, colorAttrID, ConstellationColor.getColorValue(1f, 0f, 0f, 1f), ConstellationColor.getColorValue(0f, 0f, 1f, 1f));
+            AttributeFillBuilder.fillAttribute(graph, colorAttrID, ConstellationColor.getColorValue(1F, 0F, 0F, 1F), ConstellationColor.getColorValue(0F, 0F, 1F, 1F));
 
             // Make a jellyfish and a tree and connect the pendants of the fish to the tree root
             final int[] tentacleLengths = {3, 4, 5};
@@ -119,10 +120,10 @@ public final class GraphConstructionDemoAction extends AbstractAction {
             ConnectionBuilder.makeConnection(graph, t.nodesAtLevels[0], j.pendants);
 
             // Layout the jellyfish
-            final float jellyCentreX = -5f;
-            final float jellyCentreY = -5f;
-            final float[] xTentacleDirs = {0f, -2.5f, 2.5f};
-            final float[] yTentacleDirs = {3f, -1.5f, -1.5f};
+            final float jellyCentreX = -5F;
+            final float jellyCentreY = -5F;
+            final float[] xTentacleDirs = {0F, -2.5F, 2.5F};
+            final float[] yTentacleDirs = {3F, -1.5F, -1.5F};
             graph.setFloatValue(xAttrID, j.centre, jellyCentreX);
             graph.setFloatValue(yAttrID, j.centre, jellyCentreY);
             for (int i = 0; i < j.tentacleNodes.length; i++) {
@@ -130,19 +131,19 @@ public final class GraphConstructionDemoAction extends AbstractAction {
                 AttributeFillBuilder.fillAttribute(graph, xAttrID, tentacle, jellyCentreX + xTentacleDirs[i], jellyCentreX + (xTentacleDirs[i] * tentacle.length));
                 AttributeFillBuilder.fillAttribute(graph, yAttrID, tentacle, jellyCentreY + yTentacleDirs[i], jellyCentreY + (yTentacleDirs[i] * tentacle.length));
             }
-            AttributeFillBuilder.fillAttribute(graph, colorAttrID, j.nodes, ConstellationColor.getColorValue(0f, 1f, 0f, 1f));
+            AttributeFillBuilder.fillAttribute(graph, colorAttrID, j.nodes, ConstellationColor.getColorValue(0F, 1F, 0F, 1F));
 
             // Layout the tree
-            final float treeRootX = -5f;
-            final float treeRootY = -10f;
-            final float gapBetweenLevels = -4f;
-            final float gapWithinLevels = 2f;
+            final float treeRootX = -5F;
+            final float treeRootY = -10F;
+            final float gapBetweenLevels = -4F;
+            final float gapWithinLevels = 2F;
             for (int i = 0; i < t.nodesAtLevels.length; i++) {
                 final int[] level = t.nodesAtLevels[i];
                 AttributeFillBuilder.fillAttribute(graph, xAttrID, level, treeRootX - gapWithinLevels * (level.length - 1), treeRootX + gapWithinLevels * (level.length - 1));
                 AttributeFillBuilder.fillAttribute(graph, yAttrID, level, treeRootY + gapBetweenLevels * i);
             }
-            AttributeFillBuilder.fillAttribute(graph, colorAttrID, t.nodes, ConstellationColor.getColorValue(1f, 1f, 0f, 1f));
+            AttributeFillBuilder.fillAttribute(graph, colorAttrID, t.nodes, ConstellationColor.getColorValue(1F, 1F, 0F, 1F));
 
             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         }

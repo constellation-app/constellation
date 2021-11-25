@@ -44,7 +44,6 @@ import org.apache.commons.collections4.CollectionUtils;
 public final class CircTreeArranger implements Arranger {
     // Vertex radii are measured in square sides, visible radii are measured in circle radii.
 
-    private static final float CIRC_RADIUS = (float) Math.sqrt(2);
     private static final int MAX_IN_ONE_CIRCLE = 16;
     private static final float TWO_PI = (float) (2 * Math.PI);
     private GraphWriteMethods graph;
@@ -111,7 +110,6 @@ public final class CircTreeArranger implements Arranger {
 
             final float[] oldCentre = maintainMean ? ArrangementUtilities.getXyzMean(graph) : null;
 
-//            System.out.printf("@AICT Tree arranging %d vertices, root=%d\n", verticesToArrange.cardinality(), rootVxId);
             // Gather the vxIds into a BitSet for faster checking.
             BitSet vxsToGo = (BitSet) verticesToArrange.clone();
             vxsToGo.clear(rootVxId);
@@ -223,7 +221,7 @@ public final class CircTreeArranger implements Arranger {
         // Get the radius of the starting vertex.
         // We don't want a radius of zero; this will break things higher up and result in NaN values for x,y,z.
         // Instead, we'll use a minimum radius (pulled out of a hat).
-        final float minRadius = 0.1f;
+        final float minRadius = 0.1F;
 //        final float selfRadius = scale * (radiusAttr!=Graph.NOT_FOUND ? graph.getFloatValue(radiusAttr, vxId) : 1);
         final float selfRadius = scale * (radiusAttr != Graph.NOT_FOUND ? Math.max(graph.getFloatValue(radiusAttr, vxId), minRadius) : 1);
 
@@ -444,7 +442,7 @@ public final class CircTreeArranger implements Arranger {
                 }
 
                 // Starting orientation is perpendicular to parent's.
-                float accumCircle = neededCircumference * (0.25f + parentAngle / TWO_PI);
+                float accumCircle = neededCircumference * (0.25F + parentAngle / TWO_PI);
 
                 // Loop through each child, positioning it and its satellites.
                 float oldRadiusIncrement = 0;
@@ -496,7 +494,7 @@ public final class CircTreeArranger implements Arranger {
 
                     // The outermost annulus starts perpendicular to its parent's angle.
                     if (lastAnnulus != 0 && lastAnnulus != childAnnulusRadius && outermostAnnulus == childAnnulusRadius) {
-                        cumAngle += TWO_PI * (parentAngle / TWO_PI + 0.25f);
+                        cumAngle += TWO_PI * (parentAngle / TWO_PI + 0.25F);
                     }
 
                     lastAnnulus = childAnnulusRadius;

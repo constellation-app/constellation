@@ -79,11 +79,8 @@ public class IconManager {
      * @return A {@link Set} of {@link String} objects representing icon names.
      */
     public static Set<String> getIconNames(final Boolean editable) {
-        return getCache().values().stream().filter(icon -> {
-            return editable == null || editable == icon.isEditable();
-        }).map(icon -> {
-            return icon.getExtendedName();
-        }).collect(Collectors.toSet());
+        return getCache().values().stream().filter(icon -> editable == null || editable == icon.isEditable()).map(icon -> icon.getExtendedName()
+        ).collect(Collectors.toSet());
     }
 
     /**
@@ -160,7 +157,7 @@ public class IconManager {
      * @return a {@link Map} of icon name to icon representing all icons from
      * all loaded icon providers.
      */
-    private static synchronized Map<String, ConstellationIcon> getCache() {
+    protected static synchronized Map<String, ConstellationIcon> getCache() {
         if (CACHE == null) {
             final Map<String, ConstellationIcon> iconNames = new HashMap<>();
             final Map<String, ConstellationIcon> iconExtendedNames = new HashMap<>();

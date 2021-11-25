@@ -169,7 +169,7 @@ public final class HitTester implements GLRenderable {
             // If JOGL is ever fixed or another solution is found, either change
             // needsManualDPIScaling to return false (so there is effectively no
             // DPI scaling here) or to remove dpiScaleY below.
-            float dpiScaleY = 1.0f;
+            float dpiScaleY = 1.0F;
             if (GLTools.needsManualDPIScaling()) {
                 dpiScaleY = parent.getDPIScaleY();
             }

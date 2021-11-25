@@ -241,7 +241,6 @@ public final class BoundingBox implements Serializable {
         final float dz = Graphics3DUtilities.mix(max.getZ(), max2.getZ(), mix) - Graphics3DUtilities.mix(cz, cz2, mix);
 
         final float radius = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
-//        System.out.printf("@BB %f <- %f %s %s %s %s\n", radius, mix, min, max, min2, max2);
 
         return radius != 0F ? radius : 1F;
     }

@@ -57,12 +57,9 @@ public class BooleanInputPane extends Pane {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
 
-        field.setOnAction(event -> {
-            parameter.setBooleanValue(field.isSelected());
-        });
+        field.setOnAction(event -> parameter.setBooleanValue(field.isSelected()));
 
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> {
-            Platform.runLater(() -> {
+        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
@@ -84,8 +81,7 @@ public class BooleanInputPane extends Pane {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            }));
         getChildren().add(field);
     }
 }

@@ -55,6 +55,10 @@ public class BlazeUtilities {
 
     private static final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
 
+    private BlazeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Selected vertices, and the color of the blaze of the first selected
      * vertex with a blaze.

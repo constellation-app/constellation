@@ -53,10 +53,10 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SimpleReadPlugin.class.getName());
 
-    public SimpleReadPlugin() {
+    protected SimpleReadPlugin() {
     }
 
-    public SimpleReadPlugin(String pluginName) {
+    protected SimpleReadPlugin(String pluginName) {
         super(pluginName);
     }
 

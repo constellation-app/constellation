@@ -23,6 +23,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -56,6 +58,8 @@ import javax.crypto.spec.SecretKeySpec;
  *
  */
 public class PasswordObfuscator {
+
+    private static final Logger LOGGER = Logger.getLogger(PasswordObfuscator.class.getName());
 
     public static final String KEYGEN_SYMBOL = "-";
 
@@ -112,29 +116,26 @@ public class PasswordObfuscator {
     @SuppressWarnings("unused")
     public static void main(final String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, IOException, IllegalBlockSizeException {
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
-        System.out.print("Enter the string to encrypt (enter \"-\" to genernate a key): ");
-        System.out.flush();
+        LOGGER.log(Level.INFO, "Enter the string to encrypt (enter \"-\" to genernate a key): ");
         final String password = input.readLine();
         if (password != null) {
             if (password.equals(KEYGEN_SYMBOL)) { // Key gen mode
                 final byte[] encodedKey = PasswordUtilities.generateKey();
-                System.out.print("new byte[] {");
+                LOGGER.log(Level.INFO, "new byte[] {");
                 int i = 0;
                 for (final byte b : encodedKey) {
-                    System.out.printf("(byte) 0x%02x", b);
+                    LOGGER.log(Level.INFO, "(byte) 0x{0}x", b);
                     if (i < encodedKey.length - 1) {
-                        System.out.print(", ");
+                        LOGGER.log(Level.INFO, ", ");
                     }
                     i = i + 1;
                     if (i % 8 == 0) {
-                        System.out.print("\n\t");
+                        LOGGER.log(Level.INFO, "next byte");
                     }
                 }
             } else { // Encrypt a password
                 final ObfuscatedPassword obfuscatedPassword = obfuscate(password);
-                System.out.print("The obfuscated password is: ");
-                System.out.println(obfuscatedPassword.toString());
-                System.out.flush();
+                LOGGER.log(Level.INFO, "The obfuscated password is: {0}", obfuscatedPassword.toString());
             }
         }
     }

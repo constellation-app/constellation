@@ -33,6 +33,10 @@ import java.util.Set;
  * @author arcturus
  */
 public class SubgraphUtilities {
+    
+    private SubgraphUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Make an exact copy of the given graph.

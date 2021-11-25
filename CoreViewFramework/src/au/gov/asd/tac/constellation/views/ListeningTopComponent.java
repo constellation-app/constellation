@@ -141,30 +141,22 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
                     synchronized (globalMonitors) {
                         globalMonitorsCopy = new HashMap<>(globalMonitors);
                     }
-                    globalMonitorsCopy.forEach((monitor, handler) -> {
-                        monitor.update(readableGraph);
-                    });
+                    globalMonitorsCopy.forEach((monitor, handler) -> monitor.update(readableGraph));
                     final Map<StructureMonitor, Consumer<Graph>> structureMonitorsCopy;
                     synchronized (globalMonitors) {
                         structureMonitorsCopy = new HashMap<>(structureMonitors);
                     }
-                    structureMonitorsCopy.forEach((monitor, handler) -> {
-                        monitor.update(readableGraph);
-                    });
+                    structureMonitorsCopy.forEach((monitor, handler) -> monitor.update(readableGraph));
                     final Map<AttributeCountMonitor, Consumer<Graph>> attributeCountMonitorsCopy;
                     synchronized (globalMonitors) {
                         attributeCountMonitorsCopy = new HashMap<>(attributeCountMonitors);
                     }
-                    attributeCountMonitorsCopy.forEach((monitor, handler) -> {
-                        monitor.update(readableGraph);
-                    });
+                    attributeCountMonitorsCopy.forEach((monitor, handler) -> monitor.update(readableGraph));
                     final Map<AttributeValueMonitor, Tuple<Consumer<Graph>, MonitorTransitionFilter>> attributeMonitorsCopy;
                     synchronized (globalMonitors) {
                         attributeMonitorsCopy = new HashMap<>(attributeValueMonitors);
                     }
-                    attributeMonitorsCopy.forEach((monitor, handler) -> {
-                        monitor.update(readableGraph);
-                    });
+                    attributeMonitorsCopy.forEach((monitor, handler) -> monitor.update(readableGraph));
                 } finally {
                     readableGraph.release();
                 }

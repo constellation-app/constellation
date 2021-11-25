@@ -71,9 +71,7 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
 
             checkBox = new CheckBox("True:");
             checkBox.setAlignment(Pos.CENTER);
-            checkBox.selectedProperty().addListener((v, o, n) -> {
-                update();
-            });
+            checkBox.selectedProperty().addListener((v, o, n) -> update());
 
             noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
             noValueCheckBox.setAlignment(Pos.CENTER);

@@ -39,7 +39,7 @@ public class GridChoiceParameters {
 
     public static GridChoiceParameters getDefaultParameters() {
 //        return new GridChoiceParameters(GridChoice.SQUARE, "Centre", "Centre", 1.25f, 1, 1);
-        return new GridChoiceParameters(GridChoice.SQUARE, 1.25f, 1, 1, false);
+        return new GridChoiceParameters(GridChoice.SQUARE, 1.25F, 1, 1, false);
     }
 
     @Override

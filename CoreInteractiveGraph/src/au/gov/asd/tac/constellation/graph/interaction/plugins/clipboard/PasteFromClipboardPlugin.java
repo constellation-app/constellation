@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
 import java.awt.datatransfer.Clipboard;
@@ -45,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("PasteFromClipboardPlugin=Paste from Clipboard")
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 public class PasteFromClipboardPlugin extends SimpleEditPlugin {
     
     private static final Logger LOGGER = Logger.getLogger(PasteFromClipboardPlugin.class.getName());

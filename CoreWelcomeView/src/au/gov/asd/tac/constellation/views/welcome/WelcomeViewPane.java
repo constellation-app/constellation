@@ -137,9 +137,7 @@ public class WelcomeViewPane extends BorderPane {
             final List<WelcomePluginInterface> topPlugins = layout.getTopPlugins();
             for (final WelcomePluginInterface plugin : topPlugins) {
                 final Button currentButton = plugin.getButton();
-                currentButton.setOnAction(e -> {
-                    plugin.run();
-                });
+                currentButton.setOnAction(e -> plugin.run());
                 setButtonProps(currentButton);
                 topHBox.getChildren().add(currentButton);
             }
@@ -148,9 +146,7 @@ public class WelcomeViewPane extends BorderPane {
             final List<WelcomePluginInterface> sidePlugins = layout.getSidePlugins();
             for (final WelcomePluginInterface plugin : sidePlugins) {
                 final Button currentButton = plugin.getButton();
-                currentButton.setOnAction(e -> {
-                    plugin.run();
-                });
+                currentButton.setOnAction(e -> plugin.run());
                 setInfoButtons(currentButton);
                 leftVBox.getChildren().add(currentButton);
             }
@@ -164,9 +160,8 @@ public class WelcomeViewPane extends BorderPane {
             final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
             lowerLeftHBox.getChildren().add(showOnStartUpCheckBox);
 
-            showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal) -> {
-                PREFERENCES.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal);
-            });
+            showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal)
+                    -> PREFERENCES.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal));
             showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
 
             // Create a preferenceListener in order to identify when user preference is changed

@@ -39,21 +39,13 @@ public class Negative {
     public static void register(Operators operators) {
         final OperatorRegistry registry = operators.getRegistry(NAME);
 
-        registry.register(DoubleReadable.class, DoubleReadable.class, p1 -> {
-            return () -> -p1.readDouble();
-        });
+        registry.register(DoubleReadable.class, DoubleReadable.class, p1 -> () -> -p1.readDouble());
 
-        registry.register(FloatReadable.class, FloatReadable.class, p1 -> {
-            return () -> -p1.readFloat();
-        });
+        registry.register(FloatReadable.class, FloatReadable.class, p1 -> () -> -p1.readFloat());
 
-        registry.register(LongReadable.class, LongReadable.class, p1 -> {
-            return () -> -p1.readLong();
-        });
+        registry.register(LongReadable.class, LongReadable.class, p1 -> () -> -p1.readLong());
 
-        registry.register(IntReadable.class, IntReadable.class, p1 -> {
-            return () -> -p1.readInt();
-        });
+        registry.register(IntReadable.class, IntReadable.class, p1 -> () -> -p1.readInt());
     }
 
     static {

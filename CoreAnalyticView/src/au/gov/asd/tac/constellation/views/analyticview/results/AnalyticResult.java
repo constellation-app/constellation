@@ -70,9 +70,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
                 // Do nothing
             }
         });
-        resultListeners.forEach(listener -> {
-            listener.resultChanged(selectedElementScores, ignoredElementScores);
-        });
+        resultListeners.forEach(listener -> listener.resultChanged(selectedElementScores, ignoredElementScores));
     }
 
     public final int size() {

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.rest;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,11 +70,11 @@ public abstract class Response {
 
     private static final Logger LOGGER = Logger.getLogger(Response.class.getName());
 
-    public Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes) throws IOException {
+    protected Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes) throws IOException {
         this(code, message, headers, bytes, true);
     }
 
-    public Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes, final boolean isJson) throws IOException {
+    protected Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes, final boolean isJson) throws IOException {
         this.code = code;
         this.message = message;
         this.headers = headers;
@@ -131,7 +132,7 @@ public abstract class Response {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
 
-            final File tmp = File.createTempFile(getSaveResponseFilename(), ".json");
+            final File tmp = File.createTempFile(getSaveResponseFilename(), FileExtensionConstants.JSON);
             mapper.writeValue(tmp, root);
             LOGGER.log(Level.INFO, "Response saved to {0}", tmp);
         }

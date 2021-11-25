@@ -59,7 +59,7 @@ public abstract class SchemaUpdateProvider implements UpdateProvider {
         }
     }
 
-    public SchemaUpdateProvider() {
+    protected SchemaUpdateProvider() {
         updateItem = new SchemaUpdateItem();
     }
 

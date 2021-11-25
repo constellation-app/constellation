@@ -56,7 +56,7 @@ public final class PanAnimation extends Animation {
     }
 
     private static float reflect(final float t) {
-        return 0.5f * (t < 0.5f ? easeCircle(2 * t) : (2 - easeCircle(2 - 2 * t)));
+        return 0.5F * (t < 0.5F ? easeCircle(2 * t) : (2 - easeCircle(2 - 2 * t)));
     }
 
     private static float easeCircle(final float t) {

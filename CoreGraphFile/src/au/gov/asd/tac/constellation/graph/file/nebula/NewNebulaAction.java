@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -34,6 +35,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -75,9 +77,8 @@ public final class NewNebulaAction implements ActionListener {
                 props.setProperty("colour", String.format("%f,%f,%f", c.getRed(), c.getGreen(), c.getBlue()));
 
                 File f = fpv.get().get(0);
-                final String s = f.getName().toLowerCase();
-                if (!s.endsWith(".nebula")) {
-                    f = new File(f.getAbsoluteFile() + ".nebula");
+                if (!StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.NEBULA)) {
+                    f = new File(f.getAbsoluteFile() + FileExtensionConstants.NEBULA);
                 }
 
                 try {

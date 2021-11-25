@@ -38,6 +38,10 @@ public class GraphicsCardUtilities {
     private static String graphicsDriver = null;
     private static String dxDiagInfo = null;
     private static Throwable error = null;
+    
+    private GraphicsCardUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static String getGraphicsCard() {
         loadGraphicsCardInfo();

@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.Arrays;
 import org.openide.util.NbBundle.Messages;
@@ -43,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("EigenvectorCentralityPlugin=Eigenvector Centrality")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class EigenvectorCentralityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute EIGENVECTOR_ATTRIBUTE = SnaConcept.VertexAttribute.EIGENVECTOR_CENTRALITY;
@@ -66,7 +67,7 @@ public class EigenvectorCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> epsilonParameter = FloatParameterType.build(EPSILON_PARAMETER_ID);
         epsilonParameter.setName("Epsilon");
         epsilonParameter.setDescription("The change threshold at which equilibrium can be considered reached");
-        epsilonParameter.setFloatValue(1E-8f);
+        epsilonParameter.setFloatValue(1E-8F);
         parameters.addParameter(epsilonParameter);
 
         final PluginParameter<BooleanParameterValue> normaliseByPossibleParameter = BooleanParameterType.build(NORMALISE_POSSIBLE_PARAMETER_ID);

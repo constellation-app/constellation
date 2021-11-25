@@ -18,10 +18,6 @@ package au.gov.asd.tac.constellation.utilities.temporal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -82,20 +78,12 @@ public class TimeZoneUtilitiesNGTest {
 
         final String result1 = TimeZoneUtilities.getTimeZoneAsString(null);
         assertEquals(result1, null);
-        
-        try (final MockedStatic<LocalDateTime> localDateTimeMockedStatic = Mockito.mockStatic(LocalDateTime.class);) {
-            localDateTimeMockedStatic.when(() -> LocalDateTime.of(anyInt(), any(Month.class), anyInt(), anyInt(), anyInt(), anyInt()))
-                    .thenCallRealMethod();
-            final LocalDateTime localDateTime  = LocalDateTime.of(2000, Month.JANUARY, 1, 2, 34, 45);
             
-            localDateTimeMockedStatic.when(() -> LocalDateTime.now()).thenReturn(localDateTime);
-            
-            final String result2 = TimeZoneUtilities.getTimeZoneAsString(ZoneId.of("+10:00"));
-            assertEquals(result2, "+10:00");
-            
-            final String result3 = TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC);
-            assertEquals(result3, "+00:00 [UTC]");
-        }
+        final String result2 = TimeZoneUtilities.getTimeZoneAsString(ZoneId.of("+10:00"));
+        assertEquals(result2, "+10:00");
+
+        final String result3 = TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC);
+        assertEquals(result3, "+00:00 [UTC]");
     }
 
     /**

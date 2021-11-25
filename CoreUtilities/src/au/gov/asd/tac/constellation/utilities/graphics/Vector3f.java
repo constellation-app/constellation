@@ -282,7 +282,7 @@ public final class Vector3f implements Serializable {
     public float normalize() {
         final float length = getLength();
         if (length != 0) {
-            scale(1.0f / length);
+            scale(1.0F / length);
         }
 
         return length;

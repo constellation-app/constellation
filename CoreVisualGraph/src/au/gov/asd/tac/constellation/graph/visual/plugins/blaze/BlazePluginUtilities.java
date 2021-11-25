@@ -25,6 +25,10 @@ import java.util.List;
  * @author algol
  */
 public class BlazePluginUtilities {
+    
+    private BlazePluginUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Convert a String or Integer to an int.

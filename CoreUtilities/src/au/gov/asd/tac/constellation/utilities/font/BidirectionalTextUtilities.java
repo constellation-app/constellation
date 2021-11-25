@@ -27,6 +27,10 @@ import java.text.Bidi;
  * @author algol
  */
 public class BidirectionalTextUtilities {
+    
+    private BidirectionalTextUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static String doBidi(final String s) {
         if (s == null) {

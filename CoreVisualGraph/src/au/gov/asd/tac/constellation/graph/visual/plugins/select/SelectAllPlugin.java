@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.Properties;
 import org.openide.util.NbBundle.Messages;
@@ -37,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 @Messages("SelectAllPlugin=Add to Selection: All")
 public class SelectAllPlugin extends SimpleEditPlugin {
 

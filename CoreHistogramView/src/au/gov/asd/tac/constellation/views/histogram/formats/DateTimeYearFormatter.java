@@ -22,9 +22,6 @@ import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.bins.AttributeBin;
 import au.gov.asd.tac.constellation.views.histogram.bins.IntBin;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,7 +48,6 @@ public class DateTimeYearFormatter extends BinFormatter {
     }
 
     private static final int NULL_YEAR = -1;
-    private static final DateTimeFormatter YEAR_FORMATTER = new DateTimeFormatterBuilder().appendValue(ChronoField.YEAR).toFormatter();
 
     private class DateTimeYearBin extends IntBin {
 

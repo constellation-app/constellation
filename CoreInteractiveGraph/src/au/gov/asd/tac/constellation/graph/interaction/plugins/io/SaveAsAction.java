@@ -59,12 +59,12 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
  * made subject to such option by the copyright holder.
  */
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
@@ -81,6 +81,7 @@ import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
@@ -200,9 +201,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                     saveAs.saveAs(FileUtil.toFileObject(newFile.getParentFile()), newFile.getName());
 
                     // take a screenshot in a separate thread in parrallel
-                    new Thread(() -> {
-                        RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName());
-                    }, "Take Graph Screenshot").start();
+                    new Thread(() -> RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName()), "Take Graph Screenshot").start();
                 } catch (final IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(
@@ -398,9 +397,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     }
 
     private LookupListener createLookupListener() {
-        return WeakListeners.create(LookupListener.class, (LookupListener) (final LookupEvent ev) -> {
-            isDirty = true;
-        }, lkpInfo);
+        return WeakListeners.create(LookupListener.class, (LookupListener) (final LookupEvent ev) -> isDirty = true, lkpInfo);
     }
 
     private void refreshEnabled() {
@@ -466,11 +463,9 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
          */
         @Override
         public Icon getIcon(final File f) {
-            final String s = f.getName().toLowerCase();
-            if (s.endsWith(GraphDataObject.FILE_EXTENSION)) {
+            if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.STAR)) {
                 return SchemaFactoryUtilities.getDefaultSchemaFactory().getIcon().buildIcon(16);
             }
-
             return super.getIcon(f);
         }
     }

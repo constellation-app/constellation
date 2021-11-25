@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.views.scripting.graph.exceptions.NoSuchAttributeException;
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SAttributeIterator;
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SEdgeTransactionIterator;
-import java.util.logging.Logger;
 
 /**
  * A representation of an edge for use with scripting.
@@ -30,8 +29,6 @@ import java.util.logging.Logger;
  * @author cygnus_x-1
  */
 public class SEdge {
-
-    private static final Logger LOGGER = Logger.getLogger(SEdge.class.getName());
 
     private final GraphReadMethods readableGraph;
     private final int id;

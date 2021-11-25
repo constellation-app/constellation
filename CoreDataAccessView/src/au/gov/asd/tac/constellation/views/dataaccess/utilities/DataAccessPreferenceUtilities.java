@@ -35,10 +35,8 @@ public class DataAccessPreferenceUtilities {
     private static final String FAVOURITE = "Favourite";
     private static final String STRING_STRING_FORMAT = "%s.%s";
     
-    /**
-     * No constructor, all static.
-     */
     private DataAccessPreferenceUtilities() {
+        throw new IllegalStateException("Utility class");
     }
     
     /**

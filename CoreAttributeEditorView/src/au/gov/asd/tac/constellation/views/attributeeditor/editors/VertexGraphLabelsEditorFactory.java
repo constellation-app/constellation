@@ -83,9 +83,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
             labels.clear();
             labelEntries.getChildren().clear();
             if (value != null) {
-                value.getLabels().forEach(label -> {
-                    new LabelEntry(labels, labelEntries, label.getAttributeName(), label.getColor(), label.getSize());
-                });
+                value.getLabels().forEach(label -> new LabelEntry(labels, labelEntries, label.getAttributeName(), label.getColor(), label.getSize()));
             }
         }
 
@@ -93,9 +91,8 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
         protected GraphLabels getValueFromControls() throws ControlsInvalidException {
             final List<GraphLabel> data = new ArrayList<>();
             try {
-                labels.forEach(label -> {
-                    data.add(new GraphLabel(label.attrCombo.getSelectionModel().getSelectedItem(), ConstellationColor.fromFXColor(label.color), Float.parseFloat(label.sizeText.getText())));
-                });
+                labels.forEach(label
+                        -> data.add(new GraphLabel(label.attrCombo.getSelectionModel().getSelectedItem(), ConstellationColor.fromFXColor(label.color), Float.parseFloat(label.sizeText.getText()))));
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Non numeric value entered for label size");
             }
@@ -171,9 +168,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
                 attrCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
                 attrCombo.setPrefWidth(150);
                 attrCombo.getSelectionModel().select(attributeName);
-                attrCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                    update();
-                });
+                attrCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
                 colorRect = new Rectangle(20, 20);
                 this.color = color.getJavaFXColor();
@@ -183,9 +178,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
 
                 sizeText = new TextField(String.valueOf(size));
                 sizeText.setPrefWidth(50);
-                sizeText.textProperty().addListener((o, n, v) -> {
-                    update();
-                });
+                sizeText.textProperty().addListener((o, n, v) -> update());
 
                 final Button upButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_UP.buildImage(16)));
                 upButton.setOnAction(e -> {

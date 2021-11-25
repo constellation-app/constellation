@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
@@ -40,7 +41,7 @@ import org.openide.util.NbBundle.Messages;
  * @author sirius
  */
 @Messages("BoxSelectionPlugin=Select in Box")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 public final class BoxSelectionPlugin extends SimpleEditPlugin {
 
     private final boolean isAdd;
@@ -59,7 +60,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
         final float mix = camera.getMix();
-        final float inverseMix = 1.0f - mix;
+        final float inverseMix = 1.0F - mix;
         final Vector3f centre = new Vector3f(camera.lookAtCentre);
 
         final float left = box[0];
@@ -106,9 +107,9 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         boolean requiresTransactionVisibility = txVisibilityAttr != Graph.NOT_FOUND;
 
         // If the mix value is either 0 or 1 then no mixing is required
-        if (requiresMix && mix == 0.0f) {
+        if (requiresMix && mix == 0.0F) {
             requiresMix = false;
-        } else if (requiresMix && mix == 1.0f) {
+        } else if (requiresMix && mix == 1.0F) {
             xAttr = x2Attr;
             yAttr = y2Attr;
             zAttr = z2Attr;
@@ -127,7 +128,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
 
             if (requiresVertexVisibility) {
                 final float visibility = graph.getFloatValue(vxVisibilityAttr, vxId);
-                if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                     continue;
                 }
             }
@@ -288,7 +289,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId)) && !graph.getBooleanValue(txSelectedAttr, txId)) {
                             if (requiresTransactionVisibility) {
                                 float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                                if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
                             }
@@ -311,7 +312,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId))) {
                             if (requiresTransactionVisibility) {
                                 float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                                if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
                             }
@@ -338,7 +339,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         boolean included = vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId));
                         if (requiresTransactionVisibility) {
                             float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                            if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                            if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                 included = false;
                             }
                         }

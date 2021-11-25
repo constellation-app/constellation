@@ -90,8 +90,7 @@ public class MultiChoiceInputPane extends HBox {
 
         field.setPrefWidth(DEFAULT_WIDTH);
 
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> {
-            Platform.runLater(() -> {
+        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
                 PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) pluginParameter;
                 switch (change) {
@@ -123,8 +122,7 @@ public class MultiChoiceInputPane extends HBox {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            }));
         getChildren().add(field);
     }
 

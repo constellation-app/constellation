@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -32,7 +33,7 @@ import java.util.regex.Pattern;
  *
  * @author twinkle2_little
  */
-@PluginInfo(pluginType = PluginType.SEARCH, tags = {"SEARCH", "MODIFY"})
+@PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH, PluginTags.MODIFY})
 public class ReplacePlugin extends SimpleEditPlugin {
 
     private final GraphElementType elementType;

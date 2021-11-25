@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -44,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ChangeSelectionPlugin=Change Selection")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 public class ChangeSelectionPlugin extends SimpleEditPlugin {
 
     public static final String ELEMENT_BIT_SET_PARAMETER_ID = PluginParameter.buildId(ChangeSelectionPlugin.class, "element_bit_set");

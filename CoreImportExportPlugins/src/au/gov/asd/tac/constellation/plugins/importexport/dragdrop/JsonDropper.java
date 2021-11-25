@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegist
 import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -55,7 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class, position = 1)
 public class JsonDropper implements GraphDropper {
     
@@ -89,7 +90,7 @@ public class JsonDropper implements GraphDropper {
         return null;
     }
 
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     public static class DragAndDropJSONPlugin extends SimpleEditPlugin {
 
         private final String data;

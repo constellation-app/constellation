@@ -65,7 +65,7 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
                 getPropertyChangeSupport().firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
                 final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
                 final HelpOptionsPanel helpOptionsPanel = getPanel();
-                prefs.putBoolean(HelpPreferenceKeys.HELP_KEY, helpOptionsPanel.getOnlineHelpOption());
+                prefs.putBoolean(HelpPreferenceKeys.HELP_KEY, helpOptionsPanel.isOnlineHelpSelected());
             }
         }
     }
@@ -85,7 +85,7 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
         final HelpOptionsPanel helpOptionsPanel = getPanel();
-        return !(helpOptionsPanel.getOnlineHelpOption() == prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP));
+        return helpOptionsPanel.isOnlineHelpSelected() != prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP);
     }
 
     @Override

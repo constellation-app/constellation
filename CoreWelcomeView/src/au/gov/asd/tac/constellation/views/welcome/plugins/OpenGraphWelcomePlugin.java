@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.file.GraphFilePluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import java.util.logging.Level;
@@ -37,7 +38,7 @@ import org.openide.util.NbBundle;
  *
  * @author canis_majoris
  */
-@PluginInfo(tags = {"WELCOME"})
+@PluginInfo(tags = {PluginTags.WELCOME})
 @NbBundle.Messages("OpenGraphWelcomePlugin=Open Graph Welcome Plugin")
 public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
     

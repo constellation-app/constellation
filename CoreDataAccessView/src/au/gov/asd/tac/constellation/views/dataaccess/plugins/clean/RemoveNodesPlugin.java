@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -47,7 +48,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @Messages("RemoveNodesPlugin=Remove Nodes")
-@PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE"})
+@PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
 public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     private static final String REMOVE_TYPE_LENGTH = "Identifier Length";

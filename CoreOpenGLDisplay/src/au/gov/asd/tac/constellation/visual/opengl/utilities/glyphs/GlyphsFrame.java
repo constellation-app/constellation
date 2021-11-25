@@ -379,7 +379,7 @@ public class GlyphsFrame extends JFrame {
         fontsInfo[0] = new FontInfo(fontName, fontStyle, fontSize, fi.mustHave, fi.mustNotHave);
 
         glyphManager.setFonts(fontsInfo);
-        glyphManager.createBackgroundGlyph(0.5f);
+        glyphManager.createBackgroundGlyph(0.5F);
 
         showTextureBuffer();
         final String line = getLine();
@@ -430,7 +430,8 @@ public class GlyphsFrame extends JFrame {
         final ParsedFontInfo pfi = FontInfo.parseFontInfo(fontNames, GlyphManagerBI.DEFAULT_FONT_SIZE);
 
         if (!pfi.messages.isEmpty()) {
-            System.out.printf("ParsedFontInfo message: %s\n", pfi.getMessages());
+            final String log = String.format("ParsedFontInfo message: %s\n", pfi.getMessages());
+            LOGGER.log(Level.INFO, log);
         }
 
         try {
@@ -443,9 +444,7 @@ public class GlyphsFrame extends JFrame {
         }
 
         /* Create and display the form */
-        EventQueue.invokeLater(() -> {
-            new GlyphsFrame(pfi.fontsInfo, text).setVisible(true);
-        });
+        EventQueue.invokeLater(() -> new GlyphsFrame(pfi.fontsInfo, text).setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

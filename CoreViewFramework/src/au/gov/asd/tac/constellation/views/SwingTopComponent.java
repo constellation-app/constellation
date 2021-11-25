@@ -81,9 +81,7 @@ public abstract class SwingTopComponent<P extends Component> extends ListeningTo
     @Override
     protected void updateFont() {
         if (content != null) {
-            SwingUtilities.invokeLater(() -> {
-                content.setFont(FontUtilities.getApplicationFont());
-            });
+            SwingUtilities.invokeLater(() -> content.setFont(FontUtilities.getApplicationFont()));
         }
     }
 }

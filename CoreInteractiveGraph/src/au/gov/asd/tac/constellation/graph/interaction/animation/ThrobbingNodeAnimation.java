@@ -34,8 +34,8 @@ public class ThrobbingNodeAnimation extends Animation {
     private int nodeRadiusAttribute;
     private final float lowerLimit = 1;
     private final float upperLimit = 4;
-    private float currentDirection = 0.1f;
-    private float currentRadius = 1f;
+    private float currentDirection = 0.1F;
+    private float currentRadius = 1F;
     private final long throbbingNodeAnimationId = VisualChangeBuilder.generateNewId();
 
     final Map<Integer, Float> originalNodeRadii = new HashMap<>();
@@ -75,9 +75,7 @@ public class ThrobbingNodeAnimation extends Animation {
 
     @Override
     public void reset(GraphWriteMethods wg) {
-        originalNodeRadii.forEach((vxId, radius) -> {
-            wg.setObjectValue(nodeRadiusAttribute, vxId, radius);
-        });
+        originalNodeRadii.forEach((vxId, radius) -> wg.setObjectValue(nodeRadiusAttribute, vxId, radius));
     }
 
     @Override

@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -183,12 +184,13 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         if (totalNeededHeight < PREFERRED_HEIGHT) {
             expandHeight = true;
         }
-//        System.out.println(totalNeededHeight);
         final Dimension size = new Dimension(getWidth(), expandHeight ? PREFERRED_HEIGHT : totalNeededHeight);
         setSize(size);
 
-        // Each rectangle will be of the form: {rectangle column, rectangle relative height, rectangle relative y-position}
-        // All 'relative' values are integers between 0 and 1000 where 1000 represents the full vertical size of this display panel.
+        /**
+         *  Each rectangle will be of the form: {rectangle column, rectangle relative height, rectangle relative y-position}
+         *  All 'relative' values are integers between 0 and 1000 where 1000 represents the full vertical size of this display panel.
+         */
         rectangles = new int[state.getNumComponents()][];
 
         // The cumulative height of the first column - used to determine the relative y-position of components in the frist column
@@ -234,7 +236,6 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
                 final int childHeight = state.getComponentSize(child) + (childGaps * COMPONENT_VISUAL_GRAP);
                 // column number, height, ypos
                 final int[] rect = {rectangles[i][0] + 1, childHeight, rectangles[i][2] + childColumnHeight};
-//                System.out.println("x" + (rectangles[i][0] + 3) + "-truss : " + childHeight + " : " + (rectangles[i][2] + childColumnHeight));
                 rectangles[child] = rect;
                 // Increase the cumulative height of this child column
                 childColumnHeight += (childHeight + COMPONENT_VISUAL_GRAP);
@@ -334,7 +335,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         // Override required for MouseInputListener, intentionally left blank
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.SELECT})
     // Used to select the vertices contained in a component represented by a rectangle when the user clicks on that rectangle
     private static final class Select extends SimpleEditPlugin {
 

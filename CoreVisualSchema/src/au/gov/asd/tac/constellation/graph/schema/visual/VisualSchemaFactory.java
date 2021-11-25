@@ -196,9 +196,9 @@ public class VisualSchemaFactory extends SchemaFactory {
             }
 
             final float radius = (Float) (graph.getAttributeDefaultValue(vertexRadiusAttribute));
-            final float nradius = radius <= 0f ? 1f : radius;
+            final float nradius = radius <= 0F ? 1F : radius;
             graph.setFloatValue(vertexRadiusAttribute, vertexId, nradius);
-            graph.setFloatValue(vertexVisibilityAttribute, vertexId, 1f);
+            graph.setFloatValue(vertexVisibilityAttribute, vertexId, 1F);
             graph.setBooleanValue(vertexDimAttribute, vertexId, false);
 
             final Object colorDefaultValue = graph.getAttributeDefaultValue(vertexColorAttribute);
@@ -266,8 +266,8 @@ public class VisualSchemaFactory extends SchemaFactory {
                 }
             }
 
-            graph.setFloatValue(transactionWidthAttribute, transactionId, 1f);
-            graph.setFloatValue(transactionVisibilityAttribute, transactionId, 1f);
+            graph.setFloatValue(transactionWidthAttribute, transactionId, 1F);
+            graph.setFloatValue(transactionVisibilityAttribute, transactionId, 1F);
             graph.setBooleanValue(transactionDimAttribute, transactionId, false);
 
             final Object colorDefaultValue = graph.getAttributeDefaultValue(transactionColorAttribute);
@@ -297,7 +297,7 @@ public class VisualSchemaFactory extends SchemaFactory {
         }
 
         private ConstellationColor randomColor() {
-            return ConstellationColor.getColorValue(random.nextFloat(), random.nextFloat(), random.nextFloat(), 1.0f);
+            return ConstellationColor.getColorValue(random.nextFloat(), random.nextFloat(), random.nextFloat(), 1.0F);
         }
     }
 }

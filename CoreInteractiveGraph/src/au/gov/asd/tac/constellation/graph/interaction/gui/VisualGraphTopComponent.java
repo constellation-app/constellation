@@ -72,6 +72,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.plugins.update.GraphUpdateController;
@@ -80,6 +81,7 @@ import au.gov.asd.tac.constellation.plugins.update.UpdateComponent;
 import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -128,6 +130,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.actions.Savable;
 import org.netbeans.spi.actions.AbstractSavable;
 import org.openide.DialogDisplayer;
@@ -270,7 +273,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                         @SuppressWarnings("unchecked") //files will be list of file which extends from object type
                         final List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                         for (final File file : files) {
-                            try (final InputStream in = file.getName().endsWith(".gz") ? new GZIPInputStream(new FileInputStream(file)) : new FileInputStream(file)) {
+                            try (final InputStream in = StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.GZIP) ? new GZIPInputStream(new FileInputStream(file)) : new FileInputStream(file)) {
                                 final RecordStore recordStore = RecordStoreUtilities.fromTsv(in);
                                 PluginExecution.withPlugin(new ImportRecordFile(recordStore)).executeLater(graph);
                             }
@@ -1051,7 +1054,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 existing.delete();
             }
 
-            final String ext = GraphDataObject.FILE_EXTENSION;
+            final String ext = FileExtensionConstants.STAR;
             if (name.endsWith(ext)) {
                 name = name.substring(0, name.length() - ext.length());
             }
@@ -1071,7 +1074,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      */
     private class BackgroundWriter extends SwingWorker<Void, Object> {
 
-        private static final String BACKUP_EXTENSION = ".bak";
         private final String name;
         private final GraphDataObject freshGdo;
         private final boolean deleteOldGdo;
@@ -1127,7 +1129,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
                     // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
                     // already have been written.
-                    FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(BACKUP_EXTENSION)));
+                    FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(FileExtensionConstants.BACKUP)));
                 }
 
                 try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
@@ -1154,15 +1156,11 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
                     // Delete the old DataObject and remove the old GDO from the lookup.
                     if (deleteOldGdo) {
-//                        System.out.printf("@VTC Delete %s\n", FileUtil.getFileDisplayName(gdo.getPrimaryFile()));
-//                        gdo.getPrimaryFile().delete();
                         gdo.delete();
-//                        System.out.printf("@VTX Exists %s\n", FileUtil.toFile(gdo.getPrimaryFile()).exists());
                     }
                     content.remove(gdo);
 
                     // Rename the new file and add the new GDO to the lookup.
-//                    System.out.printf("@VTC Rename %s -> %s\n", FileUtil.getFileDisplayName(freshGdo.getPrimaryFile()), name);
                     freshGdo.rename(name);
                     gdo = freshGdo;
                     content.add(gdo);
@@ -1190,7 +1188,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     /**
      * Plugin to import the record file.
      */
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     private class ImportRecordFile extends SimpleEditPlugin {
 
         private final RecordStore recordStore;
@@ -1213,7 +1211,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     /**
      * Plugin to write the graph file.
      */
-    @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
     private class WriteGraphFile extends SimplePlugin {
 
         private final GraphReadMethods copy;

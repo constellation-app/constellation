@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.views.scripting.graph.exceptions.NoSuchAttri
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SAttributeIterator;
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SLinkEdgeIterator;
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SLinkTransactionIterator;
-import java.util.logging.Logger;
 
 /**
  * A representation of a link for use with scripting.
@@ -31,8 +30,6 @@ import java.util.logging.Logger;
  * @author cygnus_x-1
  */
 public class SLink {
-
-    private static final Logger LOGGER = Logger.getLogger(SLink.class.getName());
 
     private final GraphReadMethods readableGraph;
     private final int id;

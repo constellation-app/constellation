@@ -19,9 +19,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.awt.image.DataBufferByte;
-import java.awt.image.RescaleOp;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,10 +58,6 @@ final class GlyphRectangleBuffer {
      * artifacts. Therefore we add some space between rectangles.
      */
     private static final int PADDING = 2;
-
-    // An identity operation (unchanged copy) for copying image buffers.
-    //
-    private static final BufferedImageOp IDENTITY_OP = new RescaleOp(1f, 0f, null);
 
     // The next position to draw a rectangle at.
     //

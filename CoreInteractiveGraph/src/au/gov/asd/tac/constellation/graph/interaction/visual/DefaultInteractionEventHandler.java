@@ -49,6 +49,7 @@ import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -250,9 +251,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             if (interactionGraph != null) {
                                 interactionGraph = interactionGraph.flush(announceNextFlush);
                             }
-                            operations.forEach(op -> {
-                                manager.addOperation(op);
-                            });
+                            operations.forEach(op -> manager.addOperation(op));
                             announceNextFlush = false;
                         }
                         final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION));
@@ -365,16 +364,16 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         CameraUtilities.changeMixRatio(camera, false, isCtrl);
                         eventState.addEventName(MIX_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_A) {
-                        CameraUtilities.pan(camera, -0.5f * (isShift ? 10 : 1), 0);
+                        CameraUtilities.pan(camera, -0.5F * (isShift ? 10 : 1), 0);
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_D) {
-                        CameraUtilities.pan(camera, 0.5f * (isShift ? 10 : 1), 0);
+                        CameraUtilities.pan(camera, 0.5F * (isShift ? 10 : 1), 0);
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_S) {
-                        CameraUtilities.pan(camera, 0, -0.5f * (isShift ? 10 : 1));
+                        CameraUtilities.pan(camera, 0, -0.5F * (isShift ? 10 : 1));
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_W) {
-                        CameraUtilities.pan(camera, 0, 0.5f * (isShift ? 10 : 1));
+                        CameraUtilities.pan(camera, 0, 0.5F * (isShift ? 10 : 1));
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else {
                         // Do nothing
@@ -428,7 +427,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             if (zAxisRotation) {
                                 CameraUtilities.spin(camera, visualInteraction.convertTranslationToSpin(from, to));
                             } else {
-                                CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : (from.y - to.y) / 2.0f, event.isControlDown() ? 0 : (from.x - to.x) / 2.0f);
+                                CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : (from.y - to.y) / 2.0F, event.isControlDown() ? 0 : (from.x - to.x) / 2.0F);
                             }
                             cameraChange = true;
                             break;
@@ -809,7 +808,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      */
     private void orderHitTest(final Point point, final HitTestMode mode, final Consumer<EventState> resultConsumer) {
         final BlockingQueue<HitState> hitTestQueue = new ArrayBlockingQueue<>(1);
-        manager.addOperation(visualAnnotator.hitTestCursor(point.x, point.y, new EventState(eventState), !mode.equals(HitTestMode.REQUEST_ONLY) ? hitTestQueue : null));
+        manager.addOperation(visualAnnotator.hitTestCursor(point.x, point.y, new EventState(eventState), mode != HitTestMode.REQUEST_ONLY ? hitTestQueue : null));
 
         final Runnable handleResult = () -> {
             while (true) {
@@ -1196,7 +1195,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     }
                 } else {
                     JComponent currentMenu = popup;
-                    levelLoop:
                     for (final String level : menuPath) {
                         int childCount = currentMenu.getComponentCount();
                         for (int i = 0; i < childCount; i++) {
@@ -1205,7 +1203,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 JMenu childMenu = (JMenu) childComponent;
                                 if (childMenu.getText().equals(level)) {
                                     currentMenu = childComponent;
-                                    continue levelLoop;
+                                    break;
                                 }
                             }
                         }
@@ -1252,7 +1250,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     /**
      * Plugin to select graph item.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class SelectGraphItem extends SimplePlugin {
 
         private final ContextMenuProvider pmp;

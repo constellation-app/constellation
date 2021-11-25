@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.Component;
@@ -779,7 +780,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         PluginExecution.withPlugin(select).interactively(true).executeLater(graph);
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class RemoveOverlayColors extends SimpleEditPlugin {
 
         @Override
@@ -800,7 +801,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class ColorTrusses extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -827,7 +828,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             graph.setStringValue(vxColorRef, 0, ClusteringConcept.VertexAttribute.K_TRUSS_COLOUR.getName());
             graph.setStringValue(txColorRef, 0, ClusteringConcept.TransactionAttribute.K_TRUSS_COLOUR.getName());
 
-            final ConstellationColor[] colors = ConstellationColor.createPalettePhi(state.getNumUniqueValuesOfK() + 2, 0, 0.5f, 0.95f);
+            final ConstellationColor[] colors = ConstellationColor.createPalettePhi(state.getNumUniqueValuesOfK() + 2, 0, 0.5F, 0.95F);
             colors[0] = colors[colors.length - 1];
 
             // Determine and set the overlay color for each vertex
@@ -850,7 +851,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.SELECT})
     public static final class Select extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -900,7 +901,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class Update extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -945,10 +946,10 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                 if (dim) {
                     graph.setBooleanValue(vxDimmedAttr, vxID, !displayCurrentVertex);
                     if (displayOptionHasToggled) {
-                        graph.setFloatValue(vxVisibilityAttr, vxID, 1.0f);
+                        graph.setFloatValue(vxVisibilityAttr, vxID, 1.0F);
                     }
                 } else {
-                    graph.setFloatValue(vxVisibilityAttr, vxID, (displayCurrentVertex ? 1.0f : -1.0f));
+                    graph.setFloatValue(vxVisibilityAttr, vxID, (displayCurrentVertex ? 1.0F : -1.0F));
                     if (displayOptionHasToggled) {
                         graph.setBooleanValue(vxDimmedAttr, vxID, false);
                     }
@@ -967,10 +968,10 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                 if (dim) {
                     graph.setBooleanValue(txDimmedAttr, txID, !displayCurrentTransaction);
                     if (displayOptionHasToggled) {
-                        graph.setFloatValue(txVisibilityAttr, txID, 1.0f);
+                        graph.setFloatValue(txVisibilityAttr, txID, 1.0F);
                     }
                 } else {
-                    graph.setFloatValue(txVisibilityAttr, txID, (displayCurrentTransaction ? 1.0f : -1.0f));
+                    graph.setFloatValue(txVisibilityAttr, txID, (displayCurrentTransaction ? 1.0F : -1.0F));
                     if (displayOptionHasToggled) {
                         graph.setBooleanValue(txDimmedAttr, txID, false);
                     }
@@ -1016,7 +1017,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         // Required for @ConvertAsProperties, intentionally left blank
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static class KTrussCalculatePlugin extends SimpleEditPlugin {
 
         final boolean isInteractiveButtonSelected;
