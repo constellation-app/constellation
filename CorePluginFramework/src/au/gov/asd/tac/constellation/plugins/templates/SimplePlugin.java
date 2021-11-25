@@ -44,10 +44,10 @@ public abstract class SimplePlugin extends AbstractPlugin {
     private static final String WAITING_INTERACTION = "Waiting...";
     private static final String FINISHED_INTERACTION = "Finished";
 
-    public SimplePlugin() {
+    protected SimplePlugin() {
     }
 
-    public SimplePlugin(String pluginName) {
+    protected SimplePlugin(String pluginName) {
         super(pluginName);
     }
 

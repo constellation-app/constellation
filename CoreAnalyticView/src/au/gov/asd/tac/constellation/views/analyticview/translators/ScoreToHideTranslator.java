@@ -82,7 +82,7 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
             parameters.addParameter(resetParameter);
 
             final PluginParameter<FloatParameterValue> thresholdParameter = FloatParameterType.build(THRESHOLD_PARAMETER_ID);
-            thresholdParameter.setFloatValue(0.0f);
+            thresholdParameter.setFloatValue(0.0F);
             parameters.addParameter(thresholdParameter);
 
             return parameters;
@@ -111,10 +111,10 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                     final int elementId = scoreResult.getElementId();
                     switch (elementType) {
                         case VERTEX:
-                            graph.setFloatValue(vertexVisibilityAttribute, elementId, 1.0f);
+                            graph.setFloatValue(vertexVisibilityAttribute, elementId, 1.0F);
                             break;
                         case TRANSACTION:
-                            graph.setFloatValue(transactionVisibilityAttribute, elementId, 1.0f);
+                            graph.setFloatValue(transactionVisibilityAttribute, elementId, 1.0F);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Hide Elements' is not supported "
@@ -123,8 +123,8 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                 }
             } else {
                 // find highest and lowest mean scores among available analytic events
-                float highestMeanScore = 0.0f;
-                float lowestMeanScore = 0.0f;
+                float highestMeanScore = 0.0F;
+                float lowestMeanScore = 0.0F;
                 for (final ElementScore scoreResult : scoreResults.get()) {
                     final float elementMeanScore = scoreResult.getNamedScores().values().stream()
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
@@ -147,16 +147,16 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                     switch (elementType) {
                         case VERTEX:
                             if (elementMeanScore >= normalisedThreshold) {
-                                graph.setFloatValue(vertexVisibilityAttribute, elementId, 1.0f);
+                                graph.setFloatValue(vertexVisibilityAttribute, elementId, 1.0F);
                             } else {
-                                graph.setFloatValue(vertexVisibilityAttribute, elementId, -1.0f);
+                                graph.setFloatValue(vertexVisibilityAttribute, elementId, -1.0F);
                             }
                             break;
                         case TRANSACTION:
                             if (elementMeanScore >= normalisedThreshold) {
-                                graph.setFloatValue(transactionVisibilityAttribute, elementId, 1.0f);
+                                graph.setFloatValue(transactionVisibilityAttribute, elementId, 1.0F);
                             } else {
-                                graph.setFloatValue(transactionVisibilityAttribute, elementId, -1.0f);
+                                graph.setFloatValue(transactionVisibilityAttribute, elementId, -1.0F);
                             }
                             break;
                         default:

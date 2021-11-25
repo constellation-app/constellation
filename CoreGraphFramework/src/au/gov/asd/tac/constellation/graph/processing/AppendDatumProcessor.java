@@ -42,7 +42,7 @@ public abstract class AppendDatumProcessor<T, U> implements DatumProcessor<T, U>
      * a single output record which will be appended to each record produced by
      * the lead processor.
      */
-    public AppendDatumProcessor(final DatumProcessor<T, U> leadProcessor, final DatumProcessor<T, U> appendProcessor) {
+    protected AppendDatumProcessor(final DatumProcessor<T, U> leadProcessor, final DatumProcessor<T, U> appendProcessor) {
         this.leadProcessor = leadProcessor;
         this.appendProcessor = appendProcessor;
     }

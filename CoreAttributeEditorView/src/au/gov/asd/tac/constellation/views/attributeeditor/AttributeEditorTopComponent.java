@@ -107,7 +107,6 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     private static final Logger LOGGER = Logger.getLogger(AttributeEditorTopComponent.class.getName());
 
     private static final String ATTRIBUTE_EDITOR_GRAPH_CHANGED_THREAD_NAME = "Attribute Editor Graph Changed Updater";
-    private static final String ATTRIBUTE_EDITOR_PREFERENCE_CHANGED_THREAD_NAME = "Attribute Editor Preference Changed Updater";
     private final AttributeEditorPanel attributePanel;
     private final Runnable refreshRunnable;
     private Graph activeGraph;

@@ -43,7 +43,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     protected T defaultValue;
     protected Object[] data = new Object[0];
 
-    public AbstractObjectAttributeDescription(final String name, final Class<T> nativeClass, final T defaultValue) {
+    protected AbstractObjectAttributeDescription(final String name, final Class<T> nativeClass, final T defaultValue) {
         this.name = name;
         this.nativeClass = nativeClass;
         this.defaultValue = defaultValue;

@@ -64,14 +64,12 @@ public class ActionInputPane extends Pane {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
 
-        field.setOnAction(event -> {
+        field.setOnAction(event -> 
             // Set a new Object every time so the change event fires.
             //            parameter.setObjectValue(new Object());
-            parameter.fireNoChange();
-        });
+            parameter.fireNoChange());
 
-        parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> {
-            Platform.runLater(() -> {
+        parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
                     case ENABLED:
                         field.setDisable(!pluginParameter.isEnabled());
@@ -87,8 +85,7 @@ public class ActionInputPane extends Pane {
                         break;
                 }
 
-            });
-        });
+            }));
 
         getChildren().add(field);
     }

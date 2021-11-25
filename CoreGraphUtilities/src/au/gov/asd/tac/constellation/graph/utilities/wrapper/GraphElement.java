@@ -34,7 +34,7 @@ public abstract class GraphElement {
     protected GraphWrapper graph;
     protected final int id;
 
-    public GraphElement(GraphElementType type, GraphWrapper graph, int id) {
+    protected GraphElement(GraphElementType type, GraphWrapper graph, int id) {
         this.type = type;
         this.graph = graph;
         this.id = id;

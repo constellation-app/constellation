@@ -251,7 +251,7 @@ public class AddRecordStore extends RestService {
                             .followedBy(ArrangementPluginRegistry.PENDANTS)
                             .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
                             .executeNow(graph);
-                } else if (arrange.isEmpty() || arrange.equalsIgnoreCase("None")) {
+                } else if (arrange.isEmpty() || "None".equalsIgnoreCase(arrange)) {
                     // Don't do anything.
                 } else {
                     PluginExecution.withPlugin(arrange).executeNow(graph);

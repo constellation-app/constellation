@@ -147,14 +147,22 @@ public class PluginParametersSwingDialog {
     public void showAndWait() {
         final DialogDescriptor dd = new DialogDescriptor(xp, title);
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        result = r == DialogDescriptor.OK_OPTION ? OK : r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        if (r == DialogDescriptor.OK_OPTION) {
+            result = OK;
+        } else {
+            result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        }
     }
 
     public void showAndWaitNoFocus() {
         //Having 'No' button as initial value means focus is off of 'OK' and 'Cancel' buttons
         final DialogDescriptor dd = new DialogDescriptor(xp, title, true, DialogDescriptor.OK_CANCEL_OPTION, DialogDescriptor.NO_OPTION, null);
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        result = r == DialogDescriptor.OK_OPTION ? OK : r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        if (r == DialogDescriptor.OK_OPTION) {
+            result = OK;
+        } else {
+            result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        }
     }
 
     /**

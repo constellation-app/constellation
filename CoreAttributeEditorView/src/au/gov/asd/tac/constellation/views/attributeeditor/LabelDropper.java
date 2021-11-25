@@ -97,9 +97,7 @@ public class LabelDropper implements GraphDropper {
                     }
                 }
                 if (data != null) {
-                    return (graph, dropInfo) -> {
-                        PluginExecution.withPlugin(new SetTopLabelPlugin(data)).executeLater(graph);
-                    };
+                    return (graph, dropInfo) -> PluginExecution.withPlugin(new SetTopLabelPlugin(data)).executeLater(graph);
                 }
 
             } catch (final UnsupportedFlavorException | IOException | ClassNotFoundException ex) {

@@ -68,7 +68,7 @@ public class ProxyOptionsPanelController extends OptionsPanelController implemen
                 final Preferences prefs = NbPreferences.forModule(ProxyPreferenceKeys.class);
                 final ProxyOptionsPanel proxyOptionsPanel = getPanel();
 
-                prefs.putBoolean(ProxyPreferenceKeys.USE_DEFAULTS, proxyOptionsPanel.getUseDefaultSettings());
+                prefs.putBoolean(ProxyPreferenceKeys.USE_DEFAULTS, proxyOptionsPanel.isUseDefaultSettingsSelected());
                 prefs.put(ProxyPreferenceKeys.DEFAULT, proxyOptionsPanel.getDefaultProxy());
                 prefs.put(ProxyPreferenceKeys.ADDITIONAL, proxyOptionsPanel.getAdditionalProxies());
                 prefs.put(ProxyPreferenceKeys.BYPASS, proxyOptionsPanel.getBypassProxyHosts());
@@ -96,7 +96,7 @@ public class ProxyOptionsPanelController extends OptionsPanelController implemen
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(ProxyPreferenceKeys.class);
         final ProxyOptionsPanel proxyOptionsPanel = getPanel();
-        return !(proxyOptionsPanel.getUseDefaultSettings() == prefs.getBoolean(ProxyPreferenceKeys.USE_DEFAULTS, ProxyPreferenceKeys.USE_DEFAULTS_DEFAULT)
+        return !(proxyOptionsPanel.isUseDefaultSettingsSelected() == prefs.getBoolean(ProxyPreferenceKeys.USE_DEFAULTS, ProxyPreferenceKeys.USE_DEFAULTS_DEFAULT)
                 && proxyOptionsPanel.getDefaultProxy().equals(prefs.get(ProxyPreferenceKeys.DEFAULT, ProxyPreferenceKeys.DEFAULT_DEFAULT))
                 && proxyOptionsPanel.getAdditionalProxies().equals(prefs.get(ProxyPreferenceKeys.ADDITIONAL, ProxyPreferenceKeys.ADDITIONAL_DEFAULT))
                 && proxyOptionsPanel.getBypassProxyHosts().equals(prefs.get(ProxyPreferenceKeys.BYPASS, ProxyPreferenceKeys.BYPASS_DEFAULT)));

@@ -70,7 +70,7 @@ public class BitMaskQueryCollection {
         this.activeQueriesBitMask = activeQueriesBitMask;
         activeQueries.clear();
         for (final BitMaskQuery query : queries) {
-            if (query != null && query.getVisibility()) {
+            if (query != null && query.isVisible()) {
                 activeQueries.add(query);
             }
         }
@@ -125,7 +125,7 @@ public class BitMaskQueryCollection {
                 index.writeInt(elementId);
                 final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
                 final long updatedBitMask = updateBitMask(bitMask);
-                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0f : 1.0f);
+                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0F : 1.0F);
             }
         }
     }
@@ -177,7 +177,7 @@ public class BitMaskQueryCollection {
         activeQueriesBitMask = currentBitMask;
         final List<SchemaAttribute> attributes = new ArrayList<>();
         for (final BitMaskQuery query : queries) {
-            if (query == null || !query.getVisibility() || query.getIndex() == 0 || StringUtils.isEmpty(query.getQueryString())) {
+            if (query == null || !query.isVisible() || query.getIndex() == 0 || StringUtils.isEmpty(query.getQueryString())) {
                 continue;
             }
             if (query.getQuery() != null && query.getQuery().getAttributeIds() != null) {

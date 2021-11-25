@@ -27,6 +27,10 @@ import java.util.Map;
  * @author algol
  */
 public class ClusterUtilities {
+    
+    private ClusterUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Set the color of the vertices and transactions in clusters such that each
@@ -58,7 +62,7 @@ public class ClusterUtilities {
         }
 
         final int nClusters = clusterMap.size();
-        final ConstellationColor[] palette = ConstellationColor.createPalettePhi(nClusters, 0, 0.5f, 0.95f);
+        final ConstellationColor[] palette = ConstellationColor.createPalettePhi(nClusters, 0, 0.5F, 0.95F);
 
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);

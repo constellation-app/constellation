@@ -63,10 +63,10 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
     private static final String QUERYING_INTERACTION = "Querying...";
     private static final String EDITING_INTERACTION = "Editing...";
 
-    public SimpleQueryPlugin() {
+    protected SimpleQueryPlugin() {
     }
 
-    public SimpleQueryPlugin(String pluginName) {
+    protected SimpleQueryPlugin(String pluginName) {
         super(pluginName);
     }
 

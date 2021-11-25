@@ -66,9 +66,8 @@ public class NotEquals {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         COMPARISON_OPERATION.register(registry);
 
-        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> p1.readBoolean() != p2.readBoolean();
-        });
+        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> p1.readBoolean() != p2.readBoolean());
     }
 
     static {

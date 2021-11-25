@@ -95,7 +95,7 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
         final float mix = camera.getMix();
-        final float inverseMix = 1.0f - mix;
+        final float inverseMix = 1.0F - mix;
         final Vector3f centre = new Vector3f(camera.lookAtCentre);
 
         final float left = box[0];
@@ -142,9 +142,9 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
         final boolean requiresTransactionVisibility = txVisibilityAttr != Graph.NOT_FOUND;
 
         // If the mix value is either 0 or 1 then no mixing is required
-        if (requiresMix && mix == 0.0f) {
+        if (requiresMix && mix == 0.0F) {
             requiresMix = false;
-        } else if (requiresMix && mix == 1.0f) {
+        } else if (requiresMix && mix == 1.0F) {
             xAttr = x2Attr;
             yAttr = y2Attr;
             zAttr = z2Attr;
@@ -162,7 +162,7 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
 
             if (requiresVertexVisibility) {
                 final float visibility = graph.getFloatValue(vxVisibilityAttr, vxId);
-                if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                     continue;
                 }
             }
@@ -311,7 +311,7 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId)) && !graph.getBooleanValue(txSelectedAttr, txId)) {
                             if (requiresTransactionVisibility) {
                                 final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                                if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
                             }
@@ -333,7 +333,7 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId))) {
                             if (requiresTransactionVisibility) {
                                 final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                                if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
                             }
@@ -360,7 +360,7 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                         boolean included = vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId));
                         if (requiresTransactionVisibility) {
                             final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                            if (visibility <= 1.0f && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                            if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                 included = false;
                             }
                         }

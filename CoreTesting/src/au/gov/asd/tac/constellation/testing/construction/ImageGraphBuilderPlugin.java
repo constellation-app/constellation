@@ -38,6 +38,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -60,6 +61,7 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -102,7 +104,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
         for (final File imageFile : imageFiles) {
             final ArrayList<BufferedImage> images = new ArrayList<>();
-            if (imageFile.getName().endsWith(".gif")) {
+            if (StringUtils.endsWithIgnoreCase(imageFile.getName(), FileExtensionConstants.GIF)) {
                 final ThreeTuple<List<BufferedImage>, List<Integer>, List<Integer>> loadedImageData;
                 try {
                     loadedImageData = loadImagesFromStream(imageFile);
@@ -189,7 +191,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
                 int[][] vertexIds = new int[w][h];
 
-                final float zlen = multipleFrames ? 0 : Math.min(w, h) / 4f;
+                final float zlen = multipleFrames ? 0 : Math.min(w, h) / 4F;
                 final float vis = frame / (float) (images.size() - 1);
 
                 for (int x = 0; x < w; x++) {
@@ -207,10 +209,10 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                         graph.setStringValue(vertexIdentifierAttributeId, vxId, String.format("%d,%d", x, y));
 
                         final int yinv = h - y;
-                        ConstructionUtilities.setxyz(graph, vxId, vertexXAttributeId, vertexYAttributeId, vertexZAttributeId, x * 2, yinv * 2, -gray * zlen / 255f);
+                        ConstructionUtilities.setxyz(graph, vxId, vertexXAttributeId, vertexYAttributeId, vertexZAttributeId, x * 2, yinv * 2, -gray * zlen / 255F);
                         ConstructionUtilities.setxyz(graph, vxId, vertexX2AttributeId, vertexY2AttributeId, vertexZ2AttributeId, x * 2, yinv * 2, 0);
                         graph.setStringValue(vertexBackgroundIconAttributeId, vxId, "Background.Flat Square");
-                        ConstellationColor color = ConstellationColor.getColorValue(r / 255f, g / 255f, b / 255f, a / 255f);
+                        ConstellationColor color = ConstellationColor.getColorValue(r / 255F, g / 255F, b / 255F, a / 255F);
                         graph.setObjectValue(vertexColorAttributeId, vxId, color);
 
                         if (multipleFrames) {
@@ -263,8 +265,8 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
     }
 
     private static float calculateWeight(final ConstellationColor a, final ConstellationColor b) {
-        float aGray = a.getRed() * 0.21f + a.getGreen() * 0.71f + a.getBlue() * 0.08f;
-        float bGray = b.getRed() * 0.21f + b.getGreen() * 0.71f + b.getBlue() * 0.08f;
+        float aGray = a.getRed() * 0.21F + a.getGreen() * 0.71F + a.getBlue() * 0.08F;
+        float bGray = b.getRed() * 0.21F + b.getGreen() * 0.71F + b.getBlue() * 0.08F;
         float weight = Math.abs(aGray - bGray);
         weight = (float) Math.exp(-weight);
 
@@ -340,7 +342,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 throw new IOException("Can't read image format!");
             }
 
-            final boolean isGif = reader.getFormatName().equalsIgnoreCase("gif");
+            final boolean isGif = "gif".equalsIgnoreCase(reader.getFormatName());
             reader.setInput(imageStream, false, !isGif);
 
             boolean unknownMetaformat = false;

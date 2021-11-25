@@ -91,9 +91,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
             textArea = new TextArea();
             textArea.setWrapText(true);
-            textArea.textProperty().addListener((o, n, v) -> {
-                update();
-            });
+            textArea.textProperty().addListener((o, n, v) -> update());
             textArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
                 if (e.getCode() == KeyCode.DELETE) {
                     IndexRange selection = textArea.getSelection();

@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.file;
 
-import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.open.OpenFileDialogFilter;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,6 +39,6 @@ public class GraphOpenFileDialogFilter extends OpenFileDialogFilter {
 
     @Override
     public String[] getSuffixes() {
-        return new String[]{GraphDataObject.FILE_EXTENSION, NebulaDataObject.FILE_EXTENSION};
+        return new String[]{FileExtensionConstants.STAR, FileExtensionConstants.NEBULA};
     }
 }

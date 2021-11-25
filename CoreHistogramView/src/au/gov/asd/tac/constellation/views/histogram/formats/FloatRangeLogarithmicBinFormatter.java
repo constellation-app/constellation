@@ -56,7 +56,7 @@ public class FloatRangeLogarithmicBinFormatter extends BinFormatter {
 
         final PluginParameter<FloatParameterValue> base = FloatParameterType.build(BASE_PARAMETER_ID);
         base.setName("Base");
-        base.setFloatValue(10.0f);
+        base.setFloatValue(10.0F);
         params.addParameter(base);
 
         return params;

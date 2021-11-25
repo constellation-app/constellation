@@ -53,7 +53,7 @@ public abstract class AttributeUpdateProvider implements UpdateProvider {
         }
     }
 
-    public AttributeUpdateProvider() {
+    protected AttributeUpdateProvider() {
         updateItem = new AttributeUpdateItem();
     }
 

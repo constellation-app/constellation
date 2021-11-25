@@ -30,6 +30,10 @@ public class SchemaFactoryUtilities {
 
     private static SchemaFactory DEFAULT_SCHEMA = null;
     private static Map<String, SchemaFactory> SCHEMA_FACTORIES = null;
+    
+    private SchemaFactoryUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static final SchemaFactory getDefaultSchemaFactory() {
         if (DEFAULT_SCHEMA == null) {

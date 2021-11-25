@@ -26,7 +26,7 @@ public abstract class ThreadedUpdateComponent<U> extends UpdateComponent<U> {
 
     private final String threadName;
 
-    public ThreadedUpdateComponent(UpdateController<U> controller, String threadName) {
+    protected ThreadedUpdateComponent(UpdateController<U> controller, String threadName) {
         this.threadName = threadName;
     }
 

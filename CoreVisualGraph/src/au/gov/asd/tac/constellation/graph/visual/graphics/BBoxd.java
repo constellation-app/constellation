@@ -82,7 +82,7 @@ public class BBoxd {
     public double[] getCentre() {
         final double[] c = new double[3];
         for (int i = 0; i < 3; i++) {
-            c[i] = min[i] + (max[i] - min[i]) / 2f;
+            c[i] = min[i] + (max[i] - min[i]) / 2F;
         }
 
         return c;

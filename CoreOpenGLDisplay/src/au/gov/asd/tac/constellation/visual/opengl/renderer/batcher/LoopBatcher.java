@@ -99,9 +99,7 @@ public class LoopBatcher implements SceneBatcher {
     @Override
     public GLRenderableUpdateTask disposeBatch() {
         loopPosToBufferPos.clear();
-        return gl -> {
-            batch.dispose(gl);
-        };
+        return gl -> batch.dispose(gl);
     }
 
     private final SortedMap<Integer, Integer> loopPosToBufferPos = new TreeMap<>();
@@ -140,8 +138,8 @@ public class LoopBatcher implements SceneBatcher {
     private int bufferLoopInfo(final int pos, final IntBuffer dataBuffer, final VisualAccess access) {
         if (loopPosToBufferPos.containsKey(pos)) {
             final int representativeTransactionId = access.getConnectionId(pos);
-            final int loopIconIndex = access.getConnectionDirected(pos) ? GLTools.LOOP_DIRECTED_ICON_INDEX : GLTools.LOOP_UNDIRECTED_ICON_INDEX;
-            final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);
+            final int loopIconIndex = access.isConnectionDirected(pos) ? GLTools.LOOP_DIRECTED_ICON_INDEX : GLTools.LOOP_UNDIRECTED_ICON_INDEX;
+            final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int xyzTexturePosition = access.getConnectionLowVertex(pos);
 
             dataBuffer.put(representativeTransactionId);
@@ -167,19 +165,15 @@ public class LoopBatcher implements SceneBatcher {
     }
 
     public GLRenderableUpdateTask updateInfo(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateIntBufferTask(change, access, this::bufferLoopInfo, gl -> {
-            return batch.connectIntBuffer(gl, loopInfoTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, loopInfoTarget);
-        }, LOOP_INFO_BUFFER_WIDTH);
+        return SceneBatcher.updateIntBufferTask(change, access, this::bufferLoopInfo, gl -> batch.connectIntBuffer(gl, loopInfoTarget),
+                 gl -> batch.disconnectBuffer(gl, loopInfoTarget),
+                 LOOP_INFO_BUFFER_WIDTH);
     }
 
     public GLRenderableUpdateTask updateColors(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
-            return batch.connectFloatBuffer(gl, colorTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, colorTarget);
-        }, COLOR_BUFFER_WIDTH);
+        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> batch.connectFloatBuffer(gl, colorTarget),
+                 gl -> batch.disconnectBuffer(gl, colorTarget),
+                 COLOR_BUFFER_WIDTH);
     }
 
     public void setNextDrawIsHitTest() {

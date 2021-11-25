@@ -319,9 +319,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 splitPanePosition = Double.parseDouble(pos);
 
                 // Ensure that this happens after the initial setup.
-                Platform.runLater(() -> {
-                    splitPane.getDividers().get(0).setPosition(splitPanePosition);
-                });
+                Platform.runLater(() -> splitPane.getDividers().get(0).setPosition(splitPanePosition));
             } catch (final NumberFormatException ex) {
             }
         }

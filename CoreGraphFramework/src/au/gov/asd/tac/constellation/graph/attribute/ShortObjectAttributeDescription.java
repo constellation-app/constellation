@@ -101,7 +101,7 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
 
     @Override
     public float getFloat(final int id) {
-        return data[id] != null ? ((Short) data[id]).floatValue() : 0.0f;
+        return data[id] != null ? ((Short) data[id]).floatValue() : 0.0F;
     }
 
     @Override

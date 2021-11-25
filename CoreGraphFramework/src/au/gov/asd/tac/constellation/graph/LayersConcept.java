@@ -77,7 +77,7 @@ public class LayersConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
                 .setDescription("The visibility of the vertex given the layers it belongs to")
-                .setDefaultValue(1.0f)
+                .setDefaultValue(1.0F)
                 .create()
                 .build();
     }
@@ -96,7 +96,7 @@ public class LayersConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
                 .setDescription("The visibility of the transaction given the layers it belongs to")
-                .setDefaultValue(1.0f)
+                .setDefaultValue(1.0F)
                 .create()
                 .build();
     }

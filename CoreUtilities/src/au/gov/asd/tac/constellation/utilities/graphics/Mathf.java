@@ -191,21 +191,21 @@ public final class Mathf {
         final float t3 = t2 * t;
 
         // X
-        vOut[0] = 0.5f * ((2.0f * vP1[0])
+        vOut[0] = 0.5F * ((2.0F * vP1[0])
                 + (-vP0[0] + vP2[0]) * t
-                + (2.0f * vP0[0] - 5.0f * vP1[0] + 4.0f * vP2[0] - vP3[0]) * t2
-                + (-vP0[0] + 3.0f * vP1[0] - 3.0f * vP2[0] + vP3[0]) * t3);
+                + (2.0F * vP0[0] - 5.0F * vP1[0] + 4.0F * vP2[0] - vP3[0]) * t2
+                + (-vP0[0] + 3.0F * vP1[0] - 3.0F * vP2[0] + vP3[0]) * t3);
         // Y
-        vOut[1] = 0.5f * ((2.0f * vP1[1])
+        vOut[1] = 0.5F * ((2.0F * vP1[1])
                 + (-vP0[1] + vP2[1]) * t
-                + (2.0f * vP0[1] - 5.0f * vP1[1] + 4.0f * vP2[1] - vP3[1]) * t2
-                + (-vP0[1] + 3.0f * vP1[1] - 3.0f * vP2[1] + vP3[1]) * t3);
+                + (2.0F * vP0[1] - 5.0F * vP1[1] + 4.0F * vP2[1] - vP3[1]) * t2
+                + (-vP0[1] + 3.0F * vP1[1] - 3.0F * vP2[1] + vP3[1]) * t3);
 
         // Z
-        vOut[2] = 0.5f * ((2.0f * vP1[2])
+        vOut[2] = 0.5F * ((2.0F * vP1[2])
                 + (-vP0[2] + vP2[2]) * t
-                + (2.0f * vP0[2] - 5.0f * vP1[2] + 4.0f * vP2[2] - vP3[2]) * t2
-                + (-vP0[2] + 3.0f * vP1[2] - 3.0f * vP2[2] + vP3[2]) * t3);
+                + (2.0F * vP0[2] - 5.0F * vP1[2] + 4.0F * vP2[2] - vP3[2]) * t2
+                + (-vP0[2] + 3.0F * vP1[2] - 3.0F * vP2[2] + vP3[2]) * t3);
     }
 
     /**
@@ -243,7 +243,7 @@ public final class Mathf {
         final float dc3c1b = vTexCoords[2].a[1] - vTexCoords[0].a[1];
 
         float M = (dc2c1t * dc3c1b) - (dc3c1t * dc2c1b);
-        M = 1.0f / M;
+        M = 1.0F / M;
 
         dv2v1.scale(dc3c1b);
         dv3v1.scale(dc2c1b);
@@ -261,15 +261,15 @@ public final class Mathf {
     public static float smoothStep(final float edge1, final float edge2, final float x) {
         float t;
         t = (x - edge1) / (edge2 - edge1);
-        if (t > 1.0f) {
-            t = 1.0f;
+        if (t > 1.0F) {
+            t = 1.0F;
         }
 
         if (t < 0.0) {
-            t = 0.0f;
+            t = 0.0F;
         }
 
-        return t * t * (3.0f - 2.0f * t);
+        return t * t * (3.0F - 2.0F * t);
     }
 
     /**
@@ -297,17 +297,17 @@ public final class Mathf {
         proj[0] = b * dy + c * dz;
         proj[1] = -a * dy;
         proj[2] = -a * dz;
-        proj[3] = 0.0f;
+        proj[3] = 0.0F;
 
         proj[4] = -b * dx;
         proj[5] = a * dx + c * dz;
         proj[6] = -b * dz;
-        proj[7] = 0.0f;
+        proj[7] = 0.0F;
 
         proj[8] = -c * dx;
         proj[9] = -c * dy;
         proj[10] = a * dx + b * dy;
-        proj[11] = 0.0f;
+        proj[11] = 0.0F;
 
         proj[12] = -d * dx;
         proj[13] = -d * dy;

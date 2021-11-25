@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A ManualGraphMonitor monitors a graph for changes and alerts various
@@ -32,6 +34,8 @@ import java.util.Map.Entry;
  * @author sirius
  */
 public class ManualGraphMonitor {
+
+    private static final Logger LOGGER = Logger.getLogger(ManualGraphMonitor.class.getName());
 
     protected static final boolean VERBOSE = false;
 
@@ -161,7 +165,7 @@ public class ManualGraphMonitor {
         currentUpdate++;
 
         if (VERBOSE) {
-            System.out.println("GRAPH MONITOR: update()");
+            LOGGER.log(Level.INFO,"GRAPH MONITOR: update()");
         }
 
         final long oldGlobalModificationCounter = globalModificationCounter;
@@ -173,7 +177,7 @@ public class ManualGraphMonitor {
             if (structureModificationCounter != oldStructureModificationCounter) {
 
                 if (VERBOSE) {
-                    System.out.println("GRAPH MONITOR: structure changed");
+                    LOGGER.log(Level.INFO,"GRAPH MONITOR: structure changed");
                 }
 
                 if (produceEvents && structureListener != null) {
@@ -186,7 +190,7 @@ public class ManualGraphMonitor {
             if (attributeModificationCounter != oldAttributeModificationCounter) {
 
                 if (VERBOSE) {
-                    System.out.println("GRAPH MONITOR: attributes added/removed");
+                    LOGGER.log(Level.INFO,"GRAPH MONITOR: attributes added/removed");
                 }
 
                 if (produceEvents && attributeListener != null) {
@@ -204,7 +208,7 @@ public class ManualGraphMonitor {
     private void resetAttributes(final GraphReadMethods graph) {
 
         if (VERBOSE) {
-            System.out.println("GRAPH MONITOR: recreating attributes");
+            LOGGER.log(Level.INFO,"GRAPH MONITOR: recreating attributes");
         }
 
         updateAttributesCount = 0;
@@ -236,7 +240,8 @@ public class ManualGraphMonitor {
             if (attributeRecord.modificationCounter != oldModificationCounter) {
 
                 if (VERBOSE) {
-                    System.out.println("GRAPH MONITOR: attribute changed: " + attributeRecord.elementType + " " + attributeRecord.label);
+                    final String log = String.format("GRAPH MONITOR: attribute changed: " + attributeRecord.elementType + " " + attributeRecord.label);
+                    LOGGER.log(Level.INFO, log);
                 }
 
                 if (produceEvents && attributeRecord.listener != null) {

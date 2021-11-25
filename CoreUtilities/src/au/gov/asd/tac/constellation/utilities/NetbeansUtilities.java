@@ -20,6 +20,10 @@ package au.gov.asd.tac.constellation.utilities;
  * @author twilight_sparkle
  */
 public class NetbeansUtilities {
+    
+    private NetbeansUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static boolean isNetbeansApplicationRunning() {
         return System.getProperty("netbeans.productversion") != null;

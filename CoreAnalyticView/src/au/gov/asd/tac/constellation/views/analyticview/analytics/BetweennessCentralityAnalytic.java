@@ -61,9 +61,12 @@ public class BetweennessCentralityAnalytic extends ScoreAnalyticPlugin {
         final boolean includeConnectionsIn = parameters.getBooleanValue(BetweennessCentralityPlugin.INCLUDE_CONNECTIONS_IN_PARAMETER_ID);
         final boolean includeConnectionsOut = parameters.getBooleanValue(BetweennessCentralityPlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID);
         final Set<SchemaAttribute> analyticAttributes = new HashSet<>();
-        analyticAttributes.add(includeConnectionsIn && !includeConnectionsOut ? SnaConcept.VertexAttribute.IN_BETWEENNESS_CENTRALITY
-                : !includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_BETWEENNESS_CENTRALITY
-                        : SnaConcept.VertexAttribute.BETWEENNESS_CENTRALITY);
+        if (includeConnectionsIn && !includeConnectionsOut) {
+            analyticAttributes.add(SnaConcept.VertexAttribute.IN_BETWEENNESS_CENTRALITY);
+        } else {
+            analyticAttributes.add(!includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_BETWEENNESS_CENTRALITY
+                    : SnaConcept.VertexAttribute.BETWEENNESS_CENTRALITY);
+        }
         return Collections.unmodifiableSet(analyticAttributes);
     }
 

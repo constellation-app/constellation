@@ -156,7 +156,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
 
         for (final String currentColor : presetCustomColorsString.split(SeparatorConstants.SEMICOLON)) {
-            if (!currentColor.equals("#")) {
+            if (!"#".equals(currentColor)) {
                 // here the color should be populated correctly. Add to list.
                 presetCustomColors.add(ConstellationColor.fromHtmlColor(currentColor) == null
                         ? ConstellationColor.getColorValue(currentColor)
@@ -294,7 +294,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         menu.add(verticalPanel);
 
         this.sliderChangeListener = e
-                -> setBlazeProperties(sizeSlider.getValue() / 100f, opacitySlider.getValue() / 100f);
+                -> setBlazeProperties(sizeSlider.getValue() / 100F, opacitySlider.getValue() / 100F);
         sizeSlider.addChangeListener(sliderChangeListener);
         opacitySlider.addChangeListener(sliderChangeListener);
 
@@ -391,12 +391,12 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
             final int blazeSizeAttributeId = VisualConcept.GraphAttribute.BLAZE_SIZE.get(rg);
             final float blazeSize = blazeSizeAttributeId == Graph.NOT_FOUND
-                    ? (prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)) / 100f
+                    ? (prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)) / 100F
                     : rg.getFloatValue(blazeSizeAttributeId, 0);
 
             final int blazeOpacityAttributeId = VisualConcept.GraphAttribute.BLAZE_OPACITY.get(rg);
             final float blazeOpacity = blazeOpacityAttributeId == Graph.NOT_FOUND
-                    ? (prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)) / 100f
+                    ? (prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)) / 100F
                     : rg.getFloatValue(blazeOpacityAttributeId, 0);
 
             sizeSlider.removeChangeListener(sliderChangeListener);

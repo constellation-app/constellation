@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.util.logging.Logger;
 
 /**
  * A plugin template for plugins that only require read access to the graph.
@@ -41,11 +42,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
  */
 public abstract class SimpleReadPlugin extends AbstractPlugin {
 
-    public SimpleReadPlugin() {
-        // This constructor is intentionally left blank.
+    private static final Logger LOGGER = Logger.getLogger(SimpleReadPlugin.class.getName());
+
+    protected SimpleReadPlugin() {
     }
 
-    public SimpleReadPlugin(String pluginName) {
+    protected SimpleReadPlugin(String pluginName) {
         super(pluginName);
     }
 

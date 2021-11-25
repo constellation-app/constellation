@@ -57,7 +57,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     // The size of the border on each side of the step slider with which this panel is aligned.
     private static final int BORDER_SIZE = 8;
     // The width in pixels of the rectangles representing connected components
-    private final int rectangleWidth = 5;
+    private static final int RECTANGLE_WIDTH = 5;
     // the distance to the left (in pixels) of the step slider tick marks which rectangles will be drawn. Ensures that rectangles are centred on tick marks
     private final int rectangleOffset;
     private int totalNeededHeight;
@@ -65,12 +65,11 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     private static final int PREFERRED_HEIGHT = 500;
     private final Set<Integer> selectedRectangles;
     private Map<Integer, List<Integer>> childMapper;
-    private Map<Integer, Integer> numDescendants;
 
     public NestedKTrussDisplayPanel(final KTrussState state, final Graph graph) {
         this.state = state;
         this.graph = graph;
-        rectangleOffset = rectangleWidth / 2;
+        rectangleOffset = RECTANGLE_WIDTH / 2;
         selectedRectangles = new HashSet<>();
         addMouseListener(this);
     }
@@ -78,7 +77,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     @Override
     public void paintComponent(Graphics g) {
 
-        if (!state.getNestedTrussesVisible()) {
+        if (!state.isNestedTrussesVisible()) {
             return;
         }
 
@@ -91,7 +90,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
             } else {
                 g2.setColor(Color.blue);
             }
-            g2.fillRect(rectX(i), rectY(i), rectangleWidth, rectHeight(i));
+            g2.fillRect(rectX(i), rectY(i), RECTANGLE_WIDTH, rectHeight(i));
         }
     }
 
@@ -137,8 +136,8 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     // KTrussState. Note that this method does not calculate actual pixel values, but the relative information stored in the
     // rectangles field. See the declaration for more information
     public void calculateRectangles() {
+        final Map<Integer, Integer> numDescendants = new HashMap<>();
         childMapper = new HashMap<>();
-        numDescendants = new HashMap<>();
 
         // Calculate the children of each component.
         for (int i = state.getNumComponents() - 1; i >= 0; i--) {
@@ -184,12 +183,13 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         if (totalNeededHeight < PREFERRED_HEIGHT) {
             expandHeight = true;
         }
-//        System.out.println(totalNeededHeight);
         final Dimension size = new Dimension(getWidth(), expandHeight ? PREFERRED_HEIGHT : totalNeededHeight);
         setSize(size);
 
-        // Each rectangle will be of the form: {rectangle column, rectangle relative height, rectangle relative y-position}
-        // All 'relative' values are integers between 0 and 1000 where 1000 represents the full vertical size of this display panel.
+        /**
+         *  Each rectangle will be of the form: {rectangle column, rectangle relative height, rectangle relative y-position}
+         *  All 'relative' values are integers between 0 and 1000 where 1000 represents the full vertical size of this display panel.
+         */
         rectangles = new int[state.getNumComponents()][];
 
         // The cumulative height of the first column - used to determine the relative y-position of components in the frist column
@@ -235,7 +235,6 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
                 final int childHeight = state.getComponentSize(child) + (childGaps * COMPONENT_VISUAL_GRAP);
                 // column number, height, ypos
                 final int[] rect = {rectangles[i][0] + 1, childHeight, rectangles[i][2] + childColumnHeight};
-//                System.out.println("x" + (rectangles[i][0] + 3) + "-truss : " + childHeight + " : " + (rectangles[i][2] + childColumnHeight));
                 rectangles[child] = rect;
                 // Increase the cumulative height of this child column
                 childColumnHeight += (childHeight + COMPONENT_VISUAL_GRAP);
@@ -270,7 +269,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
             final int rectX = rectX(i);
             final int rectY = rectY(i);
             final int rectHeight = rectHeight(i);
-            if (x >= rectX && x <= rectX + rectangleWidth && y >= rectY && y <= rectY + rectHeight) {
+            if (x >= rectX && x <= rectX + RECTANGLE_WIDTH && y >= rectY && y <= rectY + rectHeight) {
                 final int parent = state.getComponentParent(i);
                 if (e.isControlDown() && selectedRectangles.contains(parent) && parent != i) {
                     return;

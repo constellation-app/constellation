@@ -105,7 +105,7 @@ public final class SimpleGraphOpener extends GraphOpener {
                 final NotifyDescriptor d = new NotifyDescriptor.Message(String.format("%s error opening graph:%n%s", exName, gex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
                 DialogDisplayer.getDefault().notify(d);
             } else if (graph != null) {
-                StatusDisplayer.getDefault().setStatusText(String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000f));
+                StatusDisplayer.getDefault().setStatusText(String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000F));
                 final SimpleGraphTopComponent vtc = new SimpleGraphTopComponent(gdo, graph);
                 vtc.open();
                 vtc.requestActive();

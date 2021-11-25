@@ -38,13 +38,13 @@ public final class Frame implements Serializable {
      */
     public Frame() {
         // At origin.
-        origin = new Vector3f(0.0f, 0.0f, 0.0f);
+        origin = new Vector3f(0.0F, 0.0F, 0.0F);
 
         // Forward is -Z (default OpenGL).
-        forward = new Vector3f(0.0f, 0.0f, -1.0f);
+        forward = new Vector3f(0.0F, 0.0F, -1.0F);
 
         // Up is up (+Y).
-        up = new Vector3f(0.0f, 1.0f, 0.0f);
+        up = new Vector3f(0.0F, 1.0F, 0.0F);
 
         absm = -1;
     }
@@ -241,9 +241,9 @@ public final class Frame implements Serializable {
 
         // Translation (already done)
         if (rotationOnly) {
-            matrix.a[12] = 0.0f;
-            matrix.a[13] = 0.0f;
-            matrix.a[14] = 0.0f;
+            matrix.a[12] = 0.0F;
+            matrix.a[13] = 0.0F;
+            matrix.a[14] = 0.0F;
         } else {
             matrix.setRow(origin, 3);
         }

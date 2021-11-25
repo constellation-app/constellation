@@ -168,7 +168,7 @@ public final class GraphTaxonomy {
         }
     }
 
-    public boolean getArrangeRectangularly(final int key) {
+    public boolean isArrangeRectangularly(final int key) {
         return arrangeRectangularly.contains(key);
     }
 
@@ -301,10 +301,8 @@ public final class GraphTaxonomy {
             condensedGraph.setFloatValue(cRadiusAttr, cVxId, extent.getLRadius());
             cVxIdToTaxonKey.put(cVxId, k);
             taxonKeyToVxId.put(k, cVxId);
-//            taxonKeyToExtent.put(k, extent);
         }
 
-//        System.out.printf("@GT Condensation (nTaxa=%d) (vxCount %d->%d)\n", taxa.keySet().size(), graph.getVertexCount(), wg.getVertexCount());
         // Add the transactions.
         //        final long t0 = System.currentTimeMillis();
         // We search through all of the taxa to find sources,

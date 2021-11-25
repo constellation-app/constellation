@@ -100,9 +100,7 @@ public class ConstellationIcon {
     private String createExtendedName() {
         StringBuilder fullyQualifiedname = new StringBuilder();
         if (categories != null) {
-            categories.forEach(category -> {
-                fullyQualifiedname.append(category).append(DEFAULT_ICON_SEPARATOR);
-            });
+            categories.forEach(category -> fullyQualifiedname.append(category).append(DEFAULT_ICON_SEPARATOR));
         }
         fullyQualifiedname.append(name);
         return fullyQualifiedname.toString();

@@ -109,7 +109,7 @@ public class NewDefaultSchemaGraphAction extends AbstractAction implements Prefe
                     }
 
                     // Give the new graph a default name the reflects the schema.
-                    final String graphName = schemaFactory.getLabel().replace(" ", "").toLowerCase();
+                    final String graphName = schemaFactory.getLabel().trim().toLowerCase();
                     GraphOpener.getDefault().openGraph(graph, graphName);
                 }
             }.start();

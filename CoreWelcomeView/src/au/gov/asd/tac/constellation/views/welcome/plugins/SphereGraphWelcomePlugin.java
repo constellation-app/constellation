@@ -94,7 +94,7 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
         try {
             // ensure sphere graph has finished before opening the graph
             f.get();
-            final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().replace(" ", "").toLowerCase();
+            final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().trim().toLowerCase();
             GraphOpener.getDefault().openGraph(dualGraph, graphName);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();

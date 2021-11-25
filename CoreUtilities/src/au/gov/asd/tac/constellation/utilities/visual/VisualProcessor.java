@@ -292,9 +292,7 @@ public abstract class VisualProcessor {
     private void processChangeSet(final Collection<VisualChange> changes, final VisualAccess access) {
         calculatePertinentChanges(changes).forEach((property, propertyChanges) -> {
             final VisualChangeProcessor processor = getChangeProcessor(property);
-            propertyChanges.forEach(change -> {
-                processor.processChange(change, access);
-            });
+            propertyChanges.forEach(change -> processor.processChange(change, access));
         });
     }
 
@@ -318,11 +316,7 @@ public abstract class VisualProcessor {
         });
 
         final Set<VisualProperty> propertySet = new HashSet<>(masterChangeMap.keySet());
-        propertySet.forEach(property -> {
-            getTrumpedProperties(property).forEach(trumpedProperty -> {
-                masterChangeMap.remove(trumpedProperty);
-            });
-        });
+        propertySet.forEach(property -> getTrumpedProperties(property).forEach(trumpedProperty -> masterChangeMap.remove(trumpedProperty)));
         return masterChangeMap;
     }
 

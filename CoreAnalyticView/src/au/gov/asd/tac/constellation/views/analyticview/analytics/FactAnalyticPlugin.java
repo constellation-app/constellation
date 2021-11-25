@@ -112,9 +112,12 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
             }
 
             for (int graphElementPosition = 0; graphElementPosition < graphElementCount; graphElementPosition++) {
-                final int graphElementId = graphElementType == GraphElementType.VERTEX
-                        ? graph.getVertex(graphElementPosition) : graphElementType == GraphElementType.TRANSACTION
-                        ? graph.getTransaction(graphElementPosition) : Graph.NOT_FOUND;
+                final int graphElementId;
+                if (graphElementType == GraphElementType.VERTEX) {
+                    graphElementId = graph.getVertex(graphElementPosition);
+                } else {
+                    graphElementId = graphElementType == GraphElementType.TRANSACTION ? graph.getTransaction(graphElementPosition) : Graph.NOT_FOUND;
+                }
                 final String identifier = graph.getStringValue(identifierAttributeId, graphElementId);
                 final boolean fact = graph.getBooleanValue(factAttributeId, graphElementId);
                 final boolean defaultFact = (boolean) graph.getAttributeDefaultValue(factAttributeId);
@@ -199,9 +202,8 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
             } else {
                 // create subgraph
                 final Set<SchemaTransactionType> transactionTypes = new HashSet<>();
-                chosenTransactionTypes.forEach(parameterValue -> {
-                    transactionTypes.add((SchemaTransactionType) ((TransactionTypeParameterValue) parameterValue).getObjectValue());
-                });
+                chosenTransactionTypes.forEach(parameterValue
+                        -> transactionTypes.add((SchemaTransactionType) ((TransactionTypeParameterValue) parameterValue).getObjectValue()));
                 assert transactionTypes.size() > 0 : "You must select at least one transaction type";
                 final StoreGraph subgraph = getSubgraph(graph, SchemaFactoryUtilities.getDefaultSchemaFactory(), transactionTypes);
 

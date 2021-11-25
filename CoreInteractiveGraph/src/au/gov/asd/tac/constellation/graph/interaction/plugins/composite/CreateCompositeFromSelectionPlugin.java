@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -103,7 +104,7 @@ public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin impleme
                 String copyId = "";
                 for (int primarykeyAttr : graph.getPrimaryKey(GraphElementType.VERTEX)) {
                     final String val = graph.getStringValue(primarykeyAttr, selectedVerts.iterator().next());
-                    copyId += graph.getAttributeName(primarykeyAttr) + "<" + (val == null ? "" : val) + ">";
+                    copyId += graph.getAttributeName(primarykeyAttr) + "<" + StringUtils.defaultString(val) + ">";
                 }
                 final String compositeId = copyId;
 

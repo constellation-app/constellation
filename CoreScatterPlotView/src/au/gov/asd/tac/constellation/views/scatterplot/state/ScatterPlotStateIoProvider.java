@@ -51,9 +51,9 @@ public class ScatterPlotStateIoProvider extends AbstractGraphIOProvider {
         if (!jnode.isNull()) {
             final ScatterPlotState state = new ScatterPlotState();
             GraphElementType elementType = GraphElementType.valueOf(jnode.get("elementType").asText());
-            final Attribute xAttribute = jnode.get(X_ATTRIBUTE).asText().equalsIgnoreCase("null") ? null
+            final Attribute xAttribute = "null".equalsIgnoreCase(jnode.get(X_ATTRIBUTE).asText()) ? null
                     : new GraphAttribute(graph, graph.getAttribute(elementType, jnode.get(X_ATTRIBUTE).asText()));
-            final Attribute yAttribute = jnode.get(Y_ATTRIBUTE).asText().equalsIgnoreCase("null") ? null
+            final Attribute yAttribute = "null".equalsIgnoreCase(jnode.get(Y_ATTRIBUTE).asText()) ? null
                     : new GraphAttribute(graph, graph.getAttribute(elementType, jnode.get(Y_ATTRIBUTE).asText()));
             state.setElementType(elementType);
             state.setXAttribute(xAttribute);

@@ -51,15 +51,15 @@ public class UpdateBlazeSizeOpacityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> sizeParameter = FloatParameterType.build(SIZE_PARAMETER_ID);
         sizeParameter.setName("Size");
         sizeParameter.setDescription("The size of the blaze");
-        FloatParameterType.setMinimum(sizeParameter, 0f);
-        FloatParameterType.setMaximum(sizeParameter, 1f);
+        FloatParameterType.setMinimum(sizeParameter, 0F);
+        FloatParameterType.setMaximum(sizeParameter, 1F);
         parameters.addParameter(sizeParameter);
 
         final PluginParameter<FloatParameterValue> opacityParameter = FloatParameterType.build(OPACITY_PARAMETER_ID);
         opacityParameter.setName("Opacity");
         opacityParameter.setDescription("The opacity of the blaze");
-        FloatParameterType.setMinimum(opacityParameter, 0f);
-        FloatParameterType.setMaximum(opacityParameter, 1f);
+        FloatParameterType.setMinimum(opacityParameter, 0F);
+        FloatParameterType.setMaximum(opacityParameter, 1F);
         parameters.addParameter(opacityParameter);
 
         return parameters;

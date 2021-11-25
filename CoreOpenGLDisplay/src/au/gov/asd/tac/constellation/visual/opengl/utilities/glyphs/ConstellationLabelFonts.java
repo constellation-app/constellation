@@ -31,7 +31,7 @@ public interface ConstellationLabelFonts {
      *
      * @return True is you want to use a list of fonts, false otherwise.
      */
-    public default boolean getUseMultiFonts() {
+    public default boolean isUseMultiFontsChosen() {
         return true;
     }
 
@@ -49,9 +49,7 @@ public interface ConstellationLabelFonts {
      */
     public default String getFontListString() {
         final StringBuilder fontList = new StringBuilder();
-        getFontList().forEach(font -> {
-            fontList.append(font).append(SeparatorConstants.NEWLINE);
-        });
+        getFontList().forEach(font -> fontList.append(font).append(SeparatorConstants.NEWLINE));
         return fontList.toString();
     }
 

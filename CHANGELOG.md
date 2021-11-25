@@ -6,6 +6,19 @@
     `netbeans.exception.alert.min.level=900` with both set to `900` to make
     sure all `ERROR` and `FATAL` levels will present a dialog box.
 
+-   Removed unused methods in `SelectableLabel` in `ConversationView`.
+
+-   Renamed methods returning a boolean value to start with "is" or "has". This 
+    includes methods in `KTrussState` in `CoreAlgorithmPlugins`, `AnalyticResult`
+    in `CoreAnalyticView`; `GraphTaxonomy` & `Scatter3dChoiceParameters` in
+    `CoreArrangementPlugins`; `FindRule`, `BasicFindPanel` & `ReplacePanel` in
+    `CoreFindView`; `HashmodPanel` in `CoreGraphUtilities`; `ToggleGraphVisibilityAction`
+    in `CoreInteractiveGraph`; `LayersViewController` & `BitMaskQuerry` in 
+    `CoreLayersView`; `LabelFontsOptionsPanel` & `ConstellationLabelFonts` in 
+    `CoreOpenGLDisplay`; `ApplicationOptionsPanel` & `DeveloperOptionsPanel` in
+    `CorePreferences`; `ProxyOptionsPanel` in `CoreSecuirty`, `VisualAccess` in 
+    `CoreUtilities` and `VisualGraphUtilities` in `CoreVisualGraph`.
+
 -   Update the default configuration to always show errors as a dialog message.
 
 -   Updated the way exceptions are displayed to the user. Exceptions thrown in
@@ -13,12 +26,16 @@
     class `NotifyDescriptor.Exception`. This presents an exception dialog
     when Constellation is ran from the executable.
 
+-   Updated public constructors in `ConversationProvider` and
+    `ConversationContributionProvider` to protected to fix code smell that
+    abstract classes should not have public constructors. 
+
 ## Changes in October 2021
 -   Added `PluginTags` class to hold all tags as constants for `PluginInfo`.
 
 -   Added `isRequired` in `PluginParameter` with a getter and a setter, which
     can be used to configure the required plugin parameters to mark as `*required`
-  	in the swagger.
+    in the swagger.
 
 -   Added a file chooser utility to core utilities. This provides a template
     for opening file choosers. It protects against common mistakes that may

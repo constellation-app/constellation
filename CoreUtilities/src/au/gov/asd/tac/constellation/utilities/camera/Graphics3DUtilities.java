@@ -30,6 +30,10 @@ import java.util.logging.Logger;
 public class Graphics3DUtilities {
 
     private static final Logger LOGGER = Logger.getLogger(Graphics3DUtilities.class.getName());
+    
+    private Graphics3DUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Converts the supplied point from screen coordinates to world coordinates,
@@ -110,7 +114,7 @@ public class Graphics3DUtilities {
     public static boolean project(final Vector3f position, final Matrix44f modelViewProjectionMatrix, final int[] viewport, final Vector4f projectedPosition) {
         final Matrix44f mvpmat = new Matrix44f();
         mvpmat.set(modelViewProjectionMatrix);
-        final float[] tr = mvpmat.multiply(position.getX(), position.getY(), position.getZ(), 1.0f);
+        final float[] tr = mvpmat.multiply(position.getX(), position.getY(), position.getZ(), 1.0F);
         if (tr[3] == 0) {
             return false;
         }
@@ -121,9 +125,9 @@ public class Graphics3DUtilities {
         tr[2] /= w;
 
         // At this point, the projected coordinates (tr) are normalised to the unit cube.
-        float winx = viewport[0] + (viewport[2] * (tr[0] + 1.0f)) / 2.0f;
-        float winy = viewport[1] + (viewport[3] * (tr[1] + 1.0f)) / 2.0f;
-        float winz = (tr[2] + 1.0f) / 2.0f;
+        float winx = viewport[0] + (viewport[2] * (tr[0] + 1.0F)) / 2.0F;
+        float winy = viewport[1] + (viewport[3] * (tr[1] + 1.0F)) / 2.0F;
+        float winz = (tr[2] + 1.0F) / 2.0F;
 
         // Now we're projected to the window.
         projectedPosition.set(winx, winy, winz, w);
@@ -139,9 +143,9 @@ public class Graphics3DUtilities {
 
         // Start unprojecting the window coordinates.
         final float[] tr = new float[4];
-        tr[0] = (winx - viewport[0]) * 2.0f / viewport[2] - 1.0f;
-        tr[1] = (winy - viewport[1]) * 2.0f / viewport[3] - 1.0f;
-        tr[2] = winz * 2.0f - 1.0f;
+        tr[0] = (winx - viewport[0]) * 2.0F / viewport[2] - 1.0F;
+        tr[1] = (winy - viewport[1]) * 2.0F / viewport[3] - 1.0F;
+        tr[2] = winz * 2.0F - 1.0F;
         tr[3] = w;
 
         tr[0] *= w;
@@ -172,9 +176,9 @@ public class Graphics3DUtilities {
         final float[] cameraMovement = new float[3];
 
         final float w = modelViewProjectionMatrix.multiply(position.getX(), position.getY(), position.getZ(), 1)[3];
-        cameraMovement[0] = movement.getX() * 2.0f * w / viewport[2];
-        cameraMovement[1] = -movement.getY() * 2.0f * w / viewport[3];
-        cameraMovement[2] = movement.getZ() * 2.0f * w;
+        cameraMovement[0] = movement.getX() * 2.0F * w / viewport[2];
+        cameraMovement[1] = -movement.getY() * 2.0F * w / viewport[3];
+        cameraMovement[2] = movement.getZ() * 2.0F * w;
 
         final Matrix44f invmat = new Matrix44f();
         invmat.invert(modelViewProjectionMatrix);
@@ -210,7 +214,7 @@ public class Graphics3DUtilities {
         //        final Matrix44f mvpmat = new Matrix44f();
 //        mvpmat.set(modelViewProjectionMatrix);
 //        final float[] tr = mvpmat.multiply(0f, 0f, 0f, 1.0f);
-        final float[] tr = modelViewProjectionMatrix.multiply(0f, 0f, 0f, 1.0f);
+        final float[] tr = modelViewProjectionMatrix.multiply(0F, 0F, 0F, 1.0F);
         if (tr[3] == 0) {
             return false;
         }
@@ -221,21 +225,20 @@ public class Graphics3DUtilities {
         tr[2] /= w;
 
         // At this point, the projected coordinates (tr) are normalised to the unit cube.
-        float winx = viewport[0] + (viewport[2] * (tr[0] + 1.0f)) / 2.0f;
-        float winy = viewport[1] + (viewport[3] * (tr[1] + 1.0f)) / 2.0f;
-        float winz = (tr[2] + 1.0f) / 2.0f;
+        float winx = viewport[0] + (viewport[2] * (tr[0] + 1.0F)) / 2.0F;
+        float winy = viewport[1] + (viewport[3] * (tr[1] + 1.0F)) / 2.0F;
+        float winz = (tr[2] + 1.0F) / 2.0F;
 
         // Now we're projected to the window.
-        //        System.out.printf("@@(win) %s -> x=%f, y=%f, z=%f w=%f: %d %d\n", position, winx, viewport[3]-winy, winz, w, xdelta, ydelta);
         // Add the delta from the before and after mouse movement.
         // Note that the ydelta is substracted: OpenGL and Windows have opposite y axes.
         winx += deltaX;
         winy -= deltaY;
 
         // Start unprojecting the window coordinates.
-        tr[0] = (winx - viewport[0]) * 2.0f / viewport[2] - 1.0f;
-        tr[1] = (winy - viewport[1]) * 2.0f / viewport[3] - 1.0f;
-        tr[2] = winz * 2.0f - 1.0f;
+        tr[0] = (winx - viewport[0]) * 2.0F / viewport[2] - 1.0F;
+        tr[1] = (winy - viewport[1]) * 2.0F / viewport[3] - 1.0F;
+        tr[2] = winz * 2.0F - 1.0F;
 
         tr[0] *= w;
         tr[1] *= w;

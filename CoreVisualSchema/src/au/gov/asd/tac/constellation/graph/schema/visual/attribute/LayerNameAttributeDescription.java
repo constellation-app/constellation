@@ -46,7 +46,7 @@ public class LayerNameAttributeDescription extends AbstractObjectAttributeDescri
     protected LayerName convertFromString(final String string) {
         if (StringUtils.isBlank(string)) {
             return getDefault();
-        } else if (string.equals("DEFAULT")) {
+        } else if ("DEFAULT".equals(string)) {
             // handle default value from file import
             return DEFAULT_VALUE;
         } else {
