@@ -48,14 +48,14 @@ public class PQTreeEmbedding {
     }
 
     private void generateInitialAdjacencyLists() {
-        Map<Integer, Integer> componentVxIDsToStNumbers = new HashMap<>();
+        final Map<Integer, Integer> componentVxIDsToStNumbers = new HashMap<>();
         int i = 1;
-        for (TreeNode node : numberedComponent) {
+        for (final TreeNode node : numberedComponent) {
             componentVxIDsToStNumbers.put(node.vxID, i++);
         }
         i = 1;
-        for (TreeNode node : numberedComponent) {
-            List<Integer> adjacencyList = new LinkedList<>();
+        for (final TreeNode node : numberedComponent) {
+            final List<Integer> adjacencyList = new LinkedList<>();
             for (int j = 0; j < graph.getVertexNeighbourCount(node.vxID); j++) {
                 final int neighbourID = graph.getVertexNeighbour(node.vxID, j);
                 if (componentVxIDsToStNumbers.containsKey(neighbourID)) {
@@ -77,14 +77,14 @@ public class PQTreeEmbedding {
 
         // create the upward embedding
         for (int i = 2; i <= n; i++) {
-            List<Integer> virtaulNodes = adjacencyLists.get(i - 1);
+            final List<Integer> virtaulNodes = adjacencyLists.get(i - 1);
             tree.reduce();
             adjacencyLists.set(i - 1, tree.readPertinentFrontier());
             final int listToReverse = tree.readAndRemoveDirectionIndicator();
             if (listToReverse != -1) {
-                List<Integer> toReverse = adjacencyLists.get(listToReverse - 1);
-                List<Integer> reversed = new LinkedList<>();
-                for (int neighbour : toReverse) {
+                final List<Integer> toReverse = adjacencyLists.get(listToReverse - 1);
+                final List<Integer> reversed = new LinkedList<>();
+                for (final int neighbour : toReverse) {
                     reversed.add(0, neighbour);
                 }
                 adjacencyLists.set(listToReverse - 1, reversed);
@@ -93,15 +93,15 @@ public class PQTreeEmbedding {
         }
 
         // convert the upward embedding into an entire embedding.
-        Set<Integer> oldNumbers = new HashSet<>();
+        final Set<Integer> oldNumbers = new HashSet<>();
         entireEmbed(n, oldNumbers);
 
     }
 
-    public void entireEmbed(int number, Set<Integer> oldNumbers) {
-        List<Integer> neighbours = new LinkedList<>(adjacencyLists.get(number - 1));
+    public void entireEmbed(final int number, final Set<Integer> oldNumbers) {
+        final List<Integer> neighbours = new LinkedList<>(adjacencyLists.get(number - 1));
         oldNumbers.add(number);
-        for (int neighbour : neighbours) {
+        for (final int neighbour : neighbours) {
             if (neighbour < number) {
                 adjacencyLists.get(neighbour - 1).add(0, number);
             }
@@ -110,5 +110,4 @@ public class PQTreeEmbedding {
             }
         }
     }
-
 }

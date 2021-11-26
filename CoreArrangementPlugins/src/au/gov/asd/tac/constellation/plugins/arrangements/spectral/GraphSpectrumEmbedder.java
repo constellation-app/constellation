@@ -29,16 +29,16 @@ import org.apache.commons.math3.linear.MatrixUtils;
  */
 public class GraphSpectrumEmbedder {
 
-    public static Map<Integer, double[]> spectralEmbedding(GraphReadMethods rg, final Set<Integer> includedVertices) {
+    public static Map<Integer, double[]> spectralEmbedding(final GraphReadMethods rg, final Set<Integer> includedVertices) {
 
-        Map<Integer, double[]> vertexPositions = new HashMap<>();
+        final Map<Integer, double[]> vertexPositions = new HashMap<>();
 
         // Don't position anything if there are fewer than 3 vertices to embedd - this embedding shouldn't be used in these cases.
         if (includedVertices.size() <= 2) {
             return vertexPositions;
         }
 
-        GraphMatrix l = GraphMatrix.adjacencyFromGraph(rg, includedVertices, new HashSet<>());
+        final GraphMatrix l = GraphMatrix.adjacencyFromGraph(rg, includedVertices, new HashSet<>());
 
         final EigenDecomposition e = new EigenDecomposition(MatrixUtils.createRealMatrix(l.laplacianMatrix));
         final int numVectors = e.getRealEigenvalues().length;
@@ -72,29 +72,29 @@ public class GraphSpectrumEmbedder {
         private final double[][] laplacianMatrix;
         private final int dimension;
 
-        private GraphMatrix(double[][] laplacianMatrix, Map<Integer, Integer> matrixPositionToID) {
+        private GraphMatrix(final double[][] laplacianMatrix, final Map<Integer, Integer> matrixPositionToID) {
             this.laplacianMatrix = laplacianMatrix;
             this.matrixPositionToID = matrixPositionToID;
             this.dimension = laplacianMatrix.length;
         }
 
-        public static GraphMatrix adjacencyFromGraph(GraphReadMethods rg, Set<Integer> includedVertices, Set<Integer> excludedLinks) {
+        public static GraphMatrix adjacencyFromGraph(final GraphReadMethods rg, final Set<Integer> includedVertices, final Set<Integer> excludedLinks) {
             return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.ADJACENCY_MATRIX);
         }
 
-        public static GraphMatrix laplacianFromGraph(GraphReadMethods rg, Set<Integer> includedVertices, Set<Integer> excludedLinks) {
+        public static GraphMatrix laplacianFromGraph(final GraphReadMethods rg, final Set<Integer> includedVertices, final Set<Integer> excludedLinks) {
             return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.LAPLACIAN_MATRIX);
         }
 
-        public static GraphMatrix matrixFromGraph(GraphReadMethods rg, Set<Integer> includedVertices, Set<Integer> excludedLinks, MatrixType type) {
+        public static GraphMatrix matrixFromGraph(final GraphReadMethods rg, final Set<Integer> includedVertices, final Set<Integer> excludedLinks, final MatrixType type) {
 
             final int numVertices = includedVertices.size();
             final double[][] matrixEntries = new double[numVertices][];
             for (int i = 0; i < numVertices; i++) {
                 matrixEntries[i] = new double[numVertices];
             }
-            Map<Integer, Integer> idToMatrixPosition = new HashMap<>();
-            Map<Integer, Integer> matrixPositionToID = new HashMap<>();
+            final Map<Integer, Integer> idToMatrixPosition = new HashMap<>();
+            final Map<Integer, Integer> matrixPositionToID = new HashMap<>();
 
             int skips = 0;
             for (int i = 0; i < rg.getVertexCount(); i++) {
@@ -149,9 +149,7 @@ public class GraphSpectrumEmbedder {
                     }
                 }
             }
-
             return new GraphMatrix(matrixEntries, matrixPositionToID);
         }
     }
-
 }

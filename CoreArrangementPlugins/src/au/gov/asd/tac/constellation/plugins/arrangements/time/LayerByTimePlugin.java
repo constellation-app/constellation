@@ -387,7 +387,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             for (final Entry<Integer, List<Float>> entry : remappedLayers.entrySet()) {
                 for (final Entry<Float, List<Integer>> currentLayer : transactionLayers.entrySet()) {
                     if (entry.getValue().contains(currentLayer.getKey())) {
-                        for (int txId : currentLayer.getValue()) {
+                        for (final int txId : currentLayer.getValue()) {
                             final float origLayer = currentLayer.getKey();
                             int newLayer = 0;
                             if (entry.getValue().contains(origLayer)) {
@@ -552,7 +552,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      */
     private void buildBins(final GraphWriteMethods wgcopy, final List<Float> values, final Map<Integer, List<Float>> remappedLayers, final Map<Integer, String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int binAmount) {
         final Calendar dtg = Calendar.getInstance();
-        float maxUnit = dtg.getMaximum(unit);
+        final float maxUnit = dtg.getMaximum(unit);
 
         if (binAmount > maxUnit) {
             throw new RuntimeException("The selected bin size, " + binAmount + " exceeds the number of values for the specified bin period, " + (int) maxUnit);
@@ -602,7 +602,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         for (int i = 0; i <= maxUnit && i < values.size(); i++) {
             //Create new layer
             final List<Float> runningLayers = new ArrayList<>();
-            int currentBinAmount = j + binAmount;
+            final int currentBinAmount = j + binAmount;
             try {
                 for (; j < currentBinAmount && j < values.size(); j++) {
                     //Add value to layer
@@ -626,7 +626,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
         // Handle layer names of each layer.
         // Build a map (displayNames) of layer number -> label.
-        for (Entry<Integer, List<Float>> entry : remappedLayers.entrySet()) {
+        for (final Entry<Integer, List<Float>> entry : remappedLayers.entrySet()) {
             final StringBuilder sb = new StringBuilder();
             for (final float layer : entry.getValue()) {
                 for (int txId : transactionLayers.get(layer)) {

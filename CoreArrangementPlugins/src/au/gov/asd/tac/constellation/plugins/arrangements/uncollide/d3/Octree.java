@@ -65,7 +65,7 @@ public class Octree {
         return boxes;
     }
 
-    private void getSubs(List<Box3D> boxes) {
+    private void getSubs(final List<Box3D> boxes) {
         boxes.add(box);
         for (final Octree qt : nodes) {
             if (qt != null) {

@@ -187,7 +187,7 @@ public class Scatter3dArranger implements Arranger {
         return value;
     }
 
-    private float getFloatValueFromObject(Object attributeValue, boolean logarithmic) {
+    private float getFloatValueFromObject(final Object attributeValue, final boolean logarithmic) {
         if (attributeValue == null) {
             return 0.0F;
         }

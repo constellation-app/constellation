@@ -64,15 +64,19 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int element, final Vector3f unprojected) {
         switch (elementType) {
-
             case GRAPH:
-                PluginExecution.withPlugin(new GatherNodesForGraphContextMenuPlugin(unprojected))
-                        .executeLater(graph);
+                PluginExecution.withPlugin(new GatherNodesForGraphContextMenuPlugin(unprojected)).executeLater(graph);
                 break;
-
             case VERTEX:
-                PluginExecution.withPlugin(new GatherNodesForVertexContextMenuPlugin(element))
-                        .executeLater(graph);
+                PluginExecution.withPlugin(new GatherNodesForVertexContextMenuPlugin(element)).executeLater(graph);
+                break;
+            case META:
+                break;
+            case LINK:
+                break;
+            case EDGE:
+                break;
+            case TRANSACTION:
                 break;
             default:
                 break;
@@ -111,7 +115,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
         }
 
         @Override
-        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             final BitSet gathers = selectedVertexBits(graph);
 
             PluginExecution.withPlugin(ArrangementPluginRegistry.GATHER_NODES_IN_GRAPH)
@@ -137,7 +141,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
         }
 
         @Override
-        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             final BitSet gathers = selectedVertexBits(graph);
 
             PluginExecution.withPlugin(ArrangementPluginRegistry.GATHER_NODES)

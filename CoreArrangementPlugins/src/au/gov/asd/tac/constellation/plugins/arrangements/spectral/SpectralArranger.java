@@ -65,8 +65,8 @@ public class SpectralArranger implements Arranger {
         xValues.sort(null);
         yValues.sort(null);
         double averageOverlap = 0;
-        Iterator<Double> xValIter = xValues.iterator();
-        Iterator<Double> yValIter = yValues.iterator();
+        final Iterator<Double> xValIter = xValues.iterator();
+        final Iterator<Double> yValIter = yValues.iterator();
         double currentX;
         double nextX = xValIter.next();
         double currentY;
@@ -102,22 +102,22 @@ public class SpectralArranger implements Arranger {
         private int highestK;
 
         @Override
-        public void initialise(BitSet currentLinksCopy) {
+        public void initialise(final BitSet currentLinksCopy) {
             // Required for KTrussResultHandler, intentionally left blank
         }
 
         @Override
-        public void recordTransactionCluster(int txID, int clusterNum) {
+        public void recordTransactionCluster(final int txID, final int clusterNum) {
             // Required for KTrussResultHandler, intentionally left blank
         }
 
         @Override
-        public void recordVertexCluster(int vxID, int clusterNum) {
+        public void recordVertexCluster(final int vxID, final int clusterNum) {
             verticesInHighestTruss.add(vxID);
         }
 
         @Override
-        public boolean nextK(int lastK, boolean clustersModified, BitSet currentLinksCopy) {
+        public boolean nextK(final int lastK, final boolean clustersModified, final BitSet currentLinksCopy) {
             otherVertices.addAll(verticesInHighestTruss);
             verticesInHighestTruss.clear();
             return true;
@@ -125,7 +125,7 @@ public class SpectralArranger implements Arranger {
         }
 
         @Override
-        public void finalise(int highestK, BitSet currentLinksCopy) {
+        public void finalise(final int highestK, final BitSet currentLinksCopy) {
             this.highestK = highestK;
         }
 
@@ -153,7 +153,7 @@ public class SpectralArranger implements Arranger {
         }
 
         // Otherwise calculate the spectral (eigenvector) embedding of the most interconnected truss
-        Map<Integer, double[]> vertexToCoordinates = GraphSpectrumEmbedder.spectralEmbedding(wg, handler.verticesInHighestTruss);
+        final Map<Integer, double[]> vertexToCoordinates = GraphSpectrumEmbedder.spectralEmbedding(wg, handler.verticesInHighestTruss);
         if (vertexToCoordinates.isEmpty()) {
             return;
         }
@@ -174,13 +174,13 @@ public class SpectralArranger implements Arranger {
         int level = 0;
         while (!handler.otherVertices.isEmpty()) {
             level++;
-            Set<Integer> verticesPlacedThisLevel = new HashSet<>();
-            Map<Set<Integer>, List<Integer>> significantNeighbourSets = new HashMap<>();
+            final Set<Integer> verticesPlacedThisLevel = new HashSet<>();
+            final Map<Set<Integer>, List<Integer>> significantNeighbourSets = new HashMap<>();
             for (final int vxID : handler.otherVertices) {
                 double xPos = 0;
                 double yPos = 0;
                 int significantNeighbourCount = 0;
-                Set<Integer> significantNeighbourSet = new HashSet<>();
+                final Set<Integer> significantNeighbourSet = new HashSet<>();
                 for (int j = 0; j < wg.getVertexNeighbourCount(vxID); j++) {
                     final int neighbourID = wg.getVertexNeighbour(vxID, j);
                     if (handler.otherVertices.contains(neighbourID)) {
@@ -196,7 +196,7 @@ public class SpectralArranger implements Arranger {
                 }
                 verticesPlacedThisLevel.add(vxID);
                 if (!significantNeighbourSets.containsKey(significantNeighbourSet)) {
-                    List<Integer> newList = new ArrayList<>();
+                    final List<Integer> newList = new ArrayList<>();
                     newList.add(vxID);
                     significantNeighbourSets.put(significantNeighbourSet, newList);
                 } else {
@@ -210,7 +210,7 @@ public class SpectralArranger implements Arranger {
             handler.otherVertices.removeAll(verticesPlacedThisLevel);
 
             // Spread out vertices that clash a litle bit
-            for (Entry<Set<Integer>, List<Integer>> set : significantNeighbourSets.entrySet()) {
+            for (final Entry<Set<Integer>, List<Integer>> set : significantNeighbourSets.entrySet()) {
                 final List<Integer> colocatedNodes = set.getValue();
                 final int colocatedSize = colocatedNodes.size();
                 if (colocatedSize > 1) {
@@ -234,5 +234,4 @@ public class SpectralArranger implements Arranger {
             ArrangementUtilities.moveMean(wg, oldMean);
         }
     }
-
 }
