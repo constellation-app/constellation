@@ -724,8 +724,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         if (layer > 0) {
             // To move this transaction to the correct layer, we need two new nodes.
             // Do they already exist?
-            // Create (or fetch the already created) two duplicate nodes;
-            // move the duplicates up the z axis by layer;
+            // Create (or fetch the already created) two duplicate nodes
+            // move the duplicates up the z axis by layer
             final int dupSNodeId = getDuplicateNode(graph, nodeDups, sNodeId, layer);
             graph.setFloatValue(zAttr, dupSNodeId, layer * 20);
             final int dupDNodeId = getDuplicateNode(graph, nodeDups, dNodeId, layer);

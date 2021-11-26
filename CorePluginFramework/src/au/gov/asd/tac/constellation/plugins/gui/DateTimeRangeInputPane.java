@@ -275,12 +275,7 @@ public final class DateTimeRangeInputPane extends Pane {
         // If the parameter is unset, set it with our default.
         // Otherwise, set ourself from the parameter.
         final DateTimeRange dtr = parameter.getDateTimeRangeValue();
-        /*if(dtr==null) {
-         setPeriod(relativeButtons.get(0).getPeriod(), getZoneId());
-         absPane.setExpanded(false);
-         parameter.setObjectValue(new DateTimeRange(relativeButtons.get(0).getPeriod(), getZoneId()));
-         }
-         else*/ if (dtr.getPeriod() != null) {
+        if (dtr.getPeriod() != null) {
             setPeriod(dtr.getPeriod(), dtr.getZoneId());
             absPane.setExpanded(false);
         } else {
@@ -449,7 +444,6 @@ public final class DateTimeRangeInputPane extends Pane {
         for (final String item : timeZonesCombo.getItems()) {
             final String itemPart = item.split(" ", 3)[1];
             if (itemPart.equals(id)) {
-//                timeZonesCombo.setValue(item);
                 timeZonesCombo.getSelectionModel().select(item);
                 break;
             }

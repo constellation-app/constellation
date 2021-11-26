@@ -44,12 +44,6 @@ public final class MemoryAction implements ActionListener {
         b.append(String.format("Total memory: %,6.2f %s %n", totalmem, "MB"));
         b.append(String.format("Maximum memory: %,6.2f %s %n", maxmem, "MB"));
 
-//        // test
-//        for (MemoryPoolMXBean memoryPoolMXBeans : ManagementFactory.getMemoryPoolMXBeans()) {
-//            b.append(memoryPoolMXBeans.getName());
-//            b.append(memoryPoolMXBeans.getUsage());
-//            b.append(SeparatorConstants.NEWLINE);
-//        }
         final NotifyDescriptor nd = new NotifyDescriptor.Message(b.toString(), NotifyDescriptor.INFORMATION_MESSAGE);
         DialogDisplayer.getDefault().notify(nd);
     }

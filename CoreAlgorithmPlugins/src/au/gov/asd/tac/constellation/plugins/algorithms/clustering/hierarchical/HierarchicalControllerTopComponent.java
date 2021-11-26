@@ -371,19 +371,15 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
     private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downButtonActionPerformed
         if (state.currentStep > 0) {
-//            stepSlider.setValue(--state.currentStep);
             state.currentStep--;
             updateSlider();
-//            updateGraph();
         }
     }//GEN-LAST:event_downButtonActionPerformed
 
     private void upButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upButtonActionPerformed
         if (state.currentStep < state.steps) {
-//            stepSlider.setValue(++state.currentStep);
             state.currentStep++;
             updateSlider();
-//            updateGraph();
         }
     }//GEN-LAST:event_upButtonActionPerformed
 

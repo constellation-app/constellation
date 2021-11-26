@@ -106,11 +106,6 @@ public class PluginParametersSwingDialog {
      * @param helpID The JavaHelp ID of the help.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String helpID) {
-//        if(!SwingUtilities.isEventDispatchThread())
-//        {
-//            throw new IllegalStateException("Not event dispatch thread");
-//        }
-
         this.title = title;
 
         final CountDownLatch latch = new CountDownLatch(1);

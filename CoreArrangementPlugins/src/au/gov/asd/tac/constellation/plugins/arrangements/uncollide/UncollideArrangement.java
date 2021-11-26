@@ -145,10 +145,6 @@ public class UncollideArrangement implements Arranger {
 
             // Vary the padding to see if we can make things use fewer steps.
             final float padding = 1;
-//                    final float padding = 9-i%10;
-//                    final float padding = prevCollisions<0 ? 1 : 1+2*prevCollisions/orbs.length;
-//            final float padding = prevCollisions<0 ? 1 : 1+prevCollisions/orbs.length;
-//                    final float padding = 0;
 
             int totalCollided = 0;
             for (final Orb2D orb : orbs) {
@@ -182,10 +178,6 @@ public class UncollideArrangement implements Arranger {
 
             // Vary the padding to see if we can make things use fewer steps.
             final float padding = 1;
-//                    final float padding = 9-i%10;
-//                    final float padding = prevCollisions<0 ? 1 : 1+2*prevCollisions/orbs.length;
-//            final float padding = prevCollisions<0 ? 1 : 1+prevCollisions/orbs.length;
-//                    final float padding = 0;
 
             int totalCollided = 0;
             for (final Orb3D orb : orbs) {

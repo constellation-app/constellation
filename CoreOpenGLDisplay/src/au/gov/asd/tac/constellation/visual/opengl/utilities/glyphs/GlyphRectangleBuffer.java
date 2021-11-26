@@ -270,7 +270,6 @@ final class GlyphRectangleBuffer {
         // (The obvious drawImage() variation is technically asynchronous, so don't use it.)
         //
         g2d.drawImage(img, x, y, null);
-//            g2d.drawImage(img, IDENTITY_OP, x, y);
 
         putImageInRectTextureCoordinates(rectIndex, extra, w, h);
 
@@ -292,7 +291,7 @@ final class GlyphRectangleBuffer {
             rectTextureCoordinates = Arrays.copyOf(rectTextureCoordinates, rectTextureCoordinates.length * 2);
         }
 
-        // Texture coordinates are in units of texture buffer size;
+        // Texture coordinates are in units of texture buffer size,
         // each coordinate ranges from 0 to 1. The x coordinate also encodes
         // the texture page.
         //

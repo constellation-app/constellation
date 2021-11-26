@@ -901,8 +901,6 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
      * @param node The GraphNode containing the graph to be displayed.
      */
     private void setNode(final GraphNode node) {
-//        propertyChange(null);
-
         if (graphNode != null) {
             final Graph graph = graphNode.getGraph();
 
@@ -918,7 +916,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
             final Graph graph = graphNode.getGraph();
 
             // Force a refresh as we are moving graphs!
-            attributeModificationCounter = -1;  //graph.getAttributeModificationCounter();
+            attributeModificationCounter = -1;
             determineAttributes();
 
             graph.addGraphChangeListener(this);

@@ -142,17 +142,14 @@ public class MdsArranger implements Arranger {
 
         final int vxCount = wg.getVertexCount();
         for (int vxId = verticesToArrange.nextSetBit(0); vxId >= 0; vxId = verticesToArrange.nextSetBit(vxId + 1)) {
-//            final boolean arrangeIt = verticesToArrange.get(vxId);
-//            final boolean influence = verticesToArrange.get(vxId);
-//            final boolean useLocs = verticesToArrange.get(vxId);
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
 
-            final boolean arrangeIt = true; // verticesToArrange.contains( thisVertex );
-            final boolean influence = true; //verticesThatInfluence.contains( thisVertex );
-            final boolean useLocs = false; //verticesToUseExistingLoc.contains( thisVertex );
+            final boolean arrangeIt = true; // verticesToArrange.contains( thisVertex )
+            final boolean influence = true; //verticesThatInfluence.contains( thisVertex )
+            final boolean useLocs = false; //verticesToUseExistingLoc.contains( thisVertex )
             if (arrangeIt && useLocs) {
                 vxsToArrange[numVxsToArrange++] = vxId;
             } else if (arrangeIt && !useLocs) {

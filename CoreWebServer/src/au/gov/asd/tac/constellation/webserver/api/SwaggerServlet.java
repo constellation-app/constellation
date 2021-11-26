@@ -120,7 +120,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     // Some parameters are passed in the body of the request.
                     // Since PluginParameter doesn't have an option to specify
                     // this, we'll improvise and look for "(body)" in the
-                    // parameter name. These will be dummy parameters;
+                    // parameter name. These will be dummy parameters,
                     // unused except for their swagger description.
                     final ArrayNode params = httpMethod.putArray("parameters");
                     rs.createParameters().getParameters().entrySet().forEach(entry -> {

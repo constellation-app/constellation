@@ -84,7 +84,6 @@ public class LocalDateInputPane extends Pane {
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
-                        //                    final LocalDate param = LocalDate.parse(pluginParameter.getStringValue(), DATE_FORMATTER);
                         final LocalDate param = pluginParameter.getLocalDateValue();
                         if (!param.equals(field.getValue())) {
                             field.setValue(param);

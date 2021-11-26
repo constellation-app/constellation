@@ -304,7 +304,6 @@ public abstract class InfomapGreedy extends InfomapBase {
                 node = node.getParent();
                 final double parentFlow = getNode(node).getData().getFlow();
                 getNode(node).getData().setFlow(parentFlow + flow);
-//                getNode(*node).data.flow += flow;
             }
         }
     }
@@ -744,12 +743,6 @@ public abstract class InfomapGreedy extends InfomapBase {
             }
         }
 
-        // Aggregate links from lower level to the new modular level
-        /*
-         typedef std::pair<NodeBase*, NodeBase*> NodePair;
-         typedef std::map<NodePair, double> EdgeMap;
-         EdgeMap moduleLinks;
-         */
         final TreeMap<Tuple<NodeBase, NodeBase>, Double> moduleLinks = new TreeMap<>((lhs, rhs) -> {
             if (lhs.getFirst().getId() < rhs.getFirst().getId()) {
                 return -1;

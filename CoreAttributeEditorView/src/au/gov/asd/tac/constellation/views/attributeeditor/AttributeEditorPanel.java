@@ -174,7 +174,6 @@ public class AttributeEditorPanel extends BorderPane {
     private static final ListSelectionEditorFactory LIST_SELECTION_EDITOR_FACTORY = new ListSelectionEditorFactory();
     private static final TimeZoneEditorFactory UPDATE_TIME_ZONE_EDITOR_FACTORY = new TimeZoneEditorFactory();
 
-//    private static final HashMap<String, AbstractAttributeHandler> attributeHandlerMap = new HashMap<>();
     private final TooltipPane tooltipPane = new TooltipPane();
 
     private void addCopyHandlersToListView(final ListView<Object> newList, final AttributeData attribute) {
@@ -429,7 +428,6 @@ public class AttributeEditorPanel extends BorderPane {
 
         optionsButtons.maxHeightProperty().bind(addMenu.heightProperty());
         optionsButtons.getChildren().addAll(showAllToggle, addMenu, editKeyButton);
-//        optionsButtons.getChildren().addAll(showAllcb, addMenu, editKeyButton);
         headerGraphic.setLeft(heading);
         headerGraphic.setRight(optionsButtons);
         headerGraphic.prefWidthProperty().bind(scrollPane.widthProperty().subtract(45));

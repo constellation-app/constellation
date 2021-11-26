@@ -254,7 +254,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         ReadableGraph rg;
         final GraphRecordStore originalAll;
         final GraphRecordStore compareAll;
-//        final Map<String, Integer> originalStatistics, compareStatistics;
 
         final Set<String> vertexPrimaryKeys;
         final Set<String> transactionPrimaryKeys;
@@ -263,7 +262,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         rg = originalGraph.getReadableGraph();
         try {
             originalAll = GraphRecordStoreUtilities.getAll(rg, false, true);
-//            originalStatistics = collectStatisticsFromGraph(rg);
             vertexPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg, GraphElementType.VERTEX);
             transactionPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg, GraphElementType.TRANSACTION);
         } finally {
@@ -273,7 +271,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         rg = compareGraph.getReadableGraph();
         try {
             compareAll = GraphRecordStoreUtilities.getAll(rg, false, true);
-//            compareStatistics = collectStatisticsFromGraph(rg);
         } finally {
             rg.release();
         }

@@ -512,9 +512,9 @@ public final class Frame implements Serializable {
     public void transformPoint(final Vector3f pointSrc, final Vector3f pointDst) {
         final Matrix44f m = new Matrix44f();
         getMatrix(m, false);    // Rotate and translate
-        pointDst.a[0] = m.a[0] * pointSrc.a[0] + m.a[4] * pointSrc.a[1] + m.a[8] * pointSrc.a[2] + m.a[12];// * v[3];
-        pointDst.a[1] = m.a[1] * pointSrc.a[0] + m.a[5] * pointSrc.a[1] + m.a[9] * pointSrc.a[2] + m.a[13];// * v[3];
-        pointDst.a[2] = m.a[2] * pointSrc.a[0] + m.a[6] * pointSrc.a[1] + m.a[10] * pointSrc.a[2] + m.a[14];// * v[3];
+        pointDst.a[0] = m.a[0] * pointSrc.a[0] + m.a[4] * pointSrc.a[1] + m.a[8] * pointSrc.a[2] + m.a[12];
+        pointDst.a[1] = m.a[1] * pointSrc.a[0] + m.a[5] * pointSrc.a[1] + m.a[9] * pointSrc.a[2] + m.a[13];
+        pointDst.a[2] = m.a[2] * pointSrc.a[0] + m.a[6] * pointSrc.a[1] + m.a[10] * pointSrc.a[2] + m.a[14];
     }
 
     /**

@@ -176,7 +176,6 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
 
     @Override
     public HelpCtx getHelpCtx() {
-//        return new HelpCtx("au.gov.asd.tac.constellation.functionality.labelfonts");
         return new HelpCtx("au.gov.asd.tac.constellation.visual.opengl.labelfonts");
     }
 }
