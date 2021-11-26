@@ -56,7 +56,7 @@ import org.openide.util.NbPreferences;
  * @author twinkle2_little
  */
 public class AttributeReader {
-    
+
     private static final Logger LOGGER = Logger.getLogger(AttributeReader.class.getName());
 
     private final Graph graph;
@@ -68,7 +68,7 @@ public class AttributeReader {
     private final IntArray selectedNodes = new IntArray();
     private final Map<GraphElementType, List<AttributeData>> elementAttributeData = new HashMap<>();
     private final Map<GraphElementType, Integer> elementAttributeCounts = new HashMap<>();
-    
+
     // type appended with attribute name as key.
     private final HashMap<String, Object[]> elementAttributeValues = new HashMap<>();
 
@@ -111,7 +111,7 @@ public class AttributeReader {
         showAllPrefs.put(GraphElementType.GRAPH, prefs.getBoolean(AttributePreferenceKey.GRAPH_SHOW_ALL, false));
         showAllPrefs.put(GraphElementType.VERTEX, prefs.getBoolean(AttributePreferenceKey.NODE_SHOW_ALL, false));
         showAllPrefs.put(GraphElementType.TRANSACTION, prefs.getBoolean(AttributePreferenceKey.TRANSACTION_SHOW_ALL, false));
-        
+
         final List<String> hiddenAttrs = StringUtilities.splitLabelsWithEscapeCharacters(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, ""), AttributePreferenceKey.SPLIT_CHAR_SET);
         final Set<String> hiddenAttrsSet = new HashSet<>(hiddenAttrs);
 
@@ -280,8 +280,8 @@ public class AttributeReader {
                     final Set<Object> values = new HashSet<>();
                     int valueCountLimit = 11;
                     // only load 10 values first... if the user wants more then another request is made. we load 11 to know that there are more than 10
-                    if (data.getDataType().equals("boolean")) {
-                        valueCountLimit = 2; 
+                    if ("boolean".equals(data.getDataType())) {
+                        valueCountLimit = 2;
                         // boolean only has two possibilities.
                     }
                     if (selectedElement != null) {
@@ -338,7 +338,19 @@ public class AttributeReader {
             if (o instanceof Comparable) {
                 final Comparable<Object>[] valuesArray = new Comparable[values.size()];
                 values.toArray(valuesArray);
-                Arrays.sort(valuesArray, (a, b) -> a == null ? (b == null ? 0 : -1) : (b == null ? 1 : a.compareTo(b)));
+                Arrays.sort(valuesArray, (a, b) -> {
+                    if (a == null) {
+                        if (b == null) {
+                            return 0;
+                        }
+                        return -1;
+                    } else {
+                        if (b == null) {
+                            return 1;
+                        }
+                        return a.compareTo(b);
+                    }
+                });
 
                 return valuesArray;
             }

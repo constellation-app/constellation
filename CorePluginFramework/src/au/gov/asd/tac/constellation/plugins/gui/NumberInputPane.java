@@ -97,7 +97,12 @@ public class NumberInputPane<T> extends Pane {
 
         if (shrinkWidth != null && shrinkWidth) {
             final int maxIntegers = max == null ? 10 : (int) Math.floor(Math.log10(max.doubleValue()) + 1);
-            final int maxDecimals = step == null ? 3 : Math.log10(step.doubleValue()) < 0 ? (int) -Math.ceil((Math.log10(step.doubleValue()) - 1)) : 0;
+            final int maxDecimals;
+            if (step == null) {
+                maxDecimals = 3;
+            } else {
+                maxDecimals = Math.log10(step.doubleValue()) < 0 ? (int) -Math.ceil((Math.log10(step.doubleValue()) - 1)) : 0;
+            }
             final int width = (maxIntegers + maxDecimals) * CHAR_SIZE + BASE_WIDTH;
             field.setPrefWidth(width);
             field.setMinWidth(width);

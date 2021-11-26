@@ -423,7 +423,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         case ROTATING:
                             from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
                             to = point;
-                            final boolean zAxisRotation = !VisualGraphUtilities.getDisplayModeIs3D(wg) || (event.isControlDown() && event.isShiftDown());
+                            final boolean zAxisRotation = !VisualGraphUtilities.isDisplayModeIn3D(wg) || (event.isControlDown() && event.isShiftDown());
                             if (zAxisRotation) {
                                 CameraUtilities.spin(camera, visualInteraction.convertTranslationToSpin(from, to));
                             } else {
@@ -506,9 +506,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 } else if (SwingUtilities.isRightMouseButton(event) && !eventState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
                     eventState.setCurrentAction(SceneAction.DRAG_NODES);
                 } else if (SwingUtilities.isLeftMouseButton(event)) {
-                    if ((wg == null || !VisualGraphUtilities.getIsDrawingMode(wg)) && event.isAltDown()) {
+                    if ((wg == null || !VisualGraphUtilities.isDrawingMode(wg)) && event.isAltDown()) {
                         eventState.setCurrentAction(SceneAction.FREEFORM_SELECTING);
-                    } else if (wg == null || !VisualGraphUtilities.getIsDrawingMode(wg)) {
+                    } else if (wg == null || !VisualGraphUtilities.isDrawingMode(wg)) {
                         eventState.setCurrentAction(SceneAction.SELECTING);
                     } else {
                         eventState.setCurrentAction(SceneAction.CREATING);
@@ -575,7 +575,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                     eventState.setCurrentCreationMode(CreationMode.NONE);
                                     break;
                                 case FINISHING_TRANSACTION:
-                                    createTransaction(wg, eventState.getAddTransactionSourceVertex(), eventState.getAddTransactionDestinationVertex(), VisualGraphUtilities.getIsDrawingDirectedTransactions(wg));
+                                    createTransaction(wg, eventState.getAddTransactionSourceVertex(), eventState.getAddTransactionDestinationVertex(), VisualGraphUtilities.isDrawingDirectedTransactions(wg));
                                     if (event.isShiftDown()) {
                                         eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
                                     } else if (event.isControlDown()) {
@@ -808,7 +808,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      */
     private void orderHitTest(final Point point, final HitTestMode mode, final Consumer<EventState> resultConsumer) {
         final BlockingQueue<HitState> hitTestQueue = new ArrayBlockingQueue<>(1);
-        manager.addOperation(visualAnnotator.hitTestCursor(point.x, point.y, new EventState(eventState), !mode.equals(HitTestMode.REQUEST_ONLY) ? hitTestQueue : null));
+        manager.addOperation(visualAnnotator.hitTestCursor(point.x, point.y, new EventState(eventState), mode != HitTestMode.REQUEST_ONLY ? hitTestQueue : null));
 
         final Runnable handleResult = () -> {
             while (true) {
@@ -1195,7 +1195,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     }
                 } else {
                     JComponent currentMenu = popup;
-                    levelLoop:
                     for (final String level : menuPath) {
                         int childCount = currentMenu.getComponentCount();
                         for (int i = 0; i < childCount; i++) {
@@ -1204,7 +1203,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 JMenu childMenu = (JMenu) childComponent;
                                 if (childMenu.getText().equals(level)) {
                                     currentMenu = childComponent;
-                                    continue levelLoop;
+                                    break;
                                 }
                             }
                         }

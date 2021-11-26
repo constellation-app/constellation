@@ -19,13 +19,14 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 /**
  *
@@ -123,7 +124,7 @@ public class STNumbering {
             // Set up the old vertices and edges, and the stack for building an st numbering
             final Set<Integer> oldVxIDs = new HashSet<>();
             final Set<Integer> oldLxIDs = new HashSet<>();
-            final Stack<TreeNode> pathfinderStack = new Stack<>();
+            final Deque<TreeNode> pathfinderStack = new LinkedList<>();
             oldVxIDs.add(t.vxID);
             pathfinderStack.push(t);
 

@@ -164,7 +164,7 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
      */
     public boolean isInMemory() {
         try {
-            return getPrimaryFile().getFileSystem().getDisplayName().equals("MemoryFileSystem");
+            return "MemoryFileSystem".equals(getPrimaryFile().getFileSystem().getDisplayName());
         } catch (final FileStateInvalidException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }

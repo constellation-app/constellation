@@ -31,9 +31,6 @@ public class FlowNetwork {
 
     private static final Logger LOGGER = Logger.getLogger(FlowNetwork.class.getName());
 
-    private int[] nodeOutDegree;
-    private double[] sumLinkOutWeight; // Per leaf nodes
-
     private double[] nodeFlow;
     private double[] nodeTeleportRates;
     private Connection[] flowConns;
@@ -43,11 +40,10 @@ public class FlowNetwork {
 
         // Prepare data in sequence containers for fast access of individual elements.
         final int numNodes = network.getNumNodes();
-        nodeOutDegree = new int[numNodes];
-        sumLinkOutWeight = new double[numNodes];
+        final double[] sumLinkOutWeight = new double[numNodes];
         nodeFlow = new double[numNodes];
         nodeTeleportRates = new double[numNodes];
-
+        final int[] nodeOutDegree = new int[numNodes];
         final Map<NodePair, Double> connMap = network.getMap();
         final int numConns = connMap.size();
         flowConns = new Connection[numConns];

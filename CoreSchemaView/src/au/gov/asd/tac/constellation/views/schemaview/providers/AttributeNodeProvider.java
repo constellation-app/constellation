@@ -52,6 +52,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -124,11 +125,10 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
             table.scrollTo(0);
             table.getSelectionModel().clearSelection();
         } else {
-            final String lc = newValue.toLowerCase();
             final ObservableList<AttributeEntry> items = FXCollections.observableArrayList();
             attributeInfo.stream().forEach(si -> {
                 final String nameLc = si.attr.getName().toLowerCase();
-                final boolean found = st ? nameLc.startsWith(lc) : nameLc.contains(lc);
+                final boolean found = st ? StringUtils.startsWithIgnoreCase(nameLc, newValue) : StringUtils.containsIgnoreCase(nameLc, newValue);
                 if (found) {
                     items.add(si);
                 }

@@ -48,8 +48,9 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
         final TableVisualisation<ElementFact> tableVisualisation = new TableVisualisation<>(this);
         final Set<String> factNames = result.getUniqueFactNames();
         tableVisualisation.addColumn(IDENTIFIER_COLUMN_NAME, (100 / 3) * 2);
+
         factNames.forEach(factName -> tableVisualisation.addColumn(factName, (100 / (factNames.size() + 2))));
-        tableVisualisation.populateTable(result.getIgnoreNullResults()
+        tableVisualisation.populateTable(result.isIgnoreNullResults()
                 ? result.get().stream().filter(elementScore -> !elementScore.isNull()).collect(Collectors.toList()) : result.get());
         result.addResultListener(tableVisualisation);
         tableVisualisation.setSelectionModelListener(change -> result.setSelectionOnGraph(tableVisualisation.getSelectedItems()));

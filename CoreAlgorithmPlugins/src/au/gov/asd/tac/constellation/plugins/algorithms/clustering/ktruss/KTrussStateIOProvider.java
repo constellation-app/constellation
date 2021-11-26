@@ -165,7 +165,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeNumberField(STRUCMODCOUNT, state.strucModificationCount);
                 jsonGenerator.writeNumberField(CURRENTK, state.getCurrentK());
                 jsonGenerator.writeNumberField(HIGHESTK, state.getHighestK());
-                jsonGenerator.writeBooleanField(DIMMED, state.getExcludedElementsDimmed());
+                jsonGenerator.writeBooleanField(DIMMED, state.isExcludedElementsDimmed());
                 jsonGenerator.writeNumberField(TOGGLES, state.getDisplayOptionToggles());
 
                 final boolean[] extantKTrusses = state.getExtantKTrusses();
@@ -235,13 +235,13 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 }
                 jsonGenerator.writeEndArray();
 
-                jsonGenerator.writeBooleanField(NESTEDVIS, state.getNestedTrussesVisible());
+                jsonGenerator.writeBooleanField(NESTEDVIS, state.isNestedTrussesVisible());
                 jsonGenerator.writeNumberField(HIGHCOMP, state.getHighestComponentNum());
                 jsonGenerator.writeNumberField(TOTALVERTS, state.getTotalVerts());
                 jsonGenerator.writeNumberField(TOTALTRUSSVERTS, state.getTotalVertsInTrusses());
-                jsonGenerator.writeBooleanField(DRAWALL, state.getDrawAllComponents());
-                jsonGenerator.writeBooleanField(NESTEDCOLORED, state.getNestedTrussesColored());
-                jsonGenerator.writeBooleanField(INTERACTIVE, state.getInteractive());
+                jsonGenerator.writeBooleanField(DRAWALL, state.isDrawAllComponents());
+                jsonGenerator.writeBooleanField(NESTEDCOLORED, state.isNestedTrussesColored());
+                jsonGenerator.writeBooleanField(INTERACTIVE, state.isInteractive());
                 jsonGenerator.writeEndObject();
             }
         }

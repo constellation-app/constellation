@@ -38,6 +38,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -60,6 +61,7 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -102,7 +104,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
         for (final File imageFile : imageFiles) {
             final ArrayList<BufferedImage> images = new ArrayList<>();
-            if (imageFile.getName().endsWith(".gif")) {
+            if (StringUtils.endsWithIgnoreCase(imageFile.getName(), FileExtensionConstants.GIF)) {
                 final ThreeTuple<List<BufferedImage>, List<Integer>, List<Integer>> loadedImageData;
                 try {
                     loadedImageData = loadImagesFromStream(imageFile);
@@ -340,7 +342,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 throw new IOException("Can't read image format!");
             }
 
-            final boolean isGif = reader.getFormatName().equalsIgnoreCase("gif");
+            final boolean isGif = "gif".equalsIgnoreCase(reader.getFormatName());
             reader.setInput(imageStream, false, !isGif);
 
             boolean unknownMetaformat = false;

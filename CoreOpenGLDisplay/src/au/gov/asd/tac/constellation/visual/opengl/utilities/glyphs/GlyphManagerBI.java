@@ -126,7 +126,7 @@ public final class GlyphManagerBI implements GlyphManager {
      * Cache the bulk of the work renderTextAsLigature does to greatly improve
      * performance.
      */
-    private static Map<String, LigatureContext> cache;
+    private static Map<String, LigatureContext> cache = new HashMap<>();;
 
     /**
      * A default no-op GlyphStream to use when the user specifies null.
@@ -182,8 +182,6 @@ public final class GlyphManagerBI implements GlyphManager {
         drawRuns = false;
         drawIndividual = false;
         drawCombined = false;
-
-        cache = new HashMap<>();
     }
 
     public BufferedImage getImage() {

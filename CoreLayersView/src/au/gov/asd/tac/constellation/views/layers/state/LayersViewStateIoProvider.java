@@ -137,7 +137,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     } else {
                         jsonGenerator.writeStartArray("index", layer.getIndex());
                         jsonGenerator.writeNumber(layer.getIndex());
-                        jsonGenerator.writeBoolean(layer.getVisibility());
+                        jsonGenerator.writeBoolean(layer.isVisible());
                         jsonGenerator.writeString(layer.getQueryString());
                         jsonGenerator.writeString(layer.getDescription());
                         jsonGenerator.writeEndArray();
@@ -153,7 +153,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     } else {
                         jsonGenerator.writeStartArray("index", layer.getIndex());
                         jsonGenerator.writeNumber(layer.getIndex());
-                        jsonGenerator.writeBoolean(layer.getVisibility());
+                        jsonGenerator.writeBoolean(layer.isVisible());
                         jsonGenerator.writeString(layer.getQueryString());
                         jsonGenerator.writeString(layer.getDescription());
                         jsonGenerator.writeEndArray();

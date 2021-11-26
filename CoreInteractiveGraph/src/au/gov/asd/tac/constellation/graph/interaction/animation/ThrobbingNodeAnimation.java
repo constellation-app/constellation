@@ -32,8 +32,8 @@ import java.util.Map;
 public class ThrobbingNodeAnimation extends Animation {
 
     private int nodeRadiusAttribute;
-    private final float lowerLimit = 1;
-    private final float upperLimit = 4;
+    private static final float LOWER_LIMIT = 1;
+    private static final float UPPER_LIMIT = 4;
     private float currentDirection = 0.1F;
     private float currentRadius = 1F;
     private final long throbbingNodeAnimationId = VisualChangeBuilder.generateNewId();
@@ -59,7 +59,7 @@ public class ThrobbingNodeAnimation extends Animation {
         // if there is at least 1 node on the graph
         if (wg.getVertexCount() > 0) {
 
-            if (currentRadius > upperLimit || currentRadius < lowerLimit) {
+            if (currentRadius > UPPER_LIMIT || currentRadius < LOWER_LIMIT) {
                 currentDirection = -currentDirection;
             }
             currentRadius += currentDirection;

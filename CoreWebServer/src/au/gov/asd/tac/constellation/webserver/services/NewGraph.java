@@ -110,7 +110,7 @@ public class NewGraph extends RestService {
         schema.newGraph(sg);
         final Graph dualGraph = new DualGraph(sg, false);
 
-        final String graphName = SchemaFactoryUtilities.getSchemaFactory(schemaName).getLabel().replace(" ", "").toLowerCase();
+        final String graphName = SchemaFactoryUtilities.getSchemaFactory(schemaName).getLabel().trim().toLowerCase();
         GraphOpener.getDefault().openGraph(dualGraph, graphName);
 
         final String newId = RestServiceUtilities.waitForGraphChange(existingId);

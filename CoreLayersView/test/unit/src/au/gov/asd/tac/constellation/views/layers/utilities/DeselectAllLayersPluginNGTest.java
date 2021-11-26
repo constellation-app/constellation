@@ -87,7 +87,7 @@ public class DeselectAllLayersPluginNGTest {
         PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeNow(graph);
 
         for (final BitMaskQuery query : vxLayers) {
-            assertTrue(query != null ? query.getVisibility() == false : true);
+            assertTrue(query != null ? query.isVisible() == false : true);
         }
     }
 }

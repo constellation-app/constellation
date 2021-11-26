@@ -321,14 +321,11 @@ public class SqlQuery {
     // Note that the table and column name are assumed not to be user input and hence are not
     // sanitized. The values are sanitized.
     public void appendUnionComparisonClause(final String columnName, final List<? extends Object> values, final MatchType matchType) {
-        String currentQuery = query.toString();
+        final String currentQuery = query.toString();
         for (Object value : values) {
             query.append(columnName);
-            if (matchType.equals(MatchType.MATCH_EXACT)) {
-                query.append(" = ");
-            } else {
-                query.append(" LIKE ");
-            }
+            query.append(matchType == MatchType.MATCH_EXACT ? " = " : " LIKE ");
+            
             switch (matchType) {
                 case MATCH_BEGINS_WITH:
                     value = value + "%";
@@ -365,11 +362,8 @@ public class SqlQuery {
     public void appendDisjunctiveComparisonClause(final String columnName, final List<? extends Object> values, final MatchType matchType, final boolean lastClause) {
         for (Object value : values) {
             query.append(columnName);
-            if (matchType.equals(MatchType.MATCH_EXACT)) {
-                query.append(" = ");
-            } else {
-                query.append(" LIKE ");
-            }
+            query.append(matchType == MatchType.MATCH_EXACT ? " = " : " LIKE ");
+            
             switch (matchType) {
                 case MATCH_BEGINS_WITH:
                     value = value + "%";

@@ -54,6 +54,6 @@ public class MenuSetDrawDirectedTransactionsAction extends MenuBaseAction {
 
     @Override
     protected void displayValue() {
-        menuButton.setSelected(VisualGraphUtilities.getIsDrawingDirectedTransactions(getContext().getGraph()));
+        menuButton.setSelected(VisualGraphUtilities.isDrawingDirectedTransactions(getContext().getGraph()));
     }
 }

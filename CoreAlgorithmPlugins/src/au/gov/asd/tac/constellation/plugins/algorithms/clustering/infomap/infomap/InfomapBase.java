@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Lcg;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1120,7 +1121,7 @@ public abstract class InfomapBase {
         }
         // Print .tree.
         if (config.isPrintTree()) {
-            final File outName = new File(config.getOutDirectory(), filename + ".tree");
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.TREE);
             if (config.getVerbosity() == 0) {
                 LOGGER.log(Level.INFO, "Writing .tree file.");
             } else {
@@ -1139,7 +1140,7 @@ public abstract class InfomapBase {
 
         // Print .clu.
         if (config.isPrintClu()) {
-            final File outName = new File(config.getOutDirectory(), filename + ".clu");
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.CLUSTER);
             if (config.getVerbosity() == 0) {
                 LOGGER.log(Level.INFO, "Writing .clu file..");
             } else {
@@ -1156,7 +1157,7 @@ public abstract class InfomapBase {
         }
 
         if (config.isPrintNodeRanks()) {
-            final File outName = new File(config.getOutDirectory(), filename + ".rank");
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.RANK);
             if (config.getVerbosity() > 0) {
                 LOGGER.log(Level.INFO, "Print node ranks to {0}... ", outName);
             }
@@ -1171,7 +1172,7 @@ public abstract class InfomapBase {
         }
 
         if (config.isPrintFlowNetwork()) {
-            final File outName = new File(config.getOutDirectory(), filename + ".flow");
+            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.FLOW);
             if (config.getVerbosity() == 0) {
                 LOGGER.log(Level.INFO, "Writing .flow file {0}", outName);
             } else {

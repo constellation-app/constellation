@@ -53,7 +53,7 @@ import org.openide.util.Cancellable;
  * @author algol
  */
 public final class GraphJsonWriter implements Cancellable {
-    
+
     private static final Logger LOGGER = Logger.getLogger(GraphJsonWriter.class.getName());
 
     /**
@@ -307,7 +307,7 @@ public final class GraphJsonWriter implements Cancellable {
 
             ioProviders[attrId] = graphIoProviders.get(attr.getAttributeType());
             // Don't write non-META object types; we don't know what they are.
-            if (!attr.getAttributeType().equals("object") || elementType == GraphElementType.META) {
+            if (!"object".equals(attr.getAttributeType()) || elementType == GraphElementType.META) {
                 attrs.add(attr);
             }
         }
@@ -334,7 +334,7 @@ public final class GraphJsonWriter implements Cancellable {
             // actual attribute values inside the attribute descriptions.
             if (attr.getDefaultValue() != null && isNumeric(attr)) {
                 jg.writeNumberField(DEFAULT_FIELD, ((Number) attr.getDefaultValue()).doubleValue());
-            } else if (attr.getDefaultValue() != null && attr.getAttributeType().equals("boolean")) {
+            } else if (attr.getDefaultValue() != null && "boolean".equals(attr.getAttributeType())) {
                 jg.writeBooleanField(DEFAULT_FIELD, (Boolean) attr.getDefaultValue());
             } else if (attr.getDefaultValue() != null) {
                 jg.writeStringField(DEFAULT_FIELD, attr.getDefaultValue().toString());

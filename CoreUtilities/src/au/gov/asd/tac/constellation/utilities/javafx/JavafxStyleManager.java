@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.javafx;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class JavafxStyleManager {
             currentFontFamily = FontUtilities.getApplicationFontFamily();
             try {
                 // create a new temp file that will be removed as the application exits
-                final File tempStyleClass = File.createTempFile("dynamic", ".css");
+                final File tempStyleClass = File.createTempFile("dynamic", FileExtensionConstants.CASCADING_STYLE_SHEET);
                 tempStyleClass.deleteOnExit();
 
                 // dynamically write the style sheet

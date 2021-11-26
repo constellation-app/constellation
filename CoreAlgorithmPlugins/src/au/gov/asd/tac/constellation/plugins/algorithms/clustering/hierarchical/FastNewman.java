@@ -236,8 +236,8 @@ public class FastNewman {
 
         final int coiAttr = ClusteringConcept.MetaAttribute.HIERARCHICAL_CLUSTERING_STATE.ensure(graph);
         final HierarchicalState state = new HierarchicalState(step - 1, maxStep, groups, graph.getVertexCapacity());
-        state.strucModificationCount = graph.getStructureModificationCounter();
-        state.interactive = interactive;
+        state.setStrucModificationCount(graph.getStructureModificationCounter());
+        state.setInteractive(interactive);
         graph.setObjectValue(coiAttr, 0, state);
     }
 

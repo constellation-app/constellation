@@ -52,9 +52,9 @@ public class HttpsUtilities {
     public static InputStream getInputStream(final HttpURLConnection connection) throws IOException {
         final String encoding = connection.getContentEncoding();
 
-        if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
+        if (encoding != null && "gzip".equalsIgnoreCase(encoding)) {
             return new GZIPInputStream(connection.getInputStream());
-        } else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
+        } else if (encoding != null && "deflate".equalsIgnoreCase(encoding)) {
             return new InflaterInputStream(connection.getInputStream(), new Inflater(Boolean.TRUE));
         } else {
             return connection.getInputStream();
@@ -76,9 +76,9 @@ public class HttpsUtilities {
     public static InputStream getErrorStream(final HttpURLConnection connection) throws IOException {
         final String encoding = connection.getContentEncoding();
 
-        if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
+        if (encoding != null && "gzip".equalsIgnoreCase(encoding)) {
             return new GZIPInputStream(connection.getErrorStream());
-        } else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
+        } else if (encoding != null && "deflate".equalsIgnoreCase(encoding)) {
             return new InflaterInputStream(connection.getErrorStream(), new Inflater(Boolean.TRUE));
         } else {
             return connection.getErrorStream();

@@ -67,11 +67,11 @@ public final class DeveloperOptionsPanelController extends OptionsPanelControlle
                 final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
                 final DeveloperOptionsPanel developerOptionsPanel = getPanel();
 
-                prefs.putBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_OPEN, developerOptionsPanel.getGcOnOpen());
-                prefs.putBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, developerOptionsPanel.getGcOnClose());
-                prefs.putBoolean(DeveloperPreferenceKeys.DEBUG_GL, developerOptionsPanel.getDebugGl());
-                prefs.putBoolean(DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES, developerOptionsPanel.getPrintGl());
-                prefs.putBoolean(DeveloperPreferenceKeys.DISPLAY_FRAME_RATE, developerOptionsPanel.getDisplayFps());
+                prefs.putBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_OPEN, developerOptionsPanel.isGcOnOpenSelected());
+                prefs.putBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, developerOptionsPanel.isGcOnCloseSelected());
+                prefs.putBoolean(DeveloperPreferenceKeys.DEBUG_GL, developerOptionsPanel.isDebugGlSelected());
+                prefs.putBoolean(DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES, developerOptionsPanel.isPrintGlSelected());
+                prefs.putBoolean(DeveloperPreferenceKeys.DISPLAY_FRAME_RATE, developerOptionsPanel.isDisplayFpsSelected());
             }
         }
     }
@@ -90,11 +90,11 @@ public final class DeveloperOptionsPanelController extends OptionsPanelControlle
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
         final DeveloperOptionsPanel developerOptionsPanel = getPanel();
-        return !(developerOptionsPanel.getGcOnOpen() == prefs.getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_OPEN, DeveloperPreferenceKeys.FORCE_GC_ON_OPEN_DEFAULT)
-                && developerOptionsPanel.getGcOnClose() == prefs.getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT)
-                && developerOptionsPanel.getDebugGl() == prefs.getBoolean(DeveloperPreferenceKeys.DEBUG_GL, DeveloperPreferenceKeys.DEBUG_GL_DEFAULT)
-                && developerOptionsPanel.getPrintGl() == prefs.getBoolean(DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES, DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES_DEFAULT)
-                && developerOptionsPanel.getDisplayFps() == prefs.getBoolean(DeveloperPreferenceKeys.DISPLAY_FRAME_RATE, DeveloperPreferenceKeys.DISPLAY_FRAME_RATE_DEFAULT));
+        return !(developerOptionsPanel.isGcOnOpenSelected() == prefs.getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_OPEN, DeveloperPreferenceKeys.FORCE_GC_ON_OPEN_DEFAULT)
+                && developerOptionsPanel.isGcOnCloseSelected() == prefs.getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT)
+                && developerOptionsPanel.isDebugGlSelected() == prefs.getBoolean(DeveloperPreferenceKeys.DEBUG_GL, DeveloperPreferenceKeys.DEBUG_GL_DEFAULT)
+                && developerOptionsPanel.isPrintGlSelected() == prefs.getBoolean(DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES, DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES_DEFAULT)
+                && developerOptionsPanel.isDisplayFpsSelected() == prefs.getBoolean(DeveloperPreferenceKeys.DISPLAY_FRAME_RATE, DeveloperPreferenceKeys.DISPLAY_FRAME_RATE_DEFAULT));
     }
 
     @Override

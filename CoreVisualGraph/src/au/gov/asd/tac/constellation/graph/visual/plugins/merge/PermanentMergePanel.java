@@ -404,10 +404,7 @@ public final class PermanentMergePanel extends JPanel {
 
         @Override
         public int compare(final Attribute a1, final Attribute a2) {
-            final String name1 = a1.getName().toLowerCase();
-            final String name2 = a2.getName().toLowerCase();
-
-            return name1.compareTo(name2);
+            return a1.getName().compareToIgnoreCase(a2.getName());
         }
     }
 

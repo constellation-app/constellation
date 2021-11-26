@@ -64,7 +64,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         // set the colours here - below generates a list of coloured icons.
         final List<Color> colors = new ArrayList<>();
         for (final String currentColor : presetColorsString.split(";")) {
-            if (StringUtils.isNotBlank(currentColor) && !currentColor.equals("null")) {
+            if (StringUtils.isNotBlank(currentColor) && !"null".equals(currentColor)) {
                 final int r = Integer.valueOf(currentColor.substring(1, 3), 16);
                 final int g = Integer.valueOf(currentColor.substring(3, 5), 16);
                 final int b = Integer.valueOf(currentColor.substring(5, 7), 16);

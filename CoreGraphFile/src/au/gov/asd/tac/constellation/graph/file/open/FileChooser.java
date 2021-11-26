@@ -43,8 +43,8 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
-import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.ArrayList;
@@ -56,6 +56,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -101,10 +102,9 @@ public class FileChooser extends JFileChooser {
      */
     @Override
     public Icon getIcon(final File f) {
-        final String s = f.getName().toLowerCase();
-        if (s.endsWith(GraphDataObject.FILE_EXTENSION)) {
+        if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.STAR)) {
             return SchemaFactoryUtilities.getDefaultSchemaFactory().getIcon().buildIcon(16);
-        } else if (s.endsWith(".nebula")) {
+        } else if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.NEBULA)) {
             return NEBULA_ICON;
         } else {
             // Do nothing
@@ -180,7 +180,7 @@ public class FileChooser extends JFileChooser {
 
         @Override
         public String[] getSuffixes() {
-            return new String[]{".java"};
+            return new String[]{FileExtensionConstants.JAVA};
         }
     }
 
