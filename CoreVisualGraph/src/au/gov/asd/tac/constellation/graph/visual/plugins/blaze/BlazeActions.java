@@ -156,7 +156,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
 
         for (final String currentColor : presetCustomColorsString.split(SeparatorConstants.SEMICOLON)) {
-            if (!currentColor.equals("#")) {
+            if (!"#".equals(currentColor)) {
                 // here the color should be populated correctly. Add to list.
                 presetCustomColors.add(ConstellationColor.fromHtmlColor(currentColor) == null
                         ? ConstellationColor.getColorValue(currentColor)

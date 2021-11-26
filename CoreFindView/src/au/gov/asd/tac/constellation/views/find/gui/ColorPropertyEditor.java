@@ -42,7 +42,6 @@ public final class ColorPropertyEditor extends PropertyEditorSupport implements 
 
     private static final Color MULTIPLE_COLOR = new Color(0, 0, 127);
     private final JColorChooser chooser;
-    private Color currentColor;
 
     public ColorPropertyEditor() {
         chooser = new GraphColorChooser();
@@ -106,7 +105,7 @@ public final class ColorPropertyEditor extends PropertyEditorSupport implements 
     @Override
     public Component getCustomEditor() {
         final ConstellationColor cv = (ConstellationColor) getValue();
-        currentColor = cv != null ? new Color(cv.getRed(), cv.getGreen(), cv.getBlue(), cv.getAlpha()) : Color.BLUE;
+        final Color currentColor = cv != null ? new Color(cv.getRed(), cv.getGreen(), cv.getBlue(), cv.getAlpha()) : Color.BLUE;
         chooser.setColor(currentColor);
         final DialogDescriptor dd = new DialogDescriptor(chooser, NbBundle.getMessage(ColorPropertyEditor.class, "MSG_SelectColor"), true, this);
 

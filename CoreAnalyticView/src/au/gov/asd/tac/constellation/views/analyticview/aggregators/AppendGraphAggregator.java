@@ -40,7 +40,7 @@ public class AppendGraphAggregator implements AnalyticAggregator<GraphResult> {
         }
 
         aggregateResult.setIgnoreNullResults(results.stream()
-                .anyMatch(result -> result.getIgnoreNullResults()));
+                .anyMatch(result -> result.isIgnoreNullResults()));
 
         for (final GraphResult result : results) {
             for (final GraphScore score : result.get()) {

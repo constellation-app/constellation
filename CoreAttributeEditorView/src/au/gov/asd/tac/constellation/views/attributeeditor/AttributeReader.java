@@ -280,7 +280,7 @@ public class AttributeReader {
                 if (preferenceChanged || selectionChanged || attributeModified || data.attibuteValueHasChanged(rg.getValueModificationCounter(data.getAttributeId()))) {
                     HashSet<Object> values = new HashSet<>();
                     int valueCountLimit = 11;//only load 10 values first... if the user wants more then another request is made. we load 11 to know that there are more than 10
-                    if (data.getDataType().equals("boolean")) {
+                    if ("boolean".equals(data.getDataType())) {
                         valueCountLimit = 2; // boolean only has two possibilities.
                     }
                     if (selectedElement != null) {
@@ -344,7 +344,19 @@ public class AttributeReader {
             if (o instanceof Comparable) {
                 final Comparable<Object>[] valuesArray = new Comparable[values.size()];
                 values.toArray(valuesArray);
-                Arrays.sort(valuesArray, (a, b) -> a == null ? (b == null ? 0 : -1) : (b == null ? 1 : a.compareTo(b)));
+                Arrays.sort(valuesArray, (a, b) -> {
+                    if (a == null) {
+                        if (b == null) {
+                            return 0;
+                        }
+                        return -1;
+                    } else {
+                        if (b == null) {
+                            return 1;
+                        }
+                        return a.compareTo(b);
+                    }
+                });
 
                 return valuesArray;
             }

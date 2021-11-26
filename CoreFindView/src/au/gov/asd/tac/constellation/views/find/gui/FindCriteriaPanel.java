@@ -158,7 +158,7 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
                 case STRING:
                 default:
                     panelString = new StringCriteriaPanel(this, localState.getStringContent(),
-                            localState.getStringCaseSensitivity(), localState.getStringUsingList(),
+                            localState.isStringCaseSensitivity(), localState.isStringUsingList(),
                             localState.getOperator().equals(FindTypeOperators.Operator.REGEX));
                     panelCriteriaHolder.add(panelString);
                     break;

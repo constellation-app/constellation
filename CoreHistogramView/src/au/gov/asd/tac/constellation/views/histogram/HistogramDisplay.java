@@ -99,7 +99,6 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private int userSetBarHeight = -1;   // the vertical thickness of the bars as set by the user
     private int barsWidth; // the length of the longest bar
     private int textWidth; // the width of the space allocated to text
-    private float scaleFactor; // the scale factor from histogram count to bar length in pixels
     private int preferredTextWidth = 80; // this will be modified when the component is painted and the actual size of the text is measured.
     private final Dimension preferredSize = new Dimension(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2, PREFERRED_HEIGHT);
     private BinCollection binCollection = null;
@@ -313,7 +312,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
             final int maxCount = binCollection.getMaxElementCount();
             if (maxCount > 0) {
 
-                scaleFactor = barsWidth / (float) maxCount;
+                // the scale factor from histogram count to bar length in pixels
+                final float scaleFactor = barsWidth / (float) maxCount;
 
                 // Only draw the bars that are visible
                 JViewport viewPort = (JViewport) getParent();

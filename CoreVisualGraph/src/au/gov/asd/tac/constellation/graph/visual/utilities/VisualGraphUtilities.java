@@ -150,15 +150,15 @@ public class VisualGraphUtilities {
         }
     }
 
-    public static boolean getDisplayModeIs3D(final GraphReadMethods graph) {
+    public static boolean isDisplayModeIn3D(final GraphReadMethods graph) {
         final int displayModeAttribute = VisualConcept.GraphAttribute.DISPLAY_MODE_3D.get(graph);
         return displayModeAttribute != Graph.NOT_FOUND ? graph.getBooleanValue(displayModeAttribute, 0) : VisualGraphDefaults.DEFAULT_DISPLAY_MODE_3D;
     }
 
-    public static boolean getDisplayModeIs3D(final Graph graph) {
+    public static boolean isDisplayModeIn3D(final Graph graph) {
         final ReadableGraph rg = graph.getReadableGraph();
         try {
-            return getDisplayModeIs3D(rg);
+            return isDisplayModeIn3D(rg);
         } finally {
             rg.release();
         }
@@ -178,29 +178,29 @@ public class VisualGraphUtilities {
         }
     }
 
-    public static boolean getIsDrawingMode(final GraphReadMethods graph) {
+    public static boolean isDrawingMode(final GraphReadMethods graph) {
         final int drawModeAttribute = VisualConcept.GraphAttribute.DRAWING_MODE.get(graph);
         return drawModeAttribute != Graph.NOT_FOUND ? graph.getBooleanValue(drawModeAttribute, 0) : VisualGraphDefaults.DEFAULT_DRAWING_MODE;
     }
 
-    public static boolean getIsDrawingMode(final Graph graph) {
+    public static boolean isDrawingMode(final Graph graph) {
         final ReadableGraph rg = graph.getReadableGraph();
         try {
-            return getIsDrawingMode(rg);
+            return isDrawingMode(rg);
         } finally {
             rg.release();
         }
     }
 
-    public static boolean getIsDrawingDirectedTransactions(final GraphReadMethods graph) {
+    public static boolean isDrawingDirectedTransactions(final GraphReadMethods graph) {
         final int drawDirectedTransactionsAttribute = VisualConcept.GraphAttribute.DRAW_DIRECTED_TRANSACTIONS.get(graph);
         return drawDirectedTransactionsAttribute != Graph.NOT_FOUND ? graph.getBooleanValue(drawDirectedTransactionsAttribute, 0) : VisualGraphDefaults.DEFAULT_DRAWING_DIRECTED_TRANSACTIONS;
     }
 
-    public static boolean getIsDrawingDirectedTransactions(final Graph graph) {
+    public static boolean isDrawingDirectedTransactions(final Graph graph) {
         final ReadableGraph rg = graph.getReadableGraph();
         try {
-            return getIsDrawingDirectedTransactions(rg);
+            return isDrawingDirectedTransactions(rg);
         } finally {
             rg.release();
         }

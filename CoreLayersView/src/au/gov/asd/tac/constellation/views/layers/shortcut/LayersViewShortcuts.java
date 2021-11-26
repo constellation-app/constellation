@@ -64,10 +64,10 @@ public class LayersViewShortcuts extends AbstractAction {
         final BitMaskQueryCollection txCollection = LayersViewController.getDefault().getTxQueryCollection();
 
         if (vxCollection.getQuery(layerId) != null) {
-            vxCollection.getQuery(layerId).setVisibility(!vxCollection.getQuery(layerId).getVisibility());
+            vxCollection.getQuery(layerId).setVisibility(!vxCollection.getQuery(layerId).isVisible());
         }
         if (txCollection.getQuery(layerId) != null) {
-            txCollection.getQuery(layerId).setVisibility(!txCollection.getQuery(layerId).getVisibility());
+            txCollection.getQuery(layerId).setVisibility(!txCollection.getQuery(layerId).isVisible());
         }
 
         final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(vxCollection, txCollection);
@@ -88,7 +88,7 @@ public class LayersViewShortcuts extends AbstractAction {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
-        if (!LayersViewController.getDefault().getParentVisibility()) {
+        if (!LayersViewController.getDefault().hasParentVisibility()) {
             LayersViewController.getDefault().readStateFuture();
             LayersViewController.getDefault().updateQueries(graph);
         }

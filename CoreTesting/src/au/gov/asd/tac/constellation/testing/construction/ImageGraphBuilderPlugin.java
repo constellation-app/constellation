@@ -338,7 +338,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 throw new IOException("Can't read image format!");
             }
 
-            final boolean isGif = reader.getFormatName().equalsIgnoreCase("gif");
+            final boolean isGif = "gif".equalsIgnoreCase(reader.getFormatName());
             reader.setInput(imageStream, false, !isGif);
 
             boolean unknownMetaformat = false;

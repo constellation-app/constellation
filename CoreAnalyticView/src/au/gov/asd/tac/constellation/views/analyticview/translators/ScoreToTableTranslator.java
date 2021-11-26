@@ -51,7 +51,7 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         scoreNames.forEach(scoreName -> {
             tableVisualisation.addColumn(scoreName, (100 / (scoreNames.size() + 2)));
         });
-        tableVisualisation.populateTable(result.getIgnoreNullResults()
+        tableVisualisation.populateTable(result.isIgnoreNullResults()
                 ? result.get().stream().filter(elementMultiScore -> !elementMultiScore.isNull()).collect(Collectors.toList()) : result.get());
         result.addResultListener(tableVisualisation);
         tableVisualisation.setSelectionModelListener(change -> {

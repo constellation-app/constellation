@@ -86,6 +86,8 @@ public final class ShuffleElementBitmaskPlugin extends SimpleEditPlugin {
      * Effectively removing a vertex from a higher layer and adding it to a
      * layer closer to 0.
      *
+     * Protected access is required for unit tests.
+     *
      * @param currentIndex The current layer (empty position) to move the layer
      * to
      * @param currentBitmask the current bitmask to increment.

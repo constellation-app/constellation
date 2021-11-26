@@ -71,14 +71,15 @@ public final class HashmodAction implements ActionListener {
 
         final HashmodPanel hashmodPanel = new HashmodPanel(hashmod);
         final DialogDescriptor dialog = new DialogDescriptor(hashmodPanel, Bundle.MSG_Title(), true, e -> {
-            if (e.getActionCommand().equals("OK")) {
+            if ("OK".equals(e.getActionCommand())) {
                 final Hashmod hashmod1 = hashmodPanel.getHashmod();
                 final boolean isChainedHashmods = hashmodPanel.isChainedHashmods();
-                final boolean createAttributes = hashmodPanel.getCreateAttributes();
+                final boolean createAttributes = hashmodPanel.isCreateAttributesSelected();
                 final Hashmod[] chainedHashmods = hashmodPanel.getChainedHashmods();
                 final int numChainedHashmods = hashmodPanel.numChainedHashmods();
-                final boolean createVertices = hashmodPanel.getCreateVertexes();
-                final boolean createTransactions = hashmodPanel.getCreateTransactions();
+                final boolean createVertices = hashmodPanel.isCreateVerticesSelected();
+                final boolean createTransactions = hashmodPanel.isCreateTransactionsSelected();
+
                 hashmodPanel.setAttributeNames(hashmod1.getCSVKey(), hashmod1.getCSVHeader(1), hashmod1.getCSVHeader(2));
 
                 PluginExecution.withPlugin(

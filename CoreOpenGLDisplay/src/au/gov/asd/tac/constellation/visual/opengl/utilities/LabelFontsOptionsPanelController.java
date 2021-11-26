@@ -116,8 +116,8 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
                 final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
                 final LabelFontsOptionsPanel labelFontsOptionsPanel = getPanel();
 
-                prefs.putBoolean(LabelFontsPreferenceKeys.USE_DEFAULTS, labelFontsOptionsPanel.getUseDefaultSettings());
-                prefs.putBoolean(LabelFontsPreferenceKeys.USE_MULTI_FONTS, labelFontsOptionsPanel.getUseMultiFonts());
+                prefs.putBoolean(LabelFontsPreferenceKeys.USE_DEFAULTS, labelFontsOptionsPanel.isUseDefaultSettingsSelected());
+                prefs.putBoolean(LabelFontsPreferenceKeys.USE_MULTI_FONTS, labelFontsOptionsPanel.isUseMultiFontsSelected());
                 prefs.put(LabelFontsPreferenceKeys.FONT_LIST, labelFontsOptionsPanel.getFontList());
 
                 // TODO: store modified settings
@@ -147,8 +147,8 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
         final LabelFontsOptionsPanel labelFontsOptionsPanel = getPanel();
-        return !(labelFontsOptionsPanel.getUseDefaultSettings() == prefs.getBoolean(LabelFontsPreferenceKeys.USE_DEFAULTS, LabelFontsPreferenceKeys.USE_DEFAULTS_DEFAULT)
-                && labelFontsOptionsPanel.getUseMultiFonts() == prefs.getBoolean(LabelFontsPreferenceKeys.USE_MULTI_FONTS, LabelFontsPreferenceKeys.USE_MULTI_FONTS_DEFAULT)
+        return !(labelFontsOptionsPanel.isUseDefaultSettingsSelected() == prefs.getBoolean(LabelFontsPreferenceKeys.USE_DEFAULTS, LabelFontsPreferenceKeys.USE_DEFAULTS_DEFAULT)
+                && labelFontsOptionsPanel.isUseMultiFontsSelected() == prefs.getBoolean(LabelFontsPreferenceKeys.USE_MULTI_FONTS, LabelFontsPreferenceKeys.USE_MULTI_FONTS_DEFAULT)
                 && labelFontsOptionsPanel.getFontList().equals(prefs.get(LabelFontsPreferenceKeys.FONT_LIST, LabelFontsPreferenceKeys.FONT_LIST_DEFAULT)));
     }
 
