@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.views.welcome.plugins.AddModeWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.DataAccessViewWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.DelimitedFileWelcomePlugin;
@@ -38,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Delphinus8821
  */
 @ServiceProvider(service = WelcomePageLayoutProvider.class, position = 1000)
-@PluginInfo(tags = {"WELCOME"})
+@PluginInfo(tags = {PluginTags.WELCOME})
 @NbBundle.Messages("WelcomePluginList=Welcome Plugin List")
 
 public class WelcomePluginList extends WelcomePageLayoutProvider {

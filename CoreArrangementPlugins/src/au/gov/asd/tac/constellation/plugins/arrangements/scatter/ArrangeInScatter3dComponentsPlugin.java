@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -39,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("ArrangeInScatter3dComponentsPlugin=Arrange Components in Scatter 3D")
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class ArrangeInScatter3dComponentsPlugin extends SimpleEditPlugin {
 
     @Override

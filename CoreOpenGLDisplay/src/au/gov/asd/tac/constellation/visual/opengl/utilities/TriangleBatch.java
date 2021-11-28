@@ -109,7 +109,7 @@ public class TriangleBatch {
      * vertices.
      */
     public void addTriangle(final Vector3f[] verts, final Vector3f[] norms, final Vector2f[] texCoords) {
-        final float e = 0.00001f; // How small a difference to equate.
+        final float e = 0.00001F; // How small a difference to equate.
 
         // First thing we do is make sure the normals are unit length!
         // It's almost always a good idea to work with pre-normalized normals.
@@ -222,7 +222,6 @@ public class TriangleBatch {
 
         // Unbind to anybody
         // Should this be just plain 0?
-        //	gl.glBindVertexArray(vertexArrayBufferObject[0]);
         gl.glBindVertexArray(0);
     }
 }

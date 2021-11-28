@@ -26,7 +26,10 @@ import org.ejml.simple.SimpleMatrix;
  */
 public class MatrixUtilities {
 
-    // TODO: distance matrix, where D[i,j] = distance between i and j
+    private MatrixUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     public static SimpleMatrix identity(final GraphReadMethods graph) {
         return SimpleMatrix.identity(graph.getVertexCount());
     }

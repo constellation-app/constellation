@@ -140,19 +140,6 @@ public class TaxFromTrees {
             }
         }
 
-        // Each remaining vertex (valences[vxId]!=Graph.NOT_FOUND) is the root of a tree.
-        // The object "members" contains a set of members for each such tree, keyed by root id.
-        //        debug("members=%d\n", members.size());
-//        for(Integer i : members.keySet())
-//        {
-//            final Set<Integer> m = members.get(i);
-//            debug(": %d (size %d)\n", i, m.size());
-//            for(int j : m)
-//            {
-//                debug(" %d ", j);
-//            }
-//            debug(SeparatorConstants.NEWLINE);
-//        }
         return new GraphTaxonomy(graph, members, nodeToTaxa);
     }
 }

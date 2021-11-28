@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.BitSet;
 import org.openide.util.NbBundle;
@@ -47,7 +48,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("RemoveBlazePlugin=Remove Blazes")
-@PluginInfo(pluginType = PluginType.DELETE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.MODIFY})
 public class RemoveBlazePlugin extends SimpleEditPlugin {
 
     @Override

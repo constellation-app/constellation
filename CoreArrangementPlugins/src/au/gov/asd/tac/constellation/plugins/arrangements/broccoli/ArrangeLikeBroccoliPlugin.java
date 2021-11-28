@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -31,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ArrangeLikeBroccoliPlugin=Arrange like Broccoli")
-@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class ArrangeLikeBroccoliPlugin extends SimpleEditPlugin {
 
     @Override

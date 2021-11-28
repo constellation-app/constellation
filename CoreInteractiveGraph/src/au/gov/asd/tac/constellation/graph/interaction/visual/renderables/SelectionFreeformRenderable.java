@@ -46,8 +46,8 @@ public class SelectionFreeformRenderable implements GLRenderable {
 
     // How many vertices do we need to draw a freeform shape?
     // What color is the selection freeform shape?
-    private static final Vector4f SELECTION_COLOR = new Vector4f(0, 0.5f, 1, 0.375f);
-    private static final Vector4f SECOND_SELECTION_COLOR = new Vector4f(1, 0.5f, 0, 0.375f);
+    private static final Vector4f SELECTION_COLOR = new Vector4f(0, 0.5F, 1, 0.375F);
+    private static final Vector4f SECOND_SELECTION_COLOR = new Vector4f(1, 0.5F, 0, 0.375F);
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private int shader;
     private int shaderMvp;
@@ -146,9 +146,9 @@ public class SelectionFreeformRenderable implements GLRenderable {
             final float[] v = new float[150];
 
             for (int i = 0; i < 50; i++) {
-                v[i * 3] = ((float) selectionFreeformModel.getPoint(i).getX() / width) * 2 - 1f;
-                v[i * 3 + 1] = ((float) (height - selectionFreeformModel.getPoint(i).getY()) / height) * 2 - 1f;
-                v[i * 3 + 2] = 0.0f;
+                v[i * 3] = ((float) selectionFreeformModel.getPoint(i).getX() / width) * 2 - 1F;
+                v[i * 3 + 1] = ((float) (height - selectionFreeformModel.getPoint(i).getY()) / height) * 2 - 1F;
+                v[i * 3 + 2] = 0.0F;
             }
 
             fbuf.put(v);

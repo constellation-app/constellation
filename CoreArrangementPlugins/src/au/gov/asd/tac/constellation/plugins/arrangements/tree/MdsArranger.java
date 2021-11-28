@@ -52,8 +52,8 @@ public class MdsArranger implements Arranger {
     // Vertex radii are measured in square sides, visible radii are measured in circle radii.
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final float CIRC_RADIUS = (float) Math.sqrt(2);
-    private static final float RADIUS_INFLATION_AT_100_PERCENT = 1.5f;
-    private static final float EXTENTS_SIZE_INFLATION = 1.2f;
+    private static final float RADIUS_INFLATION_AT_100_PERCENT = 1.5F;
+    private static final float EXTENTS_SIZE_INFLATION = 1.2F;
 
     private final MDSChoiceParameters params;
 
@@ -82,7 +82,7 @@ public class MdsArranger implements Arranger {
         int numTrialsForSmallGraph = 4;
 
         final boolean setMinByRadii = params.tryToAvoidOverlap;
-        final float radiusInflation = RADIUS_INFLATION_AT_100_PERCENT * (params.overlapAvoidance / 100.0f);
+        final float radiusInflation = RADIUS_INFLATION_AT_100_PERCENT * (params.overlapAvoidance / 100.0F);
 
         if (iterationsPerStageTrial < 0) {
             iterationsPerStageTrial = -iterationsPerStageTrial;
@@ -94,7 +94,7 @@ public class MdsArranger implements Arranger {
         final float perturbationSize;
         if (usingExtents) {
             scaleFactor = params.scale;
-            perturbationSize = (scaleFactor * 3f * ArrangementUtilities.FUNDAMENTAL_SIZE) / 2f;
+            perturbationSize = (scaleFactor * 3F * ArrangementUtilities.FUNDAMENTAL_SIZE) / 2F;
         } else {
             final float minSpacing;
 
@@ -114,8 +114,8 @@ public class MdsArranger implements Arranger {
                 minSpacing = Math.max(min, 3 * ArrangementUtilities.FUNDAMENTAL_SIZE);
             }
 
-            scaleFactor = 3f * minSpacing * params.scale;
-            perturbationSize = scaleFactor / 2f;
+            scaleFactor = 3F * minSpacing * params.scale;
+            perturbationSize = scaleFactor / 2F;
         }
 
         // Make complete list of vertices and maps between them and one-up indices.
@@ -142,17 +142,14 @@ public class MdsArranger implements Arranger {
 
         final int vxCount = wg.getVertexCount();
         for (int vxId = verticesToArrange.nextSetBit(0); vxId >= 0; vxId = verticesToArrange.nextSetBit(vxId + 1)) {
-//            final boolean arrangeIt = verticesToArrange.get(vxId);
-//            final boolean influence = verticesToArrange.get(vxId);
-//            final boolean useLocs = verticesToArrange.get(vxId);
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
 
-            final boolean arrangeIt = true; // verticesToArrange.contains( thisVertex );
-            final boolean influence = true; //verticesThatInfluence.contains( thisVertex );
-            final boolean useLocs = false; //verticesToUseExistingLoc.contains( thisVertex );
+            final boolean arrangeIt = true; // verticesToArrange.contains( thisVertex )
+            final boolean influence = true; //verticesThatInfluence.contains( thisVertex )
+            final boolean useLocs = false; //verticesToUseExistingLoc.contains( thisVertex )
             if (arrangeIt && useLocs) {
                 vxsToArrange[numVxsToArrange++] = vxId;
             } else if (arrangeIt && !useLocs) {
@@ -400,7 +397,7 @@ public class MdsArranger implements Arranger {
      * Usual edge weights, multiple edges, etc, are not considered.
      */
     private static float[][] calcDistanceMatrixByExtent(final GraphWriteMethods graph, final BitSet verticesToArrange, final float scaleFactor) {
-        final float minRadius = 1.5f * ArrangementUtilities.FUNDAMENTAL_SIZE;
+        final float minRadius = 1.5F * ArrangementUtilities.FUNDAMENTAL_SIZE;
 
         // Record distances here.
         final float[][] distanceMatrix = new float[graph.getVertexCapacity()][graph.getVertexCapacity()];
@@ -533,13 +530,13 @@ public class MdsArranger implements Arranger {
                 final float tjk = tDiff * tDiff;
 
                 float gamma = (tik - (tij + tjk)) / (2 * tjk);
-                if (gamma > 0.5f) {
-                    gamma = 0.5f;
+                if (gamma > 0.5F) {
+                    gamma = 0.5F;
                 }
 
                 gammas[vxId] = gamma;
             } else {
-                gammas[vxId] = -0.5f;
+                gammas[vxId] = -0.5F;
             }
         }
     }
@@ -570,7 +567,7 @@ public class MdsArranger implements Arranger {
             }
 
             if (sum > 0) {
-                gains[vxId] = 1.0f / (2.0f * sum);
+                gains[vxId] = 1.0F / (2.0F * sum);
             }
         }
     }
@@ -605,17 +602,17 @@ public class MdsArranger implements Arranger {
             if ((vxClosest >= 0) && (vxNextClosest >= 0)) {
                 final float cX = currentX[vxClosest];
                 final float ncX = currentX[vxNextClosest];
-                currentX[vxNew] = cX + (gammas[vxNew] * (cX - ncX)) + (perturbationSize * (RANDOM.nextFloat() - 0.5f));
+                currentX[vxNew] = cX + (gammas[vxNew] * (cX - ncX)) + (perturbationSize * (RANDOM.nextFloat() - 0.5F));
 
                 final float cY = currentY[vxClosest];
                 final float ncY = currentY[vxNextClosest];
-                currentY[vxNew] = cY + (gammas[vxNew] * (cY - ncY)) + (perturbationSize * (RANDOM.nextFloat() - 0.5f));
+                currentY[vxNew] = cY + (gammas[vxNew] * (cY - ncY)) + (perturbationSize * (RANDOM.nextFloat() - 0.5F));
             } else if (vxClosest >= 0) {
-                currentX[vxNew] = currentX[vxClosest] + (perturbationSize * (RANDOM.nextFloat() - 0.5f));
-                currentY[vxNew] = currentY[vxClosest] + (perturbationSize * (RANDOM.nextFloat() - 0.5f));
+                currentX[vxNew] = currentX[vxClosest] + (perturbationSize * (RANDOM.nextFloat() - 0.5F));
+                currentY[vxNew] = currentY[vxClosest] + (perturbationSize * (RANDOM.nextFloat() - 0.5F));
             } else {
-                currentX[vxNew] = scaleFactor * (RANDOM.nextFloat() - 0.5f);
-                currentY[vxNew] = scaleFactor * (RANDOM.nextFloat() - 0.5f);
+                currentX[vxNew] = scaleFactor * (RANDOM.nextFloat() - 0.5F);
+                currentY[vxNew] = scaleFactor * (RANDOM.nextFloat() - 0.5F);
             }
         }
     }
@@ -671,7 +668,7 @@ public class MdsArranger implements Arranger {
                             // should not happen!
                         } else if (currentDistSquared != 0) {
                             final float currentDist = (float) Math.sqrt(currentDistSquared);
-                            float mult = (1.0f / targetDist) - (1.0f / currentDist);
+                            float mult = (1.0F / targetDist) - (1.0F / currentDist);
 
                             if (setMinByRadii && (mult < 0.0)) {
                                 final float minDist = radiusInflation * (radii[vxId] + radii[inflvxId]);
@@ -685,7 +682,7 @@ public class MdsArranger implements Arranger {
                                     }
 
                                     if (inflation > (numVxsToInfluence - 1)) {
-                                        inflation = numVxsToInfluence - 1f;
+                                        inflation = numVxsToInfluence - 1F;
                                     }
 
                                     mult *= inflation;
@@ -701,8 +698,8 @@ public class MdsArranger implements Arranger {
                     }
                 }
 
-                newX[vxId] = currentX[vxId] - (2.0f * gains[vxId] * xInc);
-                newY[vxId] = currentY[vxId] - (2.0f * gains[vxId] * yInc);
+                newX[vxId] = currentX[vxId] - (2.0F * gains[vxId] * xInc);
+                newY[vxId] = currentY[vxId] - (2.0F * gains[vxId] * yInc);
             }
 
             // Update current values from new ones.

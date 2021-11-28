@@ -81,9 +81,7 @@ public class SetGraph extends RestService {
         final GraphNode graphNode = GraphNode.getGraphNode(graphId);
         if (graphNode != null) {
             try {
-                SwingUtilities.invokeAndWait(() -> {
-                    graphNode.getTopComponent().requestActive();
-                });
+                SwingUtilities.invokeAndWait(() -> graphNode.getTopComponent().requestActive());
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 throw new RestServiceException(ex);

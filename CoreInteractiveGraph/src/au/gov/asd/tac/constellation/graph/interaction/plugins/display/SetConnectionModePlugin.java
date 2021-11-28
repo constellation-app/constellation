@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -39,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("SetConnectionModePlugin=Set Connection Mode")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
 public class SetConnectionModePlugin extends SimpleEditPlugin {
 
     public static final String CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(SetConnectionModePlugin.class, "mode");

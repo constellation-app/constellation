@@ -34,6 +34,10 @@ public class SimilarityUtilities {
     private static int uniqueIdAttribute;
     private static int typeAttribute;
     private static int similarityAttribute;
+    
+    private SimilarityUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void setGraphAndEnsureAttributes(final GraphWriteMethods graph, final SchemaAttribute schemaSimilarityAttribute) {
         SimilarityUtilities.graph = graph;

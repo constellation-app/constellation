@@ -46,10 +46,10 @@ public class ConstellationSecurityManager {
     public static final String RUNNABLE_THREAD_NAME = "Runnable Thread";
     public static final String RUNNABLE_JAVAFX_THREAD_NAME = "Runnable JavaFX Thread";
 
-    private static ConstellationSecurityProvider[] SECURITY_PROVIDERS = null;
-    private static ConstellationSecurityContext[][] SECURITY_CONTEXTS = null;
+    private static ConstellationSecurityProvider[] securityProviders = null;
+    private static ConstellationSecurityContext[][] securityContexts = null;
 
-    private static ConstellationSecurityContext CURRENT_CONTEXT = null;
+    private static ConstellationSecurityContext currentContext = null;
 
     private static final boolean RUN_IMMEDIATELY = false;
     private static final List<Runnable> RUN_AFTER_STARTING = new ArrayList<>();
@@ -62,15 +62,13 @@ public class ConstellationSecurityManager {
      */
     public static synchronized void startSecurity() {
 
-        if (SECURITY_PROVIDERS == null) {
+        if (securityProviders == null) {
 
             LOGGER.log(LEVEL, "Starting security");
 
             final List<ConstellationSecurityProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationSecurityProvider.class));
             LOGGER.log(LEVEL, "Found {0} security provider{1}", new Object[]{providers.size(), providers.size() == 1 ? "" : "s"});
-            providers.stream().forEach(provider -> {
-                LOGGER.log(LEVEL, "  {0}", provider);
-            });
+            providers.stream().forEach(provider -> LOGGER.log(LEVEL, "  {0}", provider));
 
             // Check for a preferred provider, if the preferred provider is present move it to the top of the list
             final String preferredProvider = System.getProperty(PREFERRED_PROVIDER_PROPERTY);
@@ -91,27 +89,26 @@ public class ConstellationSecurityManager {
                 LOGGER.log(LEVEL, "No preferred security provider specified");
             }
 
-            SECURITY_PROVIDERS = providers.toArray(new ConstellationSecurityProvider[providers.size()]);
-            SECURITY_CONTEXTS = new ConstellationSecurityContext[SECURITY_PROVIDERS.length][];
+            securityProviders = providers.toArray(new ConstellationSecurityProvider[providers.size()]);
+            securityContexts = new ConstellationSecurityContext[securityProviders.length][];
 
-            finished:
-            for (int i = 0; i < SECURITY_PROVIDERS.length; i++) {
-                LOGGER.log(LEVEL, "Getting contexts from {0}", SECURITY_PROVIDERS[i].getName());
+            for (int i = 0; i < securityProviders.length; i++) {
+                LOGGER.log(LEVEL, "Getting contexts from {0}", securityProviders[i].getName());
 
-                final List<ConstellationSecurityContext> contexts = SECURITY_PROVIDERS[i].getContexts();
+                final List<ConstellationSecurityContext> contexts = securityProviders[i].getContexts();
                 if (contexts != null) {
-                    SECURITY_CONTEXTS[i] = contexts.toArray(new ConstellationSecurityContext[contexts.size()]);
-                    for (ConstellationSecurityContext context : SECURITY_CONTEXTS[i]) {
+                    securityContexts[i] = contexts.toArray(new ConstellationSecurityContext[contexts.size()]);
+                    for (ConstellationSecurityContext context : securityContexts[i]) {
                         try {
                             final SSLContext sslContext = context.getSSLContext();
                             if (sslContext != null) {
                                 SSLContext.setDefault(sslContext);
-                                CURRENT_CONTEXT = context;
+                                currentContext = context;
 
                                 LOGGER.log(LEVEL, "Setting current context {0} from provider {1}",
-                                        new Object[]{CURRENT_CONTEXT.getName(), SECURITY_PROVIDERS[i].getName()});
+                                        new Object[]{currentContext.getName(), securityProviders[i].getName()});
 
-                                break finished;
+                                return;
                             }
                         } catch (final SecurityException ex) {
                             // TODO: Handle exceptions from getSSLContext()
@@ -172,10 +169,10 @@ public class ConstellationSecurityManager {
      * Stops the security manager synchronously.
      */
     public synchronized void stopSecurity() {
-        if (SECURITY_PROVIDERS != null) {
-            SECURITY_PROVIDERS = null;
-            SECURITY_CONTEXTS = null;
-            CURRENT_CONTEXT = null;
+        if (securityProviders != null) {
+            securityProviders = null;
+            securityContexts = null;
+            currentContext = null;
         }
     }
 
@@ -185,7 +182,7 @@ public class ConstellationSecurityManager {
      * @return the current ConstellationSecurityContext.
      */
     public static ConstellationSecurityContext getCurrentSecurityContext() {
-        return CURRENT_CONTEXT;
+        return currentContext;
     }
 
     /**

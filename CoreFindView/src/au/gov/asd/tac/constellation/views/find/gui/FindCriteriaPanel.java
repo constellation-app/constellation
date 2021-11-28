@@ -50,7 +50,6 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
     private FindTopComponent parentTopComponent;
     // The current state of this component:
     private FindRule localState;
-    private ArrayList<Attribute> attributes = new ArrayList<>();
     private BooleanCriteriaPanel panelBoolean;
     private ColorCriteriaPanel panelColor;
     private DateRangePanel panelDate;
@@ -159,7 +158,7 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
                 case STRING:
                 default:
                     panelString = new StringCriteriaPanel(this, localState.getStringContent(),
-                            localState.getStringCaseSensitivity(), localState.getStringUsingList(),
+                            localState.isStringCaseSensitivity(), localState.isStringUsingList(),
                             localState.getOperator().equals(FindTypeOperators.Operator.REGEX));
                     panelCriteriaHolder.add(panelString);
                     break;
@@ -270,7 +269,7 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
             cmbOperators.setModel(new OperatorComboBoxModel(operators));
 
             // Determine if this is a new find, or we are restoring from a previous state:
-            if (isNew) { //if(localState.getOperator() == null || localState.getOperator() != cmbOperators.getSelectedItem())
+            if (isNew) { 
                 localState.setOperator((Operator) cmbOperators.getSelectedItem());
             } else {
                 cmbOperators.setSelectedItem(localState.getOperator());
@@ -341,9 +340,6 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
 
         this.validate();
         this.repaint();
-
-        // Things have likely changed, so save the state to the graph:
-        //saveStateToGraph();
     }
 
     /**

@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -44,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("RotateCameraPlugin=Rotate Camera")
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {"VIEW"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
 public final class RotateCameraPlugin extends SimpleEditPlugin {
 
     public static final String X_PARAMETER_ID = PluginParameter.buildId(RotateCameraPlugin.class, "x");
@@ -64,19 +65,19 @@ public final class RotateCameraPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> xaxisParam = FloatParameterType.build(X_PARAMETER_ID);
         xaxisParam.setName("xAxis");
         xaxisParam.setDescription("Rotation in degrees around the x axis");
-        xaxisParam.setFloatValue(0f);
+        xaxisParam.setFloatValue(0F);
         parameters.addParameter(xaxisParam);
 
         final PluginParameter<FloatParameterValue> yaxisParam = FloatParameterType.build(Y_PARAMETER_ID);
         yaxisParam.setName("yAxis");
         yaxisParam.setDescription("Rotation in degrees around the y axis");
-        yaxisParam.setFloatValue(0f);
+        yaxisParam.setFloatValue(0F);
         parameters.addParameter(yaxisParam);
 
         final PluginParameter<FloatParameterValue> zaxisParam = FloatParameterType.build(Z_PARAMETER_ID);
         zaxisParam.setName("zAxis");
         zaxisParam.setDescription("Rotation in degrees around the z axis");
-        zaxisParam.setFloatValue(0f);
+        zaxisParam.setFloatValue(0F);
         parameters.addParameter(zaxisParam);
 
         final PluginParameter<BooleanParameterValue> animateParam = BooleanParameterType.build(ANIMATE_PARAMETER_ID);

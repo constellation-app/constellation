@@ -179,7 +179,7 @@ public class StyleGenerator {
         public static Iterator<Color> iterator() {
             return new Iterator<Color>() {
 
-                private final AtomicDouble counter = new AtomicDouble(0d);
+                private final AtomicDouble counter = new AtomicDouble(0D);
 
                 @Override
                 public boolean hasNext() {
@@ -191,10 +191,10 @@ public class StyleGenerator {
                     if (!hasNext()) {
                         throw new NoSuchElementException();
                     }
-                    double currColorValue = counter.getAndAdd(1d);
+                    double currColorValue = counter.getAndAdd(1D);
                     double num = (currColorValue - 1.0) * 0.618033988749895;
                     double fmod = num - Math.floor(num);
-                    return Color.getHSBColor((float) num, (float) Math.sqrt(fmod), 0.8f);
+                    return Color.getHSBColor((float) num, (float) Math.sqrt(fmod), 0.8F);
                 }
 
                 @Override

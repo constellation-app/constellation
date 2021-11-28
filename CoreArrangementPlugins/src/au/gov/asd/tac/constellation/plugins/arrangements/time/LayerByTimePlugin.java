@@ -52,6 +52,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
@@ -90,7 +91,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("LayerByTimePlugin=Layer by Time")
-@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class LayerByTimePlugin extends SimpleReadPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(LayerByTimePlugin.class.getName());
@@ -360,7 +361,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             wgcopy.addAttribute(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, NLAYERS, "The number of layers to layer by time", 1, null);
             final int txColorAttr = wgcopy.getAttribute(GraphElementType.TRANSACTION, "color");
             final int txGuideline = wgcopy.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "layer_guideline", "This transaction is a layer guideline", false, null);
-            final ConstellationColor guidelineColor = ConstellationColor.getColorValue(0.25f, 0.25f, 0.25f, 1f);
+            final ConstellationColor guidelineColor = ConstellationColor.getColorValue(0.25F, 0.25F, 0.25F, 1F);
             wgcopy.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, ORIGINAL_ID_LABEL, "Original Node Id", -1, null);
 
             final List<Float> values = new ArrayList<>();
@@ -397,11 +398,11 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                             final LayerName dn = new LayerName(newLayer, displayNames.get(newLayer));
                             wgcopy.setObjectValue(timeLayerAttr, txId, dn);
 
-                            final float normLayer = newLayer / (remappedLayers.keySet().size() * 1f);
+                            final float normLayer = newLayer / (remappedLayers.keySet().size() * 1F);
 
                             if (!keepTxColors) {
-                                final Color heatmap = new Color(Color.HSBtoRGB((1 - normLayer) * 2f / 3f, 0.5f, 1));
-                                final ConstellationColor color = ConstellationColor.getColorValue(heatmap.getRed() / 255f, heatmap.getGreen() / 255f, heatmap.getBlue() / 255f, 1f);
+                                final Color heatmap = new Color(Color.HSBtoRGB((1 - normLayer) * 2F / 3F, 0.5F, 1));
+                                final ConstellationColor color = ConstellationColor.getColorValue(heatmap.getRed() / 255F, heatmap.getGreen() / 255F, heatmap.getBlue() / 255F, 1F);
                                 wgcopy.setObjectValue(txColorAttr, txId, color);
                             }
 
@@ -723,8 +724,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         if (layer > 0) {
             // To move this transaction to the correct layer, we need two new nodes.
             // Do they already exist?
-            // Create (or fetch the already created) two duplicate nodes;
-            // move the duplicates up the z axis by layer;
+            // Create (or fetch the already created) two duplicate nodes
+            // move the duplicates up the z axis by layer
             final int dupSNodeId = getDuplicateNode(graph, nodeDups, sNodeId, layer);
             graph.setFloatValue(zAttr, dupSNodeId, layer * 20);
             final int dupDNodeId = getDuplicateNode(graph, nodeDups, dNodeId, layer);

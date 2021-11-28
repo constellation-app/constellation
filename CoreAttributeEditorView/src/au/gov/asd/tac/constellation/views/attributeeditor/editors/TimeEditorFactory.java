@@ -153,18 +153,10 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
             secSpinner.setEditable(true);
             milliSpinner.setEditable(true);
 
-            hourSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
-            minSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
-            secSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
-            milliSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
+            hourSpinner.valueProperty().addListener((o, n, v) -> update());
+            minSpinner.valueProperty().addListener((o, n, v) -> update());
+            secSpinner.valueProperty().addListener((o, n, v) -> update());
+            milliSpinner.valueProperty().addListener((o, n, v) -> update());
 
             final VBox hourLabelNode = new VBox(5);
             hourLabelNode.getChildren().addAll(hourSpinnerLabel, hourSpinner);

@@ -30,6 +30,10 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
  * @author arcturus
  */
 public class CopyGraphUtilities {
+    
+    private CopyGraphUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Copy the primary keys from a source graph and copy it to a new graph.

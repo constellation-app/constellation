@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute.io;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -86,7 +87,7 @@ public final class GraphByteWriter {
         final String reference = UUID.randomUUID().toString();
 
         // Store the data in a temporary file.
-        final File temp = File.createTempFile(FILE_PREFIX, FILE_SUFFIX);
+        final File temp = File.createTempFile(FILE_PREFIX, FileExtensionConstants.BINARY);
         try (OutputStream out = new FileOutputStream(temp)) {
             copy(in, out);
             fileMap.put(reference, temp);

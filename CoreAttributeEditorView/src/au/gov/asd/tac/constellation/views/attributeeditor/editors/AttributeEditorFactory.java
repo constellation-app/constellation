@@ -57,7 +57,6 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
         private GraphElementType elementType;
         private ComboBox<String> typeCombo;
         private TextField nameText;
-        private Button setDefaultButton;
         private Button clearDefaultButton;
         TextField descText;
         private Object defaultValue;
@@ -106,25 +105,19 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             controls.setHgap(5);
             controls.setVgap(CONTROLPANE_SPACING);
 
+            final Button setDefaultButton = new Button("Set Default");
             Label nameLabel = new Label("Attribute Name:");
             Label typeLabel = new Label("Attribute Type:");
             Label descLabel = new Label("Attribute Description:");
             Label defaultLabel = new Label("Default Value:");
 
             nameText = new TextField();
-            nameText.textProperty().addListener((o, n, v) -> {
-                update();
-            });
+            nameText.textProperty().addListener((o, n, v) -> update());
             typeCombo = new ComboBox<>();
             typeCombo.setDisable(!isTypeModifiable);
-            typeCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                update();
-            });
+            typeCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
             descText = new TextField();
-            descText.textProperty().addListener((o, n, v) -> {
-                update();
-            });
-            setDefaultButton = new Button("Set Default");
+            descText.textProperty().addListener((o, n, v) -> update());
             setDefaultButton.setOnAction(getSelectDefaultHandler());
             clearDefaultButton = new Button("Clear Default");
             clearDefaultButton.setOnAction(e -> {

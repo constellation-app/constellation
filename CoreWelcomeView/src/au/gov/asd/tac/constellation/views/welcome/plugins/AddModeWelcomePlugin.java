@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -40,7 +41,7 @@ import org.openide.util.NbBundle;
  *
  * @author canis_majoris
  */
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE", "WELCOME"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE, PluginTags.WELCOME})
 @NbBundle.Messages("AddModeWelcomePlugin=Add Mode Welcome Plugin")
 public class AddModeWelcomePlugin implements WelcomePluginInterface {
 
@@ -72,7 +73,7 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
         sg.setBooleanValue(drawModeAttribute, 0, true);
         final Graph dualGraph = new DualGraph(sg, false);
 
-        final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().replace(" ", "").toLowerCase();
+        final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().trim().toLowerCase();
         GraphOpener.getDefault().openGraph(dualGraph, graphName);
 
     }

@@ -29,9 +29,8 @@ public interface StringOperation {
 
     default void register(OperatorRegistry registry) {
 
-        registry.register(StringReadable.class, StringReadable.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> execute(p1.readString(), p2.readString());
-        });
+        registry.register(StringReadable.class, StringReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> execute(p1.readString(), p2.readString()));
 
         registry.register(StringConstant.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> {
             final String p1String = p1.readString();

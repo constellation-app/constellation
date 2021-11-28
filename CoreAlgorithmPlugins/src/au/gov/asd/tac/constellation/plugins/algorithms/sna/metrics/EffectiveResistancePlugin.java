@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.ejml.simple.SimpleMatrix;
 import org.openide.util.NbBundle;
@@ -39,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("EffectiveResistancePlugin=Effective Resistance")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class EffectiveResistancePlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute EFFECTIVE_RESISTANCE_ATTRIBUTE = SnaConcept.TransactionAttribute.EFFECTIVE_RESISTANCE;

@@ -85,7 +85,7 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
         }
     }
 
-    boolean getUseDefaultSettings() {
+    boolean isUseDefaultSettingsSelected() {
         return useDefaultCheckBox.isSelected();
     }
 
@@ -93,13 +93,13 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
         useDefaultCheckBox.setSelected(useDefaultSettings);
         if (useDefaultSettings) {
             final ConstellationLabelFonts defaultFonts = ConstellationLabelFonts.getDefault();
-            setUseMultiFonts(defaultFonts.getUseMultiFonts());
+            setUseMultiFonts(defaultFonts.isUseMultiFontsChosen());
             setFontList(defaultFonts.getFontListString());
         }
         setLabelFontsPanelEnabled(!useDefaultSettings);
     }
 
-    public boolean getUseMultiFonts() {
+    public boolean isUseMultiFontsSelected() {
         return useMultiFontCheckBox.isSelected();
     }
 

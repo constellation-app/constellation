@@ -34,7 +34,6 @@ final class NamedColorPanel extends AbstractColorChooserPanel {
 
     public NamedColorPanel() {
         initComponents();
-//        colorList.setCellRenderer(new NamedColorCellRenderer());
     }
 
     private void setColor(Color jc) {
@@ -134,70 +133,12 @@ final class NamedColorPanel extends AbstractColorChooserPanel {
 
         @Override
         public int getSize() {
-//            System.out.printf("@~getSize %d\n", ColorValue.NAMED_COLOR_LIST.size());
             return ConstellationColor.NAMED_COLOR_LIST.size();
         }
 
         @Override
         public ConstellationColor getElementAt(int index) {
-//            System.out.printf("@~getElementAt %d %s\n", index, ColorValue.NAMED_COLOR_LIST.get(index));
             return ConstellationColor.NAMED_COLOR_LIST.get(index);
         }
     }
-
-//    private static class NamedColorCellRenderer implements ListCellRenderer
-//    {
-//        @Override
-//        public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
-//        {
-//            return new JPanel()
-//            {
-//                @Override
-//                public void paintComponent(Graphics g)
-//                {
-////                    super.paintComponent(g);
-////                    setPreferredSize(new Dimension(100, 13));
-//                    if(isSelected)
-//                    {
-//                        setBackground(list.getSelectionBackground());
-//                        setForeground(list.getSelectionForeground());
-//                    }
-//                    else
-//                    {
-//                        setBackground(list.getBackground());
-//                        setForeground(list.getForeground());
-//                    }
-//                    setEnabled(list.isEnabled());
-//                    setFont(list.getFont());
-//                    setOpaque(true);
-//                    final Color gcolor = g.getColor();
-//                    System.out.printf("~~renderer value=%d %s\n", index, value);
-//                    final ColorValue cv = (ColorValue)value;
-//                    final Color color = new Color(cv.red, cv.green, cv.blue, cv.alpha);
-//                    int px = 0;
-//                    final Rectangle r = getBounds();
-//                    System.out.printf("@~graphics=%s\n  %s\n  %s\n  %s\n  %s\n", g, r, gcolor, color, getLocation());
-//                    g.drawRect(r.x, r.y+r.height/2-5, 10, 10);
-//                    g.setColor(color);
-//                    g.fillRect(r.x + 1, r.y+r.height/2-4, 9, 9);
-//                    px = 18;
-//                    final String text = cv.name!=null ? cv.name : String.format("%f,%f,%f,%f", cv.red, cv.green, cv.blue, cv.alpha);
-//                    ((Graphics2D)g).setRenderingHints(IconUtilities.getHints());
-//                    final FontMetrics fm = g.getFontMetrics();
-//                    g.setColor(gcolor);
-//                    g.drawString(text, r.x+px, r.y+(r.height-fm.getHeight())/2 + fm.getAscent());
-//                    System.out.printf("@~rend %s\n", text);
-//                }
-//                @Override
-//                public Dimension getPreferredSize()
-//                {
-//                    final FontMetrics fm = getFontMetrics(getFont());
-//                    final Rectangle2D r = fm.getStringBounds("Square + The longest color name", getGraphics());
-//                    final Dimension d = new Dimension((int)r.getWidth(), (int)r.getHeight());
-//                    System.out.printf("@~preferredSize %s\n", d);
-//                    return d;
-//                }
-//            };
-//        }
-//    }
 }

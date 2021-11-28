@@ -113,7 +113,6 @@ public final class GraphLabel implements Serializable, Comparable<GraphLabel> {
         buf.add(String.valueOf(size));
 
         return buf.toString();
-//        return StringUtilities.quoteAndDelimitString(Arrays.asList(attributeName, color.toString(), String.valueOf(size)), LABEL_PROPERTY_DELIMITER);
     }
 
     public static GraphLabel valueOf(final String graphLabelString) {

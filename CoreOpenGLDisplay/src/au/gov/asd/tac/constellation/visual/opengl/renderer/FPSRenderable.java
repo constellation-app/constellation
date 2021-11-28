@@ -62,7 +62,7 @@ public class FPSRenderable implements GLRenderable {
     private final boolean enabled;
     private long start = 0;
     private long fps = 0;
-    private long count_fps = 0;
+    private long countFps = 0;
 
     public FPSRenderable(final GLVisualProcessor parent) {
         this.parent = parent;
@@ -85,7 +85,7 @@ public class FPSRenderable implements GLRenderable {
             fpsBatcher.createShader(gl);
             fpsBatcher.createBatch(null).run(gl);
         } catch (final IOException | RenderException ex) {
-            // If we get here, a shader didn't compile. This obviously shouldn't happen in production;
+            // If we get here, a shader didn't compile. This obviously shouldn't happen in production,
             // our shaders are static and read from built-in resource files (it happens a lot in
             // development when we edit a shader, but that's OK). Since at least one shader is null,
             // there will be subsequent NullPointerExceptions, but there's nothing we can do about that.
@@ -112,7 +112,7 @@ public class FPSRenderable implements GLRenderable {
         final Vector3f unitPosition = new Vector3f(1, 0, 0);
         Graphics3DUtilities.project(unitPosition, IDENTITY_44F, viewport, proj2);
         final float xScale = proj2.getX() - proj1.getX();
-        return (256.0f / 64) / xScale;
+        return (256.0F / 64) / xScale;
     }
 
     private float calculateYProjectionScale(final int[] viewport) {
@@ -123,7 +123,7 @@ public class FPSRenderable implements GLRenderable {
         final Vector3f unitPosition = new Vector3f(0, 1, 0);
         Graphics3DUtilities.project(unitPosition, IDENTITY_44F, viewport, proj2);
         final float yScale = proj2.getY() - proj1.getY();
-        return (256.0f / 64) / yScale;
+        return (256.0F / 64) / yScale;
     }
 
     @Override
@@ -148,24 +148,21 @@ public class FPSRenderable implements GLRenderable {
         }
 
         if ((System.currentTimeMillis() - start) >= 500) {
-            fps = count_fps << 1;
+            fps = countFps << 1;
             start = 0;
-            count_fps = 0;
+            countFps = 0;
         }
 
-        count_fps++;
+        countFps++;
 
         if (enabled) {
             final GL3 gl = drawable.getGL().getGL3();
 
             // extract and scale the rotation matrix from the mvp matrix
-//            final Matrix44f rotationMatrix = new Matrix44f();
-//            parent.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
             final Matrix44f scalingMatrix = new Matrix44f();
             scalingMatrix.makeScalingMatrix(pxScale, pyScale, 0);
             final Matrix44f srMatrix = new Matrix44f();
             srMatrix.multiply(scalingMatrix, IDENTITY_44F);
-//            srMatrix.multiply(scalingMatrix, rotationMatrix);
 
             // build the fps matrix by translating the sr matrix
             final Matrix44f translationMatrix = new Matrix44f();

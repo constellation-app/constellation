@@ -70,9 +70,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
                 // Do nothing
             }
         });
-        resultListeners.forEach(listener -> {
-            listener.resultChanged(selectedElementScores, ignoredElementScores);
-        });
+        resultListeners.forEach(listener -> listener.resultChanged(selectedElementScores, ignoredElementScores));
     }
 
     public final int size() {
@@ -132,7 +130,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
         this.metadata.put(key, value);
     }
 
-    public final boolean getIgnoreNullResults() {
+    public final boolean isIgnoreNullResults() {
         return ignoreNullResults;
     }
 

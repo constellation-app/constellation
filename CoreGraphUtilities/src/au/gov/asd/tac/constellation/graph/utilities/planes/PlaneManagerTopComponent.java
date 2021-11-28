@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -104,8 +105,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
     private Graph graph;
-//    private final NodeActivationListener activationListener;
-//    private final NodeChangeListener changeListener;
     private int planesAttr;
     private long planesModificationCounter;
     private boolean isAdjustingList;
@@ -122,9 +121,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
 
         isAdjustingList = false;
 
-//        activationListener = new NodeActivationListener();
-//        changeListener = new NodeChangeListener();
-//        setActivatedNodes(null);
         planeList.addListSelectionListener(e -> {
             if (!isAdjustingList) {
                 final DragDropList.MyListModel listModel = ((DragDropList) planeList).getModel();
@@ -136,8 +132,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 }
 
                 PluginExecution.withPlugin(new UpdatePlaneVisibilityPlugin(visibleLayers)).executeLater(graph);
-
-//                    graphNode.getVisualisationManager().setVisiblePlanes(visibleLayers);
             }
         });
 
@@ -159,8 +153,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         scaleMI.addActionListener(this::scaleSelectedPlanesAction);
         actionsMenu.add(scaleMI);
 
-//        // Are there any graphs with planes already open?
-//        //        activationListener.activate();
+        // Are there any graphs with planes already open?
         result = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
         result.addLookupListener(this);
     }
@@ -338,25 +331,8 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         // Method intentionally left blank
     }
 
-//    /**
-//     * Listen to the TopComponent registry for node activations.
-//     *
-//     * @param listen
-//     */
-//    private void updateListener(boolean listen)
-//    {
-//        if(listen)
-//        {
-//            TopComponent.getRegistry().addPropertyChangeListener(activationListener);
-//        }
-//        else
-//        {
-//            TopComponent.getRegistry().removePropertyChangeListener(activationListener);
-//        }
-//    }
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
-//        System.out.printf("@PMTC gC %s\n", evt);
         boolean update = false;
         final ReadableGraph rg = graph.getReadableGraph();
         try {
@@ -366,7 +342,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                     planesAttr = pa;
                     planesModificationCounter = rg.getValueModificationCounter(planesAttr);
                     update = true;
-//                    System.out.printf("@PMTC %d %d\n", planesAttr, planesModificationCounter);
                 }
             } else {
                 final long pmc = rg.getValueModificationCounter(planesAttr);
@@ -397,14 +372,11 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         if (graphNode != null) {
             ((DragDropList) planeList).setPlanes(null, null);
             graph.removeGraphChangeListener(this);
-//            graphNode.removeNodeListener(changeListener);
-//            graphNode.getVisualisationManager().removePropertyChangeListener(this);
         }
 
         if (node != null) {
             graphNode = node;
             graph = graphNode.getGraph();
-//            final Visual visual = graphNode.getVisualisationManager();
 
             final ReadableGraph rg = graph.getReadableGraph();
             try {
@@ -421,71 +393,20 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 rg.release();
             }
 
-//            final List<Plane> planes = visual.getPlanes();
-//            final BitSet visiblePlanes = visual.getVisiblePlanes();
-//            ((DragDropList)planeList).setPlanes(planes, visiblePlanes);
             graph.addGraphChangeListener(this);
 
-//            graphNode.getVisualisationManager().addPropertyChangeListener(this);
         } else {
             graphNode = null;
             graph = null;
-            // state = null;
         }
         isAdjustingList = false;
     }
-//    /**
-//     * Listener for node activations.
-//     */
-//    private class NodeActivationListener implements Runnable, PropertyChangeListener
-//    {
-//        @Override
-//        public void propertyChange(PropertyChangeEvent ev)
-//        {
-//            if(TopComponent.Registry.PROP_ACTIVATED_NODES.equals(ev.getPropertyName()))
-//            {
-//                activate();
-//            }
-//        }
-//        @Override
-//        public void run()
-//        {
-//            activate();
-//        }
-//        public void activate()
-//        {
-//            final Node[] nodes = TopComponent.getRegistry().getActivatedNodes();
-//            if(nodes!=null && nodes.length==1 && nodes[0] instanceof GraphNode)
-//            {
-//                final GraphNode gnode = ((GraphNode)nodes[0]);
-//                if(gnode!=graphNode)
-//                {
-//                    setNode(gnode);
-//                }
-//            }
-//        }
-//    }
-//    /**
-//     * Listener for node changes, particularly nodes being destroyed.
-//     */
-//    private class NodeChangeListener extends NodeAdapter
-//    {
-//        @Override
-//        public void propertyChange(PropertyChangeEvent ev)
-//        {
-//            debug("property change %s %s\n", new Date(), ev);
-//        }
-//        @Override
-//        public void nodeDestroyed(NodeEvent ev)
-//        {
-//            setNode(null);
-//        }
-//    }
+
 
     /**
      * Plugin to update the plane visibility on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
     private static class UpdatePlaneVisibilityPlugin extends SimpleEditPlugin {
 
         private final BitSet visibleLayers;
@@ -516,7 +437,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to import the plane on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.IMPORT})
     private static class ImportPlanePlugin extends SimpleEditPlugin {
         
         private static final Logger LOGGER = Logger.getLogger(ImportPlanePlugin.class.getName());
@@ -555,7 +476,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 final float width = bi.getWidth() * sizeFactor;
                 final float height = bi.getHeight() * sizeFactor;
                 final float[] centre = box.getCentre();
-                final Plane plane = new Plane(label, centre[0] - width / 2f, centre[1] - height / 2f, 0, width, height, bi, bi.getWidth(), bi.getHeight());
+                final Plane plane = new Plane(label, centre[0] - width / 2F, centre[1] - height / 2F, 0, width, height, bi, bi.getWidth(), bi.getHeight());
                 int planesAttr = wg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
                 if (planesAttr == Graph.NOT_FOUND) {
                     planesAttr = wg.addAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, null, null);
@@ -580,7 +501,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to remove the plane from the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"DELETE"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.DELETE})
     private static class RemovePlanePlugin extends SimpleEditPlugin {
 
         final List<Integer> toRemove;
@@ -614,7 +535,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to set the plane position on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
     private static class SetPlanePositionPlugin extends SimpleEditPlugin {
 
         final PlanePositionPanel ppp;
@@ -693,7 +614,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to scale the plane on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
     private static class ScalePlanesPlugin extends SimpleEditPlugin {
 
         final List<Integer> selectedPlanes;
@@ -720,17 +641,16 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
             final PlaneState state = new PlaneState(oldState);
             for (int ix : selectedPlanes) {
                 final Plane plane = state.getPlane(ix);
-                final float centrex = plane.getX() + plane.getWidth() / 2f;
-                final float centrey = plane.getY() + plane.getHeight() / 2f;
+                final float centrex = plane.getX() + plane.getWidth() / 2F;
+                final float centrey = plane.getY() + plane.getHeight() / 2F;
                 final float w = plane.getImageWidth() * newScale;
                 final float h = plane.getImageHeight() * newScale;
-                plane.setX(centrex - w / 2f);
-                plane.setY(centrey - h / 2f);
+                plane.setX(centrex - w / 2F);
+                plane.setY(centrey - h / 2F);
                 plane.setWidth(w);
                 plane.setHeight(h);
             }
             wg.setObjectValue(planesAttr, 0, state);
         }
-
     }
 }

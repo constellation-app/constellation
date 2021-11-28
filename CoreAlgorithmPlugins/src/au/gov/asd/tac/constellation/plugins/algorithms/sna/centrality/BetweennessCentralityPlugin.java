@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
@@ -43,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("BetweennessCentralityPlugin=Betweenness Centrality")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class BetweennessCentralityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute BETWEENNESS_ATTRIBUTE = SnaConcept.VertexAttribute.BETWEENNESS_CENTRALITY;
@@ -158,7 +159,7 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
                     final float subgraphVertexCount = subgraphs[vertexPosition].cardinality();
                     betweennessAttributeValue = betweennesses[vertexPosition] / (((subgraphVertexCount - 1) * (subgraphVertexCount - 2)) / 2);
                 } else {
-                    betweennessAttributeValue = betweennesses[vertexPosition] / (((vertexCount - 1) * (vertexCount - 2)) / 2f);
+                    betweennessAttributeValue = betweennesses[vertexPosition] / (((vertexCount - 1) * (vertexCount - 2)) / 2F);
                 }
             } else if (normaliseByAvailable && maxBetweenness > 0) {
                 if (normaliseConnectedComponents) {

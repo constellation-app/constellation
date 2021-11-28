@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 
 /**
  * A plugin template for a plugin that naturally works within a read-query-write
@@ -65,14 +64,7 @@ import java.util.logging.Logger;
  *
  * @author sirius
  */
-//@Messages({
-//    "# {0} - graph",
-//    "# {1} - name",
-//    "MSG_Query_Failed=Action failed: {0}; {1}"
-//})
 public abstract class CascadingQueryPlugin extends AbstractPlugin {
-
-    private static final Logger LOGGER = Logger.getLogger(CascadingQueryPlugin.class.getName());
 
     /**
      * Returns whether this plugin performs a 'significant edit' of the graph

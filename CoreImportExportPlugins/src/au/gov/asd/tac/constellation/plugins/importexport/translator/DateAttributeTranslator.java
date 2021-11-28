@@ -80,7 +80,7 @@ public class DateAttributeTranslator extends AttributeTranslator {
         parameters.addController(FORMAT_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> params, final ParameterChange change) -> {
             if (change == ParameterChange.VALUE) {
                 final PluginParameter<?> slave = params.get(CUSTOM_PARAMETER_ID);
-                slave.setEnabled(master.getStringValue().equals("CUSTOM"));
+                slave.setEnabled("CUSTOM".equals(master.getStringValue()));
             }
         });
 

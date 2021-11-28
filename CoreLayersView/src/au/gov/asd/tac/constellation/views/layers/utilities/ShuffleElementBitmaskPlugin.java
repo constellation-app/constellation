@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 
 /**
@@ -28,7 +29,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
  *
  * @author aldebaran30701
  */
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public final class ShuffleElementBitmaskPlugin extends SimpleEditPlugin {
 
     private final int startIndex;
@@ -84,6 +85,8 @@ public final class ShuffleElementBitmaskPlugin extends SimpleEditPlugin {
      *
      * Effectively removing a vertex from a higher layer and adding it to a
      * layer closer to 0.
+     *
+     * Protected access is required for unit tests.
      *
      * @param currentIndex The current layer (empty position) to move the layer
      * to

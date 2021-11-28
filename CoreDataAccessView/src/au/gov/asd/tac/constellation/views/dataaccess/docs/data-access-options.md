@@ -6,18 +6,18 @@ menu in the top left corner of the Data Access View.
 
 ## Saving and loading data access preferences
 
-Data access preferences can be saved and loaded using the "Save" and
-"Load..." options.
+Data access preferences can be saved and loaded using the "Save Templates" and
+"Load Templates" options.
 
 When a preference is saved, you are prompted to name the preference. If
 a preference of that name has already been saved, you will be asked if
 you want to overwrite it. Preferences are saved by default in the
-directory HOME_DIRECTORY/.CONSTELLATION/DataAccessView. (The name of the
+directory &lt;HOME_DIRECTORY&gt;/.CONSTELLATION/DataAccessView. (The name of the
 file in which the preference is saved is encoded so it doesn't clash
 with file system limitations.) Files in this directory can be copied and
 deleted using your favourite file management utility.
 
-When you select "Load...", you will be presented with a list of saved
+When you select "Load Templates", you will be presented with a list of saved
 preferences. Select one from the list and select OK. The preference will
 be loaded and will appear exactly as it was when it was saved. You can
 also remove a saved preference from here by selecting one from the list
@@ -51,12 +51,12 @@ creates.
 ## Deselecting plugins on Go
 
 Data Access plugins can be deselected after pressing the Go button via
-the "Deselect Plugins on Go" option.
+the "Deselect on Go" option.
 
-When you check the "Deselect Plugins on Go" item, data access plugins
+When you check the "Deselect on Go" item, data access plugins
 that are ticked will be deselected after pressing "Go". This will
 persist until the item is unchecked.
 
-When "Deselect Plugins on Go" is unchecked, data access plugins will
+When "Deselect on Go" is unchecked, data access plugins will
 remain ticked even after "Go" is pressed and will need to be unticked
 manually.

@@ -17,14 +17,10 @@ package au.gov.asd.tac.constellation.utilities.tooltip;
 
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider.TooltipDefinition;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import org.apache.commons.collections4.CollectionUtils;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

@@ -19,9 +19,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
+import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessConcept;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import java.lang.reflect.InvocationTargetException;
@@ -39,11 +39,8 @@ import org.openide.windows.WindowManager;
  */
 public class DataAccessUtilities {
 
-    /**
-     * Private constructor to prevent external initialization.
-     */
     private DataAccessUtilities() {
-        
+        throw new IllegalStateException("Utility class");
     }
     
     /**

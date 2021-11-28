@@ -140,14 +140,14 @@ public class GraphDisplayer implements GLRenderable {
                 ShaderManager.FRAG_BASE, "fragColor");
 
         graphTextureBatch.initialise(GRAPH_TEXTURE_NUMBER_OF_VERTICES);
-        graphTextureBatch.stage(vertexTarget, -1f, -1f);
-        graphTextureBatch.stage(vertexTarget, 1f, -1f);
-        graphTextureBatch.stage(vertexTarget, -1f, 1f);
-        graphTextureBatch.stage(vertexTarget, 1f, 1f);
-        graphTextureBatch.stage(textureCoordinatesTarget, 0f, 0f);
-        graphTextureBatch.stage(textureCoordinatesTarget, 1f, 0f);
-        graphTextureBatch.stage(textureCoordinatesTarget, 0f, 1f);
-        graphTextureBatch.stage(textureCoordinatesTarget, 1f, 1f);
+        graphTextureBatch.stage(vertexTarget, -1F, -1F);
+        graphTextureBatch.stage(vertexTarget, 1F, -1F);
+        graphTextureBatch.stage(vertexTarget, -1F, 1F);
+        graphTextureBatch.stage(vertexTarget, 1F, 1F);
+        graphTextureBatch.stage(textureCoordinatesTarget, 0F, 0F);
+        graphTextureBatch.stage(textureCoordinatesTarget, 1F, 0F);
+        graphTextureBatch.stage(textureCoordinatesTarget, 0F, 1F);
+        graphTextureBatch.stage(textureCoordinatesTarget, 1F, 1F);
         graphTextureBatch.finalise(gl);
 
         // Create the FBO to draw the graph onto.

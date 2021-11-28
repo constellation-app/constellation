@@ -44,9 +44,6 @@ class LineDragger {
     private float totaldx;
     private float totaldy;
 
-//    // Debugging.
-//    //    static final String IO_NAME = "Renderer";
-//    final InputOutput io = IOProvider.getDefault().getIO(IO_NAME, false);
     LineDragger(final Graph graph, final int txId, final Matrix44f mvpMatrix, final int[] viewport, final int mousex, final int mousey) {
         totaldx = 0;
         totaldy = 0;

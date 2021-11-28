@@ -212,9 +212,7 @@ public class NodeLabelBatcher implements SceneBatcher {
         for (int i = 0; i < numBottomLabels; i++) {
             labelBottomInfoReference.set(i, 3, (int) (LabelUtilities.NRADIUS_TO_LABEL_UNITS * Math.min(access.getBottomLabelSize(i), LabelUtilities.MAX_LABEL_SIZE)));
         }
-        return gl -> {
-            labelBottomInfo.set(labelBottomInfoReference);
-        };
+        return gl -> labelBottomInfo.set(labelBottomInfoReference);
     }
 
     public GLRenderableUpdateTask setBottomLabelColors(final VisualAccess access) {
@@ -223,9 +221,7 @@ public class NodeLabelBatcher implements SceneBatcher {
             final ConstellationColor labelColor = access.getBottomLabelColor(i);
             labelBottomInfoReference.setRow(labelColor.getRed(), labelColor.getGreen(), labelColor.getBlue(), labelBottomInfoReference.get(i, 3), i);
         }
-        return gl -> {
-            labelBottomInfo.set(labelBottomInfoReference);
-        };
+        return gl -> labelBottomInfo.set(labelBottomInfoReference);
     }
 
     public GLRenderableUpdateTask setTopLabelSizes(final VisualAccess access) {
@@ -233,9 +229,7 @@ public class NodeLabelBatcher implements SceneBatcher {
         for (int i = 0; i < numTopLabels; i++) {
             labelTopInfoReference.set(i, 3, (int) (LabelUtilities.NRADIUS_TO_LABEL_UNITS * Math.min(access.getTopLabelSize(i), LabelUtilities.MAX_LABEL_SIZE)));
         }
-        return gl -> {
-            labelTopInfo.set(labelTopInfoReference);
-        };
+        return gl -> labelTopInfo.set(labelTopInfoReference);
     }
 
     public GLRenderableUpdateTask setTopLabelColors(final VisualAccess access) {
@@ -244,23 +238,17 @@ public class NodeLabelBatcher implements SceneBatcher {
             final ConstellationColor labelColor = access.getTopLabelColor(i);
             labelTopInfoReference.setRow(labelColor.getRed(), labelColor.getGreen(), labelColor.getBlue(), labelTopInfoReference.get(i, 3), i);
         }
-        return gl -> {
-            labelTopInfo.set(labelTopInfoReference);
-        };
+        return gl -> labelTopInfo.set(labelTopInfoReference);
     }
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor color = access.getHighlightColor();
-        return gl -> {
-            highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
-        };
+        return gl -> highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
     }
 
     public GLRenderableUpdateTask setBackgroundColor(final VisualAccess access) {
         final ConstellationColor color = access.getBackgroundColor();
-        return gl -> {
-            backgroundColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 0.25f};
-        };
+        return gl -> backgroundColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 0.25F};
     }
 
     @Override

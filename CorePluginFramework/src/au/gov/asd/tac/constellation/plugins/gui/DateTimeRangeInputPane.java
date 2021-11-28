@@ -133,9 +133,7 @@ public final class DateTimeRangeInputPane extends Pane {
                     // chew up and throw away date time exception, this results in datetime reverting back into
                     // allowable range, ie if you enter 33 for hours, this will be thrown out and revert to 23.
                 } finally {
-                    Platform.runLater(() -> {
-                        isAdjusting = false;
-                    });
+                    Platform.runLater(() -> isAdjusting = false);
                 }
             }
         };
@@ -178,18 +176,14 @@ public final class DateTimeRangeInputPane extends Pane {
 
         // Convenience button to change to UTC.
         final Button utcButton = new Button("UTC");
-        utcButton.setOnAction(event -> {
-            setZoneId("UTC");
-        });
+        utcButton.setOnAction(event -> setZoneId("UTC"));
         // take up half of the second date picker's width
         utcButton.minWidthProperty().bind(pickers.widthProperty().divide(4.0));
         utcButton.maxWidthProperty().bind(pickers.widthProperty().divide(4.0));
 
         // Convenience button to change to the local timezone.
         final Button localButton = new Button("Local");
-        localButton.setOnAction(event -> {
-            setZoneId(ZoneId.systemDefault().getId());
-        });
+        localButton.setOnAction(event -> setZoneId(ZoneId.systemDefault().getId()));
         // use the remainig width of the second date picker
         localButton.minWidthProperty().bind(pickers.widthProperty().divide(4.0));
         localButton.maxWidthProperty().bind(pickers.widthProperty().divide(4.0));
@@ -225,16 +219,13 @@ public final class DateTimeRangeInputPane extends Pane {
         final EventHandler<ActionEvent> toggleHandler = (final ActionEvent event) -> {
             if (!isAdjusting) {
                 final Period period = ((TimeRangeToggleButton) event.getSource()).getPeriod();
-//                System.out.printf("!!DTRIP rel %s\n", period);
 
                 isAdjusting = true;
                 try {
                     parameter.setObjectValue(new DateTimeRange(period, getZoneId()));
                     setAbsoluteNow(period);
                 } finally {
-                    Platform.runLater(() -> {
-                        isAdjusting = false;
-                    });
+                    Platform.runLater(() -> isAdjusting = false);
                 }
             }
 
@@ -284,12 +275,7 @@ public final class DateTimeRangeInputPane extends Pane {
         // If the parameter is unset, set it with our default.
         // Otherwise, set ourself from the parameter.
         final DateTimeRange dtr = parameter.getDateTimeRangeValue();
-        /*if(dtr==null) {
-         setPeriod(relativeButtons.get(0).getPeriod(), getZoneId());
-         absPane.setExpanded(false);
-         parameter.setObjectValue(new DateTimeRange(relativeButtons.get(0).getPeriod(), getZoneId()));
-         }
-         else*/ if (dtr.getPeriod() != null) {
+        if (dtr.getPeriod() != null) {
             setPeriod(dtr.getPeriod(), dtr.getZoneId());
             absPane.setExpanded(false);
         } else {
@@ -304,8 +290,7 @@ public final class DateTimeRangeInputPane extends Pane {
 
         // The GUI is done.
         // Set up the parameter listener.
-        parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> {
-            Platform.runLater(() -> {
+        parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
                         if (!isAdjusting) {
@@ -332,8 +317,7 @@ public final class DateTimeRangeInputPane extends Pane {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            }));
     }
 
     /**
@@ -355,9 +339,7 @@ public final class DateTimeRangeInputPane extends Pane {
                 }
             }
         } finally {
-            Platform.runLater(() -> {
-                isAdjusting = false;
-            });
+            Platform.runLater(() -> isAdjusting = false);
         }
     }
 
@@ -381,9 +363,7 @@ public final class DateTimeRangeInputPane extends Pane {
 
             setZoneId(zdt0.getZone().getId());
         } finally {
-            Platform.runLater(() -> {
-                isAdjusting = false;
-            });
+            Platform.runLater(() -> isAdjusting = false);
         }
 
         setUsingAbsolute(true);
@@ -464,7 +444,6 @@ public final class DateTimeRangeInputPane extends Pane {
         for (final String item : timeZonesCombo.getItems()) {
             final String itemPart = item.split(" ", 3)[1];
             if (itemPart.equals(id)) {
-//                timeZonesCombo.setValue(item);
                 timeZonesCombo.getSelectionModel().select(item);
                 break;
             }
@@ -523,9 +502,7 @@ public final class DateTimeRangeInputPane extends Pane {
     }
 
     public void clearRangeButtons() {
-        dateRangeGroup.getToggles().stream().forEach(button -> {
-            button.setSelected(false);
-        });
+        dateRangeGroup.getToggles().stream().forEach(button -> button.setSelected(false));
     }
 
     /**
@@ -619,9 +596,8 @@ public final class DateTimeRangeInputPane extends Pane {
         final VBox vbox = new VBox();
         vbox.getChildren().addAll(spinnerLabel, spinner);
 
-        spinner.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            changed.changed(null, null, null);
-        });
+        spinner.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+                -> changed.changed(null, null, null));
 
         timeSpinners.add(spinner);
 
@@ -700,9 +676,7 @@ public final class DateTimeRangeInputPane extends Pane {
             setToggleGroup(group);
             getStyleClass().add("time-range-toggle");
 
-            setOnAction(event -> {
-                toggleHandler.handle(event);
-            });
+            setOnAction(event -> toggleHandler.handle(event));
         }
 
         public Period getPeriod() {

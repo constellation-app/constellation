@@ -117,7 +117,7 @@ public abstract class AbstractInclusionGraph {
      * @param wg The original graph.
      * @param connections How to copy transactions to the inclusion graph.
      */
-    public AbstractInclusionGraph(final GraphWriteMethods wg, final Connections connections) {
+    protected AbstractInclusionGraph(final GraphWriteMethods wg, final Connections connections) {
         this.wg = wg;
         this.connections = connections;
         attributesToCopy = new ArrayList<>();

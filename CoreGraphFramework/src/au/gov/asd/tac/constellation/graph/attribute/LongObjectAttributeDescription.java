@@ -103,7 +103,7 @@ public class LongObjectAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     public float getFloat(final int id) {
-        return data[id] != null ? ((Long) data[id]).floatValue() : 0.0f;
+        return data[id] != null ? ((Long) data[id]).floatValue() : 0.0F;
     }
 
     @Override

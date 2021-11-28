@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins;
 
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -52,5 +53,5 @@ public @interface PluginInfo {
      *
      * @return a list of tags associated with this plugin.
      */
-    public String[] tags() default {"GENERAL"};
+    public String[] tags() default PluginTags.GENERAL;
 }

@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -64,7 +65,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @Messages("MergeNodesPlugin=Merge Nodes")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     public static final String MERGE_TYPE_PARAMETER_ID = PluginParameter.buildId(MergeNodesPlugin.class, "merge_type");
@@ -171,13 +172,6 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         selectedOnly.setEnabled(false);
         params.addParameter(selectedOnly);
 
-//        final PluginParameter<BooleanParameterValue> ask = BooleanParameterType.buildId(ASK_PARAMETER_ID);
-//        ask.setName("Ask Before Merging");
-//        ask.setDescription("Should you be asked before merging occurs?");
-//        ask.setBooleanValue(false);
-//        ask.setEnabled(false);
-//        params.addParameter(ask);
-//
         params.addController(MERGE_TYPE_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> parameters, final ParameterChange change) -> {
             if (change == ParameterChange.VALUE) {
                 final String selectedMergeType = parameters.get(MERGE_TYPE_PARAMETER_ID).getStringValue();

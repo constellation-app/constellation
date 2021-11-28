@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -34,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("FlattenZFieldPlugin=Flatten z field")
-@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class FlattenZFieldPlugin extends SimpleEditPlugin {
 
     @Override

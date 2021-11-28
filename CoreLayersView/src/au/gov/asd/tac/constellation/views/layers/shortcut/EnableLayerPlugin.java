@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
@@ -33,7 +34,7 @@ import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
  *
  * @author formalhaut69
  */
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class EnableLayerPlugin extends SimpleEditPlugin {
 
     final int layerIndex;
@@ -65,10 +66,10 @@ public class EnableLayerPlugin extends SimpleEditPlugin {
             final BitMaskQuery txQuery = currentState.getTxQueriesCollection().getQuery(layerIndex);
 
             if (vxQuery != null) {
-                vxQuery.setVisibility(!vxQuery.getVisibility());
+                vxQuery.setVisibility(!vxQuery.isVisible());
             }
             if (txQuery != null) {
-                txQuery.setVisibility(!txQuery.getVisibility());
+                txQuery.setVisibility(!txQuery.isVisible());
             }
 
             currentState.getVxQueriesCollection().add(vxQuery);

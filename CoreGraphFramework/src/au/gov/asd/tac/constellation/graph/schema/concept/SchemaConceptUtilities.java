@@ -38,12 +38,16 @@ import org.openide.util.lookup.ServiceProvider;
  */
 public class SchemaConceptUtilities {
 
-    private static SchemaConcept DEFAULT_CONCEPT = null;
-    private static Collection<SchemaConcept> SCHEMA_CONCEPTS = null;
-    private static Map<Class<? extends SchemaConcept>, Collection<SchemaAttribute>> SCHEMA_ATTRIBUTES = null;
-    private static Map<Class<? extends SchemaConcept>, Collection<SchemaVertexType>> SCHEMA_VERTEX_TYPES = null;
-    private static Map<Class<? extends SchemaConcept>, Collection<SchemaTransactionType>> SCHEMA_TRANSACTION_TYPES = null;
+    private static SchemaConcept defaultConcept = null;
+    private static Collection<SchemaConcept> schemaConcepts = null;
+    private static Map<Class<? extends SchemaConcept>, Collection<SchemaAttribute>> schemaAttributes = null;
+    private static Map<Class<? extends SchemaConcept>, Collection<SchemaVertexType>> schemaVertexTypes = null;
+    private static Map<Class<? extends SchemaConcept>, Collection<SchemaTransactionType>> schemaTransactionTypes = null;
 
+    private SchemaConceptUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Get the highest priority (ie. lowest {@link ServiceProvider} 'position'
      * value) SchemaConcept using {@link Lookup}.
@@ -51,10 +55,10 @@ public class SchemaConceptUtilities {
      * @return The highest priority SchemaConcept.
      */
     public static final SchemaConcept getDefaultConcept() {
-        if (DEFAULT_CONCEPT == null) {
-            DEFAULT_CONCEPT = Lookup.getDefault().lookup(SchemaConcept.class);
+        if (defaultConcept == null) {
+            defaultConcept = Lookup.getDefault().lookup(SchemaConcept.class);
         }
-        return DEFAULT_CONCEPT;
+        return defaultConcept;
     }
 
     /**
@@ -63,12 +67,12 @@ public class SchemaConceptUtilities {
      * @return the collection of all registered {@link SchemaConcept} objects.
      */
     public static final synchronized Collection<SchemaConcept> getConcepts() {
-        if (SCHEMA_CONCEPTS == null) {
+        if (schemaConcepts == null) {
             Collection<? extends SchemaConcept> concepts = Lookup.getDefault().lookupAll(SchemaConcept.class);
-            SCHEMA_CONCEPTS = Collections.unmodifiableCollection(concepts);
+            schemaConcepts = Collections.unmodifiableCollection(concepts);
         }
 
-        return SCHEMA_CONCEPTS;
+        return schemaConcepts;
     }
 
     /**
@@ -103,9 +107,7 @@ public class SchemaConceptUtilities {
     public static final Set<SchemaConcept> getChildConcepts(final Set<Class<? extends SchemaConcept>> schemaConceptClasses) {
         final Set<SchemaConcept> childConcepts = new HashSet<>();
         if (schemaConceptClasses != null) {
-            schemaConceptClasses.forEach(schemaConceptClass -> {
-                childConcepts.addAll(getChildConcepts(schemaConceptClass));
-            });
+            schemaConceptClasses.forEach(schemaConceptClass -> childConcepts.addAll(getChildConcepts(schemaConceptClass)));
         }
 
         return childConcepts;
@@ -117,18 +119,18 @@ public class SchemaConceptUtilities {
      * @return a collection of all registered {@link SchemaAttribute}s.
      */
     public static final synchronized Map<Class<? extends SchemaConcept>, Collection<SchemaAttribute>> getAttributes() {
-        if (SCHEMA_ATTRIBUTES == null) {
-            final Map<Class<? extends SchemaConcept>, Collection<SchemaAttribute>> schemaAttributes = new HashMap<>();
+        if (schemaAttributes == null) {
+            final Map<Class<? extends SchemaConcept>, Collection<SchemaAttribute>> attributes = new HashMap<>();
             getConcepts().forEach(concept -> {
                 if (concept.getSchemaAttributes() != null) {
-                    schemaAttributes.put(concept.getClass(), new ArrayList<>(concept.getSchemaAttributes()));
+                    attributes.put(concept.getClass(), new ArrayList<>(concept.getSchemaAttributes()));
                 }
             });
 
-            SCHEMA_ATTRIBUTES = Collections.unmodifiableMap(schemaAttributes);
+            schemaAttributes = Collections.unmodifiableMap(attributes);
         }
 
-        return SCHEMA_ATTRIBUTES;
+        return schemaAttributes;
     }
 
     /**
@@ -159,19 +161,19 @@ public class SchemaConceptUtilities {
      * @return A {@link Collection} of SchemaVertexTypeProvider.
      */
     public static final synchronized Map<Class<? extends SchemaConcept>, Collection<SchemaVertexType>> getVertexTypes() {
-        if (SCHEMA_VERTEX_TYPES == null) {
+        if (schemaVertexTypes == null) {
             // using LinkedHashMap to preserve Schema order priority
-            final Map<Class<? extends SchemaConcept>, Collection<SchemaVertexType>> schemaVertexTypes = new LinkedHashMap<>();
+            final Map<Class<? extends SchemaConcept>, Collection<SchemaVertexType>> vertexTypes = new LinkedHashMap<>();
             getConcepts().forEach(concept -> {
                 if (concept.getSchemaVertexTypes() != null) {
-                    schemaVertexTypes.put(concept.getClass(), new ArrayList<>(concept.getSchemaVertexTypes()));
+                    vertexTypes.put(concept.getClass(), new ArrayList<>(concept.getSchemaVertexTypes()));
                 }
             });
 
-            SCHEMA_VERTEX_TYPES = Collections.unmodifiableMap(schemaVertexTypes);
+            schemaVertexTypes = Collections.unmodifiableMap(vertexTypes);
         }
 
-        return SCHEMA_VERTEX_TYPES;
+        return schemaVertexTypes;
     }
 
     /**
@@ -211,19 +213,19 @@ public class SchemaConceptUtilities {
      * @return A {@link Collection} of SchemaTransactionTypeProvider.
      */
     public static final synchronized Map<Class<? extends SchemaConcept>, Collection<SchemaTransactionType>> getTransactionTypes() {
-        if (SCHEMA_TRANSACTION_TYPES == null) {
+        if (schemaTransactionTypes == null) {
             // using LinkedHashMap to preserve Schema order priority
-            final Map<Class<? extends SchemaConcept>, Collection<SchemaTransactionType>> schemaTransactionTypes = new LinkedHashMap<>();
+            final Map<Class<? extends SchemaConcept>, Collection<SchemaTransactionType>> transactionTypes = new LinkedHashMap<>();
             getConcepts().forEach(concept -> {
                 if (concept.getSchemaTransactionTypes() != null) {
-                    schemaTransactionTypes.put(concept.getClass(), new ArrayList<>(concept.getSchemaTransactionTypes()));
+                    transactionTypes.put(concept.getClass(), new ArrayList<>(concept.getSchemaTransactionTypes()));
                 }
             });
 
-            SCHEMA_TRANSACTION_TYPES = Collections.unmodifiableMap(schemaTransactionTypes);
+            schemaTransactionTypes = Collections.unmodifiableMap(transactionTypes);
         }
 
-        return SCHEMA_TRANSACTION_TYPES;
+        return schemaTransactionTypes;
     }
 
     /**

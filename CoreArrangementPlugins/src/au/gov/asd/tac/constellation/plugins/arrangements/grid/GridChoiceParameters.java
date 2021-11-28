@@ -28,7 +28,6 @@ public class GridChoiceParameters {
     private int verticalGap;
     private boolean rowOffsets;
 
-//    public GridChoiceParameters(GridChoice gridChoice, String horizontalAlignment, String verticalAlignment, float sizeGain, int horizontalGap, int verticalGap)
     public GridChoiceParameters(final GridChoice gridChoice, final float sizeGain, final int horizontalGap, final int verticalGap, final boolean rowOffsets) {
         this.gridChoice = gridChoice;
         this.sizeGain = sizeGain;
@@ -38,13 +37,11 @@ public class GridChoiceParameters {
     }
 
     public static GridChoiceParameters getDefaultParameters() {
-//        return new GridChoiceParameters(GridChoice.SQUARE, "Centre", "Centre", 1.25f, 1, 1);
-        return new GridChoiceParameters(GridChoice.SQUARE, 1.25f, 1, 1, false);
+        return new GridChoiceParameters(GridChoice.SQUARE, 1.25F, 1, 1, false);
     }
 
     @Override
     public String toString() {
-//        return String.format("[gridChoice:%s halign:%s valign:%s gain:%f hgap:%s vgap:%s]", gridChoice, horizontalAlignment, verticalAlignment, sizeGain, horizontalGap, verticalGap);
         return String.format("[%s gridChoice:%s gain:%f hgap:%s vgap:%s offsets:%s]", this.getClass().getSimpleName(), gridChoice, sizeGain, horizontalGap, verticalGap, rowOffsets);
     }
 

@@ -240,7 +240,7 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
             final int da;
             final int ho;
             final int mi;
-            TimeZone tzp = tz;
+            TimeZone tzp = (tz == null) ? UTC : tz;
             int p = 16;
             int se = 0;
             int ms = 0;
@@ -265,10 +265,6 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
 
                 if (dt.length() > p) {
                     tzp = TimeZone.getTimeZone("GMT" + dt.substring(p));
-                } else if (tz == null) {
-                    tzp = UTC;
-                } else {
-                    tzp = tz;
                 }
             } else {
                 ye = Integer.parseInt(dt.substring(0, 4), 10);
@@ -300,13 +296,8 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
             final int mi = Integer.parseInt(dt.substring(10, 12), 10);
             final int se = Integer.parseInt(dt.substring(12, 14), 10);
             final int ms = 0;
-
-            final TimeZone tzp;
-            if (tz == null) {
-                tzp = UTC;
-            } else {
-                tzp = tz;
-            }
+            
+            final TimeZone tzp = (tz == null) ? UTC : tz;
 
             final Calendar cal = new GregorianCalendar(tzp);
             cal.set(Calendar.YEAR, ye);
@@ -347,15 +338,6 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sdf.setTimeZone(tz);
         String s = sdf.format(time);
-
-//        final Calendar calendar = GregorianCalendar.getInstance(UTC);
-//        calendar.setTime(new Date(time));
-//        String check = String.format("%4d-%02d-%02d %02d:%02d:%02d",
-//            calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH),
-//            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
-//        System.out.printf("@A %s\n@B %s\n\n", s, check);
-//        assert s.equals(check);
-//        final int ms = calendar.get(Calendar.MILLISECOND);
         final int ms = (int) (time % 1000);
         if (ms > 0) {
             s += String.format(".%03d", ms);

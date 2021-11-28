@@ -47,9 +47,7 @@ public abstract class ImportFileParser {
     private static synchronized void init() {
         if (PARSERS.isEmpty()) {
             final List<ImportFileParser> parsers = new ArrayList<>(Lookup.getDefault().lookupAll(ImportFileParser.class));
-            Collections.sort(parsers, (ImportFileParser o1, ImportFileParser o2) -> {
-                return Integer.compare(o1.position, o2.position);
-            });
+            Collections.sort(parsers, (ImportFileParser o1, ImportFileParser o2) -> Integer.compare(o1.position, o2.position));
             parsers.stream().forEach(parser -> PARSERS.put(parser.label, parser));
         }
     }
@@ -91,7 +89,7 @@ public abstract class ImportFileParser {
      * @param position the position of the ImportFileParser used for sorting a
      * list of parsers.
      */
-    public ImportFileParser(final String label, final int position) {
+    protected ImportFileParser(final String label, final int position) {
         this.label = label;
         this.position = position;
     }

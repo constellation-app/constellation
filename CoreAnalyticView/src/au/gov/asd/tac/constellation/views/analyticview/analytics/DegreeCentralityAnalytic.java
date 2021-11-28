@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.DegreeCentralityPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +39,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = AnalyticPlugin.class),
     @ServiceProvider(service = Plugin.class)
 })
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 @AnalyticInfo(analyticCategory = "Centrality")
 @NbBundle.Messages("DegreeCentralityAnalytic=Degree Centrality Analytic")
 public class DegreeCentralityAnalytic extends ScoreAnalyticPlugin {
@@ -60,9 +61,12 @@ public class DegreeCentralityAnalytic extends ScoreAnalyticPlugin {
         final boolean includeConnectionsIn = parameters.getBooleanValue(DegreeCentralityPlugin.INCLUDE_CONNECTIONS_IN_PARAMETER_ID);
         final boolean includeConnectionsOut = parameters.getBooleanValue(DegreeCentralityPlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID);
         final Set<SchemaAttribute> analyticAttributes = new HashSet<>();
-        analyticAttributes.add(includeConnectionsIn && !includeConnectionsOut ? SnaConcept.VertexAttribute.IN_DEGREE_CENTRALITY
-                : !includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_DEGREE_CENTRALITY
-                        : SnaConcept.VertexAttribute.DEGREE_CENTRALITY);
+        if (includeConnectionsIn && !includeConnectionsOut) {
+            analyticAttributes.add(SnaConcept.VertexAttribute.IN_DEGREE_CENTRALITY);
+        } else {
+            analyticAttributes.add(!includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_DEGREE_CENTRALITY
+                    : SnaConcept.VertexAttribute.DEGREE_CENTRALITY);
+        }
         return Collections.unmodifiableSet(analyticAttributes);
     }
 

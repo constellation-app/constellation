@@ -237,11 +237,11 @@ public abstract class AbstractAttributeInteraction<T> {
         if (isComparable()) {
             return createObjectComparator(createComparator());
         }
-        return HASHCODE_COMPARATOR;
+        return hashcodeComparator;
     }
 
     protected Comparator<T> createComparator() {
-        return VALUE_COMPARATOR;
+        return valueComparator;
     }
 
     @SuppressWarnings("unchecked")
@@ -256,7 +256,7 @@ public abstract class AbstractAttributeInteraction<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private final Comparator<T> VALUE_COMPARATOR = (o1, o2) -> {
+    private final Comparator<T> valueComparator = (o1, o2) -> {
         if (o1 == null) {
             return o2 == null ? 0 : -1;
         } else if (o2 == null) {
@@ -265,7 +265,7 @@ public abstract class AbstractAttributeInteraction<T> {
             return ((Comparable<T>) o1).compareTo(o2);
         }
     };
-    private final Comparator<Object> HASHCODE_COMPARATOR = (o1, o2) -> {
+    private final Comparator<Object> hashcodeComparator = (o1, o2) -> {
         if (o1 == null) {
             return o2 == null ? 0 : -1;
         } else if (o2 == null) {

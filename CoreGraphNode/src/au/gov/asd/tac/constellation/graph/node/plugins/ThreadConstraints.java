@@ -62,4 +62,14 @@ public class ThreadConstraints {
     public void setSilentCount(final int silentCount) {
         this.silentCount = silentCount;
     }
+    
+    /**
+     * THREAD_LOCAL should be cleaned up when no longer in use.
+     * This method should be used when each thread is completed to 
+     * ensure that the THREAD_LOCAL field is cleaned up.
+     * This assists with garbage collection.
+     */
+    public void unload() {
+        THREAD_LOCAL.remove();
+    }
 }

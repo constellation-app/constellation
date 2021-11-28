@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -129,9 +130,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             listView = new ListView<>();
             listView.setCellFactory(param -> new IconNodeCell());
             listView.getStyleClass().add("rounded");
-            listView.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
-                update();
-            });
+            listView.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> update());
 
             treeRoot = new TreeItem<>(new IconNode("Icons", new HashSet<>()));
             treeRoot.setExpanded(true);
@@ -140,9 +139,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             treeView.setShowRoot(true);
             treeView.setRoot(treeRoot);
             treeView.getStyleClass().add("rounded");
-            treeView.setOnMouseClicked((MouseEvent event) -> {
-                refreshIconList();
-            });
+            treeView.setOnMouseClicked((MouseEvent event) -> refreshIconList());
 
             final SplitPane splitPane = new SplitPane();
             splitPane.setId("hiddenSplitter");
@@ -183,7 +180,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                     return true;
                 } else {
                     final String filename = pathname.getAbsolutePath();
-                    return filename.endsWith(".png") || filename.endsWith(".PNG");
+                    return StringUtils.endsWithIgnoreCase(filename, FileExtensionConstants.PNG);
                 }
             });
             for (final File file : filesInPath) {

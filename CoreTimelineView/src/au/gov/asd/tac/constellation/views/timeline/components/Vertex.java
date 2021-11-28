@@ -79,15 +79,6 @@ public final class Vertex extends Group {
         return isSelected;
     }
 
-//    public void setSelectedWithTransaction(final boolean selectedWithTransaction) {
-//        this.selectedWithTransaction = selectedWithTransaction;
-//        updateSelectedVisualIndication();
-//    }
-//    public void setSelected(final boolean selected)
-//    {
-//        isSelected = selected;
-//        updateSelectedVisualIndication();
-//    }
     private void updateSelectedVisualIndication() {
         if (isSelected) {
             Color highlightColor = selectedWithTransaction ? Color.RED : Color.YELLOW;

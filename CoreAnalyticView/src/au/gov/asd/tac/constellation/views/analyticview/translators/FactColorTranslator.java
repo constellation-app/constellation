@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
@@ -63,7 +64,7 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
-    @PluginInfo(tags = {"MODIFY"})
+    @PluginInfo(tags = {PluginTags.MODIFY})
     private class ColorElementsPlugin extends SimpleEditPlugin {
 
         protected static final String RESET_PARAMETER_ID = "ColorElementsPlugin.reset";
@@ -125,14 +126,14 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
                 for (final ElementFact scoreResult : factResults.get()) {
                     final GraphElementType elementType = scoreResult.getElementType();
                     final int elementId = scoreResult.getElementId();
-                    final float colorIntensity = scoreResult.getFactValue() ? 1f : 0f;
+                    final float colorIntensity = scoreResult.getFactValue() ? 1F : 0F;
                     switch (elementType) {
                         case VERTEX:
-                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1f, 1f));
+                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
                             graph.setObjectValue(vertexIconAttribute, elementId, "transparent");
                             break;
                         case TRANSACTION:
-                            graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1f, 1f));
+                            graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
                             break;
                         default:
                             throw new InvalidElementTypeException("'Color Elements' is not supported "

@@ -31,8 +31,10 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionListener;
@@ -74,7 +76,6 @@ import org.openide.windows.TopComponent;
 public final class VisualGraphOpener extends GraphOpener {
 
     private static final Logger LOGGER = Logger.getLogger(VisualGraphOpener.class.getName());
-    private static final String BACKUP_EXTENSION = ".bak";
 
     /**
      * Open a graph file into a VisualTopComponent.
@@ -116,7 +117,7 @@ public final class VisualGraphOpener extends GraphOpener {
                     if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
                         // The user wants the more recent autosaved version.
                         // Backup the current actual file and replace it with the autosave file.
-                        final File autosaved = new File(AutosaveUtilities.getAutosaveDir(), props.getProperty(AutosaveUtilities.ID) + GraphDataObject.FILE_EXTENSION);
+                        final File autosaved = new File(AutosaveUtilities.getAutosaveDir(), props.getProperty(AutosaveUtilities.ID) + FileExtensionConstants.STAR);
                         try {
                             AutosaveUtilities.copyFile(autosaved, f);
                         } catch (final IOException ex) {
@@ -193,7 +194,7 @@ public final class VisualGraphOpener extends GraphOpener {
                         // An exception was thrown trying to read specified star file. The most likely reason for this is
                         // a corrupt star file. Check to see if there was a 'backup' star file generated before the star file
                         // was writtien - if so, attmept to load this.
-                        final File backupFile = new File(graphFile.toString().concat(BACKUP_EXTENSION));
+                        final File backupFile = new File(graphFile.toString().concat(FileExtensionConstants.BACKUP));
 
                         // Clear previous progress message and reset to indicate we are trying to use backup.
                         ioProgressHandler.finish();
@@ -250,7 +251,7 @@ public final class VisualGraphOpener extends GraphOpener {
                         NotificationDisplayer.Priority.HIGH
                 );
             } else if (graph != null) {
-                final String msg = String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000f);
+                final String msg = String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000F);
                 StatusDisplayer.getDefault().setStatusText(msg);
                 LOGGER.info(msg);
 
@@ -270,7 +271,7 @@ public final class VisualGraphOpener extends GraphOpener {
     /**
      * Plugin to open graph file.
      */
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     private static class OpenGraphFile extends SimplePlugin {
 
         private final File graphFile;

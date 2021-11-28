@@ -154,7 +154,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public float getFloat(final int id) {
-        return data[id] != null && !data[id].isEmpty() ? Float.parseFloat(data[id]) : 0.0f;
+        return data[id] != null && !data[id].isEmpty() ? Float.parseFloat(data[id]) : 0.0F;
     }
 
     @Override

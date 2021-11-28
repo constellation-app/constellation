@@ -175,11 +175,6 @@ public class MultiPart {
             location = null;
         }
 
-//        conn.getHeaderFields().entrySet().stream().forEach(entry ->
-//        {
-//            System.out.printf("@@MultiPart header %s: %s\n", entry.getKey(), entry.getValue());
-//        });
-//        System.out.printf("@@MultiPart response [%s]\n", new String(getBody(conn, code)));
         return new Pair<>(conn.getResponseMessage(), location);
     }
 

@@ -36,9 +36,7 @@ public class Not {
     public static void register(Operators operators) {
         final OperatorRegistry registry = operators.getRegistry(NAME);
 
-        registry.register(BooleanReadable.class, BooleanReadable.class, p1 -> {
-            return () -> !p1.readBoolean();
-        });
+        registry.register(BooleanReadable.class, BooleanReadable.class, p1 -> () -> !p1.readBoolean());
     }
 
     static {

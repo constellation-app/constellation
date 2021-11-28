@@ -90,7 +90,6 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     private GraphNode graphNode = null;
     private final Lookup.Result<GraphNode> result;
 
-//    private static final NamedSelectionManager singleton = new NamedSelectionManager();
     /**
      * Gets the global <code>NamedSelectionManager</code>.
      * <p>
@@ -173,7 +172,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
                         // Save the selection to the graph elements:
                         performSave(graph, newSelection.getID());
 
-                        // Write this to the state;
+                        // Write this to the state
                         saveStateToGraph();
                     } else {
                         notifyAllAlloc();
@@ -202,7 +201,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
                 // Save the selection to the graph elements:
                 performSave(graphNode.getGraph(), newSelection.getID());
 
-                // Write this to the state;
+                // Write this to the state
                 saveStateToGraph();
 
                 updateState();
@@ -245,7 +244,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
                 // Save the selection to the graph elements:
                 performCustomSave(graphNode.getGraph(), nodesToSave, transactionsToSave, newSelection.getID());
 
-                // Write this to the state;
+                // Write this to the state
                 saveStateToGraph();
 
                 updateState();
@@ -305,7 +304,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
                 // Recall the newly saved selection with the dim / select states being honoured:
                 performRecall(graph, state.isSelectResults(), state.isDimOthers(), clonedSelection.getID());
 
-                // Write this to the state;
+                // Write this to the state
                 saveStateToGraph();
 
                 updateState();
@@ -455,7 +454,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
 
             state.getNamedSelections().get(index).setName(newName);
 
-            // Write this to the state;
+            // Write this to the state
             saveStateToGraph();
 
             updateState();
@@ -477,7 +476,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
 
             state.getNamedSelections().get(index).setDescription(newDescription);
 
-            // Write this to the state;
+            // Write this to the state
             saveStateToGraph();
 
             updateState();

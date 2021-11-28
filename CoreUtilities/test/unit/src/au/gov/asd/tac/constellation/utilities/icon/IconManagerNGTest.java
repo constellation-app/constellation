@@ -51,7 +51,7 @@ public class IconManagerNGTest {
     @BeforeClass
     public static void setUpClass() throws URISyntaxException {
         // Create test icons
-        try ( MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class)) {
+        try (MockedStatic<DefaultCustomIconProvider> defaultCustomIconProviderMock = Mockito.mockStatic(DefaultCustomIconProvider.class)) {
             // Get a test directory location for the getIconDirectory call
             URL exampleIcon = IconManagerNGTest.class.getResource("resources/");
             File testFile = new File(exampleIcon.toURI());
@@ -160,7 +160,7 @@ public class IconManagerNGTest {
      */
     @Test
     public void testGetIconNames() {
-        try ( MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class)) {
+        try (MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class)) {
             iconManagerMock.when(() -> IconManager.getCache()).thenReturn(TEST_CACHE);
             // Test when editable boolean is set to true
             final Set<String> namesTrue = IconManager.getIconNames(true);
@@ -211,7 +211,7 @@ public class IconManagerNGTest {
      */
     @Test
     public void testRemoveIcon() {
-        // Remove the icons created in the setUpClass method 
+        // Remove the icons created in the setUpClass method
         final boolean result1 = IconManager.removeIcon("Test1");
         assertTrue(result1);
 

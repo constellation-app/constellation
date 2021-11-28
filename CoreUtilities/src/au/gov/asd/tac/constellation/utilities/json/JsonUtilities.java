@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -41,6 +40,10 @@ import org.apache.commons.lang3.StringUtils;
  * @author arcturus
  */
 public class JsonUtilities {
+    
+    private JsonUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
     
     private static final Logger LOGGER = Logger.getLogger(JsonUtilities.class.getName());
 

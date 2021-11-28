@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -56,7 +57,7 @@ public final class PasteFromClipboardAction extends AbstractAction {
     /**
      * Plugin to paste from the clipboard.
      */
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     private final class PasteFromClipboard extends SimpleEditPlugin {
 
         @Override

@@ -60,7 +60,7 @@ import javax.swing.event.MouseInputListener;
 public class HistogramDisplay extends JPanel implements MouseInputListener, MouseWheelListener, KeyListener, PropertyChangeListener, ComponentListener {
 
     public static final Color BACKGROUND_COLOR = new Color(0x44, 0x44, 0x44);
-    public static final Color BAR_COLOR = new Color(0.1176f, 0.5647f, 1.0f);
+    public static final Color BAR_COLOR = new Color(0.1176F, 0.5647F, 1.0F);
     public static final Color SELECTED_COLOR = Color.RED.darker();
     public static final Color ACTIVE_COLOR = Color.YELLOW;
 
@@ -99,7 +99,6 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private int userSetBarHeight = -1;   // the vertical thickness of the bars as set by the user
     private int barsWidth; // the length of the longest bar
     private int textWidth; // the width of the space allocated to text
-    private float scaleFactor; // the scale factor from histogram count to bar length in pixels
     private int preferredTextWidth = 80; // this will be modified when the component is painted and the actual size of the text is measured.
     private final Dimension preferredSize = new Dimension(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2, PREFERRED_HEIGHT);
     private BinCollection binCollection = null;
@@ -120,15 +119,11 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         initializeListeners();
 
         final JMenuItem copyValuesMenuItem = new JMenuItem("Copy Selected Property Values");
-        copyValuesMenuItem.addActionListener(e -> {
-            copySelectedToClipboard(false);
-        });
+        copyValuesMenuItem.addActionListener(e -> copySelectedToClipboard(false));
         copyMenu.add(copyValuesMenuItem);
 
         final JMenuItem copyValuesAndCountsMenuItem = new JMenuItem("Copy Selected Property Values & Counts");
-        copyValuesAndCountsMenuItem.addActionListener(e -> {
-            copySelectedToClipboard(true);
-        });
+        copyValuesAndCountsMenuItem.addActionListener(e -> copySelectedToClipboard(true));
         copyMenu.add(copyValuesAndCountsMenuItem);
     }
 
@@ -217,7 +212,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         } while (--fontSize > MIN_FONT_SIZE && size > barSize - 4);
 
         g.setFont(font);
-        return Math.round(size / 2f) - metrics.getMaxDescent();
+        return Math.round(size / 2F) - metrics.getMaxDescent();
     }
 
     private int getPreferredTextWidth(Graphics g) {
@@ -317,7 +312,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
             final int maxCount = binCollection.getMaxElementCount();
             if (maxCount > 0) {
 
-                scaleFactor = barsWidth / (float) maxCount;
+                // the scale factor from histogram count to bar length in pixels
+                final float scaleFactor = barsWidth / (float) maxCount;
 
                 // Only draw the bars that are visible
                 JViewport viewPort = (JViewport) getParent();
@@ -517,7 +513,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
      * bar doesn't exist.
      */
     private int getBarAtPoint(Point p, boolean bounded) {
-        int n = (int) ((p.y - 2 + GAP_BETWEEN_BARS / 2f) / (GAP_BETWEEN_BARS + barHeight)) - 1;
+        int n = (int) ((p.y - 2 + GAP_BETWEEN_BARS / 2F) / (GAP_BETWEEN_BARS + barHeight)) - 1;
         if (bounded) {
             n = Math.min(Math.max(n, 0), binCollection.getBins().length - 1);
         }
