@@ -53,8 +53,6 @@ public final class FrameworkGraphManager extends GraphManager implements LookupL
         activeGraph = getActiveGraph();
 
         GraphNode.addGraphManagerListener(this);
-
-//        server = new RemoteGraphManagerServer(this);
     }
 
     @Override

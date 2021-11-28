@@ -723,7 +723,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     private void updateHitTestAndNewLine(final GraphReadMethods rg, final Point point) {
         final boolean newLine = eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION);
         // We need to wait for the results of the hit test if we are creating a transaction
-//        orderHitTest(point, newLine);
         if (newLine) {
             orderHitTest(point, HitTestMode.HANDLE_ASYNCHRONOUSLY, eventState -> scheduleNewLineChangeOperation(rg, point, VisualGraphUtilities.getCamera(rg), false, eventState));
         } else {

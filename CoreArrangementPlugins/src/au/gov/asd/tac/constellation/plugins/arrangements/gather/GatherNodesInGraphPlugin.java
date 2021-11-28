@@ -93,7 +93,7 @@ public final class GatherNodesInGraphPlugin extends SimpleEditPlugin {
 
             int h = 0;
             int v = 0;
-            float scalingFactor = 4; // *maxRadius;
+            float scalingFactor = 4;
 
             for (int vxId = gathers.nextSetBit(0); vxId >= 0; vxId = gathers.nextSetBit(vxId + 1)) {
                 if (h == 0 && v == 0) {

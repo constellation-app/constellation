@@ -287,7 +287,6 @@ public class ClusteringManager {
                     for (TreeElement te : elementsToUndim) {
                         if (te instanceof TreeLeaf) {
                             TreeLeaf leaf = (TreeLeaf) te;
-                            //wg.setBooleanValue(transDimAttr, leaf.getId(), false);
 
                             transactionsToUndim.add(leaf.getId());
                             Integer countA = undimmedVerticesOnGraph.get(leaf.vertexIdA);
@@ -337,7 +336,6 @@ public class ClusteringManager {
                     for (TreeElement te : elementsToUnhide) {
                         if (te instanceof TreeLeaf) {
                             TreeLeaf leaf = (TreeLeaf) te;
-                            //wg.setBooleanValue(transDimAttr, leaf.getId(), false);
 
                             transactionsToUnhide.add(leaf.getId());
                             Integer countA = unhiddenVerticesOnGraph.get(leaf.vertexIdA);

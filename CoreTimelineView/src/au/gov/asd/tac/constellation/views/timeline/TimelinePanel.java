@@ -172,15 +172,12 @@ public class TimelinePanel extends Region {
         // Layer that combines the newly constructed time-extents with the timeline layer:
         final StackPane stackPane = new StackPane();
         StackPane.setAlignment(labelsPane, Pos.CENTER);
-//        extentLabelPane.maxHeightProperty().bind(stackPane.heightProperty());
         StackPane.setAlignment(timelinePane, Pos.CENTER);
-//        timelinePane.prefHeightProperty().bind(stackPane.heightProperty());
         stackPane.setPadding(Insets.EMPTY);
         stackPane.getChildren().addAll(timelinePane, labelsPane);
 
         // Layout the menu bar and the timeline object:
         final VBox vbox = new VBox();
-//        stackPane.prefHeightProperty().bind(vbox.heightProperty());
         VBox.setVgrow(toolbar, Priority.NEVER);
         VBox.setVgrow(stackPane, Priority.ALWAYS);
         vbox.getChildren().addAll(toolbar, stackPane);
@@ -299,8 +296,6 @@ public class TimelinePanel extends Region {
                             transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
                         } else if (directionality == Graph.UPHILL) {
                             throw new IllegalArgumentException("source > dest is always downhill");
-//                                final String label = labelMaker(sourceBLabel, ARROW_CHAR, sourceALabel);
-//                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
                         } else { // Undirected / Bi-directional
                             final String label = labelMaker(sourceALabel, '-', sourceBLabel);
                             transaction = new Transaction(transactionID, transColor, label, transSelected);
@@ -506,23 +501,10 @@ public class TimelinePanel extends Region {
             }
         });
 
-        //btnDim = new ToggleButton(Bundle.DimGraphLabel());
-        // Register a toggle event listeners for the toggle buttons:
-        /*btnDim.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
-                if (!Objects.equals(oldValue, newValue) && coordinator != null) {
-                    coordinator.setIsDimming(newValue);
-                }
-            }
-        });*/
         // Handle
         btnShowLabels = new ToggleButton(Bundle.ShowLabels());
         btnShowLabels.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
-            //                if(oldValue != newValue)
-//                {
             coordinator.setIsShowingNodeLabels(newValue);
-//                }
         });
 
         btnZoomToSelection = new Button(Bundle.ZoomtoSelection());
@@ -615,8 +597,6 @@ public class TimelinePanel extends Region {
             toolbar.getItems().remove(cmbAttributeNames);
             cmbAttributeNames = createComboNodeLabels();
             toolbar.getItems().add(cmbAttributeNames);
-
-            //cmbAttributeNames.getItems().clear();
             cmbAttributeNames.setPromptText(Bundle.SelectLabelAttribute());
         }
     }

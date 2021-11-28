@@ -26,7 +26,7 @@ import org.openide.util.Lookup;
  */
 public abstract class TooltipProvider {
 
-    private static List<TooltipProvider> TOOLTIP_PROVIDERS = null;
+    private static List<TooltipProvider> tooltipProviders = null;
 
     /**
      * Requests a TooltipDefinition from all registered TooltipProviders and
@@ -62,13 +62,13 @@ public abstract class TooltipProvider {
     }
 
     protected static synchronized void init() {
-        if (TOOLTIP_PROVIDERS == null) {
-            TOOLTIP_PROVIDERS = new ArrayList<>(Lookup.getDefault().lookupAll(TooltipProvider.class));
+        if (tooltipProviders == null) {
+            tooltipProviders = new ArrayList<>(Lookup.getDefault().lookupAll(TooltipProvider.class));
         }
     }
     
     protected static List<TooltipProvider> getTooltipProviders(){
-        return TOOLTIP_PROVIDERS;
+        return tooltipProviders;
     }
     
     public abstract TooltipDefinition createTooltips(final String content);

@@ -118,7 +118,6 @@ public class ScriptingViewPane extends JPanel {
 
         this.scriptEditor = new RSyntaxTextArea(5, 80);
         scriptEditor.addParser(scriptParser);
-//        scriptEditor.setAnimateBracketMatching(false);
         scriptEditor.setAnimateBracketMatching(true);
         scriptEditor.setAntiAliasingEnabled(true);
         scriptEditor.setAutoIndentEnabled(true);

@@ -185,9 +185,8 @@ class FR2DArranger implements Arranger {
 
             if (vxId != vxOrigin) {
                 final Point2D p2 = points.get(vxId);
-//                final float radius2 = radiusAttr!=Graph.NOT_FOUND ? graph.getFloatValue(radiusAttr, node) : 1;
-                final double xDelta = p1.getX() - p2.getX();// + radius1 + radius2;
-                final double yDelta = p1.getY() - p2.getY();// + radius1 + radius2;
+                final double xDelta = p1.getX() - p2.getX();
+                final double yDelta = p1.getY() - p2.getY();
                 final double lenDelta = Math.max(EPSILON, Math.sqrt(xDelta * xDelta + yDelta * yDelta));
                 final double force = (repulsionConstant * repulsionConstant) / lenDelta;
                 if (Double.isNaN(force)) {
@@ -211,10 +210,8 @@ class FR2DArranger implements Arranger {
     private void attract(final int vx0Id, final int vx1Id) {
         final Point2D point1 = points.get(vx0Id);
         final Point2D point2 = points.get(vx1Id);
-//        final float radius1 = radiusAttr!=Graph.NOT_FOUND ? graph.getFloatValue(radiusAttr, node1) : 1;
-//        final float radius2 = radiusAttr!=Graph.NOT_FOUND ? graph.getFloatValue(radiusAttr, node2) : 1;
-        final double xDelta = point1.getX() - point2.getX();// + radius1 + radius2;
-        final double yDelta = point1.getY() - point2.getY();// + radius1 + radius2;
+        final double xDelta = point1.getX() - point2.getX();
+        final double yDelta = point1.getY() - point2.getY();
         final double lenDelta = Math.max(EPSILON, Math.sqrt(xDelta * xDelta + yDelta * yDelta));
         final double force = (lenDelta * lenDelta) / attractionConstant;
         if (Double.isNaN(force)) {

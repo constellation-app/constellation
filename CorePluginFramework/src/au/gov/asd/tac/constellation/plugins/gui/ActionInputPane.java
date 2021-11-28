@@ -65,8 +65,6 @@ public class ActionInputPane extends Pane {
         this.setVisible(parameter.isVisible());
 
         field.setOnAction(event -> 
-            // Set a new Object every time so the change event fires.
-            //            parameter.setObjectValue(new Object());
             parameter.fireNoChange());
 
         parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> Platform.runLater(() -> {

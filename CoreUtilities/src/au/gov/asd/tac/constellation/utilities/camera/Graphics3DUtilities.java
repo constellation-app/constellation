@@ -211,9 +211,6 @@ public class Graphics3DUtilities {
     public static boolean moveByProjection(final Vector3f position, final Matrix44f modelViewProjectionMatrix, final int[] viewport, final int deltaX, final int deltaY, final Vector3f newposition) {
         // To avoid playing with large numbers, we move the fixed position (0,0,0),
         // then add the original position at the end.
-        //        final Matrix44f mvpmat = new Matrix44f();
-//        mvpmat.set(modelViewProjectionMatrix);
-//        final float[] tr = mvpmat.multiply(0f, 0f, 0f, 1.0f);
         final float[] tr = modelViewProjectionMatrix.multiply(0F, 0F, 0F, 1.0F);
         if (tr[3] == 0) {
             return false;
