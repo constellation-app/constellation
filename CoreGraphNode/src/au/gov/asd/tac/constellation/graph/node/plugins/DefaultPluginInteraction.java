@@ -23,14 +23,14 @@ import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.netbeans.api.progress.ProgressHandle;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import static org.openide.NotifyDescriptor.DEFAULT_OPTION;
 import org.openide.awt.NotificationDisplayer;
@@ -39,7 +39,20 @@ import org.openide.awt.StatusDisplayer.Message;
 import org.openide.util.Cancellable;
 
 /**
- * Interface for plugins that work in an interactive mode
+ * Interface for plugins that work in an interactive mode.
+ * <p>
+ * The following is a summary:</p>
+ * <ul>
+ * <li>{@code PluginNotificationLevel.FATAL} and
+ * {@code PluginNotificationLevel.ERROR} type messages will have a dialog
+ * presented</li>
+ * <li>{@code PluginNotificationLevel.WARNING} will have a balloon notification
+ * popup</li>
+ * <li>{@code PluginNotificationLevel.INFO} will have the message shown in the
+ * applications status notification area which is to the bottom left area</li>
+ * <li>{@code PluginNotificationLevel.DEBUG} messages will be logged if the FINE
+ * log to this class in enabled</li>
+ * </ul>
  *
  * @author sirius
  */
@@ -53,7 +66,8 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     private String currentMessage;
     private Timer timer = null;
 
-    private static final String STRING_STRING_FORMAT = "%s: %s";
+    private static final String LOGGING_FORMAT = "{0}: {1}";
+    private static final String STRING_FORMAT = "%s: %s";
 
     public DefaultPluginInteraction(final PluginManager pluginManager, final PluginReport pluginReport) {
         this.pluginManager = pluginManager;
@@ -93,7 +107,8 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             final String graphName = graphNode.getName();
             if (graphName != null) {
                 result.append(graphName);
-                result.append(": ");
+                result.append(SeparatorConstants.COLON);
+                result.append(" ");
             }
         }
 
@@ -170,33 +185,27 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         final String title = pluginManager.getPlugin().getName();
         switch (level) {
             case FATAL:
-                SwingUtilities.invokeLater(() -> {
-                    final NotifyDescriptor ndf = new NotifyDescriptor(
-                            "Fatal error:\n" + message,
-                            title,
-                            DEFAULT_OPTION,
-                            NotifyDescriptor.ERROR_MESSAGE,
-                            new Object[]{NotifyDescriptor.OK_OPTION},
-                            NotifyDescriptor.OK_OPTION
-                    );
-                    DialogDisplayer.getDefault().notify(ndf);
-                });
-                LOGGER.severe(String.format(STRING_STRING_FORMAT, title, message));
+                NotifyDisplayer.display(new NotifyDescriptor(
+                        "Fatal Error:\n" + message,
+                        title,
+                        DEFAULT_OPTION,
+                        NotifyDescriptor.ERROR_MESSAGE,
+                        new Object[]{NotifyDescriptor.OK_OPTION},
+                        NotifyDescriptor.OK_OPTION
+                ));
+                LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
             case ERROR:
-                SwingUtilities.invokeLater(() -> {
-                    final NotifyDescriptor nde = new NotifyDescriptor(
-                            "Error:\n" + message,
-                            title,
-                            DEFAULT_OPTION,
-                            NotifyDescriptor.ERROR_MESSAGE,
-                            new Object[]{NotifyDescriptor.OK_OPTION},
-                            NotifyDescriptor.OK_OPTION
-                    );
-                    DialogDisplayer.getDefault().notify(nde);
-                });
-                LOGGER.severe(String.format(STRING_STRING_FORMAT, title, message));
+                NotifyDisplayer.display(new NotifyDescriptor(
+                        "Error:\n" + message,
+                        title,
+                        DEFAULT_OPTION,
+                        NotifyDescriptor.ERROR_MESSAGE,
+                        new Object[]{NotifyDescriptor.OK_OPTION},
+                        NotifyDescriptor.OK_OPTION
+                ));
+                LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
             case WARNING:
@@ -205,18 +214,20 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         message,
                         null
                 );
-                LOGGER.warning(String.format(STRING_STRING_FORMAT, title, message));
+                LOGGER.log(Level.WARNING, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
             case INFO:
-                final Message statusMessage = StatusDisplayer.getDefault().setStatusText(String.format(STRING_STRING_FORMAT, title, message), 10);
+                final String statusText = String.format(STRING_FORMAT, title, message);
+                final Message statusMessage = StatusDisplayer.getDefault().setStatusText(statusText, 10);
                 statusMessage.clear(5000);
-                LOGGER.info(String.format(STRING_STRING_FORMAT, title, message));
+                LOGGER.log(Level.INFO, LOGGING_FORMAT, new Object[]{title, message});
                 break;
 
             case DEBUG:
-                LOGGER.fine(String.format(STRING_STRING_FORMAT, title, message));
+                LOGGER.log(Level.FINE, LOGGING_FORMAT, new Object[]{title, message});
                 break;
+
             default:
                 break;
         }
@@ -224,21 +235,27 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
     @Override
     public boolean confirm(final String message) {
-        final int[] result = new int[1];
+        final NotifyDescriptor descriptor = new NotifyDescriptor.Message(
+                message,
+                NotifyDescriptor.QUESTION_MESSAGE
+        );
+
+        descriptor.setOptions(new Object[]{
+            NotifyDescriptor.YES_OPTION,
+            NotifyDescriptor.NO_OPTION
+        });
+
         try {
-            SwingUtilities.invokeAndWait(() -> {
-                final NotifyDescriptor descriptor = new NotifyDescriptor.Message(message, NotifyDescriptor.QUESTION_MESSAGE);
-                descriptor.setOptions(new Object[]{NotifyDescriptor.YES_OPTION, NotifyDescriptor.NO_OPTION});
-                result[0] = (int) DialogDisplayer.getDefault().notify(descriptor);
-            });
-        } catch (final InterruptedException ex) {
+            return NotifyDisplayer.displayAndWait(descriptor).get()
+                    == NotifyDescriptor.YES_OPTION;
+        } catch (ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, "Failed to open confirm dialog", ex);
+        } catch (InterruptedException ex) {
             LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (final InvocationTargetException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
-        return result[0] == 0;
+        return false;
     }
 
     @Override

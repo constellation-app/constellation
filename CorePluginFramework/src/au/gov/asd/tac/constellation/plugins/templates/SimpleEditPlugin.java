@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.templates;
 
-import au.gov.asd.tac.constellation.graph.DuplicateKeyException;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -24,12 +23,9 @@ import au.gov.asd.tac.constellation.plugins.AbstractPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.NbBundle.Messages;
 
 /**
  * A plugin template for plugins that edit the graph is a single efficient
@@ -46,11 +42,6 @@ import org.openide.util.NbBundle.Messages;
  *
  * @author sirius
  */
-@Messages({
-    "# {0} - graph",
-    "# {1} - name",
-    "MSG_Edit_Failed=Action failed: {0}; {1}"
-})
 public abstract class SimpleEditPlugin extends AbstractPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SimpleEditPlugin.class.getName());
@@ -86,28 +77,28 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     }
 
     @Override
-    public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
 
         boolean inControlOfProgress = true;
 
         final Graph graph = graphs.getGraph();
         //graph no longer exists
         if (graph == null) {
-            LOGGER.warning(String.format("Null graph not allowed in a %s", SimpleEditPlugin.class.getSimpleName()));
+            LOGGER.log(Level.WARNING, "Null graph not allowed in a {0}", SimpleEditPlugin.class.getSimpleName());
             return;
         }
+
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
         try {
-
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+
             try {
                 boolean cancelled = false;
-
                 Object description = null;
-
                 WritableGraph writableGraph = graph.getWritableGraph(getName(), isSignificant(), this);
+
                 try {
                     interaction.setProgress(0, 0, "Editing...", true);
 
@@ -116,25 +107,10 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                         if (!"Editing...".equals(interaction.getCurrentMessage())) {
                             inControlOfProgress = false;
                         }
-                    } catch (InterruptedException e) {
+                    } catch (final Exception ex) {
                         cancelled = true;
-                        interaction.notify(PluginNotificationLevel.INFO, "Action cancelled: " + graphs.getGraph() + SeparatorConstants.COLON + " " + getName());
-                        throw e;
-                    } catch (PluginException e) {
-                        final String msg = Bundle.MSG_Edit_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg + SeparatorConstants.NEWLINE + e.getMessage());
-                        cancelled = true;
-                        LOGGER.log(Level.WARNING, msg, e);
-                        throw e;
-                    } catch (Exception ex) {
-                        final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimpleEditPlugin.class.getName());
-                        final String msg = Bundle.MSG_Edit_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + ex.getMessage());
-                        cancelled = true;
-                        LOGGER.log(Level.WARNING, ex, () -> msg0 + SeparatorConstants.SEMICOLON + " " + msg);
-                        throw new RuntimeException(ex);
+                        throw ex;
                     }
-
                 } finally {
                     if (cancelled) {
                         writableGraph.rollBack();
@@ -142,8 +118,6 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                         writableGraph.commit(description);
                     }
                 }
-            } catch (DuplicateKeyException ex) {
-                interaction.notify(PluginNotificationLevel.ERROR, ex.getMessage());
             } finally {
                 interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
             }
@@ -165,10 +139,11 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
 
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
-        try {
 
+        try {
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+
             try {
                 edit(graph, interaction, parameters);
                 if (!WAITING_INTERACTION.equals(interaction.getCurrentMessage())) {
@@ -177,7 +152,6 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
             } finally {
                 interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
             }
-
         } finally {
             interaction.setBusy(graph.getId(), false);
         }
