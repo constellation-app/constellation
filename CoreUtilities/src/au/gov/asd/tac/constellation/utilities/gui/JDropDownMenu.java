@@ -181,9 +181,7 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
 
     protected List<CompletableFuture<Void>> performActionsOnListeners(final ActionEvent event) {
         final List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
-        listeners.forEach(listener -> {
-            completableFutures.add(CompletableFuture.runAsync(() -> listener.actionPerformed(event)));
-        });
+        listeners.forEach(listener -> completableFutures.add(CompletableFuture.runAsync(() -> listener.actionPerformed(event))));
         return completableFutures;
     }
 
