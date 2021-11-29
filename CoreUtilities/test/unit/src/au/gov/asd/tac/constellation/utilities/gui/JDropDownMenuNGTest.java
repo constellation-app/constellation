@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -311,17 +312,29 @@ public class JDropDownMenuNGTest {
     public void testActionPerformed() throws Exception {
         System.out.println("actionPerformed");
 
-        final ActionListener listSelectionListenerMock1 = mock(ActionListener.class);
-        final ActionListener listSelectionListenerMock2 = mock(ActionListener.class);
-        final ActionEvent mockEvent = mock(ActionEvent.class);
         final JDropDownMenu instance = new JDropDownMenu("Text", items);
+        final JDropDownMenu instanceSpy = spy(instance);
+        final ActionEvent actionEventMock = mock(ActionEvent.class);
+        instanceSpy.actionPerformed(actionEventMock);
+        verify(instanceSpy, times(1)).performActionsOnListeners(any(ActionEvent.class));
+    }
 
-        instance.addActionListener(listSelectionListenerMock1);
-        instance.addActionListener(listSelectionListenerMock2);
-        instance.actionPerformed(mockEvent);
-        Thread.sleep(1000);
-        verify(listSelectionListenerMock1, times(1)).actionPerformed(mockEvent);
-        verify(listSelectionListenerMock2, times(1)).actionPerformed(mockEvent);
+    @Test
+    public void testPerformActionsOnListeners() throws Exception {
+        System.out.println("performActionsOnListeners");
+
+        final ActionEvent mockEvent = mock(ActionEvent.class);
+        final ActionListener actionListenerMock1 = mock(ActionListener.class);
+        final JDropDownMenu instance = new JDropDownMenu("Text", items);
+        instance.addActionListener(actionListenerMock1);
+        List<CompletableFuture<Void>> completableFuture = instance.performActionsOnListeners(mockEvent);
+        assertEquals(completableFuture.size(), 1);
+
+        CompletableFuture result = completableFuture.stream().findFirst().get();
+        result.get();
+
+        assertTrue(result.isDone());
+        verify(actionListenerMock1, times(1)).actionPerformed(mockEvent);
     }
 
     /**

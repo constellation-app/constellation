@@ -19,12 +19,14 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -174,15 +176,15 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent event) {
+        performActionsOnListeners(event);
+    }
+
+    protected List<CompletableFuture<Void>> performActionsOnListeners(final ActionEvent event) {
+        final List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
         listeners.forEach(listener -> {
-            final Thread thread = new Thread("JDropDownMenu Worker") {
-                @Override
-                public void run() {
-                    listener.actionPerformed(event);
-                }
-            };
-            thread.start();
+            completableFutures.add(CompletableFuture.runAsync(() -> listener.actionPerformed(event)));
         });
+        return completableFutures;
     }
 
     @Override
