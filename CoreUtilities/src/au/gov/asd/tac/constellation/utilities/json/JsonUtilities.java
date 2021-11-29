@@ -45,10 +45,6 @@ public class JsonUtilities {
     
     private static final Logger LOGGER = Logger.getLogger(JsonUtilities.class.getName());
         
-    private JsonUtilities() {
-        throw new IllegalStateException("Utility class");
-    }
-    
     public static String getTextField(JsonNode node, String... keys) {
         return getTextField(null, node, keys);
     }
