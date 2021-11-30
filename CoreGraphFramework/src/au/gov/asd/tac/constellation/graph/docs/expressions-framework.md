@@ -30,21 +30,21 @@ A valid query for a vertex or transaction takes the form of
   
 
 How to form an expression to find a vertex with the "Label" attribute
-matching "Vertex #1\<Unknown>".
+matching "Vertex #1&lt;Unknown&gt;".
 
 -   "AttributeName" is Label
 -   "Operator" is == or equals
--   "Value" is "Vertex #1\<Unknown>" or 'Vertex #1\<Unknown>'
+-   "Value" is "Vertex #1&lt;Unknown&gt;" or 'Vertex #1&lt;Unknown&gt;'
 
   
 
 Combining these into the pattern \[AttributeName\] \[Operator\]
 \[Value\] yields the following suitable query strings.
 
--   Label == "Vertex #1\<Unknown>"
--   Label == 'Vertex #1\<Unknown>'
--   Label equals "Vertex #1\<Unknown>"
--   Label equals 'Vertex #1\<Unknown>'
+-   Label == "Vertex #1&lt;Unknown&gt;"
+-   Label == 'Vertex #1&lt;Unknown&gt;'
+-   Label equals "Vertex #1&lt;Unknown&gt;"
+-   Label equals 'Vertex #1&lt;Unknown&gt;'
 
 ## Operators
 
@@ -201,11 +201,11 @@ See below for an example.
 
   
 
-(Label == 'Vertex #0\<Unknown>' || Label == 'Vertex #1\<Unknown>' ) &&
+(Label == 'Vertex #0&lt;Unknown&gt;' || Label == 'Vertex #1&lt;Unknown&gt;' ) &&
 Type == 'Machine Identifier'
 
-Will show a Vertex which is either Vertex #0\<Unknown> or Vertex
-\#1\<Unknown> and has a "Type" of 'Machine Identifier'.
+Will show a Vertex which is either Vertex #0&lt;Unknown&gt; or Vertex 
+#1&lt;Unknown&gt; and has a "Type" of 'Machine Identifier'.
 
 ## Restricted Characters
 
@@ -228,4 +228,4 @@ Care must be taken for things like lexicographic ordering with different
 variable types.  
 Addition as shown below works similar to appending for String types.
 
-(Label + 'extratext') == 'Vertex #1\<Unknown>extratext'
+(Label + 'extratext') == 'Vertex #1&lt;Unknown&gt;extratext'
