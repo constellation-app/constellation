@@ -204,8 +204,8 @@ See below for an example.
 (Label == 'Vertex #0&lt;Unknown&gt;' || Label == 'Vertex #1&lt;Unknown&gt;' ) &&
 Type == 'Machine Identifier'
 
-Will show a Vertex which is either Vertex #0&lt;Unknown&gt; or Vertex 
-#1&lt;Unknown&gt; and has a "Type" of 'Machine Identifier'.
+Will show a Vertex which is either Vertex #0&lt;Unknown&gt; or Vertex
+\#1&lt;Unknown&gt; and has a "Type" of 'Machine Identifier'.
 
 ## Restricted Characters
 
