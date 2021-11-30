@@ -86,7 +86,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
         try {
             final InputStream in = SwaggerServlet.class.getResourceAsStream(fileName);
 
-            if (fileName.equals("swagger/constellation.json")) {
+            if ("swagger/constellation.json".equals(fileName)) {
                 // The file constellation.json contains our swagger info.
                 // Dynamically add data and services.
                 final ObjectMapper mapper = new ObjectMapper();

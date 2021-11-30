@@ -87,27 +87,27 @@ public final class HistogramState {
         private String attribute = null;
         private BinFormatter binFormatter = BinFormatter.DEFAULT_BIN_FORMATTER;
 
-        protected AttributeType getAttributeType() {
+        private AttributeType getAttributeType() {
             return attributeType;
         }
 
-        protected void setAttributeType(final AttributeType attributeType) {
+        private void setAttributeType(final AttributeType attributeType) {
             this.attributeType = attributeType;
         }
 
-        protected String getAttribute() {
+        private String getAttribute() {
             return attribute;
         }
 
-        protected void setAttribute(final String attribute) {
+        private void setAttribute(final String attribute) {
             this.attribute = attribute;
         }
 
-        protected BinFormatter getBinFormatter() {
+        private BinFormatter getBinFormatter() {
             return binFormatter;
         }
 
-        protected void setBinFormatter(final BinFormatter binFormatter) {
+        private void setBinFormatter(final BinFormatter binFormatter) {
             this.binFormatter = binFormatter;
 
         }

@@ -42,7 +42,7 @@ public class DeveloperOptionsPanel extends JPanel {
         initComponents();
     }
 
-    public boolean getGcOnOpen() {
+    public boolean isGcOnOpenSelected() {
         return gcOnOpenCheckbox.isSelected();
     }
 
@@ -50,7 +50,7 @@ public class DeveloperOptionsPanel extends JPanel {
         gcOnOpenCheckbox.setSelected(gcOnOpen);
     }
 
-    public boolean getGcOnClose() {
+    public boolean isGcOnCloseSelected() {
         return gcOnCloseCheckbox.isSelected();
     }
 
@@ -58,7 +58,7 @@ public class DeveloperOptionsPanel extends JPanel {
         gcOnCloseCheckbox.setSelected(gcOnClose);
     }
 
-    public boolean getDebugGl() {
+    public boolean isDebugGlSelected() {
         return debugGlCheckbox.isSelected();
     }
 
@@ -66,7 +66,7 @@ public class DeveloperOptionsPanel extends JPanel {
         debugGlCheckbox.setSelected(debugGl);
     }
 
-    public boolean getPrintGl() {
+    public boolean isPrintGlSelected() {
         return printGlCheckbox.isSelected();
     }
 
@@ -74,7 +74,7 @@ public class DeveloperOptionsPanel extends JPanel {
         printGlCheckbox.setSelected(printGl);
     }
 
-    public boolean getDisplayFps() {
+    public boolean isDisplayFpsSelected() {
         return displayFpsCheckbox.isSelected();
     }
 
@@ -200,7 +200,7 @@ public class DeveloperOptionsPanel extends JPanel {
 
         for (UpdateUnit unit : UpdateManager.getDefault().getUpdateUnits()) {
             String codeName = unit.getCodeName();
-            if (!codeName.equals("au.gov.asd.tac.constellation.autoupdate")
+            if (!"au.gov.asd.tac.constellation.autoupdate".equals(codeName)
                     && !codeName.startsWith("org.netbeans.")
                     && !codeName.startsWith("org.openide.")
                     && !codeName.startsWith("org.jdesktop.")) {

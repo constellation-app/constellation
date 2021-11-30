@@ -58,6 +58,6 @@ public class MenuSetDrawModeAction extends MenuBaseAction {
 
     @Override
     protected void displayValue() {
-        menuButton.setSelected(VisualGraphUtilities.getIsDrawingMode(getContext().getGraph()));
+        menuButton.setSelected(VisualGraphUtilities.isDrawingMode(getContext().getGraph()));
     }
 }

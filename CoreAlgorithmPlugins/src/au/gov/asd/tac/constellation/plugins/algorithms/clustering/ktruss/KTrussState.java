@@ -156,7 +156,7 @@ public class KTrussState {
         this.totalVertsInTrusses = totalVertsInTrusses;
     }
 
-    public boolean getNestedTrussesColored() {
+    public boolean isNestedTrussesColored() {
         return nestedTrussesColored;
     }
 
@@ -168,7 +168,7 @@ public class KTrussState {
         drawAllComponents = !drawAllComponents;
     }
 
-    public boolean getDrawAllComponents() {
+    public boolean isDrawAllComponents() {
         return drawAllComponents;
     }
 
@@ -180,7 +180,7 @@ public class KTrussState {
         isNestedTrussesVisible = !isNestedTrussesVisible;
     }
 
-    public boolean getNestedTrussesVisible() {
+    public boolean isNestedTrussesVisible() {
         return isNestedTrussesVisible;
     }
 
@@ -286,16 +286,12 @@ public class KTrussState {
         return highestK;
     }
 
-    public boolean getInteractive() {
+    public boolean isInteractive() {
         return interactive;
     }
 
     public void setInteractive(final boolean value) {
         interactive = value;
-    }
-
-    public boolean getExcludedElementsDimmed() {
-        return isExcludedElementsDimmed();
     }
 
     public void setExcludedElementsDimmed(final boolean value) {

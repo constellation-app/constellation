@@ -130,7 +130,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
         this.metadata.put(key, value);
     }
 
-    public final boolean getIgnoreNullResults() {
+    public final boolean isIgnoreNullResults() {
         return ignoreNullResults;
     }
 

@@ -56,8 +56,18 @@ public class CompoundIcon implements Icon {
     public CompoundIcon(final Axis axis, final int gap, final float alignmentX, final float alignmentY, final Icon... icons) {
         this.axis = axis;
         this.gap = gap;
-        this.alignmentX = alignmentX > 1.0F ? 1.0F : alignmentX < 0.0F ? 0.0F : alignmentX;
-        this.alignmentY = alignmentY > 1.0F ? 1.0F : alignmentY < 0.0F ? 0.0F : alignmentY;
+
+        if (alignmentX > 1.0F) {
+            this.alignmentX = 1.0F;
+        } else {
+            this.alignmentX = alignmentX < 0.0F ? 0.0F : alignmentX;
+        }
+
+        if (alignmentY > 1.0F) {
+            this.alignmentY = 1.0F;
+        } else {
+            this.alignmentY = alignmentY < 0.0F ? 0.0F : alignmentY;
+        }
 
         for (int index = 0; index < icons.length; index++) {
             if (icons[index] == null) {

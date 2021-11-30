@@ -200,17 +200,42 @@ public class ProductBuilder extends GraphBuilder {
             return;
         }
 
-        int g1Link = g1.getLink(g1Vertices[x], g1Vertices[x2]);
-        int g2Link = g2.getLink(g2Vertices[y], g2Vertices[y2]);
+        final int g1Link = g1.getLink(g1Vertices[x], g1Vertices[x2]);
+        final int g2Link = g2.getLink(g2Vertices[y], g2Vertices[y2]);
         final boolean g1Reverse = g1Counts && g1.getLinkLowVertex(g1Link) != g1Vertices[x];
         final boolean g2Reverse = g2Counts && g2.getLinkLowVertex(g2Link) != g2Vertices[y];
 
         final int g1Flat = !g1Counts ? 1 : g1.getLinkTransactionCount(g1Link, Graph.FLAT);
-        final int g1Uphill = !g1Counts ? 1 : g1Reverse ? g1.getLinkTransactionCount(g1Link, Graph.DOWNHILL) : g1.getLinkTransactionCount(g1Link, Graph.UPHILL);
-        final int g1Downhill = !g1Counts ? 1 : g1Reverse ? g1.getLinkTransactionCount(g1Link, Graph.UPHILL) : g1.getLinkTransactionCount(g1Link, Graph.DOWNHILL);
+
+        final int g1Uphill;
+        if (!g1Counts) {
+            g1Uphill = 1;
+        } else {
+            g1Uphill = g1Reverse ? g1.getLinkTransactionCount(g1Link, Graph.DOWNHILL) : g1.getLinkTransactionCount(g1Link, Graph.UPHILL);
+        }
+
+        final int g1Downhill;
+        if (!g1Counts) {
+            g1Downhill = 1;
+        } else {
+            g1Downhill = g1Reverse ? g1.getLinkTransactionCount(g1Link, Graph.UPHILL) : g1.getLinkTransactionCount(g1Link, Graph.DOWNHILL);
+        }
+
         final int g2Flat = !g2Counts ? 1 : g2.getLinkTransactionCount(g2Link, Graph.FLAT);
-        final int g2Uphill = !g2Counts ? 1 : g2Reverse ? g2.getLinkTransactionCount(g2Link, Graph.DOWNHILL) : g2.getLinkTransactionCount(g2Link, Graph.UPHILL);
-        final int g2Downhill = !g2Counts ? 1 : g2Reverse ? g2.getLinkTransactionCount(g2Link, Graph.UPHILL) : g2.getLinkTransactionCount(g2Link, Graph.DOWNHILL);
+
+        final int g2Uphill;
+        if (!g2Counts) {
+            g2Uphill = 1;
+        } else {
+            g2Uphill = g2Reverse ? g2.getLinkTransactionCount(g2Link, Graph.DOWNHILL) : g2.getLinkTransactionCount(g2Link, Graph.UPHILL);
+        }
+
+        final int g2Downhill;
+        if (!g2Counts) {
+            g2Downhill = 1;
+        } else {
+            g2Downhill = g2Reverse ? g2.getLinkTransactionCount(g2Link, Graph.UPHILL) : g2.getLinkTransactionCount(g2Link, Graph.DOWNHILL);
+        }
 
         final int flat = g1Flat * g2Flat;
         final int uphill = g1Uphill * g2Uphill;

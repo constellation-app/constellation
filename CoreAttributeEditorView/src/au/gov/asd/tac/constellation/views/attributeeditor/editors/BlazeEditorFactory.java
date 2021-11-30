@@ -66,7 +66,6 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         private CheckBox noValueCheckBox;
         private TextField angleTextField;
-        private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
 
         protected BlazeEditor(final EditOperation editOperation, final DefaultGetter<Blaze> defaultGetter, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
@@ -139,7 +138,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
                 namedColors.add(c);
             }
-            colorCombo = new ComboBox<>(namedColors);
+            final ComboBox<ConstellationColor> colorCombo = new ComboBox<>(namedColors);
             final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
                 @Override
                 protected void updateItem(final ConstellationColor item, boolean empty) {
