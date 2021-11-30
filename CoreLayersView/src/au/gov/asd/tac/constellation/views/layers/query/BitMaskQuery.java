@@ -53,7 +53,7 @@ public class BitMaskQuery {
         return bitIndex;
     }
 
-    public boolean getVisibility() {
+    public boolean isVisible() {
         return visible;
     }
 

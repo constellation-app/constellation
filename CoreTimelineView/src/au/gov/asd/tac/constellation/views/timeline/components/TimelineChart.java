@@ -232,9 +232,6 @@ public class TimelineChart extends XYChart<Number, Number> {
 
         this.xAxis = (NumberAxis) xAxis;
         this.yAxis = yAxis;
-//        this.xAxis.setLowerBound(System.currentTimeMillis() - (31536000000l * 5));
-//        this.xAxis.setUpperBound(System.currentTimeMillis());
-//        setExtents(System.currentTimeMillis() - (31536000000l * 5), System.currentTimeMillis(), true);
         tooltip = createTooltip();
 
         formatAxes();

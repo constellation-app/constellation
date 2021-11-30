@@ -121,10 +121,6 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     final BufferedImage currentImage = loadedImageData.getFirst().get(i);
                     final BufferedImage image = new BufferedImage(firstImage.getWidth(), firstImage.getHeight(), firstImage.getType());
                     final Graphics2D g2d = image.createGraphics();
-//                    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-//                    g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-//                    g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-//                    g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
                     g2d.drawImage(images.get(i - 1), identity, null);
                     g2d.drawImage(currentImage, new AffineTransform(1, 0, 0, 1, loadedImageData.getSecond().get(i), loadedImageData.getThird().get(i)), null);
                     g2d.dispose();
@@ -203,7 +199,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                         final int b = rgb & 0xff;
 
                         // Generate Z using grayscale.
-                        final float gray = 0;//0.21f * r + 0.71f * g + 0.08f * b;
+                        final float gray = 0;
 
                         final int vxId = vertexIds[x][y] = graph.addVertex();
                         graph.setStringValue(vertexIdentifierAttributeId, vxId, String.format("%d,%d", x, y));
@@ -342,7 +338,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 throw new IOException("Can't read image format!");
             }
 
-            final boolean isGif = reader.getFormatName().equalsIgnoreCase("gif");
+            final boolean isGif = "gif".equalsIgnoreCase(reader.getFormatName());
             reader.setInput(imageStream, false, !isGif);
 
             boolean unknownMetaformat = false;

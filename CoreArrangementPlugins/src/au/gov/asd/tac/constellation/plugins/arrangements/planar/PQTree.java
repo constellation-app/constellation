@@ -65,14 +65,12 @@ class PQTree {
         final Set<PQNode> bubbled = new HashSet<>();
 
         for (PQNode leaf : leaves.get(currentNumber - 1)) {
-//            if (leaf.virtualNum == currentNumber) {
             leaf.setPertinentLeafCount(1);
             if (leaf.getParent() != null) {
                 leaf.getParent().setPertinentChildCount(leaf.getParent().getPertinentChildCount() + 1);
                 nodesToBubble.addLast(leaf.getParent());
             }
             nodesToProcess.addLast(leaf);
-//            }
         }
         numPertinentLeaves = nodesToProcess.size();
         boolean toBreak = false;
@@ -435,7 +433,6 @@ class PQTree {
     // Matches Q-nodes that are the root of the pertinent subtree with exactly two partial children, deleting extra partial children if necessary.
     private boolean templateQ3(PQNode candidate) {
         // Check whether candidate is a Q node with two or more partial children
-//        int numPartialChildren = candidate.labeledChildren.get(NodeLabel.Partial).size();
         if (candidate.type != NodeType.QNODE /*|| numPartialChildren < 2*/) {
             return false;
         }

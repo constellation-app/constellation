@@ -86,7 +86,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
         try {
             final InputStream in = SwaggerServlet.class.getResourceAsStream(fileName);
 
-            if (fileName.equals("swagger/constellation.json")) {
+            if ("swagger/constellation.json".equals(fileName)) {
                 // The file constellation.json contains our swagger info.
                 // Dynamically add data and services.
                 final ObjectMapper mapper = new ObjectMapper();
@@ -120,7 +120,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     // Some parameters are passed in the body of the request.
                     // Since PluginParameter doesn't have an option to specify
                     // this, we'll improvise and look for "(body)" in the
-                    // parameter name. These will be dummy parameters;
+                    // parameter name. These will be dummy parameters,
                     // unused except for their swagger description.
                     final ArrayNode params = httpMethod.putArray("parameters");
                     rs.createParameters().getParameters().entrySet().forEach(entry -> {

@@ -63,13 +63,19 @@ public class ClosenessCentralityAnalytic extends ScoreAnalyticPlugin {
         final boolean includeConnectionsOut = parameters.getBooleanValue(ClosenessCentralityPlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID);
         final Set<SchemaAttribute> analyticAttributes = new HashSet<>();
         if (harmonic) {
-            analyticAttributes.add(includeConnectionsIn && !includeConnectionsOut ? SnaConcept.VertexAttribute.IN_HARMONIC_CLOSENESS_CENTRALITY
-                    : !includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_HARMONIC_CLOSENESS_CENTRALITY
-                            : SnaConcept.VertexAttribute.HARMONIC_CLOSENESS_CENTRALITY);
+            if (includeConnectionsIn && !includeConnectionsOut) {
+                analyticAttributes.add(SnaConcept.VertexAttribute.IN_HARMONIC_CLOSENESS_CENTRALITY);
+            } else {
+                analyticAttributes.add(!includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_HARMONIC_CLOSENESS_CENTRALITY
+                        : SnaConcept.VertexAttribute.HARMONIC_CLOSENESS_CENTRALITY);
+            }
         } else {
-            analyticAttributes.add(includeConnectionsIn && !includeConnectionsOut ? SnaConcept.VertexAttribute.IN_CLOSENESS_CENTRALITY
-                    : !includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_CLOSENESS_CENTRALITY
-                            : SnaConcept.VertexAttribute.CLOSENESS_CENTRALITY);
+            if (includeConnectionsIn && !includeConnectionsOut) {
+                analyticAttributes.add(SnaConcept.VertexAttribute.IN_CLOSENESS_CENTRALITY);
+            } else {
+                analyticAttributes.add(!includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_CLOSENESS_CENTRALITY
+                        : SnaConcept.VertexAttribute.CLOSENESS_CENTRALITY);
+            }
         }
         return Collections.unmodifiableSet(analyticAttributes);
     }

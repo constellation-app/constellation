@@ -199,7 +199,6 @@ public class SchemaVertexTypeUtilities {
             type = new SchemaVertexType.Builder(defaultType, name)
                     .setIncomplete(true)
                     .build();
-            //SchemaVertexTypeUtilities.addCustomType(type, false);
         }
 
         return type;

@@ -204,7 +204,7 @@ public class LineBatcher implements SceneBatcher {
             final int representativeTransactionId = access.getConnectionId(pos);
             final int lowVertex = access.getConnectionLowVertex(pos);
             final int highVertex = access.getConnectionHighVertex(pos);
-            final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);
+            final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int lineStyle = access.getConnectionLineStyle(pos).ordinal();
             final ConnectionDirection connectionDirection = access.getConnectionDirection(pos);
 
@@ -227,10 +227,10 @@ public class LineBatcher implements SceneBatcher {
             final int representativeTransactionId = access.getConnectionId(pos);
             final int lowVertex = access.getConnectionLowVertex(pos);
             final int highVertex = access.getConnectionHighVertex(pos);
-            final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);
+            final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int lineStyle = access.getConnectionLineStyle(pos).ordinal();
             final ConnectionDirection connectionDirection;
-            if (access.getConnectionDirected(pos)) {
+            if (access.isConnectionDirected(pos)) {
                 if (access.getConnectionDirection(pos) != ConnectionDirection.UNDIRECTED) { // covers the case where the transaction was initially undirected
                     connectionDirection = access.getConnectionDirection(pos);
                 } else {

@@ -171,7 +171,7 @@ public class LayersViewController {
                 .executeLater(graph);
     }
 
-    public boolean getParentVisibility() {
+    public boolean hasParentVisibility() {
         return parent != null && parent.getVisibility();
     }
 

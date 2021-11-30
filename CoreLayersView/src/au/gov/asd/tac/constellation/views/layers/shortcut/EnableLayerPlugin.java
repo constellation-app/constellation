@@ -66,10 +66,10 @@ public class EnableLayerPlugin extends SimpleEditPlugin {
             final BitMaskQuery txQuery = currentState.getTxQueriesCollection().getQuery(layerIndex);
 
             if (vxQuery != null) {
-                vxQuery.setVisibility(!vxQuery.getVisibility());
+                vxQuery.setVisibility(!vxQuery.isVisible());
             }
             if (txQuery != null) {
-                txQuery.setVisibility(!txQuery.getVisibility());
+                txQuery.setVisibility(!txQuery.isVisible());
             }
 
             currentState.getVxQueriesCollection().add(vxQuery);

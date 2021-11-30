@@ -183,7 +183,7 @@ public interface VisualAccess {
      * connections to display.
      * @return
      */
-    public boolean getIsLabelSummary(final int connection);
+    public boolean isLabelSummary(final int connection);
 
     /**
      * Get the colour of the given label on top of nodes.
@@ -354,7 +354,7 @@ public interface VisualAccess {
      * display.
      * @return
      */
-    public boolean getVertexSelected(final int vertex);
+    public boolean isVertexSelected(final int vertex);
 
     /**
      * Get the visibility value for the given vertex, informing whether or not
@@ -376,7 +376,7 @@ public interface VisualAccess {
      * display.
      * @return
      */
-    public boolean getVertexDimmed(final int vertex);
+    public boolean isVertexDimmed(final int vertex);
 
     /**
      * Get the radius of the given vertex
@@ -394,7 +394,7 @@ public interface VisualAccess {
      * display.
      * @return
      */
-    public boolean getBlazed(final int vertex);
+    public boolean isBlazed(final int vertex);
 
     /**
      * Get the angle at which the blaze should be displayed for the given
@@ -473,7 +473,7 @@ public interface VisualAccess {
      * connections to display.
      * @return
      */
-    public boolean getConnectionSelected(final int connection);
+    public boolean isConnectionSelected(final int connection);
 
     /**
      * Get the visibility value for the given connection, informing whether or
@@ -495,7 +495,7 @@ public interface VisualAccess {
      * connections to display.
      * @return
      */
-    public boolean getConnectionDimmed(final int connection);
+    public boolean isConnectionDimmed(final int connection);
 
     /**
      * Get the linestyle to use to display the given connection.
@@ -548,7 +548,7 @@ public interface VisualAccess {
      * connections to display
      * @return A boolean value representing whether the connection is directed
      */
-    public boolean getConnectionDirected(final int connection);
+    public boolean isConnectionDirected(final int connection);
 
     /**
      * Get the endpoint vertex for the given connection with the lower ID in the

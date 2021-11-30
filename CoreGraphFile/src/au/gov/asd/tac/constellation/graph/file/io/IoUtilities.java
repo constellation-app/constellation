@@ -87,7 +87,18 @@ public final class IoUtilities {
         int begin = 0;
         for (int i = 0; i < length; i++) {
             final char c = s.charAt(i);
-            final char replacement = c == 9 ? 't' : (c == 10 ? 'n' : (c == 13 ? 'r' : (c == '\\' ? '\\' : 0)));
+
+            final char replacement;
+            if (c == 9) {
+                replacement = 't';
+            } else if (c == 10) {
+                replacement = 'n';
+            } else if (c == 13) {
+                replacement = 'r';
+            } else {
+                replacement = c == '\\' ? '\\' : 0;
+            }
+
             if (replacement != 0) {
                 t.append(s.substring(begin, i)).append('\\').append(replacement);
                 begin = i + 1;
@@ -113,7 +124,7 @@ public final class IoUtilities {
      * @return The unescaped string.
      */
     public static String unescape(final String s) {
-        if (s.equals("\\0")) {
+        if ("\\0".equals(s)) {
             return null;
         }
 
@@ -254,7 +265,7 @@ public final class IoUtilities {
                 z = s.substring(19, 24);
             }
 
-            final boolean isUtc = z.equals("Z") || z.equals("z") || z.equals("+0000");
+            final boolean isUtc = "Z".equals(z) || "z".equals(z) || "+0000".equals(z);
             final TimeZone tz = isUtc ? UTC : TimeZone.getTimeZone("GMT" + z);
             final Calendar cal = new GregorianCalendar(tz);
             cal.set(Calendar.YEAR, y);

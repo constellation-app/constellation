@@ -28,19 +28,19 @@ import org.openide.util.lookup.ServiceProvider;
  */
 public class SchemaFactoryUtilities {
 
-    private static SchemaFactory DEFAULT_SCHEMA = null;
-    private static Map<String, SchemaFactory> SCHEMA_FACTORIES = null;
+    private static SchemaFactory defaultSchema = null;
+    private static Map<String, SchemaFactory> schemaFactories = null;
     
     private SchemaFactoryUtilities() {
         throw new IllegalStateException("Utility class");
     }
 
     public static final SchemaFactory getDefaultSchemaFactory() {
-        if (DEFAULT_SCHEMA == null) {
-            DEFAULT_SCHEMA = Lookup.getDefault().lookup(SchemaFactory.class);
+        if (defaultSchema == null) {
+            defaultSchema = Lookup.getDefault().lookup(SchemaFactory.class);
         }
 
-        return DEFAULT_SCHEMA;
+        return defaultSchema;
     }
 
     /**
@@ -53,16 +53,16 @@ public class SchemaFactoryUtilities {
      * names.
      */
     public static final Map<String, SchemaFactory> getSchemaFactories() {
-        if (SCHEMA_FACTORIES == null) {
-            final Collection<? extends SchemaFactory> schemaFactories = Lookup.getDefault().lookupAll(SchemaFactory.class);
+        if (schemaFactories == null) {
+            final Collection<? extends SchemaFactory> factories = Lookup.getDefault().lookupAll(SchemaFactory.class);
 
-            SCHEMA_FACTORIES = new LinkedHashMap<>();
-            schemaFactories.forEach(schemaFactory -> SCHEMA_FACTORIES.put(schemaFactory.getName(), schemaFactory));
+            schemaFactories = new LinkedHashMap<>();
+            factories.forEach(schemaFactory -> schemaFactories.put(schemaFactory.getName(), schemaFactory));
 
-            SCHEMA_FACTORIES = Collections.unmodifiableMap(SCHEMA_FACTORIES);
+            schemaFactories = Collections.unmodifiableMap(schemaFactories);
         }
 
-        return SCHEMA_FACTORIES;
+        return schemaFactories;
     }
 
     /**

@@ -43,7 +43,7 @@ public class MinScoreAggregator implements AnalyticAggregator<ScoreResult> {
         }
 
         aggregateResult.setIgnoreNullResults(results.stream()
-                .anyMatch(result -> result.getIgnoreNullResults()));
+                .anyMatch(result -> result.isIgnoreNullResults()));
 
         results.forEach(scoreResult -> combinedResults.combine(scoreResult));
         combinedResults.getResult().forEach((key, value) -> {

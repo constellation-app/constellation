@@ -33,6 +33,10 @@ This is a side affect of some back end changes we had to make.</p>
 == 2021-10-06 Plugin Parameters
 <p>If you enter a value into a number parameter field that is either less than the minimum allowed or more than maximum allowed, the field turns red.</p>
 
+== 2021-09-28 Error Handling
+<p>Fatal errors and exceptions will now be presented as a dialog box in the executable version.</p>
+<p>Previously only a small red icon on the bottom right of the application was shown when an exception occurred.</p>
+
 == 2021-09-28 Hashmod Improvements
 <p>Significant speed up in ingesting CSV files with a header line in as separate vertices and you can now specify
 (via a header field with format 'COLUMN1...COLUMN2;;;COLUMN3') that any transactions that hashmod creates via

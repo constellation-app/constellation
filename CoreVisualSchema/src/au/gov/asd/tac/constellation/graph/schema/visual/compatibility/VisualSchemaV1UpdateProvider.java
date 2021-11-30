@@ -144,6 +144,6 @@ public class VisualSchemaV1UpdateProvider extends SchemaUpdateProvider {
     }
 
     private static String updateDecoratorAttr(final String attr) {
-        return StringUtils.isBlank(attr) || attr.equals("null") ? null : attr;
+        return StringUtils.isBlank(attr) || "null".equals(attr) ? null : attr;
     }
 }
