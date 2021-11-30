@@ -121,7 +121,6 @@ public class BlazeV0 implements Serializable, Comparable<BlazeV0> {
     @Override
     public String toString() {
         return String.format("%d;%s;%s;%s", angle, color, iconLabel, iconEnabled);
-        //return String.valueOf(color);
     }
 
     @Override

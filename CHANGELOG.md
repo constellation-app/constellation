@@ -2,9 +2,12 @@
 
 ## Changes in November 2021
 
--   Changed public constructors in `ConversationProvider` and
-    `ConversationContributionProvider` to protected to fix code smell that
-    abstract classes should not have public constructors. 
+
+-   Added `netbeans.exception.report.min.level=900` and
+    `netbeans.exception.alert.min.level=900` with both set to `900` to make
+    sure all `ERROR` and `FATAL` levels will present a dialog box.
+
+-   Removed unused methods in `SelectableLabel` in `ConversationView`.
 
 -   Renamed methods returning a boolean value to start with "is" or "has". This 
     includes methods in `KTrussState` in `CoreAlgorithmPlugins`, `AnalyticResult`
@@ -17,28 +20,34 @@
     `CorePreferences`; `ProxyOptionsPanel` in `CoreSecuirty`, `VisualAccess` in 
     `CoreUtilities` and `VisualGraphUtilities` in `CoreVisualGraph`.
 
--   Removed unused methods in `SelectableLabel` in `ConversationView`.
+-   Update the default configuration to always show errors as a dialog message.
+
+-   Updated the way exceptions are displayed to the user. Exceptions thrown in
+    the `DefaultPluginEnvironment` are now presented to the user using the
+    class `NotifyDescriptor.Exception`. This presents an exception dialog
+    when Constellation is ran from the executable.
+
+-   Updated public constructors in `ConversationProvider` and
+    `ConversationContributionProvider` to protected to fix code smell that
+    abstract classes should not have public constructors. 
 
 ## Changes in October 2021
 -   Added `PluginTags` class to hold all tags as constants for `PluginInfo`.
 
--   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
+-   Added `isRequired` in `PluginParameter` with a getter and a setter, which
     can be used to configure the required plugin parameters to mark as `*required`
-  	in the swagger.
-
--   Removed the `keepAlive` method from `HttpsConnection` as it is not the 
-    method to enable HTTP keep-alive for `HttpURLConnection`. `keepAlive` is 
-    turned on by default and is controlled using the `http.keepalive` VM
-    argument.
+    in the swagger.
 
 -   Added a file chooser utility to core utilities. This provides a template
     for opening file choosers. It protects against common mistakes that may
     cause issues on different platforms.
 
--   Changed `DataAccessPluginType` from an abstract class to an interface.
+-   Removed the verbose printing of garbage collection by default.
 
--   Changed the access of some of the constants in `DirectedShortestPathsPlugin` 
-    to private since they weren't being used elsewhere. 
+-   Removed the `keepAlive` method from `HttpsConnection` as it is not the 
+    method to enable HTTP keep-alive for `HttpURLConnection`. `keepAlive` is 
+    turned on by default and is controlled using the `http.keepalive` VM
+    argument.
 
 -   Renamed `au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys`
     to `au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities`
@@ -53,6 +62,11 @@
 
 -   Renamed constants in `DirectedShortestPathsPlugin` with VERTEX in name to 
     have NODE instead.
+
+-   Updated `DataAccessPluginType` from an abstract class to an interface.
+
+-   Updated the access of some of the constants in `DirectedShortestPathsPlugin` 
+    to private since they weren't being used elsewhere. 
 
 ## Changes in September 2021
 
@@ -76,6 +90,9 @@
 
 -   Renamed `PreferenceUtilites` to `PreferenceUtilities` to fix the typo.
 
+-   Removed unused `localized` parameter from the signature of the `locate()`
+    method in `ConstellationInstalledFileLocator`.
+
 -   Updated Core Import Export summary text to provide more information. To
     achieve this, added `definitionName` parameter to `ImportDefinition`
     constructor and paneName parameter to `RunPane` constructor. Updated
@@ -85,6 +102,9 @@
 
 -   Updated `processImport` in `ImportController` to a `void` method given the
     return type `List<File>` previously defined was not being used.
+
+-   Updated `setRotationMatrix` in `Matrix44d` as it was previously placing
+    rotation values in the wrong value positions.
 
 ## Changes in August 2021
 

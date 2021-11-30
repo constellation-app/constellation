@@ -354,7 +354,7 @@ public final class GraphRenderable implements GLRenderable {
             connectionLabelBatcher.createShader(gl);
             iconBatcher.createShader(gl);
         } catch (final IOException | RenderException ex) {
-            // If we get here, a shader didn't compile. This obviously shouldn't happen in production;
+            // If we get here, a shader didn't compile. This obviously shouldn't happen in production,
             // our shaders are static and read from built-in resource files (it happens a lot in
             // development when we edit a shader, but that's OK). Since at least one shader is null,
             // there will be subsequent NullPointerExceptions, but there's nothing we can do about that.
@@ -469,7 +469,6 @@ public final class GraphRenderable implements GLRenderable {
                 //
                 final Vector3f eye = camera.lookAtEye;
                 final Vector3f centre = camera.lookAtCentre;
-//                final float distanceToCentre = (float)Math.sqrt(Math.pow(centre.getX()-eye.getX(), 2) + Math.pow(centre.getY()-eye.getY(), 2) + Math.pow(centre.getZ()-eye.getZ(), 2));
                 final float distanceToCentre = Vector3f.subtract(centre, eye).getLength();
 
                 final float convergence = Camera.PERSPECTIVE_NEAR + distanceToCentre;
@@ -491,7 +490,6 @@ public final class GraphRenderable implements GLRenderable {
                 Matrix44f mv = anaglyphCam.applyLeftFrustum(mvMatrix);
                 Matrix44f p = anaglyphCam.getProjectionMatrix();
 
-//                gl.glColorMask(true, false, true, true);
                 gl.glColorMask(rightEyeColor.red, rightEyeColor.green, rightEyeColor.blue, true);
 
                 drawBatches(gl, mv, p, true);
@@ -506,7 +504,6 @@ public final class GraphRenderable implements GLRenderable {
                 mv = anaglyphCam.applyRightFrustum(mvMatrix);
                 p = anaglyphCam.getProjectionMatrix();
 
-//                gl.glColorMask(false, true, false, true);
                 gl.glColorMask(leftEyeColor.red, leftEyeColor.green, leftEyeColor.blue, true);
 
                 drawBatches(gl, mv, p, true);

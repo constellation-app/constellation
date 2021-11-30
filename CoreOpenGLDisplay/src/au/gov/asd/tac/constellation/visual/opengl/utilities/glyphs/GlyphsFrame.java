@@ -75,10 +75,7 @@ public class GlyphsFrame extends JFrame {
         imageFrame.getContentPane().setBackground(Color.DARK_GRAY);
         imageFrame.getContentPane().setPreferredSize(new Dimension(textureBufferSize, textureBufferSize));
         imageFrame.getContentPane().setLayout(new BorderLayout());
-//        imageFrame.getContentPane().setBackground(Color.BLACK);
-//        imageFrame.setPreferredSize(new Dimension(TEXTURE_BUFFER_SIZE*2, TEXTURE_BUFFER_SIZE*2));
         imageFrame.getContentPane().add(new JLabel(), BorderLayout.CENTER);
-//        imageFrame.getContentPane().getComponent(0).setPreferredSize(new Dimension(TEXTURE_BUFFER_SIZE, TEXTURE_BUFFER_SIZE));
         imageFrame.pack();
         imageFrame.setVisible(true);
         imageFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);

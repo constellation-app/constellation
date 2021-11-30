@@ -343,7 +343,7 @@ public class BasicFindTab extends Tab {
             try {
                 cdl.await();
             } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage());
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
                 Thread.currentThread().interrupt();
             }
         }

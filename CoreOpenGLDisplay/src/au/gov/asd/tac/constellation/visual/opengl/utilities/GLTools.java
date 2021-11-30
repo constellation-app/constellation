@@ -489,7 +489,6 @@ public final class GLTools {
     // Load a TGA as a 2D Texture. Completely initialize the state
     public static Texture loadTexture(final GL3 gl, final InputStream in, final String ext, final int minFilter, final int magFilter, final int wrapMode) throws IOException {
         // NVS-415: Appears to be a bug in JOGL where texture provider for PNG files does not flip the texture.
-//         final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, ext);
         final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, null);
         final Texture tex = TextureIO.newTexture(data);
 

@@ -1062,8 +1062,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             final File newFile = new File(folder.getPath(), name + ext);
             final FileObject fo = FileUtil.createData(newFile);
             final GraphDataObject freshGdo = (GraphDataObject) DataObject.find(fo);
-//            final GraphDataObject freshGdo = (GraphDataObject)DataObject.find(newFile);
-//            final GraphDataObject freshGdo = (GraphDataObject)gdo.createFromTemplate(DataFolder.findFolder(folder), name);
             final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, false);
             writer.execute();
         }

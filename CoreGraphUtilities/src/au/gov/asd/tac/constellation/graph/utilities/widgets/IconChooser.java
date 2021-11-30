@@ -321,7 +321,6 @@ private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
             final IconListElement element = listModel.getElementAt(index);
             final TreePath path = iconFolders.getSelectionPath();
             if (path != null) {
-//            final IconFoldersTreeModel treeModel = (IconFoldersTreeModel)iconFolders.getModel();
                 final IconTreeFolder folder = (IconTreeFolder) path.getLastPathComponent();
                 folder.removeChild(new IconTreeFolder(element.name));
             }
@@ -334,7 +333,6 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         if (iconName != null) {
             final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
                     .setTitle("Save icon");
-//        final File file = fChooser.showSaveDialog();
 
             // We need to get a JFileChooser because FileChooserBuilder doesn't have setSelectedFile().
             final JFileChooser chooser = fChooser.createFileChooser();

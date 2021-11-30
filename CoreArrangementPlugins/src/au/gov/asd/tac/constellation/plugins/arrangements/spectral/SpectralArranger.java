@@ -121,7 +121,6 @@ public class SpectralArranger implements Arranger {
             otherVertices.addAll(verticesInHighestTruss);
             verticesInHighestTruss.clear();
             return true;
-//            return (lastK < clusterOfInterest);
         }
 
         @Override

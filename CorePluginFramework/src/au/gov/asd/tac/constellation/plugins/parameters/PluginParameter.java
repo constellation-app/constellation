@@ -487,8 +487,6 @@ public class PluginParameter<V extends ParameterValue> {
      * @return An object representing the current value of this parameter.
      */
     public Object getObjectValue() {
-//        return ((ObjectParameterValue)value).getObjectValue();
-//        return (V)value.getObjectValue();
         return value.getObjectValue();
     }
 
@@ -509,11 +507,8 @@ public class PluginParameter<V extends ParameterValue> {
      * @param stringValue The String value to set.
      */
     public final void setStringValue(final String stringValue) {
-
-//        setError(validateString(stringValue));
         setError(value.validateString(stringValue));
         if (getError() != null) {
-//            throw new IllegalArgumentException(getError());
             return;
         }
 
@@ -529,13 +524,9 @@ public class PluginParameter<V extends ParameterValue> {
      * @return A String representing the current value of this parameter.
      */
     public final String getStringValue() {
-//        return convertToString(value);
         return value.toString();
     }
 
-//    public final String convertToString(V objectValue) {
-//        return type.convertToString(objectValue);
-//    }
     /**
      * Validate the specified string value as a value for this parameter.
      *
@@ -545,18 +536,8 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public final String validateString(final String stringValue) {
         return value.validateString(stringValue);
-//        return type.validateString(this, stringValue);
     }
 
-//    public final V convertToObject(String stringValue) {
-//        return type.convertToObject(stringValue);
-//    }
-//    public final String validateObject(V objectValue) {
-//        return type.validateObject(this, objectValue);
-//    }
-//    public final V copyValue(V value) {
-//        return type.copyValue(value);
-//    }
     /**
      * Set an enclosing parameter for which this is a subparameter. This is only
      * used in special cases such as

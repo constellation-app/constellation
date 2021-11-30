@@ -255,7 +255,6 @@ public final class GraphTaxonomy {
      * TODO: sometimes its not worth adding the transactions.
      */
     public Condensation getCondensedGraph() throws InterruptedException {
-//        final Map<Integer, Extent> taxonKeyToExtent = new HashMap<>();
         final Map<Integer, Integer> cVxIdToTaxonKey = new HashMap<>();
         final Map<Integer, Integer> taxonKeyToVxId = new HashMap<>();
 
@@ -330,7 +329,6 @@ public final class GraphTaxonomy {
                     final Integer dst = nodeToTaxa != null ? nodeToTaxa.get(nbId) : findTaxonContainingVertex(sources, nbId);
                     // Found the test for null was required to avoid issues
                     if (dst != null && dst != Graph.NOT_FOUND && !found.contains(dst)) {
-                        //                            Debug.debug("condense src=%s(%s) dst=%s(%s)\n", src, taxonKeyToVxId.get(src), dst, taxonKeyToVxId.get(dst));
                         condensedGraph.addTransaction(taxonKeyToVxId.get(src), taxonKeyToVxId.get(dst), true);
                         found.add(dst);
                     }
@@ -338,7 +336,7 @@ public final class GraphTaxonomy {
             }
         }
 
-        return new Condensation(condensedGraph, cVxIdToTaxonKey);//, taxonKeyToExtent);
+        return new Condensation(condensedGraph, cVxIdToTaxonKey);
     }
 
     /**

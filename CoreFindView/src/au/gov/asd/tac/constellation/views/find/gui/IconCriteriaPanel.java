@@ -55,8 +55,6 @@ public class IconCriteriaPanel extends javax.swing.JPanel implements ActionListe
         initComponents();
 
         this.parentPanel = parent;
-
-//        chooser = new IconChooser(iconMap, Bundle.No_Icon());
         chosenIcon = Bundle.No_Icon();
     }
 
@@ -71,8 +69,6 @@ public class IconCriteriaPanel extends javax.swing.JPanel implements ActionListe
         initComponents();
 
         this.parentPanel = parent;
-
-//        chooser = new IconChooser(iconMap, icon);
         chosenIcon = icon;
 
         updateIcon(icon);
@@ -91,14 +87,6 @@ public class IconCriteriaPanel extends javax.swing.JPanel implements ActionListe
     public void actionPerformed(final ActionEvent e) {
         if ("OK".equals(e.getActionCommand())) {
             updateIcon(chooser.getSelectedIconName());
-
-//            if(chooser.isIconAdded())
-//            {
-//                // Update the IconProvider.
-//                //                final Map<String, byte[]> iconMap = chooser.getIconMap();
-//                final IconProvider iconProvider = IconProvider.getDefault();
-//                iconProvider.putAll(iconMap);
-//            }
         }
     }
 
@@ -251,8 +239,6 @@ public class IconCriteriaPanel extends javax.swing.JPanel implements ActionListe
         if (constellationIcon != null) {
             imageIcon = constellationIcon.buildIcon();
         }
-        //        final ImageIcon imageIcon = chooser.getIconMap().get(currentIcon) != null ?
-//                new ImageIcon(chooser.getIconMap().get(currentIcon)) : null;
 
         // Scale the Icon so that it fits perfectly in the display label:
         if (imageIcon != null) {

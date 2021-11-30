@@ -34,7 +34,6 @@ final class NamedColorPanel extends AbstractColorChooserPanel {
 
     public NamedColorPanel() {
         initComponents();
-//        colorList.setCellRenderer(new NamedColorCellRenderer());
     }
 
     private void setColor(Color jc) {

@@ -110,7 +110,6 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
 
         long dt = new Date().getTime();
 
-        //        InputOutput io = IOProvider.getDefault().getIO("Structured Graph", false);
         // Icons will be chosen from the provided defaults.
         final ArrayList<String> iconNames = new ArrayList<>(IconManager.getIconNames(null));
 

@@ -253,7 +253,6 @@ public class STNumbering {
 
         // Construct the tree node for this vertex
         final TreeNode t = new TreeNode(vxID, parent);
-//        vxIDsToTreeNodes.put(vxID, t);
 
         // Set the tree node as a root if it has no parent
         if (parent == null) {

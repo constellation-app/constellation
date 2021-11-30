@@ -121,10 +121,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     private long currentStructureModificationCount = Long.MIN_VALUE;
     private long currentTransSelectedModificationCount = Long.MIN_VALUE;
     private long currentVertSelectedModificationCount = Long.MIN_VALUE;
-    //private long currentTransDimModificationCount = Long.MIN_VALUE;
-    //private long currentVertDimModificationCount = Long.MIN_VALUE;
-    //private long currentTransHideModificationCount = Long.MIN_VALUE;
-    //private long currentVertHideModificationCount = Long.MIN_VALUE;
     private long currentTemporalAttributeModificationCount = Long.MIN_VALUE;
     private volatile double splitPanePosition = DEFAULT_DIVIDER_LOCATION;
     private List<String> datetimeAttributes;
@@ -343,7 +339,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             Platform.runLater(() -> {
                 timelinePanel.setExclusionState(0);
-                //timelinePanel.setIsShowingNodeLabelAttributes(false);
                 timelinePanel.setNodeLabelAttributes(null);
                 timelinePanel.setNodeLabelAttribute(null);
                 timelinePanel.setTimeZone(TimeZoneUtilities.UTC);
@@ -468,10 +463,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                 timelinePanel.setDisable(false);
                                 //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
                                 //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
-//                                    splitPane.setOpacity(1);
                                 splitPane.setVisible(true);
                                 splitPane.setDisable(false);
-//                                    splitPane.getDividers().get(0).setPosition(splitPanePosition);
                                 // Add the datetime attributes:
                                 timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
                                 timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
@@ -491,8 +484,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                 rg1.release();
                             }
                             // Restore the dimming state if we have it:
-                            if (state != null) //if(state != null && !isFullRefresh)
-                            {
+                            if (state != null) {
                                 if (state.getLowerTimeExtent() == 0) {
                                     setExtents(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent());
                                 }

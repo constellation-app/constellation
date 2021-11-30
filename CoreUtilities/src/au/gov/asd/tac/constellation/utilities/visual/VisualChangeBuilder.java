@@ -41,7 +41,7 @@ public final class VisualChangeBuilder {
     public static final synchronized long generateNewId() {
         return currentId++;
     }
-
+    
     /**
      * Create a new VisualChangeBuilder to build a {@link VisualChange} for the
      * specified {@link VisualProperty}.
@@ -53,7 +53,7 @@ public final class VisualChangeBuilder {
     }
 
     /**
-     * Set an ID for the visual chagne that will be built. The provided ID
+     * Set an ID for the visual change that will be built. The provided ID
      * should be one that was returned from
      * {@link #generateNewId generateNewId()}
      * <p>
@@ -70,14 +70,23 @@ public final class VisualChangeBuilder {
         this.id = id;
         return this;
     }
+    
+    /**
+     * Get the Id of the currently built VisualChange. Added for testing
+     * 
+     * @return the current Id as a Long
+     */
+    protected long getId() {
+        return this.id;
+    }
 
     /**
      * Specify the total number of items that have changed. This will result in
-     * the creation of a change with changeset consisting of items with indices
+     * the creation of a change with change-set consisting of items with indices
      * <code>0</code> through <code>numChangedItems - 1</code>.
      * <p>
      * This is most commonly used when all of the items pertaining to the
-     * relevant {@link VisualPropety} have changed. Its effect is overriden by
+     * relevant {@link VisualPropety} have changed. Its effect is overridden by
      * the {@link #forItems(int[]) forItems(int[])} method.
      *
      * @param numChangedItems The total number of items that have changed.
@@ -86,6 +95,15 @@ public final class VisualChangeBuilder {
     public VisualChangeBuilder forItems(final int numChangedItems) {
         this.numChangedItems = numChangedItems;
         return this;
+    }
+    
+    /**
+     * Get the numChangedItems of the currently built VisualChange. Added for testing
+     * 
+     * @return the current numChangedItems as an int
+     */
+    protected int getChangedItemsCount() {
+        return this.numChangedItems;
     }
 
     /**
@@ -101,6 +119,15 @@ public final class VisualChangeBuilder {
     public VisualChangeBuilder forItems(final int[] changeList) {
         this.changeList = changeList;
         return this;
+    }
+    
+    /**
+     * Get the changeList of the currently built VisualChange. Added for testing
+     * 
+     * @return the current changeList int[]
+     */
+    protected int[] getChangedItems() {
+        return this.changeList != null ? this.changeList.clone() : null;
     }
 
     /**

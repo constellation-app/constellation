@@ -192,7 +192,6 @@ public class SchemaTransactionTypeUtilities {
             type = new SchemaTransactionType.Builder(defaultType, name)
                     .setIncomplete(true)
                     .build();
-            //SchemaTransactionTypeUtilities.addCustomType(type, false);
         }
 
         return type;
