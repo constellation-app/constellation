@@ -117,7 +117,7 @@ public class JsonUtilitiesNGTest {
             // Search for existing nested value
             assertEquals(JsonUtilities.getTextField(testJson, "1.k3", "2.k1"), "2.v1", "L2 value returned if found");  
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }  
     }
     
@@ -142,7 +142,7 @@ public class JsonUtilitiesNGTest {
             // Search for existing nested value
             assertEquals(JsonUtilities.getTextField("default", testJson, "1.k3", "2.k1"), "2.v1", "L2 value returned if not found");  
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }  
     }
     
@@ -177,7 +177,7 @@ public class JsonUtilitiesNGTest {
             } catch (NoSuchElementException nse) {
             }
           } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }       
     }
     
@@ -218,7 +218,7 @@ public class JsonUtilitiesNGTest {
             }
             
           } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }       
     }
     
@@ -246,7 +246,7 @@ public class JsonUtilitiesNGTest {
             // Search for existing nested value
             assertEquals(JsonUtilities.getIntegerField(testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");  
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }  
     }
 
@@ -274,7 +274,7 @@ public class JsonUtilitiesNGTest {
             // Search for existing nested value
             assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");  
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }  
     }
     
@@ -315,7 +315,7 @@ public class JsonUtilitiesNGTest {
             }
             
           } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }       
     }
     
@@ -343,7 +343,7 @@ public class JsonUtilitiesNGTest {
             // Search for existing nested value
             assertEquals(JsonUtilities.getLongField(testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");  
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }  
     }
     
@@ -371,7 +371,7 @@ public class JsonUtilitiesNGTest {
             // Search for existing nested value
             assertEquals(JsonUtilities.getLongField(99, testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");  
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }  
     }
     
@@ -399,7 +399,7 @@ public class JsonUtilitiesNGTest {
             // Search for existing nested value
             assertEquals(JsonUtilities.getDoubleField(testJson, "1.k3", "2.k1"), 21.1, "L2 value returned if found");  
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }  
     }
     
@@ -427,7 +427,7 @@ public class JsonUtilitiesNGTest {
             // Search for existing nested value
             assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k3", "2.k1"), 21.1, "L2 value returned if found");  
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }  
     }
      
@@ -455,7 +455,7 @@ public class JsonUtilitiesNGTest {
             // Search for existing nested value
             assertEquals(JsonUtilities.getBooleanField(testJson, "1.k3", "2.k1"), true, "L2 value returned if found");  
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }  
     }
     
@@ -483,7 +483,7 @@ public class JsonUtilitiesNGTest {
             // Search for existing nested value
             assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k3", "2.k1"), false, "L2 value returned if found");  
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }  
     }
 
@@ -524,7 +524,7 @@ public class JsonUtilitiesNGTest {
             }
             
           } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }       
     }
 
@@ -542,7 +542,7 @@ public class JsonUtilitiesNGTest {
             assertEquals(JsonUtilities.getTextValue("2.k1", childNode), "nest1", "Get text value of string");
 
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }        
     }
     
@@ -559,7 +559,7 @@ public class JsonUtilitiesNGTest {
             assertEquals(JsonUtilities.getTextValue("1.k3", testJson), "1.1", "Get text value of numerical");
             assertEquals(JsonUtilities.getTextValue("missing", testJson), null, "Node doesn't have attribute");
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }        
     }
     
@@ -578,7 +578,7 @@ public class JsonUtilitiesNGTest {
             assertEquals(JsonUtilities.getTextValues("missing", testJson, ":"), null, "Node doesn't exist");
 
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }        
     }
      
@@ -598,7 +598,7 @@ public class JsonUtilitiesNGTest {
             assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k6", "missing", testJson), null, "1st element is missing");
 
         } catch (JsonProcessingException e) {
-            // This would throw generating the JSON, which is not under test
+            fail("Exception thrown generating JSON for test");
         }        
     }
     
