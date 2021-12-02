@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javafx.collections.ObservableList;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -129,7 +130,7 @@ public class IconManager {
      * @param icon A {@link ConstellationIcon} representing a user-defined icon.
      * @return True if the icon was successfully added, false otherwise.
      */
-    public static boolean addIcon(ConstellationIcon icon) {
+    public static boolean addIcon(final ConstellationIcon icon) {
         final boolean iconAdded = IconManager.getCustomProvider().addIcon(icon);
         rebuildCache();
         return iconAdded;
@@ -145,10 +146,35 @@ public class IconManager {
      * added user-defined icon.
      * @return True if the icon was successfully removed, false otherwise.
      */
-    public static boolean removeIcon(String iconName) {
+    public static boolean removeIcon(final String iconName) {
         final boolean iconRemoved = IconManager.getCustomProvider().removeIcon(iconName);
         rebuildCache();
         return iconRemoved;
+    }
+
+    /**
+     * Use the chosen {@link CustomIconProvider} to remove user-defined icons.
+     *
+     * Note that removing an icon calls on the icon cache, so the rebuild cache
+     * flag must be set after this has occurred.
+     *
+     * @param iconNames A {@link ObservableList<String>} containing the names of
+     * previously added user-defined icons.
+     * @return True if the icons were successfully removed, false otherwise.
+     */
+    public static boolean removeIcons(final ObservableList<String> iconNames) {
+        final List<String> unableToRemove = new ArrayList<>();
+
+        iconNames.forEach(iconName -> {
+            final boolean iconRemoved = IconManager.getCustomProvider().removeIcon(iconName);
+
+            if (!iconRemoved) {
+                unableToRemove.add(iconName);
+            }
+        });
+
+        rebuildCache();
+        return unableToRemove.isEmpty();
     }
 
     /**

@@ -39,6 +39,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
@@ -133,6 +134,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             listView = new ListView<>();
             listView.setCellFactory(param -> new IconNodeCell());
             listView.getStyleClass().add("rounded");
+            listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             listView.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> update());
 
             treeRoot = new TreeItem<>(new IconNode("Icons", new HashSet<>()));
@@ -244,7 +246,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                     })));
 
             removeButton.setOnAction(event -> {
-                final boolean iconRemoved = IconManager.removeIcon(listView.getSelectionModel().getSelectedItem());
+                final boolean iconRemoved = IconManager.removeIcons(listView.getSelectionModel().getSelectedItems());
 
                 if (iconRemoved) {
                     reloadUserDefinedIcons("");
