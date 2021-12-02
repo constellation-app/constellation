@@ -17,7 +17,10 @@ package au.gov.asd.tac.constellation.views.attributeeditor.utilities;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Utility class for IconEditor.
@@ -50,23 +53,27 @@ public class IconEditorUtilities {
      * @param files
      * @return list of png files
      */
-    private static List<File> pngWalk(final File path, final List<File> files) {
-        final File[] filesInPath = path.listFiles((File pathname) -> {
-            if (pathname.isDirectory()) {
-                return true;
+    protected static List<File> pngWalk(final File path, final List<File> files) {
+        final List<File> filesInPath = Arrays.stream(path.listFiles()).collect(Collectors.toList());
+        final List<File> filesToAdd = new ArrayList<>();
+
+        filesInPath.forEach(file -> {
+            if (file.isDirectory()) {
+                filesToAdd.add(file);
             } else {
-                final String filename = pathname.getAbsolutePath();
-                return filename.endsWith(".png") || filename.endsWith(".PNG");
+                if (StringUtils.endsWithIgnoreCase(file.getAbsolutePath(), ".png")) {
+                    filesToAdd.add(file);
+                }
             }
         });
 
-        for (final File file : filesInPath) {
+        filesToAdd.forEach(file -> {
             if (file.isDirectory()) {
                 pngWalk(file, files);
             } else {
                 files.add(file);
             }
-        }
+        });
 
         return files;
     }
