@@ -37,7 +37,6 @@ public class GlyphManagerOpenGLController {
 
     private static final int FLOATS_PER_GLYPH = 4;
     private static final int BYTES_PER_FLOAT = Float.BYTES;
-    private static final int BYTES_PER_GLYPH = BYTES_PER_FLOAT * FLOATS_PER_GLYPH;
 
     private final GlyphManager glyphManager;
 

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
@@ -62,7 +63,7 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
     private static final String TITLE_SAVE = "Save Icon";
 
     private final Set<ConstellationIcon> icons;
-    private final boolean iconAdded = false;
+    private static final boolean ICON_ADDED = false;
 
     public IconChooser(final Set<ConstellationIcon> icons, final String selectedIconName) {
         initComponents();
@@ -176,7 +177,7 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
     }
 
     public boolean isIconAdded() {
-        return iconAdded;
+        return ICON_ADDED;
     }
 
     /**
@@ -306,7 +307,6 @@ private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
             final IconListElement element = listModel.getElementAt(index);
             final TreePath path = iconFolders.getSelectionPath();
             if (path != null) {
-//            final IconFoldersTreeModel treeModel = (IconFoldersTreeModel)iconFolders.getModel();
                 final IconTreeFolder folder = (IconTreeFolder) path.getLastPathComponent();
                 folder.removeChild(new IconTreeFolder(element.name));
             }
@@ -323,7 +323,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             final String iconName = getSelectedIconName();
 
             if (iconName != null) {
-                selectedFile = new File(selectedFile.getAbsolutePath() + "/" + iconName + ".png");
+                selectedFile = new File(selectedFile.getAbsolutePath() + "/" + iconName + FileExtensionConstants.PNG);
             }
 
             try {

@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.json.ExportToJsonPlugin;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,7 +43,7 @@ public final class ExportToImageAction implements ActionListener {
 
     private static final String TITLE = "Export to Image";
 
-    private static final String EXT = ".png";
+    private static final String EXT = FileExtensionConstants.PNG;
     private final GraphNode context;
 
     public ExportToImageAction(final GraphNode context) {
@@ -58,7 +59,7 @@ public final class ExportToImageAction implements ActionListener {
 
             String fileName = selectedFile.getAbsolutePath();
 
-            selectedFile.renameTo(new File("potato.png"));
+            selectedFile.renameTo(new File("ExportToImage.png"));
 
             if (!fileName.toLowerCase().endsWith(EXT)) {
                 fileName += EXT;

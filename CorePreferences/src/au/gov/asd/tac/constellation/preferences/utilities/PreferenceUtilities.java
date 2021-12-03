@@ -32,6 +32,7 @@ public class PreferenceUtilities {
     private static final Logger LOGGER = Logger.getLogger(PreferenceUtilities.class.getName());
 
     private PreferenceUtilities() {
+        throw new IllegalStateException("Utility class");
     }
 
     /**

@@ -24,6 +24,10 @@ import java.util.Map;
  * @author Delphinus8821
  */
 public abstract class HelpPageProvider {
+    
+    protected HelpPageProvider() {
+        // Intentionally left blank
+    }
 
     /**
      * Provides a map of all the help files Maps the file name to the md file

@@ -19,6 +19,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +51,7 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
 
     private static final Logger LOGGER = Logger.getLogger(JMultiChoiceComboBoxMenu.class.getName());
 
-    private final JButton button;
+    private JButton button;
     private final JPopupMenu menu;
     private final Map<JMenuItem, E> menuItems;
     private final Set<E> selectedItems;
@@ -88,6 +89,36 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
             this.button = new JButton(text, arrow);
         }
         button.setHorizontalTextPosition(SwingConstants.LEFT);
+        addButtonActionListener(button, menu);
+        add(button);
+
+        selectedItems = new HashSet<>();
+        listeners = new HashSet<>();
+
+        items.forEach(item -> {
+            final JMenuItem menuItem = new JCheckBoxMenuItem(item.toString());
+            menuItem.addActionListener(new OpenAction(menu, button));
+            addMenuItemActionListener(menuItem);
+            menuItems.put(menuItem, item);
+            menu.add(menuItem);
+        });
+    }
+
+    protected final void addMenuItemActionListener(final JMenuItem menuItem) {
+        menuItem.addActionListener(event -> {
+            final JMenuItem changedMenuItem = (JMenuItem) event.getSource();
+            final E changedItem = menuItems.get(changedMenuItem);
+            if (selectedItems.contains(changedItem)) {
+                removeSelectedItem(changedItem);
+            } else {
+                addSelectedItem(changedItem);
+            }
+            final int menuIndex = menu.getComponentIndex(changedMenuItem);
+            final ListSelectionEvent selectionEvent = new ListSelectionEvent(changedItem, menuIndex, menuIndex, false);
+            valueChanged(selectionEvent);
+        });
+    }
+    protected final void addButtonActionListener(final JButton button, final JPopupMenu menu) {
         button.addActionListener(event -> {
             if (!menu.isVisible()) {
                 final Point p = button.getLocationOnScreen();
@@ -97,31 +128,6 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
             } else {
                 menu.setVisible(false);
             }
-        });
-        add(button);
-
-        selectedItems = new HashSet<>();
-        listeners = new HashSet<>();
-
-        items.forEach(item -> {
-            final JMenuItem menuItem = new JCheckBoxMenuItem(item.toString());
-            menuItem.addActionListener(new OpenAction(menu, button));
-            menuItem.addActionListener(event -> {
-                final JMenuItem changedMenuItem = (JMenuItem) event.getSource();
-                final E changedItem = menuItems.get(changedMenuItem);
-                if (selectedItems.contains(changedItem)) {
-                    removeSelectedItem(changedItem);
-                } else {
-                    addSelectedItem(changedItem);
-                }
-                listeners.forEach(listener -> {
-                    final int menuIndex = menu.getComponentIndex(changedMenuItem);
-                    final ListSelectionEvent selectionEvent = new ListSelectionEvent(changedItem, menuIndex, menuIndex, false);
-                    listener.valueChanged(selectionEvent);
-                });
-            });
-            menuItems.put(menuItem, item);
-            menu.add(menuItem);
         });
     }
 
@@ -143,6 +149,10 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
 
     public final Set<E> getItems() {
         return new HashSet<>(menuItems.values());
+    }
+
+    protected Map<JMenuItem, E> getMenuItems() {
+        return menuItems;
     }
 
     public final Set<E> getSelectedItems() {
@@ -215,6 +225,7 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
         listeners.add(listener);
     }
 
+
     @Override
     public final void valueChanged(final ListSelectionEvent event) {
         listeners.forEach(listener -> listener.valueChanged(event));
@@ -223,6 +234,23 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
     @Override
     public void setToolTipText(final String text) {
         button.setToolTipText(text);
+    }
+
+    @Override
+    public final String getToolTipText() {
+        return button.getToolTipText();
+    }
+
+    protected Set<ListSelectionListener> getListeners() {
+        return Collections.unmodifiableSet(listeners);
+    }
+
+    protected JButton getButton() {
+        return button;
+    }
+
+    protected JPopupMenu getMenu() {
+        return menu;
     }
 
     public static class OpenAction implements ActionListener {

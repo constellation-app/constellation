@@ -703,7 +703,13 @@ public final class GraphVisualAccess implements VisualAccess {
     private void rebuildConnections(final ReadableGraph readGraph) {
         final int linkCount = readGraph.getLinkCount();
         final int maxTransactions = graphMaxTransactions != Graph.NOT_FOUND ? readGraph.getIntValue(graphMaxTransactions, 0) : VisualGraphDefaults.DEFAULT_MAX_TRANSACTION_TO_DRAW;
-        final int connectionUpperBound = connectionMode == ConnectionMode.LINK ? linkCount : connectionMode == ConnectionMode.EDGE ? readGraph.getEdgeCount() : readGraph.getTransactionCount();
+
+        final int connectionUpperBound;
+        if (connectionMode == ConnectionMode.LINK) {
+            connectionUpperBound = linkCount;
+        } else {
+            connectionUpperBound = connectionMode == ConnectionMode.EDGE ? readGraph.getEdgeCount() : readGraph.getTransactionCount();
+        }
         connectionElementTypes = new GraphElementType[connectionUpperBound];
         connectionElementIds = new int[connectionUpperBound];
         linkStartingPositions = new int[linkCount];
@@ -756,9 +762,10 @@ public final class GraphVisualAccess implements VisualAccess {
     public DrawFlags getDrawFlags() {
         final boolean visibilityThresholdExceeded = graphVisibleAboveThreshold != Graph.NOT_FOUND && !accessGraph.getBooleanValue(graphVisibleAboveThreshold, 0)
                 && graphVisibilityThreshold != Graph.NOT_FOUND && accessGraph.getVertexCount() > accessGraph.getIntValue(graphVisibilityThreshold, 0);
-        return graphDrawFlags != Graph.NOT_FOUND
-                ? visibilityThresholdExceeded ? DrawFlags.NONE
-                        : accessGraph.getObjectValue(graphDrawFlags, 0) : VisualGraphDefaults.DEFAULT_DRAW_FLAGS;
+        if (graphDrawFlags != Graph.NOT_FOUND) {
+            return visibilityThresholdExceeded ? DrawFlags.NONE : accessGraph.getObjectValue(graphDrawFlags, 0);
+        }
+        return VisualGraphDefaults.DEFAULT_DRAW_FLAGS;
     }
 
     @Override
@@ -814,7 +821,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getIsLabelSummary(final int connection) {
+    public boolean isLabelSummary(final int connection) {
         return connectionElementTypes[connection] != GraphElementType.TRANSACTION;
     }
 
@@ -903,7 +910,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionDirected(final int connection) {
+    public boolean isConnectionDirected(final int connection) {
         if (transactionDirected != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -985,7 +992,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getVertexSelected(final int vertex) {
+    public boolean isVertexSelected(final int vertex) {
         return vertexSelected != Graph.NOT_FOUND ? accessGraph.getBooleanValue(vertexSelected, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_SELECTED;
     }
 
@@ -996,7 +1003,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getVertexDimmed(final int vertex) {
+    public boolean isVertexDimmed(final int vertex) {
         return vertexDimmed != Graph.NOT_FOUND ? accessGraph.getBooleanValue(vertexDimmed, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_DIMMED;
     }
 
@@ -1006,7 +1013,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getBlazed(final int vertex) {
+    public boolean isBlazed(final int vertex) {
         final Blaze blaze = vertexBlaze != Graph.NOT_FOUND ? accessGraph.getObjectValue(vertexBlaze, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_BLAZE;
         return blaze != null;
     }
@@ -1128,7 +1135,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionSelected(final int connection) {
+    public boolean isConnectionSelected(final int connection) {
         if (transactionSelected != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -1197,7 +1204,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionDimmed(final int connection) {
+    public boolean isConnectionDimmed(final int connection) {
         if (transactionDimmed != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:

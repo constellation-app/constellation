@@ -327,7 +327,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
                             }
                         }
                         if (!skip) {
-                            if (buildMode.equals("Newman")) {
+                            if ("Newman".equals(buildMode)) {
                                 final int exId = graph.getLinkTransaction(graph.getLink(u, v), 0);
                                 graph.removeTransaction(exId);
                                 transactions.remove(exId);

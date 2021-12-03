@@ -489,7 +489,6 @@ public final class GLTools {
     // Load a TGA as a 2D Texture. Completely initialize the state
     public static Texture loadTexture(final GL3 gl, final InputStream in, final String ext, final int minFilter, final int magFilter, final int wrapMode) throws IOException {
         // NVS-415: Appears to be a bug in JOGL where texture provider for PNG files does not flip the texture.
-//         final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, ext);
         final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, null);
         final Texture tex = TextureIO.newTexture(data);
 
@@ -591,7 +590,8 @@ public final class GLTools {
         glCurrent.glGetIntegerv(GL2ES3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
         final int maxIcons = v[0] * 64;
         if (icons.size() > maxIcons) {
-            System.out.printf("****\n**** Warning: nIcons %d > GL_MAX_ARRAY_TEXTURE_LAYERS %d\n****\n", icons.size(), maxIcons);
+            final String log = String.format("****\n**** Warning: nIcons %d > GL_MAX_ARRAY_TEXTURE_LAYERS %d\n****\n", icons.size(), maxIcons);
+            LOGGER.log(Level.INFO, log);
         }
 
         final int nIcons = Math.min(icons.size(), maxIcons);
@@ -638,7 +638,8 @@ public final class GLTools {
                         data.destroy();
                     }
                 } catch (final RuntimeException ex) {
-                    System.out.printf("##%n## GLTools.loadTextures() icon %d throwable: %s%n##%n", i, ex);
+                    final String log = String.format("##%n## GLTools.loadTextures() icon %d throwable: %s%n##%n", i, ex);
+                    LOGGER.log(Level.SEVERE, log);
                     LOGGER.log(Level.SEVERE, null, ex);
                 }
             }

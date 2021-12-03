@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
@@ -88,7 +89,7 @@ public class RecentGraphScreenshotUtilities {
      * @param filename The filename of the graph
      */
     public static void takeScreenshot(final String filename) {
-        final String imageFile = getScreenshotsDir() + File.separator + filename + ".png";
+        final String imageFile = getScreenshotsDir() + File.separator + filename + FileExtensionConstants.PNG;
         final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(GraphManager.getDefault().getActiveGraph());
         final VisualManager visualManager = graphNode.getVisualManager();
@@ -165,7 +166,7 @@ public class RecentGraphScreenshotUtilities {
             filesInDirectory.addAll(Arrays.asList(screenShotsDir.listFiles()));
         }
 
-        RecentFiles.getUniqueRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + ".png"));
+        RecentFiles.getUniqueRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + FileExtensionConstants.PNG));
 
         filesInDirectory.forEach(file -> {
             if (!filesInHistory.contains(file.getName())) {

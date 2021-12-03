@@ -62,7 +62,7 @@ public class FPSRenderable implements GLRenderable {
     private final boolean enabled;
     private long start = 0;
     private long fps = 0;
-    private long count_fps = 0;
+    private long countFps = 0;
 
     public FPSRenderable(final GLVisualProcessor parent) {
         this.parent = parent;
@@ -85,7 +85,7 @@ public class FPSRenderable implements GLRenderable {
             fpsBatcher.createShader(gl);
             fpsBatcher.createBatch(null).run(gl);
         } catch (final IOException | RenderException ex) {
-            // If we get here, a shader didn't compile. This obviously shouldn't happen in production;
+            // If we get here, a shader didn't compile. This obviously shouldn't happen in production,
             // our shaders are static and read from built-in resource files (it happens a lot in
             // development when we edit a shader, but that's OK). Since at least one shader is null,
             // there will be subsequent NullPointerExceptions, but there's nothing we can do about that.
@@ -148,24 +148,21 @@ public class FPSRenderable implements GLRenderable {
         }
 
         if ((System.currentTimeMillis() - start) >= 500) {
-            fps = count_fps << 1;
+            fps = countFps << 1;
             start = 0;
-            count_fps = 0;
+            countFps = 0;
         }
 
-        count_fps++;
+        countFps++;
 
         if (enabled) {
             final GL3 gl = drawable.getGL().getGL3();
 
             // extract and scale the rotation matrix from the mvp matrix
-//            final Matrix44f rotationMatrix = new Matrix44f();
-//            parent.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
             final Matrix44f scalingMatrix = new Matrix44f();
             scalingMatrix.makeScalingMatrix(pxScale, pyScale, 0);
             final Matrix44f srMatrix = new Matrix44f();
             srMatrix.multiply(scalingMatrix, IDENTITY_44F);
-//            srMatrix.multiply(scalingMatrix, rotationMatrix);
 
             // build the fps matrix by translating the sr matrix
             final Matrix44f translationMatrix = new Matrix44f();

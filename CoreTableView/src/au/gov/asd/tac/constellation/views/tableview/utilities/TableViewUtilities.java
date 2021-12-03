@@ -40,8 +40,9 @@ import javafx.scene.input.ClipboardContent;
  * @author cygnus_x-1
  */
 public class TableViewUtilities {
-
+    
     private TableViewUtilities() {
+        throw new IllegalStateException("Utility class");
     }
 
     /**

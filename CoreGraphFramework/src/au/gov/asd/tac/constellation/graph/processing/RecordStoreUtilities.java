@@ -43,6 +43,10 @@ import org.apache.commons.csv.CSVRecord;
 public class RecordStoreUtilities {
 
     private static final Logger LOGGER = Logger.getLogger(RecordStoreUtilities.class.getName());
+    
+    private RecordStoreUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static String[] parseTsvRow(final String line) {
         final String[] fields = line.split(SeparatorConstants.TAB, -1);
@@ -274,7 +278,7 @@ public class RecordStoreUtilities {
             if (!columnsWritten) {
                 line.setLength(0);
                 for (final String key : recordStore.keys()) {
-                    final String columnValue = key == null ? "" : key.replaceAll("(\n|\")", "");
+                    final String columnValue = key == null ? "" : key.replaceAll("[\n\"]", "");
                     if (columnValue.contains(",")) {
                         line.append("\"");
                         line.append(columnValue);

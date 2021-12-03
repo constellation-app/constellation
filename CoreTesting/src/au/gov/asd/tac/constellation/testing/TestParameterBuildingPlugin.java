@@ -108,7 +108,6 @@ public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
         final PluginParameter<BooleanParameterValue> caseParam = BooleanParameterType.build(BOOLEAN_PARAMETER_ID);
         caseParam.setName(SOME_BOOLEAN_NAME);
         caseParam.setDescription(SOME_BOOLEAN_DESCRIPTION);
-//        caseParam.setObjectValue(true);
         params.addParameter(caseParam);
 
         for (int i = 0; i < 2; i++) {

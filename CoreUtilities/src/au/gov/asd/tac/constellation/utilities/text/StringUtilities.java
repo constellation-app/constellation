@@ -39,6 +39,7 @@ public class StringUtilities {
     private static final Pattern ENDING_SQUARE_BRACKET = Pattern.compile("]$");
 
     private StringUtilities() {
+        throw new IllegalStateException("Utility class");
     }
 
     /**

@@ -49,6 +49,10 @@ public class AnalyticUtilities {
                 -> GRAPH_VISUALISATION_TRANSLATORS.put(graphVisualisationTranslator.getName(), graphVisualisationTranslator));
     }
 
+    private AnalyticUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     public static Collection<AnalyticQuestionDescription> getAnalyticQuestionDescriptions() {
         return Collections.unmodifiableCollection(ANALYTIC_QUESTION_DESCRIPTIONS.values());
     }

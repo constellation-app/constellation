@@ -28,6 +28,10 @@ import java.util.Map;
  */
 public class ConstructionUtilities {
 
+    private ConstructionUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Load a sequence of icons into a list of bytes.
      * <p>

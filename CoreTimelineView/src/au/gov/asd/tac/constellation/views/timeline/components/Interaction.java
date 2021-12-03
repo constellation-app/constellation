@@ -69,14 +69,6 @@ public class Interaction extends Group {
             GraphManager.getDefault().select(vertexA.getVertexID(), vertexB.getVertexID(), transaction.getTransactionID(), t.isControlDown());
             t.consume();
         });
-//        setOnMouseReleased(new EventHandler<MouseEvent>()
-//        {
-//            @Override
-//            public void handle(final MouseEvent t)
-//            {
-//                t.consume();
-//            }
-//        });
     }
 
     public Vertex getTopVertex() {

@@ -111,7 +111,6 @@ public class FileInputPane extends HBox {
                     }));
                     break;
                 case SAVE:
-
                     FileChooser.openSaveDialog(fileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
                         savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
                         files.add(selectedFile);

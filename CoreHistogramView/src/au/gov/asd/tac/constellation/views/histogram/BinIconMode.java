@@ -52,11 +52,11 @@ public enum BinIconMode {
 
                 if (key != null) {
                     String iconLabel = ((ConstellationIcon) key).getName();
-                    BufferedImage icon = ICON_CACHE.get(iconLabel);
+                    BufferedImage icon = iconCache.get(iconLabel);
                     if (icon == null) {
                         try {
                             icon = IconManager.getIcon(iconLabel).buildBufferedImage();
-                            ICON_CACHE.put(iconLabel, icon);
+                            iconCache.put(iconLabel, icon);
                         } catch (Exception e) {
                         }
                     }
@@ -98,6 +98,6 @@ public enum BinIconMode {
 
     public abstract void draw(Graphics2D graphics, Bin bin, int left, int top, int height);
 
-    private static Map<String, BufferedImage> ICON_CACHE = new HashMap<>();
+    private static Map<String, BufferedImage> iconCache = new HashMap<>();
 
 }

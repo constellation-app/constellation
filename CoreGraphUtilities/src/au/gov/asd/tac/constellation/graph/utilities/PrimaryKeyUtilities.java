@@ -26,6 +26,10 @@ import java.util.Set;
  * @author arcturus
  */
 public class PrimaryKeyUtilities {
+    
+    private PrimaryKeyUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Return a Set of primary key names defined by the graph

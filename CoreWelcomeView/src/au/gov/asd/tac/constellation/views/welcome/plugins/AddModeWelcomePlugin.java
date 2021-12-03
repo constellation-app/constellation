@@ -73,7 +73,7 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
         sg.setBooleanValue(drawModeAttribute, 0, true);
         final Graph dualGraph = new DualGraph(sg, false);
 
-        final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().replace(" ", "").toLowerCase();
+        final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().trim().toLowerCase();
         GraphOpener.getDefault().openGraph(dualGraph, graphName);
 
     }

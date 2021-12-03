@@ -265,13 +265,13 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
         // Run in a different thread, not the JavaFX thread
         final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
-        return pluginExecutor.submit(new Thread(() -> {
+        return pluginExecutor.submit(() -> {
             Thread.currentThread().setName("Browse Help");
             try {
                 Desktop.getDesktop().browse(uri);
             } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, String.format("Failed to load the help URI %s", uri), ex);
             }
-        }));
+        });
     }
 }

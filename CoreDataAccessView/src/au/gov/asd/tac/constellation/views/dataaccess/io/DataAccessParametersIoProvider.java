@@ -126,7 +126,6 @@ public class DataAccessParametersIoProvider {
 
                 // Groups all the parameters in to the plugin groups. Common parameters
                 // are based on the plugin name that is before the first '.' in the key values
-                //final Map<String, Map<String, String>> ppmap = loadedParameter.toPerPluginParamMap();
 
                 pluginPane.getDataAccessPanes().stream()
                         // Plugins are disabled by defult. Only load and enable from

@@ -49,7 +49,7 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
      * constructor This method must be called by each child class to ensure that
      * the lookups are properly initialised
      */
-    public MenuBaseAction() {
+    protected MenuBaseAction() {
         lookup = Utilities.actionsGlobalContext();
         graphNodeSet = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
         graphNodeSet.addLookupListener(

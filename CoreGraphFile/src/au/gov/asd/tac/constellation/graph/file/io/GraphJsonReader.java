@@ -64,7 +64,6 @@ public final class GraphJsonReader {
 
     // Track classes that know how to read particular types from JSON.
     private final Map<String, AbstractGraphIOProvider> providers;
-    private Map<String, Integer> versionedItems;
     private JsonParser jp;
     private Graph graph;
     private int version;
@@ -243,7 +242,7 @@ public final class GraphJsonReader {
 
         // Read the file format version number.
         current = jp.nextToken();
-        if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("version")) {
+        if (current == JsonToken.FIELD_NAME && "version".equals(jp.getCurrentName())) {
             current = jp.nextToken();
             if (current == JsonToken.VALUE_NUMBER_INT) {
                 version = jp.getIntValue();
@@ -261,12 +260,12 @@ public final class GraphJsonReader {
             throw new GraphParseException(msg);
         }
 
-        versionedItems = new HashMap<>();
+        final Map<String, Integer> versionedItems = new HashMap<>();
 
         // Get the versions of various items in this graph (if the graph supports it)
         if (version >= 2) {
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("versionedItems")) {
+            if (current == JsonToken.FIELD_NAME && "versionedItems".equals(jp.getCurrentName())) {
                 current = jp.nextToken();
                 if (current == JsonToken.START_OBJECT) {
                     while ((current = jp.nextToken()) != JsonToken.END_OBJECT) {
@@ -297,7 +296,7 @@ public final class GraphJsonReader {
         // everytime we add something to prevent this.. its too late now.
         String schemaFactoryName = null;
         current = jp.nextToken();
-        if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("schema")) {
+        if (current == JsonToken.FIELD_NAME && "schema".equals(jp.getCurrentName())) {
             current = jp.nextToken();
             if (current == JsonToken.VALUE_STRING) {
                 schemaFactoryName = jp.getValueAsString();
@@ -344,7 +343,7 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("graph")) {
+            if (current == JsonToken.FIELD_NAME && "graph".equals(jp.getCurrentName())) {
                 parseElement(storeGraph, GraphElementType.GRAPH, null, null, progress, entrySize, immutableObjectCache);
             } else {
                 final String msg = String.format("Expected FIELD_NAME 'graph', found '%s' at %s", current, jp.getCurrentLocation());
@@ -365,7 +364,7 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("vertex")) {
+            if (current == JsonToken.FIELD_NAME && "vertex".equals(jp.getCurrentName())) {
                 parseElement(storeGraph, GraphElementType.VERTEX, vertexMap, null, progress, entrySize, immutableObjectCache);
             } else {
                 final String msg = String.format("Expected FIELD_NAME 'vertex', found '%s' at %s", current, jp.getCurrentLocation());
@@ -386,7 +385,7 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("transaction")) {
+            if (current == JsonToken.FIELD_NAME && "transaction".equals(jp.getCurrentName())) {
                 parseElement(storeGraph, GraphElementType.TRANSACTION, vertexMap, transactionMap, progress, entrySize, immutableObjectCache);
             } else {
                 final String msg = String.format("Expected FIELD_NAME 'transaction', found '%s' at %s", current, jp.getCurrentLocation());
@@ -407,7 +406,7 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("meta")) {
+            if (current == JsonToken.FIELD_NAME && "meta".equals(jp.getCurrentName())) {
                 parseElement(storeGraph, GraphElementType.META, vertexMap, transactionMap, progress, entrySize, immutableObjectCache);
             } else if (current != JsonToken.END_OBJECT) {
                 final String msg = String.format("Error: expected END_OBJECT, found '%s' at %s", current, jp.getCurrentLocation());
@@ -532,11 +531,15 @@ public final class GraphJsonReader {
             final String attrType = node.get("type").textValue();
             final String attrDesc = node.has("descr") ? node.get("descr").textValue() : null;
             final JsonNode dv = node.get("default");
-            final Object attrDefault
-                    = (dv == null || dv.isNull()) ? null
-                    : dv.isNumber() ? dv.numberValue()
-                    : dv.isBoolean() ? dv.booleanValue()
-                    : dv.textValue();
+            final Object attrDefault;
+            if (dv == null || dv.isNull()) {
+                attrDefault = null;
+            } else if (dv.isNumber()) {
+                attrDefault = dv.numberValue();
+            } else {
+                attrDefault = dv.isBoolean() ? dv.booleanValue()
+                        : dv.textValue();
+            }
 
             final String attributeMergerId = node.has("merger") ? node.get("merger").textValue() : null;
 
@@ -544,8 +547,8 @@ public final class GraphJsonReader {
                 final int attrId = graph.addAttribute(elementType, attrType, attrLabel, attrDesc, attrDefault, attributeMergerId);
 
                 final Attribute attr = new GraphAttribute(graph, attrId);
-                final boolean isNumber = attrType.equals("integer") || attrType.equals("float");
-                final boolean isBoolean = attrType.equals("boolean");
+                final boolean isNumber = "integer".equals(attrType) || "float".equals(attrType);
+                final boolean isBoolean = "boolean".equals(attrType);
                 final boolean isObject = ObjectAttributeDescription.class.isAssignableFrom(attr.getDataType());
                 attributes.put(attrLabel, new AttrInfo(attrId, attrType, isNumber, isBoolean, isObject));
 

@@ -89,7 +89,7 @@ public abstract class ImportFileParser {
      * @param position the position of the ImportFileParser used for sorting a
      * list of parsers.
      */
-    public ImportFileParser(final String label, final int position) {
+    protected ImportFileParser(final String label, final int position) {
         this.label = label;
         this.position = position;
     }

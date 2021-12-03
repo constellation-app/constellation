@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,11 +41,11 @@ public abstract class AbstractPlugin implements Plugin {
 
     private final String pluginName;
 
-    public AbstractPlugin() {
+    protected AbstractPlugin() {
         this.pluginName = null;
     }
 
-    public AbstractPlugin(String pluginName) {
+    protected AbstractPlugin(String pluginName) {
         this.pluginName = pluginName;
     }
 
@@ -90,7 +91,7 @@ public abstract class AbstractPlugin implements Plugin {
 
     @Override
     public String getDescription() {
-        final String helpFileResource = getClass().getSimpleName() + ".html";
+        final String helpFileResource = getClass().getSimpleName() + FileExtensionConstants.HTML;
         final URL helpURL = getClass().getResource(helpFileResource);
         if (helpURL != null) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(helpURL.openStream(), StandardCharsets.UTF_8.name()))) {

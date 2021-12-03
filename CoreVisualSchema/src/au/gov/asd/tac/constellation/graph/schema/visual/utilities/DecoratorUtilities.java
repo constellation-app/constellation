@@ -27,6 +27,10 @@ import java.util.List;
  * @author twilight_sparkle
  */
 public class DecoratorUtilities {
+    
+    private DecoratorUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Return a list of attribute ids corresponding to the attribute names in

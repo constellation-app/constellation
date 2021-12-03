@@ -51,7 +51,7 @@ public class HashmodPanel extends javax.swing.JPanel {
     private static final String TITLE = "Select a CSV for the Hashmod";
 
     private String hashmodCSVFileStr = "";
-    private String hashmodCSVChainStr = "";
+
     private boolean isChainedHashmods = false;
     private int numChainedHashmods = 0;
     private final Hashmod[] chainedHashmods = new Hashmod[10];
@@ -95,9 +95,8 @@ public class HashmodPanel extends javax.swing.JPanel {
 
         final String[] fileList = filesList.split(",");
         for (final String file : fileList) {
-            final Hashmod hashmod = new Hashmod(file);
-            if (numChainedHashmods < 10 && hashmod != null) {
-                chainedHashmods[numChainedHashmods] = hashmod;
+            if (numChainedHashmods < 10) {
+                chainedHashmods[numChainedHashmods] = new Hashmod(file);
                 numChainedHashmods++;
                 isChainedHashmods = true;
             }
@@ -112,15 +111,15 @@ public class HashmodPanel extends javax.swing.JPanel {
         }
     }
 
-    public boolean getCreateVertexes() {
+    public boolean isCreateVerticesSelected() {
         return createAllCheckbox.isSelected();
     }
 
-    public boolean getCreateAttributes() {
+    public boolean isCreateAttributesSelected() {
         return createAttributesCheckbox.isSelected();
     }
 
-    public boolean getCreateTransactions() {
+    public boolean isCreateTransactionsSelected() {
         return createTransactionsCheckbox.isSelected();
     }
 
@@ -327,7 +326,8 @@ public class HashmodPanel extends javax.swing.JPanel {
         }
 
         if (isChainedHashmods()) {
-            final Hashmod firstHashmod = getChainedHashmods() == null ? null : getChainedHashmods()[0];
+            final Hashmod[] hashmods = getChainedHashmods();
+            final Hashmod firstHashmod = hashmods == null ? null : hashmods[0];
             if (firstHashmod != null) {
                 setAttributeNames(firstHashmod.getCSVKey(), firstHashmod.getCSVHeader(1), firstHashmod.getCSVHeader(2));
                 hashmodCSVFile.setText(firstHashmod.getCSVFileName());

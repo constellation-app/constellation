@@ -199,8 +199,8 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
         return (StringUtils.isNotBlank(filterText.getText())
                 && StringUtils.isNotBlank(propertyValue))
                 && (startsWithRb.isSelected()
-                ? propertyValue.toLowerCase().startsWith(filterInputText)
-                : propertyValue.toLowerCase().contains(filterInputText));
+                ? StringUtils.startsWithIgnoreCase(propertyValue, filterInputText)
+                : StringUtils.containsIgnoreCase(propertyValue, filterInputText));
     }
 
     @Override

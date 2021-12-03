@@ -63,7 +63,6 @@ public class ParameterListInputPane extends BorderPane {
     private final TitledPane parameterTitledPane = new TitledPane();
     private final ScrollPane parameterScrollPane = new ScrollPane();
     private final VBox parameterItemPanes = new VBox();
-//    private final List<ParameterItem> parameterItemPaneList = new ArrayList<>();
     private final PluginParameter<ParameterListParameterValue> parameter;
     private Button addItemButton;
 

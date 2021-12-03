@@ -31,6 +31,10 @@ public class FlowFileV3Utilities {
     private static final byte[] MAGIC_HEADER = {'N', 'i', 'F', 'i', 'F', 'F', '3'};
     private static final int MAX_VALUE_2_BYTES = 65535;
 
+    private FlowFileV3Utilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     public static void packageFlowFile(final InputStream in, final OutputStream out, final Map<String, String> attributes, final long fileSize) throws IOException {
         out.write(MAGIC_HEADER);
 

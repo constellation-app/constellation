@@ -128,7 +128,12 @@ public class ExportMenu {
 
         exportExcelSelectionMenu = createExportMenu(EXPORT_XLSX_SELECTION,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
+                //<<<<<<< HEAD
                 XLSX_FILE_FILTER,
+                //=======
+                //                FileExtensionConstants.XLSX,
+                //                EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
+                //>>>>>>> master
                 file -> new ExportToExcelFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),

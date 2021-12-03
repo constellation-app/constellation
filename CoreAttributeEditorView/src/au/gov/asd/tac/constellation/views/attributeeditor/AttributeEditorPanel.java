@@ -164,7 +164,6 @@ public class AttributeEditorPanel extends BorderPane {
     private final AttributeEditorTopComponent topComponent;
     private final StringProperty[] headingTitleProperties = new StringProperty[3];
     private final Map<GraphElementType, List<String>> currentAttributeNames = new HashMap<>();
-    private int currentFontSize;
 
     private enum HeadingType {
         GRAPH, NODE, TRANSACTION;
@@ -174,7 +173,6 @@ public class AttributeEditorPanel extends BorderPane {
     private static final ListSelectionEditorFactory LIST_SELECTION_EDITOR_FACTORY = new ListSelectionEditorFactory();
     private static final TimeZoneEditorFactory UPDATE_TIME_ZONE_EDITOR_FACTORY = new TimeZoneEditorFactory();
 
-//    private static final HashMap<String, AbstractAttributeHandler> attributeHandlerMap = new HashMap<>();
     private final TooltipPane tooltipPane = new TooltipPane();
 
     private void addCopyHandlersToListView(final ListView<Object> newList, final AttributeData attribute) {
@@ -429,7 +427,6 @@ public class AttributeEditorPanel extends BorderPane {
 
         optionsButtons.maxHeightProperty().bind(addMenu.heightProperty());
         optionsButtons.getChildren().addAll(showAllToggle, addMenu, editKeyButton);
-//        optionsButtons.getChildren().addAll(showAllcb, addMenu, editKeyButton);
         headerGraphic.setLeft(heading);
         headerGraphic.setRight(optionsButtons);
         headerGraphic.prefWidthProperty().bind(scrollPane.widthProperty().subtract(45));
@@ -872,7 +869,7 @@ public class AttributeEditorPanel extends BorderPane {
 
     private double getTextWidth(final String text) {
         // we need to manually scale the width using the font size against what we guess is the default, even though this seems unecessary.
-        currentFontSize = FontUtilities.getApplicationFontSize();
+        final int currentFontSize = FontUtilities.getApplicationFontSize();
         final Text t = new Text(text);
         t.getStyleClass().add("attributeName");
         return t.getLayoutBounds().getWidth() * (currentFontSize / 10.0);

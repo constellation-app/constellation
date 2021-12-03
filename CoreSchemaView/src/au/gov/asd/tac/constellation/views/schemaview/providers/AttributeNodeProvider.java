@@ -52,6 +52,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -67,12 +68,12 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
     private static final String GRAPH_ICON = "au/gov/asd/tac/constellation/views/schemaview/resources/graph.png";
     @StaticResource
     private static final String META_ICON = "au/gov/asd/tac/constellation/views/schemaview/resources/meta.png";
-    private Image VERTEX_IMAGE = null;
-    private Image TRANSACTION_IMAGE = null;
-    private Image EDGE_IMAGE = null;
-    private Image LINK_IMAGE = null;
-    private Image GRAPH_IMAGE = null;
-    private Image META_IMAGE = null;
+    private Image vertexImage = null;
+    private Image transactionImage = null;
+    private Image edgeImage = null;
+    private Image linkImage = null;
+    private Image graphImage = null;
+    private Image metaImage = null;
 
     private final Label schemaLabel;
     private final TableView<AttributeEntry> table;
@@ -124,11 +125,10 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
             table.scrollTo(0);
             table.getSelectionModel().clearSelection();
         } else {
-            final String lc = newValue.toLowerCase();
             final ObservableList<AttributeEntry> items = FXCollections.observableArrayList();
             attributeInfo.stream().forEach(si -> {
                 final String nameLc = si.attr.getName().toLowerCase();
-                final boolean found = st ? nameLc.startsWith(lc) : nameLc.contains(lc);
+                final boolean found = st ? StringUtils.startsWithIgnoreCase(nameLc, newValue) : StringUtils.containsIgnoreCase(nameLc, newValue);
                 if (found) {
                     items.add(si);
                 }
@@ -180,12 +180,12 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
         attributeInfo.clear();
         attributeInfo.addAll(getSchemaInfo(graph));
 
-        VERTEX_IMAGE = VERTEX_IMAGE != null ? VERTEX_IMAGE : UserInterfaceIconProvider.NODES.buildImage(16);
-        TRANSACTION_IMAGE = TRANSACTION_IMAGE != null ? TRANSACTION_IMAGE : UserInterfaceIconProvider.TRANSACTIONS.buildImage(16);
-        EDGE_IMAGE = EDGE_IMAGE != null ? EDGE_IMAGE : UserInterfaceIconProvider.EDGES.buildImage(16);
-        LINK_IMAGE = LINK_IMAGE != null ? LINK_IMAGE : UserInterfaceIconProvider.LINKS.buildImage(16);
-        GRAPH_IMAGE = GRAPH_IMAGE != null ? GRAPH_IMAGE : new Image(GRAPH_ICON);
-        META_IMAGE = META_IMAGE != null ? META_IMAGE : new Image(META_ICON);
+        vertexImage = vertexImage != null ? vertexImage : UserInterfaceIconProvider.NODES.buildImage(16);
+        transactionImage = transactionImage != null ? transactionImage : UserInterfaceIconProvider.TRANSACTIONS.buildImage(16);
+        edgeImage = edgeImage != null ? edgeImage : UserInterfaceIconProvider.EDGES.buildImage(16);
+        linkImage = linkImage != null ? linkImage : UserInterfaceIconProvider.LINKS.buildImage(16);
+        graphImage = graphImage != null ? graphImage : new Image(GRAPH_ICON);
+        metaImage = metaImage != null ? metaImage : new Image(META_ICON);
 
         final TableColumn<AttributeEntry, Label> labelCol = new TableColumn<>("Attribute Name");
         labelCol.setCellValueFactory(p -> {
@@ -197,22 +197,22 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
             final GraphElementType et = p.getValue().attr.getElementType();
             switch (et) {
                 case VERTEX:
-                    label.setGraphic(new ImageView(VERTEX_IMAGE));
+                    label.setGraphic(new ImageView(vertexImage));
                     break;
                 case TRANSACTION:
-                    label.setGraphic(new ImageView(TRANSACTION_IMAGE));
+                    label.setGraphic(new ImageView(transactionImage));
                     break;
                 case EDGE:
-                    label.setGraphic(new ImageView(EDGE_IMAGE));
+                    label.setGraphic(new ImageView(edgeImage));
                     break;
                 case LINK:
-                    label.setGraphic(new ImageView(LINK_IMAGE));
+                    label.setGraphic(new ImageView(linkImage));
                     break;
                 case GRAPH:
-                    label.setGraphic(new ImageView(GRAPH_IMAGE));
+                    label.setGraphic(new ImageView(graphImage));
                     break;
                 case META:
-                    label.setGraphic(new ImageView(META_IMAGE));
+                    label.setGraphic(new ImageView(metaImage));
                     break;
                 default:
                     break;

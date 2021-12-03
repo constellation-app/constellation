@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.utilities.tooltip;
 
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseExitedHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredTextAreaHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHyperlinkHandler;
-import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseMovedHandler;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider.TooltipDefinition;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHyperlinkHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredTextAreaHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseExitedHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseMovedHandler;
 import java.time.Duration;
 import java.util.List;
 import javafx.scene.control.Hyperlink;
@@ -36,6 +36,10 @@ import org.fxmisc.richtext.event.MouseOverTextEvent;
  * @author sol695510
  */
 public class TooltipUtilities {
+    
+    private TooltipUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void activateTextInputControl(final TextInputControl textInputControl, final TooltipPane tooltipPane) {
         textInputControl.setOnMouseEntered(new TooltipMouseEnteredHandler(textInputControl, tooltipPane));

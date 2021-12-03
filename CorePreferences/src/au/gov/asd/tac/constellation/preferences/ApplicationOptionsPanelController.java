@@ -73,15 +73,15 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
 
                 prefs.put(ApplicationPreferenceKeys.USER_DIR, applicationOptionsPanel.getUserDirectory());
-                prefs.putBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, applicationOptionsPanel.getAustosaveEnabled());
+                prefs.putBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, applicationOptionsPanel.isAustosaveEnabled());
                 prefs.putInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, applicationOptionsPanel.getAustosaveFrequency());
-                prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, applicationOptionsPanel.getWelcomeOnStartup());
-                prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, applicationOptionsPanel.getWhatsNewOnStartup());
+                prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, applicationOptionsPanel.isWelcomeOnStartupSelected());
+                prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, applicationOptionsPanel.isWhatsNewOnStartupSelected());
                 prefs.putInt(ApplicationPreferenceKeys.WEBSERVER_PORT, applicationOptionsPanel.getWebserverPort());
                 prefs.put(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, applicationOptionsPanel.getNotebookDirectory());
                 prefs.put(ApplicationPreferenceKeys.REST_DIR, applicationOptionsPanel.getRestDirectory());
-                prefs.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, applicationOptionsPanel.getDownloadPythonClient());
-                prefs.putBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, applicationOptionsPanel.getRememberOpenSaveLocation());
+                prefs.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, applicationOptionsPanel.isDownloadPythonClientSelected());
+                prefs.putBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, applicationOptionsPanel.isRememberOpenSaveLocationSelected());
             }
         }
     }
@@ -106,15 +106,15 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
         return !(applicationOptionsPanel.getUserDirectory().equals(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT))
-                && applicationOptionsPanel.getAustosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
+                && applicationOptionsPanel.isAustosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
                 && applicationOptionsPanel.getAustosaveFrequency() == prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT)
-                && applicationOptionsPanel.getWelcomeOnStartup() == prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)
-                && applicationOptionsPanel.getWhatsNewOnStartup() == prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)
+                && applicationOptionsPanel.isWelcomeOnStartupSelected() == prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)
+                && applicationOptionsPanel.isWhatsNewOnStartupSelected() == prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)
                 && applicationOptionsPanel.getWebserverPort() == prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT)
                 && applicationOptionsPanel.getNotebookDirectory().equals(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT))
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
-                && applicationOptionsPanel.getDownloadPythonClient() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
-                && applicationOptionsPanel.getRememberOpenSaveLocation() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT));
+                && applicationOptionsPanel.isDownloadPythonClientSelected() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
+                && applicationOptionsPanel.isRememberOpenSaveLocationSelected() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT));
     }
 
     @Override

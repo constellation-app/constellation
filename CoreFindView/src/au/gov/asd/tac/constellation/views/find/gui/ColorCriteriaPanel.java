@@ -50,7 +50,6 @@ public class ColorCriteriaPanel extends javax.swing.JPanel implements ActionList
         this.parentPanel = parent;
 
         chooser.setColor(currentColor);
-//        updateColor(currentColor);
     }
 
     /**
@@ -68,7 +67,6 @@ public class ColorCriteriaPanel extends javax.swing.JPanel implements ActionList
 
         currentColor = color;
         chooser.setColor(currentColor);
-//        updateColor(currentColor);
     }
 
     /**

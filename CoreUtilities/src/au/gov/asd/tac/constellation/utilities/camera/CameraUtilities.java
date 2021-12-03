@@ -29,6 +29,10 @@ public class CameraUtilities {
     // and the label is probably visible.
     private static final float MIN_ZOOM_DISTANCE = 16F;
 
+    private CameraUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static void refocusOnXAxis(final Camera camera, final BoundingBox bb, final boolean reverseDirection) {
         refocus(camera, new Vector3f(reverseDirection ? -1 : 1, 0, 0), new Vector3f(0, 1, 0), bb);
     }

@@ -66,7 +66,7 @@ import javafx.scene.layout.VBox;
  */
 public class PluginReportPane extends BorderPane implements PluginReportListener {
 
-    private final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
     private static final Image REPORT_CONTRACTED_IMAGE = UserInterfaceIconProvider.CHEVRON_RIGHT.buildImage(10);
     private static final Image REPORT_EXPANDED_IMAGE = UserInterfaceIconProvider.CHEVRON_DOWN.buildImage(10);
 
@@ -203,8 +203,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
             out.append("Description: " + pluginReport.getPluginDescription() + SeparatorConstants.NEWLINE);
             out.append("Message: " + pluginReport.getMessage() + SeparatorConstants.NEWLINE);
             out.append("Tags: " + Arrays.toString(pluginReport.getTags()) + SeparatorConstants.NEWLINE);
-            out.append("Start: " + FORMAT.format(new Date(pluginReport.getStartTime())) + SeparatorConstants.NEWLINE);
-            out.append("Stop: " + FORMAT.format(new Date(pluginReport.getStopTime())) + SeparatorConstants.NEWLINE);
+            out.append("Start: " + dateFormat.format(new Date(pluginReport.getStartTime())) + SeparatorConstants.NEWLINE);
+            out.append("Stop: " + dateFormat.format(new Date(pluginReport.getStopTime())) + SeparatorConstants.NEWLINE);
 
             if (pluginReport.getError() != null) {
                 out.append("Error: " + pluginReport.getError().getMessage() + "\n\n");

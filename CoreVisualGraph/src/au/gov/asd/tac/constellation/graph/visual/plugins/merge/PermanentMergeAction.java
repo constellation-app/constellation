@@ -86,7 +86,6 @@ public final class PermanentMergeAction extends AbstractAction {
      */
     public void execute(final int vxId) throws InterruptedException {
         assert !SwingUtilities.isEventDispatchThread();
-//        final Plugin plugin = PluginRegistry.get(CoreRegistry.PERMANENT_NODE_MERGE);
         final Graph graph = context.getGraph();
 
         // make sure that selected node is part of selection set
