@@ -54,7 +54,6 @@ final class DragDropList extends JList<MyElement> {
         new MyDragListener(this);
 
         model = new MyListModel(new String[0]);
-//        setSelectedLayers(visibleLayers);
     }
 
     @Override

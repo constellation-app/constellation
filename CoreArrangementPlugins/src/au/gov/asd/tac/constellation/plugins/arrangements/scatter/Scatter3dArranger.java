@@ -75,10 +75,10 @@ public class Scatter3dArranger implements Arranger {
             xDimension = params.getXDimension();
             yDimension = params.getYDimension();
             zDimension = params.getZDimension();
-            xLogarithmic = params.getLogarithmicX();
-            yLogarithmic = params.getLogarithmicY();
-            zLogarithmic = params.getLogarithmicZ();
-            doNotScale = params.getDoNotScale();
+            xLogarithmic = params.isLogarithmicX();
+            yLogarithmic = params.isLogarithmicY();
+            zLogarithmic = params.isLogarithmicZ();
+            doNotScale = params.isDoNotScale();
         } else {
             return;
         }

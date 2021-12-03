@@ -35,6 +35,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * @author algol
  */
 public class RestUtilities {
+    
+    private RestUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static Graph getActiveGraph() {
         final Graph graph = GraphManager.getDefault().getActiveGraph();

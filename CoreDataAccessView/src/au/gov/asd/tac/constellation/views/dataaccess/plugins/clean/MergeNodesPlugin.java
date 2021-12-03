@@ -172,13 +172,6 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         selectedOnly.setEnabled(false);
         params.addParameter(selectedOnly);
 
-//        final PluginParameter<BooleanParameterValue> ask = BooleanParameterType.buildId(ASK_PARAMETER_ID);
-//        ask.setName("Ask Before Merging");
-//        ask.setDescription("Should you be asked before merging occurs?");
-//        ask.setBooleanValue(false);
-//        ask.setEnabled(false);
-//        params.addParameter(ask);
-//
         params.addController(MERGE_TYPE_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> parameters, final ParameterChange change) -> {
             if (change == ParameterChange.VALUE) {
                 final String selectedMergeType = parameters.get(MERGE_TYPE_PARAMETER_ID).getStringValue();

@@ -57,7 +57,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         userDirectoryText.setText(userDirectory);
     }
 
-    public boolean getAustosaveEnabled() {
+    public boolean isAustosaveEnabled() {
         return autosaveCheckBox.isSelected();
     }
 
@@ -74,7 +74,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         autosaveSpinner.getModel().setValue(autosaveFrequency);
     }
 
-    public boolean getWelcomeOnStartup() {
+    public boolean isWelcomeOnStartupSelected() {
         return startupWelcomeCheckbox.isSelected();
     }
 
@@ -82,7 +82,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         startupWelcomeCheckbox.setSelected(welcomeOnStartup);
     }
 
-    public boolean getWhatsNewOnStartup() {
+    public boolean isWhatsNewOnStartupSelected() {
         return startupWhatsNewCheckbox.isSelected();
     }
 
@@ -114,7 +114,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         restDirectoryText.setText(restDirectory);
     }
 
-    public boolean getDownloadPythonClient() {
+    public boolean isDownloadPythonClientSelected() {
         return downloadPythonClientCheckBox.isSelected();
     }
 
@@ -122,7 +122,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         downloadPythonClientCheckBox.setSelected(downloadPythonClient);
     }
 
-    public boolean getRememberOpenSaveLocation() {
+    public boolean isRememberOpenSaveLocationSelected() {
         return rememberOpenAndSaveLocationCheckBox.isSelected();
     }
 

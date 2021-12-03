@@ -56,6 +56,10 @@ public class PlaceholderUtilities {
 
     private static final String DEFAULT_PLACEHOLDER_LABEL = "_placeholder<" + AnalyticConcept.VertexType.PLACEHOLDER.getName() + ">";
 
+    private PlaceholderUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Given a String, returns the corresponding name for a placeholder node.
      * This should be used to ensure the right data merges together by keeping
@@ -133,7 +137,7 @@ public class PlaceholderUtilities {
                     .filter(transaction -> transaction.getTypeValue().equals(SchemaTransactionTypeUtilities.getDefaultType()))
                     .forEach(GraphTransaction::deferRemove);
             g.streamVertices()
-                    .filter(vertex -> vertex.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER).equals("unknown"))
+                    .filter(vertex -> "unknown".equals(vertex.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER)))
                     .forEach(GraphVertex::deferRemove);
             g.completeDeferred();
         }

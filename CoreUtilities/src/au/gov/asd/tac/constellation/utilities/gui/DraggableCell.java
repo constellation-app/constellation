@@ -86,7 +86,6 @@ public class DraggableCell<T> extends ListCell<T> {
                 Dragboard dragboard = event.getDragboard();
 
                 if (dragboard.hasString()) {
-//                    System.out.println("dragging");
                     ObservableList<T> items = getListView().getItems();
                     final int draggedIndex = Integer.parseInt(dragboard.getString());
                     final int thisIndex = items.indexOf(getItem());

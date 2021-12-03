@@ -68,15 +68,6 @@ public class LayersViewPane extends BorderPane {
         // create controller
         this.controller = controller;
 
-        // create help button
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
-        helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
-        helpButton.setTooltip(new Tooltip("Display help for Layers View"));
-        helpButton.setOnAction(event -> new HelpCtx(LayersViewTopComponent.class.getName()).display());
-
-        // Get rid of the ugly button look so the icon stands alone.
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
-
         // create layer headings
         final Label layerIdHeadingText = new Label("Layer\nID");
         final Label visibilityHeadingText = new Label("Visibility");
@@ -149,7 +140,7 @@ public class LayersViewPane extends BorderPane {
         });
         HBox.setHgrow(deselectAllButton, Priority.ALWAYS);
 
-        this.options = new HBox(5, addButton, deselectAllButton, helpButton, errorLabel);
+        this.options = new HBox(5, addButton, deselectAllButton, createHelpButton(), errorLabel);
         options.setAlignment(Pos.TOP_LEFT);
         options.setPadding(new Insets(0, 0, 0, 10));
 
@@ -164,11 +155,23 @@ public class LayersViewPane extends BorderPane {
         
         final Label noGraphLabel = new Label("Open or create a graph to enable the Layers View.");
         // add layers grid and options to pane
-        this.noGraphPane = new VBox(5, noGraphLabel, helpButton);
+        this.noGraphPane = new VBox(5, noGraphLabel, createHelpButton());
         noGraphPane.setPadding(new Insets(0,0,0,0));
 
         // create layout bindings
         noGraphPane.prefWidthProperty().bind(this.widthProperty());
+    }
+    
+    private Button createHelpButton() {
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
+        helpButton.setTooltip(new Tooltip("Display help for Layers View"));
+        helpButton.setOnAction(event -> new HelpCtx(LayersViewTopComponent.class.getName()).display());
+
+        // Get rid of the ugly button look so the icon stands alone.
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        
+        return helpButton;
     }
 
     private void createLayer(final int currentIndex, final boolean checkBoxSelected, final String vxQuery, final String txQuery, final String description, final boolean showVertices, final boolean showTransactions) {
@@ -295,7 +298,7 @@ public class LayersViewPane extends BorderPane {
                 }
 
                 final int queryIndex = vxQuery != null ? vxQuery.getIndex() : txQuery.getIndex();
-                final boolean queryVisibility = vxQuery != null ? vxQuery.getVisibility() : txQuery.getVisibility();
+                final boolean queryVisibility = vxQuery != null ? vxQuery.isVisible() : txQuery.isVisible();
                 final String vxqueryString = vxQuery != null ? vxQuery.getQueryString() : StringUtils.EMPTY;
                 final String txqueryString = txQuery != null ? txQuery.getQueryString() : StringUtils.EMPTY;
                 final String queryDescription = vxQuery != null ? vxQuery.getDescription() : txQuery.getDescription();

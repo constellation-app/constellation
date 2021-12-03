@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * A trivial text-based implementation of IoProgress.
  *
@@ -23,6 +26,7 @@ package au.gov.asd.tac.constellation.utilities.gui;
 public class TextIoProgress implements IoProgress {
 
     private final boolean display;
+    private static final Logger LOGGER = Logger.getLogger(TextIoProgress.class.getName());
 
     /**
      *
@@ -36,42 +40,43 @@ public class TextIoProgress implements IoProgress {
     @Override
     public void start() {
         if (display) {
-            System.out.printf("start%n");
+            LOGGER.log(Level.INFO, "start");
         }
     }
 
     @Override
     public void start(final int workunits) {
         if (display) {
-            System.out.printf("start(%d)%n", workunits);
+            LOGGER.log(Level.INFO, "start({0})", workunits);
         }
     }
 
     @Override
     public void progress(final int workunit) {
         if (display) {
-            System.out.printf("progress(%d)%n", workunit);
+            LOGGER.log(Level.INFO, "progress({0})", workunit);
         }
     }
 
     @Override
     public void progress(final String message) {
         if (display) {
-            System.out.printf("progress(%s)%n", message);
+            LOGGER.log(Level.INFO, "progress({0})", message);
         }
     }
 
     @Override
     public void progress(final String message, final int workunit) {
         if (display) {
-            System.out.printf("progress(%s,%d)%n", message, workunit);
+            final String log = String.format("progress(%s,%d)%n", message, workunit);
+            LOGGER.log(Level.INFO, log);
         }
     }
 
     @Override
     public void finish() {
         if (display) {
-            System.out.printf("finish%n");
+            LOGGER.log(Level.INFO, "finish()");
         }
     }
 }

@@ -21,6 +21,7 @@ import javafx.geometry.Insets;
 import javafx.scene.CacheHint;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A SelectableLabel is a TextArea that has been enhanced to provide similar
@@ -43,7 +44,7 @@ public class SelectableLabel extends Label {
      */
     public SelectableLabel(final String text, boolean wrapText, String style, final TooltipPane tipsPane, final List<MenuItem> contextMenuItems) {
         getStyleClass().add("selectable-label");
-        setText(text == null ? "" : text);
+        setText(StringUtils.defaultString(text));
         setWrapText(wrapText);
         final Insets insets = new Insets(3, 3, 3, 3);
         setPadding(insets);

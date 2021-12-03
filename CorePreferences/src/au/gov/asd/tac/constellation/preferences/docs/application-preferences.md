@@ -7,7 +7,7 @@ CONSTELLATION -> Application.
 
 The user directory is where Constellation stores user-specific data such
 as auto-save files, icons, and templates. By default the user directory
-is "\<HomeDirectory>/.CONSTELLATION". If you want to change your user
+is "&lt;<HomeDirectory&gt;/.CONSTELLATION". If you want to change your user
 directory, create the new directory first, copy any files you want from
 the current directory to the new one, then change the directory in
 preferences.

@@ -106,15 +106,6 @@ public class FileInputPane extends HBox {
                 case SAVE:
                     final File saveFile = fileChooser.showSaveDialog(getScene().getWindow());
                     if (saveFile != null) {
-//                        if (filter != null && filter.getExtensions().size() == 1) {
-//                            final String fileExtension = filter.getExtensions().get(0).substring(1);
-//                            if (!file.getName().endsWith(fileExtension)) {
-//                                final File fileWithExtension = new File(file.getAbsolutePath() + fileExtension);
-//                                files.add(fileWithExtension);
-//                            }
-//                        } else {
-//                            files.add(file);
-//                        }
                         files.add(saveFile);
                     }
                     break;

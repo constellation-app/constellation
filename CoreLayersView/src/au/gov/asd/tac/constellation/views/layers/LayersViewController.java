@@ -171,7 +171,7 @@ public class LayersViewController {
                 .executeLater(graph);
     }
 
-    public boolean getParentVisibility() {
+    public boolean hasParentVisibility() {
         return parent != null && parent.getVisibility();
     }
 
@@ -219,7 +219,7 @@ public class LayersViewController {
         if (graph == null) {
             return;
         }
-        PluginExecution.withPlugin(new UpdateQueryPlugin(vxBitMaskCollection, txBitMaskCollection)).executeLater(graph);
+        PluginExecution.withPlugin(new UpdateQueryPlugin()).executeLater(graph);
     }
 
     public void updateQueriesFuture(final Graph currentGraph) {
@@ -227,8 +227,7 @@ public class LayersViewController {
         if (graph == null) {
             return;
         }
-        final Future<?> f = PluginExecution.withPlugin(new UpdateQueryPlugin(vxBitMaskCollection,
-                txBitMaskCollection)).executeLater(graph);
+        final Future<?> f = PluginExecution.withPlugin(new UpdateQueryPlugin()).executeLater(graph);
         try {
             f.get();
         } catch (final InterruptedException ex) {
@@ -394,12 +393,8 @@ public class LayersViewController {
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
     protected static class UpdateQueryPlugin extends SimpleEditPlugin {
 
-        private final BitMaskQueryCollection vxBitMasks;
-        private final BitMaskQueryCollection txBitMasks;
-
-        protected UpdateQueryPlugin(final BitMaskQueryCollection vxbitMasks, final BitMaskQueryCollection txbitMasks) {
-            this.vxBitMasks = vxbitMasks;
-            this.txBitMasks = txbitMasks;
+        protected UpdateQueryPlugin() {
+            
         }
 
         @Override

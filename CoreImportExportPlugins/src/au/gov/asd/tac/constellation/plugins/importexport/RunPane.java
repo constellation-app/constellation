@@ -86,7 +86,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final String FILTER_STYLE = "-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;";
     private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;";
 
-    protected final ImportController importController;
+    private final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
     private final AttributeList sourceVertexAttributeList;
     private final AttributeList destinationVertexAttributeList;
@@ -100,7 +100,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private int attributeCount = 0;
 
     private final TextField filterField;
-    protected static RowFilter rowFilter;
+    private static RowFilter rowFilter;
     private String filter = "";
 
     private final TextField attributeFilterTextField = new TextField();
@@ -117,7 +117,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
     private String[] currentColumnLabels = new String[0];
 
-    protected static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
+    private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
     
     // made protected purely so that FilterStartUp load can trigger the process for this on startup
     // needs to declared CompletableFuture rather than simply Future so that we can call thenRun() later on

@@ -38,6 +38,10 @@ public class PasswordUtilities {
 
     private static byte[] iv = null;
     private static byte[] key = null;
+    
+    private PasswordUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static byte[] getIV() {
         if (iv == null) {

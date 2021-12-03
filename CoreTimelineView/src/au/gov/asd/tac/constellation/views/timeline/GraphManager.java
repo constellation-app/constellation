@@ -39,7 +39,6 @@ public class GraphManager implements LookupListener {
     private GraphNode graphNode;
     private final Lookup.Result<GraphNode> result;
     private String datetimeAttr = null;
-    private final String labelAttr = null;
     private boolean isElementSelected = false;
 
     public static GraphManager getDefault() {

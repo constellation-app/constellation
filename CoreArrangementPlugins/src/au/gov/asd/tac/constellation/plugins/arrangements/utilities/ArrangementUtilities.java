@@ -40,7 +40,11 @@ import java.util.Set;
  */
 public final class ArrangementUtilities {
 
-    public static final int FUNDAMENTAL_SIZE = 2; //20;
+    public static final int FUNDAMENTAL_SIZE = 2;
+    
+    private ArrangementUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Find the minimum sum of weighted edges that must be traversed to reach
@@ -411,8 +415,6 @@ public final class ArrangementUtilities {
         component.add(seedVxId);
         while (!neighbours.isEmpty()) {
             final Integer vxId = neighbours.removeFirst();
-//            component.add(vxId);
-//            Debug.debug("@added to component: %d (%d)\n", vxId, component.size());
             final int nNeighbours = graph.getVertexNeighbourCount(vxId);
             for (int nbPosition = 0; nbPosition < nNeighbours; nbPosition++) {
                 final int nbId = graph.getVertexNeighbour(vxId, nbPosition);

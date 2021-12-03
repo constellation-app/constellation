@@ -44,10 +44,10 @@ public abstract class SimplePlugin extends AbstractPlugin {
     private static final String WAITING_INTERACTION = "Waiting...";
     private static final String FINISHED_INTERACTION = "Finished";
 
-    public SimplePlugin() {
+    protected SimplePlugin() {
     }
 
-    public SimplePlugin(String pluginName) {
+    protected SimplePlugin(String pluginName) {
         super(pluginName);
     }
 
@@ -61,15 +61,14 @@ public abstract class SimplePlugin extends AbstractPlugin {
         }
 
         try {
-
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+
             try {
                 execute(graphs, interaction, parameters);
             } finally {
                 interaction.setProgress(2, 1, FINISHED_INTERACTION, true);
             }
-
         } finally {
             if (graph != null) {
                 interaction.setBusy(graph.getId(), false);
@@ -82,16 +81,16 @@ public abstract class SimplePlugin extends AbstractPlugin {
 
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
-        try {
 
+        try {
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+
             try {
                 read(graph, interaction, parameters);
             } finally {
                 interaction.setProgress(2, 1, FINISHED_INTERACTION, true);
             }
-
         } finally {
             interaction.setBusy(graph.getId(), false);
         }
@@ -102,16 +101,16 @@ public abstract class SimplePlugin extends AbstractPlugin {
 
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
-        try {
 
+        try {
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+
             try {
                 edit(graph, interaction, parameters);
             } finally {
                 interaction.setProgress(2, 1, FINISHED_INTERACTION, true);
             }
-
         } finally {
             interaction.setBusy(graph.getId(), false);
         }

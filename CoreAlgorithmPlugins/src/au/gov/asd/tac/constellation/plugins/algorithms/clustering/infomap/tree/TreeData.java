@@ -40,7 +40,7 @@ public class TreeData {
 
     public int addNewNode(final int position, final String name, final double flow, final double teleportWeight) {
         final NodeBase node = nodeFactory.createNode(name, flow, teleportWeight);
-        node.setOriginalIndex(position); //leafNodes.size();
+        node.setOriginalIndex(position);
         root.addChild(node);
         leafNodes.add(node);
 

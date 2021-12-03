@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -179,7 +180,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                     return true;
                 } else {
                     final String filename = pathname.getAbsolutePath();
-                    return filename.endsWith(".png") || filename.endsWith(".PNG");
+                    return StringUtils.endsWithIgnoreCase(filename, FileExtensionConstants.PNG);
                 }
             });
             for (final File file : filesInPath) {

@@ -25,11 +25,9 @@ import javax.swing.DefaultComboBoxModel;
 public class StringListPanel extends javax.swing.JPanel {
 
     private static final String COMMA = "Comma";
-//    private static final String NEW_LINE = "New Line";
     private static final String TAB = "Tab";
     private static final String SEMI_COLON = "Semi-colon";
     private static final String STRING = "String";
-//    private String delimiter = NEW_LINE;
     private String delimiter = COMMA;
 
     /**

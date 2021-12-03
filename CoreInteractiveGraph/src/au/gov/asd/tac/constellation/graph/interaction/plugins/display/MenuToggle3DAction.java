@@ -55,6 +55,6 @@ public class MenuToggle3DAction extends MenuBaseAction {
 
     @Override
     protected void displayValue() {
-        menuButton.setSelected(VisualGraphUtilities.getDisplayModeIs3D(getContext().getGraph()));
+        menuButton.setSelected(VisualGraphUtilities.isDisplayModeIn3D(getContext().getGraph()));
     }
 }

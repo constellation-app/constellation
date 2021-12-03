@@ -193,9 +193,6 @@ public class GraphRecordStore extends TabularRecordStore {
         }
         final GraphRecordStore other = (GraphRecordStore) obj;
 
-//        if (!Objects.equals(this.typedRecords, other.typedRecords)) {
-//            return false;
-//        }
         if (this.typedRecords.size() != other.typedRecords.size()) {
             return false;
         }

@@ -25,9 +25,9 @@ import java.util.Arrays;
  */
 public class ElementSet {
 
-    private static long[] EMPTY_ARRAY = new long[0];
+    private static long[] emptyArray = new long[0];
 
-    private long[] elements = EMPTY_ARRAY;
+    private long[] elements = emptyArray;
     private final GraphElementType type;
 
     public ElementSet(final GraphElementType type) {

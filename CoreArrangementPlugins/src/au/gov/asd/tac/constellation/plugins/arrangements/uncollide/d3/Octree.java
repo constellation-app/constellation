@@ -143,18 +143,34 @@ public class Octree {
         // Object can completely fit within the left quadrants.
         if (orb.getX() + orb.r < midx) {
             if (topQuadrant) {
-                index = frontQuadrant ? TOP_L_F : backQuadrant ? TOP_L_B : -1;
+                if (frontQuadrant) {
+                    index = TOP_L_F;
+                } else {
+                    index = backQuadrant ? TOP_L_B : -1;
+                }
             } else if (bottomQuadrant) {
-                index = frontQuadrant ? BOT_L_F : backQuadrant ? BOT_L_B : -1;
+                if (frontQuadrant) {
+                    index = BOT_L_F;
+                } else {
+                    index = backQuadrant ? BOT_L_B : -1;
+                }
             } else {
                 // Do nothing
             }
         } // Object can completely fit within the right quadrants.
         else if (orb.getX() - orb.r > midx) {
             if (topQuadrant) {
-                index = frontQuadrant ? TOP_R_F : backQuadrant ? TOP_R_B : -1;
+                if (frontQuadrant) {
+                    index = TOP_R_F;
+                } else {
+                    index = backQuadrant ? TOP_R_B : -1;
+                }
             } else if (bottomQuadrant) {
-                index = frontQuadrant ? BOT_R_F : backQuadrant ? BOT_R_B : -1;
+                if (frontQuadrant) {
+                    index = BOT_R_F;
+                } else {
+                    index = backQuadrant ? BOT_R_B : -1;
+                }
             } else {
                 // Do nothing
             }
@@ -250,7 +266,6 @@ public class Octree {
                     z *= nudge;
                     z += perturbation;
                     perturbation = -perturbation;
-//                    System.out.printf("-Collided %f %f %f x=%f y=%f z=%f\n  %s <> %s\n", l, r, nudge, x, y, z, orb, possible);
                     orb.setX(orb.getX() - x);
                     orb.setY(orb.getY() - y);
                     orb.setZ(orb.getZ() - z);

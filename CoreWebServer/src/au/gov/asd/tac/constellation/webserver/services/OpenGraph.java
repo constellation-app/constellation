@@ -36,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -93,7 +94,7 @@ public class OpenGraph extends RestService {
 
         final File fnam = new File(filePath).getAbsoluteFile();
         String name = fnam.getName();
-        if (name.toLowerCase().endsWith(GraphDataObject.FILE_EXTENSION)) {
+        if (StringUtils.endsWithIgnoreCase(name, GraphDataObject.FILE_EXTENSION)) {
             name = name.substring(0, name.length() - GraphDataObject.FILE_EXTENSION.length());
         }
 

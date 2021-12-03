@@ -93,11 +93,8 @@ public class TimelineChart extends XYChart<Number, Number> {
     private final Tooltip tooltip;
     private final Rectangle selection;
     // Attributes and Instance Variables:
-    private final long lowestObservedTime = Long.MAX_VALUE;
-    private final long highestObservedTime = Long.MIN_VALUE;
     private long lowestObservedDisplayPos = Long.MAX_VALUE;
     private long highestObservedDisplayPos = Long.MIN_VALUE;
-    private double shiftYAxis = 0.0;
     private double mouseOrigin = 0.0;
     private double mouseDistanceFromOrigin = 0.0;
     private double tickUnit = 1.0;
@@ -235,9 +232,6 @@ public class TimelineChart extends XYChart<Number, Number> {
 
         this.xAxis = (NumberAxis) xAxis;
         this.yAxis = yAxis;
-//        this.xAxis.setLowerBound(System.currentTimeMillis() - (31536000000l * 5));
-//        this.xAxis.setUpperBound(System.currentTimeMillis());
-//        setExtents(System.currentTimeMillis() - (31536000000l * 5), System.currentTimeMillis(), true);
         tooltip = createTooltip();
 
         formatAxes();
@@ -359,16 +353,13 @@ public class TimelineChart extends XYChart<Number, Number> {
                 lowerTimeExtentProperty.setValue(extentFormatter.format(new Date((long) lowerTimeExtent)));
                 upperTimeExtentProperty.setValue(extentFormatter.format(new Date((long) upperTimeExtent)));
 
-                // return the label
-                String formatted;
-                try {
+                if(tickDate != null) {
                     tickDate.setTimeZone(currentTimezone);
-                    formatted = tickDate.format(date);
-                } catch (NullPointerException npe) {
-                    formatted = ""; // We don't have a valid timeline;
+                    return tickDate.format(date);
                 }
 
-                return formatted;
+                // We don't have a valid timeline
+                return "";
             }
 
             @Override
@@ -727,7 +718,6 @@ public class TimelineChart extends XYChart<Number, Number> {
         final double timeExtentDifference = upperTimeExtent - lowerTimeExtent;
         final double amountX = timeExtentDifference == 0 ? this.getWidth() : this.getWidth() / (upperTimeExtent - lowerTimeExtent);
 
-        shiftYAxis = yAxis.getLayoutY();
         // Update all node positions:
         for (int seriesIndex = 0; seriesIndex < getData().size(); seriesIndex++) {
             final Series<Number, Number> series = getData().get(seriesIndex);
@@ -806,8 +796,6 @@ public class TimelineChart extends XYChart<Number, Number> {
             final Axis<Number> ya = getYAxis();
             List<Number> xData = null;
             List<Number> yData = null;
-
-            shiftYAxis = this.getHeight() - yAxis.getHeight();
 
             if (xa.isAutoRanging()) {
                 xData = new ArrayList<>();

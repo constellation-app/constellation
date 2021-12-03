@@ -253,7 +253,6 @@ public class OverviewPanel extends Pane {
                 if (isFullRefresh) {
                     histogram.getData().clear();
                     histogram.getData().addAll(totalSeries, selectedSeries);
-                    //histogram.setData(FXCollections.observableArrayList(totalSeries, selectedSeries));
                 } else {
                     //causes flickers on remove
                     if (selectedOnly) {

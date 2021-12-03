@@ -37,6 +37,10 @@ public class SchemaAttributeUtilities {
 
     private static final Collection<SchemaAttribute> SCHEMA_VERTEX_ATTRIBUTES = new ArrayList<>();
     private static final Collection<SchemaAttribute> SCHEMA_TRANSACTION_ATTRIBUTES = new ArrayList<>();
+    
+    private SchemaAttributeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static synchronized void buildAttributes() {
         if (SCHEMA_VERTEX_ATTRIBUTES.isEmpty() || SCHEMA_TRANSACTION_ATTRIBUTES.isEmpty()) {

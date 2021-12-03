@@ -83,19 +83,19 @@ public class Scatter3dChoiceParameters {
         return this.zDimension;
     }
 
-    public boolean getLogarithmicX() {
+    public boolean isLogarithmicX() {
         return xLogarithmic;
     }
 
-    public boolean getLogarithmicY() {
+    public boolean isLogarithmicY() {
         return yLogarithmic;
     }
 
-    public boolean getLogarithmicZ() {
+    public boolean isLogarithmicZ() {
         return zLogarithmic;
     }
 
-    public boolean getDoNotScale() {
+    public boolean isDoNotScale() {
         return doNotScale;
     }
 }

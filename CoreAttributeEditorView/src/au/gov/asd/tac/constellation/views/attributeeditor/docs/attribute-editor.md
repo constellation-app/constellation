@@ -26,8 +26,8 @@ Graph, Node, and Transaction attributes on your graph. When you have a
 graph element (node or transaction) selected, you are able to view all
 the current values assigned to that particular graph element. If no
 value is assigned to an attribute for a given graph element, the text
-"\<No Value>" will be displayed. If more than one value is assigned to a
-set of selected graph elements, the text "\<Multiple Values>" will be
+"&lt;No Value&gt;" will be displayed. If more than one value is assigned to a
+set of selected graph elements, the text "&lt;Multiple Values&gt;" will be
 displayed and the attribute will become a drop-down list which when
 expanded displays all the values assigned to that attribute (this won't
 occur if only one graph element selected).

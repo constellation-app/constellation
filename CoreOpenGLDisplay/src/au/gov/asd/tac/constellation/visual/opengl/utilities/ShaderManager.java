@@ -49,8 +49,6 @@ public class ShaderManager {
         int shaderId;
     }
 
-//    // Maximum length of shader name.
-//    //    public static final int MAX_SHADER_NAME_LENGTH = 64;
     // Stock shader ids.
     public static final int SHADER_IDENTITY = 0;
     public static final int SHADER_FLAT = 1;

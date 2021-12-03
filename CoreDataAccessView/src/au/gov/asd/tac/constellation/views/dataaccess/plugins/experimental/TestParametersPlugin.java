@@ -384,9 +384,6 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         LOGGER.log(Level.INFO, "slept for {0} seconds", sleep);
 
         LOGGER.log(Level.INFO, "parameters: {0}", parameters);
-//        final List<String> searchTerms = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
-//        AuditLogHelpers.generateSearchLog(getName(), searchTerms, "Test", 0);
-
         LOGGER.log(Level.INFO, "GraphElementType: {0}", parameters.getSingleChoice(ELEMENT_TYPE_PARAMETER_ID));
         final LocalDate localDate = parameters.getLocalDateValue(LOCAL_DATE_PARAMETER_ID);
         LOGGER.log(Level.INFO, "localdate: {0} ", localDate);

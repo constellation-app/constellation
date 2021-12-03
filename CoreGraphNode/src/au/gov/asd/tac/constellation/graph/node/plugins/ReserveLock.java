@@ -34,7 +34,10 @@ public class ReserveLock {
     private static final Comparator<Reservable> RESERVABLE_COMPARATOR = (r1, r2) -> {
         int x = System.identityHashCode(r1);
         int y = System.identityHashCode(r2);
-        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        if (x < y) {
+            return -1;
+        }
+        return (x == y) ? 0 : 1;
     };
     private final ReentrantLock lock = new ReentrantLock(true);
     private final Reservable[] reserved;

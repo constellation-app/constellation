@@ -31,7 +31,7 @@ public interface ConstellationLabelFonts {
      *
      * @return True is you want to use a list of fonts, false otherwise.
      */
-    public default boolean getUseMultiFonts() {
+    public default boolean isUseMultiFontsChosen() {
         return true;
     }
 

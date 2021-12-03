@@ -30,6 +30,10 @@ import java.util.logging.Logger;
 public class Graphics3DUtilities {
 
     private static final Logger LOGGER = Logger.getLogger(Graphics3DUtilities.class.getName());
+    
+    private Graphics3DUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Converts the supplied point from screen coordinates to world coordinates,
@@ -207,9 +211,6 @@ public class Graphics3DUtilities {
     public static boolean moveByProjection(final Vector3f position, final Matrix44f modelViewProjectionMatrix, final int[] viewport, final int deltaX, final int deltaY, final Vector3f newposition) {
         // To avoid playing with large numbers, we move the fixed position (0,0,0),
         // then add the original position at the end.
-        //        final Matrix44f mvpmat = new Matrix44f();
-//        mvpmat.set(modelViewProjectionMatrix);
-//        final float[] tr = mvpmat.multiply(0f, 0f, 0f, 1.0f);
         final float[] tr = modelViewProjectionMatrix.multiply(0F, 0F, 0F, 1.0F);
         if (tr[3] == 0) {
             return false;
@@ -226,7 +227,6 @@ public class Graphics3DUtilities {
         float winz = (tr[2] + 1.0F) / 2.0F;
 
         // Now we're projected to the window.
-        //        System.out.printf("@@(win) %s -> x=%f, y=%f, z=%f w=%f: %d %d\n", position, winx, viewport[3]-winy, winz, w, xdelta, ydelta);
         // Add the delta from the before and after mouse movement.
         // Note that the ydelta is substracted: OpenGL and Windows have opposite y axes.
         winx += deltaX;
