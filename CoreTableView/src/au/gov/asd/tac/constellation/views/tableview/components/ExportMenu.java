@@ -128,12 +128,7 @@ public class ExportMenu {
 
         exportExcelSelectionMenu = createExportMenu(EXPORT_XLSX_SELECTION,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                //<<<<<<< HEAD
                 XLSX_FILE_FILTER,
-                //=======
-                //                FileExtensionConstants.XLSX,
-                //                EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
-                //>>>>>>> master
                 file -> new ExportToExcelFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
@@ -284,9 +279,8 @@ public class ExportMenu {
             if (tablePane.getParentComponent().getCurrentGraph() != null) {
                 final FileChooserBuilder exportFileChooser = getExportFileChooser();
 
-                // Open the file chooser and get the user to select a file
-                // Use the function to create the required export plugin and
-                // then execute it.
+                // Open the file chooser and get the user to select a file.
+                // Use the function to create the required export plugin and then execute it.
                 lastExport = FileChooser.openSaveDialog(exportFileChooser).thenAccept(optionalFile -> optionalFile.ifPresent(selectedFile -> {
                     savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFile : FileChooser.DEFAULT_DIRECTORY;
 

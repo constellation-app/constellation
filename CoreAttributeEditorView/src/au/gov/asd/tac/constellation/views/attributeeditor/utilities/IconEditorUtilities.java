@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.utilities;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +62,7 @@ public class IconEditorUtilities {
             if (file.isDirectory()) {
                 filesToAdd.add(file);
             } else {
-                if (StringUtils.endsWithIgnoreCase(file.getAbsolutePath(), ".png")) {
+                if (StringUtils.endsWithIgnoreCase(file.getAbsolutePath(), FileExtensionConstants.PNG)) {
                     filesToAdd.add(file);
                 }
             }
