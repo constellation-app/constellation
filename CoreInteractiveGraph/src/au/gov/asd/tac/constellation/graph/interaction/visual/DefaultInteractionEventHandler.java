@@ -568,27 +568,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 performPointSelection(event.isControlDown(), clearSelection, eventState.getCurrentHitType().elementType, eventState.getCurrentHitId());
                             }
                             break;
-                        case CREATING:
-                            switch (eventState.getCurrentCreationMode()) {
-                                case CREATING_VERTEX:
-                                    createVertex(camera, point);
-                                    eventState.setCurrentCreationMode(CreationMode.NONE);
-                                    break;
-                                case FINISHING_TRANSACTION:
-                                    createTransaction(wg, eventState.getAddTransactionSourceVertex(), eventState.getAddTransactionDestinationVertex(), VisualGraphUtilities.isDrawingDirectedTransactions(wg));
-                                    if (event.isShiftDown()) {
-                                        eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
-                                    } else if (event.isControlDown()) {
-                                        eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
-                                        eventState.setAddTransactionSourceVertex(eventState.getAddTransactionDestinationVertex());
-                                    } else {
-                                        eventState.setCurrentCreationMode(CreationMode.NONE);
-                                        clearNewLineModel(camera);
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
+                        case CREATING:                            
+                            setCurrentCreationMode(camera, point, wg, event);
                             break;
                         case ROTATING:
                             if (!eventState.isMouseDragged() && eventState.getCurrentHitType().equals(HitType.VERTEX)) {
@@ -632,6 +613,29 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             }
             return 0;
         });
+    }
+
+    private void setCurrentCreationMode(final Camera camera, Point point, GraphWriteMethods wg, MouseEvent event) {
+        switch (eventState.getCurrentCreationMode()) {
+            case CREATING_VERTEX:
+                createVertex(camera, point);
+                eventState.setCurrentCreationMode(CreationMode.NONE);
+                break;
+            case FINISHING_TRANSACTION:
+                createTransaction(wg, eventState.getAddTransactionSourceVertex(), eventState.getAddTransactionDestinationVertex(), VisualGraphUtilities.isDrawingDirectedTransactions(wg));
+                if (event.isShiftDown()) {
+                    eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
+                } else if (event.isControlDown()) {
+                    eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
+                    eventState.setAddTransactionSourceVertex(eventState.getAddTransactionDestinationVertex());
+                } else {
+                    eventState.setCurrentCreationMode(CreationMode.NONE);
+                    clearNewLineModel(camera);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
