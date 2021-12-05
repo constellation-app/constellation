@@ -433,7 +433,12 @@ public class NotesViewPane extends BorderPane {
                 notesViewEntries.forEach(note -> addNote(note));
             }
 
-            updateNotesUI();
+            SwingUtilities.invokeLater(() -> {
+                final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
+                if (tc != null && tc.isOpened()) {
+                    updateNotesUI();
+                }                   
+            });
         });
     }
 
