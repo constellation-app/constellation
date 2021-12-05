@@ -307,7 +307,7 @@ public class AttributeReader {
 
     public Object[] loadMoreDataFor(final AttributeData attribute) {
         final int AttributeID = attribute.getAttributeId();
-        final HashSet<Object> values = new HashSet<>();
+        final Set<Object> values = new HashSet<>();
         final IntArray selectedElement;
         if (attribute.getElementType().equals(GraphElementType.VERTEX)) {
             selectedElement = selectedNodes;

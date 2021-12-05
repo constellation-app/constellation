@@ -30,8 +30,8 @@ import java.util.List;
  */
 public abstract class AbstractTree {
 
-    public static final int MAX_OBJECTS = 50;
-    public static final int MAX_LEVELS = 4;
+    protected static final int MAX_OBJECTS = 50;
+    protected static final int MAX_LEVELS = 4;
 
     final int xId;
     final int yId;

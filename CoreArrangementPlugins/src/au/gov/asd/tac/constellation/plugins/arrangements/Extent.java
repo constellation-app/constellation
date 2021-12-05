@@ -44,7 +44,7 @@ public class Extent {
     private final float nradius;
     private final float lradius;
 
-    public Extent(final float[] xyz, final float nradius, final float lradius) {
+    protected Extent(final float[] xyz, final float nradius, final float lradius) {
         x = xyz[0];
         y = xyz[1];
         z = xyz[2];

@@ -71,13 +71,9 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
                 PluginExecution.withPlugin(new GatherNodesForVertexContextMenuPlugin(element)).executeLater(graph);
                 break;
             case META:
-                break;
             case LINK:
-                break;
             case EDGE:
-                break;
             case TRANSACTION:
-                break;
             default:
                 break;
         }

@@ -413,8 +413,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                                 }
                                 break;
                             case "destination":
-                                // Intentionally left blank
-                                break;
                             case "transaction":
                                 // Intentionally left blank
                                 break;
@@ -480,7 +478,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
 
                         switch (keyType) {
                             case "source":
-                                break;
                             case "destination":
                                 break;
                             case "transaction":
