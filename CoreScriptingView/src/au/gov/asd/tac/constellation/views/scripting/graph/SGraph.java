@@ -173,7 +173,6 @@ public class SGraph {
             engine.eval("__func(__p1)");
             ok = true;
         } catch (ScriptException ex) {
-            LOGGER.log(Level.WARNING, "exception in context: {0}", ex.toString());
             readableGraph.release();
             throw ex;
         } finally {
@@ -224,7 +223,6 @@ public class SGraph {
             engine.eval("__func(__p1)");
             ok = true;
         } catch (ScriptException ex) {
-            LOGGER.log(Level.WARNING, "exception in context: {0}", ex.toString());
             writableGraph.rollback();
             throw ex;
         } finally {
