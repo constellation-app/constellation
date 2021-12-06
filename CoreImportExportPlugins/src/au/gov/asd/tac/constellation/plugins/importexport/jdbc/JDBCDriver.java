@@ -120,8 +120,7 @@ public class JDBCDriver {
 
         // Note: we can't use DriverManager here: it only uses classes that have been loaded by the system class loader.
         // Since we're loading the class on the fly with our own Classloader, DriverManager will refuse to recognise it.
-        final Driver driver = (Driver) Class.forName(driverName, true, clloader).getDeclaredConstructor().newInstance();
-        return driver;
+        return (Driver) Class.forName(driverName, true, clloader).getDeclaredConstructor().newInstance();
     }
 
     @Override

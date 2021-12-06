@@ -70,8 +70,7 @@ public class SQLiteDBManager {
     }
 
     public Connection getConnection() throws IOException, SQLException {
-        final Connection connection = DriverManager.getConnection("jdbc:sqlite:" + sqlite.getCanonicalPath());
-        return connection;
+        return DriverManager.getConnection("jdbc:sqlite:" + sqlite.getCanonicalPath());
     }
 
     private void createDriverTable(final Connection connection) throws SQLException {
