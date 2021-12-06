@@ -17,6 +17,12 @@ package au.gov.asd.tac.constellation.views.find2.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.AdvancedCriteriaBorderPane;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.BooleanCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.ColourCriteriaPanel;
@@ -182,7 +188,7 @@ public class AdvancedFindTab extends Tab {
 
         // adds all the criteriaPanes that are containined within the type
         // specific list
-        for (AdvancedCriteriaBorderPane criteriaPane : criteriaList) {
+        for (final AdvancedCriteriaBorderPane criteriaPane : criteriaList) {
             gridPane.add(criteriaPane, 0, i);
             GridPane.setHgrow(criteriaPane, Priority.ALWAYS);
             i++;
@@ -200,7 +206,7 @@ public class AdvancedFindTab extends Tab {
         int i = 0;
         final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
 
-        for (AdvancedCriteriaBorderPane criteriaPane : criteriaList) {
+        for (final AdvancedCriteriaBorderPane criteriaPane : criteriaList) {
             criteriaPane.setStyle(i % 2 == 0 ? "-fx-background-color: #4d4d4d;" : "-fx-background-color: #222222;");
             i++;
         }
@@ -213,7 +219,7 @@ public class AdvancedFindTab extends Tab {
      * @param pane
      * @param type
      */
-    public void deleteCriteriaPane(AdvancedCriteriaBorderPane pane, GraphElementType type) {
+    public void deleteCriteriaPane(final AdvancedCriteriaBorderPane pane, final GraphElementType type) {
         final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
         final GridPane gridPane = getCorrespondingGridPane(type);
 
@@ -255,7 +261,7 @@ public class AdvancedFindTab extends Tab {
         final GridPane gridPane = getCorrespondingGridPane(type);
 
         // For each of the panes in the criteriaList.
-        for (AdvancedCriteriaBorderPane pane : criteriaList) {
+        for (final AdvancedCriteriaBorderPane pane : criteriaList) {
             //  If the pane == the pane passed in, get its index and get the
             //  list of attributes it contains.
             if (criteriaPane == pane) {
@@ -302,17 +308,17 @@ public class AdvancedFindTab extends Tab {
      */
     private AdvancedCriteriaBorderPane getNewCriteriaPanel(final String attributeType, final String attributeName, final GraphElementType type) {
         switch (attributeType) {
-            case "String":
+            case StringAttributeDescription.ATTRIBUTE_NAME:
                 return new StringCriteriaPanel(this, attributeName, type);
-            case "float":
+            case FloatAttributeDescription.ATTRIBUTE_NAME:
                 return new FloatCriteriaPanel(this, attributeName, type);
-            case "boolean":
+            case BooleanAttributeDescription.ATTRIBUTE_NAME:
                 return new BooleanCriteriaPanel(this, attributeName, type);
-            case "color":
+            case ColorAttributeDescription.ATTRIBUTE_NAME:
                 return new ColourCriteriaPanel(this, attributeName, type);
-            case "datetime":
+            case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME:
                 return new DateTimeCriteriaPanel(this, attributeName, type);
-            case "icon":
+            case IconAttributeDescription.ATTRIBUTE_NAME:
                 return new IconCriteriaPanel(this, attributeName, type);
             default:
                 return new StringCriteriaPanel(this, attributeName, type);
@@ -354,7 +360,7 @@ public class AdvancedFindTab extends Tab {
      * @param elementType
      */
     private void changeDisplayedList(final String elementType) {
-        GridPane gridPane = getCorrespondingGridPane(GraphElementType.getValue(elementType));
+        final GridPane gridPane = getCorrespondingGridPane(GraphElementType.getValue(elementType));
 
         listScrollPane.setContent(gridPane);
     }

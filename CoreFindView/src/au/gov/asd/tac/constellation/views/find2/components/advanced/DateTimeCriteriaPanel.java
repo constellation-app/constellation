@@ -28,6 +28,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.text.TextAlignment;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Child criteria BorderPane for the attributes of type date time.
@@ -67,11 +68,11 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
             displayDateTimePicker(dateTimeSelectorTwo);
         });
 
-        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
+        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
             betweenSeletionAction(newElement);
         });
 
-        timeFrameChoiceBox.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
+        timeFrameChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
             timeFrameSelectionAction(newElement);
         });
     }
@@ -195,18 +196,18 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
         if (!choiceSelection.equals("Custom")) {
             // Format the timeZoneString to be in a format where it can be 
             // convered to a ZoneId
-            final String formattedTimeZoneString = (timeZoneString.equals("") ? "" : timeZoneString.split("\\[")[1].replace("]", ""));
+            final String formattedTimeZoneString = (StringUtils.isEmpty(timeZoneString) ? "" : timeZoneString.split("\\[")[1].replace("]", ""));
 
             // set dateTime two data to the current date, max time of today
             // and the previously selected timeZone
             dateStringTwo = LocalDate.now().toString();
             timeStringTwo = "23:59:59";
-            timeZoneStringTwo = (timeZoneString.equals("") ? TimeZoneUtilities.UTC.toString() : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
+            timeZoneStringTwo = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.UTC.toString() : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
 
             // set dateTime one data to the min time of today
             // and the previously selected timeZone
             timeString = "0:0:0";
-            timeZoneString = (timeZoneString.equals("") ? TimeZoneUtilities.UTC.toString() : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
+            timeZoneString = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.UTC.toString() : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
 
             // The Local Date value of the current date based of the timeZone
             final LocalDate calculatedDate = LocalDate.now(dateString.equals("") ? TimeZoneUtilities.UTC : ZoneId.of(formattedTimeZoneString));

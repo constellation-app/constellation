@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.find2.components.advanced.utilities;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.StringCriteriaPanel;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -68,7 +69,7 @@ public class UseListInputWindow extends Stage {
         setContent();
         setAlwaysOnTop(true);
 
-        splitLinesChoiceBox.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
+        splitLinesChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
             splitLinesChoiceAction(newElement);
         });
 
@@ -126,10 +127,10 @@ public class UseListInputWindow extends Stage {
      */
     public void updateText(String text) {
         StringBuilder sb = new StringBuilder();
-        String[] splitText = text.split(",");
+        String[] splitText = text.split(SeparatorConstants.COMMA);
         for (int i = 0; i < splitText.length; i++) {
             sb.append(splitText[i]);
-            sb.append(i == splitText.length - 1 ? "" : "\n");
+            sb.append(i == splitText.length - 1 ? "" : SeparatorConstants.NEWLINE);
         }
         textArea.setText(sb.toString());
     }
@@ -150,31 +151,31 @@ public class UseListInputWindow extends Stage {
      * selected. The text are will now contain This\nIs\n\ntest
      */
     private void splitLinesAction() {
-        String selectedSplitChoice = splitLinesChoiceBox.getSelectionModel().getSelectedItem();
-        String splitAt;
+        final String selectedSplitChoice = splitLinesChoiceBox.getSelectionModel().getSelectedItem();
+        final String splitAt;
         switch (selectedSplitChoice) {
             case "Comma":
-                splitAt = ",";
+                splitAt = SeparatorConstants.COMMA;
                 break;
             case "Tab":
-                splitAt = "\t";
+                splitAt = SeparatorConstants.TAB;
                 break;
             case "Semi-colon":
-                splitAt = ";";
+                splitAt = SeparatorConstants.SEMICOLON;
                 break;
             case "String":
                 splitAt = splitStringTextField.getText();
                 break;
             default:
-                splitAt = ",";
+                splitAt = SeparatorConstants.COMMA;
                 break;
         }
-        String[] splitTextField = textArea.getText().split(splitAt);
+        final String[] splitTextField = textArea.getText().split(splitAt);
         textArea.clear();
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < splitTextField.length; i++) {
             sb.append(splitTextField[i]);
-            sb.append(i == splitTextField.length - 1 ? "" : "\n");
+            sb.append(i == splitTextField.length - 1 ? "" : SeparatorConstants.NEWLINE);
         }
         textArea.setText(sb.toString());
 

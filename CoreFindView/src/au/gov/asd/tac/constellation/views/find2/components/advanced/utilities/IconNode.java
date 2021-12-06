@@ -33,7 +33,7 @@ public class IconNode extends BorderPane {
     private ConstellationIcon icon;
     private String iconName;
 
-    public IconNode(ConstellationIcon icon) {
+    public IconNode(final ConstellationIcon icon) {
         this.icon = icon;
         this.iconName = icon.getName();
 

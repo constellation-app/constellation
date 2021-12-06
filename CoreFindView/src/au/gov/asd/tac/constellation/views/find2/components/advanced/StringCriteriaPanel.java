@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.UseListInputWindow;
 import javafx.beans.value.ObservableValue;
@@ -83,7 +84,7 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
      */
     public void setSearchFieldText(final String text) {
         final StringBuilder sb = new StringBuilder();
-        final String[] splitText = text.split("\n");
+        final String[] splitText = text.split(SeparatorConstants.NEWLINE);
         for (int i = 0; i < splitText.length; i++) {
             sb.append(splitText[i]);
             sb.append(i == splitText.length - 1 ? "" : ",");

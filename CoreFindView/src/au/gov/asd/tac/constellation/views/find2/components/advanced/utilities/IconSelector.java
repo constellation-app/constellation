@@ -128,7 +128,7 @@ public class IconSelector extends Stage {
          * is Flag.Australia. Flag will be saved as a category.
          */
         final Set<String> categories = new LinkedHashSet<>();
-        for (ConstellationIcon icon : IconManager.getIcons()) {
+        for (final ConstellationIcon icon : IconManager.getIcons()) {
             final String[] splitName = icon.getExtendedName().split("\\.");
 
             categories.add(splitName[0]);
@@ -138,7 +138,7 @@ public class IconSelector extends Stage {
          * For each of the categories categories create a TreeItem and add it to
          * rootNode
          */
-        for (String categoryName : categories) {
+        for (final String categoryName : categories) {
             final TreeItem<String> categoryTreeNode = new TreeItem<>(categoryName);
             rootNode.getChildren().add(categoryTreeNode);
         }
@@ -161,7 +161,7 @@ public class IconSelector extends Stage {
          * categoryName add it to the list of iconNames.
          */
         final List<String> iconNames = new ArrayList<>();
-        for (ConstellationIcon icon : IconManager.getIcons()) {
+        for (final ConstellationIcon icon : IconManager.getIcons()) {
             if (icon.getExtendedName().split("\\.")[0].equals(categoryName)) {
                 iconNames.add(icon.getName());
             }
