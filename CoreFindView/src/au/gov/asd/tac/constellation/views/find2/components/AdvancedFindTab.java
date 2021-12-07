@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
+import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.AdvancedCriteriaBorderPane;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.BooleanCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.ColourCriteriaPanel;
@@ -30,6 +31,8 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.DateTimeCrit
 import au.gov.asd.tac.constellation.views.find2.components.advanced.IconCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.FloatCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.StringCriteriaPanel;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ObservableValue;
@@ -101,6 +104,8 @@ public class AdvancedFindTab extends Tab {
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
             changeDisplayedList(newElement);
         });
+
+        findAllButton.setOnAction(action -> findAllAction());
 
     }
 
@@ -363,6 +368,30 @@ public class AdvancedFindTab extends Tab {
         final GridPane gridPane = getCorrespondingGridPane(GraphElementType.getValue(elementType));
 
         listScrollPane.setContent(gridPane);
+    }
+
+    public List<FindCriteriaValues> getCriteriaValues(List<AdvancedCriteriaBorderPane> list) {
+        List<FindCriteriaValues> criteriaValuesList = new ArrayList<>();
+        for (AdvancedCriteriaBorderPane pane : list) {
+            criteriaValuesList.add(pane.getCriteriaValues());
+        }
+        return criteriaValuesList;
+    }
+
+    public void updateAdvancedSearchParameters(GraphElementType type) {
+        final List<FindCriteriaValues> criteriaValuesList = getCriteriaValues(getCorrespondingCriteriaList(type));
+        AdvancedSearchParameters parameters = new AdvancedSearchParameters(criteriaValuesList, type,
+                matchCriteriaChoiceBox.getSelectionModel().getSelectedItem(),
+                currentSelectionChoiceBox.getSelectionModel().getSelectedItem(),
+                searchAllGraphs.isSelected());
+        FindViewController.getDefault().updateAdvancedSearchParameters(parameters);
+    }
+
+    public void findAllAction() {
+        if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()))).isEmpty()) {
+            updateAdvancedSearchParameters(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+            FindViewController.getDefault().retrieveAdvancedSearch(true, false);
+        }
     }
 
     public Button getAddButton() {

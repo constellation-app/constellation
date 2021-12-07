@@ -23,6 +23,8 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find2.plugins.GraphAttributePlugin;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -48,6 +50,7 @@ public class FindViewController {
     // Parameters
     private final BasicFindReplaceParameters currentBasicFindParameters;
     private final BasicFindReplaceParameters currentBasicReplaceParameters;
+    private final AdvancedSearchParameters currentAdvancedSearchParameters;
     private static final Logger LOGGER = Logger.getLogger(FindViewController.class.getName());
 
     /**
@@ -56,6 +59,7 @@ public class FindViewController {
     private FindViewController() {
         currentBasicFindParameters = new BasicFindReplaceParameters();
         currentBasicReplaceParameters = new BasicFindReplaceParameters();
+        currentAdvancedSearchParameters = new AdvancedSearchParameters();
     }
 
     /**
@@ -80,6 +84,14 @@ public class FindViewController {
         return instance;
     }
 
+    /**
+     * Returns a list of all available attributes on all open graphs. Used for
+     * the attributes in the advanced find tab.
+     *
+     * @param type
+     * @param attributeModificationCounter
+     * @return
+     */
     public List<Attribute> populateAllAttributes(final GraphElementType type, final long attributeModificationCounter) {
         final List<Attribute> allAttributes = new ArrayList<>();
         final List<String> allStringAttributes = new ArrayList<>();
@@ -206,6 +218,16 @@ public class FindViewController {
     }
 
     /**
+     * updates the controllers currentAdvancedSearchParameters with the
+     * parameters passed in
+     *
+     * @param parameters
+     */
+    public void updateAdvancedSearchParameters(final AdvancedSearchParameters parameters) {
+        currentAdvancedSearchParameters.copyParameters(parameters);
+    }
+
+    /**
      * This function calls the basic find plugin, passing the
      * currentBasicFindParamters, wether to find all matching element, find the
      * next element or finding the previous element.
@@ -267,6 +289,33 @@ public class FindViewController {
         }
     }
 
+    public void retrieveAdvancedSearch(final boolean replaceAll, final boolean replaceNext) {
+        LOGGER.log(Level.SEVERE, "hi");
+        LOGGER.log(Level.SEVERE, "all or any = " + currentAdvancedSearchParameters.getAllOrAny());
+        LOGGER.log(Level.SEVERE, "current selection = " + currentAdvancedSearchParameters.getCurrentSelection());
+
+        for (FindCriteriaValues criteria : currentAdvancedSearchParameters.getCriteriaValuesList()) {
+            LOGGER.log(Level.SEVERE, "-------------------");
+            LOGGER.log(Level.SEVERE, criteria.getAttribute());
+            LOGGER.log(Level.SEVERE, criteria.getAttributeType());
+        }
+//
+//        if (currentAdvancedSearchParameters.isSearchAllGraphs()) {
+//            for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+//                // check to see the graph is not null
+//                if (graph != null && currentAdvancedSearchParameters.isSearchAllGraphs()) {
+//                    //execute plugin
+//                }
+//            }
+//        } else {
+//            final Graph graph = GraphManager.getDefault().getActiveGraph();
+//            // check to see the graph is not null
+//            if (graph != null) {
+//                //execute plugin
+//            }
+//        }
+    }
+
     /**
      * gets the controllers parent
      *
@@ -293,4 +342,14 @@ public class FindViewController {
     public BasicFindReplaceParameters getCurrentBasicReplaceParameters() {
         return currentBasicReplaceParameters;
     }
+
+    /**
+     * gets the current advanced search parameters
+     *
+     * @return
+     */
+    public AdvancedSearchParameters getCurrentAdvancedSearchParameters() {
+        return currentAdvancedSearchParameters;
+    }
+
 }

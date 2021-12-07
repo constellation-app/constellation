@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import javafx.geometry.Insets;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -59,6 +61,15 @@ public class BooleanCriteriaPanel extends AdvancedCriteriaBorderPane {
         getHboxBot().getChildren().addAll(trueToggle, falseToggle);
         getHboxBot().setPadding(new Insets(5));
 
+    }
+
+    private boolean getSelectedBoolean() {
+        return trueToggle.isSelected();
+    }
+
+    @Override
+    public FindCriteriaValues getCriteriaValues() {
+        return new BooleanCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), getSelectedBoolean());
     }
 
     @Override

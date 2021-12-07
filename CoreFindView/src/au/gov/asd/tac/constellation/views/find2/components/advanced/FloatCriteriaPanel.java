@@ -17,6 +17,10 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
+import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -33,6 +37,7 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
     private final TextField searchField = new TextField();
     private final Label andLabel = new Label("And");
     private final TextField searchFieldTwo = new TextField();
+    private static final Logger LOG = Logger.getLogger(FloatCriteriaPanel.class.getName());
 
     public FloatCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
@@ -40,6 +45,41 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
 
         getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
             enableLabelAndSearchFieldtwo(newElement);
+        });
+
+        searchField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue) {
+                // Retrieve the index of a "."
+                int index = searchField.getText().indexOf(".");
+                // Save the current text but replace all non numbers with nothing
+                String text = newValue.replaceAll("[^0-9]", "");
+                //if the newValue isnt a number and a "." was found
+                if (!newValue.matches("[0-9]") && (index != -1)) {
+                    // save the text to re add the "." back in its orignal spot
+                    text = text.substring(0, index) + "." + text.substring(index);
+                }
+                // set the text to text
+                searchField.setText(text);
+            }
+        });
+        searchFieldTwo.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue) {
+                // Retrieve the index of a "."
+                int index = searchFieldTwo.getText().indexOf(".");
+                // Save the current text but replace all non numbers with nothing
+                String text = newValue.replaceAll("[^0-9]", "");
+                //if the newValue isnt a number and a "." was found
+                if (!newValue.matches("[0-9]") && (index != -1)) {
+                    // save the text to re add the "." back in its orignal spot
+                    text = text.substring(0, index) + "." + text.substring(index);
+                }
+                // set the text to text
+                searchFieldTwo.setText(text);
+            }
         });
 
     }
@@ -56,6 +96,16 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
         // disables the relevant buttons for Is Between Searches
         andLabel.setDisable(true);
         searchFieldTwo.setDisable(true);
+    }
+
+    @Override
+    public FindCriteriaValues getCriteriaValues() {
+        float floatNumberPrimary = searchField.getText().isBlank() ? 0 : Float.parseFloat(searchField.getText());
+        if (getFilterChoiceBox().getSelectionModel().getSelectedItem().equals("Is Between")) {
+            float floatNumberSecondary = searchFieldTwo.getText().isBlank() ? 0 : Float.parseFloat(searchFieldTwo.getText());
+            return new FloatCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), floatNumberPrimary, floatNumberSecondary);
+        }
+        return new FloatCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), floatNumberPrimary);
     }
 
     @Override

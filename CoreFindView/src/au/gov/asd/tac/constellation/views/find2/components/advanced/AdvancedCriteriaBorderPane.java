@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ObservableValue;
@@ -31,7 +32,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * This is a parent class for the criteria panels. It defines the primary * UI elements that are contained within each criteria panel.
+ * This is a parent class for the criteria panels. It defines the primary * UI
+ * elements that are contained within each criteria panel.
  *
  * @author Atlas139mkm
  */
@@ -115,6 +117,14 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
             stringList.add(a.getName());
         }
         return stringList;
+    }
+
+    public FindCriteriaValues getCriteriaValues() {
+        return new FindCriteriaValues(type, attributeName, getFilterChoiceBox().getSelectionModel().getSelectedItem());
+    }
+
+    public String getAttributeName() {
+        return attributeName;
     }
 
     public ChoiceBox<String> getFilterChoiceBox() {

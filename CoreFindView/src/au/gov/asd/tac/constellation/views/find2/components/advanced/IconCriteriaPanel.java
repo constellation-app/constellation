@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.IconCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.IconSelector;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -98,6 +100,11 @@ public class IconCriteriaPanel extends AdvancedCriteriaBorderPane {
         image = icon.buildImage(50);
         imageView.setImage(image);
         openIconsMenuButton.setText(icon.getName());
+    }
+
+    @Override
+    public FindCriteriaValues getCriteriaValues() {
+        return new IconCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), chosenIcon);
     }
 
     @Override

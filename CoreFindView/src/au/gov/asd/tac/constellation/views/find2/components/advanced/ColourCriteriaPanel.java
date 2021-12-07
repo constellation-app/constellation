@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -53,6 +55,11 @@ public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
         colourRectangle.setHeight(50);
         colourRectangle.setFill(colourPicker.getValue());
         setCenter(colourRectangle);
+    }
+
+    @Override
+    public FindCriteriaValues getCriteriaValues() {
+        return new ColourCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), colourPicker.getValue());
     }
 
     @Override

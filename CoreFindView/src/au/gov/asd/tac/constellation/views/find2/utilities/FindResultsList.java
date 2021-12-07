@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.find2.utilities;
 
+import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import java.util.ArrayList;
 
@@ -27,6 +28,7 @@ public class FindResultsList extends ArrayList<FindResult> {
     private int currentIndex = -1;
     private final String graphId;
     private final BasicFindReplaceParameters searchParameters;
+    private final AdvancedSearchParameters advancedSearchParameters;
 
     /**
      * Constructor for a findReuslts list
@@ -36,6 +38,7 @@ public class FindResultsList extends ArrayList<FindResult> {
     public FindResultsList(final String graphId) {
         this.graphId = graphId;
         this.searchParameters = new BasicFindReplaceParameters();
+        this.advancedSearchParameters = new AdvancedSearchParameters();
     }
 
     /**
@@ -49,6 +52,15 @@ public class FindResultsList extends ArrayList<FindResult> {
         this.currentIndex = index;
         this.searchParameters = searchParameters;
         this.graphId = graphId;
+        this.advancedSearchParameters = new AdvancedSearchParameters();
+    }
+
+    public FindResultsList(final int index, final AdvancedSearchParameters advancedSearchParamters, final String graphId) {
+        this.currentIndex = index;
+        this.advancedSearchParameters = advancedSearchParamters;
+        this.graphId = graphId;
+        this.searchParameters = new BasicFindReplaceParameters();
+
     }
 
     /**
@@ -60,7 +72,7 @@ public class FindResultsList extends ArrayList<FindResult> {
         this.currentIndex = resultsList.getCurrentIndex();
         this.graphId = resultsList.getGraphId();
         this.searchParameters = resultsList.getSearchParameters();
-        this.addAll(resultsList);
+        this.advancedSearchParameters = resultsList.getAdvancedSearchParameters();
     }
 
     /**
@@ -120,6 +132,14 @@ public class FindResultsList extends ArrayList<FindResult> {
 
     public void setSearchParameters(final BasicFindReplaceParameters parameters) {
         this.searchParameters.copyParameters(parameters);
+    }
+
+    public AdvancedSearchParameters getAdvancedSearchParameters() {
+        return advancedSearchParameters;
+    }
+
+    public void setAdvancedSearchParameters(final AdvancedSearchParameters parameters) {
+        this.advancedSearchParameters.copyParameters(parameters);
     }
 
 }

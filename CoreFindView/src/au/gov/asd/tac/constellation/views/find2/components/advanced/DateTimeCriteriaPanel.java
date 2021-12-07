@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.DateTimeSelector;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -51,6 +53,9 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
     private String dateStringTwo = "";
     private String timeStringTwo = "";
     private String timeZoneStringTwo = "";
+
+    String dateTimeStringPrimary = "";
+    String dateTimeStringSecondary = "";
 
     public DateTimeCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
@@ -240,8 +245,20 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
             // timeZones
             datePickerButton.setText(dateString + " " + timeString + " " + timeZoneString);
             datePickerTwoButton.setText(dateStringTwo + " " + timeStringTwo + " " + timeZoneStringTwo);
-        }
 
+            // save the dateTime Values as strings
+            dateTimeStringPrimary = dateString + " " + timeString + " " + timeZoneString;
+            dateTimeStringSecondary = dateStringTwo + " " + timeStringTwo + " " + timeZoneStringTwo;
+
+        }
+    }
+
+    @Override
+    public FindCriteriaValues getCriteriaValues() {
+        if (getFilterChoiceBox().getSelectionModel().getSelectedItem().equals("Occoured Between")) {
+            return new DateTimeCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), dateTimeStringPrimary, dateTimeStringSecondary);
+        }
+        return new DateTimeCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), dateTimeStringPrimary);
     }
 
     @Override

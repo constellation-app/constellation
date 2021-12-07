@@ -18,7 +18,12 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.StringCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.UseListInputWindow;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -139,6 +144,18 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
             useListCheckBox.setSelected(choiceSelection.equals("Matches (Regex)"));
             moreDetailsButton.setDisable(choiceSelection.equals("Matches (Regex)"));
         }
+    }
+
+    @Override
+    public FindCriteriaValues getCriteriaValues() {
+        if (useListCheckBox.isSelected()) {
+            String[] splitStrings = searchField.getText().split(SeparatorConstants.COMMA);
+            List<String> stringList = new ArrayList<>();
+            Collections.addAll(stringList, splitStrings);
+            return new StringCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), stringList);
+        }
+
+        return new StringCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), searchField.getText());
     }
 
     @Override
