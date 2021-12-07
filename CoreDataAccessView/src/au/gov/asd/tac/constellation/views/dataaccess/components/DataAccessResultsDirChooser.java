@@ -18,11 +18,6 @@ package au.gov.asd.tac.constellation.views.dataaccess.components;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javax.swing.SwingUtilities;
 import org.openide.filesystems.FileChooserBuilder;
@@ -36,8 +31,6 @@ import org.openide.filesystems.FileChooserBuilder;
 public class DataAccessResultsDirChooser {
 
     private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
-
-    private static final Logger LOGGER = Logger.getLogger(DataAccessResultsDirChooser.class.getName());
 
     private static final String TITLE = "Folder to save data access results to";
 
@@ -58,26 +51,14 @@ public class DataAccessResultsDirChooser {
             throw new IllegalStateException("Attempted to open data access results dir on UI thread.");
         }
 
-        final List<File> selectedDir = new ArrayList<>();
-        final CountDownLatch cdl = new CountDownLatch(1);
-
         FileChooser.openOpenDialog(getDataAccesssResultsFileChooser()).thenAccept(optionalFolder -> {
             optionalFolder.ifPresent(selectedFolder -> {
                 savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFolder : FileChooser.DEFAULT_DIRECTORY;
-                DataAccessPreferenceUtilities.setDataAccessResultsDir(selectedFolder);
-                selectedDir.add(selectedFolder);
+                DataAccessPreferenceUtilities.setDataAccessResultsDir(selectedFolder.getAbsoluteFile());
             });
-
-            cdl.countDown();
         });
 
-        try {
-            cdl.await();
-        } catch (InterruptedException ex) {
-            LOGGER.log(Level.WARNING, ex.toString());
-        }
-
-        return selectedDir.get(0);
+        return DataAccessPreferenceUtilities.getDataAccessResultsDir();
     }
 
     /**
