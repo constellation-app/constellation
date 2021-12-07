@@ -57,10 +57,12 @@ public class OpenFilePluginNGTest {
     @Test
     public void testRead() throws Exception {
         System.out.println("testRead");
+
+        // TODO
         GraphReadMethods graph = null;
         PluginInteraction interaction = null;
         PluginParameters parameters = null;
         OpenFilePlugin instance = new OpenFilePlugin();
-        instance.read(graph, interaction, parameters);
+//        instance.read(graph, interaction, parameters);
     }
 }
