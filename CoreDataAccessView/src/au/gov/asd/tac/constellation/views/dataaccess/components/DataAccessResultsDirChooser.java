@@ -51,12 +51,10 @@ public class DataAccessResultsDirChooser {
             throw new IllegalStateException("Attempted to open data access results dir on UI thread.");
         }
 
-        FileChooser.openOpenDialog(getDataAccesssResultsFileChooser()).thenAccept(optionalFolder -> {
-            optionalFolder.ifPresent(selectedFolder -> {
-                savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFolder : FileChooser.DEFAULT_DIRECTORY;
-                DataAccessPreferenceUtilities.setDataAccessResultsDir(selectedFolder.getAbsoluteFile());
-            });
-        });
+        FileChooser.openOpenDialog(getDataAccesssResultsFileChooser()).thenAccept(optionalFolder -> optionalFolder.ifPresent(selectedFolder -> {
+            savedDirectory = FileChooser.REMEMBER_OPEN_AND_SAVE_LOCATION ? selectedFolder : FileChooser.DEFAULT_DIRECTORY;
+            DataAccessPreferenceUtilities.setDataAccessResultsDir(selectedFolder.getAbsoluteFile());
+        }));
 
         return DataAccessPreferenceUtilities.getDataAccessResultsDir();
     }

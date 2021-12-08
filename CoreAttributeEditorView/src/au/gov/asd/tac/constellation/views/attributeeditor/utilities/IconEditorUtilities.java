@@ -58,6 +58,7 @@ public class IconEditorUtilities {
         final List<File> filesInPath = Arrays.stream(path.listFiles()).collect(Collectors.toList());
         final List<File> filesToAdd = new ArrayList<>();
 
+        // Get directories to be searched or PNG files to be saved.
         filesInPath.forEach(file -> {
             if (file.isDirectory()) {
                 filesToAdd.add(file);
@@ -68,6 +69,7 @@ public class IconEditorUtilities {
             }
         });
 
+        // If file is a directory, recursively call this method to search for more PNG files.
         filesToAdd.forEach(file -> {
             if (file.isDirectory()) {
                 pngWalk(file, files);

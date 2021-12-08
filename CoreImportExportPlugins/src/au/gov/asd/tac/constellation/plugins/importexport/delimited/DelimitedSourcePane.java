@@ -199,6 +199,7 @@ public class DelimitedSourcePane extends SourcePane {
             cdl.await();
         } catch (InterruptedException ex) {
             LOGGER.log(Level.WARNING, ex.toString());
+            Thread.currentThread().interrupt();
         }
 
         if (!newFiles.isEmpty()) {
