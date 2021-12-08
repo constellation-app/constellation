@@ -253,8 +253,6 @@ public final class GlyphManagerBI implements GlyphManager {
         g2d.dispose();
 
         textureBuffer.reset();
-
-//        createBackgroundGlyph(0.5f);
     }
 
     /**
@@ -265,7 +263,6 @@ public final class GlyphManagerBI implements GlyphManager {
      * font).
      */
     public FontInfo[] getFonts() {
-//        return Arrays.copyOf(fontNames, fontNames.length);
         return fontsInfo;
     }
 
@@ -382,8 +379,6 @@ public final class GlyphManagerBI implements GlyphManager {
         final float centre = (ligature.left + ligature.right) / 2F;
         for (final GlyphRectangle gr : ligature.glyphRectangles) {
             final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1F;
-//            final float cy = (gr.rect.y-top+((maxFontHeight-(bottom-top))/2f))/(float)maxFontHeight;
-//            final float cy = (2*gr.rect.y-top+maxFontHeight-bottom)/(2f*maxFontHeight);
             final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2F) / (float) (maxFontHeight) + 0.5F;
             glyphStream.addGlyph(gr.position, cx, cy, context);
         }
@@ -399,8 +394,6 @@ public final class GlyphManagerBI implements GlyphManager {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-//        g2d.setColor(Color.ORANGE);
-//        g2d.drawLine(BASEX, BASEY, BASEX+1000, BASEY);
 
         int x = BASEX;
         final int y0 = basey;
@@ -416,9 +409,6 @@ public final class GlyphManagerBI implements GlyphManager {
         for (final FontDirectionalRun drun : FontDirectionalRun.getDirectionRuns(text)) {
             for (final FontRunSequence frun : FontRunSequence.getFontRuns(drun.run, fontsInfo)) {
 //                // Draw an indicator line to show where the font run starts.
-//                //
-//                g2d.setColor(Color.LIGHT_GRAY);
-//                g2d.drawLine(x, y0-128, x, y0+64);
 
                 final String spart = frun.string;
                 final int flags = drun.getFontLayoutDirection() | Font.LAYOUT_NO_START_CONTEXT | Font.LAYOUT_NO_LIMIT_CONTEXT;

@@ -31,8 +31,6 @@ import java.util.BitSet;
  * @author algol
  */
 public class GridArranger implements Arranger {
-//    // Vertex radii are measured in square sides, visible radii are measured in circle radii.
-//    //    private static final float CIRC_RADIUS = (float)Math.sqrt(2);
 
     private final GridChoiceParameters params;
     private boolean forceEvenNumCols;
@@ -130,7 +128,6 @@ public class GridArranger implements Arranger {
                 nfCols = (int) Math.ceil(vxCount / (double) nRows);
             }
 
-//                Debug.debug("Grid %s (%d) rows=%d cols=%d\n", forceEvenNumCols, subVxCount, nfRows, nfCols);
             // Figure out the column and row sizes.
             // Node sizes depend on the nradius attribute: if it isn't present node radius=1.
             final float[] colWidths = new float[nfCols];
@@ -217,11 +214,6 @@ public class GridArranger implements Arranger {
                 rowCentres[i] = rowCentres[i - 1] + (float) (((rowHeights[i - 1] + rowHeights[i]) * params.getSizeGain()) / 2.0) + params.getVerticalGap();
             }
 
-//            // Position everything.
-//            //            final boolean doLeft = params.horizontalAlignment.equals("Left");
-//            final boolean doRight = params.horizontalAlignment.equals("Right");
-//            final boolean doTop = params.verticalAlignment.equals("Top");
-//            final boolean doBottom = params.verticalAlignment.equals("Bottom");
             for (int i = 0; i < vxPos; i++) {
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
@@ -237,23 +229,6 @@ public class GridArranger implements Arranger {
 
                 final float x = colCentres[col];
                 float y = rowCentres[row];
-//                final float radius = radiusAttr!=Graph.NOT_FOUND ? graph.getFloatValue(radiusAttr, vxId) : 1;
-//                if(doLeft)
-//                {
-//                    x -= colWidths[col]/2 + radius;
-//                }
-//                if(doRight)
-//                {
-//                    x += colWidths[col]/2 - radius;
-//                }
-//                if(doTop)
-//                {
-//                    y -= rowHeights[row]/2 + radius;
-//                }
-//                if(doBottom)
-//                {
-//                    y += rowHeights[row]/2 - radius;
-//                }
 
                 // Offset even columns vertically so side-by-side labels don't overlap.
                 if (params.hasRowOffsets() && col % 2 == 0) {

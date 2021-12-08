@@ -105,8 +105,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
     private Graph graph;
-//    private final NodeActivationListener activationListener;
-//    private final NodeChangeListener changeListener;
     private int planesAttr;
     private long planesModificationCounter;
     private boolean isAdjustingList;
@@ -123,9 +121,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
 
         isAdjustingList = false;
 
-//        activationListener = new NodeActivationListener();
-//        changeListener = new NodeChangeListener();
-//        setActivatedNodes(null);
         planeList.addListSelectionListener(e -> {
             if (!isAdjustingList) {
                 final DragDropList.MyListModel listModel = ((DragDropList) planeList).getModel();
@@ -137,8 +132,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 }
 
                 PluginExecution.withPlugin(new UpdatePlaneVisibilityPlugin(visibleLayers)).executeLater(graph);
-
-//                    graphNode.getVisualisationManager().setVisiblePlanes(visibleLayers);
             }
         });
 
@@ -160,8 +153,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         scaleMI.addActionListener(this::scaleSelectedPlanesAction);
         actionsMenu.add(scaleMI);
 
-//        // Are there any graphs with planes already open?
-//        //        activationListener.activate();
+        // Are there any graphs with planes already open?
         result = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
         result.addLookupListener(this);
     }

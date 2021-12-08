@@ -45,7 +45,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     
     private static final Logger LOGGER = Logger.getLogger(QualityControlAutoVetter.class.getName());
 
-    private static QualityControlAutoVetter INSTANCE = null;
+    private static QualityControlAutoVetter instance = null;
     private static final List<QualityControlAutoVetterListener> buttonListeners = new ArrayList<>();
 
     private QualityControlState state;
@@ -56,8 +56,8 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
     private final List<QualityControlListener> listeners;
 
-    private static List<QualityControlRule> RULES = null;
-    private static List<QualityControlRule> U_RULES = null;
+    private static List<QualityControlRule> rules = null;
+    private static List<QualityControlRule> uRules = null;
 
     /**
      * Constructor for QualityControlAutoVetter.
@@ -225,12 +225,12 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     }
 
     protected static List<QualityControlRule> getRules() {
-        if (RULES == null) {
-            RULES = new ArrayList<>(Lookup.getDefault().lookupAll(QualityControlRule.class));
-            U_RULES = Collections.unmodifiableList(RULES);
+        if (rules == null) {
+            rules = new ArrayList<>(Lookup.getDefault().lookupAll(QualityControlRule.class));
+            uRules = Collections.unmodifiableList(rules);
         }
 
-        return U_RULES;
+        return uRules;
     }
 
     /**
@@ -296,14 +296,14 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      * @return singleton instance of QualityControlAutoVetter
      */
     public static synchronized QualityControlAutoVetter getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new QualityControlAutoVetter();
+        if (instance == null) {
+            instance = new QualityControlAutoVetter();
         }
-        return INSTANCE;
+        return instance;
     }
 
     protected static synchronized void destroyInstance() {
-        GraphManager.getDefault().removeGraphManagerListener(INSTANCE);
-        INSTANCE = null;
+        GraphManager.getDefault().removeGraphManagerListener(instance);
+        instance = null;
     }
 }

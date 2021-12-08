@@ -38,7 +38,7 @@ import java.util.Map;
 @PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.DEVELOPER})
 public class SynchronizerPlugin extends SimpleQueryPlugin {
 
-    private static int NEXT_ID = 1;
+    private static int nextID = 1;
 
     public static final String COPY_PARAMETER_ID = PluginParameter.buildId(SynchronizerPlugin.class, "copy");
     public static final String NAME_PARAMETER_ID = PluginParameter.buildId(SynchronizerPlugin.class, "name");
@@ -54,7 +54,7 @@ public class SynchronizerPlugin extends SimpleQueryPlugin {
         queryTime = random.nextInt(10) + 10;
         writeTime = random.nextInt(5) + 5;
 
-        name = "Synchronizer Plugin " + NEXT_ID++;
+        name = "Synchronizer Plugin " + nextID++;
     }
 
     @Override

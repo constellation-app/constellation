@@ -47,12 +47,6 @@ public final class Orb2D {
         this.y = y;
     }
 
-//    public boolean contains(final float x2, final float y2)
-//    {
-//        final double dx = x - x2;
-//        final double dy = y - y2;
-//        return Math.hypot(dx, dy) <= r;
-//    }
     @Override
     public String toString() {
         return String.format("[Orb2D {%d} %f,%f %f]", hashCode(), x, y, r);

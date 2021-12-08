@@ -113,9 +113,9 @@ public final class Mathd {
     }
 
     public static void transformVector(final Vector3d vOut, final Vector3d v, final Matrix44d m) {
-        vOut.a[0] = m.getA()[0] * v.a[0] + m.getA()[4] * v.a[1] + m.getA()[8] * v.a[2] + m.getA()[12];// * v[3];       // Assuming 1
-        vOut.a[1] = m.getA()[1] * v.a[0] + m.getA()[5] * v.a[1] + m.getA()[9] * v.a[2] + m.getA()[13];// * v[3];
-        vOut.a[2] = m.getA()[2] * v.a[0] + m.getA()[6] * v.a[1] + m.getA()[10] * v.a[2] + m.getA()[14];// * v[3];
+        vOut.a[0] = m.getA()[0] * v.a[0] + m.getA()[4] * v.a[1] + m.getA()[8] * v.a[2] + m.getA()[12];
+        vOut.a[1] = m.getA()[1] * v.a[0] + m.getA()[5] * v.a[1] + m.getA()[9] * v.a[2] + m.getA()[13];
+        vOut.a[2] = m.getA()[2] * v.a[0] + m.getA()[6] * v.a[1] + m.getA()[10] * v.a[2] + m.getA()[14];
     }
 
     public static void transformVector(final Vector4d vOut, final Vector4d v, final Matrix44d m) {

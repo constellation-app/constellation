@@ -61,7 +61,6 @@ public final class GatherNodesPlugin extends SimpleEditPlugin {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-//        final int nradiusId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
 
         final int selectedVertexCount = gathers.cardinality();

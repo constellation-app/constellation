@@ -232,7 +232,7 @@ public final class PlanesRenderable implements GLRenderable {
 
             // Update the visibility flag for the layers.
             // See createScene().
-            // Each plane has six data entries; each data entry is four floats;
+            // Each plane has six data entries, each data entry is four floats
             // visibility is in the first entry.
             final int verticesPerPlane = 24;
             final int nVertices = fbuf.limit() / verticesPerPlane;

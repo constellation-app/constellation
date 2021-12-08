@@ -745,9 +745,9 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         // Aggregate links from lower level to the new modular level
         /*
-         typedef std::pair<NodeBase*, NodeBase*> NodePair;
-         typedef std::map<NodePair, double> EdgeMap;
-         EdgeMap moduleLinks;
+         typedef std::pair<NodeBase*, NodeBase*> NodePair
+         typedef std::map<NodePair, double> EdgeMap
+         EdgeMap moduleLinks
          */
         final Map<Tuple<NodeBase, NodeBase>, Double> moduleLinks = new TreeMap<>((lhs, rhs) -> {
             if (lhs.getFirst().getId() < rhs.getFirst().getId()) {

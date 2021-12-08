@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 public abstract class AttributeTranslator implements Comparable<AttributeTranslator> {
 
-    private static List<AttributeTranslator> TRANSLATORS = null;
+    private static List<AttributeTranslator> translators = null;
 
     private final String label;
     private final int priority;
@@ -54,12 +54,12 @@ public abstract class AttributeTranslator implements Comparable<AttributeTransla
      * @return all the currently registered AttributeTranslators.
      */
     public static List<AttributeTranslator> getTranslators() {
-        if (TRANSLATORS == null) {
-            TRANSLATORS = new ArrayList<>(Lookup.getDefault().lookupAll(AttributeTranslator.class));
-            Collections.sort(TRANSLATORS);
+        if (translators == null) {
+            translators = new ArrayList<>(Lookup.getDefault().lookupAll(AttributeTranslator.class));
+            Collections.sort(translators);
         }
 
-        return new ArrayList<>(TRANSLATORS);
+        return new ArrayList<>(translators);
     }
 
     /**

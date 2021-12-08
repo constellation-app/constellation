@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.components;
 
-import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -26,6 +25,7 @@ import au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview.api.UserTablePreferences;
 import au.gov.asd.tac.constellation.views.tableview.components.ExportMenu.ExportMenuItemActionHandler;
+import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.views.tableview.plugins.ExportToCsvFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview.plugins.ExportToExcelFilePlugin;
 import au.gov.asd.tac.constellation.views.tableview.utilities.TableViewUtilities;
@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -268,7 +269,16 @@ public class ExportMenuNGTest {
                         Mockito.mockStatic(PluginExecution.class);
                 final MockedStatic<FileChooser> fileChooserMockedStatic = 
                         Mockito.mockStatic(FileChooser.class);
-        ) {
+                final MockedStatic<Platform> platformMockedStatic =
+                        Mockito.mockStatic(Platform.class);
+        ) {            
+            // This is added so that the mocked static that we would otherwise be 
+            // trying to run in the fx thread is actually invoked properly
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
+                    .thenAnswer(iom -> {
+                        ((Runnable) iom.getArgument(0)).run();
+                        return null;
+                    });
 
             fileChooserMockedStatic.when(() -> FileChooser.openSaveDialog(exportFileChooser))
                     .thenReturn(CompletableFuture.completedFuture(optionalExportFile));
@@ -287,7 +297,11 @@ public class ExportMenuNGTest {
                         final ExportToCsvFilePlugin plugin
                                 = (ExportToCsvFilePlugin) mockitoInvocation.getArgument(0);
 
-                        assertEquals(exportFile, plugin.getFile());
+                        if (exportFile != null) {
+                            assertEquals(exportFile.getAbsolutePath(), plugin.getFile().getAbsolutePath());                           
+                        } else {
+                            assertEquals(exportFile, plugin.getFile());                                                      
+                        }
                         assertEquals(pagination, plugin.getPagination());
                         assertEquals(tableView, plugin.getTable());
                         assertEquals(expectedExportOnlySelectedRows, plugin.isSelectedOnly());
@@ -301,6 +315,7 @@ public class ExportMenuNGTest {
             spiedExportActionHandler.getLastExport().get();
 
             fileChooserMockedStatic.verify(() -> FileChooser.openSaveDialog(exportFileChooser));
+            
             if (userCancelsRequest) {
                 verifyNoInteractions(pluginExecution);
             } else {
@@ -340,7 +355,17 @@ public class ExportMenuNGTest {
                         Mockito.mockStatic(PluginExecution.class);
                 final MockedStatic<FileChooser> fileChooserMockedStatic = 
                         Mockito.mockStatic(FileChooser.class);
+                final MockedStatic<Platform> platformMockedStatic =
+                        Mockito.mockStatic(Platform.class);
         ) {
+            // This is added so that the mocked static that we would otherwise be 
+            // trying to run in the fx thread is actually invoked properly
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
+                    .thenAnswer(iom -> {
+                        ((Runnable) iom.getArgument(0)).run();
+                        return null;
+                    });
+            
             fileChooserMockedStatic.when(() -> FileChooser.openSaveDialog(exportFileChooser))
                     .thenReturn(CompletableFuture.completedFuture(optionalExportFile));
             
@@ -364,7 +389,11 @@ public class ExportMenuNGTest {
                         final ExportToExcelFilePlugin plugin
                                 = (ExportToExcelFilePlugin) mockitoInvocation.getArgument(0);
 
-                        assertEquals(exportFile, plugin.getFile());
+                        if (exportFile != null) {
+                            assertEquals(exportFile.getAbsolutePath(), plugin.getFile().getAbsolutePath());                           
+                        } else {
+                            assertEquals(exportFile, plugin.getFile());                                                      
+                        }
                         assertEquals(pagination, plugin.getPagination());
                         assertEquals(tableView, plugin.getTable());
                         assertEquals(42, plugin.getRowsPerPage());

@@ -90,8 +90,6 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
     @Override
     public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
-        boolean inControlOfProgress = true;
-
         final Graph graph = graphs.getGraph();
 
         // If the graph no longer exists

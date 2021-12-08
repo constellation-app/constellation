@@ -331,7 +331,7 @@ public class AttributeEditorPanel extends BorderPane {
                 elementType = null;
                 break;
         }
-        showAllToggle.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) 
+        showAllToggle.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
                 -> prefs.putBoolean(key, newValue));
         showAllToggle.setSelected(prefs.getBoolean(key, false));
 
@@ -416,7 +416,7 @@ public class AttributeEditorPanel extends BorderPane {
         editKeyButton.setPrefSize(18, 12);
         editKeyButton.setPadding(new Insets(5));
         editKeyButton.setTooltip(new Tooltip("Edit primary key"));
-        
+
         if (elementType != GraphElementType.GRAPH) {
             editKeyButton.setOnMouseClicked((MouseEvent event) -> {
                 event.consume();
@@ -428,14 +428,13 @@ public class AttributeEditorPanel extends BorderPane {
 
         optionsButtons.maxHeightProperty().bind(addMenu.heightProperty());
         optionsButtons.getChildren().addAll(showAllToggle, addMenu, editKeyButton);
-        
         headerGraphic.setLeft(heading);
         headerGraphic.setRight(optionsButtons);
         headerGraphic.prefWidthProperty().bind(scrollPane.widthProperty().subtract(45));
-        
+
         BorderPane.setMargin(heading, new Insets(2, 0, 0, 0));
         BorderPane.setMargin(optionsButtons, Insets.EMPTY);
-        
+
         result.setGraphic(headerGraphic);
         result.setId("heading");
         result.setExpanded(false);
@@ -736,7 +735,7 @@ public class AttributeEditorPanel extends BorderPane {
      */
     private void populateContentContainer(final AttributeState state, final GraphElementType type, final double longestTitleWidth) {
         final int elementTypeIndex;
-        
+
         switch (type) {
             case GRAPH:
                 elementTypeIndex = 0;

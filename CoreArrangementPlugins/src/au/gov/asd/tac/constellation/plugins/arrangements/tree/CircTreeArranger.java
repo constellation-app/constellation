@@ -218,7 +218,6 @@ public final class CircTreeArranger implements Arranger {
         // We don't want a radius of zero; this will break things higher up and result in NaN values for x,y,z.
         // Instead, we'll use a minimum radius (pulled out of a hat).
         final float minRadius = 0.1F;
-//        final float selfRadius = scale * (radiusAttr!=Graph.NOT_FOUND ? graph.getFloatValue(radiusAttr, vxId) : 1);
         final float selfRadius = scale * (radiusAttr != Graph.NOT_FOUND ? Math.max(graph.getFloatValue(radiusAttr, vxId), minRadius) : 1);
 
         // Find adjacent vertices to work on.
@@ -253,7 +252,7 @@ public final class CircTreeArranger implements Arranger {
         int maxThisCircle = MAX_IN_ONE_CIRCLE;
         int nChildless = 0;
         int nWithChildren = 0;
-//        boolean separatingChildless = false;
+        
         for (final VxInfo child : children) {
             if (orderedChildren.containsKey(child.vxId)) {
                 nWithChildren++;
@@ -263,7 +262,6 @@ public final class CircTreeArranger implements Arranger {
         }
 
         if (nChildless > 2 && nChildless < MAX_IN_ONE_CIRCLE && nWithChildren > 0) {
-//            separatingChildless = true;
             maxThisCircle = nChildless;
         }
 

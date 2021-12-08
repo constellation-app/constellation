@@ -551,7 +551,6 @@ public abstract class InfomapBase {
         setActiveNetworkFromLeafs();
         initConstantInfomapTerms();
 
-        // recalculateCodelengthFromConsolidatedNetwork();
         resetModuleFlowFromLeafNodes();
         double sumModuleLength = 0;
         for (final NodeBase module : getRoot().getChildren()) {

@@ -69,10 +69,10 @@ import java.util.List;
  */
 public abstract class UpdateComponent<U> implements Comparable<UpdateComponent<U>> {
 
-    private static int NEXT_ID = 0;
+    private static int nextID = 0;
 
     private static synchronized int getNextId() {
-        return NEXT_ID++;
+        return nextID++;
     }
 
     private final String name;

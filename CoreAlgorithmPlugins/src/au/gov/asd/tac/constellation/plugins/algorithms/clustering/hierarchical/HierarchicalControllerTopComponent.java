@@ -370,8 +370,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }//GEN-LAST:event_excludeSingleVerticesCheckBoxItemStateChanged
 
     private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downButtonActionPerformed
+
         if (state.getCurrentStep() > 0) {
-//            stepSlider.setValue(--state.currentStep);
             state.setCurrentStep(state.getCurrentStep() - 1);
             updateSlider();
         }
@@ -379,7 +379,6 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
     private void upButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upButtonActionPerformed
         if (state.getCurrentStep() < state.getSteps()) {
-//            stepSlider.setValue(++state.currentStep);
             state.setCurrentStep(state.getCurrentStep() + 1);
             updateSlider();
         }

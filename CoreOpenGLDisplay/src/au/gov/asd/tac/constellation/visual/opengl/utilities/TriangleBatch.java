@@ -222,7 +222,6 @@ public class TriangleBatch {
 
         // Unbind to anybody
         // Should this be just plain 0?
-        //	gl.glBindVertexArray(vertexArrayBufferObject[0]);
         gl.glBindVertexArray(0);
     }
 }
