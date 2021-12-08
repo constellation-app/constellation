@@ -499,7 +499,7 @@ public final class GraphRenderable implements GLRenderable {
 
                 // Don't overwrite the other eye.
                 //
-                gl.glClear(GL3.GL_DEPTH_BUFFER_BIT);
+                gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 
                 mv = anaglyphCam.applyRightFrustum(mvMatrix);
                 p = anaglyphCam.getProjectionMatrix();

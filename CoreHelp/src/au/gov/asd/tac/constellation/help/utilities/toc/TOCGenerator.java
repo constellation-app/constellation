@@ -101,9 +101,9 @@ public class TOCGenerator {
      */
     public static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode root) {
         writeText(markdownOutput, String.format("<div class=\"%s\">", "container"));
-        writeText(markdownOutput, Platform.NEWLINE);
+        writeText(markdownOutput, Platform.getNewline());
         writeText(markdownOutput, String.format("<div id=\"%s\">", "accordion"));
-        writeText(markdownOutput, Platform.NEWLINE);
+        writeText(markdownOutput, Platform.getNewline());
 
         // Parse XML to tree structure
         xmlsFromFile.forEach(file -> {
@@ -118,7 +118,7 @@ public class TOCGenerator {
 
         // Write tree structure to the output
         TreeNode.writeTree(root, markdownOutput, 0);
-        writeText(markdownOutput, Platform.NEWLINE);
+        writeText(markdownOutput, Platform.getNewline());
         writeText(markdownOutput, "</div>\n</div>\n</div>");
     }
 
