@@ -88,5 +88,4 @@ public class AttributeEditorDialog extends ConstellationDialog {
         scene.getStylesheets().add(AttributeEditorDialog.class.getResource(DARK_THEME).toExternalForm());
         fxPanel.setScene(scene);
     }
-
 }

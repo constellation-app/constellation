@@ -37,7 +37,7 @@ public class ModifyAttributeEditOperation implements EditOperation {
     private final AttributeData attributeData;
     private AttributePrototype attrNew;
 
-    public ModifyAttributeEditOperation(AttributeData attributeData) {
+    public ModifyAttributeEditOperation(final AttributeData attributeData) {
         this.attributeData = attributeData;
     }
 

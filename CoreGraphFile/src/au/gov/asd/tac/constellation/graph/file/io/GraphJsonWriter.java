@@ -44,6 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Cancellable;
 
 /**
@@ -52,7 +53,7 @@ import org.openide.util.Cancellable;
  * @author algol
  */
 public final class GraphJsonWriter implements Cancellable {
-    
+
     private static final Logger LOGGER = Logger.getLogger(GraphJsonWriter.class.getName());
 
     /**
@@ -74,7 +75,7 @@ public final class GraphJsonWriter implements Cancellable {
      */
     public GraphJsonWriter() {
         byteWriter = new GraphByteWriter();
-        for (AbstractGraphIOProvider agiop : AbstractGraphIOProvider.getProviders()) {
+        for (final AbstractGraphIOProvider agiop : AbstractGraphIOProvider.getProviders()) {
             graphIoProviders.put(agiop.getName(), agiop);
         }
     }
@@ -96,7 +97,7 @@ public final class GraphJsonWriter implements Cancellable {
      */
     public boolean writeGraphFile(final GraphReadMethods graph, final String path, final IoProgress progress) throws IOException {
         final File gf = new File(path);
-        try (FileOutputStream fos = new FileOutputStream(gf)) {
+        try (final FileOutputStream fos = new FileOutputStream(gf)) {
             writeGraphToStream(graph, fos, true, ELEMENT_TYPES_FILE_ORDER);
         }
 
@@ -107,7 +108,7 @@ public final class GraphJsonWriter implements Cancellable {
                     final String reference = entry.getKey();
                     final File fbin = entry.getValue();
 
-                    try (FileOutputStream binout = new FileOutputStream(new File(parentDir, reference))) {
+                    try (final FileOutputStream binout = new FileOutputStream(new File(parentDir, reference))) {
                         GraphByteWriter.copy(new FileInputStream(fbin), binout);
                     }
                 }
@@ -165,13 +166,13 @@ public final class GraphJsonWriter implements Cancellable {
     public boolean writeGraphToZip(final GraphReadMethods graph, final OutputStream out, final IoProgress progress, final List<GraphElementType> elementTypes) throws IOException {
         this.progress = progress;
 
-        try (ZipOutputStream zout = new ZipOutputStream(out)) {
+        try (final ZipOutputStream zout = new ZipOutputStream(out)) {
             final ZipEntry zentry = new ZipEntry("graph" + GraphFileConstants.FILE_EXTENSION);
             zout.putNextEntry(zentry);
             writeGraphToStream(graph, zout, false, elementTypes);
             try {
                 if (!isCancelled) {
-                    for (Map.Entry<String, File> entry : byteWriter.getFileMap().entrySet()) {
+                    for (final Map.Entry<String, File> entry : byteWriter.getFileMap().entrySet()) {
                         final String reference = entry.getKey();
                         final File f = entry.getValue();
 
@@ -236,22 +237,22 @@ public final class GraphJsonWriter implements Cancellable {
 
             jg.writeStartObject();
 
-            //write version number
+            // write version number
             jg.writeNumberField("version", VERSION);
 
-            //write versioned items
+            // write versioned items
             jg.writeObjectFieldStart("versionedItems");
-            for (Entry<String, Integer> itemVersion : UpdateProviderManager.getLatestVersions().entrySet()) {
+            for (final Entry<String, Integer> itemVersion : UpdateProviderManager.getLatestVersions().entrySet()) {
                 jg.writeNumberField(itemVersion.getKey(), itemVersion.getValue());
             }
             jg.writeEndObject();
 
-            Schema schema = graph.getSchema();
+            final Schema schema = graph.getSchema();
 
-            //write schema
+            // write schema
             jg.writeStringField("schema", schema == null ? new BareSchemaFactory().getName() : schema.getFactory().getName());
 
-            //write global modCounts
+            // write global modCounts
             final long globalModCount = graph.getGlobalModificationCounter();
             final long structModCount = graph.getStructureModificationCounter();
             final long attrModCount = graph.getStructureModificationCounter();
@@ -259,7 +260,7 @@ public final class GraphJsonWriter implements Cancellable {
             jg.writeNumberField("structure_mod_count", structModCount);
             jg.writeNumberField("attribute_mod_count", attrModCount);
             jg.writeEndObject();
-            for (GraphElementType elementType : ELEMENT_TYPES_FILE_ORDER) {
+            for (final GraphElementType elementType : ELEMENT_TYPES_FILE_ORDER) {
                 if (!isCancelled) {
                     writeElements(jg, graph, elementType, verbose, elementTypes.contains(elementType));
                 }
@@ -318,7 +319,7 @@ public final class GraphJsonWriter implements Cancellable {
         jg.writeArrayFieldStart("attrs");
 
         // Write the attributes.
-        for (Attribute attr : attrs) {
+        for (final Attribute attr : attrs) {
             jg.writeStartObject();
             jg.writeStringField("label", attr.getName());
             jg.writeStringField("type", attr.getAttributeType());
@@ -375,9 +376,10 @@ public final class GraphJsonWriter implements Cancellable {
         jg.writeArrayFieldStart("data");
 
         if (!writeData) {
+            // Do nothing
         } else if (elementType == GraphElementType.GRAPH || elementType == GraphElementType.META) {
             jg.writeStartObject();
-            for (Attribute attr : attrs) {
+            for (final Attribute attr : attrs) {
                 final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
                 if (ioProvider != null) {
 
@@ -400,7 +402,7 @@ public final class GraphJsonWriter implements Cancellable {
 
                 jg.writeStartObject();
                 jg.writeNumberField(GraphFileConstants.VX_ID, vxId);
-                for (Attribute attr : attrs) {
+                for (final Attribute attr : attrs) {
                     final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
                     if (ioProvider != null) {
                         // Get the provider to write its data into an ObjectNode.
@@ -432,7 +434,7 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeNumberField(GraphFileConstants.SRC, graph.getTransactionSourceVertex(txId));
                 jg.writeNumberField(GraphFileConstants.DST, graph.getTransactionDestinationVertex(txId));
                 jg.writeBooleanField(GraphFileConstants.DIR, graph.getTransactionDirection(txId) != Graph.UNDIRECTED);
-                for (Attribute attr : attrs) {
+                for (final Attribute attr : attrs) {
                     final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
                     if (ioProvider != null) {
                         // Get the provider to write its data into an ObjectNode.
@@ -471,9 +473,7 @@ public final class GraphJsonWriter implements Cancellable {
      * @return true if the attribute is numeric, false otherwise.
      */
     private static boolean isNumeric(final Attribute attr) {
-        final String type = attr.getAttributeType();
-
-        return "integer".equals(type) || "float".equals(type);
+        return StringUtils.equalsAny(attr.getAttributeType(), new String[]{"integer", "float"});
     }
 
     @Override

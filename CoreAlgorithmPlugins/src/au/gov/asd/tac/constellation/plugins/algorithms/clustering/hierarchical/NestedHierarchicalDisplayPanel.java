@@ -55,6 +55,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     private int progressX;
     private final JScrollPane scrollManager;
     private final HierarchicalControllerTopComponent controller;
+    private boolean leftClickDown = false;
 
     public NestedHierarchicalDisplayPanel(final HierarchicalControllerTopComponent controller, final JScrollPane scrollManager) {
         this.controller = controller;
@@ -118,10 +119,10 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         final int arrowTop = scrollManager.getViewport().getViewPosition().y;
         final int arrowBottom = arrowTop + Math.min(neededHeight, scrollManager.getViewport().getExtentSize().height);
         final int[] xpoints = {progressX - 6, progressX + 8, progressX + 1};
-        final int[] ypoints_top = {arrowTop, arrowTop, arrowTop + 10};
-        final int[] ypoints_bottom = {arrowBottom, arrowBottom, arrowBottom - 10};
-        g2.fillPolygon(xpoints, ypoints_top, 3);
-        g2.fillPolygon(xpoints, ypoints_bottom, 3);
+        final int[] ypointsTop = {arrowTop, arrowTop, arrowTop + 10};
+        final int[] ypointsBottom = {arrowBottom, arrowBottom, arrowBottom - 10};
+        g2.fillPolygon(xpoints, ypointsTop, 3);
+        g2.fillPolygon(xpoints, ypointsBottom, 3);
         g2.setColor(new Color(0xB0, 0xB0, 0xB0, 130));
         g2.fillRect(progressX, 0, PROGRESS_BAR_THICKNESS, neededHeight);
     }
@@ -269,7 +270,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     }
 
     @Override
-    public void componentResized(ComponentEvent e) {
+    public void componentResized(final ComponentEvent e) {
         positionLines();
         repaint();
     }
@@ -281,43 +282,42 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     }
 
     @Override
-    public void componentMoved(ComponentEvent e) {
+    public void componentMoved(final ComponentEvent e) {
         // Override required for ComponentListener, intentionally left blank
     }
 
     @Override
-    public void componentShown(ComponentEvent e) {
+    public void componentShown(final ComponentEvent e) {
         // Override required for ComponentListener, intentionally left blank
     }
 
     @Override
-    public void componentHidden(ComponentEvent e) {
+    public void componentHidden(final ComponentEvent e) {
         // Override required for ComponentListener, intentionally left blank
     }
-    private boolean leftClickDown = false;
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(final MouseEvent e) {
         // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(final MouseEvent e) {
         // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
+    public void mouseMoved(final MouseEvent e) {
         // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(final MouseEvent e) {
         // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftClickDown = true;
             final int x = Math.max(0, e.getX());
@@ -327,7 +327,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
+    public void mouseDragged(final MouseEvent e) {
         if (leftClickDown) {
             final int x = Math.max(0, e.getPoint().x);
             state.setCurrentStep(Math.min(state.getSteps(), (x * stepLimit) / getWidth()));
@@ -336,7 +336,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftClickDown = false;
         }

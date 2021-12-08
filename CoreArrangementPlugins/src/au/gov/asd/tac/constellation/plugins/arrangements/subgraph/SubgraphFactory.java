@@ -24,6 +24,6 @@ import java.util.Set;
  */
 public interface SubgraphFactory {
 
-    public ComponentSubgraph constructSubgraph(GraphWriteMethods wg, Set<Integer> includedVertexIDs);
+    public ComponentSubgraph constructSubgraph(final GraphWriteMethods wg, final Set<Integer> includedVertexIDs);
 
 }

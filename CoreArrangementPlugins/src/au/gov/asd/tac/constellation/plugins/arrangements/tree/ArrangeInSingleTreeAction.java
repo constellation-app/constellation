@@ -75,11 +75,11 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
 
         private final SecureRandom r = new SecureRandom();
 
-        Worker(GraphWriteMethods graph) {
+        private Worker(final GraphWriteMethods graph) {
             this.graph = graph;
         }
 
-        void run() throws InterruptedException {
+        private void run() throws InterruptedException {
             final TreeTaxonArranger treeArranger = new TreeTaxonArranger(null, null);
 
             final GraphTaxonomy tax = treeArranger.getTaxonomy(graph);
@@ -96,10 +96,10 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
 
             // Colour the taxonomies so we can see what's going on.
             if (tax != null) {
-                for (Integer subvxId : tax.getTaxa().keySet()) {
+                for (final Integer subvxId : tax.getTaxa().keySet()) {
                     final ConstellationColor color = ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1F);
                     final Set<Integer> subgraph = tax.getTaxa().get(subvxId);
-                    for (int vxId : subgraph) {
+                    for (final int vxId : subgraph) {
                         graph.setStringValue(bgiconAttr, vxId, "Background.Round Circle");
                         graph.setObjectValue(colorAttr, vxId, color);
                     }

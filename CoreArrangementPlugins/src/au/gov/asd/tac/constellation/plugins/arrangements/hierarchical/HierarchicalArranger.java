@@ -170,7 +170,7 @@ public class HierarchicalArranger implements Arranger {
      * like normal vertices.
      * @param pendantSets The sets of pendants.
      */
-    private static void findPendants(final GraphReadMethods rg, final Set<Integer> roots, final int minPendants, Map<Integer, Set<Integer>> pendantSets) {
+    private static void findPendants(final GraphReadMethods rg, final Set<Integer> roots, final int minPendants, final Map<Integer, Set<Integer>> pendantSets) {
         final int vxCount = rg.getVertexCount();
         for (int position = 0; position < vxCount; position++) {
             final int vxId = rg.getVertex(position);

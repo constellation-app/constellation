@@ -113,7 +113,7 @@ public class CircleArranger implements Arranger {
     }
 
     @Override
-    public void setMaintainMean(boolean b) {
+    public void setMaintainMean(final boolean b) {
         maintainMean = b;
     }
 }

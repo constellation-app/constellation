@@ -60,7 +60,7 @@ public class QuadTree {
         return boxes;
     }
 
-    private void getSubs(List<Box2D> boxes) {
+    private void getSubs(final List<Box2D> boxes) {
         boxes.add(box);
         if (nodes != null) {
             for (final QuadTree qt : nodes) {

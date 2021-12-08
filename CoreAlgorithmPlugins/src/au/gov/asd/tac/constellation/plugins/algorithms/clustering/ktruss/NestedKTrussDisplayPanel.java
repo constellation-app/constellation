@@ -75,7 +75,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(final Graphics g) {
 
         if (!state.isNestedTrussesVisible()) {
             return;
@@ -243,22 +243,22 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(final MouseEvent e) {
         // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(final MouseEvent e) {
         // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
+    public void mouseMoved(final MouseEvent e) {
         // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(final MouseEvent e) {
         final int x = e.getX();
         final int y = e.getY();
         if (!e.isControlDown()) {
@@ -320,17 +320,17 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(final MouseEvent e) {
         // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
+    public void mouseDragged(final MouseEvent e) {
         // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(final MouseEvent e) {
         // Override required for MouseInputListener, intentionally left blank
     }
 

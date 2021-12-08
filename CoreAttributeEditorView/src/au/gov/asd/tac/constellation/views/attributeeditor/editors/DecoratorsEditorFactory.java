@@ -88,7 +88,7 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         protected Node createEditorControls() {
             // get all vertex attributes currently in the graph
             final List<String> attributeNames = new ArrayList<>();
-            ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
+            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
             try {
                 for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
                     attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));

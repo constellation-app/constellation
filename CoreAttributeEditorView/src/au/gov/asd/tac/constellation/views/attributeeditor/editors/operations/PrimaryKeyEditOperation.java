@@ -56,9 +56,9 @@ public class PrimaryKeyEditOperation implements EditOperation {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            int[] keyIds = new int[keyAttributeNames.size()];
+            final int[] keyIds = new int[keyAttributeNames.size()];
             int i = 0;
-            for (String attrName : keyAttributeNames) {
+            for (final String attrName : keyAttributeNames) {
                 keyIds[i++] = graph.getAttribute(elementType, attrName);
             }
             graph.setPrimaryKey(elementType, keyIds);
