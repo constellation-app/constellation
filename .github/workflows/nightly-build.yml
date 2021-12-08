@@ -36,7 +36,7 @@ jobs:
         run: |
               sudo docker run -v "$PWD:/code" -v "$HOME/.ivy2:/root/.ivy2" --workdir "/code/constellation-applications" constellationapplication/netbeans-runner:12 ./build-zip.sh -a constellation -m "constellation constellation-adaptors"
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v2.3.0
         with:
-          name: zip_files
-          path: *.zip
+          name: zipFiles
+          path: **.zip
