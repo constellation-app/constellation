@@ -39,15 +39,6 @@ public abstract class IconData {
     private byte[] data = null;
 
     /**
-     * Setter used only for testing.
-     *
-     * @param data
-     */
-    protected void setData(final byte[] data) {
-        this.data = data;
-    }
-
-    /**
      * Get an array of bytes representing the data of a
      * {@link ConstellationIcon} of default size, specified by
      * {@link ConstellationIcon#DEFAULT_ICON_SIZE}, and original color. This
@@ -192,7 +183,7 @@ public abstract class IconData {
             return false;
         }
 
-        if (getClass() != obj.getClass()) {
+        if (this.getClass() != obj.getClass()) {
             return false;
         }
 

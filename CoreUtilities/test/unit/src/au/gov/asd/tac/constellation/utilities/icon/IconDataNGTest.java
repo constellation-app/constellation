@@ -20,9 +20,11 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 import javax.imageio.ImageIO;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,7 +51,11 @@ public class IconDataNGTest {
     private static BufferedImage bufferedImageMock;
     private static IOException IOExceptionMock;
 
+    private final IconData instanceWithData;
+
     public IconDataNGTest() {
+        instanceWithData = new IconDataImpl();
+        instanceWithData.getData();
     }
 
     @BeforeClass
@@ -64,7 +70,6 @@ public class IconDataNGTest {
     public void setUpMethod() throws Exception {
         iconDataStaticMock = Mockito.mockStatic(IconData.class);
         imageIOStaticMock = Mockito.mockStatic(ImageIO.class);
-
         inputStreamMock = Mockito.mock(InputStream.class);
         bufferedImageMock = Mockito.mock(BufferedImage.class);
         IOExceptionMock = Mockito.mock(IOException.class);
@@ -166,15 +171,12 @@ public class IconDataNGTest {
     public void testGetData_dataNotNull() {
         System.out.println("testGetData_dataNotNull");
 
-        final IconData instance = spy(new IconDataImpl());
+        final IconData instance = spy(instanceWithData);
 
         final int size = ConstellationIcon.DEFAULT_ICON_SIZE;
         final Color color = null;
 
-        // Data not null.
-        instance.setData(new byte[1]);
-
-        final byte[] expResult = new byte[1];
+        final byte[] expResult = new byte[0];
         final byte[] result = instance.getData(size, color);
 
         verify(instance, times(0)).createData(Mockito.eq(size), Mockito.eq(color));
@@ -489,21 +491,13 @@ public class IconDataNGTest {
         obj = new Object();
         assertFalse(instance.equals(obj));
 
-        // When the class of obj is the same class as this but has a different value for data.
+        // When the class of obj is the same class as IconData and has the same value for data.
         obj = new IconDataImpl();
-
-        instance.setData(new byte[1]);
-        ((IconData) obj).setData(new byte[2]);
-
-        assertFalse(instance.equals(obj));
-
-        // When the class of obj is the same class as this and has the same value for data.
-        obj = new IconDataImpl();
-
-        instance.setData(new byte[1]);
-        ((IconData) obj).setData(new byte[1]);
-
         assertTrue(instance.equals(obj));
+
+        // When the class of obj is the same class as IconData but has a different value for data.
+        obj = instanceWithData;
+        assertFalse(instance.equals(obj));
     }
 
     /**
@@ -513,17 +507,22 @@ public class IconDataNGTest {
     public void testToString() {
         System.out.println("testToString");
 
-        final IconData instance = new IconDataImpl();
+        // When data is null.
+        final IconData instance = spy(new IconDataImpl());
 
         final String expResult1 = String.format("Image of %d bytes", 0);
         final String result1 = instance.toString();
 
         assertEquals(result1, expResult1);
 
-        // When data is not null.
-        instance.setData(new byte[2]);
+        // When data is anything but null.
+        final Random random = new Random();
+        final int bytes = random.nextInt(50) + 1;
 
-        final String expResult2 = String.format("Image of %d bytes", 2);
+        doReturn(new byte[bytes]).when(instance).createData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+        instance.getData();
+
+        final String expResult2 = String.format("Image of %d bytes", bytes);
         final String result2 = instance.toString();
 
         assertEquals(result2, expResult2);
