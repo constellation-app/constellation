@@ -19,7 +19,8 @@ https://github.com/constellation-app/constellation/blob/master/CODE_OF_CONDUCT.m
 - [ ] Reviewed the [checklist](CHECKLIST.md)
 
 - [ ] Reviewed feedback from the "Sonar Cloud" bot. Note that you have to wait
-    for the "CI / Unit Tests") to complete first.
+    for the "CI / Unit Tests") to complete first. Failed Unit tests can be 
+    debugged by adding the label "verbose logging" to the GitHub PR.
 
 ### Description of the Change
 
