@@ -175,15 +175,18 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         }
 
         private List<File> pngWalk(final File path, final List<File> files) {
-            final File[] filesInPath = path.listFiles((File pathname) -> {
-                if (pathname.isDirectory()) {
-                    return true;
+            final List<File> addedFiles = new ArrayList<>();
+            for(final File f : path.listFiles()){
+                if (f.isDirectory()) {
+                    addedFiles.add(f);
                 } else {
-                    final String filename = pathname.getAbsolutePath();
-                    return StringUtils.endsWithIgnoreCase(filename, FileExtensionConstants.PNG);
+                    if(StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
+                        addedFiles.add(f);
+                    }
                 }
-            });
-            for (final File file : filesInPath) {
+            }
+            
+            for (final File file : addedFiles) {
                 if (file.isDirectory()) {
                     pngWalk(file, files);
                 } else {

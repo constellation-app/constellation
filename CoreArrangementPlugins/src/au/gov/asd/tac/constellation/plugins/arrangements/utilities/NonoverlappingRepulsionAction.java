@@ -60,7 +60,7 @@ public final class NonoverlappingRepulsionAction implements ActionListener {
          *
          * @param graph A Graph.
          */
-        Worker(final Graph graph) {
+        private Worker(final Graph graph) {
             this.graph = graph;
         }
 

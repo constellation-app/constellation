@@ -16,13 +16,11 @@
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * The AttributeState is the data model for CONSTELLATION's attribute editor. It
+ * The AttributeState is the data model for Constellation's attribute editor. It
  * contains information about the current graphs attributes and all their
  * values. AttributeState objects are primarily created and populated by an
  * {@link AttributeReader} when requested by the
@@ -31,17 +29,17 @@ import java.util.Map;
  * @author twinkle2_little
  */
 public class AttributeState {
-    //graph, nodes, trasaction etc.
+    // graph, nodes, trasaction etc.
 
     private final List<GraphElementType> graphElements;
     private final List<GraphElementType> activeGraphElements;
-    //key: element type, value : list of attributedata
-    private final HashMap<GraphElementType, ArrayList<AttributeData>> attributeNames;
-    //key: element type+attribute name value: list of values
-    private final HashMap<String, Object[]> attributeValues;
+    // key: element type, value : list of attributedata
+    private final Map<GraphElementType, List<AttributeData>> attributeNames;
+    // key: element type+attribute name value: list of values
+    private final Map<String, Object[]> attributeValues;
     private final Map<GraphElementType, Integer> attributeCounts;
 
-    public AttributeState(List<GraphElementType> graphElements, List<GraphElementType> activeGraphElements, HashMap<GraphElementType, ArrayList<AttributeData>> attributeNames, HashMap<String, Object[]> attributeValues, Map<GraphElementType, Integer> attributeCounts) {
+    public AttributeState(final List<GraphElementType> graphElements, final List<GraphElementType> activeGraphElements, final Map<GraphElementType, List<AttributeData>> attributeNames, final Map<String, Object[]> attributeValues, final Map<GraphElementType, Integer> attributeCounts) {
         this.graphElements = graphElements;
         this.activeGraphElements = activeGraphElements;
         this.attributeNames = attributeNames;
@@ -74,14 +72,14 @@ public class AttributeState {
     /**
      * @return the attributeNames
      */
-    public HashMap<GraphElementType, ArrayList<AttributeData>> getAttributeNames() {
+    public Map<GraphElementType, List<AttributeData>> getAttributeNames() {
         return attributeNames;
     }
 
     /**
      * @return the attributeValues
      */
-    public HashMap<String, Object[]> getAttributeValues() {
+    public Map<String, Object[]> getAttributeValues() {
         return attributeValues;
     }
 

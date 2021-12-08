@@ -31,11 +31,11 @@ class PQNodeList implements Iterable<PQNode> {
         ListItem next;
         ListItem prev;
 
-        ListItem(PQNode node) {
+        private ListItem(final PQNode node) {
             this(null, node, null);
         }
 
-        ListItem(ListItem prev, PQNode node, ListItem next) {
+        private ListItem(final ListItem prev, final PQNode node, final ListItem next) {
             this.node = node;
             this.next = next;
             this.prev = prev;
@@ -55,11 +55,11 @@ class PQNodeList implements Iterable<PQNode> {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(final int size) {
         this.size = size;
     }
 
-    private void link(ListItem left, ListItem right) {
+    private void link(final ListItem left, final ListItem right) {
         if (left != null) {
             left.next = right;
         }
@@ -68,8 +68,8 @@ class PQNodeList implements Iterable<PQNode> {
         }
     }
 
-    public void addFirst(PQNode node) {
-        ListItem item = new ListItem(node);
+    public void addFirst(final PQNode node) {
+        final ListItem item = new ListItem(node);
         if (size == 0) {
             first = last = item;
         } else {
@@ -80,8 +80,8 @@ class PQNodeList implements Iterable<PQNode> {
         size++;
     }
 
-    public void addLast(PQNode node) {
-        ListItem item = new ListItem(node);
+    public void addLast(final PQNode node) {
+        final ListItem item = new ListItem(node);
         if (size == 0) {
             first = last = item;
         } else {
@@ -92,7 +92,7 @@ class PQNodeList implements Iterable<PQNode> {
         size++;
     }
 
-    public void remove(PQNode node) {
+    public void remove(final PQNode node) {
         for (ListItem item = first; item != null; item = item.next) {
             if (item.node == node) {
                 link(item.prev, item.next);
@@ -108,8 +108,8 @@ class PQNodeList implements Iterable<PQNode> {
         }
     }
 
-    public void replace(PQNode node, PQNode newNode) {
-        ListItem newItem = new ListItem(newNode);
+    public void replace(final PQNode node, final PQNode newNode) {
+        final ListItem newItem = new ListItem(newNode);
         for (ListItem item = first; item != null; item = item.next) {
             if (item.node == node) {
                 link(item.prev, newItem);
@@ -128,11 +128,11 @@ class PQNodeList implements Iterable<PQNode> {
     // Reverses this list of children, useful when it belongs to a QNode.
     public void reverse() {
         for (ListItem childItem = first; childItem != null; childItem = childItem.prev) {
-            ListItem temp = childItem.next;
+            final ListItem temp = childItem.next;
             childItem.next = childItem.prev;
             childItem.prev = temp;
         }
-        ListItem temp = first;
+        final ListItem temp = first;
         first = last;
         last = temp;
     }
@@ -140,7 +140,7 @@ class PQNodeList implements Iterable<PQNode> {
     // appends the apecified list to this list
     // Note that new list items are not created meaning that toConcat will no longer be a valid PQNodeList,
     // which is fine since this should only be called when the PQNode possessing toConcat is being removed.
-    public void concatenate(PQNodeList toConcat) {
+    public void concatenate(final PQNodeList toConcat) {
 
         if (toConcat.size == 0) {
             return;
@@ -160,7 +160,7 @@ class PQNodeList implements Iterable<PQNode> {
     }
 
     // Replaces the specified node in this list with its list of children.
-    public void flatten(PQNode node) {
+    public void flatten(final PQNode node) {
         if (node.children.size == 0) {
             remove(node);
             return;

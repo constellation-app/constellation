@@ -71,7 +71,7 @@ public class TransactionTypeAttributeDescription extends AbstractObjectAttribute
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (ObjectReadable) () -> data[indexReadable.readInt()] != null
                 ? ((SchemaTransactionType) data[indexReadable.readInt()]).getName() : data[indexReadable.readInt()];
     }

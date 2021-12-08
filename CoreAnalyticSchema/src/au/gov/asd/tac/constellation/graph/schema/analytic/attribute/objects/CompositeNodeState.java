@@ -201,7 +201,7 @@ public class CompositeNodeState {
             }
 
             return outputStream.toString(StandardCharsets.UTF_8.name());
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new IllegalArgumentException("Error converting this composite node state to a string");
         }
     }
@@ -262,10 +262,9 @@ public class CompositeNodeState {
             }
 
             return new CompositeNodeState(nodeId, expandedState, contractedState);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new IllegalArgumentException("Error converting this string to a composite node state");
         }
 
     }
-
 }

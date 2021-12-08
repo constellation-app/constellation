@@ -42,9 +42,9 @@ public abstract class VertexDominanceCalculator<T> {
     }
 
     public Comparator<T> getComparator() {
-        return (T type1, T type2) -> {
-            SchemaVertexType convertedType1 = this.convertType(type1);
-            SchemaVertexType convertedType2 = this.convertType(type2);
+        return (final T type1, final T type2) -> {
+            final SchemaVertexType convertedType1 = this.convertType(type1);
+            final SchemaVertexType convertedType2 = this.convertType(type2);
             return Integer.compare(this.getDominance(convertedType1), this.getDominance(convertedType2));
         };
     }

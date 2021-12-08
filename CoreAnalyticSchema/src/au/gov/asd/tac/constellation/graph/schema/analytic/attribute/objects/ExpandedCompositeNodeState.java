@@ -100,7 +100,7 @@ public class ExpandedCompositeNodeState {
         this.numberOfNodes = numberOfNodes;
     }
 
-    private void contractSingleVertex(GraphWriteMethods wg, final int vxId, final RecordStore constituentNodeStore, final List<String> expandedIds, final List<String> affectedExpandedIds, final Map<Integer, String> idToCopiedId) {
+    private void contractSingleVertex(final GraphWriteMethods wg, final int vxId, final RecordStore constituentNodeStore, final List<String> expandedIds, final List<String> affectedExpandedIds, final Map<Integer, String> idToCopiedId) {
 
         // Copy this vertex into the expansion record store inside the contracted composite state.
         final String[] copiedId = new String[1];
@@ -128,7 +128,7 @@ public class ExpandedCompositeNodeState {
      * @param wg The graph write lock with which to perform the expansion.
      * @return The graph ID of the now contracted composite node.
      */
-    public int contract(GraphWriteMethods wg) {
+    public int contract(final GraphWriteMethods wg) {
         final int uniqueIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.get(wg);
         final int compositeStateAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
         final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);

@@ -34,7 +34,7 @@ public class FindSubgraphs {
      * @param graph
      * @return
      */
-    static BitSet[] traverse(final GraphWriteMethods graph) {
+    protected static BitSet[] traverse(final GraphWriteMethods graph) {
 
         final int vxCount = graph.getVertexCount();
         final BitSet update = new BitSet(vxCount);

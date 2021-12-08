@@ -94,7 +94,7 @@ public final class GatherNodesPlugin extends SimpleEditPlugin {
             // Skip the first position: when we get to vxId, we don't change it's position.
             int h = 1;
             int v = 0;
-            float scalingFactor = 4;
+            final float scalingFactor = 4;
             for (int vertex = gathers.nextSetBit(0); vertex >= 0; vertex = gathers.nextSetBit(vertex + 1)) {
                 if (vertex != vxId) {
                     wg.setFloatValue(xId, vertex, x + scalingFactor * (h * left.getX() + v * up.getX()));
