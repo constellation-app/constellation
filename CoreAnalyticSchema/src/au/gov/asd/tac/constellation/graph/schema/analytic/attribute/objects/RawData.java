@@ -167,7 +167,9 @@ public class RawData implements Comparable<RawData> {
         repr.append(StringUtils.defaultString(rawIdentifier));
 
         if (StringUtils.isNotBlank(rawType)) {
-            repr.append("<").append(rawType).append(">");
+            repr.append("<")
+                .append(rawType)
+                .append(">");
         }
 
         return repr.toString();

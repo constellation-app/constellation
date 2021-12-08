@@ -94,10 +94,14 @@ public class SendToEmailClientPlugin extends SimplePlugin {
 
         try {
             final StringBuilder sb = new StringBuilder();
-            sb.append("mailto:").append(toEmail).append("?subject=")
-                    .append(encodeString(subject)).append("&cc=")
-                    .append(encodeString(ccEmail)).append("&body=")
-                    .append(encodeString(body));
+            sb.append("mailto:")
+                .append(toEmail)
+                .append("?subject=")
+                .append(encodeString(subject))
+                .append("&cc=")
+                .append(encodeString(ccEmail))
+                .append("&body=")
+                .append(encodeString(body));
 
             final URI uri = new URI(sb.toString());
             Desktop.getDesktop().mail(uri);
