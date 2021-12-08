@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-title "Start of run-tests.sh"
-
 if (( $# != 2 ))
 then
   echo "Invalid arguments parsed."
@@ -11,11 +9,7 @@ fi
 
 source .githubutilities/functions.sh
 
-echo "before verbosity"
-
 verbosity=""
-
-echo "after verbosity"
 
 title "Capture parsed arguments"
 
