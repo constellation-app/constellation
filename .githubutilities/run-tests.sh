@@ -11,8 +11,6 @@ source .githubutilities/functions.sh
 
 verbosity=""
 
-title "Capture parsed arguments"
-
 while getopts ":v:" opt
 do
   case ${opt} in
@@ -32,6 +30,8 @@ ant \
   -Dbuild.compiler.debug=true update-dependencies-clean-build
 
 title "Run Core Unit Testing"
+
+echo "Running tests with verbosity tag as: ${verbosity}"
 
 ant \
   $verbosity \
