@@ -89,7 +89,7 @@ public final class GraphJsonReader {
     public GraphJsonReader() {
         providers = new HashMap<>();
 
-        Lookup.Result<AbstractGraphIOProvider> providerResults = Lookup.getDefault().lookupResult(AbstractGraphIOProvider.class);
+        final Lookup.Result<AbstractGraphIOProvider> providerResults = Lookup.getDefault().lookupResult(AbstractGraphIOProvider.class);
         providerResults.allInstances().forEach(provider -> providers.put(provider.getName(), provider));
 
         byteReader = null;
@@ -101,7 +101,7 @@ public final class GraphJsonReader {
         }
     }
 
-    public Graph readGraphZip(final String name, InputStream bin, final IoProgress progress) throws IOException, GraphParseException {
+    public Graph readGraphZip(final String name, final InputStream bin, final IoProgress progress) throws IOException, GraphParseException {
         try (bin) {
             progress.start(100);
             byteReader = new GraphByteReader(bin);
@@ -115,7 +115,7 @@ public final class GraphJsonReader {
         try {
             // Get the graph first.
             final String graphEntry = "graph" + GraphFileConstants.FILE_EXTENSION;
-            ExtendedBuffer in = byteReader.read(graphEntry);
+            final ExtendedBuffer in = byteReader.read(graphEntry);
             if (in == null) {
                 final String msg = "Entry " + graphEntry + " not found in graph file";
                 throw new GraphParseException(msg);
@@ -145,8 +145,8 @@ public final class GraphJsonReader {
      * @throws IOException
      * @throws GraphParseException
      */
-    private JsonToken readGraphModCounts(JsonToken current) throws IOException, GraphParseException {
-        //read global mod count
+    private JsonToken readGraphModCounts(final JsonToken current) throws IOException, GraphParseException {
+        // read global mod count
         final JsonNode node = jp.readValueAsTree();
         if (!node.has(GLOBAL_MOD_COUNT)) {
             final String msg = String.
@@ -163,7 +163,7 @@ public final class GraphJsonReader {
                     format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
-        //global
+        // global
         if (node.get(GLOBAL_MOD_COUNT).isNumber()) {
             globalModCount = node.get(GLOBAL_MOD_COUNT).asLong();
         } else {
@@ -171,7 +171,7 @@ public final class GraphJsonReader {
                     format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT).asText(), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
-        //structure
+        // structure
         if (node.get(STRUCTURE_MOD_COUNT).isNumber()) {
             globalModCount = node.get(STRUCTURE_MOD_COUNT).asLong();
         } else {
@@ -179,7 +179,7 @@ public final class GraphJsonReader {
                     format(EXPECTED_NUMERIC_FORMAT, node.get(STRUCTURE_MOD_COUNT), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
-        //attribute
+        // attribute
         if (node.get(ATTRIBUTE_MOD_COUNT).isNumber()) {
             globalModCount = node.get(ATTRIBUTE_MOD_COUNT).asLong();
         } else {
@@ -187,8 +187,7 @@ public final class GraphJsonReader {
                     format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
-        current = jp.getLastClearedToken();
-        return current;
+        return jp.getLastClearedToken();
     }
 
     /**
@@ -435,7 +434,7 @@ public final class GraphJsonReader {
         //set mod count vals
         if (version >= 1) {
             storeGraph.setModificationCounters(globalModCount, structModCount, attrModCount);
-            for (Entry<Integer, Long> e : attrValCount.entrySet()) {
+            for (final Entry<Integer, Long> e : attrValCount.entrySet()) {
                 storeGraph.setValueModificationCounter(e.getKey(), e.getValue());
             }
         }
@@ -446,7 +445,7 @@ public final class GraphJsonReader {
                 if (item.appliesToGraph(storeGraph)) {
                     int currentVersion = versionedItems.containsKey(item.getName()) ? versionedItems.get(item.getName()) : UpdateProvider.DEFAULT_VERSION;
                     while (itemProviders.containsKey(currentVersion)) {
-                        UpdateProvider provider = itemProviders.get(currentVersion);
+                        final UpdateProvider provider = itemProviders.get(currentVersion);
                         provider.update(storeGraph);
                         currentVersion = provider.getToVersionNumber();
                     }
@@ -689,13 +688,13 @@ public final class GraphJsonReader {
                 id = Graph.NOT_FOUND;
             }
 
-            for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
+            for (final Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
                 final Map.Entry<String, JsonNode> entry = it.next();
                 final String label = entry.getKey();
                 final JsonNode jnode = entry.getValue();
                 final AttrInfo ai = attributes.get(label);
                 if (ai != null && providers.containsKey(ai.attrType)) {
-                    AbstractGraphIOProvider ioProvider = providers.get(ai.attrType);
+                    final AbstractGraphIOProvider ioProvider = providers.get(ai.attrType);
                     ioProvider.readObject(ai.attrId, id, jnode, graph, vertexPositions, transactionPositions, byteReader, immutableObjectCache);
                 } else if (ai != null) {
                     throw new Exception("No IO provider found for attribute type: " + ai.attrType);
@@ -751,7 +750,7 @@ public final class GraphJsonReader {
          * @param isBoolean Is the attribute a boolean?
          * @param isObject is the attribute an object?
          */
-        AttrInfo(final int attrId, final String attrType, final boolean isNumber, final boolean isBoolean, final boolean isObject) {
+        protected AttrInfo(final int attrId, final String attrType, final boolean isNumber, final boolean isBoolean, final boolean isObject) {
             this.attrId = attrId;
             this.attrType = attrType;
             this.isNumber = isNumber;

@@ -254,21 +254,22 @@ public class KTruss {
     // nodeToComponent and linkToComponent record the smallest components that each node and link lies in
     // componentTree records the heirarchy of nested components
     // componentSizes records the number of nodes in each componenent
-    // currentComponentNum keeps track of the total number of components
-    private static int getComponents(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, int currentComponentNum) {
+    // nextComponentNum keeps track of the total number of components
+    private static int getComponents(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final int currentComponentNum) {
+        int nextComponentNum = currentComponentNum;
         // For each link remaining in the graph find all links connected to it, record them and their end vertices as belonging to the same component, and clear them.
         for (int linkPosition = links.nextSetBit(0); linkPosition >= 0; linkPosition = links.nextSetBit(linkPosition + 1)) {
-            getComponentsHopper(graph, links, nodeToComponent, linkToComponent, componentTree, currentComponentNum, linkPosition);
+            getComponentsHopper(graph, links, nodeToComponent, linkToComponent, componentTree, nextComponentNum, linkPosition);
             int componentCounter = 0;
             for (final Map.Entry<Integer, Integer> entry : nodeToComponent.entrySet()) {
-                if (entry.getValue() == currentComponentNum) {
+                if (entry.getValue() == nextComponentNum) {
                     componentCounter++;
                 }
             }
-            componentSizes.put(currentComponentNum, componentCounter);
-            currentComponentNum++;
+            componentSizes.put(nextComponentNum, componentCounter);
+            nextComponentNum++;
         }
-        return currentComponentNum;
+        return nextComponentNum;
     }
 
     // Helper method for getComponents which uses recursion to 'hop out one'.

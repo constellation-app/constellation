@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,8 +54,8 @@ public abstract class InfomapBase {
     protected TreeData treeData;
 
     // Points either to m_nonLeafActiveNetwork or m_treeData.m_leafNodes
-    protected ArrayList<NodeBase> activeNetwork;
-    protected ArrayList<Integer> moveTo;
+    protected List<NodeBase> activeNetwork;
+    protected List<Integer> moveTo;
 
     protected double oneLevelCodelength;
     protected double codelength;
@@ -72,7 +73,7 @@ public abstract class InfomapBase {
 
     protected StringBuilder bestIntermediateStatistics;
 
-    private final ArrayList<NodeBase> nonLeafActiveNetwork;
+    private final List<NodeBase> nonLeafActiveNetwork;
 
     private static final String NINE_FORMAT1 = "%.9f, ";
     private static final String NINE_FORMAT2 = "%.9f]";
@@ -943,7 +944,7 @@ public abstract class InfomapBase {
 
         // Prepare the sub-modules to move into the former module structure and begin optimization from there.
         setActiveNetworkFromChildrenOfRoot();
-        Resizer.resizeInteger(moveTo, activeNetwork.size(), 0);
+        Resizer.resize(moveTo, activeNetwork.size(), 0);
         i = 0;
         for (final NodeBase subModule : getRoot().getChildren()) {
             moveTo.set(i, subModule.getIndex());
@@ -1039,7 +1040,7 @@ public abstract class InfomapBase {
 
         final int numNodes = getRoot().getChildDegree();
         activeNetwork = nonLeafActiveNetwork;
-        Resizer.resizeNodeBase(activeNetwork, numNodes);
+        Resizer.resize(activeNetwork, numNodes, null);
         assert nonLeafActiveNetwork.size() == numNodes;
         int i = 0;
         for (final NodeBase child : getRoot().getChildren()) {
@@ -1056,7 +1057,7 @@ public abstract class InfomapBase {
         }
 
         activeNetwork = treeData.getLeaves();
-        Resizer.resizeInteger(moveTo, activeNetwork.size(), 0);
+        Resizer.resize(moveTo, activeNetwork.size(), 0);
         assert moveTo.size() == treeData.getLeaves().size();
     }
 
@@ -1268,7 +1269,7 @@ public abstract class InfomapBase {
         aggregatePerLevelCodelength(indexLengths, leafLengths);
 
         final int numLevels = leafLengths.size();
-        Resizer.resizeDouble(indexLengths, numLevels, 0);
+        Resizer.resize(indexLengths, numLevels, 0D);
 
         buf.append("Per level codelength for modules:    [");
         for (int i = 0; i < numLevels - 1; ++i) {
@@ -1327,10 +1328,10 @@ public abstract class InfomapBase {
     private void aggregatePerLevelCodelength(final NodeBase parent, final ArrayList<Double> indexLengths,
             final ArrayList<Double> leafLengths, final int level) {
         if (indexLengths.size() < level + 1) {
-            Resizer.resizeDouble(indexLengths, level + 1, 0);
+            Resizer.resize(indexLengths, level + 1, 0D);
         }
         if (leafLengths.size() < level + 2) {
-            Resizer.resizeDouble(leafLengths, level + 2, 0);
+            Resizer.resize(leafLengths, level + 2, 0D);
         }
         indexLengths.set(level, indexLengths.get(level) + (parent.isRoot() ? indexCodelength : parent.getCodelength()));
 

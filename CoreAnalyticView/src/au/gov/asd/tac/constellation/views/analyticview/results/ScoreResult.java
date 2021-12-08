@@ -47,7 +47,7 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
         return sb.toString();
     }
 
-    public ScoreResult combine(ScoreResult otherResult) {
+    public ScoreResult combine(final ScoreResult otherResult) {
         otherResult.result.forEach((key, value)
                 -> result.merge(key, value, ElementScore::combineReplace)
         );

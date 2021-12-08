@@ -48,7 +48,7 @@ public class FlattenZField implements Arranger {
     }
 
     @Override
-    public void setMaintainMean(boolean b) {
+    public void setMaintainMean(final boolean b) {
         // No need to maintain the mean, this arrangement is too simple.
     }
 }

@@ -61,7 +61,7 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
         if (putSingletonTaxaWithSameNeighborsTogether) {
             // Remove all taxa with only one member and add all of the single members to a single new taxon.
             final Set<Integer> singletons = new HashSet<>();
-            Map<Integer, Set<Integer>> taxa = taxByTrees.getTaxa();
+            final Map<Integer, Set<Integer>> taxa = taxByTrees.getTaxa();
             for (Iterator<Integer> ii = taxa.keySet().iterator(); ii.hasNext();) {
                 final Integer vxRoot = ii.next();
 

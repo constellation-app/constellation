@@ -212,7 +212,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             label = resolved.toString();
 
             // write changes to graph
-            if (identifier != null && !identifier.equals(graph.getStringValue(vertexIdentifierAttribute, vertexId))) {
+            if (!StringUtils.equals(identifier, graph.getStringValue(vertexIdentifierAttribute, vertexId))) {
                 graph.setStringValue(vertexIdentifierAttribute, vertexId, identifier);
             }
 
@@ -224,7 +224,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setObjectValue(vertexRawAttribute, vertexId, raw);
             }
 
-            if (label != null && !label.equals(graph.getStringValue(vertexLabelAttribute, vertexId))) {
+            if (!StringUtils.equals(label, graph.getStringValue(vertexLabelAttribute, vertexId))) {
                 graph.setStringValue(vertexLabelAttribute, vertexId, label);
             }
 
@@ -336,7 +336,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             label = type == null ? null : type.getName();
 
             // set new values on the graph
-            if (identifier != null && !identifier.equals(graph.getStringValue(transactionIdentifierAttribute, transactionId))) {
+            if (!StringUtils.equals(identifier, graph.getStringValue(transactionIdentifierAttribute, transactionId))) {
                 graph.setStringValue(transactionIdentifierAttribute, transactionId, identifier);
             }
 
@@ -344,7 +344,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setObjectValue(transactionTypeAttribute, transactionId, type);
             }
 
-            if (label != null && !label.equals(graph.getStringValue(transactionLabelAttribute, transactionId))) {
+            if (!StringUtils.equals(label, graph.getStringValue(transactionLabelAttribute, transactionId))) {
                 graph.setStringValue(transactionLabelAttribute, transactionId, label);
             }
 
@@ -366,7 +366,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setBooleanValue(transactionDirectedAttribute, transactionId, type.isDirected());
             }
 
-            final Boolean directed = graph.getBooleanValue(transactionDirectedAttribute, transactionId);
+            final boolean directed = graph.getBooleanValue(transactionDirectedAttribute, transactionId);
             final boolean transactionIsDirected = graph.getTransactionDirection(transactionId) != Graph.FLAT;
             if (directed != transactionIsDirected) {
                 // this next bit is done to ensure that transactions merge to the appropriate edge/link group when updated

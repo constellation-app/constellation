@@ -21,13 +21,13 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
  *
  * @author Nova
  */
-class BoxFactory {
+public class BoxFactory {
 
     private BoxFactory() {
         throw new IllegalStateException("Utility class");
     }
 
-    static AbstractBoundingBox create(GraphReadMethods wg, Dimensions d) {
+    protected static AbstractBoundingBox create(final GraphReadMethods wg, final Dimensions d) {
         switch (d) {
             case TWO:
                 return new BoundingBox2D(wg);

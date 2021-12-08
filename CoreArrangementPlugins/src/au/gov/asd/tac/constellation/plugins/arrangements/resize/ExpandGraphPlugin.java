@@ -61,7 +61,7 @@ public class ExpandGraphPlugin extends SimpleEditPlugin {
 
         int currentStep = 0;
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-            int newStep = vertexPosition * 10 / vertexCount;
+            final int newStep = vertexPosition * 10 / vertexCount;
             if (newStep > currentStep) {
                 currentStep = newStep;
                 interaction.setProgress(currentStep, 10, "Working...", true);

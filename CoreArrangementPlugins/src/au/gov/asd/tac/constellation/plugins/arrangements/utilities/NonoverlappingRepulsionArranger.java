@@ -133,7 +133,7 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
         }
 
         // Copy the blob positions back into the graph.
-        for (Blob b : blobs) {
+        for (final Blob b : blobs) {
             graph.setFloatValue(xAttr, b.vxId, b.x);
             graph.setFloatValue(yAttr, b.vxId, b.y);
         }
@@ -205,7 +205,7 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
          *
          * @return The distance from the other x,y.
          */
-        float distanceFrom(final float ox, final float oy) {
+        private float distanceFrom(final float ox, final float oy) {
             return (float) Math.hypot(ox - x, oy - y);
         }
 
@@ -217,7 +217,7 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
          * @return True if this Blob and the other Blob overlap, false
          * otherwise.
          */
-        boolean overlaps(final Blob other) {
+        private boolean overlaps(final Blob other) {
             return distanceFrom(other.x, other.y) < radius + other.radius;
         }
 
@@ -237,7 +237,7 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
          * @param centreX The x position of the centre.
          * @param centreY The y position of the centre.
          */
-        void repulseFrom(final Blob other, final float centreX, final float centreY) {
+        private void repulseFrom(final Blob other, final float centreX, final float centreY) {
             final float d = distanceFrom(other.x, other.y);
             final float r = radius + other.radius;
             if (d > MIN_DISTANCE) {

@@ -108,7 +108,7 @@ public class AnalyticViewPane extends BorderPane {
                 progressTab.setContent(analyticResultsPane.getProgressIndicatorPane());
                 analyticResultsPane.getInternalVisualisationPane().getTabs().add(progressTab);
                 // answer the current analytic question and display the results
-                Thread answerQuestionThread = new Thread(() -> {
+                final Thread answerQuestionThread = new Thread(() -> {
                     Platform.runLater(() -> {
                         runButton.setText(RUN_STOP_TEXT);
                         runButton.setStyle(RUN_STOP_STYLE);

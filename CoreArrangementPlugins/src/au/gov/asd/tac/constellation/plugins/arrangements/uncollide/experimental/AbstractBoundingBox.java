@@ -27,14 +27,14 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
  *
  * @author Nova
  */
-class AbstractBoundingBox {
+public class AbstractBoundingBox {
 
-    final float minX;
-    final float minY;
-    final float maxX;
-    final float maxY;
-    final float midX;
-    final float midY;
+    protected final float minX;
+    protected final float minY;
+    protected final float maxX;
+    protected final float maxY;
+    protected final float midX;
+    protected final float midY;
 
     /**
      * Generate a 2D bounding box for the graph.
@@ -46,7 +46,7 @@ class AbstractBoundingBox {
      * @param wg the graph
      * @return instance of class BoundingBox2D based on input graph
      */
-    AbstractBoundingBox(final GraphReadMethods wg) {
+    protected AbstractBoundingBox(final GraphReadMethods wg) {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
 
@@ -88,7 +88,7 @@ class AbstractBoundingBox {
         this.midY = minYObserved + (maxYObserved - minYObserved) * (float) 0.5;
     }
 
-    AbstractBoundingBox(float minX, float maxX, float minY, float maxY) {
+    protected AbstractBoundingBox(final float minX, final float maxX, final float minY, final float maxY) {
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;
