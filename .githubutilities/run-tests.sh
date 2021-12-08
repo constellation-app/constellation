@@ -3,6 +3,19 @@ set -euo pipefail
 
 source .githubutilities/functions.sh
 
+verbosity=""
+
+title "Capture parsed arguments"
+
+while getopts ":v:" opt
+do
+  case ${opt} in
+    v )
+      verbosity=$OPTARG
+      ;;
+  esac
+done
+
 title "Run Core Build"
 
 ant \
@@ -14,7 +27,8 @@ ant \
 
 title "Run Core Unit Testing"
 
-ant -verbose \
+ant \
+  $verbosity \
   -Dnbplatform.active.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
