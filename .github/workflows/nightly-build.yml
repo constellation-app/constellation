@@ -1,0 +1,42 @@
+name: CRON Build Every Night
+
+on:
+  schedule:
+    - cron: '* * * * *'
+# '0 1 * * *'
+jobs:
+  Nightly-Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get actions tools
+        run: |
+          apk update && apk add --no-cache coreutils && apk add bash && apk add docker
+      - name: make a new directory
+        run: |
+              mkdir -p ./workspace
+      - name: Checkout Constellation repository
+        uses: actions/checkout@v2
+        with:
+          repository: constellation-app/constellation
+          path: ./workspace/constellation
+      - name: Checkout Constellation adaptors repository
+        uses: actions/checkout@v2
+        with:
+          repository: constellation-app/constellation-adaptors
+          path: ./workspace/constellation-adaptors
+      - name: Checkout Constellation applications repository
+        uses: actions/checkout@v2
+        with:
+          repository: constellation-app/constellation-applications
+          path: ./workspace/constellation-applications
+      - name: add execute priveledge and run scripts
+        run: |
+              chmod +x ./build-zip.sh
+      - name: build in docker
+        run: |
+              sudo docker run -v "$PWD:/code" -v "$HOME/.ivy2:/root/.ivy2" --workdir "/code/constellation-applications" constellationapplication/netbeans-runner:12 ./build-zip.sh -a constellation -m "constellation constellation-adaptors"
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: zip_files
+          path: *.zip
