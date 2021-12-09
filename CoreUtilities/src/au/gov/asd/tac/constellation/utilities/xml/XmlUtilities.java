@@ -266,11 +266,11 @@ public class XmlUtilities {
     public Node getNodeNS(final String namespaceURI, final String localName, final NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
-                if (node.getNamespaceURI() != null 
-                    && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
-                    && node.getLocalName().equalsIgnoreCase(localName)) {
-                    return node;
-                }
+            if (node.getNamespaceURI() != null 
+                && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
+                && node.getLocalName().equalsIgnoreCase(localName)) {
+                return node;
+            }
         }
 
         return null;
@@ -308,8 +308,9 @@ public class XmlUtilities {
         final List<Node> requestedNodes = new ArrayList<>();
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
-            if (node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
-                    && node.getLocalName().equalsIgnoreCase(localName)) {
+            if (node.getNamespaceURI() != null 
+                && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
+                && node.getLocalName().equalsIgnoreCase(localName)) {
                 requestedNodes.add(node);
             }
         }

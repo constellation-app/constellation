@@ -195,8 +195,7 @@ public class XmlUtilitiesNGTest {
         try {
             // TODO Create a test XML file for now, may become test file
             FileWriter fw = new FileWriter("testFile.xml");
-            fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                    + "<parent>\n"
+            fw.write("<parent>\n"
                     + "  <child1>child1_value</child1>\n"
                     + "  <child2>child2_value</child2>\n"
                     + "  <child3>child3_value</child3>\n"
@@ -243,8 +242,7 @@ public class XmlUtilitiesNGTest {
         try {
             // TODO Create a test XML file for now, may become test file
             FileWriter fw = new FileWriter("testFile.xml");
-            fw.write(""         //"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-                    + "<c:parent xmlns:c=\"http://www.consty.com/star\">\n"
+            fw.write("<c:parent xmlns:c=\"http://www.consty.com/star\">\n"
                     + "  <c:child1>child1_value</c:child1>\n"
                     + "  <c:child2>child2_value</c:child2>\n"
                     + "  <c:child3>child3_value</c:child3>\n"
@@ -259,7 +257,6 @@ public class XmlUtilitiesNGTest {
             
             NodeList nodeList = document.getElementsByTagName("c:parent");
             Node parent = nodeList.item(0);
-            System.out.println("parent:" + parent.getNamespaceURI());
             NodeList children = parent.getChildNodes();
             
             XmlUtilities instance = new XmlUtilities();
@@ -294,6 +291,52 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodes() {
         System.out.println("getNodes");
+
+        try {
+            // TODO Create a test XML file for now, may become test file
+            FileWriter fw = new FileWriter("testFile.xml");
+            fw.write("<parent>\n"
+                    + "  <child>child_value1</child>\n"
+                    + "  <child>child_value2</child>\n"
+                    + "  <child>child_value3</child>\n"
+                    + "  <nest_child><child_nest>child_nest_value</child_nest></nest_child>\n"
+                    + "</parent>");
+            fw.close();
+
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document document = docBuilder.parse(new File("testFile.xml"));
+            NodeList nodeList = document.getElementsByTagName("parent");
+            Node parent = nodeList.item(0);
+            NodeList children = parent.getChildNodes();
+            
+            XmlUtilities instance = new XmlUtilities();
+            
+            List<Node> nodes = instance.getNodes("child", children);
+            assertEquals(nodes.size(), 3, "Found all 3 nodes called child");
+            for (int index = 0; index < nodes.size(); index++) {
+                assertEquals(nodes.get(index).getNodeName(), "child", "Node name matches");
+                assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element");
+                assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches");
+            }
+            
+            nodes = instance.getNodes("CHILD", children);
+            assertEquals(nodes.size(), 3, "Found all 3 nodes called child (case insensitive)");
+            for (int index = 0; index < nodes.size(); index++) {
+                assertEquals(nodes.get(index).getNodeName(), "child", "Node name matches (case insensitive)");
+                assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element (case insensitive)");
+                assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches (case insensitive)");
+            }
+
+            nodes = instance.getNodes("missing_child", children);
+            assertEquals(nodes.size(), 0, "Found 0 nodes called missing_child");
+            
+            nodes = instance.getNodes("child_nest", children);
+            assertEquals(nodes.size(), 0, "Found 0 nodes matching nested node name");
+            
+        } catch (Exception ex) {
+            fail("The test through an unexpected exception.");
+        }
     }
 
     /**
@@ -302,6 +345,59 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodesNS() {
         System.out.println("getNodesNS");
+
+        try {
+            // TODO Create a test XML file for now, may become test file
+            FileWriter fw = new FileWriter("testFile.xml");
+            fw.write("<c:parent xmlns:c=\"http://www.consty.com/star\" xmlns:c2=\"http://www.consty2.com/star2\">>\n"
+                    + "  <c:child>child_value1</c:child>\n"
+                    + "  <c:child>child_value2</c:child>\n"
+                    + "  <child>child_value3</child>\n"
+                    + "  <c2:child>child_value4</c2:child>\n"
+                    + "  <c:nest_child><c:child_nest>child_nest_value</c:child_nest></c:nest_child>\n"
+                    + "</c:parent>");
+            fw.close();
+
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            docBuilderFactory.setNamespaceAware(true);
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document document = docBuilder.parse(new File("testFile.xml"));
+            
+            NodeList nodeList = document.getElementsByTagName("c:parent");
+            Node parent = nodeList.item(0);
+            NodeList children = parent.getChildNodes();
+            
+            XmlUtilities instance = new XmlUtilities();
+            List<Node> nodes = instance.getNodesNS("http://www.consty.com/star", "child", children);
+            assertEquals(nodes.size(), 2, "Found both nodes called child in given namespace");
+            for (int index = 0; index < nodes.size(); index++) {
+                assertEquals(nodes.get(index).getNodeName(), "c:child", "Node name matches");
+                assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element");
+                assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches");
+            }
+            
+            nodes = instance.getNodesNS("http://www.consty.com/star", "CHILD", children);
+            assertEquals(nodes.size(), 2, "Found both nodes called child in given namespace (case insensitive)");
+            for (int index = 0; index < nodes.size(); index++) {
+                assertEquals(nodes.get(index).getNodeName(), "c:child", "Node name matches (case insensitive)");
+                assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element (case insensitive)");
+                assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches (case insensitive)");
+            }
+            
+            nodes = instance.getNodesNS("http://www.consty.com/star", "missing_child", children);
+            assertEquals(nodes.size(), 0, "Found 0 nodes called missing_child in namespace");
+            
+            nodes = instance.getNodes("child_nest", children);
+            assertEquals(nodes.size(), 0, "Found 0 nodes matching nested node name in namespace");
+            
+            nodes = instance.getNodesNS("http://www.notconsty.com/star", "child", children);
+            assertEquals(nodes.size(), 0, "Found 0 nodes matching nodes in unknown namespace");
+            
+
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test through an unexpected exception.");
+        }
     }
 
     /**
