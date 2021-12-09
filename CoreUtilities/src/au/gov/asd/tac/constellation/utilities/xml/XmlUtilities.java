@@ -47,6 +47,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -75,8 +76,11 @@ public class XmlUtilities {
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(namespaceAware);
         transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        try {
+            // Some implemntations wont support these settings
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        } catch (IllegalArgumentException ex) {}
         try {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
             transformer = transformerFactory.newTransformer();
@@ -262,10 +266,11 @@ public class XmlUtilities {
     public Node getNodeNS(final String namespaceURI, final String localName, final NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
-            if (node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
+                if (node.getNamespaceURI() != null 
+                    && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
                     && node.getLocalName().equalsIgnoreCase(localName)) {
-                return node;
-            }
+                    return node;
+                }
         }
 
         return null;
