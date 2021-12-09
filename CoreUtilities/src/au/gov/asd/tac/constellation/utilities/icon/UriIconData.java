@@ -24,6 +24,7 @@ import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * An IconData implementation allowing an icon to be built using a {@link URI}.
@@ -51,15 +52,15 @@ public class UriIconData extends IconData {
     @Override
     protected InputStream createInputStream() throws IOException {
         InputStream stream;
-        HttpsURLConnection connection = null;
+
         try {
-            if ("HTTPS".equalsIgnoreCase(uri.getScheme())) {
-                connection = HttpsConnection.withUrl(uri.toURL().toString()).get();
+            if (StringUtils.equalsIgnoreCase(uri.getScheme(), "HTTPS")) {
+                final HttpsURLConnection connection = HttpsConnection.withUrl(uri.toURL().toString()).get();
                 stream = HttpsUtilities.getInputStream(connection);
             } else {
                 stream = uri.toURL().openStream();
             }
-        } catch (FileNotFoundException ex) {
+        } catch (final FileNotFoundException ex) {
             LOGGER.log(Level.WARNING, "UriIconData: file not found at {0}", uri);
             stream = null;
         }
