@@ -198,11 +198,13 @@ public class XmlUtilitiesNGTest {
             fw.write("<parent>\n"
                     + "  <child1>child1_value</child1>\n"
                     + "  <child2>child2_value</child2>\n"
-                    + "  <child3>child3_value</child3>\n"
+                    + "  <child3>child3a_value</child3>\n"
+                    + "  <child3>child3b_value</child3>\n"
                     + "  <child4><child4.1>child4.1</child4.1></child4>\n"
                     + "</parent>");
             fw.close();
 
+            // Read the test file into a Document object and extract parent node and list of children
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(new File("testFile.xml"));
@@ -210,25 +212,31 @@ public class XmlUtilitiesNGTest {
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
             
+            // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
+
+            // Confirm matching node is found, and is the first match
             Node node = instance.getNode("child3", children);
             assertNotNull(node, "Found node");
             assertEquals(node.getNodeName(), "child3", "Node name matches");
             assertEquals(node.getChildNodes().getLength(), 1, "Node has one child element");
-            assertEquals(node.getChildNodes().item(0).getNodeValue(), "child3_value", "Node value matches");
+            assertEquals(node.getChildNodes().item(0).getNodeValue(), "child3a_value", "Node value matches");
 
+            // Confirm searches are case insensitive
             node = instance.getNode("CHILD3", children);
             assertNotNull(node, "Found node (case insensitive)");
             assertEquals(node.getNodeName(), "child3", "Node name matches (case insensitive)");
             
+            // Confirm no results found when node doesn't exist
             node = instance.getNode("missing_child", children);
             assertNull(node, "Can't find node");
             
+            // Confirm nested nodes are not traversed
             node = instance.getNode("child4.1", children);
             assertNull(node, "Doesn't find nested node");
             
         } catch (Exception ex) {
-            fail("The test through an unexpected exception.");
+            fail("The test threw an unexpected exception.");
         }
     }
 
@@ -245,43 +253,51 @@ public class XmlUtilitiesNGTest {
             fw.write("<c:parent xmlns:c=\"http://www.consty.com/star\">\n"
                     + "  <c:child1>child1_value</c:child1>\n"
                     + "  <c:child2>child2_value</c:child2>\n"
-                    + "  <c:child3>child3_value</c:child3>\n"
+                    + "  <c:child3>child3a_value</c:child3>\n"
+                    + "  <c:child3>child3b_value</c:child3>\n"
                     + "  <c:child4><c:child4.1>child4.1</c:child4.1></c:child4>\n"
                     + "</c:parent>");
             fw.close();
 
+            // Read the test file into a Document object and extract parent node and list of children
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(new File("testFile.xml"));
-            
             NodeList nodeList = document.getElementsByTagName("c:parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
             
+            // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
+
+            // Confirm matching node is found, and is the first match
             Node node = instance.getNodeNS("http://www.consty.com/star", "child3", children);
             assertNotNull(node, "Found node");
             assertEquals(node.getNodeName(), "c:child3", "Node name matches");
             assertEquals(node.getChildNodes().getLength(), 1, "Node has one child element");
-            assertEquals(node.getChildNodes().item(0).getNodeValue(), "child3_value", "Node value matches");
+            assertEquals(node.getChildNodes().item(0).getNodeValue(), "child3a_value", "Node value matches");
 
+            // Confirm searches are case insensitive
             node = instance.getNodeNS("http://www.consty.com/star", "CHILD3", children);
             assertNotNull(node, "Found node (case insensitive)");
             assertEquals(node.getNodeName(), "c:child3", "Node name matches (case insensitive)");
             
+            // Confirm no results found when node doesn't exist
             node = instance.getNodeNS("http://www.consty.com/star", "missing_child", children);
             assertNull(node, "Can't find node");
             
+            // Confirm nested nodes are not traversed
             node = instance.getNodeNS("http://www.consty.com/star", "child4.1", children);
             assertNull(node, "Doesn't find nested node");
             
+            // Confirm nothing is found if invalid namespace is specified
             node = instance.getNodeNS("http://www.notconsty.com/star", "child3", children);
             assertNull(node, "Doesn't find if invalid namespace");
             
         } catch (Exception ex) {
             System.out.println("Exception:" + ex.toString());
-            fail("The test through an unexpected exception.");
+            fail("The test threw an unexpected exception.");
         }
     }
 
@@ -303,6 +319,7 @@ public class XmlUtilitiesNGTest {
                     + "</parent>");
             fw.close();
 
+            // Read the test file into a Document object and extract parent node and list of children
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(new File("testFile.xml"));
@@ -310,8 +327,10 @@ public class XmlUtilitiesNGTest {
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
             
+            // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
             
+            // Confirm all matching nodes are found
             List<Node> nodes = instance.getNodes("child", children);
             assertEquals(nodes.size(), 3, "Found all 3 nodes called child");
             for (int index = 0; index < nodes.size(); index++) {
@@ -320,6 +339,7 @@ public class XmlUtilitiesNGTest {
                 assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches");
             }
             
+            // Confirm searches are case insensitive
             nodes = instance.getNodes("CHILD", children);
             assertEquals(nodes.size(), 3, "Found all 3 nodes called child (case insensitive)");
             for (int index = 0; index < nodes.size(); index++) {
@@ -328,14 +348,17 @@ public class XmlUtilitiesNGTest {
                 assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches (case insensitive)");
             }
 
+            // Confirm no results found when node doesn't exist
             nodes = instance.getNodes("missing_child", children);
             assertEquals(nodes.size(), 0, "Found 0 nodes called missing_child");
             
+            // Confirm nested nodes are not traversed
             nodes = instance.getNodes("child_nest", children);
             assertEquals(nodes.size(), 0, "Found 0 nodes matching nested node name");
             
         } catch (Exception ex) {
-            fail("The test through an unexpected exception.");
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
         }
     }
 
@@ -358,16 +381,19 @@ public class XmlUtilitiesNGTest {
                     + "</c:parent>");
             fw.close();
 
+            // Read the test file into a Document object and extract parent node and list of children
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(new File("testFile.xml"));
-            
             NodeList nodeList = document.getElementsByTagName("c:parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
             
+            // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
+
+            // Confirm multiple matching nodes can be returned
             List<Node> nodes = instance.getNodesNS("http://www.consty.com/star", "child", children);
             assertEquals(nodes.size(), 2, "Found both nodes called child in given namespace");
             for (int index = 0; index < nodes.size(); index++) {
@@ -375,7 +401,8 @@ public class XmlUtilitiesNGTest {
                 assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element");
                 assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches");
             }
-            
+
+            // Confirm searches are case insensitive
             nodes = instance.getNodesNS("http://www.consty.com/star", "CHILD", children);
             assertEquals(nodes.size(), 2, "Found both nodes called child in given namespace (case insensitive)");
             for (int index = 0; index < nodes.size(); index++) {
@@ -384,19 +411,22 @@ public class XmlUtilitiesNGTest {
                 assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches (case insensitive)");
             }
             
+            // Confirm null is returned if no node matching all conditions is found
             nodes = instance.getNodesNS("http://www.consty.com/star", "missing_child", children);
             assertEquals(nodes.size(), 0, "Found 0 nodes called missing_child in namespace");
             
+            // Confirm nested nodes are not traversed
             nodes = instance.getNodes("child_nest", children);
             assertEquals(nodes.size(), 0, "Found 0 nodes matching nested node name in namespace");
             
+            // Test case where namespace doesn't exist
             nodes = instance.getNodesNS("http://www.notconsty.com/star", "child", children);
             assertEquals(nodes.size(), 0, "Found 0 nodes matching nodes in unknown namespace");
             
 
         } catch (Exception ex) {
             System.out.println("Exception:" + ex.toString());
-            fail("The test through an unexpected exception.");
+            fail("The test threw an unexpected exception.");
         }
     }
 
@@ -406,6 +436,36 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeValue_Node() {
         System.out.println("getNodeValue");
+
+        try {
+            // TODO Create a test XML file for now, may become test file
+            FileWriter fw = new FileWriter("testFile.xml");
+            fw.write("<parent><child>child_value1</child></parent>");
+            fw.close();
+
+            // Read the test file into a Document object and extract parent node and list of children
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document document = docBuilder.parse(new File("testFile.xml"));
+            NodeList nodeList = document.getElementsByTagName("parent");
+            Node parent = nodeList.item(0);
+            NodeList children = parent.getChildNodes();
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+            
+            // Check that parent node doesnt contain content
+            String result = instance.getNodeValue(parent);
+            assertNull(result, "First child value matches expected");
+
+            // Check that correct  child value is returned
+            result = instance.getNodeValue(children.item(0));
+            assertEquals(result, "child_value1", "First child value matches expected");
+            
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
+        }
     }
 
     /**
@@ -414,6 +474,51 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeValue_String_NodeList() {
         System.out.println("getNodeValue");
+
+        try {
+            // TODO Create a test XML file for now, may become test file
+            FileWriter fw = new FileWriter("testFile.xml");
+            fw.write("<parent>\n"
+                    + "  <child>child_value1</child>\n"
+                    + "  <child>child_value2</child>\n"
+                    + "  <child3>child_value3</child3>\n"
+                    + "  <child4><child_nest>child_nest_value</child_nest></child4>\n"
+                    + "  <child4>child_value4</child4>\n"
+                    + "  <child5><child_nest>child_nest_value</child_nest></child5>\n"
+                    + "</parent>");
+            fw.close();
+
+            // Read the test file into a Document object and extract parent node and list of children
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document document = docBuilder.parse(new File("testFile.xml"));
+            NodeList nodeList = document.getElementsByTagName("parent");
+            Node parent = nodeList.item(0);
+            NodeList children = parent.getChildNodes();
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+            
+            // Check that correct first child value is returned
+            String result = instance.getNodeValue("child", children);
+            assertEquals(result, "child_value1", "First child value matches expected");
+
+            // Repeat above but use node name that doesnt match first child node
+            result = instance.getNodeValue("child3", children);
+            assertEquals(result, "child_value3", "Confirm actual node name is checked when returning child");
+            
+            // Check that only nodes with matching name that are of type Node.TEXT_NODE are considered
+            result = instance.getNodeValue("child4", children);
+            assertEquals(result, "child_value4", "First string child value matches expected");
+            
+            // Confirm null is returned if no node matching all conditions is found
+            result = instance.getNodeValue("child5", children);
+            assertNull(result, "Non text node returns null");
+            
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
+        }
     }
 
     /**

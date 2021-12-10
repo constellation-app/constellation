@@ -338,7 +338,8 @@ public class XmlUtilities {
 
     /**
      * Searches the given list of nodes for a tag with the given name and
-     * returns the first match as a string.
+     * returns the first TEXT_NODE match as a string, nodes with matching name that
+     * are not of type TEXT_NODE are ignored.
      *
      * @param tagName the tag name.
      * @param nodes the nodes to search.
