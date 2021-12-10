@@ -588,6 +588,38 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeAttr_String_Node() {
         System.out.println("getNodeAttr");
+
+        try {
+            // TODO Create a test XML file for now, may become test file
+            FileWriter fw = new FileWriter("testFile.xml");
+            fw.write("<parent attr1=\"attrib 1 value\" attr2=\"attrib 2 value\">\n"
+                    + "  <child>child_value1</child>\n"
+                    + "</parent>");
+            fw.close();
+
+            // Read the test file into a Document object and extract parent node and list of children
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            docBuilderFactory.setNamespaceAware(true);
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document document = docBuilder.parse(new File("testFile.xml"));
+            NodeList nodeList = document.getElementsByTagName("parent");
+            Node parent = nodeList.item(0);
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+        
+            // Show attribute values are read
+            String result = instance.getNodeAttr("attr1", parent);
+            assertEquals(result, "attrib 1 value", "Successfully finds attribute");    
+            
+            // Show attributes other than first can be read
+            result = instance.getNodeAttr("attr2", parent);
+            assertEquals(result, "attrib 2 value", "Successfully finds attribute");  
+      
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
+        }
     }
 
     /**
