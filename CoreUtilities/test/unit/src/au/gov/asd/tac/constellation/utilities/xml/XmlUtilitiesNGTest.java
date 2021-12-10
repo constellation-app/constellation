@@ -527,6 +527,54 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeValueNS() {
         System.out.println("getNodeValueNS");
+
+        try {
+            // TODO Create a test XML file for now, may become test file
+            FileWriter fw = new FileWriter("testFile.xml");
+            fw.write("<c:parent xmlns:c=\"http://www.consty.com/star\" xmlns:c2=\"http://www.consty2.com/star2\">>\n"
+                    + "  <c:child>child_value1</c:child>\n"
+                    + "  <c:child>child_value2</c:child>\n"
+                    + "  <child>child_value3</child>\n"
+                    + "  <c2:child>child_value4</c2:child>\n"
+                    + "  <c:nest_child><c:child_nest>child_nest_value</c:child_nest></c:nest_child>\n"
+                    + "</c:parent>");
+            fw.close();
+
+            // Read the test file into a Document object and extract parent node and list of children
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            docBuilderFactory.setNamespaceAware(true);
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document document = docBuilder.parse(new File("testFile.xml"));
+            NodeList nodeList = document.getElementsByTagName("c:parent");
+            Node parent = nodeList.item(0);
+            NodeList children = parent.getChildNodes();
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+            
+            // Check that correct first child value is returned
+            String result = instance.getNodeValueNS("http://www.consty.com/star", "child", children);
+            assertEquals(result, "child_value1", "First child value matches expected");
+
+            // Confirm searches are case insensitive
+            result = instance.getNodeValueNS("http://www.consty.com/star", "CHILD", children);
+            assertEquals(result, "child_value1", "First child value matches expected (case insensitive)");
+            
+            // Confirm null is returned if no node matching all conditions is found
+            result = instance.getNodeValueNS("http://www.consty.com/star", "missing_child", children);
+            assertNull(result, "Missing node returns null");
+            
+            // Confirm nested nodes are not traversed
+            result = instance.getNodeValueNS("http://www.consty.com/star", "child_nest", children);
+            assertNull(result, "Nested node is not found and fucntion returns null");
+            
+            // Test case where namespace doesn't exist
+            result = instance.getNodeValueNS("http://www.notconsty.com/star", "child", children);
+            assertNull(result, "Namespace not found, hence no match - return null");
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
+        }
     }
 
     /**

@@ -367,15 +367,16 @@ public class XmlUtilities {
      * returns the first match as a string.
      *
      * @param namespaceURI the namespace.
-     * @param localName the tag name.
+     * @param tagName the tag name.
      * @param nodes the nodes to search.
      * @return the first matching node as a string.
      */
-    public String getNodeValueNS(final String namespaceURI, final String localName, final NodeList nodes) {
+    public String getNodeValueNS(final String namespaceURI, final String tagName, final NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
-            if (node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
-                    && node.getLocalName().equalsIgnoreCase(localName)) {
+            if (node.getNamespaceURI() != null 
+                && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
+                && node.getLocalName().equalsIgnoreCase(tagName)) {
                 final NodeList childNodes = node.getChildNodes();
                 for (int j = 0; j < childNodes.getLength(); j++) {
                     final Node data = childNodes.item(j);
