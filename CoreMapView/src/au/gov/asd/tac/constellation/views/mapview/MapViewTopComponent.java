@@ -384,7 +384,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                     } else {
                         radius = 0;
                     }
-                } catch (NumberFormatException ex) {
+                } catch (final NumberFormatException ex) {
                     throw new AssertionError("Invalid coordinate data provided, latitude and longitude should be numbers");
                 }
                 assert latitude > -90F && latitude < 90F : "Invalid coordinate data provided, latitude should be in the range [-90. 90]";
@@ -594,7 +594,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         }
 
         @Override
-        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             switch (graphElementType) {
                 case VERTEX:
                     final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);

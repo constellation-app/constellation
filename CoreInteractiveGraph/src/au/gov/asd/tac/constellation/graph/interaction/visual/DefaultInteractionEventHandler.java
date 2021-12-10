@@ -531,7 +531,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     @SuppressWarnings("fallthrough")
     @Override
-    public void mouseReleased(MouseEvent event) {
+    public void mouseReleased(final MouseEvent event) {
         queue.add(wg -> {
             // If a button other than the original button is involved, or a mouse pressed event was never registered (can happen when left clicking off a context menu) we ignore this event.
             if (eventState.isMousePressed() && eventState.getCurrentButton() == event.getButton()) {
@@ -615,7 +615,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         });
     }
 
-    private void setCurrentCreationMode(final Camera camera, Point point, GraphWriteMethods wg, MouseEvent event) {
+    private void setCurrentCreationMode(final Camera camera, final Point point, final GraphWriteMethods wg, final MouseEvent event) {
         switch (eventState.getCurrentCreationMode()) {
             case CREATING_VERTEX:
                 createVertex(camera, point);
@@ -652,7 +652,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent event) {
+    public void mouseWheelMoved(final MouseWheelEvent event) {
         queue.add(wg -> {
             if (wg != null) {
                 final Camera camera = new Camera(VisualGraphUtilities.getCamera(wg));
@@ -698,7 +698,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(final MouseEvent e) {
         // Method override required, intentionally left blank
     }
 
@@ -1043,7 +1043,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         return selectedIds;
     }
 
-    private void performDrag(GraphWriteMethods wg, final Camera camera, final Point from, final Point to) {
+    private void performDrag(final GraphWriteMethods wg, final Camera camera, final Point from, final Point to) {
         // Get the ids of the selected nodes (and those of the associated transaction as well)
         final List<Integer> draggedNodes = gatherSelectedNodes(wg);
         int nodeBeingDraggedId = eventState.getCurrentHitType().equals(HitType.TRANSACTION) ? wg.getTransactionSourceVertex(eventState.getCurrentHitId()) : eventState.getCurrentHitId();
@@ -1243,7 +1243,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         popup.show(manager.getVisualComponent(), screenLocation.x, screenLocation.y);
     }
 
-    private void scaleMousePointByDPIFactor(Point pointToScale) {
+    private void scaleMousePointByDPIFactor(final Point pointToScale) {
         // HACK_DPI - Get the DPI scale factor and multiply the point by it
         final float dpiScalingFactor = this.visualInteraction.getDPIScalingFactor();
         pointToScale.x *= dpiScalingFactor;
