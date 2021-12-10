@@ -54,6 +54,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     private static final Logger LOGGER = Logger.getLogger(ConstellationHelpDisplayer.class.getName());
 
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
+    private static final String NEWLINE = "\n";
 
     public static void copy(final String filePath, final OutputStream out) throws IOException {
         final String sep = File.separator;
@@ -119,86 +120,86 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String boostrapjs = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/js/bootstrap.js"));
         final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/js/js.cookie.min.js"));
 
-        final String scriptTag = "<script>\n"
-                + " // when a group is shown, save it as active\n"
-                + " $(\".collapse\").on('shown.bs.collapse', function(e) {\n"
-                + "     e.stopPropagation(); \n"
-                + "     var active = $(this).attr('id');\n"
-                + "     Cookies.set(active, \"true\");\n"
-                + "     $(\"#\" + active).addClass('show');\n"
-                + " });\n"
-                + " // when a group is hidden, save it as inactive\n"
-                + " $(\".collapse\").on('hidden.bs.collapse', function(e) {\n"
-                + "     e.stopPropagation(); \n"
-                + "     var active = $(this).attr('id');\n"
-                + "     Cookies.set(active, \"false\");\n"
-                + "     $(\"#\" + active).removeClass('show');\n"
-                + "     $(\"#\" + active).collapse(\"hide\");\n"
-                + " });\n"
-                + " \n"
-                + " $(document).ready(function() {\n"
-                + "      var allCookies = Cookies.get();\n"
-                + "      for (var cookie in allCookies) { \n"
-                + "          if (cookie != null) {\n"
-                + "              //remove default collapse settings\n"
-                + "              $(\"#\" + cookie).removeClass('show');\n"
-                + "              //show the group if the value is true \n"
-                + "              var cookieValue = Cookies.get(cookie);\n"
-                + "              if (cookieValue == (\"true\")) {\n"
-                + "                 $(\"#\" + cookie).collapse(\"show\");\n"
-                + "              } else {\n"
-                + "                 $(\"#\" + cookie).collapse(\"hide\");\n"
-                + "                 $(\"#\" + cookie + \" .collapse\").removeClass('show');\n"
-                + "              }\n"
-                + "          }\n"
-                + "      }\n"
-                + " });\n"
-                + "\n"
+        final String scriptTag = "<script>" + NEWLINE
+                + " // when a group is shown, save it as active" + NEWLINE
+                + " $(\".collapse\").on('shown.bs.collapse', function(e) {" + NEWLINE
+                + "     e.stopPropagation(); " + NEWLINE
+                + "     var active = $(this).attr('id');" + NEWLINE
+                + "     Cookies.set(active, \"true\");" + NEWLINE
+                + "     $(\"#\" + active).addClass('show');" + NEWLINE
+                + " });" + NEWLINE
+                + " // when a group is hidden, save it as inactive" + NEWLINE
+                + " $(\".collapse\").on('hidden.bs.collapse', function(e) {" + NEWLINE
+                + "     e.stopPropagation(); " + NEWLINE
+                + "     var active = $(this).attr('id');" + NEWLINE
+                + "     Cookies.set(active, \"false\");" + NEWLINE
+                + "     $(\"#\" + active).removeClass('show');" + NEWLINE
+                + "     $(\"#\" + active).collapse(\"hide\");" + NEWLINE
+                + " });" + NEWLINE
+                + " " + NEWLINE
+                + " $(document).ready(function() {" + NEWLINE
+                + "      var allCookies = Cookies.get();" + NEWLINE
+                + "      for (var cookie in allCookies) { " + NEWLINE
+                + "          if (cookie != null) {" + NEWLINE
+                + "              //remove default collapse settings" + NEWLINE
+                + "              $(\"#\" + cookie).removeClass('show');" + NEWLINE
+                + "              //show the group if the value is true " + NEWLINE
+                + "              var cookieValue = Cookies.get(cookie);" + NEWLINE
+                + "              if (cookieValue == (\"true\")) {" + NEWLINE
+                + "                 $(\"#\" + cookie).collapse(\"show\");" + NEWLINE
+                + "              } else {" + NEWLINE
+                + "                 $(\"#\" + cookie).collapse(\"hide\");" + NEWLINE
+                + "                 $(\"#\" + cookie + \" .collapse\").removeClass('show');" + NEWLINE
+                + "              }" + NEWLINE
+                + "          }" + NEWLINE
+                + "      }" + NEWLINE
+                + " });" + NEWLINE
+                + NEWLINE
                 + "</script>";
 
         // Add items to StringBuilder
         html.append(css);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(noScript);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(cssBootstrap);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(jquery);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(cookiejs);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(dropotron);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(scrolly);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(scrollex);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(browser);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(breakpoints);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(appJS);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(boostrapjs);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(startRowDiv);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(startColDiv);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(Processor.process(tocInput));
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(endDiv);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(startInnerColDiv);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(Processor.process(pageInput));
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(endDiv);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(endDiv);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(endDiv);
-        html.append("\n");
+        html.append(NEWLINE);
         html.append(scriptTag);
 
         return html.toString();

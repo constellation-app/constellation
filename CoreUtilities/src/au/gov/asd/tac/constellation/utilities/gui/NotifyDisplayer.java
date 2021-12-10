@@ -31,7 +31,6 @@ import javax.swing.SwingUtilities;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -120,16 +119,13 @@ public class NotifyDisplayer {
                 
                 return CompletableFuture.completedFuture(showDialogRunner.getSelection());
             } catch (InterruptedException ex) {
-                LOGGER.log(Level.WARNING, "Thread displaying the a notify dialog was interrupted.", ex);
+                LOGGER.log(Level.WARNING, "Thread displaying the notify dialog was interrupted.", ex);
                 Thread.currentThread().interrupt();
                 
                 return CompletableFuture.completedFuture(null);
             } catch (InvocationTargetException ex) {
-                LOGGER.log(Level.SEVERE, "Error occured during user dialog notification", ex);
-                Exceptions.printStackTrace(ex);
-                
                 // An error happened when showing the dialog. Send it up the stack.
-                throw new RuntimeException(ex.getCause());
+                throw new RuntimeException("Error occured during user dialog notification" + ex.getCause());
             }
         }
     }

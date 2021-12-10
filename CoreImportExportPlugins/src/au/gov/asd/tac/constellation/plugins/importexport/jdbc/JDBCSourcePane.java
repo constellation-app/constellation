@@ -77,7 +77,9 @@ public class JDBCSourcePane extends SourcePane {
     private static final int GAP = 10;
     private static final String ACTION_CANCEL = "Cancel";
     private static final String TITLE_JDBC_IMPORT = "JDBC Import";
-    private static final String PROMT_TEXT_COLOUR = "-fx-prompt-text-fill: grey";
+    private static final String PROMPT_TEXT_COLOUR = "-fx-prompt-text-fill: grey";
+    private static final String ADD_CONNECTION = "Add Connection";
+    private static final String MODIFY_CONNECTION = "Modify Connection";
 
     private final ComboBox<JDBCConnection> dbConnectionComboBox;
 
@@ -423,7 +425,7 @@ public class JDBCSourcePane extends SourcePane {
         }
 
         if (missingParamsMsgs.length() > 0) {
-            NotifyDisplayer.displayAlert("Add Connection",
+            NotifyDisplayer.displayAlert(ADD_CONNECTION,
                     "Missing connection parameters",
                     "The connection name, driver, and connection string are all required fields, you are missing the following:"
                     + System.lineSeparator()
@@ -457,7 +459,7 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(nameLabel, 0, 0, 1, 1);
         final TextField cn = new TextField(add ? "" : connection.getConnectionName());
         cn.setPromptText("Enter a name for your connection");
-        cn.setStyle(PROMT_TEXT_COLOUR);
+        cn.setStyle(PROMPT_TEXT_COLOUR);
         cn.setFocusTraversable(false);
         cn.focusedProperty().addListener((obs, oldVal, newVal) -> {
             cn.setStyle(""); 
@@ -481,7 +483,7 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(connectionStringLabel, 0, 2, 1, 1);
         final TextField connectionStringF = new TextField(add ? "" : connection.getConnectionString());
         connectionStringF.setPromptText("Enter a URL to connect to, eg. jdbc:sqlite:C:/my_folder/database.sqlite");
-        connectionStringF.setStyle(PROMT_TEXT_COLOUR);
+        connectionStringF.setStyle(PROMPT_TEXT_COLOUR);
         connectionStringF.setFocusTraversable(false);
         connectionStringF.focusedProperty().addListener((obs, oldVal, newVal) -> {
             connectionStringF.setStyle(""); 
@@ -494,14 +496,14 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(usernameLabel, 0, 3, 1, 1);
         final TextField username = new TextField();
         username.setPromptText("Optional: Set a username");
-        username.setStyle(PROMT_TEXT_COLOUR);
+        username.setStyle(PROMPT_TEXT_COLOUR);
         username.setFocusTraversable(false);
         gp.add(username, 1, 3, 2, 1);
         final Label passwordLabel = new Label("Password");
         gp.add(passwordLabel, 0, 4, 1, 1);
         final PasswordField password = new PasswordField();
         password.setPromptText("Optional: Set a password");
-        password.setStyle(PROMT_TEXT_COLOUR);
+        password.setStyle(PROMPT_TEXT_COLOUR);
         password.setFocusTraversable(false);
 
         gp.add(password, 1, 4, 2, 1);
@@ -512,7 +514,7 @@ public class JDBCSourcePane extends SourcePane {
             }
 
             if (add && connectionsTable.getItems().stream().anyMatch(v -> v.getConnectionName().equals(cn.getText()))) {
-                final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT, "Add Connection", "There exist another connection with this name "
+                final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT, ADD_CONNECTION, "There exist another connection with this name "
                         + cn.getText() + ". Do you want to overwrite it?");
                 if (!res.isPresent() || res.get() == ButtonType.NO) {
                     return;
@@ -521,7 +523,7 @@ public class JDBCSourcePane extends SourcePane {
 
             if (!add && !cn.getText().isBlank() && !cn.getText().equals(connection.getConnectionName())
                     && connectionsTable.getItems().stream().anyMatch(v -> v.getConnectionName().equals(cn.getText()))) {
-                NotifyDisplayer.displayAlert(TITLE_JDBC_IMPORT, "Modify Connection", "There exist another connection with the name "
+                NotifyDisplayer.displayAlert(TITLE_JDBC_IMPORT, MODIFY_CONNECTION, "There exist another connection with the name "
                         + cn.getText() + ". Choose a different name to proceed.", AlertType.CONFIRMATION);
                 return;
             }
@@ -576,7 +578,7 @@ public class JDBCSourcePane extends SourcePane {
         scene1.setFill(Color.WHITESMOKE);
         scene1.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
         stage.setScene(scene1);
-        stage.setTitle(add ? "Add Connection" : "Modify Connection");
+        stage.setTitle(add ? ADD_CONNECTION : MODIFY_CONNECTION);
         stage.centerOnScreen();
         stage.initOwner(dialog);
         stage.initModality(Modality.APPLICATION_MODAL);
