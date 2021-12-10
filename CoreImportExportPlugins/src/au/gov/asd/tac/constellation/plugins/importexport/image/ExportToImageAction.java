@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.plugins.importexport.image;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.importexport.json.ExportToJsonPlugin;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
@@ -43,7 +42,6 @@ public final class ExportToImageAction implements ActionListener {
 
     private static final String TITLE = "Export to Image";
 
-    private static final String EXT = FileExtensionConstants.PNG;
     private final GraphNode context;
 
     public ExportToImageAction(final GraphNode context) {
@@ -59,15 +57,13 @@ public final class ExportToImageAction implements ActionListener {
 
             String fileName = selectedFile.getAbsolutePath();
 
-            selectedFile.renameTo(new File("ExportToImage.png"));
-
-            if (!fileName.toLowerCase().endsWith(EXT)) {
-                fileName += EXT;
+            if (!fileName.toLowerCase().endsWith(FileExtensionConstants.PNG)) {
+                fileName += FileExtensionConstants.PNG;
             }
 
             PluginExecution
                     .withPlugin(ImportExportPluginRegistry.EXPORT_IMAGE)
-                    .withParameter(ExportToJsonPlugin.FILE_NAME_PARAMETER_ID, fileName)
+                    .withParameter(ExportToImagePlugin.FILE_NAME_PARAMETER_ID, fileName)
                     .executeLater(context.getGraph());
         }));
     }

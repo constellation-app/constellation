@@ -15,10 +15,17 @@
  */
 package au.gov.asd.tac.constellation.testing;
 
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.times;
+import org.openide.filesystems.FileChooserBuilder;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -26,11 +33,13 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
+ * Test class for ExportGlyphTexturesAction.
  *
  * @author sol695510
  */
 public class ExportGlyphTexturesActionNGTest {
 
+    private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<SharedDrawable> sharedDrawableStaticMock;
 
     public ExportGlyphTexturesActionNGTest() {
@@ -46,28 +55,49 @@ public class ExportGlyphTexturesActionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
         sharedDrawableStaticMock = Mockito.mockStatic(SharedDrawable.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        fileChooserStaticMock.close();
         sharedDrawableStaticMock.close();
     }
 
     /**
      * Test of actionPerformed method, of class ExportGlyphTexturesAction.
      *
-     * @throws java.lang.InterruptedException
-     * @throws java.util.concurrent.ExecutionException
+     * @throws java.lang.Exception
      */
     @Test
     public void testActionPerformed() throws Exception {
         System.out.println("testActionPerformed");
 
-        // TODO
         final ExportGlyphTexturesAction instance = new ExportGlyphTexturesAction();
         final ActionEvent e = null;
-//        instance.actionPerformed(e);
-//        sharedDrawableStaticMock.verify(() -> SharedDrawable.exportGlyphTextures(Mockito.any(File.class)), times(1));
+
+        final String title = "Export Glyph Textures";
+        final File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
+        final FileNameExtensionFilter filter = FileChooser.PNG_FILE_FILTER;
+
+        final File file = new File("test.png");
+        final Optional<File> optionalFile = Optional.ofNullable(file);
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.getBaseFileChooserBuilder(
+                        title,
+                        savedDirectory,
+                        filter))
+                .thenCallRealMethod();
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
+                .thenReturn(CompletableFuture.completedFuture(optionalFile));
+
+        instance.actionPerformed(e);
+
+        sharedDrawableStaticMock.verify(()
+                -> SharedDrawable.exportGlyphTextures(Mockito.eq(file)), times(1));
     }
 }
