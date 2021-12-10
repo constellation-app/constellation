@@ -419,8 +419,7 @@ public final class CircTreeArranger implements Arranger {
         } else {
             // More than one child.
 
-            if (strictCircularLayout || annulusInfo[children.get(children.size() - 1).vxId] == null) // annulusInfo[children.get(0).vxId]==null
-            {
+            if (strictCircularLayout || annulusInfo[children.get(children.size() - 1).vxId] == null) { // annulusInfo[children.get(0).vxId]==null
                 // Remove these children from consideration.
                 removeChildren(vxsToGo, children);
 

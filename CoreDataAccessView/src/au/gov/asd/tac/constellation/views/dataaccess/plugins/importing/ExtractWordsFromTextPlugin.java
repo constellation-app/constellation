@@ -416,9 +416,8 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                     }
                 }
             }
-        } // End of regexOnly.
-        else // The original logic.
-        {
+            // End of regexOnly.
+        } else { // The original logic.
             final List<Pattern> patterns = patternsFromWords(words, useRegex, wholeWordOnly);
 
             /*
