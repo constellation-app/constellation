@@ -363,8 +363,10 @@ public class XmlUtilities {
     }
 
     /**
-     * Searches the given list of nodes for a tag with the given name and
-     * returns the first match as a string.
+     * Searches the given list of nodes for nodes in the given namespaceURI matching
+     * the requested tagName. Within any matching nodes return the value of the first
+     * node which is of type TEXT_NODE. Returns null if no node matching these conditions
+     * is found.
      *
      * @param namespaceURI the namespace.
      * @param tagName the tag name.

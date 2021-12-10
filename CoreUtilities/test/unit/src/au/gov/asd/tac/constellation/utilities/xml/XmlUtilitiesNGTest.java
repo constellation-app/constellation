@@ -536,7 +536,8 @@ public class XmlUtilitiesNGTest {
                     + "  <c:child>child_value2</c:child>\n"
                     + "  <child>child_value3</child>\n"
                     + "  <c2:child>child_value4</c2:child>\n"
-                    + "  <c:nest_child><c:child_nest>child_nest_value</c:child_nest></c:nest_child>\n"
+                    + "  <c:nest_child><c:child_nest>child_nest_value1</c:child_nest><c:child_nest>child_nest_value2</c:child_nest></c:nest_child>\n"
+                    + "  <c:nest_child>second_nest_child</c:nest_child>\n"
                     + "</c:parent>");
             fw.close();
 
@@ -566,8 +567,12 @@ public class XmlUtilitiesNGTest {
             
             // Confirm nested nodes are not traversed
             result = instance.getNodeValueNS("http://www.consty.com/star", "child_nest", children);
-            assertNull(result, "Nested node is not found and fucntion returns null");
+            assertNull(result, "Nested node is not found and function returns null");
             
+            // Confirm nodes that are not TEXT_NODE's are not considered
+            result = instance.getNodeValueNS("http://www.consty.com/star", "nest_child", children);
+            assertEquals(result, "second_nest_child", "Nodes not considered if not TEXT_NODEs");
+
             // Test case where namespace doesn't exist
             result = instance.getNodeValueNS("http://www.notconsty.com/star", "child", children);
             assertNull(result, "Namespace not found, hence no match - return null");
