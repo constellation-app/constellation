@@ -28,14 +28,11 @@ jobs:
       # Checkout this commit
     - name: Checkout Branch
       uses: actions/checkout@v1
-    - name: checklabels
-      run: |
-        if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo 'Verboselogging = true'; else echo 'Verboselogging = false'; fi
-
-      # Set the verbose flag as a variable.
+      
+      # Set the verbose flag as a variable
     - name: Set Verbosity
       run: |
-        if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo '::set-output name=VERBOSITY::-v -verbose' && echo 'Verbose = true'; else echo '::set-output name=VERBOSITY::-v " "' && echo 'Verbose = false'; fi
+        if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo '::set-output name=VERBOSITY::-v -verbose' && echo 'Verbose Logging Enabled'; else echo '::set-output name=VERBOSITY::-v " "' && echo 'Verbose Logging Disabled'; fi
       id: verbosity
 
     - name: Create Cache Folder
