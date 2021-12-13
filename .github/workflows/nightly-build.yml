@@ -2,7 +2,7 @@ name: Create Nightly Build
 
 on:
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '0 20 * * *'
   release:
     types: [prereleased, released]
  
