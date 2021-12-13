@@ -34,7 +34,7 @@ jobs:
       uses: shioyang/check-pr-labels-on-push-action@v1.0.3
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        labels: '["verbose logging"]'
+        labels: '["verbose-logging"]'
 
       # Set the verbose flag as a variable.
     - name: Set Verbosity
