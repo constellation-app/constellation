@@ -456,7 +456,7 @@ public final class Batch {
         if (!bufferIsFloat[target]) {
             throw new RenderException(NOT_FLOATBUFFER);
         }
-        gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferName);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferName);
         final ByteBuffer connectionBbuf = gl.glMapBuffer(GL.GL_ARRAY_BUFFER, GL2ES3.GL_READ_WRITE);
         return connectionBbuf.order(ByteOrder.nativeOrder()).asFloatBuffer();
     }

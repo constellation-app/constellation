@@ -63,12 +63,6 @@ public class Generator implements Runnable {
         baseDirectory = getBaseDirectory();
         tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
 
-        if (!StringUtils.contains(System.getProperty("constellation.environment"), "IDE")) {
-            // Ensure that the mappings are generated for clicks on help icons within the application.
-            HelpMapper.updateMappings();
-            return;
-        }
-
         // Create TOCFile with the location of the resources file
         // Create the root node for application-wide table of contents
         TOCGenerator.createTOCFile(baseDirectory + tocDirectory);

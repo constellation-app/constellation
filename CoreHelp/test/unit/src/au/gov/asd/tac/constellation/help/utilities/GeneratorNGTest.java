@@ -69,8 +69,8 @@ public class GeneratorNGTest {
      * Test of run method, of class Generator.
      */
     @Test
-    public void testRunDevelopment() {
-        System.out.println("run in development");
+    public void testRun() {
+        System.out.println("testing run");
 
         final String previousProperty = System.getProperty("constellation.environment");
 
@@ -111,46 +111,7 @@ public class GeneratorNGTest {
         }
 
     }
-
-    /**
-     * Test of run method, of class Generator.
-     */
-    @Test
-    public void testRunProduction() {
-        System.out.println("run in production");
-
-        final String previousProperty = System.getProperty("constellation.environment");
-
-        try {
-            // Test on production Version
-            System.setProperty("constellation.environment", "PRODUCTION");
-
-            try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS);
-                    MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class);
-                    MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
-                generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenCallRealMethod();
-
-                tocgeneratorStaticMock.when(() -> TOCGenerator.createTOCFile(Mockito.anyString())).thenReturn(true);
-
-                helpMapperStaticMock.when(() -> HelpMapper.updateMappings()).thenAnswer((Answer<Void>) invocation -> null);
-                Generator generator = new Generator();
-                generator.run();
-
-                // verify that helpMappings was called once
-                helpMapperStaticMock.verify(() -> HelpMapper.updateMappings(), times(1));
-
-                // verify that no method from TOCGenerator was called
-                tocgeneratorStaticMock.verifyNoInteractions();
-
-                generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(2));
-            }
-        } finally {
-            if (previousProperty != null) {
-                System.setProperty("constellation.environment", previousProperty);
-            }
-        }
-    }
-
+    
     /**
      * Test of run method, of class Generator.
      */

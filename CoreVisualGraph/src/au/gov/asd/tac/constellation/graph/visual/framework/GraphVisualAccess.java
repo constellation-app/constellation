@@ -884,28 +884,36 @@ public final class GraphVisualAccess implements VisualAccess {
                     return ConnectionDirection.UNDIRECTED;
                 }
             case EDGE:
-                final int edgeDirection = accessGraph.getEdgeDirection(connectionElementIds[connection]);
-                switch (edgeDirection) {
-                    case Graph.UPHILL:
-                        return ConnectionDirection.LOW_TO_HIGH;
-                    case Graph.DOWNHILL:
-                        return ConnectionDirection.HIGH_TO_LOW;
-                    case Graph.UNDIRECTED:
-                    default:
-                        return ConnectionDirection.UNDIRECTED;
-                }
+                return getEdgeConnectionDirection(connection);
             case TRANSACTION:
             default:
-                final int transactionDirection = accessGraph.getTransactionDirection(connectionElementIds[connection]);
-                switch (transactionDirection) {
-                    case Graph.UPHILL:
-                        return ConnectionDirection.LOW_TO_HIGH;
-                    case Graph.DOWNHILL:
-                        return ConnectionDirection.HIGH_TO_LOW;
-                    case Graph.UNDIRECTED:
-                    default:
-                        return ConnectionDirection.UNDIRECTED;
-                }
+                return getTransactionConnectionDirection(connection);
+        }
+    }
+
+    private ConnectionDirection getTransactionConnectionDirection(final int connection) {        
+        final int transactionDirection = accessGraph.getTransactionDirection(connectionElementIds[connection]);
+        switch (transactionDirection) {
+            case Graph.UPHILL:
+                return ConnectionDirection.LOW_TO_HIGH;
+            case Graph.DOWNHILL:
+                return ConnectionDirection.HIGH_TO_LOW;
+            case Graph.UNDIRECTED:
+            default:
+                return ConnectionDirection.UNDIRECTED;
+        }
+    }
+
+    private ConnectionDirection getEdgeConnectionDirection(final int connection) {        
+        final int edgeDirection = accessGraph.getEdgeDirection(connectionElementIds[connection]);
+        switch (edgeDirection) {
+            case Graph.UPHILL:
+                return ConnectionDirection.LOW_TO_HIGH;
+            case Graph.DOWNHILL:
+                return ConnectionDirection.HIGH_TO_LOW;
+            case Graph.UNDIRECTED:
+            default:
+                return ConnectionDirection.UNDIRECTED;
         }
     }
 
