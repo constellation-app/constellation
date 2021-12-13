@@ -39,7 +39,7 @@ jobs:
       # Set the verbose flag as a variable
     - name: Set Verbosity
       run: |
-        [ 'true' = '${{ steps.check_pr_labels.outputs.result }}' ] && echo 'found true'
+        if [[ 'true' = '${{ steps.check_pr_labels.outputs.result }}' ]]; then echo 'found true'; fi
       id: verbosity
 
     - name: Create Cache Folder
