@@ -15,7 +15,19 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.json;
 
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.times;
+import org.openide.filesystems.FileChooserBuilder;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -23,10 +35,15 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
+ * Test class for ExportToJsonAction.
  *
  * @author sol695510
  */
 public class ExportToJsonActionNGTest {
+
+    private static MockedStatic<FileChooser> fileChooserStaticMock;
+    private static MockedStatic<PluginExecution> pluginExecutionStaticMock;
+    private static GraphNode context;
 
     public ExportToJsonActionNGTest() {
     }
@@ -41,10 +58,15 @@ public class ExportToJsonActionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
+        pluginExecutionStaticMock = Mockito.mockStatic(PluginExecution.class);
+        context = Mockito.mock(GraphNode.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        fileChooserStaticMock.close();
+        pluginExecutionStaticMock.close();
     }
 
     /**
@@ -54,9 +76,30 @@ public class ExportToJsonActionNGTest {
     public void testActionPerformed() {
         System.out.println("testActionPerformed");
 
-        // TODO
-        ActionEvent e = null;
-        ExportToJsonAction instance = null;
-//        instance.actionPerformed(e);
+        final ExportToJsonAction instance = new ExportToJsonAction(context);
+        final ActionEvent e = null;
+
+        final String title = "Export to JSON";
+        final File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
+        final FileNameExtensionFilter filter = FileChooser.JSON_FILE_FILTER;
+
+        final File file = new File("test.json");
+        final Optional<File> optionalFile = Optional.ofNullable(file);
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.getBaseFileChooserBuilder(
+                        title,
+                        savedDirectory,
+                        filter))
+                .thenCallRealMethod();
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
+                .thenReturn(CompletableFuture.completedFuture(optionalFile));
+
+        instance.actionPerformed(e);
+
+        pluginExecutionStaticMock.verify(()
+                -> PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_JSON), times(1));
     }
 }
