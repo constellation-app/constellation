@@ -27,6 +27,9 @@ jobs:
       # Checkout this commit
     - name: Checkout Branch
       uses: actions/checkout@v1
+    - name: checklabels
+      run: |
+        if [[ ${{ contains(github.event.pull_request.labels.*.names, 'verbose-logging') }} ]]; then echo 'Verboselogging = true'; fi
 
       # Check the label of the PR for verbose logging
     - name: Check PR labels action step
