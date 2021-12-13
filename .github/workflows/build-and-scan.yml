@@ -29,7 +29,7 @@ jobs:
       uses: actions/checkout@v1
     - name: checklabels
       run: |
-        echo github.event.pull_request.labels
+        echo "${{ github.event.pull_request.labels }}"
  # if [[ ${{ contains(github.event.pull_request.labels.*.names, 'verbose-logging') }} ]]; then echo 'Verboselogging = true'; else echo 'Verboselogging = false'; fi
 
       # Check the label of the PR for verbose logging
