@@ -6,6 +6,7 @@ on:
     branches:
     - master
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
     branches:
     - master
 
@@ -31,18 +32,10 @@ jobs:
       run: |
         if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} ]]; then echo 'Verboselogging = true'; else echo 'Verboselogging = false'; fi
 
-      # Check the label of the PR for verbose logging
-    - name: Check PR labels action step
-      id: check_pr_labels
-      uses: shioyang/check-pr-labels-on-push-action@v1.0.3
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        labels: '["verbose-logging"]'
-
       # Set the verbose flag as a variable.
     - name: Set Verbosity
       run: |
-        if [[ 'true' = '${{ steps.check_pr_labels.outputs.result }}' ]]; then echo '::set-output name=VERBOSITY::-v -verbose' && echo 'Verbose = true'; else echo '::set-output name=VERBOSITY::-v " "' && echo 'Verbose = false'; fi
+        if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} ]]; then echo '::set-output name=VERBOSITY::-v -verbose' && echo 'Verbose = true'; else echo '::set-output name=VERBOSITY::-v " "' && echo 'Verbose = false'; fi
       id: verbosity
 
     - name: Create Cache Folder
