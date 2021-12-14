@@ -614,7 +614,11 @@ public class XmlUtilitiesNGTest {
             
             // Show attributes other than first can be read
             result = instance.getNodeAttr("attr2", parent);
-            assertEquals(result, "attrib 2 value", "Successfully finds attribute");  
+            assertEquals(result, "attrib 2 value", "Successfully finds attribute");    
+            
+            // Handling of missing attributes
+            result = instance.getNodeAttr("attr3", parent);
+            assertNull(result, "Null returned if attribute is not found");  
       
         } catch (Exception ex) {
             System.out.println("Exception:" + ex.toString());
@@ -628,6 +632,49 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeAttr_3args() {
         System.out.println("getNodeAttr");
+
+        try {
+            // TODO Create a test XML file for now, may become test file
+            FileWriter fw = new FileWriter("testFile.xml");
+            fw.write("<parent>\n"
+                    + "  <child attr1=\"attrib 1 value\" attr2=\"attrib 2 value\">child_value</child>\n"
+                    + "  <offspring>offspring_value1</offspring>\n"
+                    + "  <offspring attr1=\"attrib 1 value\">offspring_value2</offspring>\n"
+                    + "</parent>");
+            fw.close();
+
+            // Read the test file into a Document object and extract parent node and list of children
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            docBuilderFactory.setNamespaceAware(true);
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document document = docBuilder.parse(new File("testFile.xml"));
+            NodeList nodeList = document.getElementsByTagName("parent");
+            Node parent = nodeList.item(0);
+            NodeList children = parent.getChildNodes();
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+        
+            // Show attribute values are read
+            String result = instance.getNodeAttr("child", "attr1", children);
+            assertEquals(result, "attrib 1 value", "Successfully finds attribute");
+            
+            // Show attributes other than first can be read
+            result = instance.getNodeAttr("child", "attr2", children);
+            assertEquals(result, "attrib 2 value", "Successfully finds attribute");
+            
+            // Handling of missing attributes
+            result = instance.getNodeAttr("child", "attr3", children);
+            assertNull(result, "Null returned if attribute is not found");
+            
+            // Show that both node name and attrib name need to match
+            result = instance.getNodeAttr("offspring", "attr1", children);
+            assertEquals(result, "attrib 1 value", "Successfully skips nodes missing attribute");
+      
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
+        }
     }
 
     /**
@@ -636,6 +683,52 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeAttrNS() {
         System.out.println("getNodeAttrNS");
+
+        try {
+            // TODO Create a test XML file for now, may become test file
+            FileWriter fw = new FileWriter("testFile.xml");
+            fw.write("<parent xmlns:c=\"http://www.consty.com/star\" xmlns:c2=\"http://www.consty2.com/star2\">\n"
+                    + "  <c:child attr1=\"c:attrib 1 value\" attr2=\"c:attrib 2 value\">child_value1</c:child>\n"
+                    + "  <c2:child attr1=\"c2:attrib 1 value\">child_value2</c2:child>\n"
+                    + "  <c:offspring>offspring_value1</c:offspring>\n"
+                    + "  <c:offspring attr1=\"c:attrib 1 value\">offspring_value2</c:offspring>\n"
+                    + "</parent>");
+            fw.close();
+
+            // Read the test file into a Document object and extract parent node and list of children
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            docBuilderFactory.setNamespaceAware(true);
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document document = docBuilder.parse(new File("testFile.xml"));
+            NodeList nodeList = document.getElementsByTagName("parent");
+            Node parent = nodeList.item(0);
+            NodeList children = parent.getChildNodes();
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+            
+            // Check that correct first child value is returned
+            String result = instance.getNodeAttrNS("http://www.consty.com/star", "child", "attr1", children);
+            assertEquals(result, "c:attrib 1 value", "First child value matches expected");
+
+            // Confirm searches are case insensitive
+            result = instance.getNodeAttrNS("http://www.consty.com/star", "CHILD", "ATTR1", children);
+            assertEquals(result, "c:attrib 1 value", "First child value matches expected (case insensitive)");
+            
+            // Confirm namnespace is considered
+            result = instance.getNodeAttrNS("http://www.consty2.com/star2", "child", "attr1", children);
+            assertEquals(result, "c2:attrib 1 value", "First child value matches expected");
+            
+            // Confirm that nodes not matching all conditions are stepped over
+            result = instance.getNodeAttrNS("http://www.consty.com/star", "offspring", "attr1", children);
+            assertEquals(result, "c:attrib 1 value", "TODO");
+            
+            
+      
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
+        }
     }
 
     /**

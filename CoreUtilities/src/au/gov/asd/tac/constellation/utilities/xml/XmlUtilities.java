@@ -376,7 +376,7 @@ public class XmlUtilities {
     public String getNodeValueNS(final String namespaceURI, final String tagName, final NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
-            if (node.getNamespaceURI() != null 
+            if (node.getNamespaceURI() != null
                 && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
                 && node.getLocalName().equalsIgnoreCase(tagName)) {
                 final NodeList childNodes = node.getChildNodes();
@@ -412,7 +412,7 @@ public class XmlUtilities {
     }
 
     /**
-     * Returns the attribute of the node that has the provided tag name.
+     * Returns the attribute of the node that has the provided tag name and attrName.
      *
      * @param tagName the tag name.
      * @param attrName the attribute name.
@@ -424,21 +424,15 @@ public class XmlUtilities {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
             if (node.getNodeName().equalsIgnoreCase(tagName)) {
-                final NodeList childNodes = node.getChildNodes();
-                for (int j = 0; j < childNodes.getLength(); j++) {
-                    final Node data = childNodes.item(j);
-                    if (data.getNodeType() == Node.ATTRIBUTE_NODE && data.getNodeName().equalsIgnoreCase(attrName)) {
-                        return data.getNodeValue();
-                    }
-                }
+                String result = getNodeAttr(attrName, node);  
+                if (result != null) {return result; }
             }
         }
-
         return null;
     }
 
     /**
-     * Returns the attribute of the node that has the provided tag name.
+     * Returns the attribute of the node that has the provided tag name and attrName for the supplied namespace.
      *
      * @param namespaceURI the namespace.
      * @param localName the tag name.
@@ -450,18 +444,13 @@ public class XmlUtilities {
     public String getNodeAttrNS(final String namespaceURI, final String localName, final String attrName, final NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
-            if (node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
-                    && node.getLocalName().equalsIgnoreCase(localName)) {
-                final NodeList childNodes = node.getChildNodes();
-                for (int j = 0; j < childNodes.getLength(); j++) {
-                    final Node data = childNodes.item(j);
-                    if (data.getNodeType() == Node.ATTRIBUTE_NODE && data.getNodeName().equalsIgnoreCase(attrName)) {
-                        return data.getNodeValue();
-                    }
-                }
+            if (node.getNamespaceURI() != null
+                && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
+                && node.getLocalName().equalsIgnoreCase(localName)) {
+                String result = getNodeAttr(attrName, node);  
+                if (result != null) {return result; }     
             }
         }
-
         return null;
     }
 
