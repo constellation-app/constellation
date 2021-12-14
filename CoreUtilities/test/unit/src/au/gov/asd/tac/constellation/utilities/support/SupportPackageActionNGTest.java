@@ -27,6 +27,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.modules.Places;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -41,6 +42,7 @@ import org.testng.annotations.Test;
 public class SupportPackageActionNGTest {
 
     private static MockedStatic<FileChooser> fileChooserStaticMock;
+    private static MockedStatic<Places> placesStaticMock;
 
     public SupportPackageActionNGTest() {
     }
@@ -56,11 +58,13 @@ public class SupportPackageActionNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
+        placesStaticMock = Mockito.mockStatic(Places.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
         fileChooserStaticMock.close();
+        placesStaticMock.close();
     }
 
     /**
@@ -77,7 +81,7 @@ public class SupportPackageActionNGTest {
         final File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
         final FileNameExtensionFilter filter = null;
 
-        final File file = spy(new File("testDir\'"));
+        final File file = spy(new File("testFolder"));
         final Optional<File> optionalFile = Optional.ofNullable(file);
 
         fileChooserStaticMock.when(()
@@ -90,6 +94,9 @@ public class SupportPackageActionNGTest {
         fileChooserStaticMock.when(()
                 -> FileChooser.openOpenDialog(Mockito.any(FileChooserBuilder.class)))
                 .thenReturn(CompletableFuture.completedFuture(optionalFile));
+
+        placesStaticMock.when(()
+                -> Places.getUserDirectory()).thenReturn(new File(System.getProperty("user.home")));
 
         instance.actionPerformed(e);
 
