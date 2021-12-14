@@ -449,7 +449,9 @@ public final class QualityControlViewPane extends BorderPane {
             final RadioButton majorButton = new RadioButton();
             final RadioButton severeButton = new RadioButton();
             final RadioButton criticalButton = new RadioButton();
-            final Button resetButton = new Button("Reset");
+            final String resetText = rule.getCategory(0) == getPriorities().get(rule) ? "Reset" : "Reset to " + rule.getCategory(0).name();
+            
+            final Button resetButton = new Button(resetText);
             resetButton.setOnAction(event -> {
                 switch (rule.getCategory(0)) {
                     case MINOR:
@@ -470,6 +472,7 @@ public final class QualityControlViewPane extends BorderPane {
                     default:
                         break;
                 }
+                resetButton.setText("Reset");
             });
 
             getPriorities().putIfAbsent(rule, rule.getCategory(0));
