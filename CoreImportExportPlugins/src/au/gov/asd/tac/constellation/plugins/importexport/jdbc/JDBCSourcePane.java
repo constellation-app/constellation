@@ -80,6 +80,7 @@ public class JDBCSourcePane extends SourcePane {
     private static final String PROMPT_TEXT_COLOUR = "-fx-prompt-text-fill: grey";
     private static final String ADD_CONNECTION = "Add Connection";
     private static final String MODIFY_CONNECTION = "Modify Connection";
+    private static final String ADD_DRIVER = "Add Driver";
 
     private final ComboBox<JDBCConnection> dbConnectionComboBox;
 
@@ -244,8 +245,12 @@ public class JDBCSourcePane extends SourcePane {
                 gp.setVgap(GAP);
                 final Label jarLabel = new Label("Driver");
                 gp.add(jarLabel, 0, 0, 1, 1);
-                final TextField j = new TextField();
-                gp.add(j, 1, 0, 1, 1);
+                final TextField driverFilePath = new TextField();
+                driverFilePath.setPromptText("Select or enter the JDBC driver JAR file");
+                driverFilePath.setStyle(PROMPT_TEXT_COLOUR);
+                driverFilePath.setFocusTraversable(false);
+                gp.add(driverFilePath, 1, 0, 1, 1);
+
                 final Label nameLabel = new Label("Name");
                 gp.add(nameLabel, 0, 1, 1, 1);
                 final ComboBox driverName = new ComboBox();
@@ -256,29 +261,41 @@ public class JDBCSourcePane extends SourcePane {
                     cho.getExtensionFilters().add(new ExtensionFilter(FileExtensionConstants.JAR, "*.jar"));
 
                     final File f = cho.showOpenDialog(d);
+
                     if (f != null) {
                         try {
-                            j.setText(f.getCanonicalPath());
-                            driverName.getItems().clear();
-                            driverName.getItems().addAll(JDBCDriver.getDrivers(f));
-                            driverName.getSelectionModel().selectFirst();
+                            driverFilePath.setText(f.getCanonicalPath());
+                            setDriver(f, driverName);
                         } catch (final IOException ex) {
                             LOGGER.log(Level.WARNING, ex.getMessage(), ex);
+                        }
+                    }
+                });
+                // Allow manual editing on the driver path
+                driverFilePath.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if (!StringUtils.isBlank(driverFilePath.getText())) {
+                        final File f = new File(newValue);
+                        if (f != null) {
+                            setDriver(f, driverName);
                         }
                     }
                 });
                 gp.add(chooser, 2, 0, 1, 1);
                 final Button add = new Button("Add");
                 add.setOnAction((final ActionEvent t2) -> {
+                    if (!validateDriverParams(driverFilePath, driverName)) {
+                        return;
+                    }
+
                     if (driverName.getSelectionModel().getSelectedItem() != null) {
                         if (driverManager.isDriverUsed((String) driverName.getSelectionModel().getSelectedItem())) {
                             final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT,
-                                    "Add Driver", "This Driver already exists.\n Do you want to overwrite?");
+                                    ADD_DRIVER, "This Driver already exists.\n Do you want to overwrite?");
                             if (!res.isPresent() || res.get() == ButtonType.NO) {
                                 return;
                             }
                         }
-                        driverManager.addDriver((String) driverName.getSelectionModel().getSelectedItem(), new File(j.getText()));
+                        driverManager.addDriver((String) driverName.getSelectionModel().getSelectedItem(), new File(driverFilePath.getText()));
                         driverTable.getItems().clear();
                         driverTable.getItems().addAll(driverManager.getDrivers());
                         driver.getItems().clear();
@@ -307,7 +324,7 @@ public class JDBCSourcePane extends SourcePane {
                 scene2.setFill(Color.WHITESMOKE);
                 scene2.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
                 d.setScene(scene2);
-                d.setTitle("Add Driver");
+                d.setTitle(ADD_DRIVER);
                 d.centerOnScreen();
                 d.initOwner(dialog);
                 d.initModality(Modality.APPLICATION_MODAL);
@@ -397,6 +414,12 @@ public class JDBCSourcePane extends SourcePane {
                 passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, queryButton);
     }
 
+    private void setDriver(final File f, final ComboBox driverName) {
+        driverName.getItems().clear();
+        driverName.getItems().addAll(JDBCDriver.getDrivers(f));
+        driverName.getSelectionModel().selectFirst();
+    }
+
     /**
      * The import controller has been modified: update the GUI to match.
      *
@@ -407,7 +430,25 @@ public class JDBCSourcePane extends SourcePane {
         graphComboBox.getSelectionModel().select(((JDBCImportController) importController).getDestination());
 
     }
-    
+
+    private boolean validateDriverParams(final TextField driverFilePath, final ComboBox driverName) {
+        final StringJoiner missingParamsMsgs = new StringJoiner(System.lineSeparator() + System.lineSeparator());
+
+        if (StringUtils.isBlank(driverFilePath.getText())) {
+            missingParamsMsgs.add("Driver - please select or enter the JDBC driver JAR file before continuing.");
+        } else if (driverName.getValue() == null) {
+            missingParamsMsgs.add("Driver Name - please select or enter a valid JDBC driver JAR file to populate the driver name.");
+        }
+        if (missingParamsMsgs.length() > 0) {
+            NotifyDisplayer.displayAlert(ADD_DRIVER,
+                    "Missing driver parameters",
+                    missingParamsMsgs.toString(),
+                    AlertType.ERROR);
+            return false;
+        }
+        return true;
+    }
+
     private boolean validateConnectionParams(final TextField cn, final TextField connectionStringF, final ComboBox<JDBCDriver> driversComboBox) {
         final StringJoiner missingParamsMsgs = new StringJoiner(System.lineSeparator() + System.lineSeparator());
 
