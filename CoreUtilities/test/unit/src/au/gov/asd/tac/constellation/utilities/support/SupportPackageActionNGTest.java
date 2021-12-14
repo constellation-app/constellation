@@ -73,11 +73,11 @@ public class SupportPackageActionNGTest {
         final SupportPackageAction instance = new SupportPackageAction();
         final ActionEvent e = null;
 
-        final String title = "Select Folder";
+        final String title = Bundle.MSG_SaveAsTitle();
         final File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
         final FileNameExtensionFilter filter = null;
 
-        final File file = spy(new File("testDir"));
+        final File file = spy(new File("testDir\'"));
         final Optional<File> optionalFile = Optional.ofNullable(file);
 
         fileChooserStaticMock.when(()
