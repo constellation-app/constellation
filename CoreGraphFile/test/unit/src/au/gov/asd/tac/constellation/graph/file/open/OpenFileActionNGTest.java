@@ -15,13 +15,20 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
+import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.file.GraphFilePluginRegistry;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import java.awt.event.ActionEvent;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * Test class for OpenFileAction.
@@ -61,18 +68,18 @@ public class OpenFileActionNGTest {
      * @throws InterruptedException
      * @throws PluginException
      */
-//    @Test
-//    public void testActionPerformed() throws InterruptedException, PluginException {
-//        System.out.println("testActionPerformed");
-//
-//        pluginExecutionStaticMock.when(()
-//                -> PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE)).thenReturn(pluginExecutionMock);
-//
-//        final OpenFileAction instance = new OpenFileAction();
-//        final ActionEvent e = null;
-//
-//        instance.actionPerformed(e);
-//
-//        verify(pluginExecutionMock, times(1)).executeNow(Mockito.any(StoreGraph.class));
-//    }
+    @Test
+    public void testActionPerformed() throws InterruptedException, PluginException {
+        System.out.println("testActionPerformed");
+
+        pluginExecutionStaticMock.when(()
+                -> PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE)).thenReturn(pluginExecutionMock);
+
+        final OpenFileAction instance = new OpenFileAction();
+        final ActionEvent e = null;
+
+        instance.actionPerformed(e);
+
+        verify(pluginExecutionMock, times(1)).executeNow(Mockito.any(StoreGraph.class));
+    }
 }
