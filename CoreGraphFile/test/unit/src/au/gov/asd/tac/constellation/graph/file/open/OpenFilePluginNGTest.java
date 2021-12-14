@@ -16,12 +16,22 @@
 package au.gov.asd.tac.constellation.graph.file.open;
 
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.times;
+import org.openide.filesystems.FileChooserBuilder;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * Test class for OpenFilePlugin.
@@ -61,44 +71,44 @@ public class OpenFilePluginNGTest {
      *
      * @throws java.lang.Exception
      */
-//    @Test
-//    public void testRead() throws Exception {
-//        System.out.println("testRead");
-//
-//        final OpenFilePlugin instance = new OpenFilePlugin();
-//
-//        final String title = "Open";
-//        final File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
-//        final FileNameExtensionFilter filter = FileChooser.CONSTELLATION_FILE_FILTER;
-//
-//        final File file = new File("test.star");
-//        final List<File> files = new ArrayList<>();
-//
-//        final Random random = new Random();
-//        final int numberOfFiles = random.nextInt(5) + 1;
-//
-//        for (int i = numberOfFiles; i > 0; i--) {
-//            files.add(file);
-//        }
-//
-//        final Optional<List<File>> optionalFiles = Optional.ofNullable(files);
-//
-//        fileChooserStaticMock.when(()
-//                -> FileChooser.getBaseFileChooserBuilder(
-//                        title,
-//                        savedDirectory,
-//                        filter))
-//                .thenCallRealMethod();
-//
-//        fileChooserStaticMock.when(()
-//                -> FileChooser.openMultiDialog(Mockito.any(FileChooserBuilder.class)))
-//                .thenReturn(CompletableFuture.completedFuture(optionalFiles));
-//
-//        openFileStaticMock.when(() -> OpenFile.openFile(file, -1)).thenCallRealMethod();
-//
-//        instance.read(null, null, null);
-//
-//        openFileStaticMock.verify(()
-//                -> OpenFile.openFile(file, -1), times(numberOfFiles));
-//    }
+    @Test
+    public void testRead() throws Exception {
+        System.out.println("testRead");
+
+        final OpenFilePlugin instance = new OpenFilePlugin();
+
+        final String title = "Open";
+        final File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
+        final FileNameExtensionFilter filter = FileChooser.CONSTELLATION_FILE_FILTER;
+
+        final File file = new File("test.star");
+        final List<File> files = new ArrayList<>();
+
+        final Random random = new Random();
+        final int numberOfFiles = random.nextInt(5) + 1;
+
+        for (int i = numberOfFiles; i > 0; i--) {
+            files.add(file);
+        }
+
+        final Optional<List<File>> optionalFiles = Optional.ofNullable(files);
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.getBaseFileChooserBuilder(
+                        title,
+                        savedDirectory,
+                        filter))
+                .thenCallRealMethod();
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.openMultiDialog(Mockito.any(FileChooserBuilder.class)))
+                .thenReturn(CompletableFuture.completedFuture(optionalFiles));
+
+        openFileStaticMock.when(() -> OpenFile.openFile(file, -1)).thenCallRealMethod();
+
+        instance.read(null, null, null);
+
+        openFileStaticMock.verify(()
+                -> OpenFile.openFile(file, -1), times(numberOfFiles));
+    }
 }
