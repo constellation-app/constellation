@@ -121,6 +121,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
         final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
         final List<Integer> newVertices = new ArrayList<>();
         boolean positionalAtrributesExist = false;
+        int totalImportedRows = 0;
 
         final String username = parameters.getParameters().get(USERNAME_PARAMETER_ID).getStringValue();
         final String password = parameters.getParameters().get(PASSWORD_PARAMETER_ID).getStringValue();
@@ -148,19 +149,19 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
             for (final ImportDefinition definition : definitions) {
                 if (definition.getDefinitions(AttributeType.SOURCE_VERTEX).isEmpty()) {
                     if (!definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
-                        processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, interaction, newVertices);
+                        totalImportedRows += processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, interaction, newVertices);
                     }
                 } else if (definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
-                    processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, interaction, newVertices);
+                    totalImportedRows += processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, interaction, newVertices);
                 } else {
-                    processTransactions(definition, graph, data, initialiseWithSchema, interaction);
+                    totalImportedRows += processTransactions(definition, graph, data, initialiseWithSchema, interaction);
                 }
 
                 // Determine if a positional attribute has been defined, if so update the overall flag
                 final boolean isPositional = attributeDefintionIsPositional(definition.getDefinitions(AttributeType.SOURCE_VERTEX), definition.getDefinitions(AttributeType.DESTINATION_VERTEX));
                 positionalAtrributesExist = (positionalAtrributesExist || isPositional);
             }
-            displaySummaryAlert(data.size(), connection.getConnectionName());
+            displaySummaryAlert(totalImportedRows, data.size(), connection.getConnectionName());
 
             // If at least one positional attribute has been received for either the src or destination vertex we will assume that the user is trying to import positions and won't auto arrange
             // the graph. This does mean some nodes could sit on top of each other if multiple nodes have the same coordinates.
@@ -190,12 +191,13 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 || destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
-    private static void processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType, final boolean initialiseWithSchema, final PluginInteraction interaction, final List<Integer> newVertices) throws InterruptedException {
+    private static int processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType, final boolean initialiseWithSchema, final PluginInteraction interaction, final List<Integer> newVertices) throws InterruptedException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
 
         addAttributes(graph, GraphElementType.VERTEX, attributeDefinitions);
 
         int currentRow = 0;
+        int importedRows = 0;
         final int totalRows = data.size() - definition.getFirstRow();
 
         final RowFilter filter = definition.getRowFilter();
@@ -205,6 +207,8 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
 
             final String[] row = data.get(i);
             if (filter == null || filter.passesFilter(i, row)) {
+                // Count the number of processed rows to notify in the status message
+                ++importedRows;
                 final int vertexId = graph.addVertex();
                 newVertices.add(vertexId);
 
@@ -217,9 +221,10 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 }
             }
         }
+        return importedRows;
     }
 
-    private static void processTransactions(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, final PluginInteraction interaction) throws InterruptedException {
+    private static int processTransactions(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, final PluginInteraction interaction) throws InterruptedException {
         final List<ImportAttributeDefinition> sourceVertexDefinitions = definition.getDefinitions(AttributeType.SOURCE_VERTEX);
         final List<ImportAttributeDefinition> destinationVertexDefinitions = definition.getDefinitions(AttributeType.DESTINATION_VERTEX);
         final List<ImportAttributeDefinition> transactionDefinitions = definition.getDefinitions(AttributeType.TRANSACTION);
@@ -237,6 +242,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
         addAttributes(graph, GraphElementType.TRANSACTION, transactionDefinitions);
 
         int currentRow = 0;
+        int importedRows = 0;
         final int totalRows = data.size() - definition.getFirstRow();
 
         final RowFilter filter = definition.getRowFilter();
@@ -247,6 +253,8 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
             final String[] row = data.get(i);
 
             if (filter == null || filter.passesFilter(i, row)) {
+                // Count the number of processed rows to notify in the status message
+                ++importedRows;
                 final int sourceVertexId = graph.addVertex();
                 for (final ImportAttributeDefinition attributeDefinition : sourceVertexDefinitions) {
                     attributeDefinition.setValue(graph, sourceVertexId, row, (i - 1));
@@ -275,6 +283,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 }
             }
         }
+        return importedRows;
     }
 
     /**
@@ -311,7 +320,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
      * @param importedRows is the number of rows of data imported
      * @param connectionName the name of the connection
      */
-    private void displaySummaryAlert(final int importedRows, final String connectionName) {
+    private void displaySummaryAlert(final int importedRows, final int totalRows, final String connectionName) {
         Platform.runLater(() -> {
             final StringBuilder sbHeader = new StringBuilder();
             final StringBuilder sbMessage = new StringBuilder();
@@ -319,7 +328,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
                 // issues for. If there were any files with issues use a warning dialog.
-                sbHeader.append(String.format("Imported %d rows of data from connection: %s", importedRows, connectionName));
+                sbHeader.append(String.format("Imported %d out of %d rows of data from connection: %s", importedRows, totalRows, connectionName));
 
             } else {
                 // No rows were imported list all files that resulted in failures.
