@@ -235,104 +235,7 @@ public class JDBCSourcePane extends SourcePane {
             };
 
             final Button addDriverButton = new Button("Add");
-            addDriverButton.setOnAction((final ActionEvent t1) -> {
-                final Stage d = new Stage();
-                final BorderPane r = new BorderPane();
-                final EasyGridPane gp = new EasyGridPane();
-                gp.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
-                gp.setPadding(GRIDPANE_PADDING);
-                gp.setHgap(GAP);
-                gp.setVgap(GAP);
-                final Label jarLabel = new Label("Driver");
-                gp.add(jarLabel, 0, 0, 1, 1);
-                final TextField driverFilePath = new TextField();
-                driverFilePath.setPromptText("Select or enter the JDBC driver JAR file");
-                driverFilePath.setStyle(PROMPT_TEXT_COLOUR);
-                driverFilePath.setFocusTraversable(false);
-                gp.add(driverFilePath, 1, 0, 1, 1);
-
-                final Label nameLabel = new Label("Name");
-                gp.add(nameLabel, 0, 1, 1, 1);
-                final ComboBox driverName = new ComboBox();
-                gp.add(driverName, 1, 1, 1, 1);
-                final Button chooser = new Button(" ... ");
-                chooser.setOnAction((final ActionEvent t2) -> {
-                    final FileChooser cho = new FileChooser();
-                    cho.getExtensionFilters().add(new ExtensionFilter(FileExtensionConstants.JAR, "*.jar"));
-
-                    final File f = cho.showOpenDialog(d);
-
-                    if (f != null) {
-                        try {
-                            driverFilePath.setText(f.getCanonicalPath());
-                            setDriver(f, driverName);
-                        } catch (final IOException ex) {
-                            LOGGER.log(Level.WARNING, ex.getMessage(), ex);
-                        }
-                    }
-                });
-                // Allow manual editing on the driver path
-                driverFilePath.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!StringUtils.isBlank(driverFilePath.getText())) {
-                        final File f = new File(newValue);
-                        if (f != null) {
-                            setDriver(f, driverName);
-                        }
-                    }
-                });
-                gp.add(chooser, 2, 0, 1, 1);
-                final Button add = new Button("Add");
-                add.setOnAction((final ActionEvent t2) -> {
-                    if (!validateDriverParams(driverFilePath, driverName)) {
-                        return;
-                    }
-
-                    if (driverName.getSelectionModel().getSelectedItem() != null) {
-                        if (driverManager.isDriverUsed((String) driverName.getSelectionModel().getSelectedItem())) {
-                            final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT,
-                                    ADD_DRIVER, "This Driver already exists.\n Do you want to overwrite?");
-                            if (!res.isPresent() || res.get() == ButtonType.NO) {
-                                return;
-                            }
-                        }
-                        driverManager.addDriver((String) driverName.getSelectionModel().getSelectedItem(), new File(driverFilePath.getText()));
-                        driverTable.getItems().clear();
-                        driverTable.getItems().addAll(driverManager.getDrivers());
-                        driver.getItems().clear();
-                        driver.getItems().addAll(driverManager.getDrivers());
-                        d.close();
-                    }
-                });
-                gp.add(add, 0, 2, 1, 1);
-                final Button buttonCancel = new Button(ACTION_CANCEL);
-                buttonCancel.setOnAction((final ActionEvent event) -> {
-                    event.consume();
-                    final Stage stage = (Stage) buttonCancel.getScene().getWindow();
-                    stage.close();
-                });
-                gp.add(buttonCancel, 2, 2, 1, 1);
-
-                final ScrollPane sp = new ScrollPane(gp);
-                sp.setFitToWidth(true);
-                sp.setPrefHeight(SCROLLPANE_PREF_HEIGHT);
-                sp.setPrefWidth(SCROLLPANE_PREF_WIDTH);
-                sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-                sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-                r.setCenter(sp);
-
-                final Scene scene2 = new Scene(r);
-                scene2.setFill(Color.WHITESMOKE);
-                scene2.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                d.setScene(scene2);
-                d.setTitle(ADD_DRIVER);
-                d.centerOnScreen();
-                d.initOwner(dialog);
-                d.initModality(Modality.APPLICATION_MODAL);
-                d.setAlwaysOnTop(true);
-                d.setWidth(LARGE_SCROLLPANE_PREF_WIDTH);
-                d.setHeight(ADD_DRIVER_PANE_HEIGHT);
-                d.showAndWait();
-            });
+            addDriverButton.setOnAction((final ActionEvent t1) -> openAddDriverDialog(driverManager, driverTable, driver, dialog));
             driversTabGridPane.add(addDriverButton, 0, 1, 1, 1);
 
             final Button removeBtn1 = new Button("Remove");
@@ -412,6 +315,105 @@ public class JDBCSourcePane extends SourcePane {
 
         getChildren().addAll(fileLabel, dbConnectionComboBox, manageConnectionsBtn, usernameLabel, username,
                 passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, queryButton);
+    }
+
+    private void openAddDriverDialog(final JDBCDriverManager driverManager, final TableView driverTable, final ComboBox<JDBCDriver> driver, final Stage dialog) {
+        final Stage d = new Stage();
+        final BorderPane r = new BorderPane();
+        final EasyGridPane gp = new EasyGridPane();
+        gp.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
+        gp.setPadding(GRIDPANE_PADDING);
+        gp.setHgap(GAP);
+        gp.setVgap(GAP);
+        final Label jarLabel = new Label("Driver");
+        gp.add(jarLabel, 0, 0, 1, 1);
+        final TextField driverFilePath = new TextField();
+        driverFilePath.setPromptText("Select or enter the JDBC driver JAR file");
+        driverFilePath.setStyle(PROMPT_TEXT_COLOUR);
+        driverFilePath.setFocusTraversable(false);
+        gp.add(driverFilePath, 1, 0, 1, 1);
+
+        final Label nameLabel = new Label("Name");
+        gp.add(nameLabel, 0, 1, 1, 1);
+        final ComboBox driverName = new ComboBox();
+        gp.add(driverName, 1, 1, 1, 1);
+        final Button chooser = new Button(" ... ");
+        chooser.setOnAction((final ActionEvent t2) -> {
+            final FileChooser cho = new FileChooser();
+            cho.getExtensionFilters().add(new ExtensionFilter(FileExtensionConstants.JAR, "*.jar"));
+
+            final File f = cho.showOpenDialog(d);
+
+            if (f != null) {
+                try {
+                    driverFilePath.setText(f.getCanonicalPath());
+                    setDriver(f, driverName);
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.WARNING, ex.getMessage(), ex);
+                }
+            }
+        });
+        // Allow manual editing on the driver path
+        driverFilePath.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!StringUtils.isBlank(driverFilePath.getText())) {
+                final File f = new File(newValue);
+                if (f != null) {
+                    setDriver(f, driverName);
+                }
+            }
+        });
+        gp.add(chooser, 2, 0, 1, 1);
+        final Button add = new Button("Add");
+        add.setOnAction((final ActionEvent t2) -> {
+            if (!validateDriverParams(driverFilePath, driverName)) {
+                return;
+            }
+
+            if (driverName.getSelectionModel().getSelectedItem() != null) {
+                if (driverManager.isDriverUsed((String) driverName.getSelectionModel().getSelectedItem())) {
+                    final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT,
+                            ADD_DRIVER, "This Driver already exists.\n Do you want to overwrite?");
+                    if (!res.isPresent() || res.get() == ButtonType.NO) {
+                        return;
+                    }
+                }
+                driverManager.addDriver((String) driverName.getSelectionModel().getSelectedItem(), new File(driverFilePath.getText()));
+                driverTable.getItems().clear();
+                driverTable.getItems().addAll(driverManager.getDrivers());
+                driver.getItems().clear();
+                driver.getItems().addAll(driverManager.getDrivers());
+                d.close();
+            }
+        });
+        gp.add(add, 0, 2, 1, 1);
+        final Button buttonCancel = new Button(ACTION_CANCEL);
+        buttonCancel.setOnAction((final ActionEvent event) -> {
+            event.consume();
+            final Stage stage = (Stage) buttonCancel.getScene().getWindow();
+            stage.close();
+        });
+        gp.add(buttonCancel, 2, 2, 1, 1);
+
+        final ScrollPane sp = new ScrollPane(gp);
+        sp.setFitToWidth(true);
+        sp.setPrefHeight(SCROLLPANE_PREF_HEIGHT);
+        sp.setPrefWidth(SCROLLPANE_PREF_WIDTH);
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        r.setCenter(sp);
+
+        final Scene scene2 = new Scene(r);
+        scene2.setFill(Color.WHITESMOKE);
+        scene2.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+        d.setScene(scene2);
+        d.setTitle(ADD_DRIVER);
+        d.centerOnScreen();
+        d.initOwner(dialog);
+        d.initModality(Modality.APPLICATION_MODAL);
+        d.setAlwaysOnTop(true);
+        d.setWidth(LARGE_SCROLLPANE_PREF_WIDTH);
+        d.setHeight(ADD_DRIVER_PANE_HEIGHT);
+        d.showAndWait();
     }
 
     private void setDriver(final File f, final ComboBox driverName) {

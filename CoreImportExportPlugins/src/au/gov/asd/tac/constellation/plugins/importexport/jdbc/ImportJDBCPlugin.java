@@ -119,7 +119,6 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
         final String query = parameters.getParameters().get(QUERY_PARAMETER_ID).getStringValue();
         final List<ImportDefinition> definitions = (List<ImportDefinition>) parameters.getParameters().get(DEFINITIONS_PARAMETER_ID).getObjectValue();
         final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
-        final List<Integer> newVertices = new ArrayList<>();
         boolean positionalAtrributesExist = false;
         int totalImportedRows = 0;
 
@@ -149,10 +148,10 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
             for (final ImportDefinition definition : definitions) {
                 if (definition.getDefinitions(AttributeType.SOURCE_VERTEX).isEmpty()) {
                     if (!definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
-                        totalImportedRows += processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, interaction, newVertices);
+                        totalImportedRows += processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, interaction);
                     }
                 } else if (definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
-                    totalImportedRows += processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, interaction, newVertices);
+                    totalImportedRows += processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, interaction);
                 } else {
                     totalImportedRows += processTransactions(definition, graph, data, initialiseWithSchema, interaction);
                 }
@@ -172,7 +171,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 graph.validateKey(GraphElementType.TRANSACTION, true);
 
                 // unfortunately need to arrange with pendants and uncollide because grid arranger works based on selection
-                final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, newVertices);
+                final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, new ArrayList<>());
                 PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                         .followedBy(ArrangementPluginRegistry.PENDANTS)
                         .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
@@ -191,7 +190,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 || destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
-    private static int processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType, final boolean initialiseWithSchema, final PluginInteraction interaction, final List<Integer> newVertices) throws InterruptedException {
+    private static int processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType, final boolean initialiseWithSchema, final PluginInteraction interaction) throws InterruptedException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
 
         addAttributes(graph, GraphElementType.VERTEX, attributeDefinitions);
@@ -210,7 +209,6 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 // Count the number of processed rows to notify in the status message
                 ++importedRows;
                 final int vertexId = graph.addVertex();
-                newVertices.add(vertexId);
 
                 for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
                     attributeDefinition.setValue(graph, vertexId, row, (i - 1));
