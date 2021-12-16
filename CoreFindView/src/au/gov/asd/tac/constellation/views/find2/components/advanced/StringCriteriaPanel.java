@@ -43,8 +43,6 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
     private final CheckBox useListCheckBox = new CheckBox("Use List");
     private final Button moreDetailsButton = new Button("List");
 
-    private UseListInputWindow useListWindow = new UseListInputWindow(this);
-
     public StringCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
         setGridContent();
@@ -58,6 +56,7 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
         // Opens the useListWindow when the user clicks the moreDetials Button
         // It also updates the useListWindows text to match the searchField text
         moreDetailsButton.setOnAction(action -> {
+            UseListInputWindow useListWindow = new UseListInputWindow(this, searchField.getText());
             useListWindow.showAndWait();
             useListWindow.updateText(getSearchFieldText());
         });
@@ -141,21 +140,32 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
         caseSensitiveCheckBox.setDisable(choiceSelection.equals("Matches (Regex)"));
         useListCheckBox.setDisable(choiceSelection.equals("Matches (Regex)"));
         if (useListCheckBox.isSelected()) {
-            useListCheckBox.setSelected(choiceSelection.equals("Matches (Regex)"));
+            useListCheckBox.setSelected(!choiceSelection.equals("Matches (Regex)"));
             moreDetailsButton.setDisable(choiceSelection.equals("Matches (Regex)"));
         }
     }
 
+    /**
+     * This returns a FindCriteriaValue, specifically a StringCriteriaValues
+     * containing this panes selections and the text values input into the text
+     * field.
+     *
+     * @return
+     */
     @Override
     public FindCriteriaValues getCriteriaValues() {
+        // if use list is selected, retrieve all values within the list
         if (useListCheckBox.isSelected()) {
             String[] splitStrings = searchField.getText().split(SeparatorConstants.COMMA);
             List<String> stringList = new ArrayList<>();
             Collections.addAll(stringList, splitStrings);
-            return new StringCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), stringList);
+            return new StringCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(),
+                    stringList, caseSensitiveCheckBox.isSelected(), useListCheckBox.isSelected());
         }
 
-        return new StringCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), searchField.getText());
+        // else, retrieve the text field as 1 string
+        return new StringCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(),
+                searchField.getText(), caseSensitiveCheckBox.isSelected(), useListCheckBox.isSelected());
     }
 
     @Override

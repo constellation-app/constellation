@@ -23,10 +23,11 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find2.plugins.GraphAttributePlugin;
+import au.gov.asd.tac.constellation.views.find2.plugins.advanced.AdvancedSearchPlugin;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -94,7 +95,6 @@ public class FindViewController {
      */
     public List<Attribute> populateAllAttributes(final GraphElementType type, final long attributeModificationCounter) {
         final List<Attribute> allAttributes = new ArrayList<>();
-        final List<String> allStringAttributes = new ArrayList<>();
 
         for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
 
@@ -113,20 +113,12 @@ public class FindViewController {
             }
             // get all the current attributes based on the currently selcted type
             allAttributes.addAll(attrPlugin.getAttributes());
-            for (Attribute a : allAttributes) {
-                allStringAttributes.add(a.getName());
-            }
         }
         final Set<Attribute> attributeSet = new LinkedHashSet<>();
         attributeSet.addAll(allAttributes);
         allAttributes.clear();
         allAttributes.addAll(attributeSet);
-
-        // remove duplicate attributes from the list
-        final Set<String> stringSet = new LinkedHashSet<>();
-        stringSet.addAll(allStringAttributes);
-        allStringAttributes.clear();
-        allStringAttributes.addAll(stringSet);
+        allAttributes.sort(Comparator.comparing(Attribute::getName));
 
         return allAttributes;
 
@@ -289,31 +281,27 @@ public class FindViewController {
         }
     }
 
-    public void retrieveAdvancedSearch(final boolean replaceAll, final boolean replaceNext) {
-        LOGGER.log(Level.SEVERE, "hi");
-        LOGGER.log(Level.SEVERE, "all or any = " + currentAdvancedSearchParameters.getAllOrAny());
-        LOGGER.log(Level.SEVERE, "current selection = " + currentAdvancedSearchParameters.getCurrentSelection());
+    public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext) {
+        final AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
 
-        for (FindCriteriaValues criteria : currentAdvancedSearchParameters.getCriteriaValuesList()) {
-            LOGGER.log(Level.SEVERE, "-------------------");
-            LOGGER.log(Level.SEVERE, criteria.getAttribute());
-            LOGGER.log(Level.SEVERE, criteria.getAttributeType());
+        /**
+         * If search all graphs is true, execute the advanced find plugin on all
+         * open graphs. If not only call it on the active graph.
+         */
+        if (currentAdvancedSearchParameters.isSearchAllGraphs()) {
+            for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+                // check to see the graph is not null
+                if (graph != null && currentAdvancedSearchParameters.isSearchAllGraphs()) {
+                    PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
+                }
+            }
+        } else {
+            final Graph graph = GraphManager.getDefault().getActiveGraph();
+            // check to see the graph is not null
+            if (graph != null) {
+                PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
+            }
         }
-//
-//        if (currentAdvancedSearchParameters.isSearchAllGraphs()) {
-//            for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
-//                // check to see the graph is not null
-//                if (graph != null && currentAdvancedSearchParameters.isSearchAllGraphs()) {
-//                    //execute plugin
-//                }
-//            }
-//        } else {
-//            final Graph graph = GraphManager.getDefault().getActiveGraph();
-//            // check to see the graph is not null
-//            if (graph != null) {
-//                //execute plugin
-//            }
-//        }
     }
 
     /**

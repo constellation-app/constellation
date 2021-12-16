@@ -22,6 +22,10 @@ import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -53,6 +57,8 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
     private final Button deleteButton = new Button("-");
 
     private final List<Attribute> attributesList = new ArrayList<>();
+    private boolean updateUI = false;
+    private static final Logger LOGGER = Logger.getLogger(AdvancedCriteriaBorderPane.class.getName());
 
     public AdvancedCriteriaBorderPane(final AdvancedFindTab parentComponent, final String attributeName, final GraphElementType graphElementType) {
         this.type = "none";
@@ -63,10 +69,10 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
 
         typeChoiceBox.getSelectionModel().select(attributeName);
 
-        deleteButton.setOnAction(action -> parentComponent.deleteCriteriaPane(this, graphElementType));
+        deleteButton.setOnAction(action -> parentComponent.deleteCriteriaPane(this, graphElementType, -1));
 
         typeChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
-            parentComponent.changeCriteriaPane(this, graphElementType, newElement);
+            parentComponent.changeCriteriaPane(this, graphElementType, newElement, updateUI);
         });
     }
 
@@ -77,6 +83,7 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
         setPadding(new Insets(5));
         populateAttributesList();
 
+        typeChoiceBox.setMinWidth(125);
         filterChoiceBox.getItems().addAll("Is", "Is Not");
         filterChoiceBox.getSelectionModel().select("Is");
 
@@ -93,6 +100,53 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
         setRight(deleteButton);
         deleteButton.setAlignment(Pos.CENTER);
         setLeft(vbox);
+    }
+
+    /**
+     * This function updates the attribute list based on the with the attributes
+     * present for the specific graph element type passed in. It is called when
+     * the updateUI function is called in the topComponent. It saves the
+     * currently selected attribute, clears the list, gets all the attributes
+     * again, repopulates the list, then selects the previously selected
+     * attribute.
+     *
+     * @param type
+     */
+    public synchronized void updateAttributesList(GraphElementType type) {
+        // get the currently selected attribute
+        String currentlySelected = (getAttributeName().isEmpty() ? attributesList.get(0).getName() : getAttributeName());
+
+        // clear the attributes list and re add all attributes
+        // (in case new attributes were added)
+        attributesList.clear();
+        attributesList.addAll(FindViewController.getDefault().populateAllAttributes(type, 0));
+
+        /**
+         * To avoid FX error, check what thread it is currently being run on. If
+         * not the application thread, created Platform.runLater with a
+         * countDownLatch. This removes all elements from the typeChoiceBox and
+         * re adds the based off the attributeList populated earlier. It then
+         * selects the previously selected element.
+         */
+        final CountDownLatch cdl = new CountDownLatch(1);
+        if (Platform.isFxApplicationThread()) {
+            typeChoiceBox.getItems().removeAll(typeChoiceBox.getItems());
+            typeChoiceBox.getItems().addAll(getStringAttributes(attributesList));
+            typeChoiceBox.getSelectionModel().select(currentlySelected);
+        } else {
+            Platform.runLater(() -> {
+                typeChoiceBox.getItems().removeAll(typeChoiceBox.getItems());
+                typeChoiceBox.getItems().addAll(getStringAttributes(attributesList));
+                typeChoiceBox.getSelectionModel().select(currentlySelected);
+                cdl.countDown();
+            });
+            try {
+                cdl.await();
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     /**
@@ -157,6 +211,14 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
 
     public String getDisplayString() {
         return "none";
+    }
+
+    public boolean isUpdateUI() {
+        return updateUI;
+    }
+
+    public void setUpdateUI(boolean update) {
+        updateUI = update;
     }
 
 }

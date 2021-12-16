@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
@@ -78,7 +79,8 @@ public class IconCriteriaPanel extends AdvancedCriteriaBorderPane {
      * Displays the Icon selector when called
      */
     private void displayIconPicker() {
-        iconSelctor = new IconSelector(this);
+
+        iconSelctor = new IconSelector(this, chosenIcon);
         iconSelctor.showAndWait();
     }
 
@@ -102,6 +104,12 @@ public class IconCriteriaPanel extends AdvancedCriteriaBorderPane {
         openIconsMenuButton.setText(icon.getName());
     }
 
+    /**
+     * This returns a FindCriteriaValue, specifically a IconCriteriaValues
+     * containing this panes selections and the currently selected Icon
+     *
+     * @return
+     */
     @Override
     public FindCriteriaValues getCriteriaValues() {
         return new IconCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), chosenIcon);
@@ -109,7 +117,7 @@ public class IconCriteriaPanel extends AdvancedCriteriaBorderPane {
 
     @Override
     public String getType() {
-        return "icon"; //To change body of generated methods, choose Tools | Templates.
+        return IconAttributeDescription.ATTRIBUTE_NAME; //To change body of generated methods, choose Tools | Templates.
     }
 
 }

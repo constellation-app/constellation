@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues;
 
-import javafx.scene.paint.Color;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 
 /**
  *
@@ -23,14 +23,14 @@ import javafx.scene.paint.Color;
  */
 public class ColourCriteriaValues extends FindCriteriaValues {
 
-    private final Color color;
+    private final ConstellationColor color;
 
-    public ColourCriteriaValues(String attributeType, String attribute, String filter, Color color) {
+    public ColourCriteriaValues(String attributeType, String attribute, String filter, ConstellationColor color) {
         super(attributeType, attribute, filter);
         this.color = color;
     }
 
-    public Color getColorValue() {
+    public ConstellationColor getColorValue() {
         return color;
     }
 

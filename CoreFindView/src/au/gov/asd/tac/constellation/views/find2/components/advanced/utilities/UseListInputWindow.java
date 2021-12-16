@@ -63,8 +63,10 @@ public class UseListInputWindow extends Stage {
 
     private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/find2/resources/editor-dark.css";
 
-    public UseListInputWindow(StringCriteriaPanel parentComponent) {
+    public UseListInputWindow(StringCriteriaPanel parentComponent, String text) {
         this.parentComponent = parentComponent;
+        this.textArea.setText(text);
+        updateText(textArea.getText());
 
         setContent();
         setAlwaysOnTop(true);

@@ -48,6 +48,7 @@ public class IconSelector extends Stage {
     private final HBox hbox = new HBox();
     private TreeView<String> categoryTreeView;
     private ListView<IconNode> iconListView;
+    private ConstellationIcon icon;
 
     private final TreeItem<String> rootNode = new TreeItem<>("Icons");
     private final TreeItem<String> builtInNode = new TreeItem<>("(Built-In)");
@@ -60,8 +61,9 @@ public class IconSelector extends Stage {
 
     private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/find2/resources/editor-dark.css";
 
-    public IconSelector(final IconCriteriaPanel parentComponent) {
+    public IconSelector(final IconCriteriaPanel parentComponent, final ConstellationIcon icon) {
         this.parentComponent = parentComponent;
+        this.icon = icon;
         setContent();
         setAlwaysOnTop(true);
 
@@ -108,6 +110,7 @@ public class IconSelector extends Stage {
         scene.getStylesheets().add(IconSelector.class.getResource(DARK_THEME).toExternalForm());
 
         setScene(scene);
+
     }
 
     /**
@@ -127,20 +130,28 @@ public class IconSelector extends Stage {
          * duplicate categories being added). For example if the extended name
          * is Flag.Australia. Flag will be saved as a category.
          */
-        final Set<String> categories = new LinkedHashSet<>();
+        final List<String> categories = new ArrayList<>();
         for (final ConstellationIcon icon : IconManager.getIcons()) {
             final String[] splitName = icon.getExtendedName().split("\\.");
 
             categories.add(splitName[0]);
         }
+        sort(categories);
+        final Set<String> sortedCategories = new LinkedHashSet<>();
+        sortedCategories.addAll(categories);
+
+        String[] iconName = icon.getExtendedName().split("\\.");
 
         /**
-         * For each of the categories categories create a TreeItem and add it to
-         * rootNode
+         * For each of the categories create a TreeItem and add it to         * rootNode
          */
-        for (final String categoryName : categories) {
+        for (final String categoryName : sortedCategories) {
             final TreeItem<String> categoryTreeNode = new TreeItem<>(categoryName);
             rootNode.getChildren().add(categoryTreeNode);
+            if (categoryName.equals(iconName[0])) {
+                populateIconsList(categoryName);
+                categoryTreeView.getSelectionModel().select(categoryTreeNode);
+            }
         }
         rootNode.setExpanded(true);
 
@@ -168,10 +179,16 @@ public class IconSelector extends Stage {
         }
         // sort the icons in alpabetical order
         sort(iconNames);
+        String[] iconName = icon.getExtendedName().split("\\.");
 
         // for each of those iconNames find the icon and create an IconNode
         for (String name : iconNames) {
-            iconListView.getItems().add(new IconNode(IconManager.getIcon(name)));
+            IconNode node = new IconNode(IconManager.getIcon(name));
+            iconListView.getItems().add(node);
+
+            if ((iconName.length > 1 && name.equals(iconName[1])) || (iconName.length == 1 && name.equals(iconName[0]))) {
+                iconListView.getSelectionModel().select(node);
+            }
         }
 
     }

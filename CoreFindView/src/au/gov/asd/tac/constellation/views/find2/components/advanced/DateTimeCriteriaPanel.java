@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
@@ -153,6 +154,7 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
         dateTimeSelector.close();
 
         datePickerButton.setText(dateString + " " + timeString + " " + timeZoneString);
+        dateTimeStringPrimary = dateString + " " + timeString + " " + timeZoneString;
     }
 
     /**
@@ -166,6 +168,7 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
         dateTimeSelectorTwo.close();
 
         datePickerTwoButton.setText(dateStringTwo + " " + timeStringTwo + " " + timeZoneStringTwo);
+        dateTimeStringSecondary = dateStringTwo + " " + timeStringTwo + " " + timeZoneStringTwo;
     }
 
     /**
@@ -211,7 +214,7 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
 
             // set dateTime one data to the min time of today
             // and the previously selected timeZone
-            timeString = "0:0:0";
+            timeString = "00:00:00";
             timeZoneString = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.UTC.toString() : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
 
             // The Local Date value of the current date based of the timeZone
@@ -253,6 +256,12 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
         }
     }
 
+    /**
+     * This returns a FindCriteriaValue, specifically a DateTimeCriteriaValues
+     * containing this panes selections and the date time values input
+     *
+     * @return
+     */
     @Override
     public FindCriteriaValues getCriteriaValues() {
         if (getFilterChoiceBox().getSelectionModel().getSelectedItem().equals("Occoured Between")) {
@@ -263,7 +272,7 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
 
     @Override
     public String getType() {
-        return "datetime";
+        return ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME;
     }
 
 }

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
@@ -67,6 +68,12 @@ public class BooleanCriteriaPanel extends AdvancedCriteriaBorderPane {
         return trueToggle.isSelected();
     }
 
+    /**
+     * This returns a FindCriteriaValue, specifically a BooleanCriteriaValues
+     * containing this panes selections and the selected boolean value
+     *
+     * @return
+     */
     @Override
     public FindCriteriaValues getCriteriaValues() {
         return new BooleanCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), getSelectedBoolean());
@@ -74,7 +81,6 @@ public class BooleanCriteriaPanel extends AdvancedCriteriaBorderPane {
 
     @Override
     public String getType() {
-        return "boolean"; //To change body of generated methods, choose Tools | Templates.
+        return BooleanAttributeDescription.ATTRIBUTE_NAME;
     }
-
 }

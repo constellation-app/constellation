@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.AdvancedCriteriaBorderPane;
 import au.gov.asd.tac.constellation.views.find2.plugins.ResetStatePlugin;
 import java.awt.Dimension;
 import java.awt.Window;
@@ -242,6 +243,22 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         getFindViewPane().getTabs().getReplaceTab().saveSelected(replaceType);
         getFindViewPane().getTabs().getReplaceTab().populateAttributes(replaceType);
         getFindViewPane().getTabs().getReplaceTab().updateSelectedAttributes(getFindViewPane().getTabs().getReplaceTab().getMatchingAttributeList(replaceType));
+
+        // Update each of the advanced find tabs criteria panes
+        final GraphElementType advancedType = GraphElementType.getValue(getFindViewPane().getTabs().getAdvancedFindTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
+        for (AdvancedCriteriaBorderPane criteriaPane : getFindViewPane().getTabs().getAdvancedFindTab().getCorrespondingCriteriaList(advancedType)) {
+            /**
+             * set the updateUI variable to true.This avoids the change
+             * criteriapane function from occurring when re selecting the
+             * currently selected element after updating the attribute list
+             */
+            criteriaPane.setUpdateUI(true);
+            criteriaPane.updateAttributesList(advancedType);
+            // set the updateUI variable back to false to maintian normal
+            // functionality for the change criteriapane function
+            criteriaPane.setUpdateUI(false);
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

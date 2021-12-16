@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
@@ -35,6 +37,7 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalu
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -94,6 +97,8 @@ public class AdvancedFindTab extends Tab {
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
 
+    private static final long ATTRIBUTE_MODIFICATION_COUNTER = Long.MIN_VALUE;
+
     public AdvancedFindTab(final FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;
         setText("Advanced Find");
@@ -105,7 +110,16 @@ public class AdvancedFindTab extends Tab {
             changeDisplayedList(newElement);
         });
 
+        currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
+                updateSelectionFactors();
+            }
+        });
+
         findAllButton.setOnAction(action -> findAllAction());
+        findNextButton.setOnAction(action -> findNextAction());
+        findPrevButton.setOnAction(action -> findPreviousAction());
 
     }
 
@@ -181,6 +195,16 @@ public class AdvancedFindTab extends Tab {
     }
 
     /**
+     * This is called on add and remove to current selection toggles to update
+     * the variables values stored in the controller
+     */
+    public void updateSelectionFactors() {
+        final boolean disable = currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 2 || currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 3;
+        findNextButton.setDisable(disable);
+        findPrevButton.setDisable(disable);
+    }
+
+    /**
      * Updates the GridCriteriaPane based on the currently selected Graph
      * Element Type
      *
@@ -224,12 +248,22 @@ public class AdvancedFindTab extends Tab {
      * @param pane
      * @param type
      */
-    public void deleteCriteriaPane(final AdvancedCriteriaBorderPane pane, final GraphElementType type) {
+    public void deleteCriteriaPane(final AdvancedCriteriaBorderPane pane, final GraphElementType type, final int index) {
         final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
         final GridPane gridPane = getCorrespondingGridPane(type);
 
         criteriaList.remove(pane);
         gridPane.getChildren().remove(pane);
+        gridPane.getChildren().removeAll(gridPane.getChildren());
+
+        int i = 0;
+        for (AdvancedCriteriaBorderPane cirteriaPane : criteriaList) {
+            if (i == index) {
+                i++;
+            }
+            gridPane.add(cirteriaPane, 0, i);
+            i++;
+        }
 
         updateGridColours(type);
     }
@@ -243,7 +277,6 @@ public class AdvancedFindTab extends Tab {
     public void addCriteriaPane(final GraphElementType type) {
         final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
         final GridPane gridPane = getCorrespondingGridPane(type);
-
         // adds a new StrinCriteriaPanel to the end of the criteriaPaneList
         criteriaList.add(new StringCriteriaPanel(this, "Identifier", getSelectedGraphElementType()));
         gridPane.add(criteriaList.get(criteriaList.size() - 1), 0, gridPane.getRowCount());
@@ -261,42 +294,44 @@ public class AdvancedFindTab extends Tab {
      * @param type
      * @param attributeName
      */
-    public void changeCriteriaPane(final AdvancedCriteriaBorderPane criteriaPane, final GraphElementType type, final String attributeName) {
-        final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
-        final GridPane gridPane = getCorrespondingGridPane(type);
+    public void changeCriteriaPane(final AdvancedCriteriaBorderPane criteriaPane, final GraphElementType type, final String attributeName, final boolean updateUI) {
+        if (!updateUI) {
+            final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
+            final GridPane gridPane = getCorrespondingGridPane(type);
 
-        // For each of the panes in the criteriaList.
-        for (final AdvancedCriteriaBorderPane pane : criteriaList) {
-            //  If the pane == the pane passed in, get its index and get the
-            //  list of attributes it contains.
-            if (criteriaPane == pane) {
-                final int paneIndex = criteriaList.indexOf(pane);
-                final List<Attribute> attributeList = new ArrayList<>(pane.getAttributesList());
+            // For each of the panes in the criteriaList.
+            for (final AdvancedCriteriaBorderPane pane : criteriaList) {
+                //  If the pane == the pane passed in, get its index and get the
+                //  list of attributes it contains.
+                if (criteriaPane == pane) {
+                    final int paneIndex = criteriaList.indexOf(pane);
+                    final List<Attribute> attributeList = new ArrayList<>(pane.getAttributesList());
 
-                // delete the pane
-                deleteCriteriaPane(pane, type);
+                    // delete the pane
+                    deleteCriteriaPane(pane, type, paneIndex);
 
-                // for each of the attributes within the attribute list
-                for (Attribute a : attributeList) {
+                    // for each of the attributes within the attribute list
+                    for (Attribute a : attributeList) {
 
-                    // if the new attribute requested == a.getName
-                    if (attributeName == a.getName()) {
+                        // if the new attribute requested == a.getName
+                        if (attributeName == a.getName()) {
 
-                        // Add a new CriteriaPane of the attributType passed
-                        // at the index the pane was originaly on.
-                        // Select the attributeName of the type passed
-                        criteriaList.add(paneIndex, getNewCriteriaPanel(a.getAttributeType(), attributeName, type));
-                        gridPane.add(criteriaList.get(paneIndex), 0, paneIndex);
-                        pane.getTypeChoiceBox().getSelectionModel().select(attributeName);
-                        GridPane.setHgrow(criteriaList.get(paneIndex), Priority.ALWAYS);
+                            // Add a new CriteriaPane of the attributType passed
+                            // at the index the pane was originaly on.
+                            // Select the attributeName of the type passed
+                            criteriaList.add(paneIndex, getNewCriteriaPanel(a.getAttributeType(), attributeName, type));
+                            gridPane.add(criteriaList.get(paneIndex), 0, paneIndex);
+                            pane.getTypeChoiceBox().getSelectionModel().select(attributeName);
+                            GridPane.setHgrow(criteriaList.get(paneIndex), Priority.ALWAYS);
 
-                        // update the colours of the list to match
-                        updateGridColours(type);
+                            // update the colours of the list to match
+                            updateGridColours(type);
 
-                        return;
+                            return;
+                        }
                     }
-                }
 
+                }
             }
         }
     }
@@ -316,6 +351,10 @@ public class AdvancedFindTab extends Tab {
             case StringAttributeDescription.ATTRIBUTE_NAME:
                 return new StringCriteriaPanel(this, attributeName, type);
             case FloatAttributeDescription.ATTRIBUTE_NAME:
+                return new FloatCriteriaPanel(this, attributeName, type);
+            case IntegerAttributeDescription.ATTRIBUTE_NAME:
+                return new FloatCriteriaPanel(this, attributeName, type);
+            case LongAttributeDescription.ATTRIBUTE_NAME:
                 return new FloatCriteriaPanel(this, attributeName, type);
             case BooleanAttributeDescription.ATTRIBUTE_NAME:
                 return new BooleanCriteriaPanel(this, attributeName, type);
@@ -339,7 +378,7 @@ public class AdvancedFindTab extends Tab {
      * @param type
      * @return
      */
-    private List<AdvancedCriteriaBorderPane> getCorrespondingCriteriaList(final GraphElementType type) {
+    public List<AdvancedCriteriaBorderPane> getCorrespondingCriteriaList(final GraphElementType type) {
         return (type == GraphElementType.VERTEX ? nodeFindCriteriaList : transactionFindCriteriaList);
 
     }
@@ -370,6 +409,15 @@ public class AdvancedFindTab extends Tab {
         listScrollPane.setContent(gridPane);
     }
 
+    /**
+     * This function loops through all current criteria panes and reads their
+     * values. It stores these values as a findCriteriaValues object and returns
+     * them all in a list. This is used just before commencing a search
+     * function.
+     *
+     * @param list The list of criteria panes to read values from
+     * @return A list containing all criteria panes values
+     */
     public List<FindCriteriaValues> getCriteriaValues(List<AdvancedCriteriaBorderPane> list) {
         List<FindCriteriaValues> criteriaValuesList = new ArrayList<>();
         for (AdvancedCriteriaBorderPane pane : list) {
@@ -378,6 +426,14 @@ public class AdvancedFindTab extends Tab {
         return criteriaValuesList;
     }
 
+    /**
+     * This function takes a graph element type, gets the corresponding criteria
+     * values list and saves all the UI preferences into a
+     * AdvancedSearchParamters object. This object is then saved into the
+     * AdvancedSerachParamter object in the controller.
+     *
+     * @param type The graph element type being saved
+     */
     public void updateAdvancedSearchParameters(GraphElementType type) {
         final List<FindCriteriaValues> criteriaValuesList = getCriteriaValues(getCorrespondingCriteriaList(type));
         AdvancedSearchParameters parameters = new AdvancedSearchParameters(criteriaValuesList, type,
@@ -387,11 +443,49 @@ public class AdvancedFindTab extends Tab {
         FindViewController.getDefault().updateAdvancedSearchParameters(parameters);
     }
 
+    /**
+     * This action is called when the find all button is pressed. It calls the
+     * retrieveAdvancedSearch function in the controller with searchAll = true
+     * and searchNext = false;
+     */
     public void findAllAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
             FindViewController.getDefault().retrieveAdvancedSearch(true, false);
         }
+    }
+
+    /**
+     * This action is called when the find next button is pressed. It calls the
+     * retrieveAdvancedSearch function in the controller with searchAll = false
+     * and searchNext = true;
+     */
+    public void findNextAction() {
+        if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()))).isEmpty()) {
+            updateAdvancedSearchParameters(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+            FindViewController.getDefault().retrieveAdvancedSearch(false, true);
+        }
+    }
+
+    /**
+     * This action is called when the find next prev is pressed. It calls the
+     * retrieveAdvancedSearch function in the controller with searchAll = false
+     * and searchNext = false;
+     */
+    public void findPreviousAction() {
+        if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()))).isEmpty()) {
+            updateAdvancedSearchParameters(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+            FindViewController.getDefault().retrieveAdvancedSearch(false, false);
+        }
+    }
+
+    /**
+     * Gets the lookForChoiceBox
+     *
+     * @return
+     */
+    public ChoiceBox<String> getLookForChoiceBox() {
+        return lookForChoiceBox;
     }
 
     public Button getAddButton() {

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
@@ -49,7 +50,7 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
 
         searchField.textProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
+            public void changed(final ObservableValue<? extends String> observable, String oldValue,
                     String newValue) {
                 // Retrieve the index of a "."
                 int index = searchField.getText().indexOf(".");
@@ -66,7 +67,7 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
         });
         searchFieldTwo.textProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
+            public void changed(final ObservableValue<? extends String> observable, String oldValue,
                     String newValue) {
                 // Retrieve the index of a "."
                 int index = searchFieldTwo.getText().indexOf(".");
@@ -98,19 +99,20 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
         searchFieldTwo.setDisable(true);
     }
 
+    /**
+     * This returns a FindCriteriaValue, specifically a FloatCriteriaValues
+     * containing this panes selections and the current float values
+     *
+     * @return
+     */
     @Override
     public FindCriteriaValues getCriteriaValues() {
-        float floatNumberPrimary = searchField.getText().isBlank() ? 0 : Float.parseFloat(searchField.getText());
+        final float floatNumberPrimary = searchField.getText().isBlank() ? 0 : Float.parseFloat(searchField.getText());
         if (getFilterChoiceBox().getSelectionModel().getSelectedItem().equals("Is Between")) {
-            float floatNumberSecondary = searchFieldTwo.getText().isBlank() ? 0 : Float.parseFloat(searchFieldTwo.getText());
+            final float floatNumberSecondary = searchFieldTwo.getText().isBlank() ? 0 : Float.parseFloat(searchFieldTwo.getText());
             return new FloatCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), floatNumberPrimary, floatNumberSecondary);
         }
         return new FloatCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), floatNumberPrimary);
-    }
-
-    @Override
-    public String getType() {
-        return "float"; //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -125,4 +127,8 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
         searchFieldTwo.setDisable(!choiceSelection.equals("Is Between"));
     }
 
+    @Override
+    public String getType() {
+        return FloatAttributeDescription.ATTRIBUTE_NAME;
+    }
 }

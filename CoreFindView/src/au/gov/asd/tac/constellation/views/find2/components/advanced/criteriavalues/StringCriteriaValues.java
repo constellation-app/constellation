@@ -26,15 +26,37 @@ public class StringCriteriaValues extends FindCriteriaValues {
 
     private String text;
     private List<String> textList = new ArrayList<>();
+    private boolean ignoreCase;
+    private boolean useList;
 
-    public StringCriteriaValues(final String attributeType, final String attribute, final String filter, final String text) {
+    public StringCriteriaValues(final String attributeType, final String attribute, final String filter, final String text, final boolean ignoreCase, final boolean useList) {
         super(attributeType, attribute, filter);
         this.text = text;
+        this.ignoreCase = ignoreCase;
+        this.useList = useList;
     }
 
-    public StringCriteriaValues(final String attributeType, final String attribute, final String filter, final List<String> textList) {
+    public StringCriteriaValues(final String attributeType, final String attribute, final String filter, final List<String> textList, final boolean ignoreCase, final boolean useList) {
         super(attributeType, attribute, filter);
         this.textList = textList;
+        this.ignoreCase = ignoreCase;
+        this.useList = useList;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public List<String> getTextList() {
+        return textList;
+    }
+
+    public boolean isIgnoreCase() {
+        return ignoreCase;
+    }
+
+    public boolean isUseList() {
+        return useList;
     }
 
 }

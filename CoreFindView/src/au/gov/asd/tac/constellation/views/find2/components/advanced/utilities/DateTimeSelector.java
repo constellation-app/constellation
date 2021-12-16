@@ -231,11 +231,11 @@ public class DateTimeSelector extends Stage {
      */
     public String saveTime() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(hourSpinner.getValue().toString());
-        sb.append(":" + minSpinner.getValue().toString());
-        sb.append(":" + secSpinner.getValue().toString());
+        sb.append(hourSpinner.getValue() < 10 ? "0" + hourSpinner.getValue().toString() : hourSpinner.getValue().toString());
+        sb.append(":" + (minSpinner.getValue() < 10 ? "0" + minSpinner.getValue().toString() : minSpinner.getValue().toString()));
+        sb.append(":" + (secSpinner.getValue() < 10 ? "0" + secSpinner.getValue().toString() : secSpinner.getValue().toString()));
         if (milliSpinner.getValue() != 0) {
-            sb.append(":" + milliSpinner.getValue().toString());
+            sb.append(":" + (milliSpinner.getValue() < 10 ? "0" + milliSpinner.getValue().toString() : milliSpinner.getValue().toString()));
         }
         return sb.toString();
     }
