@@ -60,9 +60,7 @@ public class IconEditorUtilities {
         filesInPath.forEach(file -> {
             if (file.isDirectory()) {
                 filesToAdd.add(file);
-            }
-
-            if (StringUtils.endsWithIgnoreCase(file.getAbsolutePath(), FileExtensionConstants.PNG)) {
+            } else if (StringUtils.endsWithIgnoreCase(file.getAbsolutePath(), FileExtensionConstants.PNG)) {
                 filesToAdd.add(file);
             }
         });
