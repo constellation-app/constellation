@@ -300,11 +300,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     }
 
     private void setFilterStyle(final String value) {
-        if (setFilter(value)) {
-            filterField.setStyle(FILTER_STYLE);
-        } else {
-            filterField.setStyle(FILTER_STYLE_ALERT);
-        }
+        filterField.setStyle(setFilter(value) ? FILTER_STYLE : FILTER_STYLE_ALERT);
     }
 
     /**
