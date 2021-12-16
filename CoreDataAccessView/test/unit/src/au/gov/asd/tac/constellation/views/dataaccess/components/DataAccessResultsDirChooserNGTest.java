@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.times;
 import org.openide.filesystems.FileChooserBuilder;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
@@ -107,10 +108,18 @@ public class DataAccessResultsDirChooserNGTest {
                 -> FileChooser.openOpenDialog(Mockito.any(FileChooserBuilder.class)))
                 .thenReturn(CompletableFuture.completedFuture(optionalFile));
 
+        DataAccessPreferenceUtilitiesMock.when(()
+                -> DataAccessPreferenceUtilities.setDataAccessResultsDir(file.getAbsoluteFile()))
+                .thenCallRealMethod();
+
+        DataAccessPreferenceUtilitiesMock.when(()
+                -> DataAccessPreferenceUtilities.getDataAccessResultsDir())
+                .thenReturn(file);
+
         instance.openAndSaveToPreferences();
 
         DataAccessPreferenceUtilitiesMock.verify(()
-                -> DataAccessPreferenceUtilities.setDataAccessResultsDir(file.getAbsoluteFile()));
+                -> DataAccessPreferenceUtilities.setDataAccessResultsDir(file.getAbsoluteFile()), times(1));
     }
 
     @Test
