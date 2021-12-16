@@ -122,8 +122,8 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
             final String dateString = datePicker.getEditor().getText();
-            //The converter is being used here to try and determine if the entered date is a LocalDate
-            //It will throw an exception and won't convert it if its invalid
+            // The converter is being used here to try and determine if the entered date is a LocalDate
+            // It will throw an exception and won't convert it if its invalid
             try {
                 if (!StringUtils.isBlank(dateString)) {
                     datePicker.setValue(datePicker.getConverter().fromString(dateString));
@@ -162,7 +162,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             timeZoneComboBox.setItems(timeZones.sorted(zoneIdComparator));
             final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<ZoneId>() {
                 @Override
-                protected void updateItem(final ZoneId item, boolean empty) {
+                protected void updateItem(final ZoneId item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         setText(TimeZoneUtilities.getTimeZoneAsString(currentValue == null ? null : currentValue.toLocalDateTime(), item));

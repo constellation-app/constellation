@@ -66,10 +66,10 @@ public class AttributeData extends AttributePrototype {
      * @param isSchema whether or not the attribute belongs to the graph's
      * schema.
      */
-    public AttributeData(String name, String description, int id, long modCount, GraphElementType elementType, String dataType, Object defaultValue, boolean isKey, boolean isSchema) {
+    public AttributeData(final String name, final String description, final int id, final long modCount, final GraphElementType elementType, final String dataType, final Object defaultValue, final boolean isKey, final boolean isSchema) {
         super(name, description, elementType, dataType, defaultValue);
-        attributeId = id;
-        modificationCount = modCount;
+        this.attributeId = id;
+        this.modificationCount = modCount;
         this.isKey = isKey;
         this.isSchema = isSchema;
     }
@@ -92,8 +92,8 @@ public class AttributeData extends AttributePrototype {
      * @return True if newModCount was different to the current mod count, false
      * otherwise.
      */
-    public boolean attibuteValueHasChanged(long newModCount) {
-        boolean changed = newModCount != getModificationCount();
+    public boolean attibuteValueHasChanged(final long newModCount) {
+        final boolean changed = newModCount != getModificationCount();
         modificationCount = newModCount;
         return changed;
     }

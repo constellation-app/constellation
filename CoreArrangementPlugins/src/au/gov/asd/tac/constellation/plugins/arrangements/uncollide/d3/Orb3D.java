@@ -37,7 +37,7 @@ public final class Orb3D {
         return x;
     }
 
-    public void setX(float x) {
+    public void setX(final float x) {
         this.x = x;
     }
 
@@ -45,7 +45,7 @@ public final class Orb3D {
         return y;
     }
 
-    public void setY(float y) {
+    public void setY(final float y) {
         this.y = y;
     }
 
@@ -53,7 +53,7 @@ public final class Orb3D {
         return z;
     }
 
-    public void setZ(float z) {
+    public void setZ(final float z) {
         this.z = z;
     }
 

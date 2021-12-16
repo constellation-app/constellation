@@ -116,7 +116,7 @@ later time, using the "Options" menu in the top left corner.
 When a template is saved, the import definition name is used to name the
 saved query. If a query of that name has already been saved, you will be
 asked if you want to overwrite it. Templates are saved in the directory
-"\<HOME_DIRECTORY>/.CONSTELLATION/ImportJDBC". (The name of the file in
+"&lt;HOME_DIRECTORY&gt;/.CONSTELLATION/ImportJDBC". (The name of the file in
 which the template is saved is encoded so it doesn't clash with file
 system limitations.) Files in this directory can be deleted using your
 favourite file management utility.

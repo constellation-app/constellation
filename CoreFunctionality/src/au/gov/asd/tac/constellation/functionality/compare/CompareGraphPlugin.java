@@ -251,7 +251,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
             throw new PluginException(PluginNotificationLevel.ERROR, String.format(GRAPH_NOT_FOUND_ERROR, compareGraphName));
         }
 
-        ReadableGraph rg;
         final GraphRecordStore originalAll;
         final GraphRecordStore compareAll;
 
@@ -259,7 +258,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final Set<String> transactionPrimaryKeys;
 
         // get a copy of the graph's record store and statistical info
-        rg = originalGraph.getReadableGraph();
+        ReadableGraph rg = originalGraph.getReadableGraph();
         try {
             originalAll = GraphRecordStoreUtilities.getAll(rg, false, true);
             vertexPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg, GraphElementType.VERTEX);
@@ -279,9 +278,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         ignoreVertexAttributes.add("[id]");
         ignoreTransactionAttributes.add("[id]");
 
-        // statistics
-        // TODO: add statistics to the log output.
-//        final Map<String, Integer> statisticalDifferences = calculateStatisticalDifferences(originalStatistics, compareStatistics);
         // graph changes
         final String title = String.format("Compare: %s <> %s", originalGraphName, compareGraphName);
         final GraphRecordStore changes = compareGraphs(title, originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, addedColourValue, removedColourValue, changedColourValue, unchangedColourValue);
@@ -418,6 +414,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                                 break;
                             case "destination":
                             case "transaction":
+                                // Intentionally left blank
                                 break;
                             default:
                                 break;

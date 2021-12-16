@@ -53,23 +53,23 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
         zAttribute = VisualConcept.VertexAttribute.Z.get(graph);
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
 
-        int[] parents = new int[graph.getVertexCapacity()];
-        int[] depths = new int[graph.getVertexCapacity()];
-        int[] cycles = new int[graph.getVertexCapacity()];
-        int[][] children = new int[graph.getVertexCapacity()][];
-        float[] radii = new float[graph.getVertexCapacity()];
+        final int[] parents = new int[graph.getVertexCapacity()];
+        final int[] depths = new int[graph.getVertexCapacity()];
+        final int[] cycles = new int[graph.getVertexCapacity()];
+        final int[][] children = new int[graph.getVertexCapacity()][];
+        final float[] radii = new float[graph.getVertexCapacity()];
 
-        int firstVertex = graph.getVertex(0);
+        final int firstVertex = graph.getVertex(0);
         parents[firstVertex] = -1;
         depths[firstVertex] = 1;
         extendSpanningTree(graph, firstVertex, parents, depths, cycles);
 
-        int vertexCount = graph.getVertexCount();
+        final int vertexCount = graph.getVertexCount();
         for (int position = 0; position < vertexCount; position++) {
-            int vertex = graph.getVertex(position);
+           final int vertex = graph.getVertex(position);
 
             if (cycles[vertex] == 0) {
-                int parent = parents[vertex];
+                final int parent = parents[vertex];
                 if (parent > 0) {
                     int[] parentChildren = children[parent];
                     if (parentChildren == null) {
@@ -84,7 +84,7 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
 
         float totalRadius = 4;
         for (int position = 0; position < vertexCount; position++) {
-            int vertex = graph.getVertex(position);
+            final int vertex = graph.getVertex(position);
 
             if (cycles[vertex] > 0) {
                 totalRadius += layout(graph, vertex, children, radii);
@@ -95,7 +95,7 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
 
         float angle = 0;
         for (int position = 0; position < vertexCount; position++) {
-            int vertex = graph.getVertex(position);
+            final int vertex = graph.getVertex(position);
 
             if (cycles[vertex] > 0) {
                 angle += radii[vertex] / totalRadius;
@@ -106,16 +106,14 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
     }
 
     private static void extendSpanningTree(final GraphWriteMethods graph, final int vertex, final int[] parents, final int[] depths, final int[] cycles) {
-
-        int parent = parents[vertex];
-        int neighbourCount = graph.getVertexNeighbourCount(vertex);
+        final int parent = parents[vertex];
+        final int neighbourCount = graph.getVertexNeighbourCount(vertex);
+        
         for (int position = 0; position < neighbourCount; position++) {
             int neighbour = graph.getVertexNeighbour(vertex, position);
-
+            
             if (neighbour != parent) {
-
                 if (depths[neighbour] > 0) {
-
                     int v = vertex;
                     while (v != neighbour) {
                         if (depths[v] < depths[neighbour]) {
@@ -127,13 +125,10 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
                         }
                     }
                     cycles[v] = 1;
-
                 } else {
-
                     parents[neighbour] = vertex;
                     depths[neighbour] = depths[vertex] + 1;
                     extendSpanningTree(graph, neighbour, parents, depths, cycles);
-
                 }
             }
         }
@@ -147,9 +142,9 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
 
         float totalRadius = 0;
 
-        int[] vertexChildren = children[vertex];
+        final int[] vertexChildren = children[vertex];
         if (vertexChildren != null) {
-            int childCount = vertexChildren[0];
+            final int childCount = vertexChildren[0];
 
             for (int position = 0; position < childCount; position++) {
                 totalRadius += layout(graph, vertexChildren[position + 1], children, radii);
@@ -158,7 +153,7 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
             totalRadius /= Math.PI;
             float angle = 0;
             for (int position = 0; position < childCount; position++) {
-                int child = vertexChildren[position + 1];
+                final int child = vertexChildren[position + 1];
                 angle += totalRadius != 0 ? radii[child] / totalRadius : radii[child];
                 offset(graph, child, children, (float) Math.sin(angle) * totalRadius, (float) Math.cos(angle) * totalRadius, 0);
                 angle += totalRadius != 0 ? radii[child] / totalRadius : radii[child];
@@ -176,9 +171,9 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
         graph.setFloatValue(yAttribute, vertex, graph.getFloatValue(yAttribute, vertex) + y);
         graph.setFloatValue(zAttribute, vertex, graph.getFloatValue(zAttribute, vertex) + z);
 
-        int[] vertexChildren = children[vertex];
+        final int[] vertexChildren = children[vertex];
         if (vertexChildren != null) {
-            int childCount = vertexChildren[0];
+            final int childCount = vertexChildren[0];
             for (int position = 0; position < childCount; position++) {
                 offset(graph, vertexChildren[position + 1], children, x, y, z);
             }

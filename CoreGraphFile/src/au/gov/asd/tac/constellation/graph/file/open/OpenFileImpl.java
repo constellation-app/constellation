@@ -60,5 +60,5 @@ public interface OpenFileImpl {
      * <code>-1</code> to ignore
      * @return true on success, false on failure
      */
-    boolean open(FileObject fileObject, int line);
+    boolean open(final FileObject fileObject, final int line);
 }

@@ -81,6 +81,5 @@ public final class KTrussAction extends AbstractAction {
                 }
             });
         }
-
     }
 }

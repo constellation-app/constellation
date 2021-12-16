@@ -94,7 +94,7 @@ public class OpenFileAction implements ActionListener {
      * @return the initialized file chooser
      */
     protected JFileChooser prepareFileChooser() {
-        JFileChooser chooser = new FileChooser();
+        final JFileChooser chooser = new FileChooser();
         chooser.setCurrentDirectory(getCurrentDirectory());
         HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
 
@@ -123,8 +123,7 @@ public class OpenFileAction implements ActionListener {
      * @exception org.openide.util.UserCancelException if the user cancelled the
      * operation
      */
-    public static File[] chooseFilesToOpen(final JFileChooser chooser)
-            throws UserCancelException {
+    public static File[] chooseFilesToOpen(final JFileChooser chooser) throws UserCancelException {
         File[] files;
         do {
             int selectedOption = chooser.showOpenDialog(
@@ -149,12 +148,12 @@ public class OpenFileAction implements ActionListener {
         }
         try {
             running = true;
-            JFileChooser chooser = prepareFileChooser();
+            final JFileChooser chooser = prepareFileChooser();
             File[] files;
             try {
                 files = chooseFilesToOpen(chooser);
                 saveCurrentDirectory(chooser.getCurrentDirectory());
-            } catch (UserCancelException ex) {
+            } catch (final UserCancelException ex) {
                 return;
             }
             for (final File file : files) {
@@ -173,11 +172,11 @@ public class OpenFileAction implements ActionListener {
     private static File getCurrentDirectory() {
         if (Boolean.getBoolean("netbeans.openfile.197063")) {
             // Prefer to open from parent of active editor, if any.
-            TopComponent activated = TopComponent.getRegistry().getActivated();
+            final TopComponent activated = TopComponent.getRegistry().getActivated();
             if (activated != null && WindowManager.getDefault().isOpenedEditorTopComponent(activated)) {
-                DataObject d = activated.getLookup().lookup(DataObject.class);
+                final DataObject d = activated.getLookup().lookup(DataObject.class);
                 if (d != null) {
-                    File f = FileUtil.toFile(d.getPrimaryFile());
+                    final File f = FileUtil.toFile(d.getPrimaryFile());
                     if (f != null) {
                         return f.getParentFile();
                     }
@@ -188,7 +187,7 @@ public class OpenFileAction implements ActionListener {
         lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
         rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
 
-        //Check prefferences for last saved directory
+        // Check prefferences for last saved directory
         return new File((lastFileOpenAndSaveLocation.isEmpty() || !rememberOpenAndSaveLocation) ? System.getProperty("user.home") : lastFileOpenAndSaveLocation);
     }
 }

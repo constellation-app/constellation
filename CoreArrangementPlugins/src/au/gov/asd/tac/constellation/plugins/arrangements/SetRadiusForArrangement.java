@@ -60,11 +60,11 @@ public class SetRadiusForArrangement {
         labelSizeArray = new float[labelAttrArray.length];
 
         int labelNum = 0;
-        for (GraphLabel label : bottomLabels.getLabels()) {
+        for (final GraphLabel label : bottomLabels.getLabels()) {
             labelAttrArray[labelNum] = graph.getAttribute(GraphElementType.VERTEX, label.getAttributeName());
             labelSizeArray[labelNum++] = label.getSize();
         }
-        for (GraphLabel label : topLabels.getLabels()) {
+        for (final GraphLabel label : topLabels.getLabels()) {
             labelAttrArray[labelNum] = graph.getAttribute(GraphElementType.VERTEX, label.getAttributeName());
             labelSizeArray[labelNum++] = label.getSize();
         }
@@ -87,7 +87,7 @@ public class SetRadiusForArrangement {
                 continue;
             }
 
-            Object obj = graph.getObjectValue(labelAttrArray[i], vxId);
+            final Object obj = graph.getObjectValue(labelAttrArray[i], vxId);
             float currentLabelWidth;
 
             int characters = (obj == null || obj.toString() == null) ? 0 : obj.toString().length();
@@ -99,7 +99,7 @@ public class SetRadiusForArrangement {
             }
         }
 
-        float nodeRadius = graph.getFloatValue(nodeRadiusAttr, vxId);
+        final float nodeRadius = graph.getFloatValue(nodeRadiusAttr, vxId);
         graph.setFloatValue(labelRadiusAttr, vxId, maxLabelWidth * nodeRadius);
     }
 }

@@ -92,5 +92,4 @@ public class UpdateTimeZonePlugin extends SimpleEditPlugin {
                 break;
         }
     }
-
 }

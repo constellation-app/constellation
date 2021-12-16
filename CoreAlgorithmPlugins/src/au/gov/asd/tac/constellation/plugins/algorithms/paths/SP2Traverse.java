@@ -33,7 +33,7 @@ public class SP2Traverse {
      * @param graph
      * @return
      */
-    static void traverse(final GraphWriteMethods graph) {
+    protected static void traverse(final GraphWriteMethods graph) {
 
         /*
          Initialising variables

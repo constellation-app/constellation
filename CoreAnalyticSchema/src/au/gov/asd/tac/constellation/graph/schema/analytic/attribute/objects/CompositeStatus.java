@@ -60,5 +60,4 @@ public enum CompositeStatus {
                 return null;
         }
     }
-
 }

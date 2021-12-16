@@ -60,7 +60,7 @@ public class HelpSearchProvider implements SearchProvider {
             if (fileName.contains(text)) {
 
                 // Create a display name that is easier to search
-                String displayName = fileName.replaceAll("-", " ");
+                String displayName = fileName.replace("-", " ");
                 final int indexMD = displayName.lastIndexOf(".");
                 displayName = displayName.substring(0, indexMD);
 

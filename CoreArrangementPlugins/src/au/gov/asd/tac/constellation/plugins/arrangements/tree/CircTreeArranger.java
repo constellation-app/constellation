@@ -155,7 +155,7 @@ public final class CircTreeArranger implements Arranger {
      * @param children
      */
     private static void removeChildren(final BitSet vxs, final ArrayList<VxInfo> children) {
-        for (VxInfo vxInfo : children) {
+        for (final VxInfo vxInfo : children) {
             vxs.clear(vxInfo.vxId);
         }
     }
@@ -167,11 +167,7 @@ public final class CircTreeArranger implements Arranger {
      * Record result an AtomicQueue stored by parent in hash table. Returns
      * number of children for vertex.
      */
-    private int orderChildren(
-            final int vxId,
-            final BitSet vxsToGo,
-            final HashMap<Integer, ArrayList<VxInfo>> orderedChildren,
-            final BitSet onlyChildren) {
+    private int orderChildren(final int vxId, final BitSet vxsToGo, final HashMap<Integer, ArrayList<VxInfo>> orderedChildren, final BitSet onlyChildren) {
         final ArrayList<VxInfo> children = new ArrayList<>();
 
         // For the specified vertex, get its children and record how many children they have.
@@ -196,7 +192,7 @@ public final class CircTreeArranger implements Arranger {
 
         int result = 1;
         final ArrayList<VxInfo> numChildren = new ArrayList<>();
-        for (VxInfo vxInfo : children) {
+        for (final VxInfo vxInfo : children) {
             final int nChildren = orderChildren(vxInfo.vxId, vxsToGo, orderedChildren, onlyChildren);
             numChildren.add(new VxInfo(vxInfo.vxId, nChildren));
             result += nChildren;
@@ -256,7 +252,8 @@ public final class CircTreeArranger implements Arranger {
         int maxThisCircle = MAX_IN_ONE_CIRCLE;
         int nChildless = 0;
         int nWithChildren = 0;
-        for (VxInfo child : children) {
+        
+        for (final VxInfo child : children) {
             if (orderedChildren.containsKey(child.vxId)) {
                 nWithChildren++;
             } else {
@@ -275,7 +272,7 @@ public final class CircTreeArranger implements Arranger {
             // Iterate through each, adding contributions to radius.
             float childrenCircum = 0;
             float maxChildRadius = 0;
-            for (VxInfo child : children) {
+            for (final VxInfo child : children) {
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
@@ -309,7 +306,7 @@ public final class CircTreeArranger implements Arranger {
             float maxChildRadiusThisAnnulus = 0;
             final ArrayDeque<VxInfo> needRadii = new ArrayDeque<>();
             float lastChildRadius = 0;
-            for (VxInfo child : children) {
+            for (final VxInfo child : children) {
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
@@ -422,8 +419,7 @@ public final class CircTreeArranger implements Arranger {
         } else {
             // More than one child.
 
-            if (strictCircularLayout || annulusInfo[children.get(children.size() - 1).vxId] == null) // annulusInfo[children.get(0).vxId]==null
-            {
+            if (strictCircularLayout || annulusInfo[children.get(children.size() - 1).vxId] == null) { // annulusInfo[children.get(0).vxId]==null
                 // Remove these children from consideration.
                 removeChildren(vxsToGo, children);
 
@@ -434,7 +430,7 @@ public final class CircTreeArranger implements Arranger {
 
                 // Figure out available and needed circumferences.
                 float neededCircumference = 0;
-                for (VxInfo child : children) {
+                for (final VxInfo child : children) {
                     neededCircumference += 2 * fullRadii[child.vxId];
                 }
 
@@ -444,8 +440,8 @@ public final class CircTreeArranger implements Arranger {
                 // Loop through each child, positioning it and its satellites.
                 float oldRadiusIncrement = 0;
                 boolean doneOne = false;
-                float accumToRadians = neededCircumference != 0 ? TWO_PI / neededCircumference : 0;
-                for (VxInfo child : children) {
+                final float accumToRadians = neededCircumference != 0 ? TWO_PI / neededCircumference : 0;
+                for (final VxInfo child : children) {
                     if (Thread.interrupted()) {
                         throw new InterruptedException();
                     }
@@ -475,7 +471,7 @@ public final class CircTreeArranger implements Arranger {
                 float cumAngle = 0;
                 float lastAnnulus = 0;
                 final float outermostAnnulus = annulusInfo[children.get(children.size() - 1).vxId].radius;
-                for (VxInfo child : children) {
+                for (final VxInfo child : children) {
                     if (Thread.interrupted()) {
                         throw new InterruptedException();
                     }

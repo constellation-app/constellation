@@ -68,10 +68,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.CheckComboBox;
 import org.openide.util.HelpCtx;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * Handles generating UI elements for the Notes View pane and its notes.
@@ -336,21 +339,27 @@ public class NotesViewPane extends BorderPane {
      */
     protected void setGraphReport(final NotesViewController controller) {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        final GraphReport currentGraphReport = GraphReportManager.getGraphReport(activeGraph.getId());
+        if (activeGraph != null) {
+            final GraphReport currentGraphReport = GraphReportManager.getGraphReport(activeGraph.getId());
 
-        if (currentGraphReport != null) {
-            // Iterates the list of currently executed plugins.
-            currentGraphReport.getPluginReports().forEach(pluginReport -> {
-                // Omit low level plugins which are not useful as notes.
-                if (!pluginReport.hasLowLevelTag()) {
-                    addPluginReport(pluginReport);
-                }
-            });
-
-            // Update the Notes View UI.
-            if (activeGraph != null) {
-                updateNotesUI();
-                updateFilters();
+            if (currentGraphReport != null) {
+                // Iterates the list of currently executed plugins.
+                currentGraphReport.getPluginReports().forEach(pluginReport -> {
+                    // Omit low level plugins which are not useful as notes.
+                    if (!pluginReport.hasLowLevelTag()) {
+                        addPluginReport(pluginReport);
+                    }
+                });
+                
+                SwingUtilities.invokeLater(() -> {
+                    final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
+                    if (tc != null && tc.isOpened()) {
+                        // Update the Notes View UI.
+                        updateNotesUI();
+                        updateFilters();
+                    }                   
+                });
+                
                 controller.writeState(activeGraph);
             }
         }
@@ -424,7 +433,12 @@ public class NotesViewPane extends BorderPane {
                 notesViewEntries.forEach(note -> addNote(note));
             }
 
-            updateNotesUI();
+            SwingUtilities.invokeLater(() -> {
+                final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
+                if (tc != null && tc.isOpened()) {
+                    updateNotesUI();
+                }                   
+            });
         });
     }
 
@@ -607,7 +621,7 @@ public class NotesViewPane extends BorderPane {
         // Define content text area
         final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
         contentTextArea.setWrapText(true);
-        contentTextArea.positionCaret(contentTextArea.getText().length());
+        contentTextArea.positionCaret(contentTextArea.getText() == null ? 0 : contentTextArea.getText().length());
         final VBox noteInformation;
 
         // Define selection label

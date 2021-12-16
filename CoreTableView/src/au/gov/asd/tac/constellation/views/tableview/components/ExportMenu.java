@@ -30,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
@@ -295,16 +296,21 @@ public class ExportMenu {
                 lastExport = FileChooser.openSaveDialog(exportFileChooser)
                         .thenAccept(optionalFile ->
                             optionalFile.ifPresent(file -> {
-                                try {
-                                    PluginExecution.withPlugin(
-                                            exportPluginCreator.apply(file)
-                                    ).executeNow((Graph) null);
-                                } catch (final InterruptedException ex) {
-                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                                    Thread.currentThread().interrupt();
-                                } catch (final PluginException ex) {
-                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                                }
+                                final String filePath = file.getAbsolutePath().toLowerCase().endsWith(expectedFileExtension)
+                                        ? file.getAbsolutePath() : file.getAbsolutePath() + expectedFileExtension;
+                                final File fileName = new File(filePath);
+                                Platform.runLater(() -> {
+                                    try {
+                                        PluginExecution.withPlugin(
+                                                exportPluginCreator.apply(fileName)
+                                        ).executeNow((Graph) null);
+                                    } catch (final InterruptedException ex) {
+                                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                                        Thread.currentThread().interrupt();
+                                    } catch (final PluginException ex) {
+                                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                                    }
+                                });
                             })
                         );
             }

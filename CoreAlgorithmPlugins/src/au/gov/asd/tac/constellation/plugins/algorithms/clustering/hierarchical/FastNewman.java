@@ -44,7 +44,7 @@ public class FastNewman {
         run(graph, interaction, interactive, new HashSet<>(), AnalyticConcept.VertexAttribute.WEIGHT.getName());
     }
 
-    public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive, final Set<Integer> initialLinkIds, String weightAttribute) throws InterruptedException {
+    public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive, final Set<Integer> initialLinkIds, final String weightAttribute) throws InterruptedException {
 
         final int vertexCount = graph.getVertexCount();
         final int linkCount = graph.getLinkCount();
@@ -56,10 +56,8 @@ public class FastNewman {
         final Group[] groups = new Group[graph.getVertexCapacity()];
         final NavigableSet<Link> links = new TreeSet<>();
 
-        int weightAttributeId = Graph.NOT_FOUND;
-        if (weightAttribute != null) {
-            weightAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, weightAttribute);
-        }
+        final int weightAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, weightAttribute);
+        
         float totalWeight = 0;
         if (weightAttributeId != Graph.NOT_FOUND) {
             for (int p = 0; p < transactionCount; p++) {
@@ -73,7 +71,7 @@ public class FastNewman {
         // Once a Group is added to the array, the value of vertex doesn't change,
         // and the Group isn't subsequently moved. Therefore, the index of a Group
         // is it's position. Therefore, the index of groups[i].parent can be found
-        // by graph.getVertexPosition(parent.vertex);
+        // by graph getVertexPosition (parent.vertex)
         for (int position = 0; position < vertexCount; position++) {
             final int vxId = graph.getVertex(position);
 
