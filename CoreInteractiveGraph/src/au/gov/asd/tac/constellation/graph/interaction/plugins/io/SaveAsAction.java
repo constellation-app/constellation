@@ -65,6 +65,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
@@ -76,7 +78,6 @@ import org.openide.filesystems.FileChooserBuilder;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.SaveAsCapable;
 import org.openide.util.ContextAwareAction;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -117,6 +118,8 @@ import org.openide.windows.WindowManager;
     "MSG_SaveAs_FileInUse_Title=Save Graph"
 })
 public class SaveAsAction extends AbstractAction implements ContextAwareAction {
+
+    private static final Logger LOGGER = Logger.getLogger(SaveAsAction.class.getName());
 
     private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
@@ -189,9 +192,8 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
                     // Take a screenshot in a separate thread in parallel.
                     new Thread(() -> RecentGraphScreenshotUtilities.takeScreenshot(selectedFile.getName()), "Take Graph Screenshot").start();
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
-                    Exceptions.attachLocalizedMessage(ex, Bundle.MSG_SaveAsFailed(selectedFile.getName(), ex.getLocalizedMessage()));
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.WARNING, Bundle.MSG_SaveAsFailed(selectedFile.getName(), ex.getLocalizedMessage()));
                 }
 
                 isSaved = true;

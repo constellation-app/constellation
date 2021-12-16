@@ -58,9 +58,6 @@ public class ExportMenu {
     private static final String EXPORT_CSV_FILE_CHOOSER_TITLE = "Export To CSV";
     private static final String EXPORT_XLSX_FILE_CHOOSER_TITLE = "Export To XLSX";
 
-    public static final FileNameExtensionFilter CSV_FILE_FILTER = FileChooser.CSV_FILE_FILTER;
-    public static final FileNameExtensionFilter XLSX_FILE_FILTER = FileChooser.EXCEL_FILE_FILTER;
-
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
 
     private static final int WIDTH = 120;
@@ -92,7 +89,7 @@ public class ExportMenu {
         exportCsvMenu = createExportMenu(
                 EXPORT_CSV,
                 EXPORT_CSV_FILE_CHOOSER_TITLE,
-                CSV_FILE_FILTER,
+                FileChooser.CSV_FILE_FILTER,
                 file -> new ExportToCsvFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
@@ -104,7 +101,7 @@ public class ExportMenu {
         exportCsvSelectionMenu = createExportMenu(
                 EXPORT_CSV_SELECTION,
                 EXPORT_CSV_FILE_CHOOSER_TITLE,
-                CSV_FILE_FILTER,
+                FileChooser.CSV_FILE_FILTER,
                 file -> new ExportToCsvFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
@@ -115,7 +112,7 @@ public class ExportMenu {
 
         exportExcelMenu = createExportMenu(EXPORT_XLSX,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                XLSX_FILE_FILTER,
+                FileChooser.EXCEL_FILE_FILTER,
                 file -> new ExportToExcelFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),
@@ -128,7 +125,7 @@ public class ExportMenu {
 
         exportExcelSelectionMenu = createExportMenu(EXPORT_XLSX_SELECTION,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                XLSX_FILE_FILTER,
+                FileChooser.EXCEL_FILE_FILTER,
                 file -> new ExportToExcelFilePlugin(
                         file,
                         tablePane.getTable().getTableView(),

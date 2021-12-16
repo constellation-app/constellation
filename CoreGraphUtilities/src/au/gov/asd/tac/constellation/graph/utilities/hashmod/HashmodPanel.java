@@ -70,7 +70,7 @@ public class HashmodPanel extends javax.swing.JPanel {
             return chainedHashmods[0];
         }
 
-        return !hashmodCSVFileStr.isBlank() ? new Hashmod(hashmodCSVFileStr) : new Hashmod();
+        return StringUtils.isNotBlank(hashmodCSVFileStr) ? new Hashmod(hashmodCSVFileStr) : new Hashmod();
     }
 
     public boolean isChainedHashmods() {

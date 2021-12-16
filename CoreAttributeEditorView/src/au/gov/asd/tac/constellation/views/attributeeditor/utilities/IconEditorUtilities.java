@@ -41,9 +41,7 @@ public class IconEditorUtilities {
      * @return list of png files
      */
     public static List<File> pngWalk(final File path) {
-        final List<File> files = new ArrayList<>();
-        pngWalk(path, files);
-        return files;
+        return pngWalk(path, new ArrayList<>());
     }
 
     /**
@@ -62,10 +60,8 @@ public class IconEditorUtilities {
         filesInPath.forEach(file -> {
             if (file.isDirectory()) {
                 filesToAdd.add(file);
-            } else {
-                if (StringUtils.endsWithIgnoreCase(file.getAbsolutePath(), FileExtensionConstants.PNG)) {
-                    filesToAdd.add(file);
-                }
+            } else if (StringUtils.endsWithIgnoreCase(file.getAbsolutePath(), FileExtensionConstants.PNG)) {
+                filesToAdd.add(file);
             }
         });
 

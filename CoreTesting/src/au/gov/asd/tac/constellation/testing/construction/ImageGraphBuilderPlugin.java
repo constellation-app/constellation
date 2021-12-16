@@ -288,7 +288,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
      */
     private static BufferedImage loadImage(final File file) throws IOException {
         final ByteArrayOutputStream out;
-        try (InputStream in = new FileInputStream(file)) {
+        try (final InputStream in = new FileInputStream(file)) {
             out = new ByteArrayOutputStream();
             final byte[] buf = new byte[1024];
             while (true) {
@@ -320,7 +320,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final ArrayList<Integer> loffsets = new ArrayList<>();
         final ArrayList<Integer> toffsets = new ArrayList<>();
 
-        try (ImageInputStream imageStream = new FileImageInputStream(file)) {
+        try (final ImageInputStream imageStream = new FileImageInputStream(file)) {
             final Iterator<ImageReader> readers = ImageIO.getImageReaders(imageStream);
             ImageReader reader = null;
             while (readers.hasNext()) {

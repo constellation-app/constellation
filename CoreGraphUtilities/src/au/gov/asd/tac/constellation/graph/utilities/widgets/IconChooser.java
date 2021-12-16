@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -55,6 +57,8 @@ import org.openide.filesystems.FileChooserBuilder;
  * @author algol
  */
 public final class IconChooser extends javax.swing.JPanel implements TreeSelectionListener, ListSelectionListener {
+
+    private static final Logger LOGGER = Logger.getLogger(IconChooser.class.getName());
 
     private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
@@ -337,6 +341,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                 }
             } catch (final IOException ex) {
                 NotifyDisplayer.display(String.format("Error writing icon file %s:%n%s", selectedFile.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             }
         }));
 }//GEN-LAST:event_saveButtonActionPerformed

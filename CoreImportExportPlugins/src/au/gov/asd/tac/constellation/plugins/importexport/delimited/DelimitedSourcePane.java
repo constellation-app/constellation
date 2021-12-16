@@ -197,8 +197,8 @@ public class DelimitedSourcePane extends SourcePane {
 
         try {
             cdl.await();
-        } catch (InterruptedException ex) {
-            LOGGER.log(Level.WARNING, ex.toString());
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             Thread.currentThread().interrupt();
         }
 

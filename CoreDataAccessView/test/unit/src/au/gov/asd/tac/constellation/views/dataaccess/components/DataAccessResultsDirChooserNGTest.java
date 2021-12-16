@@ -15,17 +15,28 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.openide.filesystems.FileChooserBuilder;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -35,6 +46,9 @@ import org.testng.annotations.Test;
 public class DataAccessResultsDirChooserNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(DataAccessResultsDirChooserNGTest.class.getName());
+
+    private static MockedStatic<FileChooser> fileChooserStaticMock;
+    private static MockedStatic<DataAccessPreferenceUtilities> DataAccessPreferenceUtilitiesMock;
 
     @BeforeClass
     public void setUpClass() throws Exception {
@@ -51,27 +65,53 @@ public class DataAccessResultsDirChooserNGTest {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
-    // OpenAndSaveToPreferences doesn't return the file/folder unless at runtime.
-//    @Test
-//    public void init() {
-//        final DataAccessResultsDirChooser chooser = spy(new DataAccessResultsDirChooser());
-//        assertNotNull(chooser.getDataAccesssResultsFileChooser());
-//
-//        final FileChooserBuilder fileChooser = mock(FileChooserBuilder.class);
-//        doReturn(fileChooser).when(chooser).getDataAccesssResultsFileChooser();
-//
-//        final File expectedSelectedDir = new File("/tmp");
-//        when(fileChooser.showSaveDialog()).thenReturn(expectedSelectedDir);
-//
-//        try (final MockedStatic<DataAccessPreferenceUtilities> prefUtilsMockedStatic
-//                = Mockito.mockStatic(DataAccessPreferenceUtilities.class)) {
-//            final File selectedDir = chooser.openAndSaveToPreferences();
-//
-//            assertEquals(selectedDir, expectedSelectedDir);
-//            prefUtilsMockedStatic.verify(() -> DataAccessPreferenceUtilities
-//                    .setDataAccessResultsDir(expectedSelectedDir));
-//        }
-//    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+        fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
+        DataAccessPreferenceUtilitiesMock = Mockito.mockStatic(DataAccessPreferenceUtilities.class);
+    }
+
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+        fileChooserStaticMock.close();
+        DataAccessPreferenceUtilitiesMock.close();
+    }
+
+    /**
+     * Test of openAndSaveToPreferences method, of class
+     * DataAccessResultsDirChooser.
+     */
+    @Test
+    public void testOpenAndSaveToPreferences() {
+        System.out.println("testOpenAndSaveToPreferences");
+
+        final DataAccessResultsDirChooser instance = new DataAccessResultsDirChooser();
+
+        final String title = "Folder to save data access results to";
+        final File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
+        final FileNameExtensionFilter filter = null;
+
+        final File file = new File("testFolder");
+
+        final Optional<File> optionalFile = Optional.ofNullable(file);
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.getBaseFileChooserBuilder(
+                        title,
+                        savedDirectory,
+                        filter))
+                .thenCallRealMethod();
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.openOpenDialog(Mockito.any(FileChooserBuilder.class)))
+                .thenReturn(CompletableFuture.completedFuture(optionalFile));
+
+        instance.openAndSaveToPreferences();
+
+        DataAccessPreferenceUtilitiesMock.verify(()
+                -> DataAccessPreferenceUtilities.setDataAccessResultsDir(file.getAbsoluteFile()));
+    }
 
     @Test
     public void open_called_on_fx_ui_thread() {

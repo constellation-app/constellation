@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -45,11 +44,6 @@ public class OpenFilePlugin extends SimpleReadPlugin {
     private static File savedDirectory = FileChooser.DEFAULT_DIRECTORY;
 
     private static final String TITLE = "Open";
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return new HelpCtx(this.getClass().getName());
-    }
 
     @Override
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {

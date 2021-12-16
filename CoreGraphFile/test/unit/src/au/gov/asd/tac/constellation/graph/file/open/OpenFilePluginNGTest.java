@@ -17,10 +17,10 @@ package au.gov.asd.tac.constellation.graph.file.open;
 
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.mockito.MockedStatic;
@@ -84,7 +84,7 @@ public class OpenFilePluginNGTest {
         final File file = new File("test.star");
         final List<File> files = new ArrayList<>();
 
-        final Random random = new Random();
+        final SecureRandom random = new SecureRandom();
         final int numberOfFiles = random.nextInt(5) + 1;
 
         for (int i = numberOfFiles; i > 0; i--) {

@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.mockito.Mockito;
@@ -86,13 +86,13 @@ public class CSVImportFileParserNGTest {
 
         doCallRealMethod().when(instance).parse(inputSourceMock, pluginParametersMock);
 
-        final List expResult1 = new ArrayList<>();
-        final List result1 = instance.parse(inputSourceMock, pluginParametersMock);
+        final List<String[]> expResult1 = new ArrayList<>();
+        final List<String[]> result1 = instance.parse(inputSourceMock, pluginParametersMock);
 
         assertEquals(result1, expResult1);
 
         // When there are CSV records to be parsed in the file.
-        doReturn(Boolean.TRUE, Boolean.TRUE, Boolean.FALSE).when(iteratorMock).hasNext();
+        doReturn(true, true, false).when(iteratorMock).hasNext();
         doReturn(CSVRecordMock, CSVRecordMock).when(iteratorMock).next();
         doReturn(1).when(CSVRecordMock).size();
         doReturn("test").when(CSVRecordMock).get(0);
@@ -104,8 +104,8 @@ public class CSVImportFileParserNGTest {
         list.add(line);
         list.add(line);
 
-        final List expResult2 = list;
-        final List result2 = instance.parse(inputSourceMock, pluginParametersMock);
+        final List<String[]> expResult2 = list;
+        final List<String[]> result2 = instance.parse(inputSourceMock, pluginParametersMock);
 
         assertEquals(result2, expResult2);
     }
@@ -126,18 +126,18 @@ public class CSVImportFileParserNGTest {
         doReturn(iteratorMock).when(CSVParserMock).iterator();
 
         // The limit value is irrelevant in this case.
-        final Random rand = new Random();
-        final int limit = rand.nextInt(50) + 1;
+        final SecureRandom rand = new SecureRandom();
+        final int limit = rand.nextInt(10) + 1;
 
         doCallRealMethod().when(instance).preview(inputSourceMock, pluginParametersMock, limit);
 
-        final List expResult1 = new ArrayList<>();
-        final List result1 = instance.parse(inputSourceMock, pluginParametersMock);
+        final List<String[]> expResult1 = new ArrayList<>();
+        final List<String[]> result1 = instance.parse(inputSourceMock, pluginParametersMock);
 
         assertEquals(result1, expResult1);
 
         // When there are 2 CSV records to be parsed in the file and the limit is 0.
-        doReturn(Boolean.TRUE, Boolean.TRUE, Boolean.FALSE).when(iteratorMock).hasNext();
+        doReturn(true, true, false).when(iteratorMock).hasNext();
         doReturn(CSVRecordMock, CSVRecordMock).when(iteratorMock).next();
         doReturn(1).when(CSVRecordMock).size();
         doReturn("test").when(CSVRecordMock).get(0);
@@ -149,20 +149,20 @@ public class CSVImportFileParserNGTest {
         explist.add(line);
 
         // Only 1 record should be returned by preview().
-        final List expResult2 = explist;
-        final List result2 = instance.preview(inputSourceMock, pluginParametersMock, 0);
+        final List<String[]> expResult2 = explist;
+        final List<String[]> result2 = instance.preview(inputSourceMock, pluginParametersMock, 0);
 
         assertEquals(result2, expResult2);
 
         // When there are 4 CSV records to be parsed in the file and the limit is 2
-        doReturn(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE).when(iteratorMock).hasNext();
+        doReturn(true, true, true, true, false).when(iteratorMock).hasNext();
         doReturn(CSVRecordMock, CSVRecordMock, CSVRecordMock, CSVRecordMock).when(iteratorMock).next();
 
         explist.add(line);
 
         // Only 2 records should be returned by preview().
-        final List expResult3 = explist;
-        final List result3 = instance.preview(inputSourceMock, pluginParametersMock, 2);
+        final List<String[]> expResult3 = explist;
+        final List<String[]> result3 = instance.preview(inputSourceMock, pluginParametersMock, 2);
 
         assertEquals(result3, expResult3);
     }
