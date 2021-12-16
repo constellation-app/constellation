@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2021-12-16 Quality Control Categories
+<p>The dialog to change the Quality Control category levels will now show when the level is different from the default.</p>
+
 == 2021-11-23 Context Menu
 <p>The right-click context menu in the graph window has been updated to include Selection and Reset View options.</p>
 
