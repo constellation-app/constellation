@@ -123,12 +123,18 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     // Returns the y position on this panel of the given rectangle.
     private int rectY(final int rectangleNum) {
         final int y = rectangles[rectangleNum][2];
+        if(totalNeededHeight == 0){
+            return y;
+        }
         return expandHeight ? (y * PREFERRED_HEIGHT) / totalNeededHeight : y;
     }
 
     // Returns the height in this panel of the given rectangle
     private int rectHeight(final int rectangleNum) {
         final int h = rectangles[rectangleNum][1];
+        if(totalNeededHeight == 0){
+            return h;
+        }
         return expandHeight ? (h * PREFERRED_HEIGHT) / totalNeededHeight : h;
     }
 
@@ -181,7 +187,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         }
         totalNeededHeight = state.getTotalVertsInTrusses() + (totalGaps * COMPONENT_VISUAL_GRAP);
         if (totalNeededHeight < PREFERRED_HEIGHT) {
-            expandHeight = true;
+            expandHeight = totalNeededHeight != 0;
         }
         final Dimension size = new Dimension(getWidth(), expandHeight ? PREFERRED_HEIGHT : totalNeededHeight);
         setSize(size);
