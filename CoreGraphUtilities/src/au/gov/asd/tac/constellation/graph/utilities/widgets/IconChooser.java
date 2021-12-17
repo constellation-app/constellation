@@ -341,7 +341,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                 }
             } catch (final IOException ex) {
                 NotifyDisplayer.display(String.format("Error writing icon file %s:%n%s", selectedFile.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
-                LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }));
 }//GEN-LAST:event_saveButtonActionPerformed
