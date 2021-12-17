@@ -212,10 +212,16 @@
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="au/gov/dsd/tac/constellation/core/cluster/hierarchical/Bundle.properties" key="HierarchicalControllerTopComponent.reclusterButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
+        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+          <Color id="Hand Cursor"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reclusterButtonActionPerformed"/>
       </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="reclusterButton.setFont(new java.awt.Font(&quot;Segoe UI&quot;, 1, 12)); // NOI18N"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JToggleButton" name="interactiveButton">
       <Properties>
@@ -223,10 +229,16 @@
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="au/gov/dsd/tac/constellation/core/cluster/hierarchical/Bundle.properties" key="HierarchicalControllerTopComponent.interactiveButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
+        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+          <Color id="Hand Cursor"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="interactiveButtonActionPerformed"/>
       </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="interactiveButton.setFont(new java.awt.Font(&quot;Segoe UI&quot;, 1, 12)); // NOI18N"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JCheckBox" name="colorClustersCheckBox">
       <Properties>
