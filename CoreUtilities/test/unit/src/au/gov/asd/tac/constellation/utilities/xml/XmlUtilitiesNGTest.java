@@ -6,24 +6,17 @@
 package au.gov.asd.tac.constellation.utilities.xml;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import org.openide.util.Exceptions;
+import javax.xml.transform.TransformerException;
+import org.apache.commons.io.FileUtils;
+import static org.apache.poi.hssf.usermodel.HeaderFooter.file;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -40,6 +33,8 @@ import org.w3c.dom.NodeList;
  */
 public class XmlUtilitiesNGTest {
     
+    private final String TEST_FILE = "testFile.xml";
+    
     public XmlUtilitiesNGTest() {
     }
 
@@ -53,10 +48,20 @@ public class XmlUtilitiesNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Ensure any test file has been removed
+        File file = new File(TEST_FILE);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Ensure any test file has been removed
+        File file = new File(TEST_FILE);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     /**
@@ -82,7 +87,38 @@ public class XmlUtilitiesNGTest {
      */
     @Test
     public void testWrite_Document() throws Exception {
-        System.out.println("write");
+        
+        try {
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
+            String input = "<parent>\n"
+                    + "  <child1>child1_value</child1>\n"
+                    + "  <child2>child2_value</child2>\n"
+                    + "  <child3>child3a_value</child3>\n"
+                    + "  <child3>child3b_value</child3>\n"
+                    + "  <child4><child4.1>child4.1</child4.1></child4>\n"
+                    + "</parent>";
+            fw.write(input);
+            fw.close();
+
+            // Read the test file into a Document object
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document document = docBuilder.parse(new File(TEST_FILE));
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+
+            // Execute test
+            byte[] results = instance.write(document);
+            String resultStr = (new String(results)).replaceAll("\\s+","");
+            String expectedStr = (new String("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + input)).replaceAll("\\s+","");
+           
+            assertEquals(resultStr, expectedStr, "Document string matches expected");
+            
+        } catch (Exception ex) {
+            fail("The test threw an unexpected exception.");
+        }
     }
 
     /**
@@ -125,39 +161,39 @@ public class XmlUtilitiesNGTest {
         // TODO: just experimenting with how reads work!!!!
 
         // TODO: temporarially creating a test ?XML file to read
-        
-        FileWriter fw = new FileWriter("testFile.xml");    
-        fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-"<CATALOG>\n" +
-"  <CD>\n" +
-"    <TITLE>EmpireMMMMMM Burlesque</TITLE>\n" +
-"    <ARTIST>Bob Dylan</ARTIST>\n" +
-"    <COUNTRY>USA</COUNTRY>\n" +
-"    <COMPANY>Columbia</COMPANY>\n" +
-"    <PRICE>10.90</PRICE>\n" +
-"    <YEAR>1985</YEAR>\n" +
-"  </CD>\n" +
-"</CATALOG>");
-        fw.close();
-        
-        // TODO test that xml can be read using other code, this works, so try work out
-        // why other version doesn't
-        File file = new File("testFile.xml");  
-        FileInputStream fis = new FileInputStream(file);
-        Transformer transformer=TransformerFactory.newInstance().newTransformer();
-        Source xmlInput=new StreamSource(fis);
-        final StreamResult xmlOutput=new StreamResult(new StringWriter());
-        final DOMResult rresult = new DOMResult();
-
-        transformer.transform(xmlInput,rresult);
-        System.out.println(rresult.getNode().getNodeName().toString());
-        Document doc = (Document)rresult.getNode();
-        XmlUtilities instance = new XmlUtilities();
-
-//        Document expResult = null;
-//        Document result = instance.read(file);
-//        System.out.println(result.toString());
-//        assertEquals(result, expResult);
+//        
+//        FileWriter fw = new FileWriter(TEST_FILE);    
+//        fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+//"<CATALOG>\n" +
+//"  <CD>\n" +
+//"    <TITLE>EmpireMMMMMM Burlesque</TITLE>\n" +
+//"    <ARTIST>Bob Dylan</ARTIST>\n" +
+//"    <COUNTRY>USA</COUNTRY>\n" +
+//"    <COMPANY>Columbia</COMPANY>\n" +
+//"    <PRICE>10.90</PRICE>\n" +
+//"    <YEAR>1985</YEAR>\n" +
+//"  </CD>\n" +
+//"</CATALOG>");
+//        fw.close();
+//        
+//        // TODO test that xml can be read using other code, this works, so try work out
+//        // why other version doesn't
+//        File file = new File("testFile.xml");  
+//        FileInputStream fis = new FileInputStream(file);
+//        Transformer transformer=TransformerFactory.newInstance().newTransformer();
+//        Source xmlInput=new StreamSource(fis);
+//        final StreamResult xmlOutput=new StreamResult(new StringWriter());
+//        final DOMResult rresult = new DOMResult();
+//
+//        transformer.transform(xmlInput,rresult);
+//        System.out.println(rresult.getNode().getNodeName().toString());
+//        Document doc = (Document)rresult.getNode();
+//        XmlUtilities instance = new XmlUtilities();
+//
+////        Document expResult = null;
+////        Document result = instance.read(file);
+////        System.out.println(result.toString());
+////        assertEquals(result, expResult);
 
     }
 
@@ -193,8 +229,8 @@ public class XmlUtilitiesNGTest {
         System.out.println("getNode");
 
         try {
-            // TODO Create a test XML file for now, may become test file
-            FileWriter fw = new FileWriter("testFile.xml");
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
             fw.write("<parent>\n"
                     + "  <child1>child1_value</child1>\n"
                     + "  <child2>child2_value</child2>\n"
@@ -204,7 +240,7 @@ public class XmlUtilitiesNGTest {
                     + "</parent>");
             fw.close();
 
-            // Read the test file into a Document object and extract parent node and list of children
+            // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(new File("testFile.xml"));
@@ -214,6 +250,8 @@ public class XmlUtilitiesNGTest {
             
             // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
+
+            // Execute test
 
             // Confirm matching node is found, and is the first match
             Node node = instance.getNode("child3", children);
@@ -248,8 +286,8 @@ public class XmlUtilitiesNGTest {
         System.out.println("getNodeNS");
 
         try {
-            // TODO Create a test XML file for now, may become test file
-            FileWriter fw = new FileWriter("testFile.xml");
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
             fw.write("<c:parent xmlns:c=\"http://www.consty.com/star\">\n"
                     + "  <c:child1>child1_value</c:child1>\n"
                     + "  <c:child2>child2_value</c:child2>\n"
@@ -259,7 +297,7 @@ public class XmlUtilitiesNGTest {
                     + "</c:parent>");
             fw.close();
 
-            // Read the test file into a Document object and extract parent node and list of children
+            // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -271,6 +309,8 @@ public class XmlUtilitiesNGTest {
             // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
 
+            // Execute test
+            
             // Confirm matching node is found, and is the first match
             Node node = instance.getNodeNS("http://www.consty.com/star", "child3", children);
             assertNotNull(node, "Found node");
@@ -309,8 +349,8 @@ public class XmlUtilitiesNGTest {
         System.out.println("getNodes");
 
         try {
-            // TODO Create a test XML file for now, may become test file
-            FileWriter fw = new FileWriter("testFile.xml");
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
             fw.write("<parent>\n"
                     + "  <child>child_value1</child>\n"
                     + "  <child>child_value2</child>\n"
@@ -319,7 +359,7 @@ public class XmlUtilitiesNGTest {
                     + "</parent>");
             fw.close();
 
-            // Read the test file into a Document object and extract parent node and list of children
+            // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(new File("testFile.xml"));
@@ -329,7 +369,9 @@ public class XmlUtilitiesNGTest {
             
             // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
-            
+
+            // Execute test
+
             // Confirm all matching nodes are found
             List<Node> nodes = instance.getNodes("child", children);
             assertEquals(nodes.size(), 3, "Found all 3 nodes called child");
@@ -370,8 +412,8 @@ public class XmlUtilitiesNGTest {
         System.out.println("getNodesNS");
 
         try {
-            // TODO Create a test XML file for now, may become test file
-            FileWriter fw = new FileWriter("testFile.xml");
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
             fw.write("<c:parent xmlns:c=\"http://www.consty.com/star\" xmlns:c2=\"http://www.consty2.com/star2\">>\n"
                     + "  <c:child>child_value1</c:child>\n"
                     + "  <c:child>child_value2</c:child>\n"
@@ -381,7 +423,7 @@ public class XmlUtilitiesNGTest {
                     + "</c:parent>");
             fw.close();
 
-            // Read the test file into a Document object and extract parent node and list of children
+            // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -393,6 +435,8 @@ public class XmlUtilitiesNGTest {
             // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
 
+            // Execute test
+            
             // Confirm multiple matching nodes can be returned
             List<Node> nodes = instance.getNodesNS("http://www.consty.com/star", "child", children);
             assertEquals(nodes.size(), 2, "Found both nodes called child in given namespace");
@@ -423,7 +467,6 @@ public class XmlUtilitiesNGTest {
             nodes = instance.getNodesNS("http://www.notconsty.com/star", "child", children);
             assertEquals(nodes.size(), 0, "Found 0 nodes matching nodes in unknown namespace");
             
-
         } catch (Exception ex) {
             System.out.println("Exception:" + ex.toString());
             fail("The test threw an unexpected exception.");
@@ -438,12 +481,12 @@ public class XmlUtilitiesNGTest {
         System.out.println("getNodeValue");
 
         try {
-            // TODO Create a test XML file for now, may become test file
-            FileWriter fw = new FileWriter("testFile.xml");
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
             fw.write("<parent><child>child_value1</child></parent>");
             fw.close();
 
-            // Read the test file into a Document object and extract parent node and list of children
+            // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(new File("testFile.xml"));
@@ -453,7 +496,9 @@ public class XmlUtilitiesNGTest {
             
             // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
-            
+
+            // Execute test
+
             // Check that parent node doesnt contain content
             String result = instance.getNodeValue(parent);
             assertNull(result, "First child value matches expected");
@@ -476,8 +521,8 @@ public class XmlUtilitiesNGTest {
         System.out.println("getNodeValue");
 
         try {
-            // TODO Create a test XML file for now, may become test file
-            FileWriter fw = new FileWriter("testFile.xml");
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
             fw.write("<parent>\n"
                     + "  <child>child_value1</child>\n"
                     + "  <child>child_value2</child>\n"
@@ -488,7 +533,7 @@ public class XmlUtilitiesNGTest {
                     + "</parent>");
             fw.close();
 
-            // Read the test file into a Document object and extract parent node and list of children
+            // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(new File("testFile.xml"));
@@ -498,7 +543,9 @@ public class XmlUtilitiesNGTest {
             
             // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
-            
+
+            // Execute test
+
             // Check that correct first child value is returned
             String result = instance.getNodeValue("child", children);
             assertEquals(result, "child_value1", "First child value matches expected");
@@ -529,8 +576,8 @@ public class XmlUtilitiesNGTest {
         System.out.println("getNodeValueNS");
 
         try {
-            // TODO Create a test XML file for now, may become test file
-            FileWriter fw = new FileWriter("testFile.xml");
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
             fw.write("<c:parent xmlns:c=\"http://www.consty.com/star\" xmlns:c2=\"http://www.consty2.com/star2\">>\n"
                     + "  <c:child>child_value1</c:child>\n"
                     + "  <c:child>child_value2</c:child>\n"
@@ -541,7 +588,7 @@ public class XmlUtilitiesNGTest {
                     + "</c:parent>");
             fw.close();
 
-            // Read the test file into a Document object and extract parent node and list of children
+            // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -552,7 +599,9 @@ public class XmlUtilitiesNGTest {
             
             // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
-            
+
+            // Execute test
+
             // Check that correct first child value is returned
             String result = instance.getNodeValueNS("http://www.consty.com/star", "child", children);
             assertEquals(result, "child_value1", "First child value matches expected");
@@ -590,14 +639,14 @@ public class XmlUtilitiesNGTest {
         System.out.println("getNodeAttr");
 
         try {
-            // TODO Create a test XML file for now, may become test file
-            FileWriter fw = new FileWriter("testFile.xml");
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
             fw.write("<parent attr1=\"attrib 1 value\" attr2=\"attrib 2 value\">\n"
                     + "  <child>child_value1</child>\n"
                     + "</parent>");
             fw.close();
 
-            // Read the test file into a Document object and extract parent node and list of children
+            // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -607,7 +656,9 @@ public class XmlUtilitiesNGTest {
             
             // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
-        
+
+            // Execute test
+
             // Show attribute values are read
             String result = instance.getNodeAttr("attr1", parent);
             assertEquals(result, "attrib 1 value", "Successfully finds attribute");    
@@ -634,8 +685,8 @@ public class XmlUtilitiesNGTest {
         System.out.println("getNodeAttr");
 
         try {
-            // TODO Create a test XML file for now, may become test file
-            FileWriter fw = new FileWriter("testFile.xml");
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
             fw.write("<parent>\n"
                     + "  <child attr1=\"attrib 1 value\" attr2=\"attrib 2 value\">child_value</child>\n"
                     + "  <offspring>offspring_value1</offspring>\n"
@@ -643,7 +694,7 @@ public class XmlUtilitiesNGTest {
                     + "</parent>");
             fw.close();
 
-            // Read the test file into a Document object and extract parent node and list of children
+            // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -654,7 +705,9 @@ public class XmlUtilitiesNGTest {
             
             // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
-        
+
+            // Execute test
+
             // Show attribute values are read
             String result = instance.getNodeAttr("child", "attr1", children);
             assertEquals(result, "attrib 1 value", "Successfully finds attribute");
@@ -685,8 +738,8 @@ public class XmlUtilitiesNGTest {
         System.out.println("getNodeAttrNS");
 
         try {
-            // TODO Create a test XML file for now, may become test file
-            FileWriter fw = new FileWriter("testFile.xml");
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
             fw.write("<parent xmlns:c=\"http://www.consty.com/star\" xmlns:c2=\"http://www.consty2.com/star2\">\n"
                     + "  <c:child attr1=\"c:attrib 1 value\" attr2=\"c:attrib 2 value\">child_value1</c:child>\n"
                     + "  <c2:child attr1=\"c2:attrib 1 value\">child_value2</c2:child>\n"
@@ -695,7 +748,7 @@ public class XmlUtilitiesNGTest {
                     + "</parent>");
             fw.close();
 
-            // Read the test file into a Document object and extract parent node and list of children
+            // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -706,7 +759,9 @@ public class XmlUtilitiesNGTest {
             
             // Get XmlUtilities instance
             XmlUtilities instance = new XmlUtilities();
-            
+
+            // Execute test
+
             // Check that correct first child value is returned
             String result = instance.getNodeAttrNS("http://www.consty.com/star", "child", "attr1", children);
             assertEquals(result, "c:attrib 1 value", "First child value matches expected");
@@ -722,9 +777,7 @@ public class XmlUtilitiesNGTest {
             // Confirm that nodes not matching all conditions are stepped over
             result = instance.getNodeAttrNS("http://www.consty.com/star", "offspring", "attr1", children);
             assertEquals(result, "c:attrib 1 value", "TODO");
-            
-            
-      
+
         } catch (Exception ex) {
             System.out.println("Exception:" + ex.toString());
             fail("The test threw an unexpected exception.");
@@ -735,10 +788,164 @@ public class XmlUtilitiesNGTest {
      * Test of map method, of class XmlUtilities.
      */
     @Test
-    public void testMap_String() throws Exception {
-        System.out.println("map");
+    public void testMap_File() throws Exception {
+        try {
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
+            fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                    + "<parent>\n"
+                    + "  <child1><col1>aaa</col1><col2>bbb</col2><col3>ccc</col3></child1>\n"
+                    + "  <child2><col1>ddd</col1><col2>eee</col2><col3>fff</col3></child2>\n"
+                    + "  <child3><col1>ggg</col1><col2>hhh</col2><col3>iii</col3></child3>\n"
+                    + "  <child4>No columns</child4>\n"
+                    + "</parent>");
+            fw.close();
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+
+            // Execute test
+
+            // Extract content and validate it is as expected
+            File file = new File(TEST_FILE);
+            List<Map<String, String>> result = instance.map(file);
+            assertEquals(4,result.size());
+            assertEquals(3, result.get(0).size());
+            assertEquals(3, result.get(1).size());
+            assertEquals(3, result.get(2).size());
+            assertEquals(0, result.get(3).size());
+            assertNotNull(result.get(0).get("col1"), "aaa");
+            assertNotNull(result.get(0).get("col2"), "bbb");
+            assertNotNull(result.get(0).get("col3"), "ccc");
+            assertNotNull(result.get(1).get("col1"), "ddd");
+            assertNotNull(result.get(1).get("col2"), "eee");
+            assertNotNull(result.get(1).get("col3"), "fff");
+            assertNotNull(result.get(2).get("col1"), "ggg");
+            assertNotNull(result.get(2).get("col2"), "hhh");
+            assertNotNull(result.get(2).get("col3"), "iii");
+  
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
+        }
     }
 
+    /**
+     * Test of map method, of class XmlUtilities, showing file not found exception
+     * thrown if file cant be found.
+     */
+    @Test (expectedExceptions = FileNotFoundException.class)
+    public void testMap_File_FilenotFound() throws Exception {
+        // Get XmlUtilities instance
+        XmlUtilities instance = new XmlUtilities();
+ 
+        // Test file not found exception
+        File file = new File(TEST_FILE);
+        List<Map<String, String>> result = instance.map(file);  
+    }
+ 
+    /**
+     * Test of map method, of class XmlUtilities, showing file not found exception
+     * thrown if file cant be found.
+     */
+    @Test (expectedExceptions = TransformerException.class)
+    public void testMap_File_TransformerException() throws Exception {
+        // Get XmlUtilities instance
+        XmlUtilities instance = new XmlUtilities();
+
+        // Execute test
+
+        // Generate malformed XML and confirm exception is thrown
+        FileWriter fw = new FileWriter(TEST_FILE);
+        fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                + "<badparent></parent>");
+        fw.close();
+        File file = new File("testFile.xml");
+        List<Map<String, String>> result = instance.map(file);
+    }
+    
+    /**
+     * Test of map method, of class XmlUtilities which takes in a URL.
+     */
+    @Test
+    public void testMap_String() throws Exception {
+        try {
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
+            fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                    + "<parent>\n"
+                    + "  <child1><col1>aaa</col1><col2>bbb</col2><col3>ccc</col3></child1>\n"
+                    + "  <child2><col1>ddd</col1><col2>eee</col2><col3>fff</col3></child2>\n"
+                    + "  <child3><col1>ggg</col1><col2>hhh</col2><col3>iii</col3></child3>\n"
+                    + "  <child4>No columns</child4>\n"
+                    + "</parent>");
+            fw.close();
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+
+            // Execute test
+
+            // Extract content and validate it is as expected
+            URL url = new File("testFile.xml").toURI().toURL();            
+            List<Map<String, String>> result = instance.map(url.toString());
+            assertEquals(4,result.size());
+            assertEquals(3, result.get(0).size());
+            assertEquals(3, result.get(1).size());
+            assertEquals(3, result.get(2).size());
+            assertEquals(0, result.get(3).size());
+            assertNotNull(result.get(0).get("col1"), "aaa");
+            assertNotNull(result.get(0).get("col2"), "bbb");
+            assertNotNull(result.get(0).get("col3"), "ccc");
+            assertNotNull(result.get(1).get("col1"), "ddd");
+            assertNotNull(result.get(1).get("col2"), "eee");
+            assertNotNull(result.get(1).get("col3"), "fff");
+            assertNotNull(result.get(2).get("col1"), "ggg");
+            assertNotNull(result.get(2).get("col2"), "hhh");
+            assertNotNull(result.get(2).get("col3"), "iii");
+
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
+        }
+    }
+
+    /**
+     * Test of map method, of class XmlUtilities, showing file not found exception
+     * thrown if file cant be found.
+     */
+    @Test (expectedExceptions = FileNotFoundException.class)
+    public void testMap_String_FilenotFound() throws Exception {
+        // Get XmlUtilities instance
+        XmlUtilities instance = new XmlUtilities();
+
+        // Execute test
+
+        URL url = new File(TEST_FILE).toURI().toURL();            
+        List<Map<String, String>> result = instance.map(url.toString());
+    }
+ 
+    /**
+     * Test of map method, of class XmlUtilities, showing file not found exception
+     * thrown if file cant be found.
+     */
+    @Test (expectedExceptions = TransformerException.class)
+    public void testMap_String_TransformerException() throws Exception {
+        // Get XmlUtilities instance
+        XmlUtilities instance = new XmlUtilities();
+
+        // Generate malformed XML and confirm exception is thrown
+        FileWriter fw = new FileWriter(TEST_FILE);
+        fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                + "<badparent></parent>");
+        fw.close();
+
+        // Execute test
+
+        URL url = new File("testFile.xml").toURI().toURL();            
+        List<Map<String, String>> result = instance.map(url.toString());
+    }
+    
     /**
      * Test of map method, of class XmlUtilities.
      */

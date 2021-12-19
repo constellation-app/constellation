@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +49,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.openide.util.Exceptions;
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -455,20 +457,39 @@ public class XmlUtilities {
     }
 
     /**
-     * Returns an array of maps, that represents a tabular structure. Each map
+     * Returns an array of maps, that represents a tabular structure.Each map
      * is a row with all the columns for that row.
      *
-     * @param url the URL that specifies the location of the input.
+     * @param file the file to process input.
      * @return an array of maps, that represents a tabular structure. Each map
      * is a row with all the columns for that row.
+     * @throws java.io.FileNotFoundException if file is not found
      * @throws java.io.UnsupportedEncodingException if the encoding is not
      * supported.
      * @throws TransformerException if an error occurs while transforming the
      * XML into a document.
      */
-    public List<Map<String, String>> map(final String url) throws UnsupportedEncodingException, TransformerException {
-        final Document document = read(url);
+    public List<Map<String, String>> map(final File file) throws FileNotFoundException, UnsupportedEncodingException, TransformerException {
+        final Document document = read(file);
         return map(document);
+    }
+
+    /**
+     * Returns an array of maps, that represents a tabular structure.Each map
+     * is a row with all the columns for that row.
+     *
+     * @param url the URL that specifies the location of the input.
+     * @return an array of maps, that represents a tabular structure. Each map
+     * is a row with all the columns for that row.
+     * @throws java.net.MalformedURLException if supplied URL is malformed
+     * @throws java.io.FileNotFoundException if file URL references is not found
+     * @throws java.io.UnsupportedEncodingException if the encoding is not
+     * supported.
+     * @throws TransformerException if an error occurs while transforming the
+     * XML into a document.
+     */
+    public List<Map<String, String>> map(final String url) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {       
+        return map(FileUtils.toFile(new URL(url)));
     }
 
     /**
