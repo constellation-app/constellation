@@ -37,7 +37,6 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalu
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -97,25 +96,18 @@ public class AdvancedFindTab extends Tab {
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
 
-    private static final long ATTRIBUTE_MODIFICATION_COUNTER = Long.MIN_VALUE;
-
     public AdvancedFindTab(final FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;
         setText("Advanced Find");
         setGridContent();
         addCriteriaPaneButton.setOnAction(action -> addCriteriaPane(getSelectedGraphElementType()));
 
-        // Change the
-        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
+        // Change the displayed list based on the graph element type selection
+        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
             changeDisplayedList(newElement);
         });
 
-        currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
-                updateSelectionFactors();
-            }
-        });
+        currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener(action -> updateSelectionFactors());
 
         findAllButton.setOnAction(action -> findAllAction());
         findNextButton.setOnAction(action -> findNextAction());
@@ -257,14 +249,13 @@ public class AdvancedFindTab extends Tab {
         gridPane.getChildren().removeAll(gridPane.getChildren());
 
         int i = 0;
-        for (AdvancedCriteriaBorderPane cirteriaPane : criteriaList) {
+        for (final AdvancedCriteriaBorderPane cirteriaPane : criteriaList) {
             if (i == index) {
                 i++;
             }
             gridPane.add(cirteriaPane, 0, i);
             i++;
         }
-
         updateGridColours(type);
     }
 
@@ -311,7 +302,7 @@ public class AdvancedFindTab extends Tab {
                     deleteCriteriaPane(pane, type, paneIndex);
 
                     // for each of the attributes within the attribute list
-                    for (Attribute a : attributeList) {
+                    for (final Attribute a : attributeList) {
 
                         // if the new attribute requested == a.getName
                         if (attributeName == a.getName()) {
@@ -420,7 +411,7 @@ public class AdvancedFindTab extends Tab {
      */
     public List<FindCriteriaValues> getCriteriaValues(List<AdvancedCriteriaBorderPane> list) {
         List<FindCriteriaValues> criteriaValuesList = new ArrayList<>();
-        for (AdvancedCriteriaBorderPane pane : list) {
+        for (final AdvancedCriteriaBorderPane pane : list) {
             criteriaValuesList.add(pane.getCriteriaValues());
         }
         return criteriaValuesList;
@@ -434,9 +425,9 @@ public class AdvancedFindTab extends Tab {
      *
      * @param type The graph element type being saved
      */
-    public void updateAdvancedSearchParameters(GraphElementType type) {
+    public void updateAdvancedSearchParameters(final GraphElementType type) {
         final List<FindCriteriaValues> criteriaValuesList = getCriteriaValues(getCorrespondingCriteriaList(type));
-        AdvancedSearchParameters parameters = new AdvancedSearchParameters(criteriaValuesList, type,
+        final AdvancedSearchParameters parameters = new AdvancedSearchParameters(criteriaValuesList, type,
                 matchCriteriaChoiceBox.getSelectionModel().getSelectedItem(),
                 currentSelectionChoiceBox.getSelectionModel().getSelectedItem(),
                 searchAllGraphs.isSelected());

@@ -75,7 +75,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
     private static final int STARTING_INDEX = -1;
 
-    public AdvancedSearchPlugin(final AdvancedSearchParameters parameters, boolean selectAll, boolean selectNext) {
+    public AdvancedSearchPlugin(final AdvancedSearchParameters parameters, final boolean selectAll, final boolean selectNext) {
         this.parameters = parameters;
         this.selectAll = selectAll;
         this.selectNext = selectNext;
@@ -138,7 +138,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             final FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getAdvancedSearchParameters(), foundResult.getGraphId());
             final AdvancedSearchParameters oldparameters = oldList.getAdvancedSearchParameters();
             final AdvancedSearchParameters newParamters = new AdvancedSearchParameters(this.parameters);
-            int newIndex = getIndex(newParamters, oldparameters, foundResult.getCurrentIndex());
+            final int newIndex = getIndex(newParamters, oldparameters, foundResult.getCurrentIndex());
             foundResult = new FindResultsList(newIndex, newParamters, oldList.getGraphId());
         }
 
@@ -153,11 +153,11 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             clearSelection(graph);
         }
         findInCurrentSelectionList = new FindResultsList(graph.getId());
-        FindResultsList findAllMatchingResultsList = new FindResultsList(graph.getId());
+        final FindResultsList findAllMatchingResultsList = new FindResultsList(graph.getId());
 
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
 
-        Set<FindResult> findResultSet = new HashSet<>();
+        final Set<FindResult> findResultSet = new HashSet<>();
 
         /**
          * This loops through all existing graph elements, then loops through
@@ -178,7 +178,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             final long uid = elementType.getUID(graph, currElement);
 
             // loop through all of the criteriaValues
-            for (FindCriteriaValues values : criteriaList) {
+            for (final FindCriteriaValues values : criteriaList) {
 
                 // get the int value of the current attribute
                 int attributeInt = graph.getAttribute(elementType, values.getAttribute());
@@ -408,11 +408,11 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @return
      */
     private boolean searchAsString(final FindCriteriaValues values, final int attributeInt, final int currElement, final GraphWriteMethods graph) {
-        StringCriteriaValues stringValues = (StringCriteriaValues) values;
+        final StringCriteriaValues stringValues = (StringCriteriaValues) values;
         String value = graph.getStringValue(attributeInt, currElement);
 
         // create a list that will contain the string searches
-        List<String> allSearchableString = new ArrayList<>();
+        final List<String> allSearchableString = new ArrayList<>();
         allSearchableString.add(stringValues.getText());
 
         // if using the list, clear it and re add all values in the text list
@@ -436,28 +436,28 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
          */
         switch (stringValues.getFilter()) {
             case "Is":
-                for (String str : allSearchableString) {
+                for (final String str : allSearchableString) {
                     if (str.equals(value)) {
                         matches = true;
                     }
                 }
                 break;
             case "Is Not":
-                for (String str : allSearchableString) {
+                for (final String str : allSearchableString) {
                     if (!str.equals(value)) {
                         matches = true;
                     }
                 }
                 break;
             case "Contains":
-                for (String str : allSearchableString) {
+                for (final String str : allSearchableString) {
                     if (value.contains(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Doesn't Contain":
-                for (String str : allSearchableString) {
+                for (final String str : allSearchableString) {
                     if (!value.contains(str)) {
                         matches = true;
                     }
@@ -465,24 +465,24 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
                 break;
             case "Begins With":
-                for (String str : allSearchableString) {
+                for (final String str : allSearchableString) {
                     if (value.startsWith(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Ends With":
-                for (String str : allSearchableString) {
+                for (final String str : allSearchableString) {
                     if (value.endsWith(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Matches (Regex)":
-                for (String str : allSearchableString) {
+                for (final String str : allSearchableString) {
                     final int caseSensitivity = Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE;
                     final Pattern searchPattern = Pattern.compile(str, caseSensitivity);
-                    Matcher match = searchPattern.matcher(value);
+                    final Matcher match = searchPattern.matcher(value);
                     matches = match.find();
                 }
                 break;
@@ -504,7 +504,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @return
      */
     private boolean searchAsFloat(final FindCriteriaValues values, final int attributeInt, final int currElement, final GraphWriteMethods graph) {
-        FloatCriteriaValues floatValues = (FloatCriteriaValues) values;
+        final FloatCriteriaValues floatValues = (FloatCriteriaValues) values;
         final float value = graph.getFloatValue(attributeInt, currElement);
 
         boolean matches = false;
@@ -609,19 +609,25 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @return
      */
     private boolean searchAsDateTime(final FindCriteriaValues values, final int attributeInt, final int currElement, final GraphWriteMethods graph) {
-        DateTimeCriteriaValues dateTimeValues = (DateTimeCriteriaValues) values;
-        final String dateTimeString = graph.getStringValue(attributeInt, currElement);
+        final DateTimeCriteriaValues dateTimeValues = (DateTimeCriteriaValues) values;
+        String dateTimeString = graph.getStringValue(attributeInt, currElement);
         boolean matches = false;
 
+        if (dateTimeString == null || dateTimeValues.getDateTimeStringPrimaryValue().isEmpty()) {
+            if (dateTimeValues.getFilter().equals("Didn't Occur On")) {
+                matches = true;
+            }
+            return matches;
+        }
         // convert the string date time into a zonedDateTime for comparisons
-        String[] splitDateTime = dateTimeValues.getDateTimeStringPrimaryValue().split(" ");
-        String parseFormatedString = splitDateTime[0] + "T" + splitDateTime[1] + splitDateTime[2];
-        ZonedDateTime valueDateTime = ZonedDateTime.parse(parseFormatedString);
+        final String[] splitDateTime = dateTimeValues.getDateTimeStringPrimaryValue().split(" ");
+        final String parseFormatedString = splitDateTime[0] + "T" + splitDateTime[1] + splitDateTime[2];
+        final ZonedDateTime valueDateTime = ZonedDateTime.parse(parseFormatedString);
 
         // convert the string date time into a zonedDateTime for comparisons
-        String[] splitAttributeDateTime = dateTimeString.split(" ");
-        String parseAttributeFormatedString = splitAttributeDateTime[0] + "T" + splitAttributeDateTime[1] + splitAttributeDateTime[2];
-        ZonedDateTime attributeDateTime = ZonedDateTime.parse(parseAttributeFormatedString);
+        final String[] splitAttributeDateTime = dateTimeString.split(" ");
+        final String parseAttributeFormatedString = splitAttributeDateTime[0] + "T" + splitAttributeDateTime[1] + splitAttributeDateTime[2];
+        final ZonedDateTime attributeDateTime = ZonedDateTime.parse(parseAttributeFormatedString);
 
         /**
          * This switch handles the matching check based on the filter choice by
@@ -629,31 +635,34 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
          * date time values
          */
         switch (dateTimeValues.getFilter()) {
-            case "Occoured On":
+            case "Occured On":
                 if (valueDateTime.isEqual(attributeDateTime)) {
                     matches = true;
                 }
                 break;
 
-            case "Didn't Occour On":
+            case "Didn't Occur On":
                 if (!valueDateTime.isEqual(attributeDateTime)) {
                     matches = true;
                 }
                 break;
-            case "Occoured Before":
+            case "Occured Before":
                 if (!valueDateTime.isBefore(attributeDateTime)) {
                     matches = true;
                 }
                 break;
-            case "Occoured After":
+            case "Occured After":
                 if (!valueDateTime.isAfter(attributeDateTime)) {
                     matches = true;
                 }
                 break;
-            case "Occoured Between":
-                String[] splitDateTimeTwo = dateTimeValues.getDateTimeStringSecondaryValue().split(" ");
-                String parseFormatedStringTwo = splitDateTimeTwo[0] + "T" + splitDateTimeTwo[1] + splitDateTimeTwo[2];
-                ZonedDateTime valueDateTimeTwo = ZonedDateTime.parse(parseFormatedStringTwo);
+            case "Occured Between":
+                if (dateTimeValues.getDateTimeStringSecondaryValue().isEmpty()) {
+                    return matches;
+                }
+                final String[] splitDateTimeTwo = dateTimeValues.getDateTimeStringSecondaryValue().split(" ");
+                final String parseFormatedStringTwo = splitDateTimeTwo[0] + "T" + splitDateTimeTwo[1] + splitDateTimeTwo[2];
+                final ZonedDateTime valueDateTimeTwo = ZonedDateTime.parse(parseFormatedStringTwo);
                 if (attributeDateTime.isAfter(valueDateTime) && attributeDateTime.isBefore(valueDateTimeTwo)) {
                     matches = true;
                 }
@@ -662,6 +671,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                 }
                 break;
         }
+
         return matches;
     }
 
@@ -700,7 +710,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @return the correct current index
      */
     private int getIndex(final AdvancedSearchParameters currentParameters, final AdvancedSearchParameters oldParameters, int currentIndex) {
-
         if (!selectAll && currentParameters.equals(oldParameters)) {
             // If the query hasnt changed and there must be elements in the list
             // get the current index

@@ -25,7 +25,7 @@ public class IconCriteriaValues extends FindCriteriaValues {
 
     private final ConstellationIcon icon;
 
-    public IconCriteriaValues(String attributeType, String attribute, String filter, ConstellationIcon icon) {
+    public IconCriteriaValues(final String attributeType, final String attribute, final String filter, final ConstellationIcon icon) {
         super(attributeType, attribute, filter);
         this.icon = icon;
     }

@@ -112,9 +112,9 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
      *
      * @param type
      */
-    public synchronized void updateAttributesList(GraphElementType type) {
+    public synchronized void updateAttributesList(final GraphElementType type) {
         // get the currently selected attribute
-        String currentlySelected = (getAttributeName().isEmpty() ? attributesList.get(0).getName() : getAttributeName());
+        final String currentlySelected = (getAttributeName().isEmpty() ? attributesList.get(0).getName() : getAttributeName());
 
         // clear the attributes list and re add all attributes
         // (in case new attributes were added)
@@ -217,7 +217,7 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
         return updateUI;
     }
 
-    public void setUpdateUI(boolean update) {
+    public void setUpdateUI(final boolean update) {
         updateUI = update;
     }
 

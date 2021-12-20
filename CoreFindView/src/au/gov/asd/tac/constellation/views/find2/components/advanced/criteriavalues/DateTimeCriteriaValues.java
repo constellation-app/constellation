@@ -24,13 +24,13 @@ public class DateTimeCriteriaValues extends FindCriteriaValues {
     private final String dateTimeStringPrimary;
     private final String dateTimeStringSecondary;
 
-    public DateTimeCriteriaValues(String attributeType, String attribute, String filter, String dateTimeStringPrimary) {
+    public DateTimeCriteriaValues(final String attributeType, final String attribute, final String filter, final String dateTimeStringPrimary) {
         super(attributeType, attribute, filter);
         this.dateTimeStringPrimary = dateTimeStringPrimary;
         this.dateTimeStringSecondary = "";
     }
 
-    public DateTimeCriteriaValues(String attributeType, String attribute, String filter, String dateTimeStringPrimary, String dateTimeStringSecondary) {
+    public DateTimeCriteriaValues(final String attributeType, final String attribute, final String filter, final String dateTimeStringPrimary, final String dateTimeStringSecondary) {
         super(attributeType, attribute, filter);
         this.dateTimeStringPrimary = dateTimeStringPrimary;
         this.dateTimeStringSecondary = dateTimeStringSecondary;

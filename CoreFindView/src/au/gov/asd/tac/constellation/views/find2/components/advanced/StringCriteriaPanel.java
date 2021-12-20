@@ -156,8 +156,8 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
     public FindCriteriaValues getCriteriaValues() {
         // if use list is selected, retrieve all values within the list
         if (useListCheckBox.isSelected()) {
-            String[] splitStrings = searchField.getText().split(SeparatorConstants.COMMA);
-            List<String> stringList = new ArrayList<>();
+            final String[] splitStrings = searchField.getText().split(SeparatorConstants.COMMA);
+            final List<String> stringList = new ArrayList<>();
             Collections.addAll(stringList, splitStrings);
             return new StringCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(),
                     stringList, caseSensitiveCheckBox.isSelected(), useListCheckBox.isSelected());

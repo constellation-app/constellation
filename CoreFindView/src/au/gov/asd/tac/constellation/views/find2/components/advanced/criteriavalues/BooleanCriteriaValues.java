@@ -23,7 +23,7 @@ public class BooleanCriteriaValues extends FindCriteriaValues {
 
     private final boolean boolValue;
 
-    public BooleanCriteriaValues(String attributeType, String attribute, String filter, boolean boolValue) {
+    public BooleanCriteriaValues(final String attributeType, final String attribute, final String filter, final boolean boolValue) {
         super(attributeType, attribute, filter);
         this.boolValue = boolValue;
     }

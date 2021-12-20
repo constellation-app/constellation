@@ -24,13 +24,13 @@ public class FloatCriteriaValues extends FindCriteriaValues {
     private final float floatValuePrimary;
     private final float floatValueSecondary;
 
-    public FloatCriteriaValues(String attributeType, String attribute, String filter, float floatValuePrimary) {
+    public FloatCriteriaValues(final String attributeType, final String attribute, final String filter, final float floatValuePrimary) {
         super(attributeType, attribute, filter);
         this.floatValuePrimary = floatValuePrimary;
         this.floatValueSecondary = 0;
     }
 
-    public FloatCriteriaValues(String attributeType, String attribute, String filter, float floatValuePrimary, float floatValueSecondary) {
+    public FloatCriteriaValues(final String attributeType, final String attribute, final String filter, final float floatValuePrimary, final float floatValueSecondary) {
         super(attributeType, attribute, filter);
         this.floatValuePrimary = floatValuePrimary;
         this.floatValueSecondary = floatValueSecondary;

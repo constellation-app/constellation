@@ -112,7 +112,7 @@ public class UseListInputWindow extends Stage {
         bp.setBottom(buttonsBp);
 
         bp.setCenter(vbox);
-        Scene scene = new Scene(bp);
+        final Scene scene = new Scene(bp);
         scene.getStylesheets().add(IconSelector.class.getResource(DARK_THEME).toExternalForm());
 
         setScene(scene);
@@ -128,8 +128,8 @@ public class UseListInputWindow extends Stage {
      * @param text
      */
     public void updateText(String text) {
-        StringBuilder sb = new StringBuilder();
-        String[] splitText = text.split(SeparatorConstants.COMMA);
+        final StringBuilder sb = new StringBuilder();
+        final String[] splitText = text.split(SeparatorConstants.COMMA);
         for (int i = 0; i < splitText.length; i++) {
             sb.append(splitText[i]);
             sb.append(i == splitText.length - 1 ? "" : SeparatorConstants.NEWLINE);

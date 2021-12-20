@@ -140,10 +140,10 @@ public class IconSelector extends Stage {
         final Set<String> sortedCategories = new LinkedHashSet<>();
         sortedCategories.addAll(categories);
 
-        String[] iconName = icon.getExtendedName().split("\\.");
+        final String[] iconName = icon.getExtendedName().split("\\.");
 
         /**
-         * For each of the categories create a TreeItem and add it to         * rootNode
+         * For each of the categories create a TreeItem and add it to rootNode
          */
         for (final String categoryName : sortedCategories) {
             final TreeItem<String> categoryTreeNode = new TreeItem<>(categoryName);
@@ -179,10 +179,10 @@ public class IconSelector extends Stage {
         }
         // sort the icons in alpabetical order
         sort(iconNames);
-        String[] iconName = icon.getExtendedName().split("\\.");
+        final String[] iconName = icon.getExtendedName().split("\\.");
 
         // for each of those iconNames find the icon and create an IconNode
-        for (String name : iconNames) {
+        for (final String name : iconNames) {
             IconNode node = new IconNode(IconManager.getIcon(name));
             iconListView.getItems().add(node);
 

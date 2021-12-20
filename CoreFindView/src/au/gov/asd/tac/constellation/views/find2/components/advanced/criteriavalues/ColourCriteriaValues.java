@@ -25,7 +25,7 @@ public class ColourCriteriaValues extends FindCriteriaValues {
 
     private final ConstellationColor color;
 
-    public ColourCriteriaValues(String attributeType, String attribute, String filter, ConstellationColor color) {
+    public ColourCriteriaValues(final String attributeType, final String attribute, final String filter, final ConstellationColor color) {
         super(attributeType, attribute, filter);
         this.color = color;
     }

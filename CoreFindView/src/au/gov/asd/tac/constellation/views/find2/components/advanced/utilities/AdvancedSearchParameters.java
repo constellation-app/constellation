@@ -64,7 +64,7 @@ public class AdvancedSearchParameters {
      * @param currentSelection
      * @param searchAllGraphs
      */
-    public AdvancedSearchParameters(final List<FindCriteriaValues> criteriaValuesList, final GraphElementType graphElementType, String allOrAny, String currentSelection, final boolean searchAllGraphs) {
+    public AdvancedSearchParameters(final List<FindCriteriaValues> criteriaValuesList, final GraphElementType graphElementType, final String allOrAny, final String currentSelection, final boolean searchAllGraphs) {
         this.criteriaValuesList = criteriaValuesList;
         this.graphElementType = graphElementType;
         this.allOrAny = allOrAny;
@@ -122,7 +122,7 @@ public class AdvancedSearchParameters {
         if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        AdvancedSearchParameters parameters = (AdvancedSearchParameters) object;
+        final AdvancedSearchParameters parameters = (AdvancedSearchParameters) object;
 
         if (searchAllGraphs == parameters.isSearchAllGraphs()) {
             matches++;
@@ -139,42 +139,29 @@ public class AdvancedSearchParameters {
         int i = 0;
         if (criteriaValuesList.size() == parameters.getCriteriaValuesList().size()) {
             for (FindCriteriaValues values : criteriaValuesList) {
-                if (!values.getAttribute().equals(parameters.getCriteriaValuesList().get(i).getAttribute())) {
+                if (!values.getAttribute().equals(parameters.getCriteriaValuesList().get(i).getAttribute())
+                        || !values.getAttributeType().equals(parameters.getCriteriaValuesList().get(i).getAttributeType())
+                        || !values.getFilter().equals(parameters.getCriteriaValuesList().get(i).getFilter())) {
                     return false;
                 }
-                if (!values.getAttributeType().equals(parameters.getCriteriaValuesList().get(i).getAttributeType())) {
-                    return false;
-                }
-                if (!values.getFilter().equals(parameters.getCriteriaValuesList().get(i).getFilter())) {
-                    return false;
-                }
-
                 if (values.getAttributeType().equals(parameters.getCriteriaValuesList().get(i).getAttributeType())) {
                     switch (values.getAttributeType()) {
                         case StringAttributeDescription.ATTRIBUTE_NAME:
                             StringCriteriaValues stringParameterValues = (StringCriteriaValues) values;
                             StringCriteriaValues stringActualValues = (StringCriteriaValues) parameters.getCriteriaValuesList().get(i);
 
-                            if (!stringParameterValues.isIgnoreCase() == stringActualValues.isIgnoreCase()) {
-                                return false;
-                            }
-                            if (!stringParameterValues.isUseList() == stringActualValues.isUseList()) {
-                                return false;
-                            }
-                            if (!stringActualValues.isUseList() && !stringParameterValues.getText().equals(stringActualValues.getText())) {
-                                return false;
-                            }
-                            if (stringActualValues.isUseList() && !stringParameterValues.getTextList().equals(stringActualValues.getTextList())) {
+                            if (!stringParameterValues.isIgnoreCase() == stringActualValues.isIgnoreCase()
+                                    || !stringParameterValues.isUseList() == stringActualValues.isUseList()
+                                    || (!stringActualValues.isUseList() && !stringParameterValues.getText().equals(stringActualValues.getText()))
+                                    || (stringActualValues.isUseList() && !stringParameterValues.getTextList().equals(stringActualValues.getTextList()))) {
                                 return false;
                             }
                             break;
                         case FloatAttributeDescription.ATTRIBUTE_NAME:
                             FloatCriteriaValues floatParameterValues = (FloatCriteriaValues) values;
                             FloatCriteriaValues floatActualValues = (FloatCriteriaValues) parameters.getCriteriaValuesList().get(i);
-                            if (floatParameterValues.getFloatValuePrimary() != floatActualValues.getFloatValuePrimary()) {
-                                return false;
-                            }
-                            if (floatParameterValues.getFloatValueSecondary() != floatActualValues.getFloatValueSecondary()) {
+                            if (floatParameterValues.getFloatValuePrimary() != floatActualValues.getFloatValuePrimary()
+                                    || floatParameterValues.getFloatValueSecondary() != floatActualValues.getFloatValueSecondary()) {
                                 return false;
                             }
                             break;
@@ -195,10 +182,8 @@ public class AdvancedSearchParameters {
                         case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME:
                             DateTimeCriteriaValues dateTimeParameterValues = (DateTimeCriteriaValues) values;
                             DateTimeCriteriaValues dateTimeActualValues = (DateTimeCriteriaValues) parameters.getCriteriaValuesList().get(i);
-                            if (!dateTimeParameterValues.getDateTimeStringPrimaryValue().equals(dateTimeActualValues.getDateTimeStringPrimaryValue())) {
-                                return false;
-                            }
-                            if (!dateTimeParameterValues.getDateTimeStringSecondaryValue().equals(dateTimeActualValues.getDateTimeStringSecondaryValue())) {
+                            if (!dateTimeParameterValues.getDateTimeStringPrimaryValue().equals(dateTimeActualValues.getDateTimeStringPrimaryValue())
+                                    || !dateTimeParameterValues.getDateTimeStringSecondaryValue().equals(dateTimeActualValues.getDateTimeStringSecondaryValue())) {
                                 return false;
                             }
                             break;

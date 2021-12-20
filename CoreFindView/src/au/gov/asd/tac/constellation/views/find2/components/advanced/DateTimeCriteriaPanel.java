@@ -109,7 +109,7 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
         // Add all choice Box relevant choice box options and select the first
         // for filterChoiceBox
         getFilterChoiceBox().getItems().removeAll("Is", "Is Not");
-        getFilterChoiceBox().getItems().addAll("Occoured On", "Didn't Occour On", "Occured Before", "Occoured After", "Occoured Between");
+        getFilterChoiceBox().getItems().addAll("Occured On", "Didn't Occur On", "Occured Before", "Occured After", "Occured Between");
         getFilterChoiceBox().getSelectionModel().selectFirst();
 
         // Add all choice Box relevant choice box options and select the first
@@ -178,8 +178,8 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
      * @param choiceSelection
      */
     private void betweenSeletionAction(final String choiceSelection) {
-        datePickerTwoButton.setDisable(!choiceSelection.equals("Occoured Between"));
-        timeFrameChoiceBox.setDisable(!choiceSelection.equals("Occoured Between"));
+        datePickerTwoButton.setDisable(!choiceSelection.equals("Occured Between"));
+        timeFrameChoiceBox.setDisable(!choiceSelection.equals("Occured Between"));
 
         if (!timeFrameChoiceBox.getSelectionModel().getSelectedItem().equals("Custom")) {
             timeFrameChoiceBox.getSelectionModel().select("Custom");
@@ -210,12 +210,12 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
             // and the previously selected timeZone
             dateStringTwo = LocalDate.now().toString();
             timeStringTwo = "23:59:59";
-            timeZoneStringTwo = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.UTC.toString() : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
+            timeZoneStringTwo = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC) : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
 
             // set dateTime one data to the min time of today
             // and the previously selected timeZone
             timeString = "00:00:00";
-            timeZoneString = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.UTC.toString() : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
+            timeZoneString = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC) : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
 
             // The Local Date value of the current date based of the timeZone
             final LocalDate calculatedDate = LocalDate.now(dateString.equals("") ? TimeZoneUtilities.UTC : ZoneId.of(formattedTimeZoneString));
@@ -264,7 +264,7 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
      */
     @Override
     public FindCriteriaValues getCriteriaValues() {
-        if (getFilterChoiceBox().getSelectionModel().getSelectedItem().equals("Occoured Between")) {
+        if (getFilterChoiceBox().getSelectionModel().getSelectedItem().equals("Occured Between")) {
             return new DateTimeCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), dateTimeStringPrimary, dateTimeStringSecondary);
         }
         return new DateTimeCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), dateTimeStringPrimary);
