@@ -82,7 +82,9 @@ public class XmlUtilities {
             // Some implemntations wont support these settings
             transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-        } catch (IllegalArgumentException ex) {}
+        } catch (IllegalArgumentException ex) {
+            // Do nothing - Some implemntations wont support above settings
+        }
         try {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
             transformer = transformerFactory.newTransformer();
