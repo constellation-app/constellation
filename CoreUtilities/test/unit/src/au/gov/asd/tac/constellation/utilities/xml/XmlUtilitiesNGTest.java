@@ -951,7 +951,41 @@ public class XmlUtilitiesNGTest {
      */
     @Test
     public void testMap_String_String() throws Exception {
-        System.out.println("map");
+        try {
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
+            fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                    + "<parent>\n"
+                    + "  <child><col1>aaa</col1><col2>bbb</col2><col3>ccc</col3></child>\n"
+                    + "  <child><col1>ddd</col1><col2>eee</col2><col3>fff</col3></child>\n"
+                    + "  <child3><col1>ggg</col1><col2>hhh</col2><col3>iii</col3></child3>\n"
+                    + "  <child>No columns</child>\n"
+                    + "</parent>");
+            fw.close();
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+
+            // Execute test
+
+            // Extract content and validate it is as expected
+            URL url = new File("testFile.xml").toURI().toURL();            
+            List<Map<String, String>> result = instance.map(url.toString(), "child");
+            assertEquals(3,result.size());
+            assertEquals(3, result.get(0).size());
+            assertEquals(3, result.get(1).size());
+            assertEquals(0, result.get(2).size());
+            assertNotNull(result.get(0).get("col1"), "aaa");
+            assertNotNull(result.get(0).get("col2"), "bbb");
+            assertNotNull(result.get(0).get("col3"), "ccc");
+            assertNotNull(result.get(1).get("col1"), "ddd");
+            assertNotNull(result.get(1).get("col2"), "eee");
+            assertNotNull(result.get(1).get("col3"), "fff");
+
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
+        }
     }
 
     /**

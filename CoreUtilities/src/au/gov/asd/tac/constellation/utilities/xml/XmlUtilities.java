@@ -457,7 +457,7 @@ public class XmlUtilities {
     }
 
     /**
-     * Returns an array of maps, that represents a tabular structure.Each map
+     * Returns an array of maps, that represents a tabular structure. Each map
      * is a row with all the columns for that row.
      *
      * @param file the file to process input.
@@ -475,7 +475,7 @@ public class XmlUtilities {
     }
 
     /**
-     * Returns an array of maps, that represents a tabular structure.Each map
+     * Returns an array of maps, that represents a tabular structure. Each map
      * is a row with all the columns for that row.
      *
      * @param url the URL that specifies the location of the input.
@@ -501,12 +501,14 @@ public class XmlUtilities {
      * structure.
      * @return an array of maps, that represents a tabular structure. Each map
      * is a row with all the columns for that row.
+     * @throws java.net.MalformedURLException if supplied URL is malformed
+     * @throws java.io.FileNotFoundException if file URL references is not found
      * @throws UnsupportedEncodingException if the encoding is not supported.
      * @throws TransformerException if an error occurs while transforming the
      * XML into a document.
      */
-    public List<Map<String, String>> map(final String url, final String rowTag) throws UnsupportedEncodingException, TransformerException {
-        final Document document = read(url);
+    public List<Map<String, String>> map(final String url, final String rowTag) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
+        final Document document = read(FileUtils.toFile(new URL(url)));
         return map(document, rowTag);
     }
 
