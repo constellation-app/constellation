@@ -460,24 +460,6 @@ public class XmlUtilities {
      * Returns an array of maps, that represents a tabular structure. Each map
      * is a row with all the columns for that row.
      *
-     * @param file the file to process input.
-     * @return an array of maps, that represents a tabular structure. Each map
-     * is a row with all the columns for that row.
-     * @throws java.io.FileNotFoundException if file is not found
-     * @throws java.io.UnsupportedEncodingException if the encoding is not
-     * supported.
-     * @throws TransformerException if an error occurs while transforming the
-     * XML into a document.
-     */
-    public List<Map<String, String>> map(final File file) throws FileNotFoundException, UnsupportedEncodingException, TransformerException {
-        final Document document = read(file);
-        return map(document);
-    }
-
-    /**
-     * Returns an array of maps, that represents a tabular structure. Each map
-     * is a row with all the columns for that row.
-     *
      * @param url the URL that specifies the location of the input.
      * @return an array of maps, that represents a tabular structure. Each map
      * is a row with all the columns for that row.
@@ -489,7 +471,7 @@ public class XmlUtilities {
      * XML into a document.
      */
     public List<Map<String, String>> map(final String url) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {       
-        return map(FileUtils.toFile(new URL(url)));
+        return map(read(FileUtils.toFile(new URL(url))));
     }
 
     /**
@@ -588,23 +570,6 @@ public class XmlUtilities {
      * Converts the XML document at the specified URL into a 2-dimensional
      * String array and returns the result.
      *
-     * @param file a file containing an XML document.
-     * @param swap if true then the rows and columns are swapped.
-     * @return the table.
-     * @throws java.io.FileNotFoundException if file is not found
-     * @throws UnsupportedEncodingException if the encoding is not supported.
-     * @throws TransformerException if an error occurs while transforming the
-     * XML into a document.
-     */
-    public String[][] table(final File file, final boolean swap) throws FileNotFoundException, UnsupportedEncodingException, TransformerException {
-        final Document document = read(file);
-        return table(document, swap);
-    }
-
-    /**
-     * Converts the XML document at the specified URL into a 2-dimensional
-     * String array and returns the result.
-     *
      * @param url a URL referencing an XML document.
      * @param swap if true then the rows and columns are swapped.
      * @return the table.
@@ -614,8 +579,7 @@ public class XmlUtilities {
      * XML into a document.
      */
     public String[][] table(final String url, final boolean swap) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
-        final Document document = read(FileUtils.toFile(new URL(url)));
-        return table(document, swap);
+        return table(read(FileUtils.toFile(new URL(url))), swap);
     }
 
     /**

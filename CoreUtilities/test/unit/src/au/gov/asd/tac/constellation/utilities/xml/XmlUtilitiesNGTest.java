@@ -1010,13 +1010,13 @@ public class XmlUtilitiesNGTest {
      * thrown if file cant be found.
      */
     @Test (expectedExceptions = FileNotFoundException.class)
-    public void testTable_File_FilenotFound() throws Exception {
+    public void testTable_String_Boolean_FilenotFound() throws Exception {
         // Get XmlUtilities instance
         XmlUtilities instance = new XmlUtilities();
  
         // Test file not found exception
-        File file = new File(TEST_FILE);
-        String[][] result = instance.table(file, false);
+        URL url = new File(TEST_FILE).toURI().toURL();
+        String[][] result = instance.table(url.toString(), false);
     }
  
     /**
@@ -1024,7 +1024,7 @@ public class XmlUtilitiesNGTest {
      * thrown if file cant be found.
      */
     @Test (expectedExceptions = TransformerException.class)
-    public void testTable_File_TransformerException() throws Exception {
+    public void testTable_String_Boolean_TransformerException() throws Exception {
         // Get XmlUtilities instance
         XmlUtilities instance = new XmlUtilities();
 
@@ -1035,8 +1035,8 @@ public class XmlUtilitiesNGTest {
         fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
                 + "<badparent></parent>");
         fw.close();
-        File file = new File(TEST_FILE);
-        String[][] result = instance.table(file, false);
+        URL url = new File(TEST_FILE).toURI().toURL();
+        String[][] result = instance.table(url.toString(), false);
     }
     
 }
