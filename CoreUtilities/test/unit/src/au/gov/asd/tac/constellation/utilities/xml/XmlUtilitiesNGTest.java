@@ -243,7 +243,7 @@ public class XmlUtilitiesNGTest {
             // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File("testFile.xml"));
+            Document document = docBuilder.parse(new File(TEST_FILE));
             NodeList nodeList = document.getElementsByTagName("parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
@@ -301,7 +301,7 @@ public class XmlUtilitiesNGTest {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File("testFile.xml"));
+            Document document = docBuilder.parse(new File(TEST_FILE));
             NodeList nodeList = document.getElementsByTagName("c:parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
@@ -362,7 +362,7 @@ public class XmlUtilitiesNGTest {
             // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File("testFile.xml"));
+            Document document = docBuilder.parse(new File(TEST_FILE));
             NodeList nodeList = document.getElementsByTagName("parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
@@ -427,7 +427,7 @@ public class XmlUtilitiesNGTest {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File("testFile.xml"));
+            Document document = docBuilder.parse(new File(TEST_FILE));
             NodeList nodeList = document.getElementsByTagName("c:parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
@@ -489,7 +489,7 @@ public class XmlUtilitiesNGTest {
             // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File("testFile.xml"));
+            Document document = docBuilder.parse(new File(TEST_FILE));
             NodeList nodeList = document.getElementsByTagName("parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
@@ -536,7 +536,7 @@ public class XmlUtilitiesNGTest {
             // Read the test file into a Document object
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File("testFile.xml"));
+            Document document = docBuilder.parse(new File(TEST_FILE));
             NodeList nodeList = document.getElementsByTagName("parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
@@ -592,7 +592,7 @@ public class XmlUtilitiesNGTest {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File("testFile.xml"));
+            Document document = docBuilder.parse(new File(TEST_FILE));
             NodeList nodeList = document.getElementsByTagName("c:parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
@@ -650,7 +650,7 @@ public class XmlUtilitiesNGTest {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File("testFile.xml"));
+            Document document = docBuilder.parse(new File(TEST_FILE));
             NodeList nodeList = document.getElementsByTagName("parent");
             Node parent = nodeList.item(0);
             
@@ -698,7 +698,7 @@ public class XmlUtilitiesNGTest {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File("testFile.xml"));
+            Document document = docBuilder.parse(new File(TEST_FILE));
             NodeList nodeList = document.getElementsByTagName("parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
@@ -752,7 +752,7 @@ public class XmlUtilitiesNGTest {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File("testFile.xml"));
+            Document document = docBuilder.parse(new File(TEST_FILE));
             NodeList nodeList = document.getElementsByTagName("parent");
             Node parent = nodeList.item(0);
             NodeList children = parent.getChildNodes();
@@ -783,86 +783,6 @@ public class XmlUtilitiesNGTest {
             fail("The test threw an unexpected exception.");
         }
     }
-
-    /**
-     * Test of map method, of class XmlUtilities.
-     */
-    @Test
-    public void testMap_File() throws Exception {
-        try {
-            // Create test file
-            FileWriter fw = new FileWriter(TEST_FILE);
-            fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-                    + "<parent>\n"
-                    + "  <child1><col1>aaa</col1><col2>bbb</col2><col3>ccc</col3></child1>\n"
-                    + "  <child2><col1>ddd</col1><col2>eee</col2><col3>fff</col3></child2>\n"
-                    + "  <child3><col1>ggg</col1><col2>hhh</col2><col3>iii</col3></child3>\n"
-                    + "  <child4>No columns</child4>\n"
-                    + "</parent>");
-            fw.close();
-            
-            // Get XmlUtilities instance
-            XmlUtilities instance = new XmlUtilities();
-
-            // Execute test
-
-            // Extract content and validate it is as expected
-            File file = new File(TEST_FILE);
-            List<Map<String, String>> result = instance.map(file);
-            assertEquals(4,result.size());
-            assertEquals(3, result.get(0).size());
-            assertEquals(3, result.get(1).size());
-            assertEquals(3, result.get(2).size());
-            assertEquals(0, result.get(3).size());
-            assertNotNull(result.get(0).get("col1"), "aaa");
-            assertNotNull(result.get(0).get("col2"), "bbb");
-            assertNotNull(result.get(0).get("col3"), "ccc");
-            assertNotNull(result.get(1).get("col1"), "ddd");
-            assertNotNull(result.get(1).get("col2"), "eee");
-            assertNotNull(result.get(1).get("col3"), "fff");
-            assertNotNull(result.get(2).get("col1"), "ggg");
-            assertNotNull(result.get(2).get("col2"), "hhh");
-            assertNotNull(result.get(2).get("col3"), "iii");
-  
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
-    }
-
-    /**
-     * Test of map method, of class XmlUtilities, showing file not found exception
-     * thrown if file cant be found.
-     */
-    @Test (expectedExceptions = FileNotFoundException.class)
-    public void testMap_File_FilenotFound() throws Exception {
-        // Get XmlUtilities instance
-        XmlUtilities instance = new XmlUtilities();
- 
-        // Test file not found exception
-        File file = new File(TEST_FILE);
-        List<Map<String, String>> result = instance.map(file);  
-    }
- 
-    /**
-     * Test of map method, of class XmlUtilities, showing file not found exception
-     * thrown if file cant be found.
-     */
-    @Test (expectedExceptions = TransformerException.class)
-    public void testMap_File_TransformerException() throws Exception {
-        // Get XmlUtilities instance
-        XmlUtilities instance = new XmlUtilities();
-
-        // Execute test
-
-        // Generate malformed XML and confirm exception is thrown
-        FileWriter fw = new FileWriter(TEST_FILE);
-        fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-                + "<badparent></parent>");
-        fw.close();
-        File file = new File("testFile.xml");
-        List<Map<String, String>> result = instance.map(file);
-    }
     
     /**
      * Test of map method, of class XmlUtilities which takes in a URL.
@@ -887,7 +807,7 @@ public class XmlUtilitiesNGTest {
             // Execute test
 
             // Extract content and validate it is as expected
-            URL url = new File("testFile.xml").toURI().toURL();            
+            URL url = new File(TEST_FILE).toURI().toURL();            
             List<Map<String, String>> result = instance.map(url.toString());
             assertEquals(4,result.size());
             assertEquals(3, result.get(0).size());
@@ -942,7 +862,7 @@ public class XmlUtilitiesNGTest {
 
         // Execute test
 
-        URL url = new File("testFile.xml").toURI().toURL();            
+        URL url = new File(TEST_FILE).toURI().toURL();            
         List<Map<String, String>> result = instance.map(url.toString());
     }
     
@@ -969,7 +889,7 @@ public class XmlUtilitiesNGTest {
             // Execute test
 
             // Extract content and validate it is as expected
-            URL url = new File("testFile.xml").toURI().toURL();            
+            URL url = new File(TEST_FILE).toURI().toURL();            
             List<Map<String, String>> result = instance.map(url.toString(), "child");
             assertEquals(3,result.size());
             assertEquals(3, result.get(0).size());
@@ -988,28 +908,135 @@ public class XmlUtilitiesNGTest {
         }
     }
 
-    /**
-     * Test of map method, of class XmlUtilities.
-     */
-    @Test
-    public void testMap_Document_String() {
-        System.out.println("map");
-    }
 
     /**
-     * Test of map method, of class XmlUtilities.
+     * Test of map method, of class XmlUtilities, showing file not found exception
+     * thrown if file cant be found.
      */
-    @Test
-    public void testMap_Document() {
-        System.out.println("map");
+    @Test (expectedExceptions = FileNotFoundException.class)
+    public void testMap_String_String_FilenotFound() throws Exception {
+        // Get XmlUtilities instance
+        XmlUtilities instance = new XmlUtilities();
+
+        // Execute test
+
+        URL url = new File(TEST_FILE).toURI().toURL();            
+        List<Map<String, String>> result = instance.map(url.toString(), "child");
+    }
+ 
+    /**
+     * Test of map method, of class XmlUtilities, showing file not found exception
+     * thrown if file cant be found.
+     */
+    @Test (expectedExceptions = TransformerException.class)
+    public void testMap_String_String_TransformerException() throws Exception {
+        // Get XmlUtilities instance
+        XmlUtilities instance = new XmlUtilities();
+
+        // Generate malformed XML and confirm exception is thrown
+        FileWriter fw = new FileWriter(TEST_FILE);
+        fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                + "<badparent></parent>");
+        fw.close();
+
+        // Execute test
+
+        URL url = new File(TEST_FILE).toURI().toURL();            
+        List<Map<String, String>> result = instance.map(url.toString(), "child");
     }
 
     /**
      * Test of table method, of class XmlUtilities.
      */
     @Test
-    public void testTable() throws Exception {
-        System.out.println("table");
+    public void testTable_String_Boolean() throws Exception {
+        try {
+            // Create test file
+            FileWriter fw = new FileWriter(TEST_FILE);
+            fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                    + "<parent>\n"
+                    + "  <child1><col1>aaa</col1><col2>bbb</col2><col3>ccc</col3></child1>\n"
+                    + "  <child2><col1>ddd</col1><col2>eee</col2></child2>\n"
+                    + "  <child3><col1>ggg</col1><col2>hhh</col2><col3>iii</col3></child3>\n"
+                    + "  <child4>No columns</child4>\n"
+                    + "</parent>");
+            fw.close();
+            
+            // Get XmlUtilities instance
+            XmlUtilities instance = new XmlUtilities();
+
+            // Execute test
+
+            // Extract content and validate it is as expected
+            URL url = new File(TEST_FILE).toURI().toURL(); 
+            String[][] result = instance.table(url.toString(), false);
+            assertEquals(result.length, 3);
+            assertEquals(result[0].length, 3);
+            assertEquals(result[1].length, 2);
+            assertEquals(result[2].length, 3);
+            assertEquals(result[0][0], "aaa");
+            assertEquals(result[0][1], "bbb");
+            assertEquals(result[0][2], "ccc");
+            assertEquals(result[1][0], "ddd");
+            assertEquals(result[1][1], "eee");
+            assertEquals(result[2][0], "ggg");
+            assertEquals(result[2][1], "hhh");
+            assertEquals(result[2][2], "iii");
+            
+            // Extract swapped content and validate it is as expected
+            String[][] swappedResult = instance.table(url.toString(), true);
+            assertEquals(swappedResult.length, 3);
+            assertEquals(swappedResult[0].length, 3);
+            assertEquals(swappedResult[1].length, 3);
+            assertEquals(swappedResult[2].length, 3);
+            assertEquals(swappedResult[0][0], "aaa");
+            assertEquals(swappedResult[0][1], "ddd");
+            assertEquals(swappedResult[0][2], "ggg");
+            assertEquals(swappedResult[1][0], "bbb");
+            assertEquals(swappedResult[1][1], "eee");
+            assertEquals(swappedResult[1][2], "hhh");
+            assertEquals(swappedResult[2][0], "ccc");
+            assertNull(swappedResult[2][1]);
+            assertEquals(swappedResult[2][2], "iii");
+
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.toString());
+            fail("The test threw an unexpected exception.");
+        }
+    }
+
+    /**
+     * Test of table method, of class XmlUtilities, showing file not found exception
+     * thrown if file cant be found.
+     */
+    @Test (expectedExceptions = FileNotFoundException.class)
+    public void testTable_File_FilenotFound() throws Exception {
+        // Get XmlUtilities instance
+        XmlUtilities instance = new XmlUtilities();
+ 
+        // Test file not found exception
+        File file = new File(TEST_FILE);
+        String[][] result = instance.table(file, false);
+    }
+ 
+    /**
+     * Test of table method, of class XmlUtilities, showing file not found exception
+     * thrown if file cant be found.
+     */
+    @Test (expectedExceptions = TransformerException.class)
+    public void testTable_File_TransformerException() throws Exception {
+        // Get XmlUtilities instance
+        XmlUtilities instance = new XmlUtilities();
+
+        // Execute test
+
+        // Generate malformed XML and confirm exception is thrown
+        FileWriter fw = new FileWriter(TEST_FILE);
+        fw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                + "<badparent></parent>");
+        fw.close();
+        File file = new File(TEST_FILE);
+        String[][] result = instance.table(file, false);
     }
     
 }
