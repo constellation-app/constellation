@@ -1,11 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-if (( $# != 2 ))
-then
-  echo "Invalid arguments parsed."
-  exit 1
-fi
 
 source .githubutilities/functions.sh
 
