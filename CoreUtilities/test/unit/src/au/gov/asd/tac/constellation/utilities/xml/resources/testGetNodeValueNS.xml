@@ -1,0 +1,8 @@
+<c:parent xmlns:c="http://www.consty.com/star" xmlns:c2="http://www.consty2.com/star2">>
+  <c:child>child_value1</c:child>
+  <c:child>child_value2</c:child>
+  <child>child_value3</child>
+  <c2:child>child_value4</c2:child>
+  <c:nest_child><c:child_nest>child_nest_value1</c:child_nest><c:child_nest>child_nest_value2</c:child_nest></c:nest_child>
+  <c:nest_child>second_nest_child</c:nest_child>
+</c:parent>
