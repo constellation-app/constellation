@@ -32,10 +32,14 @@ import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,6 +79,7 @@ public class DelimitedImportController extends ImportController {
         if (this.filesIncludeHeaders != filesIncludeHeaders) {
             this.filesIncludeHeaders = filesIncludeHeaders;
             updateSampleData();
+            validateFileStructure(files);
         }
     }
 
@@ -212,6 +217,65 @@ public class DelimitedImportController extends ImportController {
                 currentData.remove(0); //Remove the first row with column headers
             }
             configurationPane.setSampleData(currentColumns, currentData);
+        }
+    }
+
+    private void notifyFileStructureMismatchWarning(final List<File> filesToRemove) {
+        final StringBuilder warningMsg = new StringBuilder((filesToRemove.size() > 1 ? "These files have" : "This file has")
+                + " a different structure and will be deleted: " + SeparatorConstants.NEWLINE);
+
+        filesToRemove.forEach(file -> warningMsg.append(file.getPath() + SeparatorConstants.NEWLINE));
+
+        LOGGER.log(Level.INFO, "Header structure mismatch. These files will be removed: {0}", filesToRemove);
+
+        NotifyDisplayer.displayAlert("Header structure mismatch", "The header structure of the files should be the same", "If the `Files Include Headers` "
+                + "option is disabled the number of columns should be the same. Otherwise the column headers should be the same in the same order. "
+                + SeparatorConstants.NEWLINE + warningMsg,
+                Alert.AlertType.WARNING);
+    }
+
+    public List<String> getColumnHeaders(final File file) {
+        final List<String> strArray = new ArrayList<>();
+        try (final BufferedReader brTest = new BufferedReader(new FileReader(file))) {
+            final String text = brTest.readLine();
+            strArray.addAll(Arrays.asList(text.split(",")));
+
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, ex.getMessage(), ex);
+        }
+        return strArray;
+    }
+
+    // Iterates over files and do a check to make sure that file structure is the same.
+    // If the `Files Include Headers` option is disabled the number of columns should be the same.
+    // Otherwise the column headers should be the same in the same order.
+    public void validateFileStructure(final List<File> filesToValidate) {
+        List<File> invalidFiles = new ArrayList<>();
+
+        if (files.size() == 1) {
+            // There's only one file, nothing to compare
+            return;
+        }
+
+        for (final File file : filesToValidate) {
+            final List<String> referenceColumns = getColumnHeaders(files.get(0));
+            final List<String> fileColumns = getColumnHeaders(file);
+
+            if (!isFilesIncludeHeadersEnabled()) {
+                if (referenceColumns.size() != fileColumns.size()) {
+                    invalidFiles.add(file);
+                }
+            } else if (!fileColumns.equals(referenceColumns)) {
+                invalidFiles.add(file);
+            }
+        }
+        if (!invalidFiles.isEmpty()) {
+            notifyFileStructureMismatchWarning(invalidFiles);
+
+            for (final File fileToRemove : invalidFiles) {
+                files.remove(fileToRemove);
+                ((DelimitedSourcePane) importPane.getSourcePane()).removeFile(fileToRemove);
+            }
         }
     }
 
