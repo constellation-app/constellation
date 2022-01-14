@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.apache.commons.lang3.StringUtils;
@@ -71,6 +72,9 @@ public class DataAccessParametersIoProvider {
                     DataAccessTabPane.getQueryPhasePane(step)
             );
 
+            final Label tabCaption = (Label) step.getGraphic();
+            preferences.setStepCaption(tabCaption.getText());
+
             // Remember the first non-null, non-blank query name.
             if (queryName == null
                     && preferences.getGlobalParameters().containsKey(
@@ -112,7 +116,7 @@ public class DataAccessParametersIoProvider {
             dataAccessPane.getDataAccessTabPane().removeTabs();
 
             loadedParameters.forEach(loadedParameter -> {
-                final QueryPhasePane pluginPane = dataAccessPane.getDataAccessTabPane().newTab();
+                final QueryPhasePane pluginPane = dataAccessPane.getDataAccessTabPane().newTab(loadedParameter.getStepCaption());
 
                 // If an existing global parameter is in the JSON then update it,
                 // otherwise ignore it

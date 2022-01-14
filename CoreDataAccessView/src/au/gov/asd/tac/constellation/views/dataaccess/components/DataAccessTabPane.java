@@ -42,10 +42,14 @@ import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Wrapper of the JavaFX tab pane for the CONSTELLATION Data Access View. Provides
@@ -59,6 +63,7 @@ public class DataAccessTabPane {
     
     private static final String TAB_TITLE = "Step %d";
     private static final String LOCAL_DATE_PARAMETER_TYPE = "LocalDateParameterType";
+    private static final int DOUBLE_CLICK_COUNT = 2;
     
     /**
      * Function for determining if a tab is executable. A tab is executable
@@ -104,16 +109,30 @@ public class DataAccessTabPane {
     }
     
     /**
-     * Create a new tab. The {@link QueryPhasePane} that is added to the tab
-     * will have no global parameters initially. It will have the data access plugin
-     * map generated at start up and the {@link DataAccessPane} that this tab pane
+     * Create a new tab with a default caption, "Step 1", "Step 2" etc. The
+     * {@link QueryPhasePane} that is added to the tab will have no global
+     * parameters initially. It will have the data access plugin     * map generated at start up and the {@link DataAccessPane} that this tab pane
      * resides on.
      *
      * @return the new {@link QueryPhasePane} that was added to the tab
      * @see #newTab(PluginParameters)
      */
     public QueryPhasePane newTab() {
-        return newTab((PluginParameters) null);
+        return newTab((PluginParameters) null, "");
+    }
+
+    /**
+     * Create a new tab with the specified caption. The {@link QueryPhasePane}
+     * that is added to the tab will have no global parameters initially. It
+     * will have the data access plugin map generated at start up and the
+     * {@link DataAccessPane} that this tab pane resides on.
+     *
+     * @param tabCaption the caption of the new tab
+     * @return the new {@link QueryPhasePane} that was added to the tab
+     * @see #newTab(PluginParameters)
+     */
+    public QueryPhasePane newTab(String tabCaption) {
+        return newTab((PluginParameters) null, tabCaption);
     }
     
     /**
@@ -127,10 +146,13 @@ public class DataAccessTabPane {
      * @see #newTab(QueryPhasePane)
      * @see DataAccessPaneState#getPlugins()
      */
-    public QueryPhasePane newTab(final PluginParameters globalPrameters) {
+    public QueryPhasePane newTab(final PluginParameters globalPrameters, final String tabCaption) {
         final QueryPhasePane pane = new QueryPhasePane(plugins, getDataAccessPane(), globalPrameters);
-        newTab(pane);
-
+        if (StringUtils.isBlank(tabCaption)) {
+            newTab(pane, String.format(TAB_TITLE, getTabPane().getTabs().size() + 1));
+        } else {
+            newTab(pane, tabCaption);
+        }
         return pane;
     }
     
@@ -140,20 +162,25 @@ public class DataAccessTabPane {
      * 
      * @param queryPane the pane that will be added as the content of the new tab
      */
-    public void newTab(final QueryPhasePane queryPane) {
-        final Tab newTab = new Tab(String.format(TAB_TITLE, getTabPane().getTabs().size() + 1));
-        
+    public void newTab(final QueryPhasePane queryPane, final String tabCaption) {
+        final Label label = new Label(tabCaption);
+
+        final Tab newTab = new Tab();
+        newTab.setGraphic(label);
+
+        label.setOnMouseClicked(event -> labelClickEvent(newTab, label, event));
+
         // Get a copy of the existing on closed handler. When a tab is closed,
         // it will be called after the tab names are corrected and updated.
-        final Optional<EventHandler<Event>> origOnClose =
-                Optional.ofNullable(newTab.getOnClosed());
+        final Optional<EventHandler<Event>> origOnClose
+                = Optional.ofNullable(newTab.getOnClosed());
         newTab.setOnClosed(event -> {
             int queryNum = 1;
             for (Tab tab : getTabPane().getTabs()) {
                 tab.setText(String.format(TAB_TITLE, queryNum));
                 queryNum++;
             }
-            
+
             origOnClose.ifPresent(handler -> handler.handle(event));
         });
 
@@ -196,7 +223,27 @@ public class DataAccessTabPane {
         // Add the new tab to the pane
         getTabPane().getTabs().add(newTab);
     }
-    
+
+    private void labelClickEvent(final Tab tab, final Label label, final MouseEvent event) {
+        if (event.getClickCount() == DOUBLE_CLICK_COUNT) {
+            final TextField field = new TextField(label.getText());
+            field.setOnAction(e -> {
+                label.setText(field.getText());
+                tab.setGraphic(label);
+            });
+            field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue) -> {
+                if (!newValue) {
+                    label.setText(field.getText());
+                    tab.setGraphic(label);
+                }
+            });
+            tab.setGraphic(field);
+            field.selectAll();
+            field.requestFocus();
+        }
+    }
+
     /**
      * Run the given range of tabs inclusively. As each tab is run, the jobs from
      * the previous tab are passed so that it can block if necessary until they

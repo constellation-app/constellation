@@ -149,7 +149,7 @@ public class ButtonToolbar {
                     DataAccessTabPane.getQueryPhasePane(getTabs().get(getTabs().size() - 1))
                         .getGlobalParametersPane().getParams() : null;
             
-            dataAccessPane.getDataAccessTabPane().newTab(previousGlobals);
+            dataAccessPane.getDataAccessTabPane().newTab(previousGlobals, "");
             
             actionEvent.consume();
         });
