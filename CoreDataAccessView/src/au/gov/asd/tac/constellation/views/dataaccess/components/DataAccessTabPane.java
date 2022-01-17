@@ -131,7 +131,7 @@ public class DataAccessTabPane {
      * @return the new {@link QueryPhasePane} that was added to the tab
      * @see #newTab(PluginParameters)
      */
-    public QueryPhasePane newTab(String tabCaption) {
+    public QueryPhasePane newTab(final String tabCaption) {
         return newTab((PluginParameters) null, tabCaption);
     }
     
@@ -165,7 +165,7 @@ public class DataAccessTabPane {
     public void newTab(final QueryPhasePane queryPane, final String tabCaption) {
         final Label label = new Label(tabCaption);
 
-        final Tab newTab = new Tab();
+        final Tab newTab = new Tab(tabCaption);
         newTab.setGraphic(label);
 
         label.setOnMouseClicked(event -> labelClickEvent(newTab, label, event));
@@ -206,20 +206,20 @@ public class DataAccessTabPane {
         newTab.setContent(queryPhaseScroll);
         newTab.setTooltip(new Tooltip("Right click for more options"));
         newTab.setClosable(true);
-        
+
         // Update the context menu enablement statuses.
         // Must be called after setting the scroll pane and not before.
         final boolean hasEnabledPlugins = tabHasEnabledPlugins(newTab);
         final boolean isExecuteButtonIsGo = DataAccessPaneState.isExecuteButtonIsGo();
         final boolean isExecuteButtonEnabled = !getDataAccessPane().getButtonToolbar()
                 .getExecuteButtonTop().isDisabled();
-        
+
         updateTabMenu(
                 newTab,
                 hasEnabledPlugins && isExecuteButtonIsGo && isExecuteButtonEnabled,
                 hasEnabledPlugins
         );
-        
+
         // Add the new tab to the pane
         getTabPane().getTabs().add(newTab);
     }

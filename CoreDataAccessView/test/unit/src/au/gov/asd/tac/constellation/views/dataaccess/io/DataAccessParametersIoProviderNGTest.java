@@ -38,6 +38,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -45,6 +46,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringSubstitutor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -132,7 +134,7 @@ public class DataAccessParametersIoProviderNGTest {
         
         final QueryPhasePane tab1 = mock(QueryPhasePane.class);
         final QueryPhasePane tab2 = mock(QueryPhasePane.class);
-        when(dataAccessTabPane.newTab()).thenReturn(tab1).thenReturn(tab2);
+        when(dataAccessTabPane.newTab(anyString())).thenReturn(tab1).thenReturn(tab2);
         
         final GlobalParametersPane globalParametersPane1 = mock(GlobalParametersPane.class); 
         final GlobalParametersPane globalParametersPane2 = mock(GlobalParametersPane.class); 
@@ -200,7 +202,7 @@ public class DataAccessParametersIoProviderNGTest {
             DataAccessParametersIoProvider.loadParameters(dataAccessPane);
         }
         
-        verify(dataAccessTabPane, times(2)).newTab();
+        verify(dataAccessTabPane, times(2)).newTab(anyString());
         
         // tab1 global parameters
         verify(pluginParameter1).setStringValue("tab1_param1_value");
@@ -241,6 +243,9 @@ public class DataAccessParametersIoProviderNGTest {
         final ScrollPane scrollPane2 = mock(ScrollPane.class);
         when(tab1.getContent()).thenReturn(scrollPane1);
         when(tab2.getContent()).thenReturn(scrollPane2);
+
+        when(tab1.getGraphic()).thenReturn(new Label("Step caption 1"));
+        when(tab2.getGraphic()).thenReturn(new Label("Step caption 2"));
 
         final QueryPhasePane queryPhasePane1 = mock(QueryPhasePane.class);
         final QueryPhasePane queryPhasePane2 = mock(QueryPhasePane.class);

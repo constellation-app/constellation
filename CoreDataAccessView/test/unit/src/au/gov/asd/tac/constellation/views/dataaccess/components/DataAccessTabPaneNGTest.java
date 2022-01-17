@@ -148,7 +148,7 @@ public class DataAccessTabPaneNGTest {
                     
                     assertEquals(cntxt.arguments(), expectedArgs);
         })) {
-            doNothing().when(dataAccessTabPane).newTab(any(QueryPhasePane.class));
+            doNothing().when(dataAccessTabPane).newTab(any(QueryPhasePane.class), any(String.class));
             
             final QueryPhasePane pane = dataAccessTabPane.newTab();
             
@@ -157,7 +157,7 @@ public class DataAccessTabPaneNGTest {
             assertEquals(mockedQueryPhasePane.constructed().size(), 1);
             assertSame(mockedQueryPhasePane.constructed().get(0), pane);
             
-            verify(dataAccessTabPane).newTab(pane);
+            verify(dataAccessTabPane).newTab(pane, "Step 1");
         }
     }
     
@@ -893,8 +893,8 @@ public class DataAccessTabPaneNGTest {
             datpStateMockedStatic.when(() -> DataAccessTabPane.tabHasEnabledPlugins(any(Tab.class)))
                     .thenReturn(tabHasEnabledPlugins);
             when(executeButton.isDisabled()).thenReturn(isExecuteButtonDisabled);
-            
-            dataAccessTabPane.newTab(queryPhasePane);
+
+            dataAccessTabPane.newTab(queryPhasePane, "Step 1");
             
             // Verify the tab and context menus were created
             assertEquals(mockedTab.constructed().size(), 1);

@@ -50,7 +50,7 @@ public final class DataAccessUserPreferences {
                     pluginClass.getSimpleName(), parameterName);
 
     @JsonProperty(value = "step")
-    private String stepCaption;
+    private String stepCaption = "";
 
     @JsonProperty(value = "global")
     private Map<String, String> globalParameters;
