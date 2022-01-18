@@ -79,16 +79,16 @@ public class XmlUtilities {
         documentBuilderFactory.setNamespaceAware(namespaceAware);
         transformerFactory = TransformerFactory.newInstance();
         try {
-            // Some implemntations wont support these settings
+            // Some implementations wont support these settings
             transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-        } catch (IllegalArgumentException ex) {
-            // Do nothing - Some implemntations wont support above settings
+        } catch (final IllegalArgumentException ex) {
+            // Do nothing - Some implementations wont support above settings
         }
         try {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
             transformer = transformerFactory.newTransformer();
-        } catch (ParserConfigurationException | TransformerConfigurationException ex) {
+        } catch (final ParserConfigurationException | TransformerConfigurationException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
         }
     }
@@ -428,8 +428,11 @@ public class XmlUtilities {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
             if (node.getNodeName().equalsIgnoreCase(tagName)) {
-                String result = getNodeAttr(attrName, node);  
-                if (result != null) {return result; }
+                final String result = getNodeAttr(attrName, node);  
+                if (result != null)
+                {
+                    return result;
+                }
             }
         }
         return null;
@@ -451,8 +454,11 @@ public class XmlUtilities {
             if (node.getNamespaceURI() != null
                 && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
                 && node.getLocalName().equalsIgnoreCase(localName)) {
-                String result = getNodeAttr(attrName, node);  
-                if (result != null) {return result; }     
+                final String result = getNodeAttr(attrName, node);  
+                if (result != null)
+                {
+                    return result;
+                }     
             }
         }
         return null;

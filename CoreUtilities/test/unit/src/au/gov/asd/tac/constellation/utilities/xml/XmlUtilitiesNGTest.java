@@ -9,7 +9,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,7 @@ import org.testng.reporters.Files;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -80,37 +84,34 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of write method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testWrite_Document() throws Exception {
         System.out.println("testWrite_Document");
         XmlUtilities instance = new XmlUtilities();
-        
-        try {
-            String expectedStr = XML_HDR + "<parent>\n"
-                    + "  <child1>child1_value</child1>\n"
-                    + "  <child2>child2_value</child2>\n"
-                    + "  <child3>child3a_value</child3>\n"
-                    + "  <child3>child3b_value</child3>\n"
-                    + "  <child4><child4.1>child4.1</child4.1></child4>\n"
-                    + "</parent>\n";
 
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWrite_Document.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
+        String expectedStr = XML_HDR + "<parent>\n"
+                + "  <child1>child1_value</child1>\n"
+                + "  <child2>child2_value</child2>\n"
+                + "  <child3>child3a_value</child3>\n"
+                + "  <child3>child3b_value</child3>\n"
+                + "  <child4><child4.1>child4.1</child4.1></child4>\n"
+                + "</parent>\n";
 
-            byte[] results = instance.write(document);
-            String resultStr = (new String(results));
-            assertTrue(resultStr.replaceAll("\\s+","").equals(expectedStr.replaceAll("\\s+","")));
-            
-        } catch (Exception ex) {
-            fail("The test threw an unexpected exception.");
-        }
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWrite_Document.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+
+        byte[] results = instance.write(document);
+        String resultStr = (new String(results));
+        assertTrue(resultStr.replaceAll("\\s+","").equals(expectedStr.replaceAll("\\s+","")));
     }
 
     /**
      * Test of write method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testWrite_Document_File() throws Exception {
@@ -135,6 +136,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of writeToString method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testWriteToString_Document() throws Exception {
@@ -157,6 +159,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of writeToString method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testWriteToString_InputStream_int() throws Exception {
@@ -173,579 +176,519 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of read method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testRead_File() throws Exception {
         System.out.println("testRead_File");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testRead_File.xml").getPath();
-            Document document = instance.read(new File(testFile));
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testRead_File.xml").getPath();
+        Document document = instance.read(new File(testFile));
 
-            NodeList parentNodeList = document.getElementsByTagName("parent");
-            assertNotNull(parentNodeList);
-            Node parent = parentNodeList.item(0);
-            NodeList childNodeList = parent.getChildNodes();
-            
-            for (int child = 1; child <= 3; child ++) {
-                boolean foundChild = false;
-                String nodeName = new String("child" + child);
-                for (int i = 0; i < childNodeList.getLength(); i++) {
-                    Node childNode = childNodeList.item(i);
-                    if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
-                        String nodeValue = childNode.getFirstChild().getNodeValue();
-                        assertTrue(nodeValue.equals(new String("child" + child + "_value")));
-                        foundChild = true;
-                        break;
-                    }
+        NodeList parentNodeList = document.getElementsByTagName("parent");
+        assertNotNull(parentNodeList);
+        Node parent = parentNodeList.item(0);
+        NodeList childNodeList = parent.getChildNodes();
+
+        for (int child = 1; child <= 3; child ++) {
+            boolean foundChild = false;
+            String nodeName = new String("child" + child);
+            for (int i = 0; i < childNodeList.getLength(); i++) {
+                Node childNode = childNodeList.item(i);
+                if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
+                    String nodeValue = childNode.getFirstChild().getNodeValue();
+                    assertTrue(nodeValue.equals(new String("child" + child + "_value")));
+                    foundChild = true;
+                    break;
                 }
-                assertTrue(foundChild, nodeName);
             }
-        } catch (Exception ex) {
-            fail("The test threw an unexpected exception.");
+            assertTrue(foundChild, nodeName);
         }
     }
 
     /**
      * Test of read method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testRead_String() throws Exception {
         System.out.println("testRead_String");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String data = new String("<parent>\n"
-                    + "  <child1>child1_value</child1>\n"
-                    + "  <child2>child2_value</child2>\n"
-                    + "  <child3>child3_value</child3>\n"
-                    + "</parent>\n");
+        String data = new String("<parent>\n"
+                + "  <child1>child1_value</child1>\n"
+                + "  <child2>child2_value</child2>\n"
+                + "  <child3>child3_value</child3>\n"
+                + "</parent>\n");
 
-            Document document = instance.read(data);
+        Document document = instance.read(data);
 
-            NodeList parentNodeList = document.getElementsByTagName("parent");
-            assertNotNull(parentNodeList);
-            Node parent = parentNodeList.item(0);
-            NodeList childNodeList = parent.getChildNodes();
-            
-            for (int child = 1; child <= 3; child ++) {
-                boolean foundChild = false;
-                String nodeName = new String("child" + child);
-                for (int i = 0; i < childNodeList.getLength(); i++) {
-                    Node childNode = childNodeList.item(i);
-                    if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
-                        String nodeValue = childNode.getFirstChild().getNodeValue();
-                        assertTrue(nodeValue.equals(new String("child" + child + "_value")));
-                        foundChild = true;
-                        break;
-                    }
+        NodeList parentNodeList = document.getElementsByTagName("parent");
+        assertNotNull(parentNodeList);
+        Node parent = parentNodeList.item(0);
+        NodeList childNodeList = parent.getChildNodes();
+
+        for (int child = 1; child <= 3; child ++) {
+            boolean foundChild = false;
+            String nodeName = new String("child" + child);
+            for (int i = 0; i < childNodeList.getLength(); i++) {
+                Node childNode = childNodeList.item(i);
+                if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
+                    String nodeValue = childNode.getFirstChild().getNodeValue();
+                    assertTrue(nodeValue.equals(new String("child" + child + "_value")));
+                    foundChild = true;
+                    break;
                 }
-                assertTrue(foundChild, nodeName);
             }
-        } catch (Exception ex) {
-            fail("The test threw an unexpected exception.");
+            assertTrue(foundChild, nodeName);
         }
     }
 
     /**
      * Test of read method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testRead_InputStream_boolean() throws Exception {
         System.out.println("testRead_InputStream_boolean");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testRead_InputStream_boolean.xml").getPath();
-            Document document = instance.read(new FileInputStream(new File(testFile)), true);
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testRead_InputStream_boolean.xml").getPath();
+        Document document = instance.read(new FileInputStream(new File(testFile)), true);
 
-            NodeList parentNodeList = document.getElementsByTagName("parent");
-            assertNotNull(parentNodeList);
-            Node parent = parentNodeList.item(0);
-            NodeList childNodeList = parent.getChildNodes();
-            
-            for (int child = 1; child <= 3; child ++) {
-                boolean foundChild = false;
-                String nodeName = new String("child" + child);
-                for (int i = 0; i < childNodeList.getLength(); i++) {
-                    Node childNode = childNodeList.item(i);
-                    if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
-                        String nodeValue = childNode.getFirstChild().getNodeValue();
-                        assertTrue(nodeValue.equals(new String("child" + child + "_value")));
-                        foundChild = true;
-                        break;
-                    }
+        NodeList parentNodeList = document.getElementsByTagName("parent");
+        assertNotNull(parentNodeList);
+        Node parent = parentNodeList.item(0);
+        NodeList childNodeList = parent.getChildNodes();
+
+        for (int child = 1; child <= 3; child ++) {
+            boolean foundChild = false;
+            String nodeName = new String("child" + child);
+            for (int i = 0; i < childNodeList.getLength(); i++) {
+                Node childNode = childNodeList.item(i);
+                if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
+                    String nodeValue = childNode.getFirstChild().getNodeValue();
+                    assertTrue(nodeValue.equals(new String("child" + child + "_value")));
+                    foundChild = true;
+                    break;
                 }
-                assertTrue(foundChild, nodeName);
             }
-        } catch (Exception ex) {
-            fail("The test threw an unexpected exception.");
+            assertTrue(foundChild, nodeName);
         }
     }
 
     /**
      * Test of getNode method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetNode() {
+    public void testGetNode() throws Exception {
         System.out.println("testGetNode");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNode.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
-            NodeList nodeList = document.getElementsByTagName("parent");
-            Node parent = nodeList.item(0);
-            NodeList children = parent.getChildNodes();
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNode.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+        NodeList nodeList = document.getElementsByTagName("parent");
+        Node parent = nodeList.item(0);
+        NodeList children = parent.getChildNodes();
 
-            // Confirm matching node is found, and is the first match
-            Node node = instance.getNode("child3", children);
-            assertNotNull(node, "Found node");
-            assertEquals(node.getNodeName(), "child3", "Node name matches");
-            assertEquals(node.getChildNodes().getLength(), 1, "Node has one child element");
-            assertEquals(node.getChildNodes().item(0).getNodeValue(), "child3a_value", "Node value matches");
+        // Confirm matching node is found, and is the first match
+        Node node = instance.getNode("child3", children);
+        assertNotNull(node, "Found node");
+        assertEquals(node.getNodeName(), "child3", "Node name matches");
+        assertEquals(node.getChildNodes().getLength(), 1, "Node has one child element");
+        assertEquals(node.getChildNodes().item(0).getNodeValue(), "child3a_value", "Node value matches");
 
-            // Confirm searches are case insensitive
-            node = instance.getNode("CHILD3", children);
-            assertNotNull(node, "Found node (case insensitive)");
-            assertEquals(node.getNodeName(), "child3", "Node name matches (case insensitive)");
-            
-            // Confirm no results found when node doesn't exist
-            node = instance.getNode("missing_child", children);
-            assertNull(node, "Can't find node");
-            
-            // Confirm nested nodes are not traversed
-            node = instance.getNode("child4.1", children);
-            assertNull(node, "Doesn't find nested node");
-            
-        } catch (Exception ex) {
-            fail("The test threw an unexpected exception.");
-        }
+        // Confirm searches are case insensitive
+        node = instance.getNode("CHILD3", children);
+        assertNotNull(node, "Found node (case insensitive)");
+        assertEquals(node.getNodeName(), "child3", "Node name matches (case insensitive)");
+
+        // Confirm no results found when node doesn't exist
+        node = instance.getNode("missing_child", children);
+        assertNull(node, "Can't find node");
+
+        // Confirm nested nodes are not traversed
+        node = instance.getNode("child4.1", children);
+        assertNull(node, "Doesn't find nested node");
     }
 
     /**
      * Test of getNodeNS method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetNodeNS() {
+    public void testGetNodeNS() throws Exception {
         System.out.println("testGetNodeNS");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeNS.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            docBuilderFactory.setNamespaceAware(true);
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
-            NodeList nodeList = document.getElementsByTagName("c:parent");
-            Node parent = nodeList.item(0);
-            NodeList children = parent.getChildNodes();
-            
-            // Confirm matching node is found, and is the first match
-            Node node = instance.getNodeNS("http://www.consty.com/star", "child3", children);
-            assertNotNull(node, "Found node");
-            assertEquals(node.getNodeName(), "c:child3", "Node name matches");
-            assertEquals(node.getChildNodes().getLength(), 1, "Node has one child element");
-            assertEquals(node.getChildNodes().item(0).getNodeValue(), "child3a_value", "Node value matches");
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeNS.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        docBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+        NodeList nodeList = document.getElementsByTagName("c:parent");
+        Node parent = nodeList.item(0);
+        NodeList children = parent.getChildNodes();
 
-            // Confirm searches are case insensitive
-            node = instance.getNodeNS("http://www.consty.com/star", "CHILD3", children);
-            assertNotNull(node, "Found node (case insensitive)");
-            assertEquals(node.getNodeName(), "c:child3", "Node name matches (case insensitive)");
-            
-            // Confirm no results found when node doesn't exist
-            node = instance.getNodeNS("http://www.consty.com/star", "missing_child", children);
-            assertNull(node, "Can't find node");
-            
-            // Confirm nested nodes are not traversed
-            node = instance.getNodeNS("http://www.consty.com/star", "child4.1", children);
-            assertNull(node, "Doesn't find nested node");
-            
-            // Confirm nothing is found if invalid namespace is specified
-            node = instance.getNodeNS("http://www.notconsty.com/star", "child3", children);
-            assertNull(node, "Doesn't find if invalid namespace");
-            
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
+        // Confirm matching node is found, and is the first match
+        Node node = instance.getNodeNS("http://www.consty.com/star", "child3", children);
+        assertNotNull(node, "Found node");
+        assertEquals(node.getNodeName(), "c:child3", "Node name matches");
+        assertEquals(node.getChildNodes().getLength(), 1, "Node has one child element");
+        assertEquals(node.getChildNodes().item(0).getNodeValue(), "child3a_value", "Node value matches");
+
+        // Confirm searches are case insensitive
+        node = instance.getNodeNS("http://www.consty.com/star", "CHILD3", children);
+        assertNotNull(node, "Found node (case insensitive)");
+        assertEquals(node.getNodeName(), "c:child3", "Node name matches (case insensitive)");
+
+        // Confirm no results found when node doesn't exist
+        node = instance.getNodeNS("http://www.consty.com/star", "missing_child", children);
+        assertNull(node, "Can't find node");
+
+        // Confirm nested nodes are not traversed
+        node = instance.getNodeNS("http://www.consty.com/star", "child4.1", children);
+        assertNull(node, "Doesn't find nested node");
+
+        // Confirm nothing is found if invalid namespace is specified
+        node = instance.getNodeNS("http://www.notconsty.com/star", "child3", children);
+        assertNull(node, "Doesn't find if invalid namespace");
     }
 
     /**
      * Test of getNodes method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetNodes() {
+    public void testGetNodes() throws Exception {
         System.out.println("testGetNodes");
         XmlUtilities instance = new XmlUtilities();
+        
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodes.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+        NodeList nodeList = document.getElementsByTagName("parent");
+        Node parent = nodeList.item(0);
+        NodeList children = parent.getChildNodes();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodes.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
-            NodeList nodeList = document.getElementsByTagName("parent");
-            Node parent = nodeList.item(0);
-            NodeList children = parent.getChildNodes();
-
-            // Confirm all matching nodes are found
-            List<Node> nodes = instance.getNodes("child", children);
-            assertEquals(nodes.size(), 3, "Found all 3 nodes called child");
-            for (int index = 0; index < nodes.size(); index++) {
-                assertEquals(nodes.get(index).getNodeName(), "child", "Node name matches");
-                assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element");
-                assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches");
-            }
-            
-            // Confirm searches are case insensitive
-            nodes = instance.getNodes("CHILD", children);
-            assertEquals(nodes.size(), 3, "Found all 3 nodes called child (case insensitive)");
-            for (int index = 0; index < nodes.size(); index++) {
-                assertEquals(nodes.get(index).getNodeName(), "child", "Node name matches (case insensitive)");
-                assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element (case insensitive)");
-                assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches (case insensitive)");
-            }
-
-            // Confirm no results found when node doesn't exist
-            nodes = instance.getNodes("missing_child", children);
-            assertEquals(nodes.size(), 0, "Found 0 nodes called missing_child");
-            
-            // Confirm nested nodes are not traversed
-            nodes = instance.getNodes("child_nest", children);
-            assertEquals(nodes.size(), 0, "Found 0 nodes matching nested node name");
-            
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
+        // Confirm all matching nodes are found
+        List<Node> nodes = instance.getNodes("child", children);
+        assertEquals(nodes.size(), 3, "Found all 3 nodes called child");
+        for (int index = 0; index < nodes.size(); index++) {
+            assertEquals(nodes.get(index).getNodeName(), "child", "Node name matches");
+            assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element");
+            assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches");
         }
+
+        // Confirm searches are case insensitive
+        nodes = instance.getNodes("CHILD", children);
+        assertEquals(nodes.size(), 3, "Found all 3 nodes called child (case insensitive)");
+        for (int index = 0; index < nodes.size(); index++) {
+            assertEquals(nodes.get(index).getNodeName(), "child", "Node name matches (case insensitive)");
+            assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element (case insensitive)");
+            assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches (case insensitive)");
+        }
+
+        // Confirm no results found when node doesn't exist
+        nodes = instance.getNodes("missing_child", children);
+        assertEquals(nodes.size(), 0, "Found 0 nodes called missing_child");
+
+        // Confirm nested nodes are not traversed
+        nodes = instance.getNodes("child_nest", children);
+        assertEquals(nodes.size(), 0, "Found 0 nodes matching nested node name");
     }
 
     /**
      * Test of getNodesNS method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetNodesNS() {
+    public void testGetNodesNS() throws Exception {
         System.out.println("testGetNodesNS");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodesNS.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            docBuilderFactory.setNamespaceAware(true);
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
-            NodeList nodeList = document.getElementsByTagName("c:parent");
-            Node parent = nodeList.item(0);
-            NodeList children = parent.getChildNodes();
-            
-            // Confirm multiple matching nodes can be returned
-            List<Node> nodes = instance.getNodesNS("http://www.consty.com/star", "child", children);
-            assertEquals(nodes.size(), 2, "Found both nodes called child in given namespace");
-            for (int index = 0; index < nodes.size(); index++) {
-                assertEquals(nodes.get(index).getNodeName(), "c:child", "Node name matches");
-                assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element");
-                assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches");
-            }
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodesNS.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        docBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+        NodeList nodeList = document.getElementsByTagName("c:parent");
+        Node parent = nodeList.item(0);
+        NodeList children = parent.getChildNodes();
 
-            // Confirm searches are case insensitive
-            nodes = instance.getNodesNS("http://www.consty.com/star", "CHILD", children);
-            assertEquals(nodes.size(), 2, "Found both nodes called child in given namespace (case insensitive)");
-            for (int index = 0; index < nodes.size(); index++) {
-                assertEquals(nodes.get(index).getNodeName(), "c:child", "Node name matches (case insensitive)");
-                assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element (case insensitive)");
-                assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches (case insensitive)");
-            }
-            
-            // Confirm null is returned if no node matching all conditions is found
-            nodes = instance.getNodesNS("http://www.consty.com/star", "missing_child", children);
-            assertEquals(nodes.size(), 0, "Found 0 nodes called missing_child in namespace");
-            
-            // Confirm nested nodes are not traversed
-            nodes = instance.getNodes("child_nest", children);
-            assertEquals(nodes.size(), 0, "Found 0 nodes matching nested node name in namespace");
-            
-            // Test case where namespace doesn't exist
-            nodes = instance.getNodesNS("http://www.notconsty.com/star", "child", children);
-            assertEquals(nodes.size(), 0, "Found 0 nodes matching nodes in unknown namespace");
-            
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
+        // Confirm multiple matching nodes can be returned
+        List<Node> nodes = instance.getNodesNS("http://www.consty.com/star", "child", children);
+        assertEquals(nodes.size(), 2, "Found both nodes called child in given namespace");
+        for (int index = 0; index < nodes.size(); index++) {
+            assertEquals(nodes.get(index).getNodeName(), "c:child", "Node name matches");
+            assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element");
+            assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches");
         }
+
+        // Confirm searches are case insensitive
+        nodes = instance.getNodesNS("http://www.consty.com/star", "CHILD", children);
+        assertEquals(nodes.size(), 2, "Found both nodes called child in given namespace (case insensitive)");
+        for (int index = 0; index < nodes.size(); index++) {
+            assertEquals(nodes.get(index).getNodeName(), "c:child", "Node name matches (case insensitive)");
+            assertEquals(nodes.get(index).getChildNodes().getLength(), 1, "Node has one child element (case insensitive)");
+            assertEquals(nodes.get(index).getChildNodes().item(0).getNodeValue(), "child_value" + (index + 1), "Node value matches (case insensitive)");
+        }
+
+        // Confirm null is returned if no node matching all conditions is found
+        nodes = instance.getNodesNS("http://www.consty.com/star", "missing_child", children);
+        assertEquals(nodes.size(), 0, "Found 0 nodes called missing_child in namespace");
+
+        // Confirm nested nodes are not traversed
+        nodes = instance.getNodes("child_nest", children);
+        assertEquals(nodes.size(), 0, "Found 0 nodes matching nested node name in namespace");
+
+        // Test case where namespace doesn't exist
+        nodes = instance.getNodesNS("http://www.notconsty.com/star", "child", children);
+        assertEquals(nodes.size(), 0, "Found 0 nodes matching nodes in unknown namespace");
+
     }
 
     /**
      * Test of getNodeValue method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetNodeValue_Node() {
+    public void testGetNodeValue_Node() throws Exception {
         System.out.println("testGetNodeValue_Node");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeValue_Node.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
-            NodeList nodeList = document.getElementsByTagName("parent");
-            Node parent = nodeList.item(0);
-            NodeList children = parent.getChildNodes();
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeValue_Node.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+        NodeList nodeList = document.getElementsByTagName("parent");
+        Node parent = nodeList.item(0);
+        NodeList children = parent.getChildNodes();
 
-            // Check that parent node doesnt contain content
-            String result = instance.getNodeValue(parent);
-            assertNull(result, "First child value matches expected");
+        // Check that parent node doesnt contain content
+        String result = instance.getNodeValue(parent);
+        assertNull(result, "First child value matches expected");
 
-            // Check that correct  child value is returned
-            result = instance.getNodeValue(children.item(0));
-            assertEquals(result, "child_value1", "First child value matches expected");
-            
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
+        // Check that correct  child value is returned
+        result = instance.getNodeValue(children.item(0));
+        assertEquals(result, "child_value1", "First child value matches expected");
     }
 
     /**
      * Test of getNodeValue method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetNodeValue_String_NodeList() {
+    public void testGetNodeValue_String_NodeList() throws Exception {
         System.out.println("testGetNodeValue_String_NodeList");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeValue_String_NodeList.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
-            NodeList nodeList = document.getElementsByTagName("parent");
-            Node parent = nodeList.item(0);
-            NodeList children = parent.getChildNodes();
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeValue_String_NodeList.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+        NodeList nodeList = document.getElementsByTagName("parent");
+        Node parent = nodeList.item(0);
+        NodeList children = parent.getChildNodes();
 
-            // Check that correct first child value is returned
-            String result = instance.getNodeValue("child", children);
-            assertEquals(result, "child_value1", "First child value matches expected");
+        // Check that correct first child value is returned
+        String result = instance.getNodeValue("child", children);
+        assertEquals(result, "child_value1", "First child value matches expected");
 
-            // Repeat above but use node name that doesnt match first child node
-            result = instance.getNodeValue("child3", children);
-            assertEquals(result, "child_value3", "Confirm actual node name is checked when returning child");
-            
-            // Check that only nodes with matching name that are of type Node.TEXT_NODE are considered
-            result = instance.getNodeValue("child4", children);
-            assertEquals(result, "child_value4", "First string child value matches expected");
-            
-            // Confirm null is returned if no node matching all conditions is found
-            result = instance.getNodeValue("child5", children);
-            assertNull(result, "Non text node returns null");
-            
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
+        // Repeat above but use node name that doesnt match first child node
+        result = instance.getNodeValue("child3", children);
+        assertEquals(result, "child_value3", "Confirm actual node name is checked when returning child");
+
+        // Check that only nodes with matching name that are of type Node.TEXT_NODE are considered
+        result = instance.getNodeValue("child4", children);
+        assertEquals(result, "child_value4", "First string child value matches expected");
+
+        // Confirm null is returned if no node matching all conditions is found
+        result = instance.getNodeValue("child5", children);
+        assertNull(result, "Non text node returns null");
     }
 
     /**
      * Test of getNodeValueNS method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetNodeValueNS() {
+    public void testGetNodeValueNS() throws Exception {
         System.out.println("testGetNodeValueNS");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeValueNS.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            docBuilderFactory.setNamespaceAware(true);
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
-            NodeList nodeList = document.getElementsByTagName("c:parent");
-            Node parent = nodeList.item(0);
-            NodeList children = parent.getChildNodes();
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeValueNS.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        docBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+        NodeList nodeList = document.getElementsByTagName("c:parent");
+        Node parent = nodeList.item(0);
+        NodeList children = parent.getChildNodes();
 
-            // Check that correct first child value is returned
-            String result = instance.getNodeValueNS("http://www.consty.com/star", "child", children);
-            assertEquals(result, "child_value1", "First child value matches expected");
+        // Check that correct first child value is returned
+        String result = instance.getNodeValueNS("http://www.consty.com/star", "child", children);
+        assertEquals(result, "child_value1", "First child value matches expected");
 
-            // Confirm searches are case insensitive
-            result = instance.getNodeValueNS("http://www.consty.com/star", "CHILD", children);
-            assertEquals(result, "child_value1", "First child value matches expected (case insensitive)");
-            
-            // Confirm null is returned if no node matching all conditions is found
-            result = instance.getNodeValueNS("http://www.consty.com/star", "missing_child", children);
-            assertNull(result, "Missing node returns null");
-            
-            // Confirm nested nodes are not traversed
-            result = instance.getNodeValueNS("http://www.consty.com/star", "child_nest", children);
-            assertNull(result, "Nested node is not found and function returns null");
-            
-            // Confirm nodes that are not TEXT_NODE's are not considered
-            result = instance.getNodeValueNS("http://www.consty.com/star", "nest_child", children);
-            assertEquals(result, "second_nest_child", "Nodes not considered if not TEXT_NODEs");
+        // Confirm searches are case insensitive
+        result = instance.getNodeValueNS("http://www.consty.com/star", "CHILD", children);
+        assertEquals(result, "child_value1", "First child value matches expected (case insensitive)");
 
-            // Test case where namespace doesn't exist
-            result = instance.getNodeValueNS("http://www.notconsty.com/star", "child", children);
-            assertNull(result, "Namespace not found, hence no match - return null");
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
+        // Confirm null is returned if no node matching all conditions is found
+        result = instance.getNodeValueNS("http://www.consty.com/star", "missing_child", children);
+        assertNull(result, "Missing node returns null");
+
+        // Confirm nested nodes are not traversed
+        result = instance.getNodeValueNS("http://www.consty.com/star", "child_nest", children);
+        assertNull(result, "Nested node is not found and function returns null");
+
+        // Confirm nodes that are not TEXT_NODE's are not considered
+        result = instance.getNodeValueNS("http://www.consty.com/star", "nest_child", children);
+        assertEquals(result, "second_nest_child", "Nodes not considered if not TEXT_NODEs");
+
+        // Test case where namespace doesn't exist
+        result = instance.getNodeValueNS("http://www.notconsty.com/star", "child", children);
+        assertNull(result, "Namespace not found, hence no match - return null");
     }
 
     /**
      * Test of getNodeAttr method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetNodeAttr_String_Node() {
+    public void testGetNodeAttr_String_Node() throws Exception {
         System.out.println("testGetNodeAttr_String_Node");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeAttr_String_Node.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            docBuilderFactory.setNamespaceAware(true);
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
-            NodeList nodeList = document.getElementsByTagName("parent");
-            Node parent = nodeList.item(0);
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeAttr_String_Node.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        docBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+        NodeList nodeList = document.getElementsByTagName("parent");
+        Node parent = nodeList.item(0);
 
-            // Show attribute values are read
-            String result = instance.getNodeAttr("attr1", parent);
-            assertEquals(result, "attrib 1 value", "Successfully finds attribute");    
-            
-            // Show attributes other than first can be read
-            result = instance.getNodeAttr("attr2", parent);
-            assertEquals(result, "attrib 2 value", "Successfully finds attribute");    
-            
-            // Handling of missing attributes
-            result = instance.getNodeAttr("attr3", parent);
-            assertNull(result, "Null returned if attribute is not found");  
-      
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
+        // Show attribute values are read
+        String result = instance.getNodeAttr("attr1", parent);
+        assertEquals(result, "attrib 1 value", "Successfully finds attribute");    
+
+        // Show attributes other than first can be read
+        result = instance.getNodeAttr("attr2", parent);
+        assertEquals(result, "attrib 2 value", "Successfully finds attribute");    
+
+        // Handling of missing attributes
+        result = instance.getNodeAttr("attr3", parent);
+        assertNull(result, "Null returned if attribute is not found");  
     }
 
     /**
      * Test of getNodeAttr method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetNodeAttr_3args() {
+    public void testGetNodeAttr_3args() throws Exception {
         System.out.println("testGetNodeAttr_3args");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeAttr_3args.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            docBuilderFactory.setNamespaceAware(true);
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
-            NodeList nodeList = document.getElementsByTagName("parent");
-            Node parent = nodeList.item(0);
-            NodeList children = parent.getChildNodes();
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeAttr_3args.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        docBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+        NodeList nodeList = document.getElementsByTagName("parent");
+        Node parent = nodeList.item(0);
+        NodeList children = parent.getChildNodes();
 
-            // Show attribute values are read
-            String result = instance.getNodeAttr("child", "attr1", children);
-            assertEquals(result, "attrib 1 value", "Successfully finds attribute");
-            
-            // Show attributes other than first can be read
-            result = instance.getNodeAttr("child", "attr2", children);
-            assertEquals(result, "attrib 2 value", "Successfully finds attribute");
-            
-            // Handling of missing attributes
-            result = instance.getNodeAttr("child", "attr3", children);
-            assertNull(result, "Null returned if attribute is not found");
-            
-            // Show that both node name and attrib name need to match
-            result = instance.getNodeAttr("offspring", "attr1", children);
-            assertEquals(result, "attrib 1 value", "Successfully skips nodes missing attribute");
-      
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
+        // Show attribute values are read
+        String result = instance.getNodeAttr("child", "attr1", children);
+        assertEquals(result, "attrib 1 value", "Successfully finds attribute");
+
+        // Show attributes other than first can be read
+        result = instance.getNodeAttr("child", "attr2", children);
+        assertEquals(result, "attrib 2 value", "Successfully finds attribute");
+
+        // Handling of missing attributes
+        result = instance.getNodeAttr("child", "attr3", children);
+        assertNull(result, "Null returned if attribute is not found");
+
+        // Show that both node name and attrib name need to match
+        result = instance.getNodeAttr("offspring", "attr1", children);
+        assertEquals(result, "attrib 1 value", "Successfully skips nodes missing attribute");
     }
 
     /**
      * Test of getNodeAttrNS method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetNodeAttrNS() {
+    public void testGetNodeAttrNS() throws Exception {
         System.out.println("testGetNodeAttrNS");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeAttrNS.xml").getPath();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            docBuilderFactory.setNamespaceAware(true);
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(new File(testFile));
-            NodeList nodeList = document.getElementsByTagName("parent");
-            Node parent = nodeList.item(0);
-            NodeList children = parent.getChildNodes();
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeAttrNS.xml").getPath();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        docBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document document = docBuilder.parse(new File(testFile));
+        NodeList nodeList = document.getElementsByTagName("parent");
+        Node parent = nodeList.item(0);
+        NodeList children = parent.getChildNodes();
 
-            // Check that correct first child value is returned
-            String result = instance.getNodeAttrNS("http://www.consty.com/star", "child", "attr1", children);
-            assertEquals(result, "c:attrib 1 value", "First child value matches expected");
+        // Check that correct first child value is returned
+        String result = instance.getNodeAttrNS("http://www.consty.com/star", "child", "attr1", children);
+        assertEquals(result, "c:attrib 1 value", "First child value matches expected");
 
-            // Confirm searches are case insensitive
-            result = instance.getNodeAttrNS("http://www.consty.com/star", "CHILD", "ATTR1", children);
-            assertEquals(result, "c:attrib 1 value", "First child value matches expected (case insensitive)");
-            
-            // Confirm namnespace is considered
-            result = instance.getNodeAttrNS("http://www.consty2.com/star2", "child", "attr1", children);
-            assertEquals(result, "c2:attrib 1 value", "First child value matches expected");
-            
-            // Confirm that nodes not matching all conditions are stepped over
-            result = instance.getNodeAttrNS("http://www.consty.com/star", "offspring", "attr1", children);
-            assertEquals(result, "c:attrib 1 value", "TODO");
+        // Confirm searches are case insensitive
+        result = instance.getNodeAttrNS("http://www.consty.com/star", "CHILD", "ATTR1", children);
+        assertEquals(result, "c:attrib 1 value", "First child value matches expected (case insensitive)");
 
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
+        // Confirm namnespace is considered
+        result = instance.getNodeAttrNS("http://www.consty2.com/star2", "child", "attr1", children);
+        assertEquals(result, "c2:attrib 1 value", "First child value matches expected");
+
+        // Confirm that nodes not matching all conditions are stepped over
+        result = instance.getNodeAttrNS("http://www.consty.com/star", "offspring", "attr1", children);
+        assertEquals(result, "c:attrib 1 value", "TODO");
     }
     
     /**
      * Test of map method, of class XmlUtilities which takes in a URL.
+     * @throws java.lang.Exception
      */
     @Test
     public void testMap_String() throws Exception {
         System.out.println("testMap_String");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            // Extract content and validate it is as expected
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String.xml").getPath();
-            URL url = new File(testFile).toURI().toURL();            
-            List<Map<String, String>> result = instance.map(url.toString());
-            assertEquals(4,result.size());
-            assertEquals(3, result.get(0).size());
-            assertEquals(3, result.get(1).size());
-            assertEquals(3, result.get(2).size());
-            assertEquals(0, result.get(3).size());
-            assertNotNull(result.get(0).get("col1"), "aaa");
-            assertNotNull(result.get(0).get("col2"), "bbb");
-            assertNotNull(result.get(0).get("col3"), "ccc");
-            assertNotNull(result.get(1).get("col1"), "ddd");
-            assertNotNull(result.get(1).get("col2"), "eee");
-            assertNotNull(result.get(1).get("col3"), "fff");
-            assertNotNull(result.get(2).get("col1"), "ggg");
-            assertNotNull(result.get(2).get("col2"), "hhh");
-            assertNotNull(result.get(2).get("col3"), "iii");
-
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
+        // Extract content and validate it is as expected
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String.xml").getPath();
+        URL url = new File(testFile).toURI().toURL();            
+        List<Map<String, String>> result = instance.map(url.toString());
+        assertEquals(4,result.size());
+        assertEquals(3, result.get(0).size());
+        assertEquals(3, result.get(1).size());
+        assertEquals(3, result.get(2).size());
+        assertEquals(0, result.get(3).size());
+        assertNotNull(result.get(0).get("col1"), "aaa");
+        assertNotNull(result.get(0).get("col2"), "bbb");
+        assertNotNull(result.get(0).get("col3"), "ccc");
+        assertNotNull(result.get(1).get("col1"), "ddd");
+        assertNotNull(result.get(1).get("col2"), "eee");
+        assertNotNull(result.get(1).get("col3"), "fff");
+        assertNotNull(result.get(2).get("col1"), "ggg");
+        assertNotNull(result.get(2).get("col2"), "hhh");
+        assertNotNull(result.get(2).get("col3"), "iii");
     }
 
     /**
      * Test of map method, of class XmlUtilities, showing file not found exception
      * thrown if file cant be found.
+     * @throws java.lang.Exception
      */
     @Test (expectedExceptions = FileNotFoundException.class)
     public void testMap_String_FilenotFound() throws Exception {
@@ -760,6 +703,7 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of map method, of class XmlUtilities, showing file not found exception
      * thrown if file cant be found.
+     * @throws java.lang.Exception
      */
     @Test (expectedExceptions = TransformerException.class)
     public void testMap_String_TransformerException() throws Exception {
@@ -774,37 +718,33 @@ public class XmlUtilitiesNGTest {
     
     /**
      * Test of map method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testMap_String_String() throws Exception {
         System.out.println("testMap_String_String");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String.xml").getPath();
-            URL url = new File(testFile).toURI().toURL();            
-            List<Map<String, String>> result = instance.map(url.toString(), "child");
-            assertEquals(3,result.size());
-            assertEquals(3, result.get(0).size());
-            assertEquals(3, result.get(1).size());
-            assertEquals(0, result.get(2).size());
-            assertNotNull(result.get(0).get("col1"), "aaa");
-            assertNotNull(result.get(0).get("col2"), "bbb");
-            assertNotNull(result.get(0).get("col3"), "ccc");
-            assertNotNull(result.get(1).get("col1"), "ddd");
-            assertNotNull(result.get(1).get("col2"), "eee");
-            assertNotNull(result.get(1).get("col3"), "fff");
-
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String.xml").getPath();
+        URL url = new File(testFile).toURI().toURL();            
+        List<Map<String, String>> result = instance.map(url.toString(), "child");
+        assertEquals(3,result.size());
+        assertEquals(3, result.get(0).size());
+        assertEquals(3, result.get(1).size());
+        assertEquals(0, result.get(2).size());
+        assertNotNull(result.get(0).get("col1"), "aaa");
+        assertNotNull(result.get(0).get("col2"), "bbb");
+        assertNotNull(result.get(0).get("col3"), "ccc");
+        assertNotNull(result.get(1).get("col1"), "ddd");
+        assertNotNull(result.get(1).get("col2"), "eee");
+        assertNotNull(result.get(1).get("col3"), "fff");
     }
 
 
     /**
      * Test of map method, of class XmlUtilities, showing file not found exception
      * thrown if file cant be found.
+     * @throws java.lang.Exception
      */
     @Test (expectedExceptions = FileNotFoundException.class)
     public void testMap_String_String_FilenotFound() throws Exception {
@@ -819,6 +759,7 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of map method, of class XmlUtilities, showing file not found exception
      * thrown if file cant be found.
+     * @throws java.lang.Exception
      */
     @Test (expectedExceptions = TransformerException.class)
     public void testMap_String_String_TransformerException() throws Exception {
@@ -832,53 +773,49 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of table method, of class XmlUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testTable_String_Boolean() throws Exception {
         System.out.println("testTable_String_Boolean");
         XmlUtilities instance = new XmlUtilities();
 
-        try {
-            String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean.xml").getPath();
-            URL url = new File(testFile).toURI().toURL(); 
-            String[][] result = instance.table(url.toString(), false);
-            assertEquals(result.length, 3);
-            assertEquals(result[0].length, 3);
-            assertEquals(result[1].length, 2);
-            assertEquals(result[2].length, 3);
-            assertEquals(result[0][0], "aaa");
-            assertEquals(result[0][1], "bbb");
-            assertEquals(result[0][2], "ccc");
-            assertEquals(result[1][0], "ddd");
-            assertEquals(result[1][1], "eee");
-            assertEquals(result[2][0], "ggg");
-            assertEquals(result[2][1], "hhh");
-            assertEquals(result[2][2], "iii");
-            
-            String[][] swappedResult = instance.table(url.toString(), true);
-            assertEquals(swappedResult.length, 3);
-            assertEquals(swappedResult[0].length, 3);
-            assertEquals(swappedResult[1].length, 3);
-            assertEquals(swappedResult[2].length, 3);
-            assertEquals(swappedResult[0][0], "aaa");
-            assertEquals(swappedResult[0][1], "ddd");
-            assertEquals(swappedResult[0][2], "ggg");
-            assertEquals(swappedResult[1][0], "bbb");
-            assertEquals(swappedResult[1][1], "eee");
-            assertEquals(swappedResult[1][2], "hhh");
-            assertEquals(swappedResult[2][0], "ccc");
-            assertNull(swappedResult[2][1]);
-            assertEquals(swappedResult[2][2], "iii");
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean.xml").getPath();
+        URL url = new File(testFile).toURI().toURL(); 
+        String[][] result = instance.table(url.toString(), false);
+        assertEquals(result.length, 3);
+        assertEquals(result[0].length, 3);
+        assertEquals(result[1].length, 2);
+        assertEquals(result[2].length, 3);
+        assertEquals(result[0][0], "aaa");
+        assertEquals(result[0][1], "bbb");
+        assertEquals(result[0][2], "ccc");
+        assertEquals(result[1][0], "ddd");
+        assertEquals(result[1][1], "eee");
+        assertEquals(result[2][0], "ggg");
+        assertEquals(result[2][1], "hhh");
+        assertEquals(result[2][2], "iii");
 
-        } catch (Exception ex) {
-            System.out.println("Exception:" + ex.toString());
-            fail("The test threw an unexpected exception.");
-        }
+        String[][] swappedResult = instance.table(url.toString(), true);
+        assertEquals(swappedResult.length, 3);
+        assertEquals(swappedResult[0].length, 3);
+        assertEquals(swappedResult[1].length, 3);
+        assertEquals(swappedResult[2].length, 3);
+        assertEquals(swappedResult[0][0], "aaa");
+        assertEquals(swappedResult[0][1], "ddd");
+        assertEquals(swappedResult[0][2], "ggg");
+        assertEquals(swappedResult[1][0], "bbb");
+        assertEquals(swappedResult[1][1], "eee");
+        assertEquals(swappedResult[1][2], "hhh");
+        assertEquals(swappedResult[2][0], "ccc");
+        assertNull(swappedResult[2][1]);
+        assertEquals(swappedResult[2][2], "iii");
     }
 
     /**
      * Test of table method, of class XmlUtilities, showing file not found exception
      * thrown if file cant be found.
+     * @throws java.lang.Exception
      */
     @Test (expectedExceptions = FileNotFoundException.class)
     public void testTable_String_Boolean_FilenotFound() throws Exception {
@@ -893,6 +830,7 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of table method, of class XmlUtilities, showing file not found exception
      * thrown if file cant be found.
+     * @throws java.lang.Exception
      */
     @Test (expectedExceptions = TransformerException.class)
     public void testTable_String_Boolean_TransformerException() throws Exception {
