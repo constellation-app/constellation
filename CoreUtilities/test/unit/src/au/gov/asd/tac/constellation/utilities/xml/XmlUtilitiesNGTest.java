@@ -32,7 +32,7 @@ import org.w3c.dom.NodeList;
 
 /**
  *
- * @author mmattner
+ * @author serpens24
  */
 public class XmlUtilitiesNGTest {
     
