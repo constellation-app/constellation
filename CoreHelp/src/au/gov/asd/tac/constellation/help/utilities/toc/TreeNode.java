@@ -127,7 +127,7 @@ public class TreeNode<T> {
             }
         }
 
-        TOCGenerator.writeText(writer, Platform.NEWLINE);
+        TOCGenerator.writeText(writer, Platform.getNewline());
         if (node.getChildren().isEmpty()) {
             // Base level nodes with no children get written with no indent
             node.getChildren().forEach(each -> write(each, writer, indent));

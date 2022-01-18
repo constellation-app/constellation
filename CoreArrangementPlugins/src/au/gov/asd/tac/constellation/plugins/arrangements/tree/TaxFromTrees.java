@@ -106,13 +106,13 @@ public class TaxFromTrees {
 
             if (valences[neighbourId] != Graph.NOT_FOUND) {
                 // Get the set of the neighbour's members.
-                Set<Integer> neighbourVertices = members.get(neighbourId);
+                final Set<Integer> neighbourVertices = members.get(neighbourId);
 
                 // Pass the members of the vertex being removed along to the neighbour.
-                Set<Integer> vertices = members.get(vxToRemoveId);
+                final Set<Integer> vertices = members.get(vxToRemoveId);
                 neighbourVertices.addAll(vertices);
 
-                for (int vertex : vertices) {
+                for (final int vertex : vertices) {
                     nodeToTaxa.put(vertex, neighbourId);
                 }
 

@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config.ConnectionType;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -135,7 +136,7 @@ public class Network {
         return totalWeight;
     }
 
-    public TreeMap<NodePair, Double> getMap() {
+    public Map<NodePair, Double> getMap() {
         return connectionMap;
     }
 
@@ -148,12 +149,7 @@ public class Network {
     }
 
     public String getNodeName(final int position) {
-
-        if (vxNameId == Graph.NOT_FOUND) {
-            return "";
-        }
-
-        final int vxId = rg.getVertex(position);
-        return String.format("[Node position=%d, vxId=%d]", position, vxId);
+        return vxNameId == Graph.NOT_FOUND ? "" 
+                : String.format("[Node position=%d, vxId=%d]", position, rg.getVertex(position));
     }
 }

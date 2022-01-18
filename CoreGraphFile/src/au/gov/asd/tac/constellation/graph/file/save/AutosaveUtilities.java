@@ -156,7 +156,7 @@ public final class AutosaveUtilities {
                         return p;
                     }
                 }
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 final String msg = Bundle.MSG_FileError(autosave);
                 LOGGER.log(Level.WARNING, msg, ex);
             }
@@ -194,7 +194,7 @@ public final class AutosaveUtilities {
             }
         }
 
-        try (InputStream in = new FileInputStream(autosave)) {
+        try (final InputStream in = new FileInputStream(autosave)) {
             try (final OutputStream out = new FileOutputStream(to)) {
                 final int bufsiz = 1024 * 1024;
                 final byte[] buf = new byte[bufsiz];

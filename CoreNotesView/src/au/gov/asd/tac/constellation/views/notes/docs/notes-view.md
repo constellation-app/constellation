@@ -48,14 +48,16 @@ is nothing selected on the graph, the note is applied to the entire
 graph.
 
 Once added, these notes can edited by pressing the "Edit" button on the
-note. When editing, you can edit both the content and the selection that
-a note is linked to. A note can be deleted by pressing the "Delete"
-button on the note.
+note. A note can be deleted by pressing the "Delete" button on the note.
 
 You can see which nodes and transactions a user-generated note is linked
 to by right-clicking on a note and pressing "Select on Graph". This will
 change the graph selection to only the nodes and transactions linked to
-that note.
+that note. To change the selection linked to the note, make a selection 
+on the graph, right-click on the note, and then select either "Add Selected" 
+to link all of the selected nodes and transactions to the note or 
+"Removed Selected" to unlink any part of the selection already linked to 
+the note.
 
 ## Auto-Generated Notes
 

@@ -28,6 +28,7 @@ public final class GraphFileConstants {
      * No constructor.
      */
     private GraphFileConstants() {
+        throw new IllegalStateException("Constants Class");
     }
     /**
      * The file extensions for ZipEntry files.

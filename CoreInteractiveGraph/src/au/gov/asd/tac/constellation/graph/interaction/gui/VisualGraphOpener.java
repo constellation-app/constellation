@@ -70,7 +70,7 @@ import org.openide.windows.TopComponent;
     "# {0} - fnam",
     "# {1} - save datetime",
     "# {2} - autosave datetime",
-    "MSG_Autosave=File {0}\nsaved on {1}\nautosaved on {2}\nDo you want the more recent autosaved version?"
+    "MSG_Autosave={0}\nFile saved on {1}\nAutosaved on {2}\nDo you want the more recent autosaved version to be loaded?"
 })
 @ServiceProvider(service = GraphOpener.class, position = 100)
 public final class VisualGraphOpener extends GraphOpener {
@@ -110,9 +110,11 @@ public final class VisualGraphOpener extends GraphOpener {
                 final ZonedDateTimeAttributeDescription datetimeAttributeDescription = new ZonedDateTimeAttributeDescription();
                 final ZonedDateTime zdtAutosave = datetimeAttributeDescription.convertFromString(dtprop);
                 final long dtFile = f.lastModified();
-                if (zdtAutosave.toEpochSecond() * 1000 > dtFile) {
+                final long zdtAutosaveSeconds = zdtAutosave.toEpochSecond() * 1000;
+                if (zdtAutosaveSeconds > dtFile) {
+                    final String dateTime = new Date(zdtAutosaveSeconds).toString();
                     final String dtf = new Date(dtFile).toString();
-                    final String msg = Bundle.MSG_Autosave(f.getPath(), dtf, dtprop);
+                    final String msg = Bundle.MSG_Autosave(f.getPath(), dtf, dateTime);
                     final NotifyDescriptor nd = new NotifyDescriptor(msg, "Open autosaved file?", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE, null, null);
                     if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
                         // The user wants the more recent autosaved version.

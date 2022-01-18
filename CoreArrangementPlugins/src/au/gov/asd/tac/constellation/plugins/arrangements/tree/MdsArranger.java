@@ -237,8 +237,7 @@ public class MdsArranger implements Arranger {
                 final int newVxId = vxsToDo[i + startOfRemainingVertices];
                 vxsToArrange[numVxsToArrange++] = newVxId;
 
-                if (true) // verticesThatInfluence.contains(atomArray[newIndex])
-                {
+                if (true) { // verticesThatInfluence.contains(atomArray[newIndex])
                     vxsToInfluence[numVxsToInfluence++] = newVxId;
                 }
 

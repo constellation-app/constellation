@@ -91,8 +91,8 @@ import org.openide.windows.TopComponent;
 public final class HierarchicalControllerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
 
     private static final String INFO_STRING = "%s clusters";
-    private static final String INTERACTIVE_DISABLED = "Interactive - Disabled";
-    private static final String INTERACTIVE_ENABLED = "Interactive - Enabled";
+    private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";
+    private static final String TOGGLE_ENABLED = "Toggle Interactive: Enabled";
 
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
@@ -132,22 +132,22 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         nestedDiagramScrollPane.addComponentListener(new ComponentListener() {
 
             @Override
-            public void componentResized(ComponentEvent e) {
+            public void componentResized(final ComponentEvent e) {
                 dp.componentResized(null);
             }
 
             @Override
-            public void componentMoved(ComponentEvent e) {
+            public void componentMoved(final ComponentEvent e) {
                 // Override required for ComponentListener, intentionally left blank
             }
 
             @Override
-            public void componentShown(ComponentEvent e) {
+            public void componentShown(final ComponentEvent e) {
                 // Override required for ComponentListener, intentionally left blank
             }
 
             @Override
-            public void componentHidden(ComponentEvent e) {
+            public void componentHidden(final ComponentEvent e) {
                 // Override required for ComponentListener, intentionally left blank
             }
         });
@@ -198,7 +198,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         infoLabel = new javax.swing.JLabel();
         returnToOptimumButton = new javax.swing.JButton();
         reclusterButton = new javax.swing.JButton();
+        reclusterButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         interactiveButton = new javax.swing.JToggleButton();
+        interactiveButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         colorClustersCheckBox = new javax.swing.JCheckBox();
         shortestPathsButton = new javax.swing.JButton();
         reclusterLabel = new javax.swing.JLabel();
@@ -260,6 +262,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         });
 
         org.openide.awt.Mnemonics.setLocalizedText(reclusterButton, org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.reclusterButton.text")); // NOI18N
+        reclusterButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         reclusterButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 reclusterButtonActionPerformed(evt);
@@ -268,6 +271,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         interactiveButton.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(interactiveButton, org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.interactiveButton.text")); // NOI18N
+        interactiveButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         interactiveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 interactiveButtonActionPerformed(evt);
@@ -433,7 +437,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         state.setInteractive(!state.isInteractive());
         state.setColored(this.colorClustersCheckBox.isSelected());
         if (!state.isInteractive()) {
-            interactiveButton.setText(INTERACTIVE_DISABLED);
+            interactiveButton.setText(TOGGLE_DISABLED);
             nestedDiagramScrollPane.setViewportView(null);
             nestedDiagramScrollPane.repaint();
             if (state.isColored()) {
@@ -441,7 +445,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 PluginExecution.withPlugin(uncolor).interactively(true).executeLater(graph);
             }
         } else {
-            interactiveButton.setText(INTERACTIVE_ENABLED);
+            interactiveButton.setText(TOGGLE_ENABLED);
             nestedDiagramScrollPane.setViewportView(dp);
             nestedDiagramScrollPane.repaint();
             if (state.isColored()) {
@@ -538,7 +542,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 reclusterButton.setEnabled(true);
                 reclusterLabel.setEnabled(true);
                 interactiveButton.setEnabled(false);
-                interactiveButton.setText(INTERACTIVE_DISABLED);
+                interactiveButton.setText(TOGGLE_DISABLED);
             }
 
             if (dp != null) {
@@ -548,7 +552,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             if (state != null && doUpdate) {
                 updateGraph();
             }
-            interactiveButton.setText((state != null && state.isInteractive()) ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
+            interactiveButton.setText((state != null && state.isInteractive()) ? TOGGLE_ENABLED : TOGGLE_DISABLED);
         }
         interactiveButton.setEnabled(state != null);
         interactiveButton.setSelected(false);
@@ -588,11 +592,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             // Retrieve the COI state attribute, attribute mod counter, and structural mod counter from the graph
             final int stateAttr = ClusteringConcept.MetaAttribute.HIERARCHICAL_CLUSTERING_STATE.get(rg);
             smc = rg.getStructureModificationCounter();
-            if (stateAttr != Graph.NOT_FOUND) {
-                mc = rg.getValueModificationCounter(stateAttr);
-            } else {
-                mc = Graph.NOT_FOUND;
-            }
+            mc = stateAttr != Graph.NOT_FOUND ? rg.getValueModificationCounter(stateAttr) : Graph.NOT_FOUND;
+
 
             // If the COI state on the controller is null, or has a different modcount to the state on the graph, update this controller's state.
             if (state == null || mc != state.getModificationCounter()) {
@@ -641,15 +642,15 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 state = stateAttr != Graph.NOT_FOUND ? (HierarchicalState) rg.getObjectValue(stateAttr, 0) : null;
                 if (rg.getSchema() != null && !(rg.getSchema().getFactory() instanceof VisualSchemaFactory)) {
                     interactiveButton.setSelected(false);
-                    interactiveButton.setText(INTERACTIVE_ENABLED);
+                    interactiveButton.setText(TOGGLE_ENABLED);
                     interactivityPermitted = false;
                 } else if (state != null) {
-                    interactiveButton.setText(state.isInteractive() ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
+                    interactiveButton.setText(state.isInteractive() ? TOGGLE_ENABLED : TOGGLE_DISABLED);
                     interactiveButton.setSelected(state.isInteractive());
                     colorClustersCheckBox.setSelected(state.isColored());
                     interactivityPermitted = true;
                 } else {
-                    interactiveButton.setText(INTERACTIVE_DISABLED);
+                    interactiveButton.setText(TOGGLE_DISABLED);
                     interactiveButton.setSelected(true);
                     colorClustersCheckBox.setSelected(true);
                     interactivityPermitted = true;

@@ -86,15 +86,15 @@ public class PackagePanel extends JPanel {
         initAccessibility();
     }
 
-    JButton getOKButton() {
+    protected JButton getOKButton() {
         return okButton;
     }
 
-    JButton getCancelButton() {
+    protected JButton getCancelButton() {
         return cancelButton;
     }
 
-    JList<String> getList() {
+    protected JList<String> getList() {
         return list;
     }
 
@@ -132,7 +132,7 @@ public class PackagePanel extends JPanel {
 
             @Override
             public Component getListCellRendererComponent(final JList<? extends String> lst, final String value, final int index, final boolean isSelected, final boolean cellHasFocus) {
-                String pkg2 = value;
+                final String pkg2 = value;
                 if (pkg2.isEmpty()) { // NOI18N
                     lab.setText(NbBundle.getMessage(PackagePanel.class, "LBL_packageWillBeDefault"));
                     lab.setIcon(rootFolderIcon);
@@ -159,7 +159,8 @@ public class PackagePanel extends JPanel {
         final JTextField field = new JTextField();
         field.setEditable(false);
         field.setEnabled(true);
-        //Accessibility
+        
+        // Accessibility
         field.getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(PackagePanel.class, "ACS_Field"));
         field.selectAll();
         field.addFocusListener(new FocusListener() {
@@ -194,7 +195,7 @@ public class PackagePanel extends JPanel {
      * Updates label and enables/disables ok button.
      */
     private static void updateLabelEtcFromList(final JTextField field, final JList<String> list, final List<File> dirs, final JButton okButton) {
-        int idx = list.getSelectedIndex();
+        final int idx = list.getSelectedIndex();
         if (idx == -1) {
             field.setText(" "); // NOI18N
             field.getAccessibleContext().setAccessibleName(" ");

@@ -180,13 +180,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
         filterField.setStyle(FILTER_STYLE);
-        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (setFilter(newValue)) {
-                filterField.setStyle(FILTER_STYLE);
-            } else {
-                filterField.setStyle(FILTER_STYLE_ALERT);
-            }
-        });
+        filterField.textProperty().addListener((observable, oldValue, newValue) -> setFilterStyle(newValue));
 
         filterField.setPromptText("Currently unavailable. The filter will be ready to use shortly");
         FILTER_LOAD.thenRun(() -> filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\""));
@@ -303,6 +297,10 @@ public final class RunPane extends BorderPane implements KeyListener {
                 mouseOverColumn = null;
             }
         });
+    }
+
+    private void setFilterStyle(final String value) {
+        filterField.setStyle(setFilter(value) ? FILTER_STYLE : FILTER_STYLE_ALERT);
     }
 
     /**
@@ -457,7 +455,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
         currentRows = newRows;
         sampleDataView.setItems(currentRows);
-        setFilter(filter);
+        setFilterStyle(filter);
     }
 
     public void clearFilters() {
@@ -490,7 +488,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         return false;
     }
 
-    public boolean setFilter(final String filter) {
+    private boolean setFilter(final String filter) {
         this.filter = filter;
         if (filter.isEmpty()) {
             currentRows.forEach(tableRow -> tableRow.setIncluded(true));
@@ -571,7 +569,7 @@ public final class RunPane extends BorderPane implements KeyListener {
             script = "";
         }
         filterField.setText(script);
-        setFilter(script);
+        setFilterStyle(script);
 
         updateColumns(impdef, sourceVertexAttributeList, AttributeType.SOURCE_VERTEX);
         updateColumns(impdef, destinationVertexAttributeList, AttributeType.DESTINATION_VERTEX);

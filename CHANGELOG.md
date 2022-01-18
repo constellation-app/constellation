@@ -1,5 +1,13 @@
 # Constellation Changes
 
+## Changes in December 2021
+
+-   Changed the return type of `processVertices` and `processTransactions` methods 
+    in `ImportJDBCPlugin` and `ImportDelimitedPlugin` classes to return the number
+	of imported rows. Added a new parameter `totalRows` in `displaySummaryAlert`
+	method of `ImportJDBCPlugin` class. These allow a more meaningful
+    summary status message after importing.
+
 ## Changes in November 2021
 
 

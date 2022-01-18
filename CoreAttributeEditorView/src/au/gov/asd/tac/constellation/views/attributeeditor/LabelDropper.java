@@ -87,7 +87,7 @@ public class LabelDropper implements GraphDropper {
                     final ObjectInputStream oin = new ObjectInputStream(in);
                     data = (String) oin.readObject();
                 } else {
-                    String t = (String) transferable.getTransferData(DataFlavor.stringFlavor);
+                    final String t = (String) transferable.getTransferData(DataFlavor.stringFlavor);
                     // Do we have the correct indicator?
                     if (t != null && t.startsWith(INDICATOR)) {
                         // Skip the leading "indicator=".
@@ -158,5 +158,4 @@ public class LabelDropper implements GraphDropper {
             }
         }
     }
-
 }

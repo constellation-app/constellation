@@ -45,8 +45,7 @@ public class JDBCConnection {
         final Properties props = new Properties();
         props.put("user", user);
         props.put("password", password);
-        final Connection a = currentDriver.connect(connectionString, props);
-        return a;
+        return currentDriver.connect(connectionString, props);
     }
 
     public boolean testConnection(final String user, final String password, final boolean showError) {

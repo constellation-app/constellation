@@ -39,7 +39,7 @@ public class CircTreeChoicePanel extends JPanel {
     }
 
     public void setGraph(final Graph graph) {
-        Collection<GraphElementType> elementTypes = Collections.singleton(GraphElementType.VERTEX);
+        final Collection<GraphElementType> elementTypes = Collections.singleton(GraphElementType.VERTEX);
         attributeSelectionPanel.setGraph(graph, elementTypes, null, null);
     }
 

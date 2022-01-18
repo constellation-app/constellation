@@ -439,7 +439,7 @@ public abstract class Point3D implements Cloneable {
     public Object clone() {
         try {
             return super.clone();
-        } catch (CloneNotSupportedException e) {
+        } catch (final CloneNotSupportedException e) {
             // this shouldn't happen, since we are Cloneable
             throw new InternalError();
         }
@@ -475,7 +475,7 @@ public abstract class Point3D implements Cloneable {
             return false;
         }
         if (this.getClass() == obj.getClass()) {
-            Point3D p3d = (Point3D) obj;
+            final Point3D p3d = (Point3D) obj;
             return (getX() == p3d.getX()) && (getY() == p3d.getY() && (getZ() == p3d.getZ()));
         }
         return super.equals(obj);

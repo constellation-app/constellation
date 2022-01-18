@@ -193,9 +193,9 @@ public class DijkstraServices {
         //Loop over the map and for each vertex get the paths that it is connected to
         final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
 
-        for (Map.Entry<Integer, List<ArrayList<Integer>>> vertex : paths.entrySet()) {
+        for (final Map.Entry<Integer, List<ArrayList<Integer>>> vertex : paths.entrySet()) {
             //For each path, get the first vertex and establish which link it corresponds to
-            for (ArrayList<Integer> path : vertex.getValue()) {
+            for (final ArrayList<Integer> path : vertex.getValue()) {
                 for (int i = 0; i < path.size(); i++) {
                     final int currNode = path.get(i);
                     final int nextNode;

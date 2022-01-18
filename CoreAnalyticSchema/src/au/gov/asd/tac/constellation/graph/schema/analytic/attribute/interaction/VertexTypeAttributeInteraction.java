@@ -34,14 +34,11 @@ public class VertexTypeAttributeInteraction extends AbstractAttributeInteraction
 
     @Override
     @SuppressWarnings("unchecked") // cast is manually checked.
-    public String getDisplayText(Object value) {
-        if (value == null) {
-            return null;
-        }
+    public String getDisplayText(final Object value) {
         if (value instanceof SchemaVertexType) {
             return ((SchemaVertexType) value).getName();
         }
-        return value.toString();
+        return value == null ? null : value.toString();
     }
 
     @Override

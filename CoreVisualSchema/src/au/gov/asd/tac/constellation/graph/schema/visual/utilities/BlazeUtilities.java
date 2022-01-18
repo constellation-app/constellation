@@ -190,7 +190,6 @@ public class BlazeUtilities {
         final int r = color.getRed();
         final int g = color.getGreen();
         final int b = color.getBlue();
-        final String s = String.format("#%02x%02x%02x", r, g, b);
-        return s;
+        return String.format("#%02x%02x%02x", r, g, b);
     }
 }
