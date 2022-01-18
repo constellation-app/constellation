@@ -98,508 +98,448 @@ public class JsonUtilitiesNGTest {
     
     /**
      * Test calls to JsonUtilities.getTextField for which no default is supplied.
+     * @throws Exception
      */
     @Test
-    public void testGetTextField_NoDefault() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\"}}");  
-            
-            // Search for missing top level value
-            assertEquals(JsonUtilities.getTextField(testJson, "1.Missing"), null, "L1 null returned if not found");
-            
-            // Search for existing top level value
-            assertEquals(JsonUtilities.getTextField(testJson, "1.k2"), "1.v2", "L1 value returned if found");
-            
-            // Search for missing nested value
-            assertEquals(JsonUtilities.getTextField(testJson, "1.k3", "2.Missing"), null, "L2 null returned if not found");
-            
-            // Search for existing nested value
-            assertEquals(JsonUtilities.getTextField(testJson, "1.k3", "2.k1"), "2.v1", "L2 value returned if found");  
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }  
+    public void testGetTextField_NoDefault() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\"}}");  
+
+        // Search for missing top level value
+        assertEquals(JsonUtilities.getTextField(testJson, "1.Missing"), null, "L1 null returned if not found");
+
+        // Search for existing top level value
+        assertEquals(JsonUtilities.getTextField(testJson, "1.k2"), "1.v2", "L1 value returned if found");
+
+        // Search for missing nested value
+        assertEquals(JsonUtilities.getTextField(testJson, "1.k3", "2.Missing"), null, "L2 null returned if not found");
+
+        // Search for existing nested value
+        assertEquals(JsonUtilities.getTextField(testJson, "1.k3", "2.k1"), "2.v1", "L2 value returned if found"); 
     }
     
     /**
      * Test calls to JsonUtilities.getTextField for which a default is supplied.
+     * @throws Exception 
      */
     @Test
-    public void testGetTextField_Default() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\"}}");  
-            
-            // Search for missing top level value
-            assertEquals(JsonUtilities.getTextField("default", testJson, "1.Missing"), "default", "L1 default returned if not found");
-            
-            // Search for existing top level value
-            assertEquals(JsonUtilities.getTextField("default", testJson, "1.k2"), "1.v2", "L1 value returned if found");
-            
-            // Search for missing nested value
-            assertEquals(JsonUtilities.getTextField("default", testJson, "1.k3", "2.Missing"), "default", "L2 default returned if not found");
-            
-            // Search for existing nested value
-            assertEquals(JsonUtilities.getTextField("default", testJson, "1.k3", "2.k1"), "2.v1", "L2 value returned if not found");  
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }  
+    public void testGetTextField_Default() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\"}}");  
+
+        // Search for missing top level value
+        assertEquals(JsonUtilities.getTextField("default", testJson, "1.Missing"), "default", "L1 default returned if not found");
+
+        // Search for existing top level value
+        assertEquals(JsonUtilities.getTextField("default", testJson, "1.k2"), "1.v2", "L1 value returned if found");
+
+        // Search for missing nested value
+        assertEquals(JsonUtilities.getTextField("default", testJson, "1.k3", "2.Missing"), "default", "L2 default returned if not found");
+
+        // Search for existing nested value
+        assertEquals(JsonUtilities.getTextField("default", testJson, "1.k3", "2.k1"), "2.v1", "L2 value returned if not found");
     }
     
     /**
      * Test calls to JsonUtilities.getFieldIterator.
+     * @throws Exception 
      */
     @Test
-    public void testGetFieldIterator() {
+    public void testGetFieldIterator() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\", \"2.k2\": \"2.v2\"}}");  
+        Iterator<JsonNode> iterator = JsonUtilities.getFieldIterator(testJson, "1.k3");
+        ArrayList<String> nodes = new ArrayList<String>();
+        while(iterator.hasNext()) {
+            nodes.add(iterator.next().toString());  
+        }
+        assertEquals(nodes.toString(), "[\"2.v1\", \"2.v2\"]", "Populated node iterator matches");
+
+        iterator = JsonUtilities.getFieldIterator(testJson, "1.k1");
+        assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\", \"2.k2\": \"2.v2\"}}");  
-            Iterator<JsonNode> iterator = JsonUtilities.getFieldIterator(testJson, "1.k3");
-            ArrayList<String> nodes = new ArrayList<String>();
-            while(iterator.hasNext()) {
-                nodes.add(iterator.next().toString());  
-            }
-            assertEquals(nodes.toString(), "[\"2.v1\", \"2.v2\"]", "Populated node iterator matches");
-            
-            iterator = JsonUtilities.getFieldIterator(testJson, "1.k1");
-            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
-            try {
-                JsonNode nextNode = iterator.next();
-                fail("NoSuchElementException not thrown for empty node");
-            } catch (NoSuchElementException nse) {
-            }
-            
-            iterator = JsonUtilities.getFieldIterator(testJson, "1.Missing");
-            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
-            try {
-                JsonNode nextNode = iterator.next();
-                fail("NoSuchElementException not thrown for missing node");
-            } catch (NoSuchElementException nse) {
-            }
-          } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }       
+            JsonNode nextNode = iterator.next();
+            fail("NoSuchElementException not thrown for empty node");
+        } catch (NoSuchElementException nse) {
+        }
+
+        iterator = JsonUtilities.getFieldIterator(testJson, "1.Missing");
+        assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
+        try {
+            JsonNode nextNode = iterator.next();
+            fail("NoSuchElementException not thrown for missing node");
+        } catch (NoSuchElementException nse) {
+        }      
     }
     
     /**
      * Test calls to JsonUtilities.getTextFieldIterator.
+     * @throws Exception 
      */
     @Test
-    public void testGetTextFieldIterator() {
+    public void testGetTextFieldIterator() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\", \"2.k2\": \"2.v2\"}}");  
+        Iterator<String> iterator = JsonUtilities.getTextFieldIterator(testJson, "1.k3");
+        ArrayList<String> nodes = new ArrayList<String>();
+        while(iterator.hasNext()) {
+            nodes.add(iterator.next());  
+        }
+        assertEquals(nodes.toString(), "[2.v1, 2.v2]", "Populated node iterator matches");
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\", \"2.k2\": \"2.v2\"}}");  
-            Iterator<String> iterator = JsonUtilities.getTextFieldIterator(testJson, "1.k3");
-            ArrayList<String> nodes = new ArrayList<String>();
-            while(iterator.hasNext()) {
-                nodes.add(iterator.next());  
-            }
-            assertEquals(nodes.toString(), "[2.v1, 2.v2]", "Populated node iterator matches");
-            try {
-                String nextNode = iterator.next();
-                fail("NoSuchElementException not thrown at end of iteration");
-            } catch (NoSuchElementException nse) {
-            }
+            String nextNode = iterator.next();
+            fail("NoSuchElementException not thrown at end of iteration");
+        } catch (NoSuchElementException nse) {
+        }
 
-            iterator = JsonUtilities.getTextFieldIterator(testJson, "1.k1");
-            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
-            try {
-                String nextNode = iterator.next();
-                fail("NoSuchElementException not thrown for empty node");
-            } catch (NoSuchElementException nse) {
-            }
-            
-            iterator = JsonUtilities.getTextFieldIterator(testJson, "1.Missing");
-            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
-            try {
-                String nextNode = iterator.next();
-                fail("NoSuchElementException not thrown for missing node");
-            } catch (NoSuchElementException nse) {
-            }
-            
-          } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }       
+        iterator = JsonUtilities.getTextFieldIterator(testJson, "1.k1");
+        assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
+        try {
+            String nextNode = iterator.next();
+            fail("NoSuchElementException not thrown for empty node");
+        } catch (NoSuchElementException nse) {
+        }
+
+        iterator = JsonUtilities.getTextFieldIterator(testJson, "1.Missing");
+        assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
+        try {
+            String nextNode = iterator.next();
+            fail("NoSuchElementException not thrown for missing node");
+        } catch (NoSuchElementException nse) {
+        }     
     }
     
     /**
      * Test calls to JsonUtilities.getIntegerField for which no default is supplied.
+     * @throws Exception 
      */
     @Test
-    public void testGetIntegerField_NoDefault() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
-            
-            // Search for missing top level value
-            assertEquals(JsonUtilities.getIntegerField(testJson, "1.Missing"), 0, "0 returned if not found");
-            
-            // Search for existing top level value with invalid value type
-            assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
-            
-            // Search for existing top level value
-            assertEquals(JsonUtilities.getIntegerField(testJson, "1.k2"), 12, "L1 value returned if found");
-            
-            // Search for missing nested value
-            assertEquals(JsonUtilities.getIntegerField(testJson, "1.k3", "2.Missing"), 0, "0 returned if not found");
-            
-            // Search for existing nested value
-            assertEquals(JsonUtilities.getIntegerField(testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");  
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }  
+    public void testGetIntegerField_NoDefault() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
+
+        // Search for missing top level value
+        assertEquals(JsonUtilities.getIntegerField(testJson, "1.Missing"), 0, "0 returned if not found");
+
+        // Search for existing top level value with invalid value type
+        assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
+
+        // Search for existing top level value
+        assertEquals(JsonUtilities.getIntegerField(testJson, "1.k2"), 12, "L1 value returned if found");
+
+        // Search for missing nested value
+        assertEquals(JsonUtilities.getIntegerField(testJson, "1.k3", "2.Missing"), 0, "0 returned if not found");
+
+        // Search for existing nested value
+        assertEquals(JsonUtilities.getIntegerField(testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");
     }
 
     /**
      * Test calls to JsonUtilities.getIntegerField for which a default is supplied.
+     * @throws Exception 
      */
     @Test
-    public void testGetIntegerField_Default() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
-            
-            // Search for missing top level value
-            assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.Missing"), 99, "L1 default returned if not found");
-            
-            // Search for existing top level value with invalid value type
-            assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
-            
-            // Search for existing top level value
-            assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k2"), 12, "L1 value returned if found");
-            
-            // Search for missing nested value
-            assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k3", "2.Missing"), 99, "L2 default returned if not found");
-            
-            // Search for existing nested value
-            assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");  
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }  
+    public void testGetIntegerField_Default() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
+
+        // Search for missing top level value
+        assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.Missing"), 99, "L1 default returned if not found");
+
+        // Search for existing top level value with invalid value type
+        assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
+
+        // Search for existing top level value
+        assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k2"), 12, "L1 value returned if found");
+
+        // Search for missing nested value
+        assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k3", "2.Missing"), 99, "L2 default returned if not found");
+
+        // Search for existing nested value
+        assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");  
     }
     
     /**
      * Test calls to JsonUtilities.getIntegerFieldIterator.
+     * @throws Exception 
      */
     @Test
-    public void testGetIntegerFieldIterator() {
+    public void testGetIntegerFieldIterator() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21, \"2.k2\": 22}}"); 
+        Iterator<Integer> iterator = JsonUtilities.getIntegerFieldIterator(testJson, "1.k3");
+        ArrayList<Integer> nodes = new ArrayList<Integer>();
+        while(iterator.hasNext()) {
+            nodes.add(iterator.next());  
+        }
+        assertEquals(nodes.toString(), "[21, 22]", "Populated node iterator matches");
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21, \"2.k2\": 22}}"); 
-            Iterator<Integer> iterator = JsonUtilities.getIntegerFieldIterator(testJson, "1.k3");
-            ArrayList<Integer> nodes = new ArrayList<Integer>();
-            while(iterator.hasNext()) {
-                nodes.add(iterator.next());  
-            }
-            assertEquals(nodes.toString(), "[21, 22]", "Populated node iterator matches");
-            try {
-                Integer nextNode = iterator.next();
-                fail("NoSuchElementException not thrown at end of iteration");
-            } catch (NoSuchElementException nse) {
-            }
+            Integer nextNode = iterator.next();
+            fail("NoSuchElementException not thrown at end of iteration");
+        } catch (NoSuchElementException nse) {
+        }
 
-            iterator = JsonUtilities.getIntegerFieldIterator(testJson, "1.k1");
-            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
-            try {
-                Integer nextNode = iterator.next();
-                fail("NoSuchElementException not thrown for empty node");
-            } catch (NoSuchElementException nse) {
-            }
-            
-            iterator = JsonUtilities.getIntegerFieldIterator(testJson, "1.Missing");
-            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
-            try {
-                Integer nextNode = iterator.next();
-                fail("NoSuchElementException not thrown for missing node");
-            } catch (NoSuchElementException nse) {
-            }
-            
-          } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }       
+        iterator = JsonUtilities.getIntegerFieldIterator(testJson, "1.k1");
+        assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
+        try {
+            Integer nextNode = iterator.next();
+            fail("NoSuchElementException not thrown for empty node");
+        } catch (NoSuchElementException nse) {
+        }
+
+        iterator = JsonUtilities.getIntegerFieldIterator(testJson, "1.Missing");
+        assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
+        try {
+            Integer nextNode = iterator.next();
+            fail("NoSuchElementException not thrown for missing node");
+        } catch (NoSuchElementException nse) {
+        }      
     }
     
     /**
      * Test calls to JsonUtilities.getIntegerField for which no default is supplied.
+     * @throws Exception 
      */
     @Test
-    public void testGetLongField_NoDefault() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
-            
-            // Search for missing top level value
-            assertEquals(JsonUtilities.getLongField(testJson, "1.Missing"), 0, "Null returned if not found");
-            
-            // Search for existing top level value with invalid value type
-            assertEquals(JsonUtilities.getLongField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
-            
-            // Search for existing top level value
-            assertEquals(JsonUtilities.getLongField(testJson, "1.k2"), 12, "L1 value returned if found");
-            
-            // Search for missing nested value
-            assertEquals(JsonUtilities.getLongField(testJson, "1.k3", "2.Missing"), 0, "Null returned if not found");
-            
-            // Search for existing nested value
-            assertEquals(JsonUtilities.getLongField(testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");  
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }  
+    public void testGetLongField_NoDefault() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
+
+        // Search for missing top level value
+        assertEquals(JsonUtilities.getLongField(testJson, "1.Missing"), 0, "Null returned if not found");
+
+        // Search for existing top level value with invalid value type
+        assertEquals(JsonUtilities.getLongField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
+
+        // Search for existing top level value
+        assertEquals(JsonUtilities.getLongField(testJson, "1.k2"), 12, "L1 value returned if found");
+
+        // Search for missing nested value
+        assertEquals(JsonUtilities.getLongField(testJson, "1.k3", "2.Missing"), 0, "Null returned if not found");
+
+        // Search for existing nested value
+        assertEquals(JsonUtilities.getLongField(testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");
     }
     
     /**
      * Test calls to JsonUtilities.getIntegerField for which a default is supplied.
+     * @throws Exception 
      */
     @Test
-    public void testGetLongField_Default() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
-            
-            // Search for missing top level value
-            assertEquals(JsonUtilities.getLongField(99, testJson, "1.Missing"), 99, "L1 default returned if not found");
-            
-            // Search for existing top level value with invalid value type
-            assertEquals(JsonUtilities.getLongField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
+    public void testGetLongField_Default() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
 
-            // Search for existing top level value
-            assertEquals(JsonUtilities.getLongField(99, testJson, "1.k2"), 12, "L1 value returned if found");
-            
-            // Search for missing nested value
-            assertEquals(JsonUtilities.getLongField(99, testJson, "1.k3", "2.Missing"), 99, "L2 default returned if not found");
-            
-            // Search for existing nested value
-            assertEquals(JsonUtilities.getLongField(99, testJson, "1.k3", "2.k1"), 21, "L2 value returned if found");  
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }  
+        // Search for missing top level value
+        assertEquals(JsonUtilities.getLongField(99, testJson, "1.Missing"), 99, "L1 default returned if not found");
+
+        // Search for existing top level value with invalid value type
+        assertEquals(JsonUtilities.getLongField(99, testJson, "1.k1"), 0, "L1 value returned if found with invalid value");
+
+        // Search for existing top level value
+        assertEquals(JsonUtilities.getLongField(99, testJson, "1.k2"), 12, "L1 value returned if found");
+
+        // Search for missing nested value
+        assertEquals(JsonUtilities.getLongField(99, testJson, "1.k3", "2.Missing"), 99, "L2 default returned if not found");
+
+        // Search for existing nested value
+        assertEquals(JsonUtilities.getLongField(99, testJson, "1.k3", "2.k1"), 21, "L2 value returned if found"); 
     }
     
     /**
      * Test calls to JsonUtilities.getDoubleField for which no default is supplied.
+     * @throws Exception 
      */
     @Test
-    public void testGetDoubleField_NoDefault() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
-            
-            // Search for missing top level value
-            assertEquals(JsonUtilities.getDoubleField(testJson, "1.Missing"), 0.0, "Null returned if not found");
-            
-            // Search for existing top level value with invalid value type
-            assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k1"), 0.0, "L1 value returned if found with invalid value");
-            
-            // Search for existing top level value
-            assertEquals(JsonUtilities.getDoubleField(testJson, "1.k2"), 12.1, "L1 value returned if found");
-            
-            // Search for missing nested value
-            assertEquals(JsonUtilities.getDoubleField(testJson, "1.k3", "2.Missing"), 0.0, "Null returned if not found");
-            
-            // Search for existing nested value
-            assertEquals(JsonUtilities.getDoubleField(testJson, "1.k3", "2.k1"), 21.1, "L2 value returned if found");  
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }  
+    public void testGetDoubleField_NoDefault() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
+
+        // Search for missing top level value
+        assertEquals(JsonUtilities.getDoubleField(testJson, "1.Missing"), 0.0, "Null returned if not found");
+
+        // Search for existing top level value with invalid value type
+        assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k1"), 0.0, "L1 value returned if found with invalid value");
+
+        // Search for existing top level value
+        assertEquals(JsonUtilities.getDoubleField(testJson, "1.k2"), 12.1, "L1 value returned if found");
+
+        // Search for missing nested value
+        assertEquals(JsonUtilities.getDoubleField(testJson, "1.k3", "2.Missing"), 0.0, "Null returned if not found");
+
+        // Search for existing nested value
+        assertEquals(JsonUtilities.getDoubleField(testJson, "1.k3", "2.k1"), 21.1, "L2 value returned if found"); 
     }
     
     /**
      * Test calls to JsonUtilities.getDoubleField for which a default is supplied.
+     * @throws Exception 
      */
     @Test
-    public void testGetDoubleField_Default() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
-            
-            // Search for missing top level value
-            assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.Missing"), 99.9, "L1 default returned if not found");
-            
-            // Search for existing top level value with invalid value type
-            assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k1"), 0.0, "L1 value returned if found with invalid value");
+    public void testGetDoubleField_Default() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
 
-            // Search for existing top level value
-            assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k2"), 12.1, "L1 value returned if found");
-            
-            // Search for missing nested value
-            assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k3", "2.Missing"), 99.9, "L2 default returned if not found");
-            
-            // Search for existing nested value
-            assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k3", "2.k1"), 21.1, "L2 value returned if found");  
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }  
+        // Search for missing top level value
+        assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.Missing"), 99.9, "L1 default returned if not found");
+
+        // Search for existing top level value with invalid value type
+        assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k1"), 0.0, "L1 value returned if found with invalid value");
+
+        // Search for existing top level value
+        assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k2"), 12.1, "L1 value returned if found");
+
+        // Search for missing nested value
+        assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k3", "2.Missing"), 99.9, "L2 default returned if not found");
+
+        // Search for existing nested value
+        assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.k3", "2.k1"), 21.1, "L2 value returned if found"); 
     }
      
     /**
      * Test calls to JsonUtilities.getBooleanField for which no default is supplied.
+     * @throws Exception 
      */
     @Test
-    public void testGetBooleanField_NoDefault() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": true, \"1.k3\":{\"2.k1\": true}}");  
-            
-            // Search for missing top level value
-            assertEquals(JsonUtilities.getBooleanField(testJson, "1.Missing"), false, "L1 false returned if not found");
-            
-            // Search for existing top level value with invalid value type
-            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k1"), false, "L1 value returned if found with invalid value");
-            
-            // Search for existing top level value
-            assertEquals(JsonUtilities.getBooleanField(testJson, "1.k2"), true, "L1 value returned if found");
-            
-            // Search for missing nested value
-            assertEquals(JsonUtilities.getBooleanField(testJson, "1.k3", "2.Missing"), false, "L2 false returned if not found");
-            
-            // Search for existing nested value
-            assertEquals(JsonUtilities.getBooleanField(testJson, "1.k3", "2.k1"), true, "L2 value returned if found");  
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }  
+    public void testGetBooleanField_NoDefault() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": true, \"1.k3\":{\"2.k1\": true}}");  
+
+        // Search for missing top level value
+        assertEquals(JsonUtilities.getBooleanField(testJson, "1.Missing"), false, "L1 false returned if not found");
+
+        // Search for existing top level value with invalid value type
+        assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k1"), false, "L1 value returned if found with invalid value");
+
+        // Search for existing top level value
+        assertEquals(JsonUtilities.getBooleanField(testJson, "1.k2"), true, "L1 value returned if found");
+
+        // Search for missing nested value
+        assertEquals(JsonUtilities.getBooleanField(testJson, "1.k3", "2.Missing"), false, "L2 false returned if not found");
+
+        // Search for existing nested value
+        assertEquals(JsonUtilities.getBooleanField(testJson, "1.k3", "2.k1"), true, "L2 value returned if found");  
     }
     
     /**
      * Test calls to JsonUtilities.getBooleanField for which a default is supplied.
+     * @throws Exception 
      */
     @Test
-    public void testGetBooleanField_Default() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":{\"2.k1\": false}}");  
-            
-            // Search for missing top level value
-            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.Missing"), true, "L1 default returned if not found");
-            
-            // Search for existing top level value with invalid value type
-            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k1"), false, "L1 value returned if found with invalid value");
-            
-            // Search for existing top level value
-            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k2"), false, "L1 value returned if found");
-            
-            // Search for missing nested value
-            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k3", "2.Missing"), true, "L2 default returned if not found");
-            
-            // Search for existing nested value
-            assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k3", "2.k1"), false, "L2 value returned if found");  
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }  
+    public void testGetBooleanField_Default() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":{\"2.k1\": false}}");  
+
+        // Search for missing top level value
+        assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.Missing"), true, "L1 default returned if not found");
+
+        // Search for existing top level value with invalid value type
+        assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k1"), false, "L1 value returned if found with invalid value");
+
+        // Search for existing top level value
+        assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k2"), false, "L1 value returned if found");
+
+        // Search for missing nested value
+        assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k3", "2.Missing"), true, "L2 default returned if not found");
+
+        // Search for existing nested value
+        assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.k3", "2.k1"), false, "L2 value returned if found"); 
     }
 
     /**
      * Test calls to JsonUtilities.getIntegerFieldIterator.
+     * @throws Exception 
      */
     @Test
-    public void testGetBooleanFieldIterator() {
+    public void testGetBooleanFieldIterator() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": true, \"1.k3\":{\"2.k1\": true, \"2.k2\": false}}"); 
+        Iterator<Boolean> iterator = JsonUtilities.getBooleanFieldIterator(testJson, "1.k3");
+        ArrayList<Boolean> nodes = new ArrayList<Boolean>();
+        while(iterator.hasNext()) {
+            nodes.add(iterator.next());  
+        }
+        assertEquals(nodes.toString(), "[true, false]", "Populated node iterator matches");
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": true, \"1.k3\":{\"2.k1\": true, \"2.k2\": false}}"); 
-            Iterator<Boolean> iterator = JsonUtilities.getBooleanFieldIterator(testJson, "1.k3");
-            ArrayList<Boolean> nodes = new ArrayList<Boolean>();
-            while(iterator.hasNext()) {
-                nodes.add(iterator.next());  
-            }
-            assertEquals(nodes.toString(), "[true, false]", "Populated node iterator matches");
-            try {
-                Boolean nextNode = iterator.next();
-                fail("NoSuchElementException not thrown at end of iteration");
-            } catch (NoSuchElementException nse) {
-            }
+            Boolean nextNode = iterator.next();
+            fail("NoSuchElementException not thrown at end of iteration");
+        } catch (NoSuchElementException nse) {
+        }
 
-            iterator = JsonUtilities.getBooleanFieldIterator(testJson, "1.k1");
-            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
-            try {
-                Boolean nextNode = iterator.next();
-                fail("NoSuchElementException not thrown for empty node");
-            } catch (NoSuchElementException nse) {
-            }
-            
-            iterator = JsonUtilities.getBooleanFieldIterator(testJson, "1.Missing");
-            assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
-            try {
-                Boolean nextNode = iterator.next();
-                fail("NoSuchElementException not thrown for missing node");
-            } catch (NoSuchElementException nse) {
-            }
-            
-          } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }       
+        iterator = JsonUtilities.getBooleanFieldIterator(testJson, "1.k1");
+        assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for empty node");
+        try {
+            Boolean nextNode = iterator.next();
+            fail("NoSuchElementException not thrown for empty node");
+        } catch (NoSuchElementException nse) {
+        }
+
+        iterator = JsonUtilities.getBooleanFieldIterator(testJson, "1.Missing");
+        assertEquals(iterator.hasNext(), false, "Iterator.hasNext() returns false for missing node");
+        try {
+            Boolean nextNode = iterator.next();
+            fail("NoSuchElementException not thrown for missing node");
+        } catch (NoSuchElementException nse) {
+        }     
     }
 
     /**
      * Test calls to JsonUtilities.getGetTextValue.
+     * @throws Exception 
      */
     @Test
-    public void testGetChildNode() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
-     
-            assertEquals(JsonUtilities.getChildNode(testJson, "missing"), null, "Missing node");
-            JsonNode childNode = JsonUtilities.getChildNode(testJson, "1.k4");
-            assertEquals(JsonUtilities.getTextValue("2.k1", childNode), "nest1", "Get text value of string");
+    public void testGetChildNode() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
 
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }        
+        assertEquals(JsonUtilities.getChildNode(testJson, "missing"), null, "Missing node");
+        JsonNode childNode = JsonUtilities.getChildNode(testJson, "1.k4");
+        assertEquals(JsonUtilities.getTextValue("2.k1", childNode), "nest1", "Get text value of string");      
     }
     
     /**
      * Test calls to JsonUtilities.getGetTextValue.
+     * @throws Exception 
      */
     @Test
-    public void testGetTextValue() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
-            assertEquals(JsonUtilities.getTextValue("1.k1", testJson), "aaa", "Get text value of string");
-            assertEquals(JsonUtilities.getTextValue("1.k2", testJson), "false", "Get text value of boolean");
-            assertEquals(JsonUtilities.getTextValue("1.k3", testJson), "1.1", "Get text value of numerical");
-            assertEquals(JsonUtilities.getTextValue("missing", testJson), null, "Node doesn't have attribute");
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }        
+    public void testGetTextValue() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
+        assertEquals(JsonUtilities.getTextValue("1.k1", testJson), "aaa", "Get text value of string");
+        assertEquals(JsonUtilities.getTextValue("1.k2", testJson), "false", "Get text value of boolean");
+        assertEquals(JsonUtilities.getTextValue("1.k3", testJson), "1.1", "Get text value of numerical");
+        assertEquals(JsonUtilities.getTextValue("missing", testJson), null, "Node doesn't have attribute");
     }
     
     /**
      * Test calls to JsonUtilities.getGetTextValues.
+     * @throws Exception 
      */
     @Test
-    public void testGetTextValues() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
-            
-            assertEquals(JsonUtilities.getTextValues("1.k4", testJson, ":"), "nest1:nest2", "Print child dictionary");
-            assertEquals(JsonUtilities.getTextValues("1.k5", testJson, ":"), "{\"l1\":\"list1\"}:2:3:4", "Print child list");
+    public void testGetTextValues() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
 
-            assertEquals(JsonUtilities.getTextValues("missing", testJson, ":"), null, "Node doesn't exist");
+        assertEquals(JsonUtilities.getTextValues("1.k4", testJson, ":"), "nest1:nest2", "Print child dictionary");
+        assertEquals(JsonUtilities.getTextValues("1.k5", testJson, ":"), "{\"l1\":\"list1\"}:2:3:4", "Print child list");
 
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }        
+        assertEquals(JsonUtilities.getTextValues("missing", testJson, ":"), null, "Node doesn't exist");       
     }
      
     /**
      * Test calls to JsonUtilities.getGetTextValue., \"12\": 3
+     * @throws Exception 
      */
     @Test
-    public void testGetTextValueOfFirstSubElement() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();   
-            JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"1.sub\": \"subvalue\"}], \"1.k6\": [{\"1.sub\": 55}]}");  
-            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("missing", "1.sub", testJson), null, "Attribute doesnt exist");
-            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k3", "1.sub", testJson), null, "Attribute exists but holds numbert");
-            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k4", "1.sub", testJson), null, "Attribute exists but holds dictionary");
-            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k5", "1.sub", testJson), "subvalue", "1st element is a string");
-            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k6", "1.sub", testJson), "55", "1st element is numerical");
-            assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k6", "missing", testJson), null, "1st element is missing");
-
-        } catch (JsonProcessingException e) {
-            fail("Exception thrown generating JSON for test");
-        }        
+    public void testGetTextValueOfFirstSubElement() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"1.sub\": \"subvalue\"}], \"1.k6\": [{\"1.sub\": 55}]}");  
+        assertEquals(JsonUtilities.getTextValueOfFirstSubElement("missing", "1.sub", testJson), null, "Attribute doesnt exist");
+        assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k3", "1.sub", testJson), null, "Attribute exists but holds numbert");
+        assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k4", "1.sub", testJson), null, "Attribute exists but holds dictionary");
+        assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k5", "1.sub", testJson), "subvalue", "1st element is a string");
+        assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k6", "1.sub", testJson), "55", "1st element is numerical");
+        assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k6", "missing", testJson), null, "1st element is missing");      
     }
     
     /**
