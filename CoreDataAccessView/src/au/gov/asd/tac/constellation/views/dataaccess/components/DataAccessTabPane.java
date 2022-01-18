@@ -165,7 +165,11 @@ public class DataAccessTabPane {
     public void newTab(final QueryPhasePane queryPane, final String tabCaption) {
         final Label label = new Label(tabCaption);
 
+        // This is only needed to make the unit test work because the `Tab` is mocked with mockConstruction.
+        // final Tab newTab = new Tab() fails the unit test.
         final Tab newTab = new Tab(tabCaption);
+        newTab.setText("");
+
         newTab.setGraphic(label);
 
         label.setOnMouseClicked(event -> labelClickEvent(newTab, label, event));
