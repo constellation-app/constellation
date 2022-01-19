@@ -44,11 +44,15 @@ public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
 
     public ColourCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
-        setGridContent();
 
-        // set action so that the rectangle changes to the selected colour
-        colourPicker.setOnAction(action -> colourRectangle.setFill(colourPicker.getValue()));
-        colorComboPicker.setOnAction(action -> colourRectangle.setFill(colourPicker.getValue()));
+        /**
+         * This creates a list of all the named constellation colours
+         */
+        final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList();
+        for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
+            namedColors.add(c);
+        }
+        colorComboPicker = new ComboBox<>(namedColors);
 
         /**
          * This listener updates the colour combo picker with the colour
@@ -72,17 +76,9 @@ public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
         });
 
         /**
-         * This creates a list of all the named constellation colours
-         */
-        final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList();
-        for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
-            namedColors.add(c);
-        }
-        /**
          * This takes all the colours within the named colours and updates the
          * item to contain a small rectangle representing of the said colour.
          */
-        colorComboPicker = new ComboBox<>(namedColors);
         final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
             @Override
             protected void updateItem(final ConstellationColor item, boolean empty) {
@@ -107,6 +103,13 @@ public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
                 colourPicker.setValue(newValue.getJavaFXColor());
             }
         });
+
+        // set action so that the rectangle changes to the selected colour
+        colourPicker.setOnAction(action -> colourRectangle.setFill(colourPicker.getValue()));
+        colorComboPicker.setOnAction(action -> colourRectangle.setFill(colourPicker.getValue()));
+
+        setGridContent();
+
     }
 
     /**
