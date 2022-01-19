@@ -23,15 +23,18 @@ import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
 import au.gov.asd.tac.constellation.views.find2.components.BasicFindTab;
 import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find2.components.FindViewTabs;
 import au.gov.asd.tac.constellation.views.find2.components.ReplaceTab;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.AdvancedCriteriaBorderPane;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -72,6 +75,9 @@ public class FindViewTopComponentNGTest {
     private BasicFindTab spyBasicFindTab;
     private ReplaceTab replaceTab;
     private ReplaceTab spyReplaceTab;
+    private AdvancedFindTab advancedFindTab;
+    private AdvancedFindTab spyAdvancedFindTab;
+    private List<AdvancedCriteriaBorderPane> criteriaPanesList;
     private static final Logger LOGGER = Logger.getLogger(FindViewTopComponentNGTest.class.getName());
 
     public FindViewTopComponentNGTest() {
@@ -260,7 +266,6 @@ public class FindViewTopComponentNGTest {
 //             */
 //            spyPane.setDisable(true);
 //            assertEquals(spyPane.isDisabled(), true);
-
 //            verify(spyTopComponent, times(2)).disableFindView();
         }
     }
@@ -319,6 +324,10 @@ public class FindViewTopComponentNGTest {
         when(spyBasicFindTab.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(spyTabs.getReplaceTab()).thenReturn(spyReplaceTab);
         when(spyReplaceTab.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(spyTabs.getAdvancedFindTab()).thenReturn(spyAdvancedFindTab);
+        when(spyAdvancedFindTab.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        criteriaPanesList = new ArrayList<>();
+        when(spyAdvancedFindTab.getCorrespondingCriteriaList(GraphElementType.VERTEX)).thenReturn(criteriaPanesList);
 
         // Make the functions not do nothing
         doNothing().when(spyBasicFindTab).saveSelected(Mockito.any());
@@ -355,13 +364,16 @@ public class FindViewTopComponentNGTest {
 
         basicFindTab = mock(BasicFindTab.class);
         replaceTab = mock(ReplaceTab.class);
+        advancedFindTab = mock(AdvancedFindTab.class);
         spyBasicFindTab = spy(basicFindTab);
         spyReplaceTab = spy(replaceTab);
+        spyAdvancedFindTab = spy(advancedFindTab);
 
         when(spyTopComponent.getFindViewPane()).thenReturn(spyPane);
         when(spyPane.getTabs()).thenReturn(spyTabs);
         when(spyTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
         when(spyTabs.getReplaceTab()).thenReturn(spyReplaceTab);
+        when(spyTabs.getAdvancedFindTab()).thenReturn(spyAdvancedFindTab);
 
     }
 
