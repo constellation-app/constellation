@@ -30,7 +30,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -39,8 +38,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -174,19 +171,6 @@ public class DataAccessTabPane {
 
         label.setOnMouseClicked(event -> labelClickEvent(newTab, label, event));
 
-        // Get a copy of the existing on closed handler. When a tab is closed,
-        // it will be called after the tab names are corrected and updated.
-        final Optional<EventHandler<Event>> origOnClose
-                = Optional.ofNullable(newTab.getOnClosed());
-        newTab.setOnClosed(event -> {
-            int queryNum = 1;
-            for (Tab tab : getTabPane().getTabs()) {
-                tab.setText(String.format(TAB_TITLE, queryNum));
-                queryNum++;
-            }
-
-            origOnClose.ifPresent(handler -> handler.handle(event));
-        });
 
         // Create a context menu for the new tab and add it
         final TabContextMenu tabContextMenu = new TabContextMenu(this, newTab);
@@ -228,7 +212,7 @@ public class DataAccessTabPane {
         getTabPane().getTabs().add(newTab);
     }
 
-    private void labelClickEvent(final Tab tab, final Label label, final MouseEvent event) {
+    protected void labelClickEvent(final Tab tab, final Label label, final MouseEvent event) {
         if (event.getClickCount() == DOUBLE_CLICK_COUNT) {
             final TextField field = new TextField(label.getText());
             field.setOnAction(e -> {

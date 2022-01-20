@@ -50,11 +50,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -88,6 +90,7 @@ import org.testng.annotations.Test;
  */
 public class DataAccessTabPaneNGTest {
     private static final Logger LOGGER = Logger.getLogger(DataAccessTabPaneNGTest.class.getName());
+    private static final String newStepCaption = "New Caption - Step 1";
     
     private DataAccessViewTopComponent topComponent;
     private DataAccessPane dataAccessPane;
@@ -160,7 +163,7 @@ public class DataAccessTabPaneNGTest {
             verify(dataAccessTabPane).newTab(pane, "Step 1");
         }
     }
-    
+
     @Test
     public void newTab_provide_query_pane() {
         verifyNewTab(true, true, true, false, true);
@@ -174,6 +177,30 @@ public class DataAccessTabPaneNGTest {
         verifyNewTab(false, true, false, false, false);
         
         verifyNewTab(false, false, false, false, false);
+    }
+
+    @Test
+    public void newTab_name_specified() {
+        try (final MockedConstruction<QueryPhasePane> mockedQueryPhasePane
+                = Mockito.mockConstruction(QueryPhasePane.class, (queryPhasePaneMock, cntxt) -> {
+                    final List<Object> expectedArgs = new ArrayList<>();
+                    expectedArgs.add(plugins);
+                    expectedArgs.add(dataAccessPane);
+                    expectedArgs.add(null);
+
+                    assertEquals(cntxt.arguments(), expectedArgs);
+                })) {
+            doNothing().when(dataAccessTabPane).newTab(any(QueryPhasePane.class), any(String.class));
+
+            final QueryPhasePane pane = dataAccessTabPane.newTab("new name");
+
+            assertNotNull(pane);
+
+            assertEquals(mockedQueryPhasePane.constructed().size(), 1);
+            assertSame(mockedQueryPhasePane.constructed().get(0), pane);
+
+            verify(dataAccessTabPane).newTab(pane, "new name");
+        }
     }
 
     @Test
@@ -817,8 +844,6 @@ public class DataAccessTabPaneNGTest {
                               final boolean expectPluginDependentMenuItemsEnabled) {
         final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
         
-        final EventHandler<Event> onCloseEventHandler = mock(EventHandler.class);
-        
         final MenuItem runMenuItem = mock(MenuItem.class);
         final MenuItem runFromHereMenuItem = mock(MenuItem.class);
         final MenuItem runToHereMenuItem = mock(MenuItem.class);
@@ -850,13 +875,18 @@ public class DataAccessTabPaneNGTest {
                 final MockedConstruction<Tab> mockedTab =
                         Mockito.mockConstruction(Tab.class, (tabMock, cntxt) -> {
                             final List<Object> expectedArgs = new ArrayList<>();
-                            expectedArgs.add("Step 1");
+                            expectedArgs.add(newStepCaption);
 
                             assertEquals(cntxt.arguments(), expectedArgs);
 
-                            when(tabMock.getOnClosed()).thenReturn(onCloseEventHandler);
-                });
-                
+
+                }); //  Intercept the Label creation and insert our own mock
+                 final MockedConstruction<Label> mockedLabel = Mockito.mockConstruction(Label.class, (labelMock, cntxt) -> {
+                    final List<Object> expectedArgs = new ArrayList<>();
+                    expectedArgs.add(newStepCaption);
+
+                     assertEquals(cntxt.arguments(), expectedArgs);
+                });                
                 // When a tab is created, it is given a new context menu. We want to intercept
                 // that creation and insert our own mock
                 final MockedConstruction<TabContextMenu> mockedTabContextMenu =
@@ -894,11 +924,13 @@ public class DataAccessTabPaneNGTest {
                     .thenReturn(tabHasEnabledPlugins);
             when(executeButton.isDisabled()).thenReturn(isExecuteButtonDisabled);
 
-            dataAccessTabPane.newTab(queryPhasePane, "Step 1");
+            dataAccessTabPane.newTab(queryPhasePane, newStepCaption);
+
             
             // Verify the tab and context menus were created
             assertEquals(mockedTab.constructed().size(), 1);
             assertEquals(mockedTabContextMenu.constructed().size(), 1);
+            assertEquals(mockedLabel.constructed().size(), 1);
 
             // Verify that the context menu was created correctly
             final TabContextMenu newTabContextMenu = mockedTabContextMenu.constructed().get(0);
@@ -911,6 +943,10 @@ public class DataAccessTabPaneNGTest {
             
             // Verify that the tab was created correctly
             final Tab newTab = mockedTab.constructed().get(0);
+
+            // Verify that the label was created correctly
+            final Label newLabel = mockedLabel.constructed().get(0);
+
             
             verify(newTab).setContextMenu(contextMenu);
             verify(newTab).setClosable(true);
@@ -931,17 +967,16 @@ public class DataAccessTabPaneNGTest {
 
             // Verify that the tab pane has the correct tabs
             assertEquals(tabs, FXCollections.observableArrayList(newTab));
-            
-            // Verify the on close event for the new tab behaves as expected
-            final ArgumentCaptor<EventHandler<Event>> onCloseCaptor =
-                    ArgumentCaptor.forClass(EventHandler.class);
-            verify(newTab).setOnClosed(onCloseCaptor.capture());
-            
-            final Event event = mock(Event.class);
-            onCloseCaptor.getValue().handle(event);
-            
-            verify(newTab).setText("Step 1");
-            verify(onCloseEventHandler).handle(event);
+
+            // Verify the on Mouse Clicked event for the new Label behaves as expected
+            final ArgumentCaptor<EventHandler<Event>> onClickCaptor
+                    = ArgumentCaptor.forClass(EventHandler.class);
+            verify(newLabel).setOnMouseClicked(onClickCaptor.capture());
+
+            final MouseEvent clickEvent = mock(MouseEvent.class);
+            onClickCaptor.getValue().handle(clickEvent);
+
+            verify(dataAccessTabPane).labelClickEvent(newTab, newLabel, clickEvent);
         }
     }
 }
