@@ -240,8 +240,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
      * preferred length and give the rest to the bars.**
      */
     private void calculateTextAndBarLength(Graphics g, int padding) {
-        int parentWidth = getParent().getWidth();
-        int preferredTextWidth = getPreferredTextWidth(g);
+        final int parentWidth = getParent().getWidth();
+        final int preferredTextWidth = getPreferredTextWidth(g);
 
         if (parentWidth < LEFT_MARGIN + padding + MINIMUM_TEXT_WIDTH + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
             textWidth = MINIMUM_TEXT_WIDTH;
