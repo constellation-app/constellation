@@ -24,6 +24,8 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author cygnus_x-1
  */
 public class GaussianBlur {
+    
+    private static final String TARGET_SMALLER_THAN_SOURCE = "Target channel is smaller than source channel.";
 
     protected static final int[] RAINBOW = {
         0x0034f8, 0x0037f6, 0x003af3, 0x003df0, 0x003fed, 0x0041ea, 0x0044e7, 0x0046e4,
@@ -82,7 +84,7 @@ public class GaussianBlur {
                     }
                 }
             } else {
-                throw new IllegalArgumentException("Target channel is smaller than source channel.");
+                throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
             }
         } else {
             throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
@@ -122,7 +124,7 @@ public class GaussianBlur {
                     tempChannel = targetChannel;
                 }
             } else {
-                throw new IllegalArgumentException("Target channel is smaller than source channel.");
+                throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
             }
         } else {
             throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
@@ -281,7 +283,7 @@ public class GaussianBlur {
                     targetChannel[i] = GaussianBlur.RAINBOW[paletteIndex] + (alpha << 24);
                 }
             } else {
-                throw new IllegalArgumentException("Target channel is smaller than source channel.");
+                throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
             }
         } else {
             throw new IllegalArgumentException("Threshold must be a value between 0 and 255");
