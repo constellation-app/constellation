@@ -103,12 +103,11 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
     }
 
     /**
-     * This function updates the attribute list based on the with the attributes
-     * present for the specific graph element type passed in. It is called when
-     * the updateUI function is called in the topComponent. It saves the
-     * currently selected attribute, clears the list, gets all the attributes
-     * again, repopulates the list, then selects the previously selected
-     * attribute.
+     * This function updates the attribute list with the attributes present for
+     * the specific graph element type passed in. It is called when the updateUI
+     * function is called in the topComponent. It saves the currently selected
+     * attribute, clears the list, gets all the attributes again, repopulates
+     * the list, then selects the previously selected attribute.
      *
      * @param type
      */

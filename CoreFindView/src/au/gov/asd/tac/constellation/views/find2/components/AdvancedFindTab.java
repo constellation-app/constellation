@@ -321,7 +321,6 @@ public class AdvancedFindTab extends Tab {
                             return;
                         }
                     }
-
                 }
             }
         }
@@ -440,8 +439,8 @@ public class AdvancedFindTab extends Tab {
      * and searchNext = false;
      */
     public void findAllAction() {
-        if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()))).isEmpty()) {
-            updateAdvancedSearchParameters(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+        if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
+            updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             FindViewController.getDefault().retrieveAdvancedSearch(true, false);
         }
     }
@@ -452,8 +451,8 @@ public class AdvancedFindTab extends Tab {
      * and searchNext = true;
      */
     public void findNextAction() {
-        if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()))).isEmpty()) {
-            updateAdvancedSearchParameters(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+        if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
+            updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             FindViewController.getDefault().retrieveAdvancedSearch(false, true);
         }
     }
@@ -464,8 +463,8 @@ public class AdvancedFindTab extends Tab {
      * and searchNext = false;
      */
     public void findPreviousAction() {
-        if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()))).isEmpty()) {
-            updateAdvancedSearchParameters(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+        if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
+            updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             FindViewController.getDefault().retrieveAdvancedSearch(false, false);
         }
     }
@@ -479,7 +478,39 @@ public class AdvancedFindTab extends Tab {
         return lookForChoiceBox;
     }
 
+    public ChoiceBox<String> getCurrentSelectionChoiceBox() {
+        return currentSelectionChoiceBox;
+    }
+
+    public List<AdvancedCriteriaBorderPane> getNodeFindCriteriaList() {
+        return nodeFindCriteriaList;
+    }
+
+    public List<AdvancedCriteriaBorderPane> getTransactionFindCriteriaList() {
+        return transactionFindCriteriaList;
+    }
+
     public Button getAddButton() {
         return addCriteriaPaneButton;
+    }
+
+    public Button getFindNextButton() {
+        return findNextButton;
+    }
+
+    public Button getFindPrevButton() {
+        return findPrevButton;
+    }
+
+    public Button getFindAllButton() {
+        return findAllButton;
+    }
+
+    public CheckBox getSearchAllGraphs() {
+        return searchAllGraphs;
+    }
+
+    public ChoiceBox<String> getMatchCriteriaChoiceBox() {
+        return matchCriteriaChoiceBox;
     }
 }
