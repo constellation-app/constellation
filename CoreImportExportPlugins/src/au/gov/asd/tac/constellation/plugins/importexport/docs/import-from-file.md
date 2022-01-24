@@ -67,7 +67,12 @@ Add files to import using the <img src="../constellation/CoreImportExportPlugins
 Button" />
 and remove a file using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/minus_coloured.png" alt="Remove File
 Button" />.
-Once a file has been selected, the full name will appear. If the entire
+
+All the files that are being added should have the same column structure. When the "Files Include Headers" option is enabled, the column headings of all 
+the files should be the same. When it is disabled, the number of columns should be the same. Otherwise a warning message is displayed and the files with 
+a different structure to the first file added are removed.
+
+Once a file has been added, the full name will appear. If the entire
 file location is not visible, extend the window to see the full name.
 
 Once you add a file, the Configuration section will display the first

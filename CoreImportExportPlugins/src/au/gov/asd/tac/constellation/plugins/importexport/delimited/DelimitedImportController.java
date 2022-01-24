@@ -55,7 +55,7 @@ public class DelimitedImportController extends ImportController {
     private static final Logger LOGGER = Logger.getLogger(DelimitedImportController.class.getName());
 
     private final RefreshRequest refreshRequest = this::updateSampleData;
-    private final List<File> files;
+    protected final List<File> files;
     private File sampleFile;
     private ImportFileParser importFileParser;
     private boolean filesIncludeHeaders;
@@ -220,41 +220,41 @@ public class DelimitedImportController extends ImportController {
         }
     }
 
-    private void notifyFileStructureMismatchWarning(final List<File> filesToRemove) {
-        final StringBuilder warningMsg = new StringBuilder((filesToRemove.size() > 1 ? "These files have" : "This file has")
-                + " a different structure and will be deleted: " + SeparatorConstants.NEWLINE);
+    protected void notifyFileStructureMismatchWarning(final List<File> filesToRemove) {
+        final StringBuilder warningMsg = new StringBuilder((filesToRemove.size() > 1 ? "These files have" : "This file has"))
+                .append(" a different structure and will be deleted: ").append(SeparatorConstants.NEWLINE);
 
-        filesToRemove.forEach(file -> warningMsg.append(file.getPath() + SeparatorConstants.NEWLINE));
+        filesToRemove.forEach(file -> warningMsg.append(file.getPath()).append(SeparatorConstants.NEWLINE));
 
         LOGGER.log(Level.INFO, "Header structure mismatch. These files will be removed: {0}", filesToRemove);
 
         NotifyDisplayer.displayAlert("Header structure mismatch", "The header structure of the files should be the same", "If the `Files Include Headers` "
-                + "option is disabled the number of columns should be the same. Otherwise the column headers should be the same in the same order. "
+                + "option is disabled, the number of columns should be the same. Otherwise the column headers should be the same, in the same order. "
                 + SeparatorConstants.NEWLINE + warningMsg,
                 Alert.AlertType.WARNING);
     }
 
     public List<String> getColumnHeaders(final File file) {
-        final List<String> strArray = new ArrayList<>();
-        try (final BufferedReader brTest = new BufferedReader(new FileReader(file))) {
-            final String text = brTest.readLine();
-            strArray.addAll(Arrays.asList(text.split(",")));
+        final List<String> headersArray = new ArrayList<>();
+        try (final BufferedReader bufferReader = new BufferedReader(new FileReader(file))) {
+            final String headerLine = bufferReader.readLine();
+            headersArray.addAll(Arrays.asList(headerLine.split(SeparatorConstants.COMMA)));
 
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, ex.getMessage(), ex);
         }
-        return strArray;
+        return headersArray;
     }
 
     // Iterates over files and do a check to make sure that file structure is the same.
     // If the `Files Include Headers` option is disabled the number of columns should be the same.
     // Otherwise the column headers should be the same in the same order.
-    public void validateFileStructure(final List<File> filesToValidate) {
+    public List<File> validateFileStructure(final List<File> filesToValidate) {
         List<File> invalidFiles = new ArrayList<>();
 
-        if (files.size() == 1) {
+        if (files.size() <= 1) {
             // There's only one file, nothing to compare
-            return;
+            return invalidFiles;
         }
 
         for (final File file : filesToValidate) {
@@ -277,6 +277,7 @@ public class DelimitedImportController extends ImportController {
                 ((DelimitedSourcePane) importPane.getSourcePane()).removeFile(fileToRemove);
             }
         }
+        return invalidFiles;
     }
 
     public void setImportFileParser(final ImportFileParser importFileParser) {
