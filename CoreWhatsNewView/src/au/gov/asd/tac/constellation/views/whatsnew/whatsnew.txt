@@ -7,6 +7,9 @@ When the 'Files Include Headers' option is enabled, the column headings of all t
 the number of columns should be the same. Otherwise a warning message is displayed and the files with a different structure to the 
 first file added are removed.</p>
 
+== 2021-12-16 Quality Control Categories
+<p>The dialog to change the Quality Control category levels will now show when the level is different from the default.</p>
+
 == 2021-11-23 Context Menu
 <p>The right-click context menu in the graph window has been updated to include Selection and Reset View options.</p>
 

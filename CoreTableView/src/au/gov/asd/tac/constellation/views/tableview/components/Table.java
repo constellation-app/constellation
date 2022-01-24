@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.components;
 
-import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -30,6 +29,7 @@ import au.gov.asd.tac.constellation.views.tableview.api.Column;
 import au.gov.asd.tac.constellation.views.tableview.factory.TableCellFactory;
 import au.gov.asd.tac.constellation.views.tableview.listeners.SelectedOnlySelectionListener;
 import au.gov.asd.tac.constellation.views.tableview.listeners.TableSelectionListener;
+import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview.tasks.UpdateColumnsTask;
 import au.gov.asd.tac.constellation.views.tableview.tasks.UpdateDataTask;
@@ -535,21 +535,26 @@ public class Table {
                     .getInteraction(column.getAttribute().getAttributeType());
 
             final Object attributeValue;
-            switch (column.getAttributeNamePrefix()) {
-                case GraphRecordStoreUtilities.SOURCE:
-                    final int sourceVertexId = readableGraph.getTransactionSourceVertex(transactionId);
-                    attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
-                    break;
-                case GraphRecordStoreUtilities.TRANSACTION:
-                    attributeValue = readableGraph.getObjectValue(attributeId, transactionId);
-                    break;
-                case GraphRecordStoreUtilities.DESTINATION:
-                    final int destinationVertexId = readableGraph.getTransactionDestinationVertex(transactionId);
-                    attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
-                    break;
-                default:
-                    attributeValue = null;
+            if (attributeId != Graph.NOT_FOUND) {
+                switch (column.getAttributeNamePrefix()) {
+                    case GraphRecordStoreUtilities.SOURCE:
+                        final int sourceVertexId = readableGraph.getTransactionSourceVertex(transactionId);
+                        attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
+                        break;
+                    case GraphRecordStoreUtilities.TRANSACTION:
+                        attributeValue = readableGraph.getObjectValue(attributeId, transactionId);
+                        break;
+                    case GraphRecordStoreUtilities.DESTINATION:
+                        final int destinationVertexId = readableGraph.getTransactionDestinationVertex(transactionId);
+                        attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
+                        break;
+                    default:
+                        attributeValue = null;
+                }
+            } else {
+                attributeValue = null;
             }
+            
             // avoid duplicate strings objects and make a massivse saving on memory use
             final String displayableValue = displayTextCache.deduplicate(interaction.getDisplayText(attributeValue));
             rowData.add(displayableValue);
