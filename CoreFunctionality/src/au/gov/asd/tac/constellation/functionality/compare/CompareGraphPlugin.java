@@ -57,6 +57,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.codec.binary.StringUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.IOProvider;
@@ -102,6 +103,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
 
     // messages
     private static final String GRAPH_NOT_FOUND_ERROR = "Graph %s not found.";
+    private static final String GRAPH_COMPARED_WITH_ITSELF_WARNING = "Warning: Graph %s was compared with another graph with the same name or itself. Consider renaming before continuing.";
 
     @Override
     public PluginParameters createParameters() {
@@ -249,6 +251,11 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
 
         if (compareGraph == null) {
             throw new PluginException(PluginNotificationLevel.ERROR, String.format(GRAPH_NOT_FOUND_ERROR, compareGraphName));
+        }
+        
+        // Throw a pluginException to warn the user that the names of both graphs are the same.
+        if (StringUtils.equals(originalGraphName, compareGraphName)) {
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(GRAPH_COMPARED_WITH_ITSELF_WARNING, compareGraphName));
         }
 
         final GraphRecordStore originalAll;
