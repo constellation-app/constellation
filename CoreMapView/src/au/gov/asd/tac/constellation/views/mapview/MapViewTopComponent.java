@@ -382,7 +382,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         switch (geoType) {
             case GEO_TYPE_COORDINATE:
                 final String[] coordinate = location.split("[,\\s]+");
-                if (!(coordinate.length == 2 || coordinate.length == 3)) {
+                if (coordinate.length != 2 && coordinate.length != 3) {
                     NotifyDisplayer.display("Invalid coordinate syntax provided, should be comma or space separated", NotifyDescriptor.ERROR_MESSAGE);
                     return;
                 }
@@ -401,15 +401,15 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                     NotifyDisplayer.display("Invalid coordinate data provided, latitude and longitude should be numbers", NotifyDescriptor.ERROR_MESSAGE);
                     return;
                 }
-                if (!(latitude > -90F && latitude < 90F)) {
+                if (latitude <= -90F || latitude >= 90F) {
                     NotifyDisplayer.display("Invalid coordinate data provided, latitude should be in the range [-90. 90]", NotifyDescriptor.ERROR_MESSAGE);
                     return;
                 }
-                if (!(longitude > -180F && longitude < 180F)) {
+                if (longitude <= -180F || longitude >= 180F) {
                     NotifyDisplayer.display("Invalid coordinate data provided, longitude should be in the range [-180, 180]", NotifyDescriptor.ERROR_MESSAGE);
                     return;
                 }
-                if (!(radius >= 0F)) {
+                if (radius < 0F) {
                     NotifyDisplayer.display("Invalid coordinate data provided, radius should be greater than or equal to 0", NotifyDescriptor.ERROR_MESSAGE);
                     return;
                 }
