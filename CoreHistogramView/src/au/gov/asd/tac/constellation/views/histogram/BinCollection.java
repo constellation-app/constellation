@@ -63,7 +63,7 @@ public class BinCollection {
     public Bin[] getSelectedBins() {
         final List<Bin> selectedBins = new ArrayList<>();
         int count = 0;
-        for(final Bin bin : bins){
+        for(final Bin bin : getBins()){
             if(bin.selectedCount > 0){
                 count++;
                 selectedBins.add(bin);
