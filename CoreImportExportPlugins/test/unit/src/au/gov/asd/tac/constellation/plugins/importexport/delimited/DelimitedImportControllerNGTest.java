@@ -117,12 +117,12 @@ public class DelimitedImportControllerNGTest {
         System.out.println("validateFileStructure");
         final List<File> filesToValidate = new ArrayList<>();
         final File file = new File(this.getClass().getResource("./resources/testCSV.CSV").getFile());
-//hhh
+
         delimitedImportController.setFiles(filesToValidate, file);
-        assertEquals(delimitedImportController.files.size(), 0);
+        assertEquals(delimitedImportController.getFiles().size(), 0);
         List<File> invalidFiles = delimitedImportController.validateFileStructure(filesToValidate);
         assertTrue(invalidFiles.isEmpty());
-        assertTrue(delimitedImportController.files.isEmpty());
+        assertTrue(delimitedImportController.getFiles().isEmpty());
     }
 
     /**
@@ -137,10 +137,10 @@ public class DelimitedImportControllerNGTest {
         filesToValidate.add(file);
 
         delimitedImportController.setFiles(filesToValidate, file);
-        assertEquals(delimitedImportController.files.size(), 1);
+        assertEquals(delimitedImportController.getFiles().size(), 1);
         List<File> invalidFiles = delimitedImportController.validateFileStructure(filesToValidate);
         assertTrue(invalidFiles.isEmpty());
-        assertEquals(delimitedImportController.files.size(), 1);
+        assertEquals(delimitedImportController.getFiles().size(), 1);
     }
 
     /**
@@ -153,11 +153,11 @@ public class DelimitedImportControllerNGTest {
         final File file = new File(this.getClass().getResource("./resources/testCSV.CSV").getFile());
 
         delimitedImportController.setFiles(filesToValidate, file);
-        assertEquals(delimitedImportController.files.size(), 4);
+        assertEquals(delimitedImportController.getFiles().size(), 4);
         List<File> invalidFiles = delimitedImportController.validateFileStructure(filesToValidate);
 
         assertEquals(invalidFiles.size(), 2);
-        assertEquals(delimitedImportController.files.size(), 2);
+        assertEquals(delimitedImportController.getFiles().size(), 2);
     }
 
     /**
@@ -171,11 +171,11 @@ public class DelimitedImportControllerNGTest {
 
         delimitedImportController.setfilesIncludeHeaders(false);
         delimitedImportController.setFiles(filesToValidate, file);
-        assertEquals(delimitedImportController.files.size(), 4);
+        assertEquals(delimitedImportController.getFiles().size(), 4);
         List<File> invalidFiles = delimitedImportController.validateFileStructure(filesToValidate);
 
         assertEquals(invalidFiles.size(), 1);
-        assertEquals(delimitedImportController.files.size(), 3);
+        assertEquals(delimitedImportController.getFiles().size(), 3);
     }
 
 }

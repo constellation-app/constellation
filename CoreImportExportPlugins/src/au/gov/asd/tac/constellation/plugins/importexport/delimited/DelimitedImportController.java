@@ -55,7 +55,8 @@ public class DelimitedImportController extends ImportController {
     private static final Logger LOGGER = Logger.getLogger(DelimitedImportController.class.getName());
 
     private final RefreshRequest refreshRequest = this::updateSampleData;
-    protected final List<File> files;
+    private final List<File> files;
+
     private File sampleFile;
     private ImportFileParser importFileParser;
     private boolean filesIncludeHeaders;
@@ -81,6 +82,10 @@ public class DelimitedImportController extends ImportController {
             updateSampleData();
             validateFileStructure(files);
         }
+    }
+
+    public List<File> getFiles() {
+        return files;
     }
 
     public boolean isFilesIncludeHeadersEnabled() {

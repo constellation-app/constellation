@@ -2,7 +2,7 @@
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
 == 2022-01-21 File Importer
-<p>File Importer enforces all files that are being added have the same column structure which allows the mapping makes sense across all files. 
+<p>File Importer enforces all files that are being added have the same column structure. 
 When the 'Files Include Headers' option is enabled, the column headings of all the files should be the same. When it is disabled, 
 the number of columns should be the same. Otherwise a warning message is displayed and the files with a different structure to the 
 first file added are removed.</p>
