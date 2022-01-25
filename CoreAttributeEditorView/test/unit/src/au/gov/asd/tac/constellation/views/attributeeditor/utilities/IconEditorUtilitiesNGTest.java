@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
  */
 public class IconEditorUtilitiesNGTest {
 
-    private static MockedStatic<IconEditorUtilities> iconEditorUtilitiesMockStatic;
+    private static MockedStatic<IconEditorUtilities> iconEditorUtilitiesStaticMock;
     private static File pathMock;
     private static File folderMock;
 
@@ -53,14 +53,14 @@ public class IconEditorUtilitiesNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        iconEditorUtilitiesMockStatic = Mockito.mockStatic(IconEditorUtilities.class);
+        iconEditorUtilitiesStaticMock = Mockito.mockStatic(IconEditorUtilities.class);
         pathMock = Mockito.mock(File.class);
         folderMock = Mockito.mock(File.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        iconEditorUtilitiesMockStatic.close();
+        iconEditorUtilitiesStaticMock.close();
     }
 
     /**
@@ -72,8 +72,8 @@ public class IconEditorUtilitiesNGTest {
     public void testPngWalk_File() throws Exception {
         System.out.println("testPngWalk_File");
 
-        iconEditorUtilitiesMockStatic.when(() -> IconEditorUtilities.pngWalk(Mockito.any(File.class))).thenCallRealMethod();
-        iconEditorUtilitiesMockStatic.when(() -> IconEditorUtilities.pngWalk(Mockito.any(File.class), Mockito.eq(new ArrayList<>()))).thenCallRealMethod();
+        iconEditorUtilitiesStaticMock.when(() -> IconEditorUtilities.pngWalk(Mockito.any(File.class))).thenCallRealMethod();
+        iconEditorUtilitiesStaticMock.when(() -> IconEditorUtilities.pngWalk(Mockito.any(File.class), Mockito.eq(new ArrayList<>()))).thenCallRealMethod();
 
         // When path is null.
         final File path1 = null;
@@ -108,7 +108,7 @@ public class IconEditorUtilitiesNGTest {
     public void testPngWalk_File_List() throws Exception {
         System.out.println("testPngWalk_File_List");
 
-        iconEditorUtilitiesMockStatic.when(() -> IconEditorUtilities.pngWalk(Mockito.any(File.class), Mockito.eq(new ArrayList<>()))).thenCallRealMethod();
+        iconEditorUtilitiesStaticMock.when(() -> IconEditorUtilities.pngWalk(Mockito.any(File.class), Mockito.eq(new ArrayList<>()))).thenCallRealMethod();
 
         // When path is null;
         final File path1 = null;

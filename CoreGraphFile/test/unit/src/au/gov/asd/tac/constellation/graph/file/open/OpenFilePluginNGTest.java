@@ -22,11 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
 import org.openide.filesystems.FileChooserBuilder;
+import org.testfx.api.FxToolkit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -40,6 +44,8 @@ import org.testng.annotations.Test;
  */
 public class OpenFilePluginNGTest {
 
+    private static final Logger LOGGER = Logger.getLogger(OpenFilePluginNGTest.class.getName());
+
     private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<OpenFile> openFileStaticMock;
 
@@ -48,10 +54,18 @@ public class OpenFilePluginNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod

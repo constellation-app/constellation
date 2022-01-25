@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
  */
 public class ExportToGeoPackagePluginNGTest {
 
-    private static MockedStatic<Shape> shapeMockStatic;
+    private static MockedStatic<Shape> shapeStaticMock;
     private static PluginParameters parametersMock;
     private static Map<String, String> shapesMock;
     private static Map<String, Map<String, Object>> attributesMock;
@@ -56,7 +56,7 @@ public class ExportToGeoPackagePluginNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        shapeMockStatic = Mockito.mockStatic(Shape.class);
+        shapeStaticMock = Mockito.mockStatic(Shape.class);
         parametersMock = Mockito.mock(PluginParameters.class);
         shapesMock = Mockito.mock(Map.class);
         attributesMock = Mockito.mock(Map.class);
@@ -66,7 +66,7 @@ public class ExportToGeoPackagePluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        shapeMockStatic.close();
+        shapeStaticMock.close();
     }
 
     /**
@@ -91,7 +91,7 @@ public class ExportToGeoPackagePluginNGTest {
 
         instance.exportGeo(parameters, uuid, shapes, attributes, output);
 
-        shapeMockStatic.verify(() -> Shape.generateGeoPackage(uuid, shapes, attributes, output, spatialReferenceMock));
+        shapeStaticMock.verify(() -> Shape.generateGeoPackage(uuid, shapes, attributes, output, spatialReferenceMock));
     }
 
     /**

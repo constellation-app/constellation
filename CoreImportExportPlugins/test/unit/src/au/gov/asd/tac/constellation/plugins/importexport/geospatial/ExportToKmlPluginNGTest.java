@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
  */
 public class ExportToKmlPluginNGTest {
 
-    private static MockedStatic<Shape> shapeMockStatic;
+    private static MockedStatic<Shape> shapeStaticMock;
     private static PluginParameters parametersMock;
     private static Map<String, String> shapesMock;
     private static Map<String, Map<String, Object>> attributesMock;
@@ -54,7 +54,7 @@ public class ExportToKmlPluginNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        shapeMockStatic = Mockito.mockStatic(Shape.class);
+        shapeStaticMock = Mockito.mockStatic(Shape.class);
         parametersMock = Mockito.mock(PluginParameters.class);
         shapesMock = Mockito.mock(Map.class);
         attributesMock = Mockito.mock(Map.class);
@@ -62,7 +62,7 @@ public class ExportToKmlPluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        shapeMockStatic.close();
+        shapeStaticMock.close();
     }
 
     /**
@@ -84,7 +84,7 @@ public class ExportToKmlPluginNGTest {
 
         final String kml = "kml";
 
-        shapeMockStatic.when(() -> Shape.generateKml(uuid, shapes, attributes)).thenReturn(kml);
+        shapeStaticMock.when(() -> Shape.generateKml(uuid, shapes, attributes)).thenReturn(kml);
 
         instance.exportGeo(parameters, uuid, shapes, attributes, output);
 
