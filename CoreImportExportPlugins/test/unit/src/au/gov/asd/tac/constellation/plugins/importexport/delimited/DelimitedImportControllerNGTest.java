@@ -119,7 +119,7 @@ public class DelimitedImportControllerNGTest {
         final File file = new File(this.getClass().getResource("./resources/testCSV.CSV").getFile());
 
         delimitedImportController.setFiles(filesToValidate, file);
-        assertEquals(delimitedImportController.getFiles().size(), 0);
+        assertTrue(delimitedImportController.getFiles().isEmpty());
         List<File> invalidFiles = delimitedImportController.validateFileStructure(filesToValidate);
         assertTrue(invalidFiles.isEmpty());
         assertTrue(delimitedImportController.getFiles().isEmpty());
