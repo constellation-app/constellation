@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-01-24 Histogram Bins Selected Count
+<p>The Histogram now shows the amount of bins selected out of the total bins present.</p>
+
 == 2022-01-21 File Importer
 <p>File Importer enforces all files that are being added have the same column structure. 
 When the 'Files Include Headers' option is enabled, the column headings of all the files should be the same. When it is disabled, 
