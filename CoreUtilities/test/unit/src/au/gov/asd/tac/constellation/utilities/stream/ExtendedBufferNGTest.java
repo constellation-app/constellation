@@ -60,7 +60,6 @@ public class ExtendedBufferNGTest {
         assertEquals(localBuffer.getAvailableSize(), 0);
     }
 
-
     /**
      * Test of getOutputStream method, of class ExtendedBuffer.
      */
@@ -96,13 +95,12 @@ public class ExtendedBufferNGTest {
         assertEquals(outBytes[bytes.length + 2], 0);
         assertEquals(outBytes[bytes.length + 3], -1);
     }
-
     
     /**
      * Test of getInputStream method, of class ExtendedBuffer.
      */
     @Test
-    public void testInputStream() throws Exception {
+    public void testInputStreamReadByte() throws Exception {
         
         ExtendedBuffer buffer = new ExtendedBuffer(size);
         OutputStream outputStream = buffer.getOutputStream();
@@ -117,12 +115,35 @@ public class ExtendedBufferNGTest {
             outputStream.close();
         }
         
-        // Ready the initial content out
+        // Ready the initial content out one byte at a time
         for (int i = 0; i < bytes.length; i++) {
             assertEquals(inputStream.read(), i + 65);
         }
-        
     }
+    
+    /**
+     * Test of getInputStream method, of class ExtendedBuffer.
+     */
+    @Test
+    public void testInputStreamReadArray() throws Exception {
+        
+        ExtendedBuffer buffer = new ExtendedBuffer(size);
+        OutputStream outputStream = buffer.getOutputStream();
+        InputStream inputStream = buffer.getInputStream();
+
+        byte[] bytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".getBytes();
+        
+        // Populate data to write from inputStream
+        try {
+            outputStream.write(bytes, 0, bytes.length);
+        } finally {
+            outputStream.close();
+        }
+        
+        byte[] readBytes = new byte[21];
+        int result = inputStream.read(readBytes, 0, 21);
+    }
+
     /**
      * Test of getData method, of class ExtendedBuffer.
      */
