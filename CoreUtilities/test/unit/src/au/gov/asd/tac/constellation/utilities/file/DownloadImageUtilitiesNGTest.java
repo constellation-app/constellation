@@ -50,7 +50,7 @@ public class DownloadImageUtilitiesNGTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         System.setProperty("java.awt.headless", "true");
-        Toolkit tk = Toolkit.getDefaultToolkit();
+        Toolkit.getDefaultToolkit();
     }
 
     /**
