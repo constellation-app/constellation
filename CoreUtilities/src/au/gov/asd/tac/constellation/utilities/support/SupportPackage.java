@@ -101,7 +101,9 @@ public class SupportPackage {
      * @return A String of the directory the user log files are saved
      */
     public static String getUserLogDirectory() {
-        return String.format("%s%svar%slog", Places.getUserDirectory().getPath(), File.separator, File.separator);
+        final File userDir = Places.getUserDirectory() != null ? Places.getUserDirectory() : new File(System.getProperty("user.home"));
+
+        return String.format("%s%svar%slog", userDir.getPath(), File.separator, File.separator);
     }
 
     private String generateZipEntry(final String file, final String sourcePath) {
