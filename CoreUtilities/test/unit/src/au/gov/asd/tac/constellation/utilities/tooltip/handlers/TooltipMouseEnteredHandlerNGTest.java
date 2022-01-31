@@ -45,7 +45,6 @@ import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -69,15 +68,14 @@ public class TooltipMouseEnteredHandlerNGTest {
         }
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
+//    @AfterClass
+//    public static void tearDownClass() throws Exception {
 //        try {
 //            FxToolkit.cleanupStages();
 //        } catch (final TimeoutException ex) {
 //            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
 //        }
-    }
-
+//    }
     @BeforeMethod
     public void setUpMethod() throws Exception {
     }
