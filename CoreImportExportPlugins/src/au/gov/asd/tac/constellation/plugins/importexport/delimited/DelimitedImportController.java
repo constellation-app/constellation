@@ -32,15 +32,10 @@ import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,7 +52,6 @@ public class DelimitedImportController extends ImportController {
 
     private final RefreshRequest refreshRequest = this::updateSampleData;
     private final List<File> files;
-
     private File sampleFile;
     private ImportFileParser importFileParser;
     private boolean filesIncludeHeaders;
@@ -81,12 +75,7 @@ public class DelimitedImportController extends ImportController {
         if (this.filesIncludeHeaders != filesIncludeHeaders) {
             this.filesIncludeHeaders = filesIncludeHeaders;
             updateSampleData();
-            validateFileStructure(files);
         }
-    }
-
-    protected List<File> getFiles() {
-        return Collections.unmodifiableList(files);
     }
 
     public boolean isFilesIncludeHeadersEnabled() {
@@ -224,66 +213,6 @@ public class DelimitedImportController extends ImportController {
             }
             configurationPane.setSampleData(currentColumns, currentData);
         }
-    }
-
-    protected void notifyFileStructureMismatchWarning(final List<File> filesToRemove) {
-        final StringBuilder warningMsg = new StringBuilder((filesToRemove.size() > 1 ? "These files have" : "This file has"))
-                .append(" a different structure and will be deleted: ").append(SeparatorConstants.NEWLINE);
-
-        filesToRemove.forEach(file -> warningMsg.append(file.getPath()).append(SeparatorConstants.NEWLINE));
-
-        LOGGER.log(Level.INFO, "Header structure mismatch. These files will be removed: {0}", filesToRemove);
-
-        NotifyDisplayer.displayAlert("Header structure mismatch", "The header structure of the files should be the same", "If the `Files Include Headers` "
-                + "option is disabled, the number of columns should be the same. Otherwise the column headers should be the same, in the same order. "
-                + SeparatorConstants.NEWLINE + warningMsg,
-                Alert.AlertType.WARNING);
-    }
-
-    public List<String> getColumnHeaders(final File file) {
-        final List<String> headersArray = new ArrayList<>();
-        try (final BufferedReader bufferReader = new BufferedReader(new FileReader(file))) {
-            final String headerLine = bufferReader.readLine();
-            headersArray.addAll(Arrays.asList(headerLine.split(SeparatorConstants.COMMA)));
-
-        } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, ex.getMessage(), ex);
-        }
-        return headersArray;
-    }
-
-    // Iterates over files and do a check to make sure that file structure is the same.
-    // If the `Files Include Headers` option is disabled the number of columns should be the same.
-    // Otherwise the column headers should be the same in the same order.
-    public List<File> validateFileStructure(final List<File> filesToValidate) {
-        List<File> invalidFiles = new ArrayList<>();
-
-        if (files.size() <= 1) {
-            // There's only one file, nothing to compare
-            return invalidFiles;
-        }
-
-        for (final File file : filesToValidate) {
-            final List<String> referenceColumns = getColumnHeaders(files.get(0));
-            final List<String> fileColumns = getColumnHeaders(file);
-
-            if (!isFilesIncludeHeadersEnabled()) {
-                if (referenceColumns.size() != fileColumns.size()) {
-                    invalidFiles.add(file);
-                }
-            } else if (!fileColumns.equals(referenceColumns)) {
-                invalidFiles.add(file);
-            }
-        }
-        if (!invalidFiles.isEmpty()) {
-            notifyFileStructureMismatchWarning(invalidFiles);
-
-            for (final File fileToRemove : invalidFiles) {
-                files.remove(fileToRemove);
-                ((DelimitedSourcePane) importPane.getSourcePane()).removeFile(fileToRemove);
-            }
-        }
-        return invalidFiles;
     }
 
     public void setImportFileParser(final ImportFileParser importFileParser) {

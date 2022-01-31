@@ -4,12 +4,6 @@
 == 2022-01-24 Histogram Bins Selected Count
 <p>The Histogram now shows the amount of bins selected out of the total bins present.</p>
 
-== 2022-01-21 File Importer
-<p>File Importer enforces all files that are being added have the same column structure. 
-When the 'Files Include Headers' option is enabled, the column headings of all the files should be the same. When it is disabled, 
-the number of columns should be the same. Otherwise a warning message is displayed and the files with a different structure to the 
-first file added are removed.</p>
-
 == 2021-12-16 Quality Control Categories
 <p>The dialog to change the Quality Control category levels will now show when the level is different from the default.</p>
 

@@ -209,7 +209,7 @@ public class DelimitedSourcePane extends SourcePane {
             final StringBuilder sb = new StringBuilder();
             final String alertText = "The following files could not be parsed and have been excluded from the import set:\n";
             sb.append(alertText);
-          
+
             newFiles.forEach(file -> {
                 // Iterate over files and attempt to parse/preview, if a failure is detected don't add the file to the set of files to import.
                 try {
@@ -238,24 +238,7 @@ public class DelimitedSourcePane extends SourcePane {
 
             final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
             importController.setFiles(files, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
-
-            importController.validateFileStructure(newFiles);
         }
-    }
-
-    private boolean fileAlreadyAdded(final File newFile) {
-        final ObservableList<File> files = fileListView.getItems();
-
-        for (final File file : files) {
-            try {
-                if (file.getCanonicalPath().equals(newFile.getCanonicalPath())) {
-                    return true;
-                }
-            } catch (final IOException ex) {
-                LOGGER.log(Level.WARNING, ex.getMessage(), ex);
-            }
-        }
-        return false;
     }
 
     /**
