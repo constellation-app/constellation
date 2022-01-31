@@ -21,8 +21,6 @@ import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Skin;
 import javafx.scene.control.TextArea;
@@ -66,9 +64,9 @@ public class TooltipMouseEnteredHandlerNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        if (!FxToolkit.isFXApplicationThreadRunning()) {
-//            FxToolkit.registerPrimaryStage();
-//        }
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
@@ -82,18 +80,10 @@ public class TooltipMouseEnteredHandlerNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (final TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
     }
 
     /**
