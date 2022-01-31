@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.gui;
 
 import java.awt.EventQueue;
-import java.awt.Toolkit;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -59,9 +58,6 @@ public class NotifyDisplayerNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        System.setProperty("java.awt.headless", "true");
-        Toolkit tk = Toolkit.getDefaultToolkit();
-
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
