@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -38,6 +39,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -145,11 +148,7 @@ public class DataAccessTabPane {
      */
     public QueryPhasePane newTab(final PluginParameters globalPrameters, final String tabCaption) {
         final QueryPhasePane pane = new QueryPhasePane(plugins, getDataAccessPane(), globalPrameters);
-        if (StringUtils.isBlank(tabCaption)) {
-            newTab(pane, String.format(TAB_TITLE, getTabPane().getTabs().size() + 1));
-        } else {
-            newTab(pane, tabCaption);
-        }
+        newTab(pane, tabCaption);
         return pane;
     }
     
@@ -161,16 +160,43 @@ public class DataAccessTabPane {
      */
     public void newTab(final QueryPhasePane queryPane, final String tabCaption) {
         final Label label = new Label(tabCaption);
+        String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().size() + 1);
 
         // This is only needed to make the unit test work because the `Tab` is mocked with mockConstruction.
         // final Tab newTab = new Tab() fails the unit test.
         final Tab newTab = new Tab(tabCaption);
-        newTab.setText("");
+        newTab.setText(null);
+
+        if (StringUtils.isBlank(tabCaption)) {
+            label.setText(defaultCaption);
+        } else {
+            if (!defaultCaption.equals(tabCaption.trim())) {
+                newTab.setText("- " + defaultCaption);
+            }
+        }
 
         newTab.setGraphic(label);
 
         label.setOnMouseClicked(event -> labelClickEvent(newTab, label, event));
 
+        // Get a copy of the existing on closed handler. When a tab is closed,
+        // it will be called after the tab names are corrected and updated.
+        final Optional<EventHandler<Event>> origOnClose
+                = Optional.ofNullable(newTab.getOnClosed());
+        newTab.setOnClosed(event -> {
+            int queryNum = 1;
+            for (Tab tab : getTabPane().getTabs()) {
+                if (tab.getText() == null) {
+                    Label currentDefaultCaption = (Label) tab.getGraphic();
+                    currentDefaultCaption.setText(String.format(TAB_TITLE, queryNum));
+                } else {
+                    tab.setText("- " + String.format(TAB_TITLE, queryNum));
+                }
+                queryNum++;
+            }
+
+            origOnClose.ifPresent(handler -> handler.handle(event));
+        });
 
         // Create a context menu for the new tab and add it
         final TabContextMenu tabContextMenu = new TabContextMenu(this, newTab);
@@ -215,17 +241,34 @@ public class DataAccessTabPane {
     protected void labelClickEvent(final Tab tab, final Label label, final MouseEvent event) {
         if (event.getClickCount() == DOUBLE_CLICK_COUNT) {
             final TextField field = new TextField(label.getText());
+
             field.setOnAction(e -> {
                 label.setText(field.getText());
                 tab.setGraphic(label);
             });
+
             field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
                     Boolean newValue) -> {
                 if (!newValue) {
-                    label.setText(field.getText());
+
+                    label.setText(field.getText().trim());
                     tab.setGraphic(label);
+                    String newDefaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().indexOf(tab) + 1);
+
+                    if (field.getText() == null || field.getText().trim().equals("")) {
+                        Label currentDefaultCaption = (Label) tab.getGraphic();
+                        currentDefaultCaption.setText(newDefaultCaption);
+                        tab.setText(null);
+
+                    } else if (field.getText().trim().equals(newDefaultCaption)) {
+                        tab.setText(null);
+                    } else {
+                        tab.setText("- " + newDefaultCaption);
+                    }
                 }
             });
+
+            field.setPromptText("Enter new name here");
             tab.setGraphic(field);
             field.selectAll();
             field.requestFocus();

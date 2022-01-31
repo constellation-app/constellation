@@ -160,7 +160,7 @@ public class DataAccessTabPaneNGTest {
             assertEquals(mockedQueryPhasePane.constructed().size(), 1);
             assertSame(mockedQueryPhasePane.constructed().get(0), pane);
             
-            verify(dataAccessTabPane).newTab(pane, "Step 1");
+            verify(dataAccessTabPane).newTab(pane, "");
         }
     }
 
@@ -843,6 +843,7 @@ public class DataAccessTabPaneNGTest {
                               final boolean expectGraphDependentMenuItemsEnabled,
                               final boolean expectPluginDependentMenuItemsEnabled) {
         final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
+        final EventHandler<Event> onCloseEventHandler = mock(EventHandler.class);
         
         final MenuItem runMenuItem = mock(MenuItem.class);
         final MenuItem runFromHereMenuItem = mock(MenuItem.class);
@@ -868,6 +869,8 @@ public class DataAccessTabPaneNGTest {
         
         when(dataAccessPane.getButtonToolbar()).thenReturn(buttonToolbar);
         when(buttonToolbar.getExecuteButtonTop()).thenReturn(executeButton);
+
+        final Label mockedLabel = mock(Label.class);
         
         try (
                 // In order to ensure the correct behaviour is applied to the new
@@ -878,14 +881,15 @@ public class DataAccessTabPaneNGTest {
                             expectedArgs.add(newStepCaption);
 
                             assertEquals(cntxt.arguments(), expectedArgs);
-
+                            when(tabMock.getOnClosed()).thenReturn(onCloseEventHandler);
+                            when(tabMock.getGraphic()).thenReturn(mockedLabel);
 
                 }); //  Intercept the Label creation and insert our own mock
-                 final MockedConstruction<Label> mockedLabel = Mockito.mockConstruction(Label.class, (labelMock, cntxt) -> {
+                 final MockedConstruction<Label> mockedConstructionLabel = Mockito.mockConstruction(Label.class, (labelMock, cntxt) -> {
                     final List<Object> expectedArgs = new ArrayList<>();
                     expectedArgs.add(newStepCaption);
 
-                     assertEquals(cntxt.arguments(), expectedArgs);
+                    assertEquals(cntxt.arguments(), expectedArgs);
                 });                
                 // When a tab is created, it is given a new context menu. We want to intercept
                 // that creation and insert our own mock
@@ -930,7 +934,7 @@ public class DataAccessTabPaneNGTest {
             // Verify the tab and context menus were created
             assertEquals(mockedTab.constructed().size(), 1);
             assertEquals(mockedTabContextMenu.constructed().size(), 1);
-            assertEquals(mockedLabel.constructed().size(), 1);
+            assertEquals(mockedConstructionLabel.constructed().size(), 1);
 
             // Verify that the context menu was created correctly
             final TabContextMenu newTabContextMenu = mockedTabContextMenu.constructed().get(0);
@@ -945,7 +949,7 @@ public class DataAccessTabPaneNGTest {
             final Tab newTab = mockedTab.constructed().get(0);
 
             // Verify that the label was created correctly
-            final Label newLabel = mockedLabel.constructed().get(0);
+            final Label newLabel = mockedConstructionLabel.constructed().get(0);
 
             
             verify(newTab).setContextMenu(contextMenu);
@@ -967,6 +971,18 @@ public class DataAccessTabPaneNGTest {
 
             // Verify that the tab pane has the correct tabs
             assertEquals(tabs, FXCollections.observableArrayList(newTab));
+
+            // Verify the on close event for the new tab behaves as expected
+            final ArgumentCaptor<EventHandler<Event>> onCloseCaptor
+                    = ArgumentCaptor.forClass(EventHandler.class);
+            verify(newTab).setOnClosed(onCloseCaptor.capture());
+
+            final Event event = mock(Event.class);
+            onCloseCaptor.getValue().handle(event);
+
+            verify(newTab).setText("- Step 1");
+            verify(onCloseEventHandler).handle(event);
+
 
             // Verify the on Mouse Clicked event for the new Label behaves as expected
             final ArgumentCaptor<EventHandler<Event>> onClickCaptor
