@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.tooltip.TooltipNode;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
-import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -67,9 +66,6 @@ public class TooltipMouseEnteredHandlerNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        System.setProperty("java.awt.headless", "true");
-        Toolkit tk = Toolkit.getDefaultToolkit();
-
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }

@@ -58,8 +58,7 @@ public class NotifyDisplayerNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        System.setProperty("java.awt.headless", "true");
-//        Toolkit tk = Toolkit.getDefaultToolkit();
+        System.setProperty("java.awt.headless", "true");
 
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
