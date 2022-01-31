@@ -120,7 +120,7 @@ public class ExtendedBuffer {
         if (inputBuffer != null) {
             final int bytesToCopy = inputBuffer.length - inputBuffer.position;
             if (bytesToCopy > 0) {
-                System.arraycopy(inputBuffer, inputBuffer.position, data, position, bytesToCopy);
+                System.arraycopy(inputBuffer.data, inputBuffer.position, data, position, bytesToCopy);
                 position += bytesToCopy;
             }
         }

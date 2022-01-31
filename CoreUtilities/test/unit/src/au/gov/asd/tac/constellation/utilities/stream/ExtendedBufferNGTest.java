@@ -170,7 +170,9 @@ public class ExtendedBufferNGTest {
         
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
         final OutputStream outputStream = buffer.getOutputStream();
+        final InputStream inputStream = buffer.getInputStream();
         final byte[] bytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".getBytes();
+        final byte[] readBytes = new byte[30];
         
         // Populate data to write from inputStream
         try {
@@ -187,12 +189,14 @@ public class ExtendedBufferNGTest {
         } finally {
             outputStream.close();
             assertEquals(buffer.getAvailableSize(), 6);
+
+            final int readResult = inputStream.read(readBytes, 0, 2);
             final byte[] result = buffer.getData();
             assertEquals(buffer.getAvailableSize(), 0);
 
             // Ready the remaining content out
-            for (int i = 0; i < 6; i++) {
-                assertEquals(bytes[20 + i], result[i]);
+            for (int i = 0; i < 4; i++) {
+                assertEquals(bytes[22 + i], result[i]);
             }
         }
     }
