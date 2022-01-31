@@ -66,26 +66,34 @@ public class TooltipMouseEnteredHandlerNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+//        if (!FxToolkit.isFXApplicationThreadRunning()) {
+//            FxToolkit.registerPrimaryStage();
+//        }
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (final TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+//        }
+    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
         try {
             FxToolkit.cleanupStages();
         } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     /**
