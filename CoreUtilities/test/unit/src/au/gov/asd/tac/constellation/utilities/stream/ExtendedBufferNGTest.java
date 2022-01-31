@@ -72,13 +72,14 @@ public class ExtendedBufferNGTest {
             outputStream.write(-2147483648); // lowest 8 bits = 00000000 = 0
             outputStream.write(2147483647);  // lowest 8 bits = 11111111 = -1 (signed byte)
             assertEquals(buffer.getAvailableSize(), 20); // Only completed buffer are available
+            outputStream.write(1);
             
         } finally {
             outputStream.close();
         }
         
         // Show that entire bytes array has been read into buffer, despite exceeding buffer size
-        assertEquals(buffer.getAvailableSize(), bytes.length + 3);
+        assertEquals(buffer.getAvailableSize(), bytes.length + 4);
         
         // Extract the data from buffer and confirm is matches what was iused to
         // populate the buffer
@@ -89,6 +90,7 @@ public class ExtendedBufferNGTest {
         assertEquals(outBytes[bytes.length], 1);
         assertEquals(outBytes[bytes.length + 1], 0);
         assertEquals(outBytes[bytes.length + 2], -1);
+        assertEquals(outBytes[bytes.length + 3], 1);
     }
     
     /**
