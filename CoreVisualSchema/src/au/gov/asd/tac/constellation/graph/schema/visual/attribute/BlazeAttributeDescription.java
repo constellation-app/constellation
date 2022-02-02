@@ -38,12 +38,8 @@ public final class BlazeAttributeDescription extends AbstractObjectAttributeDesc
     }
 
     @Override
-    protected Blaze convertFromString(String string) {
-        if (StringUtils.isBlank(string)) {
-            return getDefault();
-        } else {
-            return Blaze.valueOf(string);
-        }
+    protected Blaze convertFromString(final String string) {
+        return StringUtils.isBlank(string) ? getDefault() : Blaze.valueOf(string);
     }
 
     @Override
