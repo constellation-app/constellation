@@ -5,6 +5,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.stream;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
@@ -94,6 +95,40 @@ public class ExtendedBufferNGTest {
     }
     
     /**
+     * Test of getOutputStream method, of class ExtendedBuffer.
+     */
+    @Test
+    public void testOutputStreamRanges() throws Exception {
+
+        final ExtendedBuffer buffer = new ExtendedBuffer(size);
+        final OutputStream outputStream = buffer.getOutputStream();
+        final byte[] bytes = "ABCDE".getBytes();
+        
+        try {
+            // Check write doesnt permit offset to be outside of source
+            // array size
+            try {
+            outputStream.write(bytes, 6, 1);
+            fail("Exception not thrown");
+            } catch (IOException  e) {
+                assertEquals(e.getMessage(), "Source offset outside of range");
+            }
+            
+            // Try to write more than exists in source and ensure it handles it by truncating
+            // at the ned of the source array. 
+            outputStream.write(bytes, 4, 10); 
+        } finally {
+            outputStream.close();
+        }
+        
+        // Confirm only the last character was taken
+        assertEquals(buffer.getAvailableSize(), 1);
+        final byte[] outBytes = buffer.getData();
+        assertEquals(outBytes.length, 1);
+        assertEquals(outBytes[0], (byte)'E');
+    }
+    
+    /**
      * Test of getInputStream method, of class ExtendedBuffer.
      */
     @Test
@@ -160,8 +195,46 @@ public class ExtendedBufferNGTest {
             assertEquals(buffer.getAvailableSize(), 0);
             for (int i = 0; i < 6; i++) {
                 assertEquals(readBytes[i], 20 + bytes[i]);
-            }            
+            }
         } 
+    }
+    
+        
+    
+    /**
+     * Test of getInputStream method, of class ExtendedBuffer.
+     */
+    @Test
+    public void testInputStreamRanges() throws Exception {
+
+        final ExtendedBuffer buffer = new ExtendedBuffer(size);
+        final OutputStream outputStream = buffer.getOutputStream();
+        final InputStream inputStream = buffer.getInputStream();
+        final byte[] bytes = "ABCDEFGHIJ".getBytes();
+        
+        try {
+            outputStream.write(bytes, 0, 10); 
+        } finally {
+            outputStream.close();
+        }
+        
+        final byte[] inBytes = new byte[10];
+
+        // Check write doesnt permit offset to be outside of source
+        // array size
+        try {
+            inputStream.read(inBytes, 11, 1);
+            fail("Exception not thrown");
+        } catch (IOException  e) {
+            assertEquals(e.getMessage(), "Destination offset outside of range");
+        }
+
+        // Now show truncation of output to fit array
+        inputStream.read(inBytes, 1, 10); 
+        assertEquals(inBytes[0], 0);
+        for (int i = 1; i < 10; i++) {
+            assertEquals(inBytes[i], bytes[i - 1]);
+        }  
     }
 
     /**

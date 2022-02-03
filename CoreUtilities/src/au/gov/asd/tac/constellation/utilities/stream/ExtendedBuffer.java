@@ -187,11 +187,20 @@ public class ExtendedBuffer {
          * to buffer queue and will remain blocked until the buffer is added to the queue.
          * 
          * @param b Byte array to read content into.
-         * @param off Offset into content to start reading.
+         * @param off Offset into <code>b</code> to start output. Throws IOException if offset is
+         * out of range of the destination array.
          * @param len Number of bytes to read.
          */
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
+
+            // Offset into destination array must reside within array
+            if (off >= b.length) {
+                throw new IOException("Destination offset outside of range");
+            }
+            
+            // Check if off + len would spill over the back of the source array and adjust len accordingly
+            len = Math.min(len, b.length - off);
 
             int byteCount = 0;
 
@@ -267,12 +276,21 @@ public class ExtendedBuffer {
          * into 1 or more buffers, but each buffer has a known maximum size.
          * 
          * @param b The byte array to read bytes from.
-         * @param off The offset from start of source byte array to start reading from.
+         * @param off The offset from start of source byte array to start reading from. Throws IOException
+         * if offset is out of range of the source array.
          * @param len The maximum number of bytes to read from the source byte array.
          */
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
 
+            // Offset into source array must reside within array
+            if (off >= b.length) {
+                throw new IOException("Source offset outside of range");
+            }
+            
+            // Check if off + len would spill over the back of the source array and adjust len accordingly
+            len = Math.min(len, b.length - off);
+            
             while (len > 0) {
                 // Determine how many bytes from b (up to a maximum of len) can fit into the the output buffer
                 // given the buffer size and current position.
