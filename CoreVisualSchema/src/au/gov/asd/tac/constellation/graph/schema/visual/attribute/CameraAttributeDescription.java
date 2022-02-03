@@ -40,11 +40,8 @@ public final class CameraAttributeDescription extends ObjectAttributeDescription
     // zero-argument constructor. See the comment in GraphJsonWriter.writeElements
     // for more information about how defaults should be set.
     @Override
-    protected Object convertFromObject(Object object) {
-        if (object instanceof String) {
-            return new Camera();
-        }
-        return super.convertFromObject(object);
+    protected Object convertFromObject(final Object object) {
+        return object instanceof String ? new Camera() : super.convertFromObject(object);
     }
 
     @Override
