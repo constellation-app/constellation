@@ -376,7 +376,7 @@ public class BasicFindPluginNGTest {
             wg.setBooleanValue(selectedV, vxId2, false);
             wg.setStringValue(labelV, vxId2, "label name");
             wg.setStringValue(identifierV, vxId2, "identifer name");
-            wg.setIntValue(xV, vxId1, 1);
+            wg.setIntValue(xV, vxId2, 1);
 
             vxId3 = wg.addVertex();
             wg.setBooleanValue(selectedV, vxId3, false);

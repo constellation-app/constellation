@@ -30,6 +30,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.Tooltip;
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.StringUtils;
 
@@ -63,6 +64,9 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
         setGridContent();
         dateTimeSelector = new DateTimeSelector(this, dateString, timeString, timeZoneString);
         dateTimeSelectorTwo = new DateTimeSelector(this, dateStringTwo, timeStringTwo, timeZoneStringTwo);
+
+        datePickerButton.setTooltip(new Tooltip(datePickerButton.getText()));
+        datePickerTwoButton.setTooltip(new Tooltip(datePickerTwoButton.getText()));
 
         // On button click display dateTimePicker
         datePickerButton.setOnAction(action -> {
@@ -155,6 +159,9 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
 
         datePickerButton.setText(dateString + " " + timeString + " " + timeZoneString);
         dateTimeStringPrimary = dateString + " " + timeString + " " + timeZoneString;
+
+        datePickerButton.setTooltip(new Tooltip(datePickerButton.getText()));
+        datePickerTwoButton.setTooltip(new Tooltip(datePickerTwoButton.getText()));
     }
 
     /**
@@ -169,6 +176,9 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
 
         datePickerTwoButton.setText(dateStringTwo + " " + timeStringTwo + " " + timeZoneStringTwo);
         dateTimeStringSecondary = dateStringTwo + " " + timeStringTwo + " " + timeZoneStringTwo;
+
+        datePickerButton.setTooltip(new Tooltip(datePickerButton.getText()));
+        datePickerTwoButton.setTooltip(new Tooltip(datePickerTwoButton.getText()));
     }
 
     /**
@@ -209,12 +219,12 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
             // set dateTime two data to the current date, max time of today
             // and the previously selected timeZone
             dateStringTwo = LocalDate.now().toString();
-            timeStringTwo = "23:59:59";
+            timeStringTwo = "23:59:59.999";
             timeZoneStringTwo = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC) : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
 
             // set dateTime one data to the min time of today
             // and the previously selected timeZone
-            timeString = "00:00:00";
+            timeString = "00:00:00.000";
             timeZoneString = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC) : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
 
             // The Local Date value of the current date based of the timeZone

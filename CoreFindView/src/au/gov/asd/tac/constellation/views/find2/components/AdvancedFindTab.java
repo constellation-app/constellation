@@ -107,7 +107,7 @@ public class AdvancedFindTab extends Tab {
             changeDisplayedList(newElement);
         });
 
-        currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener(action -> updateSelectionFactors());
+        currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
 
         findAllButton.setOnAction(action -> findAllAction());
         findNextButton.setOnAction(action -> findNextAction());
