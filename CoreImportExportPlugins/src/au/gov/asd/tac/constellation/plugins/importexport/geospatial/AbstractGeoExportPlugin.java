@@ -50,7 +50,6 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.GeometryType;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +61,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.NotifyDescriptor;
 
 /**
  * Abstract geo export plugin.
@@ -210,14 +208,6 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
     @Override
     public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        if (parameters.getStringValue(OUTPUT_PARAMETER_ID) == null) {
-            NotifyDisplayer.display("Invalid output file provided, cannot be empty", NotifyDescriptor.ERROR_MESSAGE);
-            return;
-        }
-        if (parameters.getSingleChoice(ELEMENT_TYPE_PARAMETER_ID) == null) {
-            NotifyDisplayer.display("Invalid element type provided, cannot be empty", NotifyDescriptor.ERROR_MESSAGE);
-            return;
-        }
         final File output = new File(parameters.getStringValue(OUTPUT_PARAMETER_ID));
         final GraphElementType elementType = (GraphElementType) ((ElementTypeParameterValue) parameters.getSingleChoice(ELEMENT_TYPE_PARAMETER_ID)).getObjectValue();
         final List<GraphAttribute> graphAttributes = parameters.getMultiChoiceValue(ATTRIBUTES_PARAMETER_ID).getChoicesData().stream()

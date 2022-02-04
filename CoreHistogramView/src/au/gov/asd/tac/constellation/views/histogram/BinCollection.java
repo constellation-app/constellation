@@ -25,10 +25,8 @@ import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,19 +56,6 @@ public class BinCollection {
 
     public Bin[] getBins() {
         return bins;
-    }
-    
-    public Bin[] getSelectedBins() {
-        final List<Bin> selectedBins = new ArrayList<>();
-        int count = 0;
-        for(final Bin bin : getBins()){
-            if(bin.selectedCount > 0){
-                count++;
-                selectedBins.add(bin);
-            }
-        }
-        final Bin[] selectedBinsArray = new Bin[count];
-        return selectedBins.toArray(selectedBinsArray);
     }
 
     public int[] getBinElements() {

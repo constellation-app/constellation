@@ -38,6 +38,10 @@ public final class ConnectionModeAttributeDescription extends AbstractObjectAttr
 
     @Override
     protected ConnectionMode convertFromString(final String string) {
-        return StringUtils.isBlank(string) ? getDefault() : ConnectionMode.valueOf(string);
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
+        } else {
+            return ConnectionMode.valueOf(string);
+        }
     }
 }

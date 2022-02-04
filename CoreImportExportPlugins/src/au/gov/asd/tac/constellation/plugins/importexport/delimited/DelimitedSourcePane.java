@@ -200,12 +200,7 @@ public class DelimitedSourcePane extends SourcePane {
             sb.append(alertText);
 
             for (final File file : newFiles) {
-                // prevent adding the same file again
-                if (fileAlreadyAdded(file)) {
-                    continue;
-                }
-
-                // Attempt to parse/preview, if a failure is detected don't add the file to the set of files to import.
+                // Iterate over files and attempt to parse/preview, if a failure is detected don't add the file to the set of files to import.
                 try {
                     if (parser != null) {
                         parser.preview(new InputSource(file), null, PREVIEW_LIMIT);
@@ -234,24 +229,7 @@ public class DelimitedSourcePane extends SourcePane {
 
             final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
             importController.setFiles(files, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
-
-            importController.validateFileStructure(newFiles);
         }
-    }
-
-    private boolean fileAlreadyAdded(final File newFile) {
-        final ObservableList<File> files = fileListView.getItems();
-
-        for (final File file : files) {
-            try {
-                if (file.getCanonicalPath().equals(newFile.getCanonicalPath())) {
-                    return true;
-                }
-            } catch (final IOException ex) {
-                LOGGER.log(Level.WARNING, ex.getMessage(), ex);
-            }
-        }
-        return false;
     }
 
     /**

@@ -50,7 +50,11 @@ public final class LineStyleAttributeDescription extends AbstractObjectAttribute
 
     @Override
     protected LineStyle convertFromString(final String string) {
-        return StringUtils.isBlank(string) ? getDefault() : LineStyle.valueOf(string); 
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
+        } else {
+            return LineStyle.valueOf(string);
+        }
     }
 
     @Override

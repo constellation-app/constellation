@@ -43,7 +43,11 @@ public final class DrawFlagsAttributeDescription extends AbstractObjectAttribute
 
     @Override
     protected DrawFlags convertFromString(final String string) {
-        return StringUtils.isBlank(string) ? getDefault() : new DrawFlags(Integer.parseInt(string));
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
+        } else {
+            return new DrawFlags(Integer.parseInt(string));
+        }
     }
 
     @Override

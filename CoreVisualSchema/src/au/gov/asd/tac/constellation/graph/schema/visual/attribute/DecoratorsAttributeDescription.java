@@ -38,6 +38,10 @@ public class DecoratorsAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     protected VertexDecorators convertFromString(final String string) {
-        return StringUtils.isBlank(string) ? getDefault() : VertexDecorators.valueOf(string);
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
+        } else {
+            return VertexDecorators.valueOf(string);
+        }
     }
 }

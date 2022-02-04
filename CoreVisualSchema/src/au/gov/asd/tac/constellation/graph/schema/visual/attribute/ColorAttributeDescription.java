@@ -73,22 +73,29 @@ public final class ColorAttributeDescription extends AbstractObjectAttributeDesc
 
     @Override
     protected ConstellationColor convertFromString(final String string) {
-        return StringUtils.isBlank(string) ? getDefault() : ConstellationColor.getColorValue(string);
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
+        } else {
+            return ConstellationColor.getColorValue(string);
+        }
     }
 
     @Override
     public void setDefault(final Object value) {
-        defaultValue = value instanceof String ? ConstellationColor.getColorValue((String) value) : (ConstellationColor) value;
+        if (value instanceof String) {
+            defaultValue = ConstellationColor.getColorValue((String) value);
+        } else {
+            defaultValue = (ConstellationColor) value;
+        }
     }
 
     @Override
     public int getInt(final int id) {
-        final ConstellationColor color = (ConstellationColor) data[id];
-        return color != null ? ((int) (color.getRed() * 255) << 24)
+        ConstellationColor color = (ConstellationColor) data[id];
+        return ((int) (color.getRed() * 255) << 24)
                 | ((int) (color.getGreen() * 255) << 16)
                 | ((int) (color.getBlue() * 255) << 8)
-                | (int) (color.getAlpha() * 255) 
-                : 0;
+                | (int) (color.getAlpha() * 255);
     }
 
     @Override
