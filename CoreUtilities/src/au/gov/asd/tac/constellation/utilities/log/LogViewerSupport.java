@@ -53,7 +53,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -107,7 +107,7 @@ public class LogViewerSupport implements Runnable {
         // displaying everything
         try {
             while ((line = ins.readLine()) != null) {
-                final String time = "[" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ";
+                final String time = "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + "] ";
                 ring.add(time + line);
             } // end of while ((line = ins.readLine()) != null)
         } catch (final IOException ex) {
@@ -134,7 +134,7 @@ public class LogViewerSupport implements Runnable {
 
                 while ((line = ins.readLine()) != null) {
                     if ((line = ring.add(line)) != null) {
-                        final String time = "[" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ";
+                        final String time = "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + "] ";
                         io.getOut().println(time + line);
                         lines++;
                     } // end of if ((line = ring.add(line)) != null)
