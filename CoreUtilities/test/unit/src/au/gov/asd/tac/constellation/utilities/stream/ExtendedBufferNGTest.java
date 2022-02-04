@@ -96,18 +96,18 @@ public class ExtendedBufferNGTest {
         assertEquals(outBytes[bytes.length + 3], 1);
     }
     
-//    /**
-//     * Test of getOutputStream method, of class ExtendedBuffer.
-//     */
-//    @Test
-//    public void testOutputStreamRanges() throws Exception {
-//        System.out.println("ExtendedBufferNGTest.testOutputStreamRanges");
-//
-//        final ExtendedBuffer buffer = new ExtendedBuffer(size);
-//        final OutputStream outputStream = buffer.getOutputStream();
-//        final byte[] bytes = "ABCDE".getBytes();
-//        
-//        try {
+    /**
+     * Test of getOutputStream method, of class ExtendedBuffer.
+     */
+    @Test
+    public void testOutputStreamRanges() throws Exception {
+        System.out.println("ExtendedBufferNGTest.testOutputStreamRanges");
+
+        final ExtendedBuffer buffer = new ExtendedBuffer(size);
+        final OutputStream outputStream = buffer.getOutputStream();
+        final byte[] bytes = "ABCDE".getBytes();
+        
+        try {
 //            // Check write doesnt permit offset to be outside of source
 //            // array size
 //            try {
@@ -116,20 +116,20 @@ public class ExtendedBufferNGTest {
 //            } catch (IOException  e) {
 //                assertEquals(e.getMessage(), "Source offset outside of range");
 //            }
-//            
-//            // Try to write more than exists in source and ensure it handles it by truncating
-//            // at the ned of the source array. 
-//            outputStream.write(bytes, 4, 10); 
-//        } finally {
-//            outputStream.close();
-//        }
-//        
-//        // Confirm only the last character was taken
-//        assertEquals(buffer.getAvailableSize(), 1);
-//        final byte[] outBytes = buffer.getData();
-//        assertEquals(outBytes.length, 1);
-//        assertEquals(outBytes[0], (byte)'E');
-//    }
+            
+            // Try to write more than exists in source and ensure it handles it by truncating
+            // at the ned of the source array. 
+            outputStream.write(bytes, 4, 10); 
+        } finally {
+            outputStream.close();
+        }
+        
+        // Confirm only the last character was taken
+        assertEquals(buffer.getAvailableSize(), 1);
+        final byte[] outBytes = buffer.getData();
+        assertEquals(outBytes.length, 1);
+        assertEquals(outBytes[0], (byte)'E');
+    }
     
     /**
      * Test of getInputStream method, of class ExtendedBuffer.
