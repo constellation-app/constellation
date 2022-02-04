@@ -232,8 +232,7 @@ public class ExtendedBufferNGTest {
             inputStream.read(inBytes, 11, 1);
             fail("Exception not thrown");
         } catch (IOException  e) {
-            int i = 5;
-//            assertEquals(e.getMessage(), "Destination offset outside of range");
+            assertEquals(e.getMessage(), "Destination offset outside of range");
         }
 
         // Now show truncation of output to fit array
