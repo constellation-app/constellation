@@ -108,14 +108,14 @@ public class ExtendedBufferNGTest {
         final byte[] bytes = "ABCDE".getBytes();
         
         try {
-//            // Check write doesnt permit offset to be outside of source
-//            // array size
-//            try {
-//            outputStream.write(bytes, 6, 1);
-//            fail("Exception not thrown");
-//            } catch (IOException  e) {
-//                assertEquals(e.getMessage(), "Source offset outside of range");
-//            }
+            // Check write doesnt permit offset to be outside of source
+            // array size
+            try {
+            outputStream.write(bytes, 6, 1);
+            fail("Exception not thrown");
+            } catch (IOException  e) {
+                assertEquals(e.getMessage(), "Source offset outside of range");
+            }
             
             // Try to write more than exists in source and ensure it handles it by truncating
             // at the ned of the source array. 
