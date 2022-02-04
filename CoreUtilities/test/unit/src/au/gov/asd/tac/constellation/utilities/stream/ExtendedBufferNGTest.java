@@ -226,14 +226,15 @@ public class ExtendedBufferNGTest {
         
         final byte[] inBytes = new byte[10];
 
-//        // Check write doesnt permit offset to be outside of source
-//        // array size
-//        try {
-//            inputStream.read(inBytes, 11, 1);
+        // Check write doesnt permit offset to be outside of source
+        // array size
+        try {
+            inputStream.read(inBytes, 11, 1);
 //            fail("Exception not thrown");
-//        } catch (IOException  e) {
+        } catch (IOException  e) {
+            int i = 5;
 //            assertEquals(e.getMessage(), "Destination offset outside of range");
-//        }
+        }
 
         // Now show truncation of output to fit array
         inputStream.read(inBytes, 1, 10); 
