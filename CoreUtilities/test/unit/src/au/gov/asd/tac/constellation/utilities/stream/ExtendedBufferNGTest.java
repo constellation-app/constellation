@@ -196,7 +196,7 @@ public class ExtendedBufferNGTest {
             readBytes = new byte[30];
             outputStream.close();
             final int result = inputStream.read(readBytes, 0, 20);
-            assertEquals(result, 6);
+            assertEquals(result, 66);
             assertEquals(buffer.getAvailableSize(), 0);
             for (int i = 0; i < 6; i++) {
                 assertEquals(readBytes[i], 20 + bytes[i]);
