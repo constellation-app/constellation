@@ -49,6 +49,7 @@ public class ExtendedBufferNGTest {
      */
     @Test
     public void testDefaultConstructor() throws Exception {
+        System.out.println("ExtendedBufferNGTest.testDefaultConstructor");
 
         final ExtendedBuffer localBuffer = new ExtendedBuffer(size);
         final Field bufferSize = ExtendedBuffer.class.getDeclaredField("bufferSize");
@@ -62,6 +63,7 @@ public class ExtendedBufferNGTest {
      */
     @Test
     public void testOutputStream() throws Exception {
+        System.out.println("ExtendedBufferNGTest.testOutputStream");
 
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
         final OutputStream outputStream = buffer.getOutputStream();
@@ -99,6 +101,7 @@ public class ExtendedBufferNGTest {
      */
     @Test
     public void testOutputStreamRanges() throws Exception {
+        System.out.println("ExtendedBufferNGTest.testOutputStreamRanges");
 
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
         final OutputStream outputStream = buffer.getOutputStream();
@@ -133,6 +136,7 @@ public class ExtendedBufferNGTest {
      */
     @Test
     public void testInputStreamReadByte() throws Exception {
+        System.out.println("ExtendedBufferNGTest.testInputStreamReadByte");
         
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
         final OutputStream outputStream = buffer.getOutputStream();
@@ -166,6 +170,7 @@ public class ExtendedBufferNGTest {
      */
     @Test
     public void testInputStreamReadArray() throws Exception {
+        System.out.println("ExtendedBufferNGTest.testInputStreamReadArray");
         
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
         final OutputStream outputStream = buffer.getOutputStream();
@@ -206,6 +211,7 @@ public class ExtendedBufferNGTest {
      */
     @Test
     public void testInputStreamRanges() throws Exception {
+        System.out.println("ExtendedBufferNGTest.testInputStreamRanges");
 
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
         final OutputStream outputStream = buffer.getOutputStream();
@@ -242,6 +248,7 @@ public class ExtendedBufferNGTest {
      */
     @Test
     public void testGetData() throws Exception {
+        System.out.println("ExtendedBufferNGTest.testGetData");
         
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
         final OutputStream outputStream = buffer.getOutputStream();
