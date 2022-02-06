@@ -234,7 +234,8 @@ public class ExtendedBufferNGTest {
             fail("Exception not thrown");
         } catch (IOException  e) {
             int i = 5;
-            final String test = e.getMessage();
+            final String test = e.getLocalizedMessage();
+            int j = 5;
 //            assertEquals(e.getMessage(), "Destination offset outside of range");
         }
 
