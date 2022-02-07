@@ -105,6 +105,15 @@ public class ExtendedBuffer {
     public long getAvailableSize() {
         return available.get();
     }
+    
+    /**
+     * Return the buffer size defined for individual buffer instances in the extended buffer.
+     * 
+     * @return The allocated buffer size.
+     */
+    public int getBufferSize() {
+        return this.bufferSize;
+    }
 
     /**
      * Get the entire available extended buffer data in a byte array.
