@@ -15,13 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.find2.components;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
@@ -241,45 +238,45 @@ public class AdvancedFindTabNGTest {
     /**
      * Test of changeCriteriaPane method, of class AdvancedFindTab.
      */
-    @Test
-    public void testChangeCriteriaPane() {
-        System.out.println("changeCriteriaPane");
-
-        setUpUi();
-        setupGraph();
-
-        GraphElementType type = GraphElementType.VERTEX;
-
-        advancedTab.addCriteriaPane(type);
-
-        AdvancedFindTab advancedFindSpy = spy(advancedTab);
-
-        AdvancedCriteriaBorderPane tempPane1 = advancedTab.getCorrespondingCriteriaList(type).get(0);
-        AdvancedCriteriaBorderPane spyTempPane = spy(tempPane1);
-
-        final List<AdvancedCriteriaBorderPane> criteriaPaneList = new ArrayList<>();
-        criteriaPaneList.add(spyTempPane);
-
-        ReadableGraph rg = graph.getReadableGraph();
-
-        int attributeInt = rg.getAttribute(type, 1);
-        labelAttributeV = new GraphAttribute(rg, attributeInt);
-        attributeInt = rg.getAttribute(type, 2);
-        identifierAttributeV = new GraphAttribute(rg, attributeInt);
-        attributeInt = rg.getAttribute(type, 3);
-        xAtrributeV = new GraphAttribute(rg, attributeInt);
-        rg.close();
-
-        List<Attribute> attributeList = new ArrayList<>();
-        attributeList.add(labelAttributeV);
-        attributeList.add(identifierAttributeV);
-        attributeList.add(xAtrributeV);
-        when(spyTempPane.getAttributesList()).thenReturn(attributeList);
-        when(advancedFindSpy.getCorrespondingCriteriaList(type)).thenReturn(criteriaPaneList);
-
-        advancedFindSpy.changeCriteriaPane(spyTempPane, type, "x", false);
-        assertEquals(advancedFindSpy.getCorrespondingCriteriaList(type).get(0).getType(), FloatAttributeDescription.ATTRIBUTE_NAME);
-    }
+//    @Test
+//    public void testChangeCriteriaPane() {
+//        System.out.println("changeCriteriaPane");
+//
+//        setUpUi();
+//        setupGraph();
+//
+//        GraphElementType type = GraphElementType.VERTEX;
+//
+//        advancedTab.addCriteriaPane(type);
+//
+//        AdvancedFindTab advancedFindSpy = spy(advancedTab);
+//
+//        AdvancedCriteriaBorderPane tempPane1 = advancedTab.getCorrespondingCriteriaList(type).get(0);
+//        AdvancedCriteriaBorderPane spyTempPane = spy(tempPane1);
+//
+//        final List<AdvancedCriteriaBorderPane> criteriaPaneList = new ArrayList<>();
+//        criteriaPaneList.add(spyTempPane);
+//
+//        ReadableGraph rg = graph.getReadableGraph();
+//
+//        int attributeInt = rg.getAttribute(type, 1);
+//        labelAttributeV = new GraphAttribute(rg, attributeInt);
+//        attributeInt = rg.getAttribute(type, 2);
+//        identifierAttributeV = new GraphAttribute(rg, attributeInt);
+//        attributeInt = rg.getAttribute(type, 3);
+//        xAtrributeV = new GraphAttribute(rg, attributeInt);
+//        rg.close();
+//
+//        List<Attribute> attributeList = new ArrayList<>();
+//        attributeList.add(labelAttributeV);
+//        attributeList.add(identifierAttributeV);
+//        attributeList.add(xAtrributeV);
+//        when(spyTempPane.getAttributesList()).thenReturn(attributeList);
+//        when(advancedFindSpy.getCorrespondingCriteriaList(type)).thenReturn(criteriaPaneList);
+//
+//        advancedFindSpy.changeCriteriaPane(spyTempPane, type, "x", false);
+//        assertEquals(advancedFindSpy.getCorrespondingCriteriaList(type).get(0).getType(), FloatAttributeDescription.ATTRIBUTE_NAME);
+//    }
 
     /**
      * Test of getCorrespondingCriteriaList method, of class AdvancedFindTab.

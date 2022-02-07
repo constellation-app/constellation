@@ -93,7 +93,7 @@ public class FindViewController {
      * @param attributeModificationCounter
      * @return
      */
-    public List<Attribute> populateAllAttributes(final GraphElementType type, final long attributeModificationCounter) {
+    public synchronized List<Attribute> populateAllAttributes(final GraphElementType type, final long attributeModificationCounter) {
         final List<Attribute> allAttributes = new ArrayList<>();
 
         for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
