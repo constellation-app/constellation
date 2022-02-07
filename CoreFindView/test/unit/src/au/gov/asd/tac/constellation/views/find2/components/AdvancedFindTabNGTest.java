@@ -155,58 +155,58 @@ public class AdvancedFindTabNGTest {
     /**
      * Test of updateSelectionFactors method, of class AdvancedFindTab.
      */
-    @Test
-    public void testUpdateSelectionFactors() {
-        System.out.println("updateSelectionFactors");
-        setUpUi();
-
-        /**
-         * The updateSelectionFactors function is called via a change listener.
-         * When index 2 or 3 is selected the findNextButton and the
-         * FindPreviousButton will be disabled
-         */
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(0);
-        assertEquals(false, advancedTab.getFindNextButton().isDisabled());
-        assertEquals(false, advancedTab.getFindPrevButton().isDisabled());
-
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(1);
-        assertEquals(false, advancedTab.getFindNextButton().isDisabled());
-        assertEquals(false, advancedTab.getFindPrevButton().isDisabled());
-
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(2);
-        assertEquals(true, advancedTab.getFindNextButton().isDisabled());
-        assertEquals(true, advancedTab.getFindPrevButton().isDisabled());
-
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(3);
-        assertEquals(true, advancedTab.getFindNextButton().isDisabled());
-        assertEquals(true, advancedTab.getFindPrevButton().isDisabled());
-
-    }
+//    @Test
+//    public void testUpdateSelectionFactors() {
+//        System.out.println("updateSelectionFactors");
+//        setUpUi();
+//
+//        /**
+//         * The updateSelectionFactors function is called via a change listener.
+//         * When index 2 or 3 is selected the findNextButton and the
+//         * FindPreviousButton will be disabled
+//         */
+//        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(0);
+//        assertEquals(false, advancedTab.getFindNextButton().isDisabled());
+//        assertEquals(false, advancedTab.getFindPrevButton().isDisabled());
+//
+//        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(1);
+//        assertEquals(false, advancedTab.getFindNextButton().isDisabled());
+//        assertEquals(false, advancedTab.getFindPrevButton().isDisabled());
+//
+//        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(2);
+//        assertEquals(true, advancedTab.getFindNextButton().isDisabled());
+//        assertEquals(true, advancedTab.getFindPrevButton().isDisabled());
+//
+//        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(3);
+//        assertEquals(true, advancedTab.getFindNextButton().isDisabled());
+//        assertEquals(true, advancedTab.getFindPrevButton().isDisabled());
+//
+//    }
 
     /**
      * Test of addCriteriaPane method, of class AdvancedFindTab.
      */
-//    @Test
-//    public void testAddCriteriaPane() {
-//        System.out.println("addCriteriaPane");
-//
-//        setUpUi();
-//        setupGraph();
-//
-//        GraphElementType type = GraphElementType.VERTEX;
-//
-//        /**
-//         * Check the the criteriaList increases in size as we add a new
-//         * criteriaPane
-//         */
-//        assertEquals(advancedTab.getCorrespondingCriteriaList(type).size(), 0);
-//        advancedTab.addCriteriaPane(type);
-//        assertEquals(advancedTab.getCorrespondingCriteriaList(type).size(), 1);
-//        advancedTab.addCriteriaPane(type);
-//        assertEquals(advancedTab.getCorrespondingCriteriaList(type).size(), 2);
-//
-//        // TODO review the generated test code and remove the default call to fail.
-//    }
+    @Test
+    public void testAddCriteriaPane() {
+        System.out.println("addCriteriaPane");
+
+        setUpUi();
+        setupGraph();
+
+        GraphElementType type = GraphElementType.VERTEX;
+
+        /**
+         * Check the the criteriaList increases in size as we add a new
+         * criteriaPane
+         */
+        assertEquals(advancedTab.getCorrespondingCriteriaList(type).size(), 0);
+        advancedTab.addCriteriaPane(type);
+        assertEquals(advancedTab.getCorrespondingCriteriaList(type).size(), 1);
+        advancedTab.addCriteriaPane(type);
+        assertEquals(advancedTab.getCorrespondingCriteriaList(type).size(), 2);
+
+        // TODO review the generated test code and remove the default call to fail.
+    }
 
     /**
      * Test of deleteCriteriaPane method, of class AdvancedFindTab.
