@@ -23,8 +23,11 @@ import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegi
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -46,9 +49,11 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle.Messages;
@@ -118,17 +123,16 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         final List<String> nChoices = new ArrayList<>();
         final List<String> tChoices = new ArrayList<>();
         if (graph != null) {
-            final List<SchemaVertexType> nodeTypes = graph.getSchema().getFactory().getRegisteredVertexTypes();
-
-            for (int i = 0; i < nodeTypes.size(); i++) {
-                final SchemaVertexType type = nodeTypes.get(i);
+            final Set<Class<? extends SchemaConcept>> concepts = graph.getSchema().getFactory().getRegisteredConcepts();
+            
+            final Collection<SchemaVertexType> nodeTypes = SchemaVertexTypeUtilities.getTypes(concepts);
+            for (final SchemaVertexType type : nodeTypes) {
                 nAttributes.add(type.getName());
             }
             nAttributes.sort(String::compareTo);
 
-            final List<SchemaTransactionType> transactionTypes = graph.getSchema().getFactory().getRegisteredTransactionTypes();
-            for (int i = 0; i < transactionTypes.size(); i++) {
-                final SchemaTransactionType type = transactionTypes.get(i);
+            final Collection<SchemaTransactionType> transactionTypes = SchemaTransactionTypeUtilities.getTypes(concepts);
+            for (final SchemaTransactionType type : transactionTypes) {
                 tAttributes.add(type.getName());
             }
             tAttributes.sort(String::compareTo);
