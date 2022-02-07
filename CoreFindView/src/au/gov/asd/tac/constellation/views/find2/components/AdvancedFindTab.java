@@ -285,7 +285,7 @@ public class AdvancedFindTab extends Tab {
      * @param type
      * @param attributeName
      */
-    public synchronized void changeCriteriaPane(final AdvancedCriteriaBorderPane criteriaPane, final GraphElementType type, final String attributeName, final boolean updateUI) {
+    public void changeCriteriaPane(final AdvancedCriteriaBorderPane criteriaPane, final GraphElementType type, final String attributeName, final boolean updateUI) {
         if (!updateUI) {
             final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
             final GridPane gridPane = getCorrespondingGridPane(type);
