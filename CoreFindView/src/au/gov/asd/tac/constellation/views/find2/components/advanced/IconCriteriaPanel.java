@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalu
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.IconSelector;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -44,7 +43,6 @@ public class IconCriteriaPanel extends AdvancedCriteriaBorderPane {
     private IconSelector iconSelctor;
     private Image image;
     private ImageView imageView;
-    private Label imageLabel;
 
     public IconCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
@@ -62,7 +60,7 @@ public class IconCriteriaPanel extends AdvancedCriteriaBorderPane {
         // Create an image of the icon to be displayed
         image = chosenIcon.buildImage(50);
         imageView = new ImageView(image);
-        imageLabel = new Label(chosenIcon.getName());
+
         // create a button with the icons name and set its settings
         openIconsMenuButton.setText(chosenIcon.getName());
         openIconsMenuButton.setTextAlignment(TextAlignment.CENTER);

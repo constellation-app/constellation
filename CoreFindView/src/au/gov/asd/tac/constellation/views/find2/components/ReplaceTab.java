@@ -102,12 +102,8 @@ public class ReplaceTab extends BasicFindTab {
         boolean replaceIn = false;
 
         // determine what currentSelectionChoiceBox option is selected
-        switch (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex()) {
-            case 1:
-                replaceIn = true;
-                break;
-            default:
-                break;
+        if (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 1) {
+            replaceIn = true;
         }
         // Create the paramters with the current UI selections
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), replaceTextField.getText(),

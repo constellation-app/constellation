@@ -59,6 +59,23 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
     String dateTimeStringPrimary = "";
     String dateTimeStringSecondary = "";
 
+    private static final String IS = "Is";
+    private static final String IS_NOT = "Is Not";
+
+    private static final String OCCURED_ON = "Occured On";
+    private static final String DIDNT_OCCUR_ON = "Didn't Occur On";
+    private static final String OCCURED_BEFORE = "Occured Before";
+    private static final String OCCURED_AFTER = "Occured After";
+    private static final String OCCURED_BETWEEN = "Occured Between";
+
+    private static final String CUSTOM = "Custom";
+    private static final String LAST_3_DAYS = "Last 3 Days";
+    private static final String LAST_WEEK = "Last Week";
+    private static final String LAST_MONTH = "Last Month";
+    private static final String LAST_3_MONTHS = "Last 3 Months";
+    private static final String LAST_6_MONTHS = "Last 6 Months";
+    private static final String LAST_YEAR = "Last Year";
+
     public DateTimeCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
         setGridContent();
@@ -69,22 +86,22 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
         datePickerTwoButton.setTooltip(new Tooltip(datePickerTwoButton.getText()));
 
         // On button click display dateTimePicker
-        datePickerButton.setOnAction(action -> {
-            displayDateTimePicker(dateTimeSelector);
-        });
+        datePickerButton.setOnAction(action
+                -> displayDateTimePicker(dateTimeSelector)
+        );
 
         // On button click display dateTimePickerTwo
-        datePickerTwoButton.setOnAction(action -> {
-            displayDateTimePicker(dateTimeSelectorTwo);
-        });
+        datePickerTwoButton.setOnAction(action
+                -> displayDateTimePicker(dateTimeSelectorTwo)
+        );
 
-        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
-            betweenSeletionAction(newElement);
-        });
+        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+                -> betweenSeletionAction(newElement)
+        );
 
-        timeFrameChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
-            timeFrameSelectionAction(newElement);
-        });
+        timeFrameChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+                -> timeFrameSelectionAction(newElement)
+        );
     }
 
     /**
@@ -112,13 +129,13 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
 
         // Add all choice Box relevant choice box options and select the first
         // for filterChoiceBox
-        getFilterChoiceBox().getItems().removeAll("Is", "Is Not");
-        getFilterChoiceBox().getItems().addAll("Occured On", "Didn't Occur On", "Occured Before", "Occured After", "Occured Between");
+        getFilterChoiceBox().getItems().removeAll(IS, IS_NOT);
+        getFilterChoiceBox().getItems().addAll(OCCURED_ON, DIDNT_OCCUR_ON, OCCURED_BEFORE, OCCURED_AFTER, OCCURED_BETWEEN);
         getFilterChoiceBox().getSelectionModel().selectFirst();
 
         // Add all choice Box relevant choice box options and select the first
         // for timeFrameChoiceBox
-        timeFrameChoiceBox.getItems().addAll("Custom", "Last 3 Days", "Last Week", "Last Month", "Last 3 Months", "Last 6 Months", "Last Year");
+        timeFrameChoiceBox.getItems().addAll(CUSTOM, LAST_3_DAYS, LAST_WEEK, LAST_MONTH, LAST_3_MONTHS, LAST_6_MONTHS, LAST_YEAR);
         timeFrameChoiceBox.getSelectionModel().selectFirst();
         getHboxTop().getChildren().add(timeFrameChoiceBox);
         getHboxBot().getChildren().addAll(datePickerButton, andLabel, datePickerTwoButton);
@@ -188,11 +205,11 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
      * @param choiceSelection
      */
     private void betweenSeletionAction(final String choiceSelection) {
-        datePickerTwoButton.setDisable(!choiceSelection.equals("Occured Between"));
-        timeFrameChoiceBox.setDisable(!choiceSelection.equals("Occured Between"));
+        datePickerTwoButton.setDisable(!choiceSelection.equals(OCCURED_BETWEEN));
+        timeFrameChoiceBox.setDisable(!choiceSelection.equals(OCCURED_BETWEEN));
 
-        if (!timeFrameChoiceBox.getSelectionModel().getSelectedItem().equals("Custom")) {
-            timeFrameChoiceBox.getSelectionModel().select("Custom");
+        if (!timeFrameChoiceBox.getSelectionModel().getSelectedItem().equals(CUSTOM)) {
+            timeFrameChoiceBox.getSelectionModel().select(CUSTOM);
             datePickerTwoButton.setDisable(true);
         }
     }
@@ -207,11 +224,11 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
      */
     private void timeFrameSelectionAction(final String choiceSelection) {
         // enable buttons if custom is selected. disable if otherwise
-        datePickerButton.setDisable(!choiceSelection.equals("Custom"));
-        datePickerTwoButton.setDisable(!choiceSelection.equals("Custom"));
+        datePickerButton.setDisable(!choiceSelection.equals(CUSTOM));
+        datePickerTwoButton.setDisable(!choiceSelection.equals(CUSTOM));
 
         // If the choiceSelection is one of the preset time frames
-        if (!choiceSelection.equals("Custom")) {
+        if (!choiceSelection.equals(CUSTOM)) {
             // Format the timeZoneString to be in a format where it can be 
             // convered to a ZoneId
             final String formattedTimeZoneString = (StringUtils.isEmpty(timeZoneString) ? "" : timeZoneString.split("\\[")[1].replace("]", ""));
@@ -233,22 +250,22 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
             // Switch statment that determines the date string one value based
             // off the choiceSelection
             switch (choiceSelection) {
-                case "Last 3 Days":
+                case LAST_3_DAYS:
                     dateString = calculatedDate.minusDays(3).toString();
                     break;
-                case "Last Week":
+                case LAST_WEEK:
                     dateString = calculatedDate.minusDays(7).toString();
                     break;
-                case "Last Month":
+                case LAST_MONTH:
                     dateString = calculatedDate.minusMonths(1).toString();
                     break;
-                case "Last 3 Months":
+                case LAST_3_MONTHS:
                     dateString = calculatedDate.minusMonths(3).toString();
                     break;
-                case "Last 6 Months":
+                case LAST_6_MONTHS:
                     dateString = calculatedDate.minusMonths(6).toString();
                     break;
-                case "Last Year":
+                case LAST_YEAR:
                     dateString = calculatedDate.minusYears(1).toString();
                     break;
                 default:
@@ -274,7 +291,7 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
      */
     @Override
     public FindCriteriaValues getCriteriaValues() {
-        if (getFilterChoiceBox().getSelectionModel().getSelectedItem().equals("Occured Between")) {
+        if (getFilterChoiceBox().getSelectionModel().getSelectedItem().equals(OCCURED_BETWEEN)) {
             return new DateTimeCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), dateTimeStringPrimary, dateTimeStringSecondary);
         }
         return new DateTimeCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), dateTimeStringPrimary);

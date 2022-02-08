@@ -67,7 +67,6 @@ public class DateTimeSelector extends Stage {
 
     private static final int NUMBER_SPINNER_WIDTH = 55;
     private static final int MILLIS_SPINNER_WIDTH = 60;
-//    private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
     private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/find2/resources/editor-dark.css";
 
     private final DateTimeCriteriaPanel parentComponent;
@@ -78,13 +77,13 @@ public class DateTimeSelector extends Stage {
         setContent(date, time, timeZone);
         setAlwaysOnTop(true);
 
-        saveButton.setOnAction(action -> {
-            parentComponent.saveButtonAction(this);
-        });
+        saveButton.setOnAction(action
+                -> parentComponent.saveButtonAction(this)
+        );
 
-        cancelButton.setOnAction(action -> {
-            close();
-        });
+        cancelButton.setOnAction(action
+                -> close()
+        );
 
     }
 
@@ -106,7 +105,7 @@ public class DateTimeSelector extends Stage {
 
         // If a string time is passed parse it and format it to be displayed in
         // the window in the spinners
-        if (time != "") {
+        if (!time.equals("")) {
             final String[] splitTime = time.split(":");
             final String[] splitMiliSeconds = splitTime[2].split("\\.");
             hourSpinner.getValueFactory().setValue(Integer.parseInt(splitTime[0]));
@@ -125,7 +124,7 @@ public class DateTimeSelector extends Stage {
         datePickerLabel.setLabelFor(datePicker);
 
         // Set the date picker value to the date passed in or the default date
-        datePicker.setValue(date != "" ? LocalDate.parse(date) : LocalDate.now(TimeZoneUtilities.UTC));
+        datePicker.setValue(!date.equals("") ? LocalDate.parse(date) : LocalDate.now(TimeZoneUtilities.UTC));
 
         // set the labels for each of the spinners
         final Label hourSpinnerLabel = new Label("hr:");
@@ -186,12 +185,12 @@ public class DateTimeSelector extends Stage {
         // as a zoneID
 
         String selectedTimeZone = "";
-        if (timeZone != "") {
+        if (!timeZone.equals("")) {
             selectedTimeZone = timeZone.split("\\[")[1].replace("]", "");
         }
 
         // select the default timeZone or the one passed in
-        timeZoneComboBox.getSelectionModel().select(selectedTimeZone != "" ? selectedTimeZone : TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC));
+        timeZoneComboBox.getSelectionModel().select(!selectedTimeZone.equals("") ? selectedTimeZone : TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC));
 
         final Label timeZoneLabel = new Label("Time Zone:");
         timeZoneLabel.setLabelFor(timeZoneComboBox);
@@ -236,9 +235,9 @@ public class DateTimeSelector extends Stage {
         sb.append(":" + (minSpinner.getValue() < 10 ? "0" + minSpinner.getValue().toString() : minSpinner.getValue().toString()));
         sb.append(":" + (secSpinner.getValue() < 10 ? "0" + secSpinner.getValue().toString() : secSpinner.getValue().toString()));
         if (milliSpinner.getValue() > 0) {
-            if (milliSpinner.getValue() > 10 && milliSpinner.getValue() < 100){
+            if (milliSpinner.getValue() > 10 && milliSpinner.getValue() < 100) {
                 sb.append(".0" + milliSpinner.getValue().toString());
-            }else {
+            } else {
                 sb.append("." + (milliSpinner.getValue() < 10 ? "00" + milliSpinner.getValue().toString() : milliSpinner.getValue().toString()));
             }
         }

@@ -43,15 +43,21 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
     private final CheckBox useListCheckBox = new CheckBox("Use List");
     private final Button moreDetailsButton = new Button("List");
 
+    private static final String CONTAINS = "Contains";
+    private static final String DOESNT_CONTAIN = "Doesn't Contain";
+    private static final String BEGINS_WITH = "Begins With";
+    private static final String ENDS_WITH = "Ends With";
+    private static final String MATCHES_REGEX = "Matches (Regex)";
+
     public StringCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
         setGridContent();
         caseSensitiveCheckBox.setOnAction(action -> setAaText(caseSensitiveCheckBox.selectedProperty().get()));
         useListCheckBox.setOnAction(action -> activateMoreDetails(useListCheckBox.selectedProperty().get()));
 
-        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
-            regexSelectionAction(newElement);
-        });
+        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+                -> regexSelectionAction(newElement)
+        );
 
         // Opens the useListWindow when the user clicks the moreDetials Button
         // It also updates the useListWindows text to match the searchField text
@@ -71,7 +77,7 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
         getHboxBot().getChildren().addAll(searchField, moreDetailsButton);
 
         // Adds the below choices to the filterChoiceBox
-        getFilterChoiceBox().getItems().addAll("Contains", "Doesn't Contain", "Begins With", "Ends With", "Matches (Regex)");
+        getFilterChoiceBox().getItems().addAll(CONTAINS, DOESNT_CONTAIN, BEGINS_WITH, ENDS_WITH, MATCHES_REGEX);
 
         // Disables the moreDetailsButton
         moreDetailsButton.setDisable(true);
@@ -137,11 +143,11 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
      * @param choiceSelection
      */
     private void regexSelectionAction(final String choiceSelection) {
-        caseSensitiveCheckBox.setDisable(choiceSelection.equals("Matches (Regex)"));
-        useListCheckBox.setDisable(choiceSelection.equals("Matches (Regex)"));
+        caseSensitiveCheckBox.setDisable(choiceSelection.equals(MATCHES_REGEX));
+        useListCheckBox.setDisable(choiceSelection.equals(MATCHES_REGEX));
         if (useListCheckBox.isSelected()) {
-            useListCheckBox.setSelected(!choiceSelection.equals("Matches (Regex)"));
-            moreDetailsButton.setDisable(choiceSelection.equals("Matches (Regex)"));
+            useListCheckBox.setSelected(!choiceSelection.equals(MATCHES_REGEX));
+            moreDetailsButton.setDisable(choiceSelection.equals(MATCHES_REGEX));
         }
     }
 

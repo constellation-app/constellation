@@ -37,13 +37,17 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
     private final Label andLabel = new Label("And");
     private final TextField searchFieldTwo = new TextField();
 
+    private static final String IS_LESS_THAN = "Is Less Than";
+    private static final String IS_GREATER_THAN = "Is Greater Than";
+    private static final String IS_BETWEEN = "Is Between";
+
     public FloatCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
         setGridContent();
 
-        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
-            enableLabelAndSearchFieldtwo(newElement);
-        });
+        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+                -> enableLabelAndSearchFieldtwo(newElement)
+        );
 
         searchField.textProperty().addListener((final ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             // Retrieve the index of a "."
@@ -81,7 +85,7 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
     private void setGridContent() {
         HBox.setHgrow(searchField, Priority.ALWAYS);
         // Adds the below choices to the filterChoiceBox
-        getFilterChoiceBox().getItems().addAll("Is Less Than", "Is Greater Than", "Is Between");
+        getFilterChoiceBox().getItems().addAll(IS_LESS_THAN, IS_GREATER_THAN, IS_BETWEEN);
         getHboxBot().getChildren().addAll(searchField, andLabel, searchFieldTwo);
 
         // disables the relevant buttons for Is Between Searches
@@ -98,7 +102,7 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
     @Override
     public FindCriteriaValues getCriteriaValues() {
         final float floatNumberPrimary = searchField.getText().isBlank() ? 0 : Float.parseFloat(searchField.getText());
-        if (getFilterChoiceBox().getSelectionModel().getSelectedItem().equals("Is Between")) {
+        if (getFilterChoiceBox().getSelectionModel().getSelectedItem().equals(IS_BETWEEN)) {
             final float floatNumberSecondary = searchFieldTwo.getText().isBlank() ? 0 : Float.parseFloat(searchFieldTwo.getText());
             return new FloatCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), floatNumberPrimary, floatNumberSecondary);
         }
@@ -113,8 +117,8 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
      * @param choiceSelection
      */
     private void enableLabelAndSearchFieldtwo(final String choiceSelection) {
-        andLabel.setDisable(!choiceSelection.equals("Is Between"));
-        searchFieldTwo.setDisable(!choiceSelection.equals("Is Between"));
+        andLabel.setDisable(!choiceSelection.equals(IS_BETWEEN));
+        searchFieldTwo.setDisable(!choiceSelection.equals(IS_BETWEEN));
     }
 
     @Override

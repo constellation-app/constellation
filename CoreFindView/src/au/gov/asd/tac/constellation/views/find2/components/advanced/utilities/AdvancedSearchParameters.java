@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalu
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.StringCriteriaValues;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -206,4 +207,16 @@ public class AdvancedSearchParameters {
         }
         return matches == 4;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.criteriaValuesList);
+        hash = 67 * hash + Objects.hashCode(this.graphElementType);
+        hash = 67 * hash + Objects.hashCode(this.allOrAny);
+        hash = 67 * hash + Objects.hashCode(this.currentSelection);
+        hash = 67 * hash + (this.searchAllGraphs ? 1 : 0);
+        return hash;
+    }
+
 }

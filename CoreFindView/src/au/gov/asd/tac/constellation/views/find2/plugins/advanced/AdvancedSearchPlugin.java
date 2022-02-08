@@ -73,6 +73,15 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
     private FindResultsList findInCurrentSelectionList;
 
+    private static final String ANY = "Any";
+    private static final String ALL = "All";
+    private static final String IGNORE = "Ignore";
+    private static final String ADD_TO = "Add To";
+    private static final String FIND_IN = "Find In";
+    private static final String REMOVE_FROM = "Remove From";
+    private static final String IS = "Is";
+    private static final String IS_NOT = "Is Not";
+
     private static final int STARTING_INDEX = -1;
 
     public AdvancedSearchPlugin(final AdvancedSearchParameters parameters, final boolean selectAll, final boolean selectNext) {
@@ -145,11 +154,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         foundResult.clear();
         graph.setObjectValue(stateId, 0, foundResult);
 
-        boolean found;
         final int elementCount = elementType.getElementCount(graph);
 
         // do this if add to selection
-        if (currentSelection.equals("Ignore")) {
+        if (IGNORE.equals(currentSelection)) {
             clearSelection(graph);
         }
         findInCurrentSelectionList = new FindResultsList(graph.getId());
@@ -220,10 +228,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         matchesAllCount++;
 
                         // If the serach is select all and match critera = any
-                        if (selectAll && allOrAny.equals("Any")) {
+                        if (selectAll && ANY.equals(allOrAny)) {
 
                             // If the current selection = ignore or add to
-                            if ((currentSelection.equals("Ignore") || currentSelection.equals("Add To"))) {
+                            if ((IGNORE.equals(currentSelection) || ADD_TO.equals(currentSelection))) {
                                 // set the elements selection attribute to true
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                                 // add a new find result to the found results list
@@ -231,12 +239,12 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                                 foundResult.add(new FindResult(currElement, uid, elementType));
 
                                 // if the current selection = find in and the graph element is already selected
-                            } else if (currentSelection.equals("Find In") && graph.getBooleanValue(selectedAttribute, currElement)) {
+                            } else if (FIND_IN.equals(currentSelection) && graph.getBooleanValue(selectedAttribute, currElement)) {
                                 // add a new FindResult of the graph element to the findInCurrentSelection list
                                 findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
 
                                 // if the current selection = remove from and the graph element is already selected
-                            } else if (currentSelection.equals("Remove From") && graph.getBooleanValue(selectedAttribute, currElement)) {
+                            } else if (REMOVE_FROM.equals(currentSelection) && graph.getBooleanValue(selectedAttribute, currElement)) {
                                 // set the graph element selection attribute to false
                                 graph.setBooleanValue(selectedAttribute, currElement, false);
                                 // add a new find result to the found results list
@@ -245,7 +253,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                             }
                         }
                         // if not select all and the match criteria = any
-                        if (!selectAll && allOrAny.equals("Any")) {
+                        if (!selectAll && ANY.equals(allOrAny)) {
                             // add a new find result to the found results list
                             // of the element
                             foundResult.add(new FindResult(currElement, uid, elementType));
@@ -256,7 +264,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                  * if match criteria = all and the attributes values match all
                  * of the criteria.
                  */
-                if (allOrAny.equals("All") && matchesAllCount == criteriaList.size()) {
+                if (allOrAny.equals(ALL) && matchesAllCount == criteriaList.size()) {
                     // add a new find result to the found results list
                     // of the element
                     foundResult.add(new FindResult(currElement, uid, elementType));
@@ -272,16 +280,16 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         findAllMatchingResultsList.addAll(findResultSet);
 
         // if Find in select all the find in results
-        if (currentSelection.equals("Find In")) {
-            selectFindInResults(currentSelection.equals("Find In"), findInCurrentSelectionList, foundResult, graph, selectedAttribute);
+        if (FIND_IN.equals(currentSelection)) {
+            selectFindInResults(FIND_IN.equals(currentSelection), findInCurrentSelectionList, foundResult, graph, selectedAttribute);
 
             // if remove from, deselect all the remove from results
-        } else if (currentSelection.equals("Remove From")) {
-            removeFindInResults(currentSelection.equals("Remove From"), findInCurrentSelectionList, foundResult, graph, selectedAttribute);
+        } else if (REMOVE_FROM.equals(currentSelection)) {
+            removeFindInResults(REMOVE_FROM.equals(currentSelection), findInCurrentSelectionList, foundResult, graph, selectedAttribute);
 
             // if select all, select all the results that match all criteria
         } else if (selectAll) {
-            selectMatchingAllResults(allOrAny.equals("All"), findAllMatchingResultsList, foundResult, graph, selectedAttribute);
+            selectMatchingAllResults(ALL.equals(allOrAny), findAllMatchingResultsList, foundResult, graph, selectedAttribute);
         }
 
         // if the user clicked find next or prev
@@ -328,7 +336,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         // if match criteria == all and the results list isnt empty
         if (findAllMatching && !findAllMatchingResultsList.isEmpty()) {
             // if not adding to the current selection, clear the selection
-            if (!currentSelection.equals("Add To")) {
+            if (!ADD_TO.equals(currentSelection)) {
                 clearSelection(graph);
             }
             // if select all, loop through all find results and select them
@@ -425,7 +433,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         if (stringValues.isIgnoreCase()) {
             value = value.toLowerCase();
             for (String str : allSearchableString) {
-                str = str.toLowerCase();
+                str.toLowerCase();
             }
         }
         boolean matches = false;
@@ -435,14 +443,14 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
          * the user. It checks all str within the allSearchable strings list.
          */
         switch (stringValues.getFilter()) {
-            case "Is":
+            case IS:
                 for (final String str : allSearchableString) {
                     if (str.equals(value)) {
                         matches = true;
                     }
                 }
                 break;
-            case "Is Not":
+            case IS_NOT:
                 for (final String str : allSearchableString) {
                     if (!str.equals(value)) {
                         matches = true;
@@ -515,12 +523,12 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
          * float value
          */
         switch (floatValues.getFilter()) {
-            case "Is":
+            case IS:
                 if (floatValues.getFloatValuePrimary() == value) {
                     matches = true;
                 }
                 break;
-            case "Is Not":
+            case IS_NOT:
                 if (floatValues.getFloatValuePrimary() != value) {
                     matches = true;
                 }
@@ -588,10 +596,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         boolean matches = false;
 
         // if the color of the attribute matches the users color matches = true
-        if (colorValues.getFilter().equals("Is") && colorValues.getColorValue().equals(color)) {
+        if (colorValues.getFilter().equals(IS) && colorValues.getColorValue().equals(color)) {
             matches = true;
             // if the color of the attribute doesnt match the users color matches = true
-        } else if (colorValues.getFilter().equals("Is Not") && !colorValues.getColorValue().equals(color)) {
+        } else if (colorValues.getFilter().equals(IS_NOT) && !colorValues.getColorValue().equals(color)) {
             matches = true;
         }
         return matches;
@@ -692,11 +700,11 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         boolean matches = false;
 
         // if the icon of the attribute matches the users icon matches = true
-        if (iconValues.getFilter().equals("Is") && iconValues.getIconValue().equals(icon)) {
+        if (iconValues.getFilter().equals(IS) && iconValues.getIconValue().equals(icon)) {
             matches = true;
 
             // if the icon of the attribute does not match the users icon matches = true
-        } else if (iconValues.getFilter().equals("Is Not") && !iconValues.getIconValue().equals(icon)) {
+        } else if (iconValues.getFilter().equals(IS_NOT) && !iconValues.getIconValue().equals(icon)) {
             matches = true;
         }
         return matches;

@@ -51,8 +51,6 @@ public class IconSelector extends Stage {
     private ConstellationIcon icon;
 
     private final TreeItem<String> rootNode = new TreeItem<>("Icons");
-    private final TreeItem<String> builtInNode = new TreeItem<>("(Built-In)");
-    private final TreeItem<String> userDefinedNode = new TreeItem<>("(User-Defined)");
 
     private final BorderPane buttonsBp = new BorderPane();
     private final HBox buttonsHbox = new HBox();
@@ -67,9 +65,9 @@ public class IconSelector extends Stage {
         setContent();
         setAlwaysOnTop(true);
 
-        categoryTreeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
-            populateIconsList(newValue.getValue());
-        });
+        categoryTreeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue)
+                -> populateIconsList(newValue.getValue())
+        );
 
         // if a icon icon node is selected, save the icon and close the window
         selectButton.setOnAction(action -> {
@@ -79,9 +77,9 @@ public class IconSelector extends Stage {
             }
         });
 
-        cancelButton.setOnAction(action -> {
-            close();
-        });
+        cancelButton.setOnAction(action
+                -> close()
+        );
     }
 
     /**
@@ -119,7 +117,7 @@ public class IconSelector extends Stage {
     private void populateCategoryTree() {
         iconListView = new ListView<>();
         iconListView.setMinWidth(275);
-        categoryTreeView = new TreeView<String>(rootNode);
+        categoryTreeView = new TreeView<>(rootNode);
         categoryTreeView.setMinWidth(275);
 
         hbox.setPadding(new Insets(10));
@@ -131,8 +129,8 @@ public class IconSelector extends Stage {
          * is Flag.Australia. Flag will be saved as a category.
          */
         final List<String> categories = new ArrayList<>();
-        for (final ConstellationIcon icon : IconManager.getIcons()) {
-            final String[] splitName = icon.getExtendedName().split("\\.");
+        for (final ConstellationIcon constellationIcon : IconManager.getIcons()) {
+            final String[] splitName = constellationIcon.getExtendedName().split("\\.");
 
             categories.add(splitName[0]);
         }
@@ -172,9 +170,9 @@ public class IconSelector extends Stage {
          * categoryName add it to the list of iconNames.
          */
         final List<String> iconNames = new ArrayList<>();
-        for (final ConstellationIcon icon : IconManager.getIcons()) {
-            if (icon.getExtendedName().split("\\.")[0].equals(categoryName)) {
-                iconNames.add(icon.getName());
+        for (final ConstellationIcon constellationIcon : IconManager.getIcons()) {
+            if (constellationIcon.getExtendedName().split("\\.")[0].equals(categoryName)) {
+                iconNames.add(constellationIcon.getName());
             }
         }
         // sort the icons in alpabetical order

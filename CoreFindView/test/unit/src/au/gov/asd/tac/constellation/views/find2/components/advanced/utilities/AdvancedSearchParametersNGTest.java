@@ -16,8 +16,16 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced.utilities;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.IconCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.StringCriteriaValues;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import static org.testng.Assert.assertEquals;
@@ -141,12 +149,71 @@ public class AdvancedSearchParametersNGTest {
         paramatersTwo = new AdvancedSearchParameters();
         paramatersTwo.copyParameters(paramatersOne);
 
-        boolean resultOne = paramatersOne.equals(paramatersTwo);
-        assertEquals(resultOne, true);
+        boolean result = paramatersOne.equals(paramatersTwo);
+        assertEquals(result, true);
 
         paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "All", "Ignore", true);
-        boolean resultTwo = paramatersOne.equals(paramatersTwo);
-        assertEquals(resultTwo, false);
+        result = paramatersOne.equals(paramatersTwo);
+        assertEquals(result, false);
+
+        //float , colour, boolean, zoned datetime, icon
+        FindCriteriaValues valueOne = new FloatCriteriaValues("float", "x", "Is", 1);
+        FindCriteriaValues valueTwo = new FloatCriteriaValues("float", "x", "Is", 6);
+        criteriaValuesListOne.clear();
+        criteriaValuesListTwo.clear();
+        criteriaValuesListOne.add(valueOne);
+        criteriaValuesListTwo.add(valueTwo);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Ignore", false);
+        result = paramatersOne.equals(paramatersTwo);
+        assertEquals(result, false);
+
+        valueOne = new BooleanCriteriaValues("boolean", "dim", "Is", true);
+        valueTwo = new BooleanCriteriaValues("boolean", "dim", "Is", false);
+        criteriaValuesListOne.clear();
+        criteriaValuesListTwo.clear();
+        criteriaValuesListOne.add(valueOne);
+        criteriaValuesListTwo.add(valueTwo);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Ignore", false);
+        result = paramatersOne.equals(paramatersTwo);
+        assertEquals(result, false);
+
+        valueOne = new ColourCriteriaValues("color", "color", "Is", ConstellationColor.BLUE);
+        valueTwo = new ColourCriteriaValues("color", "color", "Is", ConstellationColor.GREEN);
+        criteriaValuesListOne.clear();
+        criteriaValuesListTwo.clear();
+        criteriaValuesListOne.add(valueOne);
+        criteriaValuesListTwo.add(valueTwo);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Ignore", false);
+        result = paramatersOne.equals(paramatersTwo);
+        assertEquals(result, false);
+
+        valueOne = new IconCriteriaValues("icon", "background_icon", "Is", IconManager.getIcon("Flag.Australia"));
+        valueTwo = new IconCriteriaValues("icon", "background_icon", "Is", IconManager.getIcon("Flag.England"));
+        criteriaValuesListOne.clear();
+        criteriaValuesListTwo.clear();
+        criteriaValuesListOne.add(valueOne);
+        criteriaValuesListTwo.add(valueTwo);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Ignore", false);
+        result = paramatersOne.equals(paramatersTwo);
+        assertEquals(result, false);
+
+        ZonedDateTime testTimeOne = ZonedDateTime.now();
+        ZonedDateTime testTimeTwo = ZonedDateTime.now().plusHours(2);
+        valueOne = new DateTimeCriteriaValues("datetime", "DateTime", "Occured On", formatDateTime(testTimeOne));
+        valueTwo = new DateTimeCriteriaValues("datetime", "DateTime", "Occured On", formatDateTime(testTimeTwo));
+        criteriaValuesListOne.clear();
+        criteriaValuesListTwo.clear();
+        criteriaValuesListOne.add(valueOne);
+        criteriaValuesListTwo.add(valueTwo);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.TRANSACTION, "Any", "Ignore", false);
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.TRANSACTION, "Any", "Ignore", false);
+        result = paramatersOne.equals(paramatersTwo);
+        assertEquals(result, false);
+
     }
 
     private void populateCriteriaLists() {
@@ -160,6 +227,35 @@ public class AdvancedSearchParametersNGTest {
         FindCriteriaValues valueFour = new StringCriteriaValues("string", "Identifier", "Is", "four", true, false);
         criteriaValuesListTwo.add(valueThree);
         criteriaValuesListTwo.add(valueFour);
+    }
+
+    private String formatDateTime(ZonedDateTime dateTime) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Integer.toString(dateTime.getYear()));
+        sb.append("-");
+        sb.append(addZero(dateTime.getMonthValue()));
+        sb.append("-");
+        sb.append(addZero(dateTime.getDayOfMonth()));
+        sb.append(" ");
+        sb.append(addZero(dateTime.getHour()));
+        sb.append(":");
+        sb.append(addZero(dateTime.getMinute()));
+        sb.append(":");
+        sb.append(addZero(dateTime.getSecond()));
+        sb.append(".");
+        sb.append(Integer.toString(dateTime.getNano()).substring(0, 3));
+        sb.append(" ");
+        sb.append(dateTime.getOffset());
+        sb.append(" [");
+        sb.append(dateTime.getZone());
+        sb.append("]");
+
+        return sb.toString();
+    }
+
+    private String addZero(int number) {
+        String newNumber = (number < 10 ? newNumber = "0" + Integer.toString(number) : Integer.toString(number));
+        return newNumber;
     }
 
 }

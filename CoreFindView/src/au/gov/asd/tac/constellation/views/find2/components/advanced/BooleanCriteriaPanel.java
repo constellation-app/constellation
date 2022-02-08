@@ -64,7 +64,7 @@ public class BooleanCriteriaPanel extends AdvancedCriteriaBorderPane {
 
     }
 
-    private boolean getSelectedBoolean() {
+    private boolean isSelectedBoolean() {
         return trueToggle.isSelected();
     }
 
@@ -76,7 +76,7 @@ public class BooleanCriteriaPanel extends AdvancedCriteriaBorderPane {
      */
     @Override
     public FindCriteriaValues getCriteriaValues() {
-        return new BooleanCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), getSelectedBoolean());
+        return new BooleanCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), isSelectedBoolean());
     }
 
     @Override

@@ -44,7 +44,6 @@ public class UseListInputWindow extends Stage {
     private BorderPane bp = new BorderPane();
 
     private final VBox vbox = new VBox();
-    private final HBox hbox = new HBox();
 
     private final Label textAreaLabel = new Label("Input a list of delimited terms to be searched:");
     private final TextArea textArea = new TextArea();
@@ -61,6 +60,12 @@ public class UseListInputWindow extends Stage {
     private Button saveButton = new Button("Save");
     private Button cancelButton = new Button("Cancel");
 
+    private static final String COMMA = "Comma";
+    private static final String TAB = "Tab";
+    private static final String SEMI_COLON = "Semi-colon";
+    private static final String STRING_STRING = "String";
+
+    //"Comma", "Tab", "Semi-colon", "String"
     private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/find2/resources/editor-dark.css";
 
     public UseListInputWindow(StringCriteriaPanel parentComponent, String text) {
@@ -71,22 +76,22 @@ public class UseListInputWindow extends Stage {
         setContent();
         setAlwaysOnTop(true);
 
-        splitLinesChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
-            splitLinesChoiceAction(newElement);
-        });
+        splitLinesChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+                -> splitLinesChoiceAction(newElement)
+        );
 
-        splitLinesButton.setOnAction(action -> {
-            splitLinesAction();
-        });
+        splitLinesButton.setOnAction(action
+                -> splitLinesAction()
+        );
 
         saveButton.setOnAction(action -> {
             parentComponent.setSearchFieldText(getTextAreaText());
             close();
         });
 
-        cancelButton.setOnAction(action -> {
-            close();
-        });
+        cancelButton.setOnAction(action
+                -> close()
+        );
     }
 
     /**
@@ -94,7 +99,7 @@ public class UseListInputWindow extends Stage {
      */
     private void setContent() {
         textArea.setText(parentComponent.getSearchFieldText());
-        splitLinesChoiceBox.getItems().addAll("Comma", "Tab", "Semi-colon", "String");
+        splitLinesChoiceBox.getItems().addAll(COMMA, TAB, SEMI_COLON, STRING_STRING);
         splitLinesChoiceBox.getSelectionModel().selectFirst();
         chosenSplitLineOption = splitLinesChoiceBox.getSelectionModel().getSelectedItem();
 
@@ -156,16 +161,16 @@ public class UseListInputWindow extends Stage {
         final String selectedSplitChoice = splitLinesChoiceBox.getSelectionModel().getSelectedItem();
         final String splitAt;
         switch (selectedSplitChoice) {
-            case "Comma":
+            case COMMA:
                 splitAt = SeparatorConstants.COMMA;
                 break;
-            case "Tab":
+            case TAB:
                 splitAt = SeparatorConstants.TAB;
                 break;
-            case "Semi-colon":
+            case SEMI_COLON:
                 splitAt = SeparatorConstants.SEMICOLON;
                 break;
-            case "String":
+            case STRING_STRING:
                 splitAt = splitStringTextField.getText();
                 break;
             default:
@@ -195,7 +200,7 @@ public class UseListInputWindow extends Stage {
         chosenSplitLineOption = choiceSelection;
         splitLinesHbox.getChildren().clear();
 
-        if (choiceSelection.equals("String")) {
+        if (STRING_STRING.equals(choiceSelection)) {
             splitLinesHbox.getChildren().addAll(splitLinesChoiceBoxLabel, splitLinesChoiceBox,
                     splitStringTextFieldLabel, splitStringTextField, splitLinesButton);
         } else {

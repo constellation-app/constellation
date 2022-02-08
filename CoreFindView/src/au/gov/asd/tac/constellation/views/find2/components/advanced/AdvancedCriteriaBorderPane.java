@@ -71,9 +71,8 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
 
         deleteButton.setOnAction(action -> parentComponent.deleteCriteriaPane(this, graphElementType, -1));
 
-        typeChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
-            parentComponent.changeCriteriaPane(this, graphElementType, newElement, updateUI);
-        });
+        typeChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+                -> parentComponent.changeCriteriaPane(this, graphElementType, newElement, updateUI));
     }
 
     /**

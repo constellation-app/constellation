@@ -103,9 +103,7 @@ public class AdvancedFindTab extends Tab {
         addCriteriaPaneButton.setOnAction(action -> addCriteriaPane(getSelectedGraphElementType()));
 
         // Change the displayed list based on the graph element type selection
-        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
-            changeDisplayedList(newElement);
-        });
+        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> changeDisplayedList(newElement));
 
         currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
 
