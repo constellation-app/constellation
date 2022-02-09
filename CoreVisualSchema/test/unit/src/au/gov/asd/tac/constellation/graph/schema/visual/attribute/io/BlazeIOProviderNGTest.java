@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
+import au.gov.asd.tac.constellation.graph.GraphAttribute;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
@@ -30,6 +32,7 @@ import java.util.Set;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
+import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -92,10 +95,6 @@ public class BlazeIOProviderNGTest {
         int attributeId = 23;
         int elementId = 41;
         String attribValue = new String("TestAttrib");
-        Map<Integer, Integer> vertexMap = null;
-        Map<Integer, Integer> transactionMap = null;
-        GraphByteReader byteReader = null;
-        ImmutableObjectCache cache = null;
         
         // Create object under test
         BlazeIOProvider instance = new BlazeIOProvider();
@@ -108,11 +107,11 @@ public class BlazeIOProviderNGTest {
         // Call method under test with JsonNode set to returen isNull = true
         when(mockJsonNode.isNull()).thenReturn(true);
         when(mockJsonNode.textValue()).thenReturn(attribValue);
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, vertexMap, transactionMap, byteReader, cache);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
         
         // Call method under test with JsonNode set to returen isNull = false
         when(mockJsonNode.isNull()).thenReturn(false);
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, vertexMap, transactionMap, byteReader, cache);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
         
         // Verify calls to graph.setStringValue are as expected across 2 calls
         Mockito.verify(mockGraph, times(2)).setStringValue(captorAtributeId.capture(), captorElementId.capture(), captorAtributeValue.capture());
@@ -130,16 +129,54 @@ public class BlazeIOProviderNGTest {
     @Test
     public void testWriteObject() throws Exception {
         System.out.println("BlazeIOProvider.writeObject");
-//        Attribute attr = null;
-//        int elementId = 0;
-//        JsonGenerator jsonGenerator = null;
-//        GraphReadMethods graph = null;
-//        GraphByteWriter byteWriter = null;
-//        boolean verbose = false;
-//        BlazeIOProvider instance = new BlazeIOProvider();
-//        instance.writeObject(attr, elementId, jsonGenerator, graph, byteWriter, verbose);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
+        
+        final JsonGenerator mockJsonGenerator = mock(JsonGenerator.class);
+        final GraphReadMethods mockGraph = mock(GraphReadMethods.class);
+        
+        int attributeId = 23;
+        int elementId = 41;
+        String attrType = "attrType";
+        String attrName = "attrName";
+        String attrDesc = "attrDesc";
+        String attrValue = "attrValue";
+
+        GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, attrType, attrName, attrDesc,
+            null, null);
+       
+        // Create object under test
+        BlazeIOProvider instance = new BlazeIOProvider();
+        
+        // Create captors for arguments to graph.setStringValue
+        final ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
+        final ArgumentCaptor<Integer> captorElementId = ArgumentCaptor.forClass(Integer.class);
+        final ArgumentCaptor<String> captorAttrName = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<String> captorAttrValue = ArgumentCaptor.forClass(String.class);
+        
+        // Test not verbose and graph.IsDefaultValue is true skips all processing
+        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
+        Mockito.verify(mockGraph, times(0)).getStringValue(captorAtributeId.capture(), captorElementId.capture());
+        
+        // Now turn on verbose, and configure getStringValue to return null
+        when(mockGraph.getStringValue(anyInt(), anyInt())).thenReturn(null);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
+        Mockito.verify(mockGraph, times(1)).getStringValue(captorAtributeId.capture(), captorElementId.capture());
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
+        Mockito.verify(mockJsonGenerator, times(0)).writeStringField(captorAttrName.capture(), captorAttrValue.capture());
+        assertEquals((int)captorAtributeId.getAllValues().get(0), attributeId);
+        assertEquals((int)captorElementId.getAllValues().get(0), elementId);
+        assertEquals(captorAttrName.getAllValues().get(0), attrName);
+        
+        // Now turn verbose back off, but set graph.isDefaultValue to return false
+        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraph.getStringValue(anyInt(), anyInt())).thenReturn(attrValue);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
+        Mockito.verify(mockGraph, times(2)).getStringValue(captorAtributeId.capture(), captorElementId.capture());
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
+        Mockito.verify(mockJsonGenerator, times(1)).writeStringField(captorAttrName.capture(), captorAttrValue.capture());
+        assertEquals((int)captorAtributeId.getAllValues().get(0), attributeId);
+        assertEquals((int)captorElementId.getAllValues().get(0), elementId);
+        assertEquals(captorAttrName.getAllValues().get(0), attrName);
+        assertEquals(captorAttrValue.getAllValues().get(0), attrValue);
     }
-    
 }
