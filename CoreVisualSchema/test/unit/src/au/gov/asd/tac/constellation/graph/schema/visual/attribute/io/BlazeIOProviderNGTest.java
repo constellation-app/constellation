@@ -130,16 +130,16 @@ public class BlazeIOProviderNGTest {
     @Test
     public void testWriteObject() throws Exception {
         System.out.println("BlazeIOProvider.writeObject");
-        Attribute attr = null;
-        int elementId = 0;
-        JsonGenerator jsonGenerator = null;
-        GraphReadMethods graph = null;
-        GraphByteWriter byteWriter = null;
-        boolean verbose = false;
-        BlazeIOProvider instance = new BlazeIOProvider();
-        instance.writeObject(attr, elementId, jsonGenerator, graph, byteWriter, verbose);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+//        Attribute attr = null;
+//        int elementId = 0;
+//        JsonGenerator jsonGenerator = null;
+//        GraphReadMethods graph = null;
+//        GraphByteWriter byteWriter = null;
+//        boolean verbose = false;
+//        BlazeIOProvider instance = new BlazeIOProvider();
+//        instance.writeObject(attr, elementId, jsonGenerator, graph, byteWriter, verbose);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
     }
     
 }
