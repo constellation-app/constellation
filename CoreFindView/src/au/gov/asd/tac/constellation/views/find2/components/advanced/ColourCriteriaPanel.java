@@ -57,6 +57,8 @@ public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
         /**
          * This listener updates the colour combo picker with the colour
          * selected in the colour picker.
+         *
+         * NOTE - This is taken from the attribute editor for the colour picker
          */
         colourPicker.valueProperty().addListener((o, oldValue, newValue) -> {
             if (newValue != null && !newValue.equals(oldValue)) {
@@ -148,7 +150,8 @@ public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
     }
 
     /**
-     * Gets the type of the panel
+     * Overrides the parents getType function to return the correct type name
+     * being "color"
      *
      * @return
      */

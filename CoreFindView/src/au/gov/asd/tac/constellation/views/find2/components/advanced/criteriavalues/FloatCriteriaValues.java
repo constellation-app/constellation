@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues;
 
 /**
+ * This Class is for the FloatCriteriaValues which are created from a
+ * FloatCriteriaPanel
  *
  * @author Atlas139mkm
  */
@@ -24,22 +26,34 @@ public class FloatCriteriaValues extends FindCriteriaValues {
     private final float floatValuePrimary;
     private final float floatValueSecondary;
 
+    // first constructor takes one float value
     public FloatCriteriaValues(final String attributeType, final String attribute, final String filter, final float floatValuePrimary) {
         super(attributeType, attribute, filter);
         this.floatValuePrimary = floatValuePrimary;
         this.floatValueSecondary = 0;
     }
 
+    // second constructor takes two float values
     public FloatCriteriaValues(final String attributeType, final String attribute, final String filter, final float floatValuePrimary, final float floatValueSecondary) {
         super(attributeType, attribute, filter);
         this.floatValuePrimary = floatValuePrimary;
         this.floatValueSecondary = floatValueSecondary;
     }
 
+    /**
+     * Gets the floatValuePrimary
+     *
+     * @return
+     */
     public float getFloatValuePrimary() {
         return floatValuePrimary;
     }
 
+    /**
+     * Gets the floatValueSecondary
+     *
+     * @return
+     */
     public float getFloatValueSecondary() {
         return floatValueSecondary;
     }

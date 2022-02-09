@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues;
 
 /**
+ * This Class is for the BooleanCriteriaValues which are created from a
+ * BooleanCriteriaPanel
  *
  * @author Atlas139mkm
  */
@@ -28,6 +30,11 @@ public class BooleanCriteriaValues extends FindCriteriaValues {
         this.boolValue = boolValue;
     }
 
+    /**
+     * Gets the current boolean value of this booleanCriteriaValues Object
+     *
+     * @return boolValue
+     */
     public boolean getBoolValue() {
         return boolValue;
     }

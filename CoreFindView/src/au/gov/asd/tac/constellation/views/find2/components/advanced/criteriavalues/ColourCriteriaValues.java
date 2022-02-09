@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriaval
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 
 /**
+ * This Class is for the ColourCriteriaValues which are created from a
+ * ColourCriteriaPanel
  *
  * @author Atlas139mkm
  */
@@ -30,6 +32,11 @@ public class ColourCriteriaValues extends FindCriteriaValues {
         this.color = color;
     }
 
+    /**
+     * Gets the current color value of this ColourCriteriaValues Object
+     *
+     * @return color
+     */
     public ConstellationColor getColorValue() {
         return color;
     }

@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues;
 
 /**
+ * This Class is for the DateTimeCriteriaValues which are created from a
+ * DateTimeCriteriaPanel
  *
  * @author Atlas139mkm
  */
@@ -24,22 +26,35 @@ public class DateTimeCriteriaValues extends FindCriteriaValues {
     private final String dateTimeStringPrimary;
     private final String dateTimeStringSecondary;
 
+    //Main Constructor only containing one dateTimeValue
     public DateTimeCriteriaValues(final String attributeType, final String attribute, final String filter, final String dateTimeStringPrimary) {
         super(attributeType, attribute, filter);
         this.dateTimeStringPrimary = dateTimeStringPrimary;
         this.dateTimeStringSecondary = "";
     }
 
+    //Second Contructor that allows an additional parameter for another DateTimeValue
+    //This is used for "In Between" searches
     public DateTimeCriteriaValues(final String attributeType, final String attribute, final String filter, final String dateTimeStringPrimary, final String dateTimeStringSecondary) {
         super(attributeType, attribute, filter);
         this.dateTimeStringPrimary = dateTimeStringPrimary;
         this.dateTimeStringSecondary = dateTimeStringSecondary;
     }
 
+    /**
+     * Gets the Primary DateTimeStrinValue
+     *
+     * @return
+     */
     public String getDateTimeStringPrimaryValue() {
         return dateTimeStringPrimary;
     }
 
+    /**
+     * Gets the Secondary DateTimeStrinValue
+     *
+     * @return
+     */
     public String getDateTimeStringSecondaryValue() {
         return dateTimeStringSecondary;
     }

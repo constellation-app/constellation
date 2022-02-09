@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriaval
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 
 /**
+ * This Class is for the IconCriteriaValues which are created from a
+ * IconCriteriaPanel
  *
  * @author Atlas139mkm
  */
@@ -30,6 +32,11 @@ public class IconCriteriaValues extends FindCriteriaValues {
         this.icon = icon;
     }
 
+    /**
+     * Gets the IconCriteriaValues icon
+     *
+     * @return
+     */
     public ConstellationIcon getIconValue() {
         return icon;
     }

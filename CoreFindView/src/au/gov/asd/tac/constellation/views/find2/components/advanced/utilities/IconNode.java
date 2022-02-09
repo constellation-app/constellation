@@ -50,6 +50,11 @@ public class IconNode extends BorderPane {
         setCenter(new Label(iconName));
     }
 
+    /**
+     * Gets the icon
+     *
+     * @return icon
+     */
     public ConstellationIcon getIcon() {
         return icon;
     }

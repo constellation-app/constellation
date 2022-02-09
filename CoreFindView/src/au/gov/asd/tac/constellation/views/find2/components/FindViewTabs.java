@@ -28,7 +28,6 @@ import javafx.scene.control.TabPane;
 public class FindViewTabs extends TabPane {
 
     private final FindViewPane parentComponent;
-
     private final BasicFindTab basicFindTab;
     private final ReplaceTab replaceTab;
     private final AdvancedFindTab advancedFindTab;
@@ -81,7 +80,6 @@ public class FindViewTabs extends TabPane {
                 getAdvancedFindTab().updateButtons();
                 break;
         }
-
     }
 
     /**

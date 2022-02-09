@@ -432,8 +432,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         // if ignoring the case set the value and each of the strings to lower case
         if (stringValues.isIgnoreCase()) {
             value = value.toLowerCase();
+            int i = 0;
             for (String str : allSearchableString) {
-                str.toLowerCase();
+                allSearchableString.set(i, str.toLowerCase());
+                i++;
             }
         }
         boolean matches = false;
@@ -622,7 +624,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         boolean matches = false;
 
         if (dateTimeString == null || dateTimeValues.getDateTimeStringPrimaryValue().isEmpty()) {
-            if (dateTimeValues.getFilter().equals("Didn't Occur On")) {
+            if ("Didn't Occur On".equals(dateTimeValues.getFilter())) {
                 matches = true;
             }
             return matches;

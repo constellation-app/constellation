@@ -167,6 +167,7 @@ public class AdvancedFindTab extends Tab {
      * Updates the buttons at the bottom of the tab to match the tab selection
      */
     public void updateButtons() {
+        //Clears all existing buttons, then adds this panes buttons
         buttonsHBox.getChildren().clear();
         buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
 
@@ -178,7 +179,7 @@ public class AdvancedFindTab extends Tab {
      * Gets the currently selected lookForChoiceBox selection as a graph element
      * type
      *
-     * @return
+     * @return the selected graph element type
      */
     public GraphElementType getSelectedGraphElementType() {
         return GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
@@ -239,13 +240,16 @@ public class AdvancedFindTab extends Tab {
      * @param type
      */
     public void deleteCriteriaPane(final AdvancedCriteriaBorderPane pane, final GraphElementType type, final int index) {
+        //Retrieve the corresponding criteria list and grid pane for the type
         final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
         final GridPane gridPane = getCorrespondingGridPane(type);
 
+        // clear everything
         criteriaList.remove(pane);
         gridPane.getChildren().remove(pane);
         gridPane.getChildren().removeAll(gridPane.getChildren());
 
+        // re add all criteriapanes with the one at the specified index removed
         int i = 0;
         for (final AdvancedCriteriaBorderPane cirteriaPane : criteriaList) {
             if (i == index) {
@@ -254,6 +258,7 @@ public class AdvancedFindTab extends Tab {
             gridPane.add(cirteriaPane, 0, i);
             i++;
         }
+        // update the grid colours to match the new list order
         updateGridColours(type);
     }
 
@@ -264,13 +269,16 @@ public class AdvancedFindTab extends Tab {
      * @param type
      */
     public void addCriteriaPane(final GraphElementType type) {
+        //Retrieve the corresponding criteria list and grid pane for the type
         final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
         final GridPane gridPane = getCorrespondingGridPane(type);
+
         // adds a new StrinCriteriaPanel to the end of the criteriaPaneList
         criteriaList.add(new StringCriteriaPanel(this, "Identifier", getSelectedGraphElementType()));
         gridPane.add(criteriaList.get(criteriaList.size() - 1), 0, gridPane.getRowCount());
         GridPane.setHgrow(criteriaList.get(criteriaList.size() - 1), Priority.ALWAYS);
 
+        // update the grid colours to match the new list order
         updateGridColours(type);
     }
 
@@ -335,6 +343,7 @@ public class AdvancedFindTab extends Tab {
      * @return
      */
     private AdvancedCriteriaBorderPane getNewCriteriaPanel(final String attributeType, final String attributeName, final GraphElementType type) {
+        //Switch statement to determine what type of panel is being requested
         switch (attributeType) {
             case StringAttributeDescription.ATTRIBUTE_NAME:
                 return new StringCriteriaPanel(this, attributeName, type);
@@ -476,39 +485,88 @@ public class AdvancedFindTab extends Tab {
         return lookForChoiceBox;
     }
 
+    /**
+     * Gets the currentSelectionChoiceBox. This contains: Ignore, Add To, Remove
+     * From and Find In
+     *
+     * @return currentSelectionChoiceBox
+     */
     public ChoiceBox<String> getCurrentSelectionChoiceBox() {
         return currentSelectionChoiceBox;
     }
 
+    /**
+     * Gets the matchCriteriaChoiceBox.This contains: All and Any
+     *
+     * @return matchCriteriaChoiceBox
+     */
+    public ChoiceBox<String> getMatchCriteriaChoiceBox() {
+        return matchCriteriaChoiceBox;
+    }
+
+    /**
+     * Gets the nodeFindCriteriaList. This is the list off all
+     * advancedCriteriaBorderPanes for type Vertex
+     *
+     * @return nodeFindCriteriaList
+     */
     public List<AdvancedCriteriaBorderPane> getNodeFindCriteriaList() {
         return nodeFindCriteriaList;
     }
 
+    /**
+     * Gets the transactionFindCriteriaList. This is the list off all
+     * advancedCriteriaBorderPanes for type Transaction
+     *
+     * @return transactionFindCriteriaList
+     */
     public List<AdvancedCriteriaBorderPane> getTransactionFindCriteriaList() {
         return transactionFindCriteriaList;
     }
 
+    /**
+     * Gets the addButton
+     *
+     * @return addCriteriaPaneButton
+     */
     public Button getAddButton() {
         return addCriteriaPaneButton;
     }
 
+    /**
+     * Gets the FindNextButton
+     *
+     * @return findNextButton
+     */
     public Button getFindNextButton() {
         return findNextButton;
     }
 
+    /**
+     * Gets the findPrevButton
+     *
+     * @return findPrevButton
+     */
     public Button getFindPrevButton() {
         return findPrevButton;
     }
 
+    /**
+     * Gets the findAllButton
+     *
+     * @return findAllButton
+     */
     public Button getFindAllButton() {
         return findAllButton;
     }
 
+    /**
+     * Gets the searchAllGraphs
+     *
+     * @return searchAllGraphs
+     */
     public CheckBox getSearchAllGraphs() {
         return searchAllGraphs;
     }
 
-    public ChoiceBox<String> getMatchCriteriaChoiceBox() {
-        return matchCriteriaChoiceBox;
-    }
 }

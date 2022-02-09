@@ -90,22 +90,48 @@ public class AdvancedSearchParameters {
         this.searchAllGraphs = parameters.searchAllGraphs;
     }
 
+    /**
+     * Gets the criteriaValuesList. This contains a list of all the
+     * findCriteriaValues
+     *
+     * @return
+     */
     public List<FindCriteriaValues> getCriteriaValuesList() {
         return criteriaValuesList;
     }
 
+    /**
+     * gets the graphElementType of the object.
+     *
+     * @return
+     */
     public GraphElementType getGraphElementType() {
         return graphElementType;
     }
 
+    /**
+     * Gets the All or Any string
+     *
+     * @return
+     */
     public String getAllOrAny() {
         return allOrAny;
     }
 
+    /**
+     * Gets the currentSelection string
+     *
+     * @return
+     */
     public String getCurrentSelection() {
         return currentSelection;
     }
 
+    /**
+     * Gets the isSearchAllGraphs boolean value
+     *
+     * @return
+     */
     public boolean isSearchAllGraphs() {
         return searchAllGraphs;
     }
@@ -137,20 +163,27 @@ public class AdvancedSearchParameters {
         if (currentSelection == parameters.getCurrentSelection()) {
             matches++;
         }
+
+        // if the size is the same to the new object. continue
         int i = 0;
         if (criteriaValuesList.size() == parameters.getCriteriaValuesList().size()) {
+            // for each value in the criteriaValuesList
             for (FindCriteriaValues values : criteriaValuesList) {
+                // if the two objects have different attributes return false
                 if (!values.getAttribute().equals(parameters.getCriteriaValuesList().get(i).getAttribute())
                         || !values.getAttributeType().equals(parameters.getCriteriaValuesList().get(i).getAttributeType())
                         || !values.getFilter().equals(parameters.getCriteriaValuesList().get(i).getFilter())) {
                     return false;
                 }
+                // if the two objects attributeType is the same. continue
                 if (values.getAttributeType().equals(parameters.getCriteriaValuesList().get(i).getAttributeType())) {
+                    // determine the attribute type and handle the comparison appropriately
+                    // for the object comparion all values must be identical
                     switch (values.getAttributeType()) {
+                        // treat values as strings
                         case StringAttributeDescription.ATTRIBUTE_NAME:
                             StringCriteriaValues stringParameterValues = (StringCriteriaValues) values;
                             StringCriteriaValues stringActualValues = (StringCriteriaValues) parameters.getCriteriaValuesList().get(i);
-
                             if (!stringParameterValues.isIgnoreCase() == stringActualValues.isIgnoreCase()
                                     || !stringParameterValues.isUseList() == stringActualValues.isUseList()
                                     || (!stringActualValues.isUseList() && !stringParameterValues.getText().equals(stringActualValues.getText()))
@@ -158,6 +191,7 @@ public class AdvancedSearchParameters {
                                 return false;
                             }
                             break;
+                        // treat values as floats
                         case FloatAttributeDescription.ATTRIBUTE_NAME:
                             FloatCriteriaValues floatParameterValues = (FloatCriteriaValues) values;
                             FloatCriteriaValues floatActualValues = (FloatCriteriaValues) parameters.getCriteriaValuesList().get(i);
@@ -166,6 +200,7 @@ public class AdvancedSearchParameters {
                                 return false;
                             }
                             break;
+                        // treat values as booleans
                         case BooleanAttributeDescription.ATTRIBUTE_NAME:
                             BooleanCriteriaValues boolParameterValues = (BooleanCriteriaValues) values;
                             BooleanCriteriaValues boolActualValues = (BooleanCriteriaValues) parameters.getCriteriaValuesList().get(i);
@@ -173,6 +208,7 @@ public class AdvancedSearchParameters {
                                 return false;
                             }
                             break;
+                        // treat values as colors
                         case ColorAttributeDescription.ATTRIBUTE_NAME:
                             ColourCriteriaValues colourParameterValues = (ColourCriteriaValues) values;
                             ColourCriteriaValues colourActualValues = (ColourCriteriaValues) parameters.getCriteriaValuesList().get(i);
@@ -180,6 +216,7 @@ public class AdvancedSearchParameters {
                                 return false;
                             }
                             break;
+                        // treat values as dateTimes
                         case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME:
                             DateTimeCriteriaValues dateTimeParameterValues = (DateTimeCriteriaValues) values;
                             DateTimeCriteriaValues dateTimeActualValues = (DateTimeCriteriaValues) parameters.getCriteriaValuesList().get(i);
@@ -188,6 +225,7 @@ public class AdvancedSearchParameters {
                                 return false;
                             }
                             break;
+                        // treat values as icons
                         case IconAttributeDescription.ATTRIBUTE_NAME:
                             IconCriteriaValues iconParameterValues = (IconCriteriaValues) values;
                             IconCriteriaValues iconActualValues = (IconCriteriaValues) parameters.getCriteriaValuesList().get(i);
@@ -201,10 +239,13 @@ public class AdvancedSearchParameters {
                 }
                 i++;
             }
-
         } else {
             return false;
         }
+        /**
+         * matches will == 4 if all criteria of object a is the same as object
+         * b. It will return false if there is any criteria that doesn't match
+         */
         return matches == 4;
     }
 

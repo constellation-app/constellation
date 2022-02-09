@@ -105,7 +105,7 @@ public class DateTimeSelector extends Stage {
 
         // If a string time is passed parse it and format it to be displayed in
         // the window in the spinners
-        if (!time.equals("")) {
+        if (!"".equals(time)) {
             final String[] splitTime = time.split(":");
             final String[] splitMiliSeconds = splitTime[2].split("\\.");
             hourSpinner.getValueFactory().setValue(Integer.parseInt(splitTime[0]));
@@ -124,7 +124,7 @@ public class DateTimeSelector extends Stage {
         datePickerLabel.setLabelFor(datePicker);
 
         // Set the date picker value to the date passed in or the default date
-        datePicker.setValue(!date.equals("") ? LocalDate.parse(date) : LocalDate.now(TimeZoneUtilities.UTC));
+        datePicker.setValue(!"".equals(date) ? LocalDate.parse(date) : LocalDate.now(TimeZoneUtilities.UTC));
 
         // set the labels for each of the spinners
         final Label hourSpinnerLabel = new Label("hr:");
@@ -170,9 +170,9 @@ public class DateTimeSelector extends Stage {
 
         // Get a list of all the zoneId and add them to timeZones
         final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
-        ZoneId.getAvailableZoneIds().forEach(id -> {
-            timeZones.add(ZoneId.of(id));
-        });
+        ZoneId.getAvailableZoneIds().forEach(id
+                -> timeZones.add(ZoneId.of(id))
+        );
 
         // for each of the timeZones zoneIds format them and add them to
         // the timeZoneComboBox
@@ -183,14 +183,13 @@ public class DateTimeSelector extends Stage {
         }
         // if the timeZone is not the default format it so it can be read
         // as a zoneID
-
         String selectedTimeZone = "";
-        if (!timeZone.equals("")) {
+        if (!"".equals(timeZone)) {
             selectedTimeZone = timeZone.split("\\[")[1].replace("]", "");
         }
 
         // select the default timeZone or the one passed in
-        timeZoneComboBox.getSelectionModel().select(!selectedTimeZone.equals("") ? selectedTimeZone : TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC));
+        timeZoneComboBox.getSelectionModel().select(!"".equals(selectedTimeZone) ? selectedTimeZone : TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC));
 
         final Label timeZoneLabel = new Label("Time Zone:");
         timeZoneLabel.setLabelFor(timeZoneComboBox);

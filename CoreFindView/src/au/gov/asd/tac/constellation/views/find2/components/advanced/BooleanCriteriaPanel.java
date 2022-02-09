@@ -35,7 +35,6 @@ import javafx.scene.layout.Priority;
 public class BooleanCriteriaPanel extends AdvancedCriteriaBorderPane {
 
     private final TextField searchField = new TextField();
-
     private final ToggleGroup toggleGroup = new ToggleGroup();
     private final RadioButton trueToggle = new RadioButton("True");
     private final RadioButton falseToggle = new RadioButton("False");
@@ -64,6 +63,11 @@ public class BooleanCriteriaPanel extends AdvancedCriteriaBorderPane {
 
     }
 
+    /**
+     * Returns true if the trueToggle is selected. False if otherwise.
+     *
+     * @return true if the trueToggle is selected. False if otherwise.
+     */
     private boolean isSelectedBoolean() {
         return trueToggle.isSelected();
     }
@@ -79,6 +83,12 @@ public class BooleanCriteriaPanel extends AdvancedCriteriaBorderPane {
         return new BooleanCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), isSelectedBoolean());
     }
 
+    /**
+     * Overrides the parents getType function to return the correct type name
+     * being "boolean"
+     *
+     * @return
+     */
     @Override
     public String getType() {
         return BooleanAttributeDescription.ATTRIBUTE_NAME;

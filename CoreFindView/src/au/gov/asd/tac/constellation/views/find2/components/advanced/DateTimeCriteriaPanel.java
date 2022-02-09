@@ -297,6 +297,12 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
         return new DateTimeCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), dateTimeStringPrimary);
     }
 
+    /**
+     * Overrides the parents getType function to return the correct type name
+     * being "dateTime"
+     *
+     * @return
+     */
     @Override
     public String getType() {
         return ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME;

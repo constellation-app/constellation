@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues;
 
 /**
+ * This Class is the parent class for all the criteriaValueObjects
  *
  * @author Atlas139mkm
  */
@@ -31,14 +32,29 @@ public class FindCriteriaValues {
         this.filter = filter;
     }
 
+    /**
+     * Gets the type of attribute the criteriaValue is. Eg "String"
+     *
+     * @return
+     */
     public String getAttributeType() {
         return attributeType;
     }
 
+    /**
+     * Gets the attribute of the criteriaValue Eg "Identifier"
+     *
+     * @return
+     */
     public String getAttribute() {
         return attribute;
     }
 
+    /**
+     * Gets the filter of the criteriaValue. Eg "Starts With" for string
+     *
+     * @return
+     */
     public String getFilter() {
         return filter;
     }

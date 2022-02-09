@@ -46,8 +46,6 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
     private final AdvancedFindTab parentComponent;
     private final String type;
     private final String attributeName;
-    private final GraphElementType graphElementType;
-
     private final VBox vbox = new VBox();
     private final HBox hboxTop = new HBox();
     private final HBox hboxBot = new HBox();
@@ -63,7 +61,6 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
     public AdvancedCriteriaBorderPane(final AdvancedFindTab parentComponent, final String attributeName, final GraphElementType graphElementType) {
         this.type = "none";
         this.parentComponent = parentComponent;
-        this.graphElementType = graphElementType;
         this.attributeName = attributeName;
         setGridContent();
 
@@ -171,50 +168,112 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
         return stringList;
     }
 
+    /**
+     * Creates a new FindCriteriaValues Object passing the attribute type (eg.
+     * String), the attributes name, the current selected filterChoiceBox item.
+     *
+     * @return new FindCriteriaValues Object
+     */
     public FindCriteriaValues getCriteriaValues() {
         return new FindCriteriaValues(type, attributeName, getFilterChoiceBox().getSelectionModel().getSelectedItem());
     }
 
+    /**
+     * Gets the attributeName
+     *
+     * @return attributeName
+     */
     public String getAttributeName() {
         return attributeName;
     }
 
+    /**
+     * Gets the filterChoiceBox
+     *
+     * @return filterChoiceBox
+     */
     public ChoiceBox<String> getFilterChoiceBox() {
         return filterChoiceBox;
     }
 
+    /**
+     * Gets the attributesList
+     *
+     * @return attributesList
+     */
     public List<Attribute> getAttributesList() {
         return attributesList;
     }
 
+    /**
+     * Gets the typeChoiceBox
+     *
+     * @return typeChoiceBox
+     */
     public ChoiceBox<String> getTypeChoiceBox() {
         return typeChoiceBox;
     }
 
+    /**
+     * Gets the type. For example this would be "String" if the
+     * criteriaBorderPane is of type StringCriteriaPanel.
+     *
+     * @return type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Gets the hboxTop
+     *
+     * @return hboxTop
+     */
     public HBox getHboxTop() {
         return hboxTop;
     }
 
+    /**
+     * Gets the hboxBot
+     *
+     * @return hboxBot
+     */
     public HBox getHboxBot() {
         return hboxBot;
     }
 
+    /**
+     * Gets the vbox
+     *
+     * @return vbox
+     */
     public VBox getVbox() {
         return vbox;
     }
 
+    /**
+     * Gets the string to be displayed. For the parent object this is "none"
+     *
+     * @return "none"
+     */
     public String getDisplayString() {
         return "none";
     }
 
+    /**
+     * Gets the updateUI value. Refer to FindViewTopComonent updateUI function
+     * for why this exists
+     *
+     * @return updateUI
+     */
     public boolean isUpdateUI() {
         return updateUI;
     }
 
+    /**
+     * Sets the updateUI Value. Refer to FindViewTopComonent updateUI function
+     * for why this exists
+     */
     public void setUpdateUI(final boolean update) {
         updateUI = update;
     }

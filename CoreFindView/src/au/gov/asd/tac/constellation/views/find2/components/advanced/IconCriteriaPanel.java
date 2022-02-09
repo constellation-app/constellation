@@ -113,6 +113,12 @@ public class IconCriteriaPanel extends AdvancedCriteriaBorderPane {
         return new IconCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(), chosenIcon);
     }
 
+    /**
+     * Overrides the parents getType function to return the correct type name
+     * being "icon"
+     *
+     * @return
+     */
     @Override
     public String getType() {
         return IconAttributeDescription.ATTRIBUTE_NAME; //To change body of generated methods, choose Tools | Templates.
