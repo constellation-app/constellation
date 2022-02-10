@@ -84,13 +84,13 @@ public class AdvancedFindTabNGTest {
     private static final Logger LOGGER = Logger.getLogger(BasicFindTabNGTest.class.getName());
 
     public AdvancedFindTabNGTest() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass

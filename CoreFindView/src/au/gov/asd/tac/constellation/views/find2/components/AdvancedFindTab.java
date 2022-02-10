@@ -389,7 +389,7 @@ public class AdvancedFindTab extends Tab {
      * @param type
      * @return
      */
-    private GridPane getCorrespondingGridPane(final GraphElementType type) {
+    public GridPane getCorrespondingGridPane(final GraphElementType type) {
         return (type == GraphElementType.VERTEX ? nodeFindCriteriaGrid : transactionFindCriteriaGrid);
     }
 

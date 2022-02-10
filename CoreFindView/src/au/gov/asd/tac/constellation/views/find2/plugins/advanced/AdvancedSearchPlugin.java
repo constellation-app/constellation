@@ -630,7 +630,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             return matches;
         }
         // convert the string date time into a zonedDateTime for comparisons
-
         final String[] splitDateTime = dateTimeValues.getDateTimeStringPrimaryValue().split(" ");
         final String parseFormatedString = splitDateTime[0] + "T" + splitDateTime[1] + splitDateTime[2];
         final ZonedDateTime valueDateTime = ZonedDateTime.parse(parseFormatedString);

@@ -93,4 +93,5 @@ public class BooleanCriteriaPanel extends AdvancedCriteriaBorderPane {
     public String getType() {
         return BooleanAttributeDescription.ATTRIBUTE_NAME;
     }
+
 }

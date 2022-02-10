@@ -125,4 +125,13 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
     public String getType() {
         return FloatAttributeDescription.ATTRIBUTE_NAME;
     }
+
+    public TextField getSearchField() {
+        return searchField;
+    }
+
+    public TextField getSearchFieldTwo() {
+        return searchFieldTwo;
+    }
+
 }
