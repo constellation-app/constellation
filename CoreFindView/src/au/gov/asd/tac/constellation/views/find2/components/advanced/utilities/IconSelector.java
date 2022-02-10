@@ -152,7 +152,6 @@ public class IconSelector extends Stage {
             }
         }
         rootNode.setExpanded(true);
-
     }
 
     /**
@@ -188,7 +187,6 @@ public class IconSelector extends Stage {
                 iconListView.getSelectionModel().select(node);
             }
         }
-
     }
 
     /**

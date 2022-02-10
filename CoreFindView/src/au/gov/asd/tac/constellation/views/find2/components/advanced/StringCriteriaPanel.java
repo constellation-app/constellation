@@ -178,10 +178,4 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
     public String getType() {
         return "string"; //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public String getDisplayString() {
-        return "";
-    }
-
 }
