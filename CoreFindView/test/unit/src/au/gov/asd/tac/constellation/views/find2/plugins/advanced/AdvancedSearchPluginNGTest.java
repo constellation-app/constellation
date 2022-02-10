@@ -35,11 +35,13 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalu
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.IconCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.StringCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
@@ -62,9 +64,9 @@ public class AdvancedSearchPluginNGTest {
     private int labelV, identifierV, xV, dimV, colorV, iconV, dateTimeT, labelT, identiferT, widthT;
     private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
 
-    private ZonedDateTime testTime = ZonedDateTime.now();
-    private ZonedDateTime plus1YearTestTime = ZonedDateTime.now().plusYears(1);
-    private ZonedDateTime plus2YearTestTime = ZonedDateTime.now().plusYears(2);
+    private ZonedDateTime testTime = ZonedDateTime.of(2022, 02, 02, 22, 22, 22, 222222222, ZoneId.systemDefault());
+    private ZonedDateTime plus1YearTestTime = ZonedDateTime.of(2022, 02, 02, 22, 22, 22, 222222222, ZoneId.systemDefault()).plusYears(1);
+    private ZonedDateTime plus2YearTestTime = ZonedDateTime.of(2022, 02, 02, 22, 22, 22, 222222222, ZoneId.systemDefault()).plusYears(2);
     private static final Logger LOG = Logger.getLogger(AdvancedSearchPluginNGTest.class.getName());
 
     public AdvancedSearchPluginNGTest() {
@@ -95,9 +97,13 @@ public class AdvancedSearchPluginNGTest {
 
         setupGraph();
         GraphElementType elementType = GraphElementType.VERTEX;
-        String all = "All";
-        String any = "Any";
-        String ignore = "Ignore";
+        final String all = "All";
+        final String any = "Any";
+        final String ignore = "Ignore";
+        final String addTo = "Add To";
+        final String removeFrom = "Remove From";
+        final String findIn = "Find In";
+
         boolean searchAllGraphs = false;
 
         //STRING | VERTEX | MATCH ANY CRITERIA | INGORE CURRENT SELECTION | SEARCH 1 GRAPH
@@ -390,6 +396,10 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
+        LOG.log(Level.SEVERE, dateTimeCriteriaValue.getDateTimeStringPrimaryValue());
+        LOG.log(Level.SEVERE, dateTimeCriteriaValue.getDateTimeStringPrimaryValue());
+        LOG.log(Level.SEVERE, rg.getObjectValue(dateTimeT, txId1).toString());
+
         assertEquals(rg.getBooleanValue(selectedT, txId1), true);
         assertEquals(rg.getBooleanValue(selectedT, txId2), true);
         assertEquals(rg.getBooleanValue(selectedT, txId3), false);
@@ -510,6 +520,130 @@ public class AdvancedSearchPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
 
         rg.close();
+
+        //Test find next
+        findCriteriaValuesList = new ArrayList<>();
+        stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Is", "identifer name", true, false);
+        findCriteriaValuesList.add(stringCriteriaValue1);
+
+        elementType = GraphElementType.VERTEX;
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+
+        advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, true);
+        PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
+
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+
+        rg.close();
+
+        advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, true);
+        PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
+
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+
+        rg.close();
+
+        advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, true);
+        PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
+
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+
+        rg.close();
+
+        //Test find prev
+        elementType = GraphElementType.VERTEX;
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+
+        advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, false);
+        PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
+
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+
+        rg.close();
+
+        advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, false);
+        PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+        rg = graph.getReadableGraph();
+
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+
+        rg.close();
+
+        //Test add to
+        elementType = GraphElementType.VERTEX;
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+
+        advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
+        PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+
+        WritableGraph wg = graph.getWritableGraph("", true);
+        wg.setBooleanValue(selectedV, vxId6, true);
+        wg.setBooleanValue(selectedV, vxId7, true);
+        wg.commit();
+
+        rg = graph.getReadableGraph();
+
+        assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId7), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+
+        rg.close();
+
+        //Test Remove From
+        elementType = GraphElementType.VERTEX;
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, removeFrom, searchAllGraphs);
+
+        advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
+        PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+
+        rg = graph.getReadableGraph();
+
+        //all but vxId6 match the criteria, so vxId6 remains selected
+        assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+
+        rg.close();
+
+        //Test Find In
+        elementType = GraphElementType.VERTEX;
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, findIn, searchAllGraphs);
+
+        advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
+        PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+
+        wg = graph.getWritableGraph("", true);
+        wg.setBooleanValue(selectedV, vxId1, true);
+        wg.setBooleanValue(selectedV, vxId2, true);
+        wg.commit();
+
+        rg = graph.getReadableGraph();
+
+        // vxId3 is not selected so will not be considered in the
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+
+        rg.close();
+
     }
 
     /**
