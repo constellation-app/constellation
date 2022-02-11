@@ -255,12 +255,12 @@ public class DataAccessTabPane {
                     tab.setGraphic(label);
                     String newDefaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().indexOf(tab) + 1);
 
-                    if (field.getText() == null || field.getText().trim().equals("")) {
+                    if (field.getText() == null || StringUtils.isBlank(field.getText())) {
                         Label currentDefaultCaption = (Label) tab.getGraphic();
                         currentDefaultCaption.setText(newDefaultCaption);
                         tab.setText(null);
 
-                    } else if (field.getText().trim().equals(newDefaultCaption)) {
+                    } else if (newDefaultCaption.equals(field.getText().trim())) {
                         tab.setText(null);
                     } else {
                         tab.setText("- " + newDefaultCaption);
