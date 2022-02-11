@@ -23,6 +23,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.openide.util.ImageUtilities;
@@ -42,6 +44,8 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class IconManagerNGTest {
+    
+    private static final Logger LOGGER = Logger.getLogger(IconManagerNGTest.class.getName());
 
     private final static Map<String, ConstellationIcon> TEST_CACHE = new HashMap<>();
 
@@ -78,6 +82,7 @@ public class IconManagerNGTest {
                     .build();
             icon3.setEditable(false);
 
+            // required so that the icons can be removed later
             IconManager.addIcon(icon1);
             IconManager.addIcon(icon2);
             IconManager.addIcon(icon3);
@@ -93,6 +98,18 @@ public class IconManagerNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // clear the test cache
+        TEST_CACHE.clear();
+        // remove the test icons
+        final URL exampleIcon = IconManagerNGTest.class.getResource("resources/");
+        final File testFile = new File(exampleIcon.toURI());
+        final String iconDirectory = testFile.getAbsolutePath();
+        for (int i = 1; i <= 3; i++) {
+            final File iconFile = new File(iconDirectory, "Test" + i + ConstellationIcon.DEFAULT_ICON_SEPARATOR + ConstellationIcon.DEFAULT_ICON_FORMAT);
+            if (iconFile.exists() && !iconFile.delete()) {
+                LOGGER.log(Level.WARNING, "File was not deleted properly");
+            }
+        }
     }
 
     @BeforeMethod
@@ -147,32 +164,25 @@ public class IconManagerNGTest {
     }
 
     /**
-     * Test of getCustomProvider
-     */
-    @Test
-    public void testGetCustomProvider() {
-        // Check that the same provider is called
-        assertEquals(IconManager.getCustomProvider().getClass(), new DefaultCustomIconProvider().getClass());
-    }
-
-    /**
      * Test of getIconNames
      */
     @Test
     public void testGetIconNames() {
-        try (MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class)) {
+        try (MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class, Mockito.CALLS_REAL_METHODS)) {
             iconManagerMock.when(() -> IconManager.getCache()).thenReturn(TEST_CACHE);
             // Test when editable boolean is set to true
+            // Since all custom icons are made editable, this should be the whole test cache
             final Set<String> namesTrue = IconManager.getIconNames(true);
-            assertEquals(namesTrue.size(), 0);
+            assertEquals(namesTrue.size(), 3);
 
             // Test when editable boolean is set to false
+            // Since all custom icons are made editable, this should be empty
             final Set<String> namesFalse = IconManager.getIconNames(false);
             assertEquals(namesFalse.size(), 0);
 
             // Test when editable boolean is set to null
             final Set<String> namesNull = IconManager.getIconNames(null);
-            assertEquals(namesNull.size(), 0);
+            assertEquals(namesNull.size(), 3);
         }
     }
 
@@ -181,14 +191,17 @@ public class IconManagerNGTest {
      */
     @Test
     public void testIconExists() {
-        final boolean result1 = IconManager.iconExists("Test1");
-        assertTrue(result1);
+        try (MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class, Mockito.CALLS_REAL_METHODS)) {
+            iconManagerMock.when(() -> IconManager.getCache()).thenReturn(TEST_CACHE);
+            final boolean result1 = IconManager.iconExists("Test1");
+            assertTrue(result1);
 
-        final boolean result2 = IconManager.iconExists("Test2");
-        assertTrue(result2);
+            final boolean result2 = IconManager.iconExists("Test2");
+            assertTrue(result2);
 
-        final boolean result3 = IconManager.iconExists("TestDoesNotExist");
-        assertFalse(result3);
+            final boolean result3 = IconManager.iconExists("TestDoesNotExist");
+            assertFalse(result3);
+        }
     }
 
     /**
@@ -196,14 +209,17 @@ public class IconManagerNGTest {
      */
     @Test
     public void testGetIcon() {
-        // Get an icon that exists
-        final ConstellationIcon testIcon = IconManager.getIcon("Test1");
-        assertEquals(testIcon.getName(), "Test1");
+        try (MockedStatic<IconManager> iconManagerMock = Mockito.mockStatic(IconManager.class, Mockito.CALLS_REAL_METHODS)) {
+            iconManagerMock.when(() -> IconManager.getCache()).thenReturn(TEST_CACHE);
+            // Get an icon that exists
+            final ConstellationIcon testIcon = IconManager.getIcon("Test1");
+            assertEquals(testIcon.getName(), "Test1");
 
-        // Try to get an icon that does not exist
-        // Will create a new icon using createMissingIcon
-        final ConstellationIcon nullIcon = IconManager.getIcon("TestDoesNotExist1");
-        assertEquals(nullIcon.getName(), "TestDoesNotExist1");
+            // Try to get an icon that does not exist
+            // Will create a new icon using createMissingIcon
+            final ConstellationIcon nullIcon = IconManager.getIcon("TestDoesNotExist1");
+            assertEquals(nullIcon.getName(), "TestDoesNotExist1");
+        }
     }
 
     /**
