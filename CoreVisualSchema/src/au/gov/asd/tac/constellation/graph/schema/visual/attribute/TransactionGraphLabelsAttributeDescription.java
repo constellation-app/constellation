@@ -39,11 +39,7 @@ public final class TransactionGraphLabelsAttributeDescription extends AbstractOb
 
     @Override
     protected GraphLabels convertFromString(final String string) {
-        if (StringUtils.isBlank(string)) {
-            return getDefault();
-        } else {
-            return GraphLabels.valueOf(string);
-        }
+        return StringUtils.isBlank(string) ? getDefault() : GraphLabels.valueOf(string);
     }
 
     @Override

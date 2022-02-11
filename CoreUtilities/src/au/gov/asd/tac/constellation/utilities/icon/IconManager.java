@@ -50,7 +50,7 @@ public class IconManager {
      */
     public static synchronized List<? extends ConstellationIconProvider> getIconProviders() {
         if (iconProviders == null) {
-            List<? extends ConstellationIconProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationIconProvider.class));
+            final List<? extends ConstellationIconProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationIconProvider.class));
             iconProviders = Collections.unmodifiableList(providers);
         }
         return iconProviders;
@@ -129,7 +129,7 @@ public class IconManager {
      * @param icon A {@link ConstellationIcon} representing a user-defined icon.
      * @return True if the icon was successfully added, false otherwise.
      */
-    public static boolean addIcon(ConstellationIcon icon) {
+    public static boolean addIcon(final ConstellationIcon icon) {
         final boolean iconAdded = IconManager.getCustomProvider().addIcon(icon);
         rebuildCache();
         return iconAdded;
@@ -145,7 +145,7 @@ public class IconManager {
      * added user-defined icon.
      * @return True if the icon was successfully removed, false otherwise.
      */
-    public static boolean removeIcon(String iconName) {
+    public static boolean removeIcon(final String iconName) {
         final boolean iconRemoved = IconManager.getCustomProvider().removeIcon(iconName);
         rebuildCache();
         return iconRemoved;
