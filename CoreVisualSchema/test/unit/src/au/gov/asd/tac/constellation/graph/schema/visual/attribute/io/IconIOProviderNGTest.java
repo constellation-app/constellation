@@ -1,17 +1,7 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
@@ -19,7 +9,7 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.BlazeAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.mockito.ArgumentCaptor;
@@ -39,9 +29,9 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class BlazeIOProviderNGTest {
+public class IconIOProviderNGTest {
     
-    public BlazeIOProviderNGTest() {
+    public IconIOProviderNGTest() {
     }
 
     @BeforeClass
@@ -61,23 +51,23 @@ public class BlazeIOProviderNGTest {
     }
 
     /**
-     * Test of getName method, of class BlazeIOProvider.
+     * Test of getName method, of class IconIOProvider.
      */
     @Test
     public void testGetName() {
-        System.out.println("BlazeIOProvider.getName");
+        System.out.println("IconIOProvider.getName");
         
-        BlazeIOProvider instance = new BlazeIOProvider();
+        IconIOProvider instance = new IconIOProvider();
         String result = instance.getName();
-        assertEquals(result, BlazeAttributeDescription.ATTRIBUTE_NAME);
+        assertEquals(result, IconAttributeDescription.ATTRIBUTE_NAME);
     }
 
     /**
-     * Test of readObject method, of class BlazeIOProvider.
+     * Test of readObject method, of class IconIOProvider.
      */
     @Test
     public void testReadObject() throws Exception {
-        System.out.println("BlazeIOProvider.readObject");
+        System.out.println("IconIOProvider.readObject");;
         
         final JsonNode mockJsonNode = mock(JsonNode.class);
         final GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
@@ -87,7 +77,7 @@ public class BlazeIOProviderNGTest {
         String attribValue = new String("TestAttrib");
         
         // Create object under test
-        BlazeIOProvider instance = new BlazeIOProvider();
+        IconIOProvider instance = new IconIOProvider();
         
         // Create captors for arguments to graph.setStringValue
         final ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
@@ -97,6 +87,7 @@ public class BlazeIOProviderNGTest {
         // Call method under test with JsonNode set to returen isNull = true
         when(mockJsonNode.isNull()).thenReturn(true);
         when(mockJsonNode.textValue()).thenReturn(attribValue);
+        // TODO - cache needs to be non null
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
         
         // Call method under test with JsonNode set to returen isNull = false
@@ -114,11 +105,11 @@ public class BlazeIOProviderNGTest {
     }
 
     /**
-     * Test of writeObject method, of class BlazeIOProvider.
+     * Test of writeObject method, of class IconIOProvider.
      */
     @Test
     public void testWriteObject() throws Exception {
-        System.out.println("BlazeIOProvider.writeObject");
+        System.out.println("IconIOProvider.writeObject");
         
         final JsonGenerator mockJsonGenerator = mock(JsonGenerator.class);
         final GraphReadMethods mockGraph = mock(GraphReadMethods.class);
@@ -134,7 +125,7 @@ public class BlazeIOProviderNGTest {
             null, null);
        
         // Create object under test
-        BlazeIOProvider instance = new BlazeIOProvider();
+        IconIOProvider instance = new IconIOProvider();
         
         // Create captors for arguments to graph.setStringValue
         final ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
