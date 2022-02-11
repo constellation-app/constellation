@@ -45,18 +45,14 @@ public class ColorAttributeInteraction extends AbstractAttributeInteraction<Cons
         if (value == null) {
             return null;
         }
-        ConstellationColor colorValue = (ConstellationColor) value;
+        final ConstellationColor colorValue = (ConstellationColor) value;
 
-        String strValue = colorValue.getName();
-        if (StringUtils.isBlank(strValue)) {
-            strValue = colorValue.getHtmlColor();
-        }
-        return strValue;
+        return StringUtils.isNotBlank(colorValue.getName()) ? colorValue.getName() : colorValue.getHtmlColor();
     }
 
     @Override
     public List<Node> getDisplayNodes(final Object attrVal, final double width, final double height) {
-        ConstellationColor colorValue = (ConstellationColor) attrVal;
+        final ConstellationColor colorValue = (ConstellationColor) attrVal;
         final double rectWidth;
         if (width == -1) {
             rectWidth = height == -1 ? DEFAULT_NODE_SIZE : height;
