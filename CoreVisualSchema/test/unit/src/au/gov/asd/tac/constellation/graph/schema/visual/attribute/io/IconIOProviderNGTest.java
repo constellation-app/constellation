@@ -10,10 +10,13 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -71,6 +74,7 @@ public class IconIOProviderNGTest {
         
         final JsonNode mockJsonNode = mock(JsonNode.class);
         final GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
+        final ImmutableObjectCache mockCache = mock(ImmutableObjectCache.class);
         
         int attributeId = 23;
         int elementId = 41;
@@ -87,18 +91,19 @@ public class IconIOProviderNGTest {
         // Call method under test with JsonNode set to returen isNull = true
         when(mockJsonNode.isNull()).thenReturn(true);
         when(mockJsonNode.textValue()).thenReturn(attribValue);
+        when(mockCache.deduplicate(anyObject())).thenReturn(attribValue);
         // TODO - cache needs to be non null
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, mockCache);
         
         // Call method under test with JsonNode set to returen isNull = false
         when(mockJsonNode.isNull()).thenReturn(false);
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, mockCache);
         
         // Verify calls to graph.setStringValue are as expected across 2 calls
         Mockito.verify(mockGraph, times(2)).setStringValue(captorAtributeId.capture(), captorElementId.capture(), captorAtributeValue.capture());
         assertEquals((int)captorAtributeId.getAllValues().get(0), attributeId);
         assertEquals((int)captorElementId.getAllValues().get(0), elementId);
-        assertEquals(captorAtributeValue.getAllValues().get(0), null);
+        assertEquals(captorAtributeValue.getAllValues().get(0), attribValue);
         assertEquals((int)captorAtributeId.getAllValues().get(1), attributeId);
         assertEquals((int)captorElementId.getAllValues().get(1), elementId);
         assertEquals(captorAtributeValue.getAllValues().get(1), attribValue); 
