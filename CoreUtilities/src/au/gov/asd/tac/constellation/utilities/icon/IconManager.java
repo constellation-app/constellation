@@ -51,7 +51,7 @@ public class IconManager {
      */
     public static synchronized List<? extends ConstellationIconProvider> getIconProviders() {
         if (iconProviders == null) {
-            List<? extends ConstellationIconProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationIconProvider.class));
+            final List<? extends ConstellationIconProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationIconProvider.class));
             iconProviders = Collections.unmodifiableList(providers);
         }
         return iconProviders;
