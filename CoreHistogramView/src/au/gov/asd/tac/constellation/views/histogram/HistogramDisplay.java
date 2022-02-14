@@ -79,7 +79,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private static final int GAP_BETWEEN_BARS = 5;
     static final int MINIMUM_BAR_HEIGHT = FontUtilities.getApplicationFontSize() <= 18 ? 18 : FontUtilities.getApplicationFontSize();
     static final int MAXIMUM_BAR_HEIGHT = FontUtilities.getApplicationFontSize() <= 18 ? 18 : FontUtilities.getApplicationFontSize() + 10;
-    private static final int PREFERRED_BAR_LENGTH = 200;
+    private static final int PREFERRED_BAR_LENGTH = 400;
     private static final int MINIMUM_BAR_WIDTH = 4;
     private static final int MINIMUM_SELECTED_WIDTH = 3;
     private static final int MINIMUM_TEXT_WIDTH = 100;
@@ -242,9 +242,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private void calculateTextAndBarLength(Graphics g, int padding) {
         final int parentWidth = getParent().getWidth();
         final int preferredTextWidth = getPreferredTextWidth(g);
+        textWidth = MINIMUM_TEXT_WIDTH;
 
         if (parentWidth < LEFT_MARGIN + padding + MINIMUM_TEXT_WIDTH + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
-            textWidth = MINIMUM_TEXT_WIDTH;
             barsWidth = Math.max(1, parentWidth - LEFT_MARGIN - padding - MINIMUM_TEXT_WIDTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN);
 
         } else { // Bars are at desired length. Expand text space unless it is already sufficient
@@ -302,7 +302,6 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
             // We want to get the width of the widest text so we know how much space to reserve for text.
             final int correction = setFontToFit(g2, barHeight);
-            textWidth = getPreferredTextWidth(g2);
 
             g2.setColor(BACKGROUND_COLOR);
             g2.fillRect(0, 0, getWidth(), preferredHeight - 1);
