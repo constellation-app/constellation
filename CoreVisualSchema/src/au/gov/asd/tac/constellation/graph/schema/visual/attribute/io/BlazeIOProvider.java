@@ -30,6 +30,8 @@ import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * IOProvider for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.visual.attribute.BlazeAttributeDescription}
  *
  * @author twinkle2_little
  */

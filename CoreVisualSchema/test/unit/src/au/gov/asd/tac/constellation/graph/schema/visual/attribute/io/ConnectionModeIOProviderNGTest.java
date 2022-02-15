@@ -159,5 +159,4 @@ public class ConnectionModeIOProviderNGTest {
         assertEquals(captorAttrName.getAllValues().get(0), attrName);
         assertEquals(captorAttrValue.getAllValues().get(0), attrValue);
     }
-    
 }

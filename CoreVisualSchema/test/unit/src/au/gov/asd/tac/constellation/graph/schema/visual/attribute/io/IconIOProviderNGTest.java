@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
-import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -70,7 +69,7 @@ public class IconIOProviderNGTest {
      */
     @Test
     public void testReadObject() throws Exception {
-        System.out.println("IconIOProvider.readObject");;
+        System.out.println("IconIOProvider.readObject");
         
         final JsonNode mockJsonNode = mock(JsonNode.class);
         final GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
