@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -42,6 +43,7 @@ import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
@@ -158,26 +160,34 @@ public class DataAccessTabPane {
      * 
      * @param queryPane the pane that will be added as the content of the new tab
      */
-    public void newTab(final QueryPhasePane queryPane, final String tabCaption) {
-        final Label label = new Label(tabCaption);
+    public void newTab(final QueryPhasePane queryPane, final String userCaption) {
+//        final HBox fullCaptionVbox = new HBox();
+        final Label label = new Label(userCaption);
+        final Label defaultLabel = new Label(userCaption);
         String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().size() + 1);
 
         // This is only needed to make the unit test work because the `Tab` is mocked with mockConstruction.
         // final Tab newTab = new Tab() fails the unit test.
-        final Tab newTab = new Tab(tabCaption);
-        newTab.setText(null);
+        final Tab newTab = new Tab();//userCaption
+       // newTab.setText(null);
 
-        if (StringUtils.isBlank(tabCaption)) {
-            label.setText(defaultCaption);
-        } else {
-            if (!defaultCaption.equals(tabCaption.trim())) {
-                newTab.setText("- " + defaultCaption);
-            }
+        if (StringUtils.isBlank(userCaption)) {
+            defaultLabel.setText(defaultCaption);
+        } else if (!defaultCaption.equals(userCaption.trim())) {
+            defaultLabel.setText(defaultCaption + SeparatorConstants.BLANKSPACE + SeparatorConstants.HYPHEN);
         }
+
+        label.setGraphic(defaultLabel);
+        label.setContentDisplay(ContentDisplay.LEFT);
+
 
         newTab.setGraphic(label);
 
-        label.setOnMouseClicked(event -> labelClickEvent(newTab, label, event));
+
+        label.setOnMouseClicked(event
+                -> labelClickEvent(newTab, label, event));
+//        fullCaptionVbox.setOnMouseClicked(event
+//                -> hBoxClickEvent(newTab, label, event));
 
         // Get a copy of the existing on closed handler. When a tab is closed,
         // it will be called after the tab names are corrected and updated.
@@ -185,13 +195,19 @@ public class DataAccessTabPane {
                 = Optional.ofNullable(newTab.getOnClosed());
         newTab.setOnClosed(event -> {
             int queryNum = 1;
-            for (Tab tab : getTabPane().getTabs()) {
-                if (tab.getText() == null) {
-                    Label currentDefaultCaption = (Label) tab.getGraphic();
-                    currentDefaultCaption.setText(String.format(TAB_TITLE, queryNum));
+
+            for (final Tab tab : getTabPane().getTabs()) {
+                String newDefaultCaption = String.format(TAB_TITLE, queryNum);
+                final Label tabLabel = (Label) tab.getGraphic();
+                final Label tabDefaultCaption = (Label) tabLabel.getGraphic();
+
+                if (StringUtils.isBlank(tabLabel.getText()) || newDefaultCaption.equals(tabLabel.getText().trim())) {
+                    tabDefaultCaption.setText(newDefaultCaption);
+                    tabLabel.setText("");
                 } else {
-                    tab.setText("- " + String.format(TAB_TITLE, queryNum));
+                    tabDefaultCaption.setText(newDefaultCaption + SeparatorConstants.BLANKSPACE + SeparatorConstants.HYPHEN);
                 }
+
                 queryNum++;
             }
 
@@ -238,12 +254,18 @@ public class DataAccessTabPane {
         getTabPane().getTabs().add(newTab);
     }
 
+//    protected void hBoxClickEvent(final Tab tab, final Label userLabel, final Label defaultLabel, final HBox fullCaptionVbox, final MouseEvent event) {
+//        userLabel.requestFocus();
+//        labelClickEvent(tab, userLabel, defaultLabel, fullCaptionVbox, event);
+//    }
     protected void labelClickEvent(final Tab tab, final Label label, final MouseEvent event) {
         if (event.getClickCount() == DOUBLE_CLICK_COUNT) {
             final TextField field = new TextField(label.getText());
+            final Label defaultLabel = (Label) label.getGraphic();
 
             field.setOnAction(e -> {
                 label.setText(field.getText());
+                //fullCaptionVbox.getChildren().addAll(defaultLabel, userLabel);
                 tab.setGraphic(label);
             });
 
@@ -251,24 +273,21 @@ public class DataAccessTabPane {
                     Boolean newValue) -> {
                 if (!newValue) {
 
-                    label.setText(field.getText().trim());
-                    tab.setGraphic(label);
-                    String newDefaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().indexOf(tab) + 1);
+                    String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().indexOf(tab) + 1);//or current daf cap
 
-                    if (field.getText() == null || StringUtils.isBlank(field.getText())) {
-                        Label currentDefaultCaption = (Label) tab.getGraphic();
-                        currentDefaultCaption.setText(newDefaultCaption);
-                        tab.setText(null);
-
-                    } else if (newDefaultCaption.equals(field.getText().trim())) {
-                        tab.setText(null);
+                    if (StringUtils.isBlank(field.getText()) || defaultCaption.equals(field.getText().trim())) {
+                        label.setText("");
+                        defaultLabel.setText(defaultCaption);
                     } else {
-                        tab.setText("- " + newDefaultCaption);
+
+                        label.setText(field.getText().trim());
+                        defaultLabel.setText(defaultCaption + SeparatorConstants.BLANKSPACE + SeparatorConstants.HYPHEN);
                     }
+                    tab.setGraphic(label);
                 }
             });
 
-            field.setPromptText("Enter new name here");
+            field.setPromptText("Enter Step Description"); //label.getText() + userLabel.getText());
             tab.setGraphic(field);
             field.selectAll();
             field.requestFocus();
