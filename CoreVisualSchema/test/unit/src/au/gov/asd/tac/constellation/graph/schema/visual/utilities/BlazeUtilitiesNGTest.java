@@ -73,39 +73,39 @@ public class BlazeUtilitiesNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        if (!FxToolkit.isFXApplicationThreadRunning()) {
-//            FxToolkit.registerPrimaryStage();
-//        }
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-//         try {
-//            FxToolkit.cleanupStages();
-//        } catch (final TimeoutException ex) {
-//            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-//        }
+         try {
+            FxToolkit.cleanupStages();
+        } catch (final TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-//        schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
-//        graph = new StoreGraph(schema);
-//        
-//        vxId1 = graph.addVertex();
-//        vxId2 = graph.addVertex();
-//        vxId3 = graph.addVertex();
-//        vxId4 = graph.addVertex();
-//        
-//        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-//        vertexBlazeAttribute = VisualConcept.VertexAttribute.BLAZE.ensure(graph);
-//        
-//        graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
-//        graph.setBooleanValue(vertexSelectedAttribute, vxId3, true);
-//        graph.setBooleanValue(vertexSelectedAttribute, vxId4, true);
-//        
-//        graph.setStringValue(vertexBlazeAttribute, vxId3, "45;Blue");
-//        graph.setStringValue(vertexBlazeAttribute, vxId4, "60;Red");
+        schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
+        graph = new StoreGraph(schema);
+        
+        vxId1 = graph.addVertex();
+        vxId2 = graph.addVertex();
+        vxId3 = graph.addVertex();
+        vxId4 = graph.addVertex();
+        
+        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        vertexBlazeAttribute = VisualConcept.VertexAttribute.BLAZE.ensure(graph);
+        
+        graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId3, true);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId4, true);
+        
+        graph.setStringValue(vertexBlazeAttribute, vxId3, "45;Blue");
+        graph.setStringValue(vertexBlazeAttribute, vxId4, "60;Red");
     }
 
     @AfterMethod
