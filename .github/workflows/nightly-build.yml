@@ -36,7 +36,7 @@ jobs:
         with:
           repository: constellation-app/constellation-applications
           path: ./workspace/constellation-applications
-      - name: add execute priveledge to scripts
+      - name: add execute privilege to scripts
         run: |
               chmod +x ./workspace/constellation-applications/build-zip.sh && chmod +x ./workspace/constellation-applications/functions.sh
       - name: Run build process within Docker container
