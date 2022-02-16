@@ -161,33 +161,21 @@ public class DataAccessTabPane {
      * @param queryPane the pane that will be added as the content of the new tab
      */
     public void newTab(final QueryPhasePane queryPane, final String userCaption) {
-//        final HBox fullCaptionVbox = new HBox();
         final Label label = new Label(userCaption);
-        final Label defaultLabel = new Label(userCaption);
-        String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().size() + 1);
+        final Label defaultLabel = new Label(userCaption); // `userCaption` is only needed for
+        //unit test, because the `Label` is mocked with mockConstruction containing a parameter.
 
-        // This is only needed to make the unit test work because the `Tab` is mocked with mockConstruction.
-        // final Tab newTab = new Tab() fails the unit test.
-        final Tab newTab = new Tab();//userCaption
-       // newTab.setText(null);
+        final String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().size() + 1);
 
-        if (StringUtils.isBlank(userCaption)) {
-            defaultLabel.setText(defaultCaption);
-        } else if (!defaultCaption.equals(userCaption.trim())) {
-            defaultLabel.setText(defaultCaption + SeparatorConstants.BLANKSPACE + SeparatorConstants.HYPHEN);
-        }
+        final Tab newTab = new Tab();
+
+        setTabCaption(label, defaultLabel, defaultCaption);
 
         label.setGraphic(defaultLabel);
         label.setContentDisplay(ContentDisplay.LEFT);
-
-
         newTab.setGraphic(label);
 
-
-        label.setOnMouseClicked(event
-                -> labelClickEvent(newTab, label, event));
-//        fullCaptionVbox.setOnMouseClicked(event
-//                -> hBoxClickEvent(newTab, label, event));
+        label.setOnMouseClicked(event -> labelClickEvent(newTab, label, event));
 
         // Get a copy of the existing on closed handler. When a tab is closed,
         // it will be called after the tab names are corrected and updated.
@@ -197,17 +185,11 @@ public class DataAccessTabPane {
             int queryNum = 1;
 
             for (final Tab tab : getTabPane().getTabs()) {
-                String newDefaultCaption = String.format(TAB_TITLE, queryNum);
+                final String newDefaultCaption = String.format(TAB_TITLE, queryNum);
                 final Label tabLabel = (Label) tab.getGraphic();
-                final Label tabDefaultCaption = (Label) tabLabel.getGraphic();
+                final Label tabDefaultLabel = (Label) tabLabel.getGraphic();
 
-                if (StringUtils.isBlank(tabLabel.getText()) || newDefaultCaption.equals(tabLabel.getText().trim())) {
-                    tabDefaultCaption.setText(newDefaultCaption);
-                    tabLabel.setText("");
-                } else {
-                    tabDefaultCaption.setText(newDefaultCaption + SeparatorConstants.BLANKSPACE + SeparatorConstants.HYPHEN);
-                }
-
+                setTabCaption(tabLabel, tabDefaultLabel, newDefaultCaption);
                 queryNum++;
             }
 
@@ -254,10 +236,15 @@ public class DataAccessTabPane {
         getTabPane().getTabs().add(newTab);
     }
 
-//    protected void hBoxClickEvent(final Tab tab, final Label userLabel, final Label defaultLabel, final HBox fullCaptionVbox, final MouseEvent event) {
-//        userLabel.requestFocus();
-//        labelClickEvent(tab, userLabel, defaultLabel, fullCaptionVbox, event);
-//    }
+    protected void setTabCaption(final Label tabLabel, final Label tabDefaultLabel, final String newDefaultCaption) {
+        if (StringUtils.isBlank(tabLabel.getText()) || newDefaultCaption.equals(tabLabel.getText().trim())) {
+            tabDefaultLabel.setText(newDefaultCaption);
+            tabLabel.setText("");
+        } else {
+            tabDefaultLabel.setText(newDefaultCaption + SeparatorConstants.BLANKSPACE + SeparatorConstants.HYPHEN);
+        }
+    }
+
     protected void labelClickEvent(final Tab tab, final Label label, final MouseEvent event) {
         if (event.getClickCount() == DOUBLE_CLICK_COUNT) {
             final TextField field = new TextField(label.getText());
@@ -265,29 +252,20 @@ public class DataAccessTabPane {
 
             field.setOnAction(e -> {
                 label.setText(field.getText());
-                //fullCaptionVbox.getChildren().addAll(defaultLabel, userLabel);
                 tab.setGraphic(label);
             });
 
             field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
                     Boolean newValue) -> {
                 if (!newValue) {
-
-                    String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().indexOf(tab) + 1);//or current daf cap
-
-                    if (StringUtils.isBlank(field.getText()) || defaultCaption.equals(field.getText().trim())) {
-                        label.setText("");
-                        defaultLabel.setText(defaultCaption);
-                    } else {
-
-                        label.setText(field.getText().trim());
-                        defaultLabel.setText(defaultCaption + SeparatorConstants.BLANKSPACE + SeparatorConstants.HYPHEN);
-                    }
+                    final String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().indexOf(tab) + 1);
+                    label.setText(field.getText().trim());
+                    setTabCaption(label, defaultLabel, defaultCaption);
                     tab.setGraphic(label);
                 }
             });
 
-            field.setPromptText("Enter Step Description"); //label.getText() + userLabel.getText());
+            field.setPromptText("Enter Step Description");
             tab.setGraphic(field);
             field.selectAll();
             field.requestFocus();

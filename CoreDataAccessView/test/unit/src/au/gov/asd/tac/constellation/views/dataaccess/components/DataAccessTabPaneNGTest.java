@@ -871,25 +871,24 @@ public class DataAccessTabPaneNGTest {
         when(buttonToolbar.getExecuteButtonTop()).thenReturn(executeButton);
 
         final Label mockedLabel = mock(Label.class);
+        final Label mockedDefaultCaptionLabel = mock(Label.class);
         
         try (
                 // In order to ensure the correct behaviour is applied to the new
                 // tab we intercept its creation and return a mock.
                 final MockedConstruction<Tab> mockedTab =
                         Mockito.mockConstruction(Tab.class, (tabMock, cntxt) -> {
-                            final List<Object> expectedArgs = new ArrayList<>();
-                            expectedArgs.add(newStepCaption);
 
-                            assertEquals(cntxt.arguments(), expectedArgs);
                             when(tabMock.getOnClosed()).thenReturn(onCloseEventHandler);
                             when(tabMock.getGraphic()).thenReturn(mockedLabel);
+                            when(mockedLabel.getGraphic()).thenReturn(mockedDefaultCaptionLabel);
 
                 }); //  Intercept the Label creation and insert our own mock
                  final MockedConstruction<Label> mockedConstructionLabel = Mockito.mockConstruction(Label.class, (labelMock, cntxt) -> {
                     final List<Object> expectedArgs = new ArrayList<>();
-                    expectedArgs.add(newStepCaption);
+                     expectedArgs.add(newStepCaption);
 
-                    assertEquals(cntxt.arguments(), expectedArgs);
+                     assertEquals(cntxt.arguments(), expectedArgs);
                 });                
                 // When a tab is created, it is given a new context menu. We want to intercept
                 // that creation and insert our own mock
@@ -934,7 +933,7 @@ public class DataAccessTabPaneNGTest {
             // Verify the tab and context menus were created
             assertEquals(mockedTab.constructed().size(), 1);
             assertEquals(mockedTabContextMenu.constructed().size(), 1);
-            assertEquals(mockedConstructionLabel.constructed().size(), 1);
+            assertEquals(mockedConstructionLabel.constructed().size(), 2);
 
             // Verify that the context menu was created correctly
             final TabContextMenu newTabContextMenu = mockedTabContextMenu.constructed().get(0);
@@ -980,7 +979,7 @@ public class DataAccessTabPaneNGTest {
             final Event event = mock(Event.class);
             onCloseCaptor.getValue().handle(event);
 
-            verify(newTab).setText("- Step 1");
+            verify(mockedDefaultCaptionLabel).setText("Step 1");
             verify(onCloseEventHandler).handle(event);
 
 

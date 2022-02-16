@@ -73,7 +73,8 @@ public class DataAccessParametersIoProvider {
             );
 
             final Label tabCaption = (Label) step.getGraphic();
-            preferences.setStepCaption(tabCaption.getText());
+            final Label defaultCaption = (Label) tabCaption.getGraphic();
+            preferences.setStepCaption(!StringUtils.isBlank(tabCaption.getText()) ? tabCaption.getText() : defaultCaption.getText());
 
             // Remember the first non-null, non-blank query name.
             if (queryName == null
