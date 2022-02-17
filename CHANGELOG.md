@@ -1,5 +1,10 @@
 # Constellation Changes
 
+## Changes in February 2022
+
+-   Removed unused classes `DecoratorUtilities` and `LabelUtilities` from Core 
+    Visual Schema
+
 ## Changes in December 2021
 
 -   Changed the return type of `processVertices` and `processTransactions` methods 
