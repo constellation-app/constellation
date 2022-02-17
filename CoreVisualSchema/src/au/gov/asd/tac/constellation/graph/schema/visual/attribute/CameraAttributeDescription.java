@@ -41,10 +41,7 @@ public final class CameraAttributeDescription extends ObjectAttributeDescription
     // for more information about how defaults should be set.
     @Override
     protected Object convertFromObject(Object object) {
-        if (object instanceof String) {
-            return new Camera();
-        }
-        return super.convertFromObject(object);
+        return object instanceof String ? new Camera() : super.convertFromObject(object);
     }
 
     @Override
