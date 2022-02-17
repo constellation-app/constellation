@@ -188,7 +188,7 @@ public class GaussianBlur {
             for (int j = 0; j < width; j++) {
                 double val = 0;
                 for (int iy = (i - radius); iy < (i + radius + 1); iy++) {
-                    int y = Math.min(height - 1, Math.max(0, iy));
+                    final int y = Math.min(height - 1, Math.max(0, iy));
                     val += sourceChannel[y * width + j];
                 }
                 targetChannel[i * width + j] = (float) (val / (radius + radius + 1));
