@@ -43,6 +43,7 @@ import au.gov.asd.tac.constellation.utilities.geospatial.Mgrs;
 import au.gov.asd.tac.constellation.utilities.gui.JDropDownMenu;
 import au.gov.asd.tac.constellation.utilities.gui.JMultiChoiceComboBoxMenu;
 import au.gov.asd.tac.constellation.utilities.gui.JSingleChoiceComboBoxMenu;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
@@ -80,6 +81,7 @@ import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -208,30 +210,34 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         final List<String> zoomActions = Arrays.asList(ZOOM_ALL, ZOOM_SELECTION, ZOOM_LOCATION);
         this.zoomMenu = new JDropDownMenu<>(UserInterfaceIconProvider.ZOOM_IN.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), zoomActions);
         zoomMenu.addActionListener(event -> {
-            final String zoomAction = (String) event.getSource();
-            switch (zoomAction) {
-                case ZOOM_ALL:
-                    renderer.zoomToMarkers(markerState);
-                    break;
-                case ZOOM_SELECTION:
-                    final MarkerState selectedOnlyState = new MarkerState();
-                    selectedOnlyState.setShowSelectedOnly(true);
-                    renderer.zoomToMarkers(selectedOnlyState);
-                    break;
-                case ZOOM_LOCATION:
-                    final PluginParameters zoomParameters = createParameters();
-                    final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(ZOOM_LOCATION, zoomParameters);
-                    dialog.showAndWait();
-                    if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-                        @SuppressWarnings("unchecked") //the plugin that comes from PARAMETER_TYPE is of type SingleChoiceParameter
-                        final PluginParameter<SingleChoiceParameterValue> parameterType = (PluginParameter<SingleChoiceParameterValue>) zoomParameters.getParameters().get(PARAMETER_TYPE);
-                        final String geoType = SingleChoiceParameterType.getChoice(parameterType);
-                        final String location = zoomParameters.getStringValue(PARAMETER_LOCATION);
-                        zoomLocationBasedOnGeoType(geoType, location);
-                    }
-                    break;
-                default:
-                    break;
+            if (currentGraph != null) {
+                final String zoomAction = (String) event.getSource();
+                switch (zoomAction) {
+                    case ZOOM_ALL:
+                        renderer.zoomToMarkers(markerState);
+                        break;
+                    case ZOOM_SELECTION:
+                        final MarkerState selectedOnlyState = new MarkerState();
+                        selectedOnlyState.setShowSelectedOnly(true);
+                        renderer.zoomToMarkers(selectedOnlyState);
+                        break;
+                    case ZOOM_LOCATION:
+                        final PluginParameters zoomParameters = createParameters();
+                        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(ZOOM_LOCATION, zoomParameters);
+                        dialog.showAndWait();
+                        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
+                            @SuppressWarnings("unchecked") //the plugin that comes from PARAMETER_TYPE is of type SingleChoiceParameter
+                            final PluginParameter<SingleChoiceParameterValue> parameterType = (PluginParameter<SingleChoiceParameterValue>) zoomParameters.getParameters().get(PARAMETER_TYPE);
+                            final String geoType = SingleChoiceParameterType.getChoice(parameterType);
+                            final String location = zoomParameters.getStringValue(PARAMETER_LOCATION);
+                            zoomLocationBasedOnGeoType(geoType, location);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                NotifyDisplayer.display("Zoom options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
         zoomMenu.setToolTipText("Zoom based on markers or locations in the Map View");
@@ -292,11 +298,15 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(MapExporterWrapper::new).collect(Collectors.toList());
         this.exportMenu = new JDropDownMenu<>(UserInterfaceIconProvider.DOWNLOAD.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), exporterWrappers);
         exportMenu.addActionListener(event -> {
-            final MapExporterWrapper exporterWrapper = (MapExporterWrapper) event.getSource();
-            PluginExecution
-                    .withPlugin(exporterWrapper.getExporter().getPluginReference())
-                    .interactively(true)
-                    .executeLater(currentGraph);
+            if (currentGraph != null) {
+                final MapExporterWrapper exporterWrapper = (MapExporterWrapper) event.getSource();
+                PluginExecution
+                        .withPlugin(exporterWrapper.getExporter().getPluginReference())
+                        .interactively(true)
+                        .executeLater(currentGraph);
+            } else {
+                NotifyDisplayer.display("Export options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
         exportMenu.setToolTipText("Export from the Map View");
         toolBar.add(exportMenu);
@@ -371,8 +381,10 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         switch (geoType) {
             case GEO_TYPE_COORDINATE:
                 final String[] coordinate = location.split("[,\\s]+");
-                assert coordinate.length == 2 || coordinate.length == 3 : "Invalid coordinate syntax provided, should be comma or space separated";
-
+                if (coordinate.length != 2 && coordinate.length != 3) {
+                    NotifyDisplayer.display("Invalid coordinate syntax provided, should be comma or space separated", NotifyDescriptor.ERROR_MESSAGE);
+                    return;
+                }
                 final float latitude;
                 final float longitude;
                 final float radius;
@@ -385,11 +397,22 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                         radius = 0;
                     }
                 } catch (final NumberFormatException ex) {
-                    throw new AssertionError("Invalid coordinate data provided, latitude and longitude should be numbers");
+                    NotifyDisplayer.display("Invalid coordinate data provided, latitude and longitude should be numbers", NotifyDescriptor.ERROR_MESSAGE);
+                    return;
                 }
-                assert latitude > -90F && latitude < 90F : "Invalid coordinate data provided, latitude should be in the range [-90. 90]";
-                assert longitude > -180F && longitude < 180F : "Invalid coordinate data provided, longitude should be in the range [-180, 180]";
-                assert radius >= 0F : "Invalid coordinate data provided, radius should be greater than or equal to 0";
+                if (latitude <= -90F || latitude >= 90F) {
+                    NotifyDisplayer.display("Invalid coordinate data provided, latitude should be in the range [-90. 90]", NotifyDescriptor.ERROR_MESSAGE);
+                    return;
+                }
+                if (longitude <= -180F || longitude >= 180F) {
+                    NotifyDisplayer.display("Invalid coordinate data provided, longitude should be in the range [-180, 180]", NotifyDescriptor.ERROR_MESSAGE);
+                    return;
+                }
+                if (radius < 0F) {
+                    NotifyDisplayer.display("Invalid coordinate data provided, radius should be greater than or equal to 0", NotifyDescriptor.ERROR_MESSAGE);
+                    return;
+                }
+                
                 final Location coordinateLocation = new Location(latitude, longitude);
                 if (radius > 0) {
                     final float radiusDD = (float) Distance.Haversine.kilometersToDecimalDegrees(radius);

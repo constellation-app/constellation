@@ -29,7 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class SchemaFactoryUtilities {
 
     private static SchemaFactory defaultSchema = null;
-    private static Map<String, SchemaFactory> schemaFactories = null;    
+    private static Map<String, SchemaFactory> schemaFactories = null;
+    
     private SchemaFactoryUtilities() {
         throw new IllegalStateException("Utility class");
     }
