@@ -154,6 +154,8 @@ public class AutosaveGraphPluginNGTest {
             assertEquals(rg.getTransactionCount(), 5);
         } finally {
             rg.release();
+            // deleting the file afterwards
+            gdo.delete();
         }
 
     }
