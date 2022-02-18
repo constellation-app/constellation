@@ -79,13 +79,13 @@ public class DelimitedImportControllerNGTest {
         doReturn(delimitedSourcePaneMocked).when(importPaneMocked).getSourcePane();
         delimitedImportController.setImportPane(importPaneMocked);
 
-        final File file = new File(this.getClass().getResource("./resources/testCSV.CSV").getFile());
+        final File file = new File(this.getClass().getResource("./resources/testCSV.csv").getFile());
         filesToValidate.add(file);
-        final File fileValid = new File(this.getClass().getResource("./resources/testCSV-SameStructure.CSV").getFile());
+        final File fileValid = new File(this.getClass().getResource("./resources/testCSV-SameStructure.csv").getFile());
         filesToValidate.add(fileValid);
-        final File fileDifferentColumns = new File(this.getClass().getResource("./resources/testCSV-differentColumns-sameColumnCount.CSV").getFile());
+        final File fileDifferentColumns = new File(this.getClass().getResource("./resources/testCSV-differentColumns-sameColumnCount.csv").getFile());
         filesToValidate.add(fileDifferentColumns);
-        final File fileDifferentStructure = new File(this.getClass().getResource("./resources/testCSV-differentStructure.CSV").getFile());
+        final File fileDifferentStructure = new File(this.getClass().getResource("./resources/testCSV-differentStructure.csv").getFile());
         filesToValidate.add(fileDifferentStructure);
 
     }
