@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.find2.components;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.FindViewTopComponent;
 import java.util.HashMap;
@@ -24,12 +25,12 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.Button;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -105,47 +106,46 @@ public class AdvancedFindTabNGTest {
     public void tearDownMethod() throws Exception {
     }
 
+//    /**
+//     * Test of updateButtons method, of class AdvancedFindTab.
+//     */
+//    @Test
+//    public void testUpdateButtons() {
+//        System.out.println("updateButtons");
+//
+//        advancedTab.buttonsHBox.getChildren().clear();
+//        advancedTab.buttonsHBox.getChildren().add(new Button("test"));
+//
+//        /**
+//         * The updateButtons function should clear the existing elements (The
+//         * button added above) and add the findPrevButton, findNextButton,
+//         * getFindAllButton and getSearchAllGraphs checkbox.
+//         */
+//        advancedTab.updateButtons();
+//        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getSearchAllGraphs());
+//        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindAllButton());
+//        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindPrevButton());
+//        assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindNextButton());
+//
+//    }
+
     /**
-     * Test of updateButtons method, of class AdvancedFindTab.
+     * Test of getSelectedGraphElementType method, of class AdvancedFindTab.
      */
     @Test
-    public void testUpdateButtons() {
-        System.out.println("updateButtons");
+    public void testGetSelectedGraphElementType() {
+        System.out.println("getSelectedGraphElementType");
 
-        advancedTab.buttonsHBox.getChildren().clear();
-        advancedTab.buttonsHBox.getChildren().add(new Button("test"));
+        advancedTab.getLookForChoiceBox().getSelectionModel().select("Node");
 
-        /**
-         * The updateButtons function should clear the existing elements (The
-         * button added above) and add the findPrevButton, findNextButton,
-         * getFindAllButton and getSearchAllGraphs checkbox.
-         */
-        advancedTab.updateButtons();
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getSearchAllGraphs());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindAllButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindPrevButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindNextButton());
+        GraphElementType result = advancedTab.getSelectedGraphElementType();
+        GraphElementType expResult = GraphElementType.VERTEX;
+        assertEquals(result, expResult);
+
+        assertNotEquals(result, GraphElementType.TRANSACTION);
 
     }
 
-//    /**
-//     * Test of getSelectedGraphElementType method, of class AdvancedFindTab.
-//     */
-//    @Test
-//    public void testGetSelectedGraphElementType() {
-//        System.out.println("getSelectedGraphElementType");
-//
-//        setUpUi();
-//        advancedTab.getLookForChoiceBox().getSelectionModel().select("Node");
-//
-//        GraphElementType result = advancedTab.getSelectedGraphElementType();
-//        GraphElementType expResult = GraphElementType.VERTEX;
-//        assertEquals(result, expResult);
-//
-//        assertNotEquals(result, GraphElementType.TRANSACTION);
-//
-//    }
-//
 //    /**
 //     * Test of updateSelectionFactors method, of class AdvancedFindTab.
 //     */
