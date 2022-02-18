@@ -101,7 +101,7 @@ public class DelimitedImportControllerNGTest {
     @Test
     public void testGetColumnHeaders() {
         System.out.println("getColumnHeaders");
-        final File file = new File(this.getClass().getResource("./resources/testCSV.CSV").getFile());
+        final File file = new File(this.getClass().getResource("./resources/testCSV.csv").getFile());
         // final DelimitedImportController instance = new DelimitedImportController();
         final List<String> expResult = Arrays.asList("Source$name", "Source@Type", "ab cd", "Transaction.Time", "name");
         final List result = delimitedImportController.getColumnHeaders(file);
@@ -116,7 +116,7 @@ public class DelimitedImportControllerNGTest {
     public void testValidateFileStructure_emptyFiles() {
         System.out.println("validateFileStructure");
         final List<File> filesToValidate = new ArrayList<>();
-        final File file = new File(this.getClass().getResource("./resources/testCSV.CSV").getFile());
+        final File file = new File(this.getClass().getResource("./resources/testCSV.csv").getFile());
 
         delimitedImportController.setFiles(filesToValidate, file);
         assertTrue(delimitedImportController.getFiles().isEmpty());
@@ -133,7 +133,7 @@ public class DelimitedImportControllerNGTest {
     public void testValidateFileStructure_singleFile() {
         System.out.println("validateFileStructure");
         final List<File> filesToValidate = new ArrayList<>();
-        final File file = new File(this.getClass().getResource("./resources/testCSV.CSV").getFile());
+        final File file = new File(this.getClass().getResource("./resources/testCSV.csv").getFile());
         filesToValidate.add(file);
 
         delimitedImportController.setFiles(filesToValidate, file);
@@ -150,7 +150,7 @@ public class DelimitedImportControllerNGTest {
     @Test
     public void testValidateFileStructure_filesIncludeHeaders_enabled() {
         System.out.println("validateFileStructure");
-        final File file = new File(this.getClass().getResource("./resources/testCSV.CSV").getFile());
+        final File file = new File(this.getClass().getResource("./resources/testCSV.csv").getFile());
 
         delimitedImportController.setFiles(filesToValidate, file);
         assertEquals(delimitedImportController.getFiles().size(), 4);
@@ -167,7 +167,7 @@ public class DelimitedImportControllerNGTest {
     @Test
     public void testValidateFileStructure_filesIncludeHeaders_disabled() {
         System.out.println("validateFileStructure");
-        final File file = new File(this.getClass().getResource("./resources/testCSV.CSV").getFile());
+        final File file = new File(this.getClass().getResource("./resources/testCSV.csv").getFile());
 
         delimitedImportController.setfilesIncludeHeaders(false);
         delimitedImportController.setFiles(filesToValidate, file);
