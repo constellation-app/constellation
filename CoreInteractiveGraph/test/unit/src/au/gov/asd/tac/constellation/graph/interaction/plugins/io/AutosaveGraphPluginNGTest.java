@@ -155,7 +155,7 @@ public class AutosaveGraphPluginNGTest {
         } finally {
             rg.release();
             // deleting the file afterwards
-            gdo.delete();
+//            gdo.delete();
         }
 
     }

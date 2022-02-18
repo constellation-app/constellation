@@ -74,6 +74,7 @@ public final class AutosaveStartup implements Runnable {
                     if (dtprop != null) {
                         if (unsaved) {
                             final String msg = String.format("Graph %s (autosaved at %s).%nDo you want to recover it?", name != null ? name : "<unknown>", dtprop);
+                            System.out.println("@@AS " + msg);
                             final NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, "Autosaved graph", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE);
                             if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
                                 // Load the autosaved graph away from the EDT.
