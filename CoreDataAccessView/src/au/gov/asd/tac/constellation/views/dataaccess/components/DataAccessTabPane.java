@@ -162,9 +162,7 @@ public class DataAccessTabPane {
      */
     public void newTab(final QueryPhasePane queryPane, final String userCaption) {
         final Label label = new Label(userCaption);
-        final Label defaultLabel = new Label(userCaption); // `userCaption` is only needed for
-        //unit test, because the `Label` is mocked with mockConstruction containing a parameter.
-
+        final Label defaultLabel = new Label();
         final String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().size() + 1);
 
         final Tab newTab = new Tab();

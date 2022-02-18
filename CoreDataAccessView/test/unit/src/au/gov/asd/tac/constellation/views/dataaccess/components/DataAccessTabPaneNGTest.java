@@ -884,13 +884,8 @@ public class DataAccessTabPaneNGTest {
                             when(mockedLabel.getGraphic()).thenReturn(mockedDefaultCaptionLabel);
 
                 }); //  Intercept the Label creation and insert our own mock
-                 final MockedConstruction<Label> mockedConstructionLabel = Mockito.mockConstruction(Label.class, (labelMock, cntxt) -> {
-                    final List<Object> expectedArgs = new ArrayList<>();
-                     expectedArgs.add(newStepCaption);
-
-                     assertEquals(cntxt.arguments(), expectedArgs);
-                });                
-                // When a tab is created, it is given a new context menu. We want to intercept
+                    final MockedConstruction<Label> mockedConstructionLabel = Mockito.mockConstruction(Label.class, (labelMock, cntxt) -> {
+                }); // When a tab is created, it is given a new context menu. We want to intercept
                 // that creation and insert our own mock
                 final MockedConstruction<TabContextMenu> mockedTabContextMenu =
                         Mockito.mockConstruction(TabContextMenu.class, (contextMenuMock, cntxt) -> {
