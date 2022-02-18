@@ -15,6 +15,15 @@
  */
 package au.gov.asd.tac.constellation.views.find2.components;
 
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.testfx.api.FxToolkit;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+
 /**
  *
  * @author Atlas139mkm
@@ -38,35 +47,35 @@ public class AdvancedFindTabNGTest {
 //    AdvancedFindTab advancedTab;
 //    FindViewPane findViewPane;
 //    FindViewTabs findViewTabs;
-//    private static final Logger LOGGER = Logger.getLogger(BasicFindTabNGTest.class.getName());
-//
-//    public AdvancedFindTabNGTest() throws Exception {
-//    }
-//
-//    @BeforeClass
-//    public static void setUpClass() throws Exception {
-//        if (!FxToolkit.isFXApplicationThreadRunning()) {
-//            FxToolkit.registerPrimaryStage();
-//        }
-//    }
-//
-//    @AfterClass
-//    public static void tearDownClass() throws Exception {
-//        try {
-//            FxToolkit.cleanupStages();
-//        } catch (TimeoutException ex) {
-//            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-//        }
-//    }
-//
-//    @BeforeMethod
-//    public void setUpMethod() throws Exception {
-//    }
-//
-//    @AfterMethod
-//    public void tearDownMethod() throws Exception {
-//    }
-//
+    private static final Logger LOGGER = Logger.getLogger(BasicFindTabNGTest.class.getName());
+
+    public AdvancedFindTabNGTest() throws Exception {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
+    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+    }
+
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+    }
+
 //    /**
 //     * Test of updateButtons method, of class AdvancedFindTab.
 //     */
