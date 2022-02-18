@@ -15,14 +15,26 @@
  */
 package au.gov.asd.tac.constellation.views.find2.components;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphAttribute;
+import au.gov.asd.tac.constellation.views.find2.FindViewController;
+import au.gov.asd.tac.constellation.views.find2.FindViewTopComponent;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Button;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -30,23 +42,23 @@ import org.testng.annotations.BeforeMethod;
  */
 public class AdvancedFindTabNGTest {
 
-//    private Map<String, Graph> graphMap = new HashMap<>();
-//    private Graph graph;
-//    private Graph graph2;
-//    private GraphAttribute labelAttributeV, identifierAttributeV, xAtrributeV, labelAttributeT, identifierAttributeT;
-//
-//    private int selectedV, selectedT;
-//    private int labelV, identifierV, xV, labelT, identiferT, widthT;
-//    private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
-//
-//    FindViewTopComponent findViewTopComponent;
-//    FindViewTopComponent spyTopComponent;
-//
-//    BasicFindTab basicFindTab;
-//    ReplaceTab replaceTab;
-//    AdvancedFindTab advancedTab;
-//    FindViewPane findViewPane;
-//    FindViewTabs findViewTabs;
+    private Map<String, Graph> graphMap = new HashMap<>();
+    private Graph graph;
+    private Graph graph2;
+    private GraphAttribute labelAttributeV, identifierAttributeV, xAtrributeV, labelAttributeT, identifierAttributeT;
+
+    private int selectedV, selectedT;
+    private int labelV, identifierV, xV, labelT, identiferT, widthT;
+    private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
+
+    FindViewTopComponent findViewTopComponent;
+    FindViewTopComponent spyTopComponent;
+
+    BasicFindTab basicFindTab;
+    ReplaceTab replaceTab;
+    AdvancedFindTab advancedTab;
+    FindViewPane findViewPane;
+    FindViewTabs findViewTabs;
     private static final Logger LOGGER = Logger.getLogger(BasicFindTabNGTest.class.getName());
 
     public AdvancedFindTabNGTest() throws Exception {
@@ -70,36 +82,52 @@ public class AdvancedFindTabNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        findViewTopComponent = mock(FindViewTopComponent.class);
+        spyTopComponent = spy(findViewTopComponent);
+
+        findViewPane = mock(FindViewPane.class);
+        findViewTabs = mock(FindViewTabs.class);
+        FindViewController.getDefault();
+
+        basicFindTab = mock(BasicFindTab.class);
+        replaceTab = mock(ReplaceTab.class);
+
+        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
+        when(findViewPane.getTabs()).thenReturn(findViewTabs);
+        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
+        when(findViewTabs.getAdvancedFindTab()).thenReturn(advancedTab);
+
+        advancedTab = new AdvancedFindTab(findViewTabs);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of updateButtons method, of class AdvancedFindTab.
-//     */
-//    @Test
-//    public void testUpdateButtons() {
-//        System.out.println("updateButtons");
-//        setUpUi();
-//
-//        advancedTab.buttonsHBox.getChildren().clear();
-//        advancedTab.buttonsHBox.getChildren().add(new Button("test"));
-//
-//        /**
-//         * The updateButtons function should clear the existing elements (The
-//         * button added above) and add the findPrevButton, findNextButton,
-//         * getFindAllButton and getSearchAllGraphs checkbox.
-//         */
-//        advancedTab.updateButtons();
-//        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getSearchAllGraphs());
-//        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindAllButton());
-//        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindPrevButton());
-//        assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindNextButton());
-//
-//    }
-//
+    /**
+     * Test of updateButtons method, of class AdvancedFindTab.
+     */
+    @Test
+    public void testUpdateButtons() {
+        System.out.println("updateButtons");
+
+        advancedTab.buttonsHBox.getChildren().clear();
+        advancedTab.buttonsHBox.getChildren().add(new Button("test"));
+
+        /**
+         * The updateButtons function should clear the existing elements (The
+         * button added above) and add the findPrevButton, findNextButton,
+         * getFindAllButton and getSearchAllGraphs checkbox.
+         */
+        advancedTab.updateButtons();
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getSearchAllGraphs());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindAllButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindPrevButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindNextButton());
+
+    }
+
 //    /**
 //     * Test of getSelectedGraphElementType method, of class AdvancedFindTab.
 //     */
@@ -503,28 +531,7 @@ public class AdvancedFindTabNGTest {
 //        }
 //    }
 //
-//    public void setUpUi() {
-//
-//        findViewTopComponent = mock(FindViewTopComponent.class);
-//        spyTopComponent = spy(findViewTopComponent);
-//
-//        findViewPane = mock(FindViewPane.class);
-//        findViewTabs = mock(FindViewTabs.class);
-//        FindViewController.getDefault();
-//
-//        basicFindTab = mock(BasicFindTab.class);
-//        replaceTab = mock(ReplaceTab.class);
-//
-//        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
-//        when(findViewPane.getTabs()).thenReturn(findViewTabs);
-//        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
-//        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
-//        when(findViewTabs.getAdvancedFindTab()).thenReturn(advancedTab);
-//
-//        advancedTab = new AdvancedFindTab(findViewTabs);
-//
-//    }
-//
+
 //    private void setupGraph() {
 //        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 //        graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
