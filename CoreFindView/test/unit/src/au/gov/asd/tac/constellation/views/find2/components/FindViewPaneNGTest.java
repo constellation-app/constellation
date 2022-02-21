@@ -71,34 +71,6 @@ public class FindViewPaneNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
-    /**
-     * Test of getParentComponent method, of class FindViewPane.
-     */
-    @Test
-    public void testGetParentComponent() {
-        System.out.println("getParentComponent");
-        setUpUi();
-        assertEquals(spyFindViewPane.getParentComponent(), spyTopComponent);
-    }
-
-    /**
-     * Test of getTabs method, of class FindViewPane.
-     */
-    @Test
-    public void testGetTabs() {
-        System.out.println("getTabs");
-        setUpUi();
-        assertEquals(spyFindViewPane.getTabs(), spyFindViewTabs);
-    }
-
-    public void setUpUi() {
-
         findViewTopComponent = mock(FindViewTopComponent.class);
         spyTopComponent = spy(findViewTopComponent);
 
@@ -119,7 +91,29 @@ public class FindViewPaneNGTest {
         when(spyFindViewPane.getParentComponent()).thenReturn(spyTopComponent);
         when(spyFindViewTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
         when(spyFindViewTabs.getReplaceTab()).thenReturn(spyReplaceTab);
-
     }
 
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+    }
+
+    /**
+     * Test of getParentComponent method, of class FindViewPane.
+     */
+    @Test
+    public void testGetParentComponent() {
+        System.out.println("getParentComponent");
+        
+        assertEquals(spyFindViewPane.getParentComponent(), spyTopComponent);
+    }
+
+    /**
+     * Test of getTabs method, of class FindViewPane.
+     */
+    @Test
+    public void testGetTabs() {
+        System.out.println("getTabs");
+        
+        assertEquals(spyFindViewPane.getTabs(), spyFindViewTabs);
+    }
 }

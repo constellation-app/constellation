@@ -32,7 +32,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.TextIoProgress;
 import java.io.File;
-import java.util.logging.Logger;
 import org.openide.windows.TopComponent;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -47,8 +46,6 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class AutosaveGraphPluginNGTest {
-    
-    private static final Logger LOGGER = Logger.getLogger(AutosaveGraphPluginNGTest.class.getName());
 
     private int attrX, attrY, attrZ;
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7, vxId8;

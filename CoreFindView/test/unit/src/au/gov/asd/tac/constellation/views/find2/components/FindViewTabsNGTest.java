@@ -71,6 +71,24 @@ public class FindViewTabsNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        findViewTopComponent = mock(FindViewTopComponent.class);
+        spyTopComponent = spy(findViewTopComponent);
+
+        findViewPane = mock(FindViewPane.class);
+
+        findViewTabs = new FindViewTabs(findViewPane);
+        spyFindViewTabs = spy(findViewTabs);
+
+        basicFindTab = mock(BasicFindTab.class);
+        spyBasicFindTab = spy(basicFindTab);
+
+        replaceTab = mock(ReplaceTab.class);
+        spyReplaceTab = spy(replaceTab);
+
+        when(spyFindViewTabs.getParentComponent()).thenReturn(findViewPane);
+        when(findViewPane.getTabs()).thenReturn(spyFindViewTabs);
+        when(spyFindViewTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
+        when(spyFindViewTabs.getReplaceTab()).thenReturn(spyReplaceTab);
     }
 
     @AfterMethod
@@ -83,7 +101,6 @@ public class FindViewTabsNGTest {
     @Test
     public void testChangeTab() {
 //        System.out.println("changeTab");
-//        setUpUi();
 ////                doNothing().when(basicFindMock).updateBasicFindParamters();
 //
 //        doNothing().when(spyBasicFindTab).updateButtons();
@@ -103,7 +120,6 @@ public class FindViewTabsNGTest {
     @Test
     public void testGetParentComponent() {
         System.out.println("getParentComponent");
-        setUpUi();
 
         assertEquals(spyFindViewTabs.getParentComponent(), findViewPane);
     }
@@ -115,8 +131,6 @@ public class FindViewTabsNGTest {
     public void testGetBasicFindTab() {
         System.out.println("getBasicFindTab");
 
-        setUpUi();
-
         assertEquals(spyFindViewTabs.getBasicFindTab(), spyBasicFindTab);
     }
 
@@ -127,32 +141,6 @@ public class FindViewTabsNGTest {
     public void testGetReplaceTab() {
         System.out.println("getReplaceTab");
 
-        setUpUi();
-
         assertEquals(spyFindViewTabs.getReplaceTab(), spyReplaceTab);
     }
-
-    public void setUpUi() {
-
-        findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
-
-        findViewPane = mock(FindViewPane.class);
-
-        findViewTabs = new FindViewTabs(findViewPane);
-        spyFindViewTabs = spy(findViewTabs);
-
-        basicFindTab = mock(BasicFindTab.class);
-        spyBasicFindTab = spy(basicFindTab);
-
-        replaceTab = mock(ReplaceTab.class);
-        spyReplaceTab = spy(replaceTab);
-
-        when(spyFindViewTabs.getParentComponent()).thenReturn(findViewPane);
-        when(findViewPane.getTabs()).thenReturn(spyFindViewTabs);
-        when(spyFindViewTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
-        when(spyFindViewTabs.getReplaceTab()).thenReturn(spyReplaceTab);
-
-    }
-
 }

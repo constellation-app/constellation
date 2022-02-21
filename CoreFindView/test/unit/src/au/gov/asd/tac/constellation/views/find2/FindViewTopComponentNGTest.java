@@ -55,6 +55,7 @@ import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -98,6 +99,31 @@ public class FindViewTopComponentNGTest {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
+    
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+        topComponent = mock(FindViewTopComponent.class);
+        spyTopComponent = spy(topComponent);
+
+        pane = mock(FindViewPane.class);
+        spyPane = spy(pane);
+
+        tabs = mock(FindViewTabs.class);
+        spyTabs = spy(tabs);
+
+        basicFindTab = mock(BasicFindTab.class);
+        replaceTab = mock(ReplaceTab.class);
+        advancedFindTab = mock(AdvancedFindTab.class);
+        spyBasicFindTab = spy(basicFindTab);
+        spyReplaceTab = spy(replaceTab);
+        spyAdvancedFindTab = spy(advancedFindTab);
+
+        when(spyTopComponent.getFindViewPane()).thenReturn(spyPane);
+        when(spyPane.getTabs()).thenReturn(spyTabs);
+        when(spyTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
+        when(spyTabs.getReplaceTab()).thenReturn(spyReplaceTab);
+        when(spyTabs.getAdvancedFindTab()).thenReturn(spyAdvancedFindTab);
+    }
 
     /**
      * Test of createContent method, of class FindViewTopComponent.
@@ -106,7 +132,6 @@ public class FindViewTopComponentNGTest {
     public void testCreateContent() {
         System.out.println("createContent");
 
-        setUpTests();
         when(spyTopComponent.createContent()).thenReturn(spyPane);
         assertEquals(spyTopComponent.createContent(), spyTopComponent.getFindViewPane());
     }
@@ -130,7 +155,7 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testHandleComponentClosed() {
         System.out.println("handleComponentClosed");
-        setUpTests();
+
         setupGraph();
 
         doNothing().when(spyTopComponent).UpdateUI();
@@ -159,7 +184,7 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testHandleComponentOpened() {
         System.out.println("handleComponentOpened");
-        setUpTests();
+
         setupGraph();
 
         doNothing().when(spyTopComponent).UpdateUI();
@@ -183,7 +208,7 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testHandleGraphOpened() {
         System.out.println("handleGraphOpened");
-        setUpTests();
+
         setupGraph();
 
         doNothing().when(spyTopComponent).disableFindView();
@@ -202,7 +227,7 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testHandleGraphClosed() {
         System.out.println("handleGraphClosed");
-        setUpTests();
+
         setupGraph();
 
         doNothing().when(spyTopComponent).disableFindView();
@@ -223,7 +248,6 @@ public class FindViewTopComponentNGTest {
     public void testHandleNewGraph() {
         System.out.println("handleNewGraph");
 
-        setUpTests();
         setupGraph();
 
         doNothing().when(spyTopComponent).UpdateUI();
@@ -242,7 +266,7 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testDisableFindView() {
         System.out.println("disableFindView");
-        setUpTests();
+        
         setupGraph();
 
         final GraphManager gm = Mockito.mock(GraphManager.class);
@@ -276,7 +300,6 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testFocusFindTextField() {
 //        System.out.println("focusFindTextField");
-//        setUpTests();
 //        setupGraph();
 //
 //        spyTopComponent = spy(topComponent);
@@ -311,7 +334,6 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testUpdateUI() {
         System.out.println("UpdateUI");
-        setUpTests();
 //        final GraphElementType basicFindType = GraphElementType.getValue(getFindViewPane().getTabs().getBasicFindTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
 
         final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<>();
@@ -348,32 +370,6 @@ public class FindViewTopComponentNGTest {
         verify(spyReplaceTab, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
         verify(spyReplaceTab, times(1)).populateAttributes(Mockito.eq(GraphElementType.VERTEX));
         verify(spyReplaceTab, times(1)).updateSelectedAttributes(Mockito.eq(spyBasicFindTab.getMatchingAttributeList(GraphElementType.VERTEX)));
-
-    }
-
-    public void setUpTests() {
-        topComponent = mock(FindViewTopComponent.class);
-//        spyTopComponent = spy(topComponent);
-        spyTopComponent = spy(topComponent);
-
-        pane = mock(FindViewPane.class);
-        spyPane = spy(pane);
-
-        tabs = mock(FindViewTabs.class);
-        spyTabs = spy(tabs);
-
-        basicFindTab = mock(BasicFindTab.class);
-        replaceTab = mock(ReplaceTab.class);
-        advancedFindTab = mock(AdvancedFindTab.class);
-        spyBasicFindTab = spy(basicFindTab);
-        spyReplaceTab = spy(replaceTab);
-        spyAdvancedFindTab = spy(advancedFindTab);
-
-        when(spyTopComponent.getFindViewPane()).thenReturn(spyPane);
-        when(spyPane.getTabs()).thenReturn(spyTabs);
-        when(spyTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
-        when(spyTabs.getReplaceTab()).thenReturn(spyReplaceTab);
-        when(spyTabs.getAdvancedFindTab()).thenReturn(spyAdvancedFindTab);
 
     }
 

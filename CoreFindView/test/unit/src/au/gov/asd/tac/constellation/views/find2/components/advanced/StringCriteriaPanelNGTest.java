@@ -100,6 +100,23 @@ public class StringCriteriaPanelNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        findViewTopComponent = mock(FindViewTopComponent.class);
+        spyTopComponent = spy(findViewTopComponent);
+
+        findViewPane = mock(FindViewPane.class);
+        findViewTabs = mock(FindViewTabs.class);
+        FindViewController.getDefault();
+
+        basicFindTab = mock(BasicFindTab.class);
+        replaceTab = mock(ReplaceTab.class);
+
+        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
+        when(findViewPane.getTabs()).thenReturn(findViewTabs);
+        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
+        when(findViewTabs.getAdvancedFindTab()).thenReturn(advancedTab);
+
+        advancedTab = new AdvancedFindTab(findViewTabs);
     }
 
     @AfterMethod
@@ -113,7 +130,6 @@ public class StringCriteriaPanelNGTest {
     public void testSetSearchFieldText() {
         System.out.println("setSearchFieldText");
 
-        setUpUi();
         setupGraph();
 
         AdvancedFindTab parentComponent = spy(advancedTab);
@@ -134,7 +150,7 @@ public class StringCriteriaPanelNGTest {
     @Test
     public void testGetSearchFieldText() {
         System.out.println("getSearchFieldText");
-        setUpUi();
+
         setupGraph();
 
         AdvancedFindTab parentComponent = spy(advancedTab);
@@ -154,7 +170,6 @@ public class StringCriteriaPanelNGTest {
     public void testGetCriteriaValues() {
         System.out.println("getCriteriaValues");
 
-        setUpUi();
         setupGraph();
 
         AdvancedFindTab parentComponent = spy(advancedTab);
@@ -190,7 +205,7 @@ public class StringCriteriaPanelNGTest {
     @Test
     public void testGetType() {
         System.out.println("getType");
-        setUpUi();
+
         setupGraph();
 
         AdvancedFindTab parentComponent = spy(advancedTab);
@@ -198,28 +213,6 @@ public class StringCriteriaPanelNGTest {
 
         StringCriteriaPanel stringCriteriaPanel = new StringCriteriaPanel(parentComponent, "Identifier", type);
         assertEquals(stringCriteriaPanel.getType(), StringAttributeDescription.ATTRIBUTE_NAME);
-    }
-
-    public void setUpUi() {
-
-        findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
-
-        findViewPane = mock(FindViewPane.class);
-        findViewTabs = mock(FindViewTabs.class);
-        FindViewController.getDefault();
-
-        basicFindTab = mock(BasicFindTab.class);
-        replaceTab = mock(ReplaceTab.class);
-
-        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
-        when(findViewPane.getTabs()).thenReturn(findViewTabs);
-        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
-        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
-        when(findViewTabs.getAdvancedFindTab()).thenReturn(advancedTab);
-
-        advancedTab = new AdvancedFindTab(findViewTabs);
-
     }
 
     private void setupGraph() {

@@ -100,6 +100,20 @@ public class ReplaceTabNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        findViewTopComponent = mock(FindViewTopComponent.class);
+        spyTopComponent = spy(findViewTopComponent);
+
+        findViewPane = mock(FindViewPane.class);
+        findViewTabs = mock(FindViewTabs.class);
+        FindViewController.getDefault();
+
+        basicFindTab = mock(BasicFindTab.class);
+
+        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
+        when(findViewPane.getTabs()).thenReturn(findViewTabs);
+        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
+        replaceTab = new ReplaceTab(findViewTabs);
     }
 
     @AfterMethod
@@ -112,7 +126,6 @@ public class ReplaceTabNGTest {
     @Test
     public void testUpdateButtons() {
         System.out.println("updateButtons");
-        setUpUi();
 
         replaceTab.buttonsHBox.getChildren().clear();
         replaceTab.buttonsHBox.getChildren().add(new Button("test"));
@@ -134,7 +147,6 @@ public class ReplaceTabNGTest {
     @Test
     public void testUpdateBasicReplaceParamters() {
         System.out.println("updateBasicReplaceParamters");
-        setUpUi();
 
         final BasicFindReplaceParameters controlllerParameters = FindViewController.getDefault().getCurrentBasicReplaceParameters();
         replaceTab.lookForChoiceBox.getSelectionModel().select(0);
@@ -183,7 +195,6 @@ public class ReplaceTabNGTest {
     public void testReplaceAllAction() {
         System.out.println("replaceAllAction");
 
-        setUpUi();
         setupGraph();
 
         //Create a controller mock and do nothing on retriveMatchingElements()
@@ -237,7 +248,6 @@ public class ReplaceTabNGTest {
     public void testReplaceNextAction() {
         System.out.println("replaceNextAction");
 
-        setUpUi();
         setupGraph();
 
         //Create a controller mock and do nothing on retriveMatchingElements()
@@ -281,25 +291,6 @@ public class ReplaceTabNGTest {
             verify(replaceMock, times(1)).updateBasicReplaceParamters();
             verify(mockController, times(1)).replaceMatchingElements(false, true);
         }
-    }
-
-    public void setUpUi() {
-
-        findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
-
-        findViewPane = mock(FindViewPane.class);
-        findViewTabs = mock(FindViewTabs.class);
-        FindViewController.getDefault();
-
-        basicFindTab = mock(BasicFindTab.class);
-
-        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
-        when(findViewPane.getTabs()).thenReturn(findViewTabs);
-        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
-        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
-        replaceTab = new ReplaceTab(findViewTabs);
-
     }
 
     private void setupGraph() {

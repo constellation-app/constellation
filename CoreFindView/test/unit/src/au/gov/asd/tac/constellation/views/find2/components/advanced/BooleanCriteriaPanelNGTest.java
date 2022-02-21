@@ -100,6 +100,23 @@ public class BooleanCriteriaPanelNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        findViewTopComponent = mock(FindViewTopComponent.class);
+        spyTopComponent = spy(findViewTopComponent);
+
+        findViewPane = mock(FindViewPane.class);
+        findViewTabs = mock(FindViewTabs.class);
+        FindViewController.getDefault();
+
+        basicFindTab = mock(BasicFindTab.class);
+        replaceTab = mock(ReplaceTab.class);
+
+        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
+        when(findViewPane.getTabs()).thenReturn(findViewTabs);
+        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
+        when(findViewTabs.getAdvancedFindTab()).thenReturn(advancedTab);
+
+        advancedTab = new AdvancedFindTab(findViewTabs);
     }
 
     @AfterMethod
@@ -112,7 +129,7 @@ public class BooleanCriteriaPanelNGTest {
     @Test
     public void testGetCriteriaValues() {
         System.out.println("getCriteriaValues");
-        setUpUi();
+
         setupGraph();
 
         AdvancedFindTab parentComponent = spy(advancedTab);
@@ -146,7 +163,7 @@ public class BooleanCriteriaPanelNGTest {
     @Test
     public void testGetType() {
         System.out.println("getType");
-        setUpUi();
+
         setupGraph();
 
         AdvancedFindTab parentComponent = spy(advancedTab);
@@ -154,28 +171,6 @@ public class BooleanCriteriaPanelNGTest {
 
         BooleanCriteriaPanel booleanCriteriaPanel = new BooleanCriteriaPanel(parentComponent, "dim", type);
         assertEquals(booleanCriteriaPanel.getType(), BooleanAttributeDescription.ATTRIBUTE_NAME);
-    }
-
-    public void setUpUi() {
-
-        findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
-
-        findViewPane = mock(FindViewPane.class);
-        findViewTabs = mock(FindViewTabs.class);
-        FindViewController.getDefault();
-
-        basicFindTab = mock(BasicFindTab.class);
-        replaceTab = mock(ReplaceTab.class);
-
-        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
-        when(findViewPane.getTabs()).thenReturn(findViewTabs);
-        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
-        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
-        when(findViewTabs.getAdvancedFindTab()).thenReturn(advancedTab);
-
-        advancedTab = new AdvancedFindTab(findViewTabs);
-
     }
 
     private void setupGraph() {

@@ -100,6 +100,23 @@ public class FloatCriteriaPanelNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        findViewTopComponent = mock(FindViewTopComponent.class);
+        spyTopComponent = spy(findViewTopComponent);
+
+        findViewPane = mock(FindViewPane.class);
+        findViewTabs = mock(FindViewTabs.class);
+        FindViewController.getDefault();
+
+        basicFindTab = mock(BasicFindTab.class);
+        replaceTab = mock(ReplaceTab.class);
+
+        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
+        when(findViewPane.getTabs()).thenReturn(findViewTabs);
+        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
+        when(findViewTabs.getAdvancedFindTab()).thenReturn(advancedTab);
+
+        advancedTab = new AdvancedFindTab(findViewTabs);
     }
 
     @AfterMethod
@@ -113,7 +130,6 @@ public class FloatCriteriaPanelNGTest {
     public void testGetCriteriaValues() {
         System.out.println("getCriteriaValues");
 
-        setUpUi();
         setupGraph();
 
         AdvancedFindTab parentComponent = spy(advancedTab);
@@ -150,7 +166,7 @@ public class FloatCriteriaPanelNGTest {
     @Test
     public void testGetType() {
         System.out.println("getType");
-        setUpUi();
+
         setupGraph();
 
         AdvancedFindTab parentComponent = spy(advancedTab);
@@ -158,28 +174,6 @@ public class FloatCriteriaPanelNGTest {
 
         FloatCriteriaPanel floatCriteriaPanel = new FloatCriteriaPanel(parentComponent, "x", type);
         assertEquals(floatCriteriaPanel.getType(), FloatAttributeDescription.ATTRIBUTE_NAME);
-
-    }
-
-    public void setUpUi() {
-
-        findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
-
-        findViewPane = mock(FindViewPane.class);
-        findViewTabs = mock(FindViewTabs.class);
-        FindViewController.getDefault();
-
-        basicFindTab = mock(BasicFindTab.class);
-        replaceTab = mock(ReplaceTab.class);
-
-        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
-        when(findViewPane.getTabs()).thenReturn(findViewTabs);
-        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
-        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
-        when(findViewTabs.getAdvancedFindTab()).thenReturn(advancedTab);
-
-        advancedTab = new AdvancedFindTab(findViewTabs);
 
     }
 

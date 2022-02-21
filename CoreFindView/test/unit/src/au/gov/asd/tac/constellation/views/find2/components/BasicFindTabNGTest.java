@@ -105,6 +105,21 @@ public class BasicFindTabNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        findViewTopComponent = mock(FindViewTopComponent.class);
+        spyTopComponent = spy(findViewTopComponent);
+
+        findViewPane = mock(FindViewPane.class);
+        findViewTabs = mock(FindViewTabs.class);
+        FindViewController.getDefault();
+
+        replaceTab = mock(ReplaceTab.class);
+
+        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
+        when(findViewPane.getTabs()).thenReturn(findViewTabs);
+        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
+
+        basicFindTab = new BasicFindTab(findViewTabs);
     }
 
     @AfterMethod
@@ -118,7 +133,6 @@ public class BasicFindTabNGTest {
     public void testGetParentComponent() {
         System.out.println("getParentComponent");
 
-        setUpUi();
         assertEquals(basicFindTab.getParentComponent(), findViewTabs);
     }
 
@@ -128,7 +142,6 @@ public class BasicFindTabNGTest {
     @Test
     public void testUpdateButtons() {
         System.out.println("updateButtons");
-        setUpUi();
 
         basicFindTab.buttonsHBox.getChildren().clear();
         basicFindTab.buttonsHBox.getChildren().add(new Button("test"));
@@ -152,7 +165,6 @@ public class BasicFindTabNGTest {
     public void testPopulateAttributes() {
         System.out.println("populateAttributes");
 
-        setUpUi();
         setupGraph();
 
         /**
@@ -222,7 +234,6 @@ public class BasicFindTabNGTest {
     public void testUpdateSelectedAttributes() {
         System.out.println("updateSelectedAttributes");
 
-        setUpUi();
         setupGraph();
 
         // Create a list and add the first index of the attributes list (label)
@@ -271,7 +282,6 @@ public class BasicFindTabNGTest {
 
     public void testGetMatchingAttributeList() {
         System.out.println("getMatchingAttributeList");
-        setUpUi();
 
         /**
          * Check each of the graph element types and call the
@@ -299,7 +309,6 @@ public class BasicFindTabNGTest {
     public void testSaveSelected() {
         System.out.println("saveSelected");
 
-        setUpUi();
         setupGraph();
 
         /**
@@ -336,7 +345,6 @@ public class BasicFindTabNGTest {
     @Test
     public void testUpdateBasicFindParamters() {
         System.out.println("updateBasicFindParamters");
-        setUpUi();
 
         final BasicFindReplaceParameters controlllerParameters = FindViewController.getDefault().getCurrentBasicFindParameters();
         basicFindTab.lookForChoiceBox.getSelectionModel().select(0);
@@ -384,8 +392,6 @@ public class BasicFindTabNGTest {
     public void testUpdateSelectionFactors() {
         System.out.println("updateSelectionFactors");
 
-        setUpUi();
-
         /**
          * Check the button status properly updates based on the
          * currentSelectionChoice box Index
@@ -422,7 +428,7 @@ public class BasicFindTabNGTest {
     @Test
     public void testFindAllAction() {
         System.out.println("findAllAction");
-        setUpUi();
+
         setupGraph();
 
         //Create a controller mock and do nothing on retriveMatchingElements()
@@ -474,7 +480,6 @@ public class BasicFindTabNGTest {
         System.out.println("findNextAction");
 
         // Refer to testFindAllAction for comments
-        setUpUi();
         setupGraph();
 
         FindViewController mockController = mock(FindViewController.class);
@@ -514,7 +519,6 @@ public class BasicFindTabNGTest {
         System.out.println("findPrevAction");
 
         // Refer to testFindAllAction for comments
-        setUpUi();
         setupGraph();
 
         FindViewController mockController = mock(FindViewController.class);
@@ -553,32 +557,11 @@ public class BasicFindTabNGTest {
     public void testRequestTextFieldFocus() {
         System.out.println("requestTextFieldFocus");
 
-//        setUpUi();
 //        setupGraph();
 //
 //        basicFindTab.requestTextFieldFocus();
 //        assertEquals(basicFindTab.getFindTextField().isFocused(), true);
 //        basicFindTab.getFindTextField().requestFocus();
-    }
-
-    public void setUpUi() {
-
-        findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
-
-        findViewPane = mock(FindViewPane.class);
-        findViewTabs = mock(FindViewTabs.class);
-        FindViewController.getDefault();
-
-        replaceTab = mock(ReplaceTab.class);
-
-        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
-        when(findViewPane.getTabs()).thenReturn(findViewTabs);
-        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
-        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
-
-        basicFindTab = new BasicFindTab(findViewTabs);
-
     }
 
     private void setupGraph() {
