@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class GaussianBlurNGTest {
-    
+
     public GaussianBlurNGTest() {
     }
 
@@ -59,7 +59,7 @@ public class GaussianBlurNGTest {
         final int height = 0;
         GaussianBlur.gaussianBlurReal(sourceChannel, new float[1], width, height, 0);
     }
-    
+
     /**
      * Test of gaussianBlurReal method, of class GaussianBlur. When target channel is smaller than the source channel
      */
@@ -70,7 +70,7 @@ public class GaussianBlurNGTest {
         final float[] targetChannel = new float[0];
         GaussianBlur.gaussianBlurReal(sourceChannel, targetChannel, 1, 1, 0);
     }
-    
+
     /**
      * Test of gaussianBlurReal method, of class GaussianBlur.
      */
@@ -82,13 +82,13 @@ public class GaussianBlurNGTest {
         final int width = 3;
         final int height = 2;
         final int radius = 2;
-        
+
         GaussianBlur.gaussianBlurReal(sourceChannel, targetChannel, width, height, radius);
-        
+
         final float[] expResult = {2.8245978F, 3.2004867F, 3.5763752F, 3.4236248F, 3.7995133F, 4.175402F, 0F, 0F};
         assertEquals(targetChannel, expResult);
     }
-    
+
     /**
      * Test of gaussianBlurBox method, of class GaussianBlur. When the dimensions of the source channel is not equal to height x width
      */
@@ -100,7 +100,7 @@ public class GaussianBlurNGTest {
         final int height = 0;
         GaussianBlur.gaussianBlurBox(sourceChannel, new float[1], width, height, 0, 0, null);
     }
-    
+
     /**
      * Test of gaussianBlurBox method, of class GaussianBlur. When target channel is smaller than the source channel
      */
@@ -123,10 +123,10 @@ public class GaussianBlurNGTest {
         final int width = 3;
         final int height = 2;
         final int passes = 1;
-        
+
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, 0, passes, null);
     }
-    
+
     /**
      * Test of gaussianBlurBox method, of class GaussianBlur. Standard BoxBlurType
      */
@@ -139,13 +139,13 @@ public class GaussianBlurNGTest {
         final int height = 2;
         final int radius = 2;
         final int passes = 1;
-        
+
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.STANDARD);
-        
+
         final float[] expResult = {3F, 3.2857144F, 3.5714285F, 3.4285715F, 3.7142856F, 4F, 0F, 0F};
         assertEquals(targetChannel, expResult);
     }
-    
+
     /**
      * Test of gaussianBlurBox method, of class GaussianBlur. Fast BoxBlurType
      */
@@ -158,9 +158,9 @@ public class GaussianBlurNGTest {
         final int height = 2;
         final int radius = 2;
         final int passes = 1;
-        
+
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FAST);
-        
+
         final float[] expResult = {0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F};
         assertEquals(targetChannel, expResult);
     }
@@ -172,9 +172,9 @@ public class GaussianBlurNGTest {
     public void testNormalise() {
         System.out.println("normalise");
         final float[] sourceChannel = {3F, 2F, 1F, 4F, 5F, 6F};
-        
+
         GaussianBlur.normalise(sourceChannel, 10);
-        
+
         final float[] expResult = {4F, 2F, 0F, 6F, 8F, 10F};
         assertEquals(sourceChannel, expResult);
     }
@@ -188,7 +188,7 @@ public class GaussianBlurNGTest {
         final int threshold = -1;
         GaussianBlur.colorise(null, null, threshold, 0F);
     }
-    
+
     /**
      * Test of colorise method, of class GaussianBlur. Threshold too big
      */
@@ -198,7 +198,7 @@ public class GaussianBlurNGTest {
         final int threshold = 256;
         GaussianBlur.colorise(null, null, threshold, 0F);
     }
-    
+
     /**
      * Test of colorise method, of class GaussianBlur. Target channel smaller than source channel
      */
@@ -209,7 +209,7 @@ public class GaussianBlurNGTest {
         final int[] targetChannel = new int[1];
         GaussianBlur.colorise(sourceChannel, targetChannel, 100, 0F);
     }
-    
+
     /**
      * Test of colorise method, of class GaussianBlur.
      */
@@ -220,20 +220,20 @@ public class GaussianBlurNGTest {
         final int[] targetChannel = new int[5];
         final int threshold = 100;
         final float severity = 2F;
-        
+
         GaussianBlur.colorise(sourceChannel, targetChannel, threshold, severity);
 
         // since the result numbers don't really say much 
         // (due to using the using the signed bit as part of the ARGB value), 
         // we'll compare the expected alpha and colour values contained within
-        
+
         // alpha
         assertEquals(targetChannel[0] >>> 24, 0);
         assertEquals(targetChannel[1] >>> 24, 0);
         assertEquals(targetChannel[2] >>> 24, 154);
         assertEquals(targetChannel[3] >>> 24, 192);
         assertEquals(targetChannel[4] >>> 24, 192);
-        
+
         //colour
         assertEquals(targetChannel[0] & 0xFFFFFF, 0x0034F8);
         assertEquals(targetChannel[1] & 0xFFFFFF, 0x3E9350);

@@ -37,9 +37,9 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class MultiPartNGTest {
-    
+
     MultiPart multiPart;
-    
+
     public MultiPartNGTest() {
     }
 
@@ -66,19 +66,19 @@ public class MultiPartNGTest {
     @Test
     public void testAddText() {
         System.out.println("addText");
-        
+
         assertEquals(multiPart.size(), 0);
         multiPart.addText("testKey", "testValue");
         assertEquals(multiPart.size(), 97);
     }
-    
+
     /**
      * Test of addText method, of class MultiPart. Trying to add after end is called
      */
     @Test(expectedExceptions = {MultiPartException.class}, expectedExceptionsMessageRegExp = "Not allowed after calling end\\(\\).")
     public void testAddTextBadAdd() {
         System.out.println("addTextBadAdd");
-        
+
         multiPart.end();
         multiPart.addText("testKey", "testValue");
     }
@@ -89,21 +89,21 @@ public class MultiPartNGTest {
     @Test
     public void testAddBytes() {
         System.out.println("addBytes");
-        
+
         assertEquals(multiPart.size(), 0);
-        
+
         final String testContent = "testContent";
         multiPart.addBytes("testFilename", testContent.getBytes(), "application/octet-stream");
         assertEquals(multiPart.size(), 161);
     }
-    
+
     /**
      * Test of addBytes method, of class MultiPart. Trying to add after end is called
      */
     @Test(expectedExceptions = {MultiPartException.class}, expectedExceptionsMessageRegExp = "Not allowed after calling end\\(\\).")
     public void testAddBytesBadAdd() {
         System.out.println("addBytesBadAdd");
-        
+
         multiPart.end();
         multiPart.addBytes("testFilename", null, null);
     }
@@ -114,21 +114,21 @@ public class MultiPartNGTest {
     @Test
     public void testEnd() {
         System.out.println("end");
-        
+
         assertEquals(multiPart.size(), 0);
-        
+
         multiPart.end();
         //confirm the end sequence bytes have been added
         assertEquals(multiPart.size(), 36);
     }
-    
+
     /**
      * Test of end method, of class MultiPart. Trying to end more than once
      */
     @Test(expectedExceptions = {MultiPartException.class}, expectedExceptionsMessageRegExp = "Not allowed after calling end\\(\\).")
     public void testEndTwice() {
         System.out.println("endTwice");
-        
+
         multiPart.end();
         multiPart.end();
     }
@@ -139,13 +139,13 @@ public class MultiPartNGTest {
     @Test
     public void testGetBoundary() {
         System.out.println("getBoundary");
-        
+
         try (final MockedStatic<UUID> uuidMockedStatic = Mockito.mockStatic(UUID.class)) {
             final UUID mockUuid = mock(UUID.class);
             when(mockUuid.toString()).thenReturn("1-2-3-4");
-            
+
             uuidMockedStatic.when(UUID::randomUUID).thenReturn(mockUuid);
-            
+
             final MultiPart instance = new MultiPart();
             assertEquals(instance.getBoundary(), "1234");
         }
@@ -157,20 +157,20 @@ public class MultiPartNGTest {
     @Test
     public void testGetBuffer() {
         System.out.println("getBuffer");
-        
+
         try (final MockedStatic<UUID> uuidMockedStatic = Mockito.mockStatic(UUID.class)) {
             final UUID mockUuid = mock(UUID.class);
             when(mockUuid.toString()).thenReturn("1-2-3-4");
-            
+
             uuidMockedStatic.when(UUID::randomUUID).thenReturn(mockUuid);
-            
+
             final MultiPart instance = new MultiPart();
-            
+
             instance.end();
             assertEquals(instance.getBuffer(), "--1234--".getBytes());
         }
     }
-    
+
     /**
      * Test of getBuffer method, of class MultiPart. Try to get before end is called
      */
@@ -188,7 +188,7 @@ public class MultiPartNGTest {
     @Test
     public void testPostSuccess() throws Exception {
         System.out.println("postSuccess");
-        
+
         final HttpsURLConnection mockConnection = mock(HttpsURLConnection.class);
         try (final ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
             when(mockConnection.getOutputStream()).thenReturn(stream);
@@ -203,7 +203,7 @@ public class MultiPartNGTest {
             assertEquals(stream.size(), 36);
         }
     }
-    
+
     /**
      * Test of post method, of class MultiPart. Non-200 response code
      * @throws java.lang.Exception
@@ -211,7 +211,7 @@ public class MultiPartNGTest {
     @Test
     public void testPostFailed() throws Exception {
         System.out.println("postFailed");
-        
+
         final HttpsURLConnection mockConnection = mock(HttpsURLConnection.class);
         try (final ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
             // since we're simulating something going wrong, we're not going to check the output stream
@@ -224,7 +224,7 @@ public class MultiPartNGTest {
             final Pair<String, String> postResult = multiPart.post(mockConnection);
             // assert that we get the expected result for the location value
             assertEquals(postResult.getValue(), null);
-            
+
         }
     }
 
@@ -235,7 +235,7 @@ public class MultiPartNGTest {
     @Test
     public void testGetBodySuccess() throws Exception {
         System.out.println("getBodySuccess");
-        
+
         final HttpsURLConnection mockConnection = mock(HttpsURLConnection.class);
         final byte[] input = "From the input stream".getBytes();
         final byte[] error = "From the error stream".getBytes();
@@ -243,12 +243,12 @@ public class MultiPartNGTest {
                 final ByteArrayInputStream errorStream = new ByteArrayInputStream(error)) {
             when(mockConnection.getInputStream()).thenReturn(inputStream);
             when(mockConnection.getErrorStream()).thenReturn(errorStream);
-            
+
             final byte[] body = MultiPart.getBody(mockConnection, 200);
             assertEquals(body, input);
         }
     }
-    
+
     /**
      * Test of getBody method, of class MultiPart. Non-200 response code
      * @throws java.lang.Exception
@@ -256,7 +256,7 @@ public class MultiPartNGTest {
     @Test
     public void testGetBodyFailed() throws Exception {
         System.out.println("getBodyFailed");
-        
+
         final HttpsURLConnection mockConnection = mock(HttpsURLConnection.class);
         final byte[] input = "From the input stream".getBytes();
         final byte[] error = "From the error stream".getBytes();
@@ -264,7 +264,7 @@ public class MultiPartNGTest {
                 final ByteArrayInputStream errorStream = new ByteArrayInputStream(error)) {
             when(mockConnection.getInputStream()).thenReturn(inputStream);
             when(mockConnection.getErrorStream()).thenReturn(errorStream);
-            
+
             final byte[] body = MultiPart.getBody(mockConnection, 300);
             assertEquals(body, error);
         }

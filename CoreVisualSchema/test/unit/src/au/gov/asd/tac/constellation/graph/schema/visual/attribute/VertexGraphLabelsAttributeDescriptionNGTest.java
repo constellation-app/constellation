@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class VertexGraphLabelsAttributeDescriptionNGTest {
-    
+
     public VertexGraphLabelsAttributeDescriptionNGTest() {
     }
 
@@ -56,17 +56,17 @@ public class VertexGraphLabelsAttributeDescriptionNGTest {
     @Test
     public void testConvertFromString() {
         System.out.println("convertFromString");
-        
+
         final VertexGraphLabelsAttributeDescription instance = new VertexGraphLabelsAttributeDescription();
-        
+
         final GraphLabels nullResult = instance.convertFromString(null);
         // should be the default here
         assertEquals(nullResult, GraphLabels.NO_LABELS);
-        
+
         final GraphLabels blankResult = instance.convertFromString("   ");
         // should be the default here as well
         assertEquals(blankResult, GraphLabels.NO_LABELS);
-        
+
         final GraphLabels validResult = instance.convertFromString("Label1;Blue;1|Label2;Red;2|Label3;Yellow;3");
         assertEquals(validResult.getNumberOfLabels(), 3);
         final List<GraphLabel> validResultLabels = validResult.getLabels();
@@ -81,7 +81,7 @@ public class VertexGraphLabelsAttributeDescriptionNGTest {
     @Test
     public void testGetVersion() {
         System.out.println("getVersion");
-        
+
         final VertexGraphLabelsAttributeDescription instance = new VertexGraphLabelsAttributeDescription();
         assertEquals(instance.getVersion(), 1);
     }

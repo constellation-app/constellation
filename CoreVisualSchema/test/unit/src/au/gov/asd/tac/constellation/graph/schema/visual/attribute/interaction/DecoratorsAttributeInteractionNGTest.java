@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class DecoratorsAttributeInteractionNGTest {
-    
+
     public DecoratorsAttributeInteractionNGTest() {
     }
 
@@ -55,16 +55,16 @@ public class DecoratorsAttributeInteractionNGTest {
     @Test
     public void testGetDisplayText() {
         System.out.println("getDisplayText");
-        
+
         final DecoratorsAttributeInteraction instance = new DecoratorsAttributeInteraction();
-        
+
         final String nullResult = instance.getDisplayText(null);
         assertNull(nullResult);
-        
+
         final VertexDecorators nullDecorators = new VertexDecorators(null, null, null, null);
         final String nullDecoratorsResult = instance.getDisplayText(nullDecorators);
         assertEquals(nullDecoratorsResult, "");
-        
+
         final VertexDecorators decorators = new VertexDecorators("testAttribute1", "testAttribute2", "testAttribute3", "testAttribute4");
         final String decoratorsResult = instance.getDisplayText(decorators);
         assertEquals(decoratorsResult, "NW: testAttribute1, NE: testAttribute2, SE: testAttribute3, SW: testAttribute4");

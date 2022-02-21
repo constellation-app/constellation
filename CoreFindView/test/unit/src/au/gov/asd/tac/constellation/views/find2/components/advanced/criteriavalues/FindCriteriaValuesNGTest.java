@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.schema.visual.attribute;
+package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues;
 
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -25,11 +24,17 @@ import org.testng.annotations.Test;
 
 /**
  *
- * @author antares
+ * @author Atlas139mkm
  */
-public class ConnectionModeAttributeDescriptionNGTest {
-    
-    public ConnectionModeAttributeDescriptionNGTest() {
+public class FindCriteriaValuesNGTest {
+
+    private final String typeString = "Type";
+    private final String attributeString = "Attribute";
+    private final String filterString = "Filter";
+
+    private FindCriteriaValues findCriteriaValue = new FindCriteriaValues(typeString, attributeString, filterString);
+
+    public FindCriteriaValuesNGTest() {
     }
 
     @BeforeClass
@@ -49,24 +54,31 @@ public class ConnectionModeAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of convertFromString method, of class ConnectionModeAttributeDescription.
+     * Test of getAttributeType method, of class FindCriteriaValues.
      */
     @Test
-    public void testConvertFromString() {
-        System.out.println("convertFromString");
-        
-        final ConnectionModeAttributeDescription instance = new ConnectionModeAttributeDescription();
-        
-        final ConnectionMode nullResult = instance.convertFromString(null);
-        // should be the default here
-        assertEquals(nullResult, ConnectionMode.EDGE);
-        
-        final ConnectionMode blankResult = instance.convertFromString("   ");
-        // should be the default here as well
-        assertEquals(blankResult, ConnectionMode.EDGE);
-        
-        final ConnectionMode validResult = instance.convertFromString("LINK");
-        assertEquals(validResult, ConnectionMode.LINK);
+    public void testGetAttributeType() {
+        System.out.println("getAttributeType");
+        assertEquals(typeString, findCriteriaValue.getAttributeType());
     }
-    
+
+    /**
+     * Test of getAttribute method, of class FindCriteriaValues.
+     */
+    @Test
+    public void testGetAttribute() {
+        System.out.println("getAttribute");
+        assertEquals(attributeString, findCriteriaValue.getAttribute());
+    }
+
+    /**
+     * Test of getFilter method, of class FindCriteriaValues.
+     */
+    @Test
+    public void testGetFilter() {
+        System.out.println("getFilter");
+        assertEquals(filterString, findCriteriaValue.getFilter());
+
+    }
+
 }

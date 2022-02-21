@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class DrawFlagsAttributeDescriptionNGTest {
-    
+
     public DrawFlagsAttributeDescriptionNGTest() {
     }
 
@@ -54,47 +54,47 @@ public class DrawFlagsAttributeDescriptionNGTest {
     @Test
     public void testConvertFromString() {
         System.out.println("convertFromString");
-        
+
         final DrawFlagsAttributeDescription instance = new DrawFlagsAttributeDescription();
-        
+
         final DrawFlags nullResult = instance.convertFromString(null);
         // should be the default here
         assertEquals(nullResult, DrawFlags.ALL);
-        
+
         final DrawFlags blankResult = instance.convertFromString("   ");
         // should be the default here as well
         assertEquals(blankResult, DrawFlags.ALL);
-        
+
         final DrawFlags validResult = instance.convertFromString("3");
         assertEquals(validResult, new DrawFlags(3));
     }
-    
+
     /**
      * Test of setInt method, of class DrawFlagsAttributeDescription. Trying to set before capacity has been allocated to do so
      */
     @Test(expectedExceptions = {ArrayIndexOutOfBoundsException.class})
     public void testSetIntBadSet() {
         System.out.println("setIntBadSet");
-        
+
         final DrawFlagsAttributeDescription instance = new DrawFlagsAttributeDescription();
         assertEquals(instance.getCapacity(), 0);
         //trying to set when there is no capacity available
         instance.setInt(0, 0);
     }
-    
+
     /**
      * Test of setInt method, of class DrawFlagsAttributeDescription.
      */
     @Test
     public void testSetInt() {
         System.out.println("setInt");
-        
+
         final DrawFlagsAttributeDescription instance = new DrawFlagsAttributeDescription();
         instance.setCapacity(1);
-        
+
         assertEquals(instance.getInt(0), 31);
         assertEquals(instance.getObject(0), DrawFlags.ALL);
-        
+
         instance.setInt(0, 3);
         assertEquals(instance.getInt(0), 3);
         assertEquals(instance.getString(0), "3");

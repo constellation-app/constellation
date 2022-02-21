@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class BinCollectionNGTest {
-    
+
     public BinCollectionNGTest() {
     }
 
@@ -56,39 +56,39 @@ public class BinCollectionNGTest {
     @Test
     public void testGetSelectedBins() {
         System.out.println("getSelectedBins");
-        
+
         final Bin bin0 = mock(Bin.class);
         final Bin bin1 = mock(Bin.class);
         final Bin bin2 = mock(Bin.class);
         bin0.selectedCount = 5;
-        
+
         final Bin[] bins = new Bin[3];
         bins[0] = bin0;
         bins[1] = bin1;
         bins[2] = bin2;
-        
+
         final BinCollection instance = mock(BinCollection.class, Mockito.CALLS_REAL_METHODS);
         when(instance.getBins()).thenReturn(bins);
-        
+
         final Bin[] expResult = new Bin[1];
         expResult[0] = bin0;
         final Bin[] result = instance.getSelectedBins();
-        
+
         // Check that one bin was selected, and that was returned.
         assertEquals(expResult[0],  result[0]);
-        
+
         bin0.selectedCount = 0;
-        
+
         final Bin[] bins2 = new Bin[3];
         bins2[0] = bin0;
         bins2[1] = bin1;
         bins2[2] = bin2;
-        
+
         when(instance.getBins()).thenReturn(bins2);
-        
+
         final Bin[] expResult2 = new Bin[0];
         final Bin[] result2 = instance.getSelectedBins();
-        
+
         // Check that no bins are selected
         assertEquals(expResult2.length,  result2.length);
     }

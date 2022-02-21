@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class DecoratorsAttributeDescriptionNGTest {
-    
+
     public DecoratorsAttributeDescriptionNGTest() {
     }
 
@@ -54,17 +54,17 @@ public class DecoratorsAttributeDescriptionNGTest {
     @Test
     public void testConvertFromString() {
         System.out.println("convertFromString");
-        
+
         final DecoratorsAttributeDescription instance = new DecoratorsAttributeDescription();
-        
+
         final VertexDecorators nullResult = instance.convertFromString(null);
         // should be the default here
         assertEquals(nullResult, VertexDecorators.NO_DECORATORS);
-        
+
         final VertexDecorators blankResult = instance.convertFromString("   ");
         // should be the default here as well
         assertEquals(blankResult, VertexDecorators.NO_DECORATORS);
-        
+
         final VertexDecorators validResult = instance.convertFromString("\"decorator1\";\"decorator2\";\"decorator3\";\"decorator4\";");
         final VertexDecorators expResult = new VertexDecorators("decorator1", "decorator2", "decorator3", "decorator4");
         assertEquals(validResult.getNorthEastDecoratorAttribute(), expResult.getNorthEastDecoratorAttribute());
@@ -72,5 +72,5 @@ public class DecoratorsAttributeDescriptionNGTest {
         assertEquals(validResult.getSouthEastDecoratorAttribute(), expResult.getSouthEastDecoratorAttribute());
         assertEquals(validResult.getSouthWestDecoratorAttribute(), expResult.getSouthWestDecoratorAttribute());
     }
-    
+
 }

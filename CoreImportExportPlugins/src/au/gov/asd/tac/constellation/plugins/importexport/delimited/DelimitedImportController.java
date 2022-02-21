@@ -57,7 +57,6 @@ public class DelimitedImportController extends ImportController {
 
     private final RefreshRequest refreshRequest = this::updateSampleData;
     private final List<File> files;
-
     private File sampleFile;
     private ImportFileParser importFileParser;
     private boolean filesIncludeHeaders;
@@ -84,7 +83,7 @@ public class DelimitedImportController extends ImportController {
             validateFileStructure(files);
         }
     }
-
+    
     protected List<File> getFiles() {
         return Collections.unmodifiableList(files);
     }
@@ -225,7 +224,7 @@ public class DelimitedImportController extends ImportController {
             configurationPane.setSampleData(currentColumns, currentData);
         }
     }
-
+    
     protected void notifyFileStructureMismatchWarning(final List<File> filesToRemove) {
         final StringBuilder warningMsg = new StringBuilder((filesToRemove.size() > 1 ? "These files have" : "This file has"))
                 .append(" a different structure and will be deleted: ").append(SeparatorConstants.NEWLINE);

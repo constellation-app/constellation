@@ -94,7 +94,7 @@ public class ConstellationSecurityManager {
 
             for (int i = 0; i < securityProviders.length; i++) {
                 LOGGER.log(LEVEL, "Getting contexts from {0}", securityProviders[i].getName());
-
+                
                 final List<ConstellationSecurityContext> contexts = securityProviders[i].getContexts();
                 if (contexts != null) {
                     securityContexts[i] = contexts.toArray(new ConstellationSecurityContext[contexts.size()]);

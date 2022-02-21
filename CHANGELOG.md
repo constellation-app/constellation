@@ -19,6 +19,7 @@
 
 ## Changes in November 2021
 
+
 -   Added `netbeans.exception.report.min.level=900` and
     `netbeans.exception.alert.min.level=900` with both set to `900` to make
     sure all `ERROR` and `FATAL` levels will present a dialog box.

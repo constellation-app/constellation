@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class LineStyleAttributeInteractionNGTest {
-    
+
     public LineStyleAttributeInteractionNGTest() {
     }
 
@@ -55,15 +55,15 @@ public class LineStyleAttributeInteractionNGTest {
     @Test
     public void testGetDisplayText() {
         System.out.println("getDisplayText");
-        
+
         final LineStyleAttributeInteraction instance = new LineStyleAttributeInteraction();
-        
+
         final String nullResult = instance.getDisplayText(null);
         assertNull(nullResult);
-        
+
         final String lineStyleResult = instance.getDisplayText(LineStyle.DIAMOND);
         assertEquals(lineStyleResult, "DIAMOND");
-        
+
         final String otherResult = instance.getDisplayText("Not a line style");
         assertEquals(otherResult, "Not a line style");
     }

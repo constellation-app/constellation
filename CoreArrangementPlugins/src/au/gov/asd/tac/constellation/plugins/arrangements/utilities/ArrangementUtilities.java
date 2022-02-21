@@ -40,7 +40,7 @@ import java.util.Set;
  */
 public final class ArrangementUtilities {
 
-    public static final int FUNDAMENTAL_SIZE = 2;
+    public static final int FUNDAMENTAL_SIZE = 2;  
     
     private ArrangementUtilities() {
         throw new IllegalStateException("Utility class");

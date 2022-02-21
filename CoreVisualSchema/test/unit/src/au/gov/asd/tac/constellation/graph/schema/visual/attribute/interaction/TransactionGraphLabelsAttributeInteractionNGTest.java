@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class TransactionGraphLabelsAttributeInteractionNGTest {
-    
+
     public TransactionGraphLabelsAttributeInteractionNGTest() {
     }
 
@@ -52,23 +52,23 @@ public class TransactionGraphLabelsAttributeInteractionNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     /**
      * Test of getDisplayText method, of class TransactionGraphLabelsAttributeInteraction.
      */
     @Test
     public void testGetDisplayText() {
         System.out.println("getDisplayText");
-        
+
         final TransactionGraphLabelsAttributeInteraction instance = new TransactionGraphLabelsAttributeInteraction();
-        
+
         final String nullResult = instance.getDisplayText(null);
         assertNull(nullResult);
-        
+
         final GraphLabels emptyLabels = new GraphLabels(Collections.emptyList());
         final String emptyGraphLabelsResult = instance.getDisplayText(emptyLabels);
         assertEquals(emptyGraphLabelsResult, "");
-        
+
         final GraphLabel testLabel1 = new GraphLabel("test1", ConstellationColor.BANANA, 5F);
         final GraphLabel testLabel2 = new GraphLabel("test2", ConstellationColor.getColorValue(0.1F, 0.2F, 0.3F, 1F), 7F);
         final GraphLabels labels = new GraphLabels(Arrays.asList(testLabel1, testLabel2));

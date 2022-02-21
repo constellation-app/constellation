@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class UtilitiesHelpProviderNGTest {
-    
+
     public UtilitiesHelpProviderNGTest() {
     }
 
@@ -55,10 +55,10 @@ public class UtilitiesHelpProviderNGTest {
     @Test
     public void testGetHelpMap() {
         System.out.println("getHelpMap");
-        
+
         final UtilitiesHelpProvider instance = new UtilitiesHelpProvider();
         final Map<String, String> helpMap = instance.getHelpMap();
-        
+
         assertEquals(helpMap.size(), 4);
         //not going to go through and assert the existence of each specific item in the map 
         //but will assert they're all correctly located within the utilities package
@@ -74,10 +74,10 @@ public class UtilitiesHelpProviderNGTest {
     @Test
     public void testGetHelpTOC() {
         System.out.println("getHelpTOC");
-        
+
         final UtilitiesHelpProvider instance = new UtilitiesHelpProvider();
         final String tocLocation = instance.getHelpTOC();
-        
+
         //the file separator used will vary from OS to OS so rather than copying the
         //exact string from the actual class and asserting what we got is the same,
         //we'll assert that some of the keyparts of the expected filepath are present
@@ -86,11 +86,11 @@ public class UtilitiesHelpProviderNGTest {
         assertTrue(tocLocation.contains("utilities"));
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("utilities-toc.xml"));
-        
+
         assertTrue(tocLocation.indexOf("CoreUtilities") < tocLocation.indexOf("src"));
         assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("utilities"));
         assertTrue(tocLocation.indexOf("utilities") < tocLocation.indexOf("docs"));
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("utilities-toc.xml"));
     }
-    
+
 }
