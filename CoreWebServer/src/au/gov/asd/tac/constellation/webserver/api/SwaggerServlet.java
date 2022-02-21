@@ -157,13 +157,11 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     final ObjectNode responses = httpMethod.putObject("responses");
                     final ObjectNode success = responses.putObject("200");
                     success.put(DESCRIPTION, rs.getDescription());
-                    final ObjectNode content = success.putObject("content");
-                    final ObjectNode mime = content.putObject(rs.getMimeType());
-                    final ObjectNode schema = mime.putObject(SCHEMA);
-                    if (rs.getMimeType().equals(RestServiceUtilities.IMAGE_PNG)) {
-                        schema.put("type", "string");
-                        schema.put("format", "binary");
-                    } else if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
+
+                    if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
+                        final ObjectNode content = success.putObject("content");
+                        final ObjectNode mime = content.putObject(rs.getMimeType());
+                        final ObjectNode schema = mime.putObject(SCHEMA);
                         // Make a wild guess about the response.
                         if (serviceKey.name.toLowerCase(Locale.ENGLISH).startsWith("list")) {
                             schema.put("type", "array");
