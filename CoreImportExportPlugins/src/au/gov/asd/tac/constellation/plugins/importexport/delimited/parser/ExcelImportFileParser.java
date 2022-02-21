@@ -238,13 +238,12 @@ public class ExcelImportFileParser extends ImportFileParser {
                     result = cell.getStringCellValue();
                     break;
                 case NUMERIC:
-                    result = Double.toString(cell.getNumericCellValue());
+                case FORMULA:
+                    final Double temp = cell.getNumericCellValue();
+                    result = temp % 1 == 0 ? Long.toString(temp.longValue()) : Double.toString(temp);
                     break;
                 case BLANK:
                     result = "";
-                    break;
-                case FORMULA:
-                    result = Double.toString(cell.getNumericCellValue());
                     break;
                 case BOOLEAN:
                     result = Boolean.toString(cell.getBooleanCellValue());

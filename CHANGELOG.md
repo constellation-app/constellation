@@ -1,5 +1,14 @@
-# Constellation Changes
+# Constellation Changes	
 
+## Changes in February 2022
+
+-   Removed unused classes `DecoratorUtilities` and `LabelUtilities` from Core 
+    Visual Schema
+
+-   Added a new parameter `tabCaption` in `newTab` public methods in `DataAccessTabPane` class 
+	to provide the Step tab caption when required. This is used when the user renames the 
+	default caption.
+	
 ## Changes in December 2021
 
 -   Changed the return type of `processVertices` and `processTransactions` methods 

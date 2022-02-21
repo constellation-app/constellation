@@ -60,27 +60,25 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
     }
 
     @Override
-    public boolean addIcon(ConstellationIcon icon) {
+    public boolean addIcon(final ConstellationIcon icon) {
         boolean added = false;
 
         // If the icon is the same as a built-in or existing user icon, ignore it.
         if (!IconManager.iconExists(icon.getExtendedName()) && DefaultCustomIconProvider.getIconDirectory() != null) {
             final File iconDirectoryFile = DefaultCustomIconProvider.getIconDirectory();
-            if (iconDirectoryFile != null) {
-                final String iconDirectory = iconDirectoryFile.getAbsolutePath();
-                final File iconFile = new File(iconDirectory, icon.getExtendedName() + ConstellationIcon.DEFAULT_ICON_SEPARATOR + ConstellationIcon.DEFAULT_ICON_FORMAT);
-                if (!iconFile.exists()) {
-                    try {
-                        final BufferedImage image = icon.buildBufferedImage();
-                        if (image != null) {
-                            ImageIO.write(image, ConstellationIcon.DEFAULT_ICON_FORMAT, iconFile);
-                            CUSTOM_ICONS.put(icon, iconFile);
-                            icon.setEditable(true);
-                            added = true;
-                        }
-                    } catch (final IOException ex) {
-                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            final String iconDirectory = iconDirectoryFile.getAbsolutePath();
+            final File iconFile = new File(iconDirectory, icon.getExtendedName() + ConstellationIcon.DEFAULT_ICON_SEPARATOR + ConstellationIcon.DEFAULT_ICON_FORMAT);
+            if (!iconFile.exists()) {
+                try {
+                    final BufferedImage image = icon.buildBufferedImage();
+                    if (image != null) {
+                        ImageIO.write(image, ConstellationIcon.DEFAULT_ICON_FORMAT, iconFile);
+                        CUSTOM_ICONS.put(icon, iconFile);
+                        icon.setEditable(true);
+                        added = true;
                     }
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
         }
@@ -88,7 +86,7 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
     }
 
     @Override
-    public boolean removeIcon(String iconName) {
+    public boolean removeIcon(final String iconName) {
         boolean removed = false;
 
         final ConstellationIcon icon = IconManager.getIcon(iconName);
