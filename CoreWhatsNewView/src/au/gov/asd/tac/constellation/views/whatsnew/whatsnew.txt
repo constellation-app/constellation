@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-02-17 Add description to Step Tab names in Data Access View
+<p> The Step Tab names in the Data Access View can now be double clicked to add a brief decription. E.g. If "Initial run" is entered, "Step 1 - Initial run" will be displayed in the Tab name. This is also saved and loaded as part of the templates.</p>
+
 == 2022-01-24 Histogram Bins Selected Count
 <p>The Histogram now shows the amount of bins selected out of the total bins present.</p>
 

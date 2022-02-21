@@ -493,7 +493,7 @@ public class ButtonToolbarNGTest {
             addButton.getOnAction().handle(actionEvent);
             
             // Verify a new tab is created with the existing last tab's parameters
-            verify(dataAccessTabPane).newTab(pluginParameters);
+            verify(dataAccessTabPane).newTab(pluginParameters, "");
             verify(actionEvent).consume();
         }
     }
