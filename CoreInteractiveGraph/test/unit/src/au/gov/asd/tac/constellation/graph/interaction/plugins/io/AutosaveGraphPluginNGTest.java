@@ -16,12 +16,25 @@
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
+import au.gov.asd.tac.constellation.graph.file.GraphObjectUtilities;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
+import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.TextIoProgress;
+import java.io.File;
+import java.util.logging.Logger;
+import org.openide.windows.TopComponent;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -34,6 +47,8 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class AutosaveGraphPluginNGTest {
+    
+    private static final Logger LOGGER = Logger.getLogger(AutosaveGraphPluginNGTest.class.getName());
 
     private int attrX, attrY, attrZ;
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7, vxId8;
@@ -113,37 +128,38 @@ public class AutosaveGraphPluginNGTest {
      */
     @Test
     public void testExecute() throws Exception {
-//        final File saveDir = AutosaveUtilities.getAutosaveDir();
-//        final File saveFile = new File(saveDir, graph.getId() + FileExtensionConstants.STAR);
-//
-//        // check the autosave file doesn't exist before running the plugin
-//        assertEquals(saveFile.exists(), false);
-//
-//        TopComponent tc = new TopComponent();
-//        tc.setName("TestName");
-//        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
-//        final GraphNode graphNode = new GraphNode(graph, gdo, tc, null);
-//        AutosaveGraphPlugin instance = new AutosaveGraphPlugin();
-//        PluginExecution.withPlugin(instance).executeNow(graph);
-//
-//        // check that the autosave file does now exist
-//        assertEquals(saveFile.exists(), true);
-//
-//        final Graph openSavedGraph = new GraphJsonReader().readGraphZip(saveFile, new TextIoProgress(false));
-//        final ReadableGraph rg = openSavedGraph.getReadableGraph();
-//        try {
-//            // check that the graph from the autosave matches the original graph
-//            assertEquals(rg.getVertexCount(), 7);
-//            assertEquals(rg.getStringValue(vAttrId, vxId1), "false");
-//            assertEquals(rg.getStringValue(vAttrId, vxId2), "true");
-//            assertEquals(rg.getStringValue(vAttrId, vxId3), "false");
-//            assertEquals(rg.getStringValue(vAttrId, vxId4), "false");
-//            assertEquals(rg.getStringValue(vAttrId, vxId5), "true");
-//            assertEquals(rg.getTransactionCount(), 5);
-//        } finally {
-//            rg.release();
-//            // deleting the file afterwards
-//            saveFile.delete();
-//        }
+        final File saveDir = AutosaveUtilities.getAutosaveDir();
+        final File saveFile = new File(saveDir, graph.getId() + FileExtensionConstants.STAR);
+
+        // check the autosave file doesn't exist before running the plugin
+        assertEquals(saveFile.exists(), false);
+
+        TopComponent tc = new TopComponent();
+        tc.setName("TestName");
+        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
+        final GraphNode graphNode = new GraphNode(graph, gdo, tc, null);
+        AutosaveGraphPlugin instance = new AutosaveGraphPlugin();
+        PluginExecution.withPlugin(instance).executeNow(graph);
+
+        // check that the autosave file does now exist
+        assertEquals(saveFile.exists(), true);
+
+        final Graph openSavedGraph = new GraphJsonReader().readGraphZip(saveFile, new TextIoProgress(false));
+        final ReadableGraph rg = openSavedGraph.getReadableGraph();
+        try {
+            // check that the graph from the autosave matches the original graph
+            assertEquals(rg.getVertexCount(), 7);
+            assertEquals(rg.getStringValue(vAttrId, vxId1), "false");
+            assertEquals(rg.getStringValue(vAttrId, vxId2), "true");
+            assertEquals(rg.getStringValue(vAttrId, vxId3), "false");
+            assertEquals(rg.getStringValue(vAttrId, vxId4), "false");
+            assertEquals(rg.getStringValue(vAttrId, vxId5), "true");
+            assertEquals(rg.getTransactionCount(), 5);
+        } finally {
+            rg.release();
+            // deleting the file afterwards
+            AutosaveUtilities.deleteAutosave(saveFile);
+            graphNode.destroy();
+        }
     }
 }
