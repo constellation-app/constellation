@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class IconAttributeDescriptionNGTest {
-    
+
     public IconAttributeDescriptionNGTest() {
     }
 
@@ -55,17 +55,17 @@ public class IconAttributeDescriptionNGTest {
     @Test
     public void testConvertFromString() {
         System.out.println("convertFromString");
-        
+
         final IconAttributeDescription instance = new IconAttributeDescription();
-        
+
         final ConstellationIcon nullResult = instance.convertFromString(null);
         // should be the default here
         assertEquals(nullResult, DefaultIconProvider.EMPTY);
-        
+
         final ConstellationIcon blankResult = instance.convertFromString("   ");
         // should be the default here as well
         assertEquals(blankResult, DefaultIconProvider.EMPTY);
-        
+
         final ConstellationIcon validResult = instance.convertFromString("Github");
         assertEquals(validResult.getName(), "Github");
         assertEquals(validResult.getExtendedName(), "Internet.Github");
@@ -77,14 +77,14 @@ public class IconAttributeDescriptionNGTest {
     @Test
     public void testGetString() {
         System.out.println("getString");
-        
+
         final IconAttributeDescription instance = new IconAttributeDescription();
         instance.setCapacity(1);
-        
+
         assertEquals(instance.getString(0), "");
-        
+
         instance.setString(0, "Github");
         assertEquals(instance.getString(0), "Internet.Github");
     }
-    
+
 }

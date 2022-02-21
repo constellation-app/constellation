@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class VertexGraphLabelsAttributeInteractionNGTest {
-    
+
     public VertexGraphLabelsAttributeInteractionNGTest() {
     }
 
@@ -59,16 +59,16 @@ public class VertexGraphLabelsAttributeInteractionNGTest {
     @Test
     public void testGetDisplayText() {
         System.out.println("getDisplayText");
-        
+
         final VertexGraphLabelsAttributeInteraction instance = new VertexGraphLabelsAttributeInteraction();
-        
+
         final String nullResult = instance.getDisplayText(null);
         assertNull(nullResult);
-        
+
         final GraphLabels emptyLabels = new GraphLabels(Collections.emptyList());
         final String emptyGraphLabelsResult = instance.getDisplayText(emptyLabels);
         assertEquals(emptyGraphLabelsResult, "");
-        
+
         final GraphLabel testLabel1 = new GraphLabel("test1", ConstellationColor.BANANA, 5F);
         final GraphLabel testLabel2 = new GraphLabel("test2", ConstellationColor.getColorValue(0.1F, 0.2F, 0.3F, 1F), 7F);
         final GraphLabels labels = new GraphLabels(Arrays.asList(testLabel1, testLabel2));

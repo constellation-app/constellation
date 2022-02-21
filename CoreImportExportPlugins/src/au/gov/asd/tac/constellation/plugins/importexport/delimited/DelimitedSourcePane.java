@@ -238,6 +238,8 @@ public class DelimitedSourcePane extends SourcePane {
 
             final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
             importController.setFiles(files, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
+
+            importController.validateFileStructure(newFiles);
         }
     }
 

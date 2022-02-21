@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class ResponseNGTest {
-    
+
     public ResponseNGTest() {
     }
 
@@ -66,11 +66,11 @@ public class ResponseNGTest {
     @Test
     public void testIsSuccess() throws IOException {
         System.out.println("isSuccess");
-        
+
         final Response instance1 = new ResponseImpl(200, "", null, null);
         final Response instance2 = new ResponseImpl(300, "", null, null);
         final Response instance3 = new ResponseImpl(400, "", null, null);
-        
+
         assertTrue(instance1.isSuccess());
         assertFalse(instance2.isSuccess());
         assertTrue(instance3.isSuccess());
@@ -82,7 +82,7 @@ public class ResponseNGTest {
     @Test
     public void testIsCodeSuccess() {
         System.out.println("isCodeSuccess");
-        
+
         assertTrue(Response.isCodeSuccess(200));
         assertFalse(Response.isCodeSuccess(300));
         assertTrue(Response.isCodeSuccess(400));
@@ -95,14 +95,14 @@ public class ResponseNGTest {
     @Test
     public void testIsSuccessWithJson() throws IOException {
         System.out.println("isSuccessWithJson");
-        
+
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode json = mapper.createObjectNode().put("test", "mytest");
-        
+
         final Response instance1 = new ResponseImpl(200, "", null, json.toString().getBytes());
         final Response instance2 = new ResponseImpl(200, "", null, null, false);
         final Response instance3 = new ResponseImpl(300, "", null, null);
-        
+
         assertTrue(instance1.isSuccessWithJson());
         assertFalse(instance2.isSuccessWithJson());
         assertFalse(instance3.isSuccessWithJson());
@@ -115,10 +115,10 @@ public class ResponseNGTest {
     @Test
     public void testGetSaveResponseFilename() throws IOException {
         System.out.println("getSaveResponseFilename");
-        
+
         final Response instance1 = new ResponseImpl(200, "", null, null);
         final Response instance2 = new ResponseSaveImpl(200, "", null, null);
-        
+
         assertNull(instance1.getSaveResponseFilename());
         assertEquals(instance2.getSaveResponseFilename(), "test");
     }
@@ -130,12 +130,12 @@ public class ResponseNGTest {
     @Test
     public void testGetRootNode() throws IOException {
         System.out.println("getRootNode");
-        
+
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode json = mapper.createObjectNode().put("test", "mytest");
-        
+
         final Response instance = new ResponseImpl(200, "", null, null);
-        
+
         final JsonNode result = instance.getRootNode(mapper, json.toString().getBytes());
         assertEquals(result.toString(), "{\"test\":\"mytest\"}");
     }
@@ -147,7 +147,7 @@ public class ResponseNGTest {
     @Test
     public void testGetLogMessage() throws IOException {
         System.out.println("getLogMessage");
-        
+
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode json1 = mapper.createObjectNode().put("test", "mytest");
         final ObjectNode json2 = mapper.createObjectNode().put("logMessage", "my log message!");
@@ -155,7 +155,7 @@ public class ResponseNGTest {
         final Response instance1 = new ResponseImpl(200, "test1", null, null);
         final Response instance2 = new ResponseImpl(200, "test2", null, json1.toString().getBytes());
         final Response instance3 = new ResponseImpl(200, "test3", null, json2.toString().getBytes());
-        
+
         assertEquals(instance1.getLogMessage(), "Invalid response 200: test1" + System.getProperty("line.separator") 
                 + "null" + System.getProperty("line.separator"));
         assertEquals(instance2.getLogMessage(), "Invalid response 200: test2" + System.getProperty("line.separator") 
@@ -171,9 +171,9 @@ public class ResponseNGTest {
     @Test
     public void testToString() throws IOException {
         System.out.println("toString");
-        
+
         final Response instance = new ResponseImpl(200, "test", null, null);
-        
+
         final String expString = new StringBuilder("[ResponseImpl")
                 .append(System.getProperty("line.separator"))
                 .append("----\n")
@@ -183,10 +183,10 @@ public class ResponseNGTest {
                 .append(System.getProperty("line.separator"))
                 .append("----\n----\n]\n")
                 .toString();
-        
+
         assertEquals(instance.toString(), expString);
     }
-    
+
     /**
      * Test of toString method, of class Response. Headers in response
      * @throws java.io.IOException
@@ -194,12 +194,12 @@ public class ResponseNGTest {
     @Test
     public void testToStringHeaders() throws IOException {
         System.out.println("toStringHeaders");
-        
+
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("testHeader", Arrays.asList("value1", "value2"));
-        
+
         final Response instance = new ResponseImpl(200, "test", headers, null);
-        
+
         final String expString = new StringBuilder("[ResponseImpl")
                 .append(System.getProperty("line.separator"))
                 .append("----\n")
@@ -217,10 +217,10 @@ public class ResponseNGTest {
                 .append("----\n")
                 .append("----\n]\n")
                 .toString();
-        
+
         assertEquals(instance.toString(), expString);
     }
-    
+
     /**
      * Test of toString method, of class Response. Bytes (not json) included
      * @throws java.io.IOException
@@ -228,9 +228,9 @@ public class ResponseNGTest {
     @Test
     public void testToStringBytes() throws IOException {
         System.out.println("toStringBytes");
-        
+
         final Response instance = new ResponseImpl(200, "test", null, "not json".getBytes(), false);
-        
+
         final String expString = new StringBuilder("[ResponseImpl")
                 .append(System.getProperty("line.separator"))
                 .append("----\n")
@@ -242,10 +242,10 @@ public class ResponseNGTest {
                 .append("not json")
                 .append("----\n]\n")
                 .toString();
-        
+
         assertEquals(instance.toString(), expString);
     }
-    
+
     /**
      * Test of toString method, of class Response. Bytes that are json included
      * @throws java.io.IOException
@@ -253,12 +253,12 @@ public class ResponseNGTest {
     @Test
     public void testToStringJson() throws IOException {
         System.out.println("toStringJson");
-        
+
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode jsonObject = mapper.createObjectNode().put("test", "mytest");
-        
+
         final Response instance = new ResponseImpl(200, "test", null, jsonObject.toString().getBytes());
-        
+
         final String expString = new StringBuilder("[ResponseImpl")
                 .append(System.getProperty("line.separator"))
                 .append("----\n")
@@ -274,7 +274,7 @@ public class ResponseNGTest {
                 .append("}\n")
                 .append("----\n]\n")
                 .toString();
-        
+
         assertEquals(instance.toString(), expString);
     }
 
@@ -285,19 +285,19 @@ public class ResponseNGTest {
     @Test
     public void testJsonToString() throws IOException {
         System.out.println("jsonToString");
-        
+
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode json1 = mapper.createObjectNode();
         final ObjectNode json2 = mapper.createObjectNode().put("test", "mytest");
         final ArrayNode json3 = mapper.createArrayNode();
         final ArrayNode json4 = mapper.createArrayNode().add("test");
-        
+
         final String result1 = Response.jsonToString(null);
         final String result2 = Response.jsonToString(json1);
         final String result3 = Response.jsonToString(json2);
         final String result4 = Response.jsonToString(json3);
         final String result5 = Response.jsonToString(json4);
-        
+
         final String expResult3 = new StringBuilder()
                 .append("{")
                 .append(System.getProperty("line.separator"))
@@ -305,7 +305,7 @@ public class ResponseNGTest {
                 .append(System.getProperty("line.separator"))
                 .append("}")
                 .toString();
-        
+
         assertEquals(result1, "null");
         assertEquals(result2, "{ }");
         assertEquals(result3, expResult3);
@@ -324,9 +324,9 @@ public class ResponseNGTest {
                 final byte[] bytes, final boolean isJson) throws IOException {
             super(code, message, headers, bytes, isJson);
         }
-        
+
     }
-    
+
     private class ResponseSaveImpl extends Response {
 
         public ResponseSaveImpl(final int code, final String message, final Map<String, List<String>> headers, 
@@ -338,7 +338,7 @@ public class ResponseNGTest {
         public String getSaveResponseFilename() {
             return "test";
         }
-        
+
     }
-    
+
 }

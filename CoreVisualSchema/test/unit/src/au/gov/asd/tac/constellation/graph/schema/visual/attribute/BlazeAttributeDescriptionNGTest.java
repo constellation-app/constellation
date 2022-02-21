@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class BlazeAttributeDescriptionNGTest {
-    
+
     public BlazeAttributeDescriptionNGTest() {
     }
 
@@ -61,14 +61,14 @@ public class BlazeAttributeDescriptionNGTest {
         final Blaze nullResult = instance.convertFromString(null);
         // default value is null
         assertNull(nullResult);
-        
+
         final Blaze blankResult = instance.convertFromString("   ");
         // also default value
         assertNull(blankResult);
-        
+
         final Blaze dodgyBlazeResult = instance.convertFromString("Not a blaze");
         assertNull(dodgyBlazeResult);
-        
+
         final Blaze validBlazeResult = instance.convertFromString("42;RGB254255106");
         final Blaze expectedBlaze = new Blaze(42, ConstellationColor.BANANA);
         assertEquals(validBlazeResult, expectedBlaze);
@@ -80,9 +80,9 @@ public class BlazeAttributeDescriptionNGTest {
     @Test
     public void testGetVersion() {
         System.out.println("getVersion");
-        
+
         final BlazeAttributeDescription instance = new BlazeAttributeDescription();
         assertEquals(instance.getVersion(), 1);
     }
-    
+
 }

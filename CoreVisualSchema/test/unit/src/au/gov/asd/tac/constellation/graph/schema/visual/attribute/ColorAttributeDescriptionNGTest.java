@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class ColorAttributeDescriptionNGTest {
-    
+
     public ColorAttributeDescriptionNGTest() {
     }
 
@@ -55,23 +55,23 @@ public class ColorAttributeDescriptionNGTest {
     @Test
     public void testConvertFromObject() {
         System.out.println("convertFromObject");
-        
+
         final ColorAttributeDescription instance = new ColorAttributeDescription();
-        
+
         final ConstellationColor result1 = instance.convertFromObject("BANANA");
         assertEquals(result1, ConstellationColor.BANANA);
-        
+
         final ConstellationColor result2 = instance.convertFromObject(0xFEFF6AFF);
         assertEquals(result2, ConstellationColor.BANANA);
     }
-    
+
     /**
      * Test of convertFromObject method, of class ColorAttributeDescription. Invalid colour passed through
      */
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testConvertFromObjectNotAColour() {
         System.out.println("convertFromObjectNotAColour");
-        
+
         final ColorAttributeDescription instance = new ColorAttributeDescription();        
         instance.convertFromObject(true);
     }
@@ -82,15 +82,15 @@ public class ColorAttributeDescriptionNGTest {
     @Test
     public void testConvertFromString() {
         System.out.println("convertFromString");
-        
+
         final ColorAttributeDescription instance = new ColorAttributeDescription();
-        
+
         final ConstellationColor nullResult = instance.convertFromString(null);
         assertNull(nullResult);
-        
+
         final ConstellationColor blankResult = instance.convertFromString("   ");
         assertNull(blankResult);
-        
+
         final ConstellationColor validResult = instance.convertFromObject("BANANA");
         assertEquals(validResult, ConstellationColor.BANANA);
     }
@@ -101,13 +101,13 @@ public class ColorAttributeDescriptionNGTest {
     @Test
     public void testSetDefault() {
         System.out.println("setDefault");
-        
+
         final ColorAttributeDescription instance = new ColorAttributeDescription();
         assertNull(instance.getDefault());
-        
+
         instance.setDefault(ConstellationColor.CYAN);
         assertEquals(instance.getDefault(), ConstellationColor.CYAN);
-        
+
         instance.setDefault("BANANA");
         assertEquals(instance.getDefault(), ConstellationColor.BANANA);
     }
@@ -118,26 +118,26 @@ public class ColorAttributeDescriptionNGTest {
     @Test(expectedExceptions = {ArrayIndexOutOfBoundsException.class})
     public void testSetIntBadSet() {
         System.out.println("setIntBadSet");
-        
+
         final ColorAttributeDescription instance = new ColorAttributeDescription();
         assertEquals(instance.getCapacity(), 0);
         //trying to set when there is no capacity available
         instance.setInt(0, 0);
     }
-    
+
     /**
      * Test of setInt method, of class ColorAttributeDescription.
      */
     @Test
     public void testSetInt() {
         System.out.println("setInt");
-        
+
         final ColorAttributeDescription instance = new ColorAttributeDescription();
         instance.setCapacity(1);
-        
+
         assertEquals(instance.getInt(0), 0);
         assertNull(instance.getObject(0));
-        
+
         instance.setInt(0, 0xFEFF6AFF);
         assertEquals(instance.getInt(0), 0xFEFF6AFF);
         assertEquals(instance.getObject(0), ConstellationColor.BANANA);

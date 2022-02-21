@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class LayerNameAttributeDescriptionNGTest {
-    
+
     public LayerNameAttributeDescriptionNGTest() {
     }
 
@@ -56,25 +56,25 @@ public class LayerNameAttributeDescriptionNGTest {
     @Test
     public void testConvertFromString() {
         System.out.println("convertFromString");
-        
+
         final LayerNameAttributeDescription instance = new LayerNameAttributeDescription();
-        
+
         final LayerName nullResult = instance.convertFromString(null);
         assertEquals(nullResult, new LayerName(Graph.NOT_FOUND, "DEFAULT"));
-        
+
         final LayerName blankResult = instance.convertFromString("   ");
         assertEquals(blankResult, new LayerName(Graph.NOT_FOUND, "DEFAULT"));
-        
+
         final LayerName defaultResult = instance.convertFromString("DEFAULT");
         assertEquals(defaultResult, new LayerName(Graph.NOT_FOUND, "DEFAULT"));
-        
+
         final LayerName invalidResult = instance.convertFromString("Not a Layer");
         assertNull(invalidResult);
-        
+
         final LayerName validResult = instance.convertFromString("3,Test Layer");
         assertEquals(validResult, new LayerName(3, "Test Layer"));
     }
-    
+
     /**
      * Test of convertFromString method, of class LayerNameAttributeDescription. Don't supply a layer number
      */
@@ -82,9 +82,9 @@ public class LayerNameAttributeDescriptionNGTest {
             expectedExceptionsMessageRegExp = "Error converting String 'Bad Number,Test Layer' to layer_name")
     public void testConvertFromStringBadLayerNumber() {
         System.out.println("convertFromStringBadLayerNumber");
-        
+
         final LayerNameAttributeDescription instance = new LayerNameAttributeDescription();
-        
+
         instance.convertFromString("Bad Number,Test Layer");
     }
 
@@ -94,14 +94,14 @@ public class LayerNameAttributeDescriptionNGTest {
     @Test
     public void testGetInt() {
         System.out.println("getInt");
-        
+
         final LayerNameAttributeDescription instance = new LayerNameAttributeDescription();
         instance.setCapacity(1);
-        
+
         assertEquals(instance.getInt(0), Graph.NOT_FOUND);
-        
+
         instance.setString(0, "3,Test Layer");
-        
+
         assertEquals(instance.getInt(0), 3);
     }
 
@@ -111,15 +111,15 @@ public class LayerNameAttributeDescriptionNGTest {
     @Test
     public void testGetString() {
         System.out.println("getString");
-        
+
         final LayerNameAttributeDescription instance = new LayerNameAttributeDescription();
         instance.setCapacity(1);
-        
+
         assertEquals(instance.getString(0), "-1107,DEFAULT");
-        
+
         instance.setString(0, "3,Test Layer");
-        
+
         assertEquals(instance.getString(0), "3,Test Layer");
     }
-    
+
 }

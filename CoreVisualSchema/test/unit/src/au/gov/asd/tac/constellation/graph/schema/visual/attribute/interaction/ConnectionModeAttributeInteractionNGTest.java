@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class ConnectionModeAttributeInteractionNGTest {
-    
+
     public ConnectionModeAttributeInteractionNGTest() {
     }
 
@@ -55,18 +55,18 @@ public class ConnectionModeAttributeInteractionNGTest {
     @Test
     public void testGetDisplayText() {
         System.out.println("getDisplayText");
-        
+
         final ConnectionModeAttributeInteraction instance = new ConnectionModeAttributeInteraction();
-        
+
         final String nullResult = instance.getDisplayText(null);
         assertNull(nullResult);
-        
+
         final String result1 = instance.getDisplayText(ConnectionMode.EDGE);
         assertEquals(result1, "EDGE");
-        
+
         final String result2 = instance.getDisplayText(ConnectionMode.LINK);
         assertEquals(result2, "LINK");
-        
+
         final String result3 = instance.getDisplayText(ConnectionMode.TRANSACTION);
         assertEquals(result3, "TRANSACTION");
     }

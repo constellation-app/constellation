@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class CameraAttributeDescriptionNGTest {
-    
+
     public CameraAttributeDescriptionNGTest() {
     }
 
@@ -58,15 +58,15 @@ public class CameraAttributeDescriptionNGTest {
         System.out.println("convertFromObject");
 
         final CameraAttributeDescription instance = new CameraAttributeDescription();
-        
+
         final Object nullResult = instance.convertFromObject(null);
         assertNull(nullResult);
-        
+
         final Object stringResult = instance.convertFromObject("");
         assertTrue(stringResult instanceof Camera);
         final Camera resultCam = (Camera) stringResult;
         assertTrue(resultCam.areSame(new Camera()));
-        
+
         final Object otherResult = instance.convertFromObject(42);
         // should return itself
         assertEquals(otherResult, 42);
@@ -78,9 +78,9 @@ public class CameraAttributeDescriptionNGTest {
     @Test
     public void testGetVersion() {
         System.out.println("getVersion");
-        
+
         final CameraAttributeDescription instance = new CameraAttributeDescription();
         assertEquals(instance.getVersion(), 1);
     }
-    
+
 }

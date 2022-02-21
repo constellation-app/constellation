@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class ColorAttributeInteractionNGTest {
-    
+
     public ColorAttributeInteractionNGTest() {
     }
 
@@ -59,15 +59,15 @@ public class ColorAttributeInteractionNGTest {
     @Test
     public void testGetDisplayText() {
         System.out.println("getDisplayText");
-        
+
         final ColorAttributeInteraction instance = new ColorAttributeInteraction();
-        
+
         final String nullResult = instance.getDisplayText(null);
         assertNull(nullResult);
-        
+
         final String namedResult = instance.getDisplayText(ConstellationColor.BANANA);
         assertEquals(namedResult, "Banana");
-        
+
         final String unnamedResult = instance.getDisplayText(ConstellationColor.getColorValue(0.1F, 0.2F, 0.3F, 1.0F));
         assertEquals(unnamedResult, "#19334c");
     }
@@ -78,16 +78,16 @@ public class ColorAttributeInteractionNGTest {
     @Test
     public void testGetDisplayNodes() {
         System.out.println("getDisplayNodes");
-        
+
         final ColorAttributeInteraction instance = new ColorAttributeInteraction();
-                
+
         final List<Node> result1 = instance.getDisplayNodes(ConstellationColor.CYAN, -1, 2);
         assertEquals(result1.size(), 1);
         final Rectangle result1Node = (Rectangle) result1.get(0);
         assertEquals(result1Node.getFill(), Color.CYAN);
         assertEquals(result1Node.getHeight(), 2.0);
         assertEquals(result1Node.getWidth(), 2.0);
-        
+
         final List<Node> result2 = instance.getDisplayNodes(ConstellationColor.CYAN, -1, -1);
         assertEquals(result2.size(), 1);
         final Rectangle result2Node = (Rectangle) result2.get(0);
@@ -95,7 +95,7 @@ public class ColorAttributeInteractionNGTest {
         // height and width should be the default node size
         assertEquals(result2Node.getHeight(), 50.0);
         assertEquals(result2Node.getWidth(), 50.0);
-        
+
         final List<Node> result3 = instance.getDisplayNodes(ConstellationColor.CYAN, 3, 2);
         assertEquals(result3.size(), 1);
         final Rectangle result3Node = (Rectangle) result3.get(0);

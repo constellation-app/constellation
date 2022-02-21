@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class DrawFlagsModeAttributeInteractionNGTest {
-    
+
     public DrawFlagsModeAttributeInteractionNGTest() {
     }
 
@@ -55,12 +55,12 @@ public class DrawFlagsModeAttributeInteractionNGTest {
     @Test
     public void testGetDisplayText() {
         System.out.println("getDisplayText");
-        
+
         final DrawFlagsModeAttributeInteraction instance = new DrawFlagsModeAttributeInteraction();
-        
+
         final String nullResult = instance.getDisplayText(null);
         assertNull(nullResult);
-        
+
         final DrawFlags flags = new DrawFlags(25);
         final String namedResult = instance.getDisplayText(flags);
         assertEquals(namedResult, "nodes: true; connections: false; node_labels: false; connection_labels: true; blazes: true");

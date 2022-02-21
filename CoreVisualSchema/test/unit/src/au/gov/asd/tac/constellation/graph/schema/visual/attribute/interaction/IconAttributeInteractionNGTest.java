@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class IconAttributeInteractionNGTest {
-    
+
     public IconAttributeInteractionNGTest() {
     }
 
@@ -59,12 +59,12 @@ public class IconAttributeInteractionNGTest {
     @Test
     public void testGetDisplayText() {
         System.out.println("getDisplayText");
-        
+
         final IconAttributeInteraction instance = new IconAttributeInteraction();
-        
+
         final String nullResult = instance.getDisplayText(null);
         assertNull(nullResult);
-        
+
         final ConstellationIcon icon = IconManager.getIcon("Github");
         final String namedResult = instance.getDisplayText(icon);
         assertEquals(namedResult, "Internet.Github");
@@ -76,21 +76,21 @@ public class IconAttributeInteractionNGTest {
     @Test
     public void testGetDisplayNodes() {
         System.out.println("getDisplayNodes");
-        
+
         final IconAttributeInteraction instance = new IconAttributeInteraction();
         final ConstellationIcon icon = IconManager.getIcon("Github");
-        
+
         final List<Node> result1 = instance.getDisplayNodes(icon, -1, 2);
         assertEquals(result1.size(), 1);
         final ImageView result1Node = (ImageView) result1.get(0);
         assertEquals(result1Node.getFitHeight(), 2.0);
-        
+
         final List<Node> result2 = instance.getDisplayNodes(icon, -1, -1);
         assertEquals(result2.size(), 1);
         final ImageView result2Node = (ImageView) result2.get(0);
         // fit height should be the default node size
         assertEquals(result2Node.getFitHeight(), 50.0);
-        
+
         final List<Node> result3 = instance.getDisplayNodes(icon, 3, 2);
         assertEquals(result3.size(), 1);
         final ImageView result3Node = (ImageView) result3.get(0);

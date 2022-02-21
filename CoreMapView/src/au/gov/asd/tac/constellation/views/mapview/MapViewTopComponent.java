@@ -307,7 +307,6 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             } else {
                 NotifyDisplayer.display("Export options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
             }
-
         });
         exportMenu.setToolTipText("Export from the Map View");
         toolBar.add(exportMenu);
@@ -413,7 +412,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                     NotifyDisplayer.display("Invalid coordinate data provided, radius should be greater than or equal to 0", NotifyDescriptor.ERROR_MESSAGE);
                     return;
                 }
-
+                
                 final Location coordinateLocation = new Location(latitude, longitude);
                 if (radius > 0) {
                     final float radiusDD = (float) Distance.Haversine.kilometersToDecimalDegrees(radius);
