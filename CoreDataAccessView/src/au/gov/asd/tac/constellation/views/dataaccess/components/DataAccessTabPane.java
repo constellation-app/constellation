@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -42,10 +43,15 @@ import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Wrapper of the JavaFX tab pane for the CONSTELLATION Data Access View. Provides
@@ -59,6 +65,7 @@ public class DataAccessTabPane {
     
     private static final String TAB_TITLE = "Step %d";
     private static final String LOCAL_DATE_PARAMETER_TYPE = "LocalDateParameterType";
+    private static final int DOUBLE_CLICK_COUNT = 2;
     
     /**
      * Function for determining if a tab is executable. A tab is executable
@@ -104,16 +111,30 @@ public class DataAccessTabPane {
     }
     
     /**
-     * Create a new tab. The {@link QueryPhasePane} that is added to the tab
-     * will have no global parameters initially. It will have the data access plugin
-     * map generated at start up and the {@link DataAccessPane} that this tab pane
+     * Create a new tab with a default caption, "Step 1", "Step 2" etc. The
+     * {@link QueryPhasePane} that is added to the tab will have no global
+     * parameters initially. It will have the data access plugin     * map generated at start up and the {@link DataAccessPane} that this tab pane
      * resides on.
      *
      * @return the new {@link QueryPhasePane} that was added to the tab
      * @see #newTab(PluginParameters)
      */
     public QueryPhasePane newTab() {
-        return newTab((PluginParameters) null);
+        return newTab((PluginParameters) null, "");
+    }
+
+    /**
+     * Create a new tab with the specified caption. The {@link QueryPhasePane}
+     * that is added to the tab will have no global parameters initially. It
+     * will have the data access plugin map generated at start up and the
+     * {@link DataAccessPane} that this tab pane resides on.
+     *
+     * @param tabCaption the caption of the new tab
+     * @return the new {@link QueryPhasePane} that was added to the tab
+     * @see #newTab(PluginParameters)
+     */
+    public QueryPhasePane newTab(final String tabCaption) {
+        return newTab((PluginParameters) null, tabCaption);
     }
     
     /**
@@ -127,10 +148,9 @@ public class DataAccessTabPane {
      * @see #newTab(QueryPhasePane)
      * @see DataAccessPaneState#getPlugins()
      */
-    public QueryPhasePane newTab(final PluginParameters globalPrameters) {
+    public QueryPhasePane newTab(final PluginParameters globalPrameters, final String tabCaption) {
         final QueryPhasePane pane = new QueryPhasePane(plugins, getDataAccessPane(), globalPrameters);
-        newTab(pane);
-
+        newTab(pane, tabCaption);
         return pane;
     }
     
@@ -140,20 +160,37 @@ public class DataAccessTabPane {
      * 
      * @param queryPane the pane that will be added as the content of the new tab
      */
-    public void newTab(final QueryPhasePane queryPane) {
-        final Tab newTab = new Tab(String.format(TAB_TITLE, getTabPane().getTabs().size() + 1));
-        
+    public void newTab(final QueryPhasePane queryPane, final String userCaption) {
+        final Label label = new Label(userCaption);
+        final Label defaultLabel = new Label();
+        final String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().size() + 1);
+
+        final Tab newTab = new Tab();
+
+        setTabCaption(label, defaultLabel, defaultCaption);
+
+        label.setGraphic(defaultLabel);
+        label.setContentDisplay(ContentDisplay.LEFT);
+        newTab.setGraphic(label);
+
+        label.setOnMouseClicked(event -> labelClickEvent(newTab, label, event));
+
         // Get a copy of the existing on closed handler. When a tab is closed,
         // it will be called after the tab names are corrected and updated.
-        final Optional<EventHandler<Event>> origOnClose =
-                Optional.ofNullable(newTab.getOnClosed());
+        final Optional<EventHandler<Event>> origOnClose
+                = Optional.ofNullable(newTab.getOnClosed());
         newTab.setOnClosed(event -> {
             int queryNum = 1;
-            for (Tab tab : getTabPane().getTabs()) {
-                tab.setText(String.format(TAB_TITLE, queryNum));
+
+            for (final Tab tab : getTabPane().getTabs()) {
+                final String newDefaultCaption = String.format(TAB_TITLE, queryNum);
+                final Label tabLabel = (Label) tab.getGraphic();
+                final Label tabDefaultLabel = (Label) tabLabel.getGraphic();
+
+                setTabCaption(tabLabel, tabDefaultLabel, newDefaultCaption);
                 queryNum++;
             }
-            
+
             origOnClose.ifPresent(handler -> handler.handle(event));
         });
 
@@ -179,24 +216,60 @@ public class DataAccessTabPane {
         newTab.setContent(queryPhaseScroll);
         newTab.setTooltip(new Tooltip("Right click for more options"));
         newTab.setClosable(true);
-        
+
         // Update the context menu enablement statuses.
         // Must be called after setting the scroll pane and not before.
         final boolean hasEnabledPlugins = tabHasEnabledPlugins(newTab);
         final boolean isExecuteButtonIsGo = DataAccessPaneState.isExecuteButtonIsGo();
         final boolean isExecuteButtonEnabled = !getDataAccessPane().getButtonToolbar()
                 .getExecuteButtonTop().isDisabled();
-        
+
         updateTabMenu(
                 newTab,
                 hasEnabledPlugins && isExecuteButtonIsGo && isExecuteButtonEnabled,
                 hasEnabledPlugins
         );
-        
+
         // Add the new tab to the pane
         getTabPane().getTabs().add(newTab);
     }
-    
+
+    protected void setTabCaption(final Label tabLabel, final Label tabDefaultLabel, final String newDefaultCaption) {
+        if (StringUtils.isBlank(tabLabel.getText()) || newDefaultCaption.equals(tabLabel.getText().trim())) {
+            tabDefaultLabel.setText(newDefaultCaption);
+            tabLabel.setText("");
+        } else {
+            tabDefaultLabel.setText(newDefaultCaption + SeparatorConstants.BLANKSPACE + SeparatorConstants.HYPHEN);
+        }
+    }
+
+    protected void labelClickEvent(final Tab tab, final Label label, final MouseEvent event) {
+        if (event.getClickCount() == DOUBLE_CLICK_COUNT) {
+            final TextField field = new TextField(label.getText());
+            final Label defaultLabel = (Label) label.getGraphic();
+
+            field.setOnAction(e -> {
+                label.setText(field.getText());
+                tab.setGraphic(label);
+            });
+
+            field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue) -> {
+                if (!newValue) {
+                    final String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().indexOf(tab) + 1);
+                    label.setText(field.getText().trim());
+                    setTabCaption(label, defaultLabel, defaultCaption);
+                    tab.setGraphic(label);
+                }
+            });
+
+            field.setPromptText("Enter Step Description");
+            tab.setGraphic(field);
+            field.selectAll();
+            field.requestFocus();
+        }
+    }
+
     /**
      * Run the given range of tabs inclusively. As each tab is run, the jobs from
      * the previous tab are passed so that it can block if necessary until they
