@@ -429,8 +429,7 @@ public class XmlUtilities {
             final Node node = nodes.item(i);
             if (node.getNodeName().equalsIgnoreCase(tagName)) {
                 final String result = getNodeAttr(attrName, node);  
-                if (result != null)
-                {
+                if (result != null) {
                     return result;
                 }
             }
@@ -455,8 +454,7 @@ public class XmlUtilities {
                 && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
                 && node.getLocalName().equalsIgnoreCase(localName)) {
                 final String result = getNodeAttr(attrName, node);  
-                if (result != null)
-                {
+                if (result != null) {
                     return result;
                 }     
             }
