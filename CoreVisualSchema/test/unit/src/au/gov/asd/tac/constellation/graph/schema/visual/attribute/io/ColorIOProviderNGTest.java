@@ -5,35 +5,18 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
-import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonPointer;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.node.FloatNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.TextNode;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.ObjectUtils;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
@@ -80,7 +63,7 @@ public class ColorIOProviderNGTest {
      */
     @Test
     public void testGetName() {
-        System.out.println("ColorIOProvider.getName");
+        System.out.println("ColorIOProvider.testGetName");
         
         ColorIOProvider instance = new ColorIOProvider();
         String result = instance.getName();
@@ -141,7 +124,6 @@ public class ColorIOProviderNGTest {
         assertEquals(captorAtributeValue.getAllValues().get(1).toString(), "Teal");       
         
         // Call method under test with JsonNode.isNull=false and JsonNode.isObject=false
-        // TODO this is hitting case where jnode.tx
         when(mockJsonNode.isObject()).thenReturn(false);
         when(mockJsonNode.textValue()).thenReturn("Test");
         when(mockCache.deduplicate(anyObject())).thenReturn("Null");
