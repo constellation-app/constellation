@@ -1,0 +1,6 @@
+<parent xmlns:c="http://www.consty.com/star" xmlns:c2="http://www.consty2.com/star2">
+  <c:child attr1="c:attrib 1 value" attr2="c:attrib 2 value">child_value1</c:child>
+  <c2:child attr1="c2:attrib 1 value">child_value2</c2:child>
+  <c:offspring>offspring_value1</c:offspring>
+  <c:offspring attr1="c:attrib 1 value">offspring_value2</c:offspring>
+</parent>
