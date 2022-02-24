@@ -117,7 +117,6 @@ public class DecoratorsIOProviderNGTest {
         System.out.println("DecoratorsIOProvider.testWriteObject");
 
 
-        fail("The test case is a prototype.");
     }
     
 }
