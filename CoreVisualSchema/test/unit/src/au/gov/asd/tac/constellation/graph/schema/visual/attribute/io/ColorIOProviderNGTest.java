@@ -6,6 +6,8 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
+import au.gov.asd.tac.constellation.graph.GraphAttribute;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
@@ -26,14 +28,18 @@ import com.fasterxml.jackson.databind.node.FloatNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.ObjectUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import static org.mockito.ArgumentMatchers.anyFloat;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -161,6 +167,68 @@ public class ColorIOProviderNGTest {
     public void testWriteObject() throws Exception {
         System.out.println("ColorIOProvider.testWriteObject");
         
+        final JsonGenerator mockJsonGenerator = mock(JsonGenerator.class);
+        final GraphReadMethods mockGraph = mock(GraphReadMethods.class);
+        
+        int attributeId = 23;
+        int elementId = 41;
+        String attrType = "attrType";
+        String attrName = "attrName";
+        String attrDesc = "attrDesc";
+        String attrValue = "GREY";
+
+        GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, attrType, attrName, attrDesc,
+            null, null);
+        
+        // Create object under test
+        ColorIOProvider instance = new ColorIOProvider();
+        
+        // Create captors for arguments to graph.setStringValue
+        final ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
+        final ArgumentCaptor<Integer> captorElementId = ArgumentCaptor.forClass(Integer.class);
+        final ArgumentCaptor<String> captorAttrName = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<String> captorAttrValue = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<String> captorFieldStart = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<String> captorColorField = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<String> captorColorValue = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<Float> captorColorFloatValue = ArgumentCaptor.forClass(Float.class);
+
+        // Test not verbose and graph.IsDefaultValue is true skips all processing
+        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
+        Mockito.verify(mockGraph, times(0)).getStringValue(captorAtributeId.capture(), captorElementId.capture());
+
+        // Now turn on verbose, and configure getStringValue to return null
+        when(mockGraph.getStringValue(anyInt(), anyInt())).thenReturn(null);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
+        Mockito.verify(mockGraph, times(1)).getStringValue(captorAtributeId.capture(), captorElementId.capture());
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
+        Mockito.verify(mockJsonGenerator, times(0)).writeStringField(captorAttrName.capture(), captorAttrValue.capture());
+        assertEquals((int)captorAtributeId.getAllValues().get(0), attributeId);
+        assertEquals((int)captorElementId.getAllValues().get(0), elementId);
+
+        // Now turn verbose back off, but set graph.isDefaultValue to return false. Set color to a known color (Grey)
+        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraph.getStringValue(anyInt(), anyInt())).thenReturn(attrValue);
+        doNothing().when(mockJsonGenerator).writeObjectFieldStart(anyString());
+        doNothing().when(mockJsonGenerator).writeStringField(anyString(), anyString());
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
+        Mockito.verify(mockGraph, times(2)).getStringValue(captorAtributeId.capture(), captorElementId.capture());
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
+        Mockito.verify(mockJsonGenerator, times(1)).writeStringField(captorAttrName.capture(), captorAttrValue.capture());
+        Mockito.verify(mockJsonGenerator, times(1)).writeObjectFieldStart(captorFieldStart.capture());
+        Mockito.verify(mockJsonGenerator, times(1)).writeStringField(captorColorField.capture(), captorColorValue.capture());
+        assertEquals(captorFieldStart.getAllValues().get(0), attrName);
+        assertEquals(captorColorField.getAllValues().get(0), "name");
+        assertEquals(captorColorValue.getAllValues().get(0), "Grey");
+
+        
+        attrValue = "RGB255255255";
+        doNothing().when(mockJsonGenerator).writeNumberField(anyString(), anyFloat());
+        when(mockGraph.getStringValue(anyInt(), anyInt())).thenReturn(attrValue);
+        // Repeat but set color to be RGB color
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
+        Mockito.verify(mockJsonGenerator, times(4)).writeNumberField(captorColorField.capture(), captorColorFloatValue.capture());
     }
 
     /**
