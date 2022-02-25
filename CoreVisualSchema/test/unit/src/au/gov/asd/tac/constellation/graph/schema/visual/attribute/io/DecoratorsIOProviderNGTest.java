@@ -162,7 +162,6 @@ public class DecoratorsIOProviderNGTest {
         final ArgumentCaptor<String> captorField = ArgumentCaptor.forClass(String.class);
         final ArgumentCaptor<String> captorValue = ArgumentCaptor.forClass(String.class);
 
-        
         int attributeId = 23;
         int elementId = 41;
         String attrType = "attrType";
@@ -176,7 +175,7 @@ public class DecoratorsIOProviderNGTest {
         instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
         Mockito.verify(mockGraph, times(0)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
 
-        // Test not verbose but graph.IsDefaultValue is false, graph.getObjectValue returns null 
+        // Test not verbose but graph.IsDefaultValue is false, graph.getObjectValue returns null
         when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
         when(mockGraph.getObjectValue(anyInt(), anyInt())).thenReturn(null);
         instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
