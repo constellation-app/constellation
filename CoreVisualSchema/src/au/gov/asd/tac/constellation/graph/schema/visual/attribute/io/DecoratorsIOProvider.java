@@ -89,6 +89,21 @@ public class DecoratorsIOProvider extends AbstractGraphIOProvider {
         }
     }
 
+    /**
+     * Write this object to the JSON generator.
+     * <p>
+     * Refer to base class for detailed description.
+     * 
+     * @param attr The attribute being written.
+     * @param elementId The id of the element being written.
+     * @param jsonGenerator The JsonGenerator used to write to the JSON document.
+     * @param graph The graph that the object belongs to. Provided in case the object requires some 
+     * graph data.
+     * @param byteWriter (not used)  For ancillary data (e.g. images) that doesn't easily
+     * fit into a JSON document.
+     * @param verbose Determines whether to write default values of attributes or not.
+     * @throws IOException 
+     */
     @Override
     public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
