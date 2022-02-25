@@ -5,18 +5,10 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
-import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
-import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DecoratorsAttributeDescription;
-import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DrawFlagsAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
-import java.util.Map;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.Mockito;
@@ -64,7 +56,7 @@ public class DrawFlagsIOProviderNGTest {
         
         DrawFlagsIOProvider instance = new DrawFlagsIOProvider();
         String result = instance.getName();
-        assertEquals(result, DecoratorsAttributeDescription.ATTRIBUTE_NAME);
+        assertEquals(result, DrawFlagsAttributeDescription.ATTRIBUTE_NAME);
     }
 
     /**
