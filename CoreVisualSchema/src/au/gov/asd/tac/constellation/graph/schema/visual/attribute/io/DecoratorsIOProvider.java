@@ -71,7 +71,7 @@ public class DecoratorsIOProvider extends AbstractGraphIOProvider {
      * transaction id in the graph.
      * @param byteReader (not used) The byte reader containing ancillary data (e.g. images)
      * that doesn't easily fit into a JSON document.
-     * @param (not used) cache A cache that can be used to dedup identical instances of the
+     * @param cache (not used) cache A cache that can be used to dedup identical instances of the
      * same immutable objects.
      * @throws java.io.IOException If there's a problem reading the document. 
      */
