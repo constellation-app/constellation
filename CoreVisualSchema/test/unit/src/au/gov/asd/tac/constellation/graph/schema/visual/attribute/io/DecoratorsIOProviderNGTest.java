@@ -5,12 +5,16 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
+import au.gov.asd.tac.constellation.graph.GraphAttribute;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DecoratorsAttributeDescription;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -67,20 +71,21 @@ public class DecoratorsIOProviderNGTest {
     public void testReadObject() throws Exception {
         System.out.println("DecoratorsIOProvider.testReadObject");
         
+        // Create object under test
+        DecoratorsIOProvider instance = new DecoratorsIOProvider();
+        
+        // Create mocks
         final JsonNode mockJsonNode = mock(JsonNode.class);
         GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
         
-        int attributeId = 23;
-        int elementId = 41;
-        
-        // Create object under test
-        DecoratorsIOProvider instance = new DecoratorsIOProvider();
-
+        // Create argument captors
         ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<Integer> captorElementId = ArgumentCaptor.forClass(Integer.class);
         final ArgumentCaptor<VertexDecorators> captorObjectAttributeValue = ArgumentCaptor.forClass(VertexDecorators.class);
         ArgumentCaptor<String> captorStringAttributeValue = ArgumentCaptor.forClass(String.class);
         
+        int attributeId = 23;
+        int elementId = 41;
         
         // Call method under test with JsonNode.isNull=false and JsonNode.isObject=true
         when(mockJsonNode.isNull()).thenReturn(false);
@@ -141,8 +146,70 @@ public class DecoratorsIOProviderNGTest {
     @Test
     public void testWriteObject() throws Exception {
         System.out.println("DecoratorsIOProvider.testWriteObject");
+        
+        // Create object under test
+        DecoratorsIOProvider instance = new DecoratorsIOProvider();
+        
+        // Create mocks
+        JsonGenerator mockJsonGenerator = mock(JsonGenerator.class);
+        GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
+        
+        // Create argument captors
+        final ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
+        final ArgumentCaptor<Integer> captorElementId = ArgumentCaptor.forClass(Integer.class);
+        final ArgumentCaptor<String> captorAttrName = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<String> captorFieldStart = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<String> captorField = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<String> captorValue = ArgumentCaptor.forClass(String.class);
 
+        
+        int attributeId = 23;
+        int elementId = 41;
+        String attrType = "attrType";
+        String attrName = "attrName";
+        String attrDesc = "attrDesc";
+        GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, attrType, attrName, attrDesc,
+            null, null);
 
-    }
-    
+        // Test not verbose and graph.IsDefaultValue is true skips all processing
+        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
+        Mockito.verify(mockGraph, times(0)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
+
+        // Test not verbose but graph.IsDefaultValue is false, graph.getObjectValue returns null 
+        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraph.getObjectValue(anyInt(), anyInt())).thenReturn(null);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
+        Mockito.verify(mockGraph, times(1)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
+        assertEquals((int)captorAtributeId.getValue(), attributeId);
+        assertEquals((int)captorElementId.getValue(), elementId);
+        
+        // Test verbose and graph.IsDefaultValue is false, graph.getObjectValue returns null 
+        mockJsonGenerator = mock(JsonGenerator.class);
+        mockGraph = mock(GraphWriteMethods.class);
+        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraph.getObjectValue(anyInt(), anyInt())).thenReturn(null);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
+        Mockito.verify(mockGraph, times(1)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
+        assertEquals((int)captorAtributeId.getValue(), attributeId);
+        assertEquals((int)captorElementId.getValue(), elementId);
+        
+        // Test verbose and graph.IsDefaultValue is true, graph.getObjectValue returns decotrator object
+        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
+        when(mockGraph.getObjectValue(anyInt(), anyInt())).thenReturn(new VertexDecorators("NW", "NE", "SE", "SW"));
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
+        Mockito.verify(mockJsonGenerator, times(1)).writeObjectFieldStart(captorFieldStart.capture());
+        Mockito.verify(mockJsonGenerator, times(4)).writeStringField(captorField.capture(), captorValue.capture());
+       assertEquals(captorFieldStart.getAllValues().get(0), attrName);
+       assertEquals(captorField.getAllValues().get(0), "north_west");
+       assertEquals(captorValue.getAllValues().get(0), "NW");
+       assertEquals(captorField.getAllValues().get(1), "north_east");
+       assertEquals(captorValue.getAllValues().get(1), "NE");
+       assertEquals(captorField.getAllValues().get(2), "south_east");
+       assertEquals(captorValue.getAllValues().get(2), "SE");
+       assertEquals(captorField.getAllValues().get(3), "south_west");
+       assertEquals(captorValue.getAllValues().get(3), "SW");
+    } 
 }
