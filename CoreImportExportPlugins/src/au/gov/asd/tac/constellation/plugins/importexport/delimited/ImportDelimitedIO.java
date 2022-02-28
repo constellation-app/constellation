@@ -232,8 +232,6 @@ public final class ImportDelimitedIO {
             final String parser = source.get(PARSER).textValue();
             final ImportFileParser ifp = ImportFileParser.getParser(parser);
 
-            ImportFileParser importFileParser = importController.getImportFileParser();
-
             if (!importController.getImportFileParser().getLabel().equals(parser)) {
                 final String message = String.format("Template is for a different file Parser '%s'.", parser);
                 NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "File Parser Mismatch", message, Alert.AlertType.ERROR);
