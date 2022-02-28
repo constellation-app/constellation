@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
@@ -43,7 +44,6 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.Ad
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -52,6 +52,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class handles the logic for selecting the correct elements on the graphs
@@ -461,14 +462,14 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                 break;
             case "Contains":
                 for (final String str : allSearchableString) {
-                    if (value.contains(str)) {
+                    if (StringUtils.isNotBlank(value) && value.contains(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Doesn't Contain":
                 for (final String str : allSearchableString) {
-                    if (!value.contains(str)) {
+                    if (StringUtils.isNotBlank(value) && !value.contains(str)) {
                         matches = true;
                     }
                 }
@@ -476,24 +477,26 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                 break;
             case "Begins With":
                 for (final String str : allSearchableString) {
-                    if (value.startsWith(str)) {
+                    if (StringUtils.isNotBlank(value) && value.startsWith(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Ends With":
                 for (final String str : allSearchableString) {
-                    if (value.endsWith(str)) {
+                    if (StringUtils.isNotBlank(value) && value.endsWith(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Matches (Regex)":
                 for (final String str : allSearchableString) {
-                    final int caseSensitivity = Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE;
-                    final Pattern searchPattern = Pattern.compile(str, caseSensitivity);
-                    final Matcher match = searchPattern.matcher(value);
-                    matches = match.find();
+                    if (StringUtils.isNotBlank(value)) {
+                        final int caseSensitivity = Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE;
+                        final Pattern searchPattern = Pattern.compile(str, caseSensitivity);
+                        final Matcher match = searchPattern.matcher(value);
+                        matches = match.find();
+                    }
                 }
                 break;
             default:
