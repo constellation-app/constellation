@@ -52,7 +52,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class handles the logic for selecting the correct elements on the graphs
@@ -431,7 +430,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         }
 
         // if ignoring the case set the value and each of the strings to lower case
-        if (stringValues.isIgnoreCase()) {
+        if (stringValues.isIgnoreCase() && value != null) {
             value = value.toLowerCase();
             int i = 0;
             for (String str : allSearchableString) {
@@ -462,14 +461,14 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                 break;
             case "Contains":
                 for (final String str : allSearchableString) {
-                    if (StringUtils.isNotBlank(value) && value.contains(str)) {
+                    if (value != null && value.contains(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Doesn't Contain":
                 for (final String str : allSearchableString) {
-                    if (StringUtils.isNotBlank(value) && !value.contains(str)) {
+                    if (value != null && !value.contains(str)) {
                         matches = true;
                     }
                 }
@@ -477,21 +476,21 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                 break;
             case "Begins With":
                 for (final String str : allSearchableString) {
-                    if (StringUtils.isNotBlank(value) && value.startsWith(str)) {
+                    if (value != null && value.startsWith(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Ends With":
                 for (final String str : allSearchableString) {
-                    if (StringUtils.isNotBlank(value) && value.endsWith(str)) {
+                    if (value != null && value.endsWith(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Matches (Regex)":
                 for (final String str : allSearchableString) {
-                    if (StringUtils.isNotBlank(value)) {
+                    if (value != null) {
                         final int caseSensitivity = Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE;
                         final Pattern searchPattern = Pattern.compile(str, caseSensitivity);
                         final Matcher match = searchPattern.matcher(value);
