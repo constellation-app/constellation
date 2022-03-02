@@ -280,9 +280,13 @@ public class DelimitedSourcePane extends SourcePane {
      */
     @Override
     public void update(final ImportController importController) {
-        graphComboBox.getSelectionModel().select(importController.getDestination());
-        importFileParserComboBox.getSelectionModel().select(((DelimitedImportController) importController)
-                .getImportFileParser());
+        graphComboBox.getItems().stream()
+                .filter(importDestination -> importController.getDestination().toString().equals(importDestination.toString()))
+                .findAny()
+                .ifPresent(graphComboBox.getSelectionModel()::select);
+
+        importFileParserComboBox.getSelectionModel().select(((DelimitedImportController) importController).getImportFileParser());
         schemaCheckBox.setSelected(importController.isSchemaInitialised());
+        filesIncludeHeadersCheckBox.setSelected(importController.isSchemaInitialised());
     }
 }
