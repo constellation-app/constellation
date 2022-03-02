@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -149,12 +150,12 @@ public class ButtonToolbar {
         addButton = new Button("", ADD_ICON);
         addButton.setTooltip(new Tooltip(ADD_TOOLTIP));
         addButton.setOnAction(actionEvent -> {
-            final PluginParameters previousGlobals = getTabs().size() > 0 ?
-                    DataAccessTabPane.getQueryPhasePane(getTabs().get(getTabs().size() - 1))
-                        .getGlobalParametersPane().getParams() : null;
-            
+            final PluginParameters previousGlobals = getTabs().size() > 0
+                    ? DataAccessTabPane.getQueryPhasePane(getTabs().get(getTabs().size() - 1))
+                            .getGlobalParametersPane().getParams() : null;
+
             dataAccessPane.getDataAccessTabPane().newTab(previousGlobals, "");
-            
+
             actionEvent.consume();
         });
 
@@ -416,17 +417,19 @@ public class ButtonToolbar {
             NotifyDisplayer.displayAndWait(nde)
                     .thenAccept(option -> {
                         try {
-                          // If the users seclection was cancel, then do nothing. Otherwise add or
-                          // remove the selected plugins from the favourites based on the users selection
-                            final String optionValue = (String) ((CompletableFuture) option).get();
-                            if (option != NotifyDescriptor.CANCEL_OPTION) {
+                            // If the users seclection was cancel, then do nothing. Otherwise add or
+                            // remove the selected plugins from the favourites based on the users selection
+                            final Object optionValue = ((CompletableFuture) option).get();
+                            if (optionValue != NotifyDescriptor.CANCEL_OPTION) {
                                 selectedPlugins.stream().forEach(name
                                         -> DataAccessPreferenceUtilities.setFavourite(name, ADD_FAVOURITE.equals(optionValue))
                                 );
                             }
-                        } catch (final Throwable throwable) {
-                            LOGGER.log(Level.INFO,("Failed to get user option to add or remove favourites"),
-                                    throwable);
+                        } catch (final ExecutionException ex) {
+                            LOGGER.log(Level.INFO, "Failed to get user option to add or remove favourites", ex);
+                        } catch (final InterruptedException ex) {
+                            LOGGER.log(Level.INFO, "Failed to get user option to add or remove favourites", ex);
+                            Thread.currentThread().interrupt();
                         }
                     });
         }
