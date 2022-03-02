@@ -183,6 +183,7 @@ public class DecoratorsIOProviderNGTest {
         Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
         assertEquals((int)captorAtributeId.getValue(), attributeId);
         assertEquals((int)captorElementId.getValue(), elementId);
+        assertEquals(captorAttrName.getValue(), attrName);
         
         // Test verbose and graph.IsDefaultValue is false, graph.getObjectValue returns null 
         mockJsonGenerator = mock(JsonGenerator.class);
