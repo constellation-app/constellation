@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
@@ -43,7 +44,6 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.Ad
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -430,7 +430,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         }
 
         // if ignoring the case set the value and each of the strings to lower case
-        if (stringValues.isIgnoreCase()) {
+        if (stringValues.isIgnoreCase() && value != null) {
             value = value.toLowerCase();
             int i = 0;
             for (String str : allSearchableString) {
@@ -461,14 +461,14 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                 break;
             case "Contains":
                 for (final String str : allSearchableString) {
-                    if (value.contains(str)) {
+                    if (value != null && value.contains(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Doesn't Contain":
                 for (final String str : allSearchableString) {
-                    if (!value.contains(str)) {
+                    if (value != null && !value.contains(str)) {
                         matches = true;
                     }
                 }
@@ -476,24 +476,26 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                 break;
             case "Begins With":
                 for (final String str : allSearchableString) {
-                    if (value.startsWith(str)) {
+                    if (value != null && value.startsWith(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Ends With":
                 for (final String str : allSearchableString) {
-                    if (value.endsWith(str)) {
+                    if (value != null && value.endsWith(str)) {
                         matches = true;
                     }
                 }
                 break;
             case "Matches (Regex)":
                 for (final String str : allSearchableString) {
-                    final int caseSensitivity = Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE;
-                    final Pattern searchPattern = Pattern.compile(str, caseSensitivity);
-                    final Matcher match = searchPattern.matcher(value);
-                    matches = match.find();
+                    if (value != null) {
+                        final int caseSensitivity = Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE;
+                        final Pattern searchPattern = Pattern.compile(str, caseSensitivity);
+                        final Matcher match = searchPattern.matcher(value);
+                        matches = match.find();
+                    }
                 }
                 break;
             default:
