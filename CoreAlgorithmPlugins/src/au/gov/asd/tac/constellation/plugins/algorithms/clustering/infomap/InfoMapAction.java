@@ -77,6 +77,5 @@ public final class InfoMapAction implements ActionListener {
             ClusterUtilities.colorClusters(graph, clusterId, vxColorId, txColorId);
             ClusterUtilities.explodeGraph(graph, clusterId);
         }
-
     }
 }

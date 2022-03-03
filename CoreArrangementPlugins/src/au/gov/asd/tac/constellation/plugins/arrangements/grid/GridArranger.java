@@ -201,8 +201,8 @@ public class GridArranger implements Arranger {
             final float yOrig = -totalHeight / 2;
 
             // Figure out the centres of the rows and columns.
-            float[] colCentres = new float[nfCols];
-            float[] rowCentres = new float[nfRows];
+            final float[] colCentres = new float[nfCols];
+            final float[] rowCentres = new float[nfRows];
             colCentres[0] = (float) (xOrig + ((colWidths[0] * params.getSizeGain()) / 2.0));
             rowCentres[0] = (float) (yOrig + ((rowHeights[0] * params.getSizeGain()) / 2.0));
 
@@ -227,7 +227,7 @@ public class GridArranger implements Arranger {
                     topLeftVxId = vxId;
                 }
 
-                float x = colCentres[col];
+                final float x = colCentres[col];
                 float y = rowCentres[row];
 
                 // Offset even columns vertically so side-by-side labels don't overlap.

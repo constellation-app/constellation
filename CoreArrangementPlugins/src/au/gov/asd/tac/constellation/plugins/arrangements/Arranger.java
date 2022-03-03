@@ -31,12 +31,12 @@ public interface Arranger {
      *
      * @throws InterruptedException If the user cancels the task.
      */
-    void arrange(GraphWriteMethods wg) throws InterruptedException;
+    public void arrange(final GraphWriteMethods wg) throws InterruptedException;
 
     /**
      * Specify whether the mean position of the nodes should be maintained.
      *
      * @param b If true, the mean position of the nodes will be maintained.
      */
-    void setMaintainMean(boolean b);
+    public void setMaintainMean(final boolean b);
 }

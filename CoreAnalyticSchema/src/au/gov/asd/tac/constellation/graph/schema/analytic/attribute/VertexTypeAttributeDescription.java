@@ -72,7 +72,7 @@ public class VertexTypeAttributeDescription extends AbstractObjectAttributeDescr
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (ObjectReadable) () -> data[indexReadable.readInt()] != null
                 ? ((SchemaVertexType) data[indexReadable.readInt()]).getName() : data[indexReadable.readInt()];
     }

@@ -1,7 +1,19 @@
 #!/bin/bash
 set -euo pipefail
 
+
 source .githubutilities/functions.sh
+
+verbosity=""
+
+while getopts ":v:" opt
+do
+  case ${opt} in
+    v )
+      verbosity=$OPTARG
+      ;;
+  esac
+done
 
 title "Run Core Build"
 
@@ -14,7 +26,10 @@ ant \
 
 title "Run Core Unit Testing"
 
-ant -verbose \
+echo "Running tests with verbosity tag as: ${verbosity}"
+
+ant \
+  $verbosity \
   -Dnbplatform.active.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \

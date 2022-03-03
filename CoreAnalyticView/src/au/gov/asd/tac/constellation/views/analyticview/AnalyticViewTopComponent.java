@@ -309,6 +309,5 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                     break;
             }
         }
-
     }
 }

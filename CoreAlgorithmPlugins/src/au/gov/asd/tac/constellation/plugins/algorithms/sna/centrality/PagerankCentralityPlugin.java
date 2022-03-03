@@ -225,7 +225,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
             reset();
         }
 
-        private static void commitPagerankToGraph(PagerankVertex pagerankVertex) {
+        private static void commitPagerankToGraph(final PagerankVertex pagerankVertex) {
             graph.setDoubleValue(pagerankAttribute, pagerankVertex.vertexId, pagerankVertex.pagerank);
         }
 
@@ -272,5 +272,4 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
             stagedPagerank = baseContribution + (dampingFactor * neighbourContribution);
         }
     }
-
 }

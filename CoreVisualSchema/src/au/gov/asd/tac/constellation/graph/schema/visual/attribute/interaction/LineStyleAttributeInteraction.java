@@ -34,15 +34,11 @@ public class LineStyleAttributeInteraction extends AbstractAttributeInteraction<
 
     @Override
     @SuppressWarnings("unchecked") //Cast is manually checked
-    public String getDisplayText(Object value) {
+    public String getDisplayText(final Object value) {
         if (value == null) {
             return null;
-        }
-        if (value instanceof LineStyle) {
-            return ((LineStyle) value).name();
-        } else {
-            return value.toString();
-        }
+        }       
+        return value instanceof LineStyle ? ((LineStyle) value).name() : value.toString();
     }
 
     @Override

@@ -219,7 +219,7 @@ public final class SpanningTree {
         private final GraphWriteMethods wg;
         private final int comp;
 
-        LinkSorter(final GraphWriteMethods wg, final boolean isMinimal) {
+        protected LinkSorter(final GraphWriteMethods wg, final boolean isMinimal) {
             this.wg = wg;
             this.comp = isMinimal ? 1 : -1;
         }

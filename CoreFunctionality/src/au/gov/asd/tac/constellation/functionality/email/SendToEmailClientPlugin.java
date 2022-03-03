@@ -86,7 +86,7 @@ public class SendToEmailClientPlugin extends SimplePlugin {
     }
 
     @Override
-    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final String toEmail = parameters.getStringValue(TO_EMAIL_PARAMETER_ID);
         final String ccEmail = parameters.getStringValue(CC_EMAIL_PARAMETER_ID);
         final String subject = parameters.getStringValue(SUBJECT_PARAMETER_ID);
@@ -94,10 +94,14 @@ public class SendToEmailClientPlugin extends SimplePlugin {
 
         try {
             final StringBuilder sb = new StringBuilder();
-            sb.append("mailto:").append(toEmail)
-                    .append("?subject=").append(encodeString(subject))
-                    .append("&cc=").append(encodeString(ccEmail))
-                    .append("&body=").append(encodeString(body));
+            sb.append("mailto:")
+                .append(toEmail)
+                .append("?subject=")
+                .append(encodeString(subject))
+                .append("&cc=")
+                .append(encodeString(ccEmail))
+                .append("&body=")
+                .append(encodeString(body));
 
             final URI uri = new URI(sb.toString());
             Desktop.getDesktop().mail(uri);

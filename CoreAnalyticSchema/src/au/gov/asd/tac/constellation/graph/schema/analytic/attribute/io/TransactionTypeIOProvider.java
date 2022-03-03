@@ -63,12 +63,10 @@ public class TransactionTypeIOProvider extends AbstractGraphIOProvider {
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         if (!jnode.isNull() && jnode.isObject()) {
-            final SchemaTransactionType attributeValue = readTypeObject(jnode);
-            graph.setObjectValue(attributeId, elementId, attributeValue);
+            graph.setObjectValue(attributeId, elementId, readTypeObject(jnode));
         } else {
             // legacy
-            final String attributeValue = jnode.isNull() ? null : jnode.textValue();
-            graph.setStringValue(attributeId, elementId, attributeValue);
+            graph.setStringValue(attributeId, elementId, jnode.isNull() ? null : jnode.textValue());
         }
     }
 

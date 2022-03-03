@@ -20,10 +20,10 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -82,7 +82,7 @@ public final class IoUtilities {
 
         // Scan the string so if there aren't any changes to be made (which could be the common case),
         // there's no copying of substrings.
-        StringBuilder t = new StringBuilder();
+        final StringBuilder t = new StringBuilder();
         final int length = s.length();
         int begin = 0;
         for (int i = 0; i < length; i++) {
@@ -128,7 +128,7 @@ public final class IoUtilities {
             return null;
         }
 
-        StringBuilder t = new StringBuilder();
+        final StringBuilder t = new StringBuilder();
         final int length = s.length();
         int begin = 0;
         for (int i = 0; i < length; i++) {
@@ -205,9 +205,9 @@ public final class IoUtilities {
      * @throws IllegalArgumentException if the color cannot be parsed.
      */
     public static float[] parseColor(final String s) {
-        float[] vec = new float[4];
+        final float[] vec = new float[4];
 
-        String[] f = split(s, 4, ',');
+        final String[] f = split(s, 4, ',');
         if (f[3] == null) {
             f[3] = "1.0";
         }
@@ -277,7 +277,7 @@ public final class IoUtilities {
             cal.set(Calendar.MILLISECOND, ms);
 
             return cal;
-        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
+        } catch (final StringIndexOutOfBoundsException | NumberFormatException ex) {
             throw new GraphParseException("Can't parse datetime string '" + s + "'", ex);
         }
     }
@@ -313,7 +313,7 @@ public final class IoUtilities {
             cal.set(Calendar.MILLISECOND, 0);
 
             return cal;
-        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
+        } catch (final StringIndexOutOfBoundsException | NumberFormatException ex) {
             throw new GraphParseException("Can't parse date string '" + s + "'", ex);
         }
     }
@@ -390,9 +390,9 @@ public final class IoUtilities {
      *
      * @return The strings joined using the separator character.
      */
-    public static String join(final ArrayList<String> a, final char separator) {
-        StringBuilder buf = new StringBuilder();
-        for (String s : a) {
+    public static String join(final List<String> a, final char separator) {
+        final StringBuilder buf = new StringBuilder();
+        for (final String s : a) {
             if (buf.length() > 0) {
                 buf.append(separator);
             }

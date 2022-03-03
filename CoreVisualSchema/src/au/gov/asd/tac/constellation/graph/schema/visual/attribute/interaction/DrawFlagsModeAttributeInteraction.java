@@ -33,7 +33,10 @@ public class DrawFlagsModeAttributeInteraction extends AbstractAttributeInteract
     }
 
     @Override
-    public String getDisplayText(Object value) {
+    public String getDisplayText(final Object value) {
+        if (value == null) {
+            return null;
+        }
         final DrawFlags drawFlags = (DrawFlags) value;
         return String.format("nodes: %s; connections: %s; node_labels: %s; connection_labels: %s; blazes: %s",
                 drawFlags.drawNodes(), drawFlags.drawConnections(), drawFlags.drawNodeLabels(), drawFlags.drawConnectionLabels(), drawFlags.drawBlazes());

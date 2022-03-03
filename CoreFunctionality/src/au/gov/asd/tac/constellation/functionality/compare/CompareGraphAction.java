@@ -40,7 +40,7 @@ public final class CompareGraphAction implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         PluginExecution.withPlugin(CorePluginRegistry.COMPARE_GRAPH)
                 .interactively(true)
                 .executeLater(context.getGraph());

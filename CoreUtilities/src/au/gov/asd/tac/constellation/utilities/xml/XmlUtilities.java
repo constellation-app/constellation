@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +49,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -75,12 +78,17 @@ public class XmlUtilities {
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(namespaceAware);
         transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        try {
+            // Some implementations wont support these settings
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        } catch (final IllegalArgumentException ex) {
+            // Do nothing - Some implementations wont support above settings
+        }
         try {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
             transformer = transformerFactory.newTransformer();
-        } catch (ParserConfigurationException | TransformerConfigurationException ex) {
+        } catch (final ParserConfigurationException | TransformerConfigurationException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
         }
     }
@@ -262,8 +270,9 @@ public class XmlUtilities {
     public Node getNodeNS(final String namespaceURI, final String localName, final NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
-            if (node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
-                    && node.getLocalName().equalsIgnoreCase(localName)) {
+            if (node.getNamespaceURI() != null 
+                && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
+                && node.getLocalName().equalsIgnoreCase(localName)) {
                 return node;
             }
         }
@@ -303,8 +312,9 @@ public class XmlUtilities {
         final List<Node> requestedNodes = new ArrayList<>();
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
-            if (node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
-                    && node.getLocalName().equalsIgnoreCase(localName)) {
+            if (node.getNamespaceURI() != null 
+                && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
+                && node.getLocalName().equalsIgnoreCase(localName)) {
                 requestedNodes.add(node);
             }
         }
@@ -332,7 +342,8 @@ public class XmlUtilities {
 
     /**
      * Searches the given list of nodes for a tag with the given name and
-     * returns the first match as a string.
+     * returns the first TEXT_NODE match as a string, nodes with matching name that
+     * are not of type TEXT_NODE are ignored.
      *
      * @param tagName the tag name.
      * @param nodes the nodes to search.
@@ -356,19 +367,22 @@ public class XmlUtilities {
     }
 
     /**
-     * Searches the given list of nodes for a tag with the given name and
-     * returns the first match as a string.
+     * Searches the given list of nodes for nodes in the given namespaceURI matching
+     * the requested tagName. Within any matching nodes return the value of the first
+     * node which is of type TEXT_NODE. Returns null if no node matching these conditions
+     * is found.
      *
      * @param namespaceURI the namespace.
-     * @param localName the tag name.
+     * @param tagName the tag name.
      * @param nodes the nodes to search.
      * @return the first matching node as a string.
      */
-    public String getNodeValueNS(final String namespaceURI, final String localName, final NodeList nodes) {
+    public String getNodeValueNS(final String namespaceURI, final String tagName, final NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
-            if (node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
-                    && node.getLocalName().equalsIgnoreCase(localName)) {
+            if (node.getNamespaceURI() != null
+                && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
+                && node.getLocalName().equalsIgnoreCase(tagName)) {
                 final NodeList childNodes = node.getChildNodes();
                 for (int j = 0; j < childNodes.getLength(); j++) {
                     final Node data = childNodes.item(j);
@@ -402,7 +416,7 @@ public class XmlUtilities {
     }
 
     /**
-     * Returns the attribute of the node that has the provided tag name.
+     * Returns the attribute of the node that has the provided tag name and attrName.
      *
      * @param tagName the tag name.
      * @param attrName the attribute name.
@@ -414,21 +428,17 @@ public class XmlUtilities {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
             if (node.getNodeName().equalsIgnoreCase(tagName)) {
-                final NodeList childNodes = node.getChildNodes();
-                for (int j = 0; j < childNodes.getLength(); j++) {
-                    final Node data = childNodes.item(j);
-                    if (data.getNodeType() == Node.ATTRIBUTE_NODE && data.getNodeName().equalsIgnoreCase(attrName)) {
-                        return data.getNodeValue();
-                    }
+                final String result = getNodeAttr(attrName, node);  
+                if (result != null) {
+                    return result;
                 }
             }
         }
-
         return null;
     }
 
     /**
-     * Returns the attribute of the node that has the provided tag name.
+     * Returns the attribute of the node that has the provided tag name and attrName for the supplied namespace.
      *
      * @param namespaceURI the namespace.
      * @param localName the tag name.
@@ -440,18 +450,15 @@ public class XmlUtilities {
     public String getNodeAttrNS(final String namespaceURI, final String localName, final String attrName, final NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
-            if (node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
-                    && node.getLocalName().equalsIgnoreCase(localName)) {
-                final NodeList childNodes = node.getChildNodes();
-                for (int j = 0; j < childNodes.getLength(); j++) {
-                    final Node data = childNodes.item(j);
-                    if (data.getNodeType() == Node.ATTRIBUTE_NODE && data.getNodeName().equalsIgnoreCase(attrName)) {
-                        return data.getNodeValue();
-                    }
-                }
+            if (node.getNamespaceURI() != null
+                && node.getNamespaceURI().equalsIgnoreCase(namespaceURI)
+                && node.getLocalName().equalsIgnoreCase(localName)) {
+                final String result = getNodeAttr(attrName, node);  
+                if (result != null) {
+                    return result;
+                }     
             }
         }
-
         return null;
     }
 
@@ -462,14 +469,15 @@ public class XmlUtilities {
      * @param url the URL that specifies the location of the input.
      * @return an array of maps, that represents a tabular structure. Each map
      * is a row with all the columns for that row.
+     * @throws java.net.MalformedURLException if supplied URL is malformed
+     * @throws java.io.FileNotFoundException if file URL references is not found
      * @throws java.io.UnsupportedEncodingException if the encoding is not
      * supported.
      * @throws TransformerException if an error occurs while transforming the
      * XML into a document.
      */
-    public List<Map<String, String>> map(final String url) throws UnsupportedEncodingException, TransformerException {
-        final Document document = read(url);
-        return map(document);
+    public List<Map<String, String>> map(final String url) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {       
+        return map(read(FileUtils.toFile(new URL(url))));
     }
 
     /**
@@ -481,12 +489,14 @@ public class XmlUtilities {
      * structure.
      * @return an array of maps, that represents a tabular structure. Each map
      * is a row with all the columns for that row.
+     * @throws java.net.MalformedURLException if supplied URL is malformed
+     * @throws java.io.FileNotFoundException if file URL references is not found
      * @throws UnsupportedEncodingException if the encoding is not supported.
      * @throws TransformerException if an error occurs while transforming the
      * XML into a document.
      */
-    public List<Map<String, String>> map(final String url, final String rowTag) throws UnsupportedEncodingException, TransformerException {
-        final Document document = read(url);
+    public List<Map<String, String>> map(final String url, final String rowTag) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
+        final Document document = read(FileUtils.toFile(new URL(url)));
         return map(document, rowTag);
     }
 
@@ -569,13 +579,13 @@ public class XmlUtilities {
      * @param url a URL referencing an XML document.
      * @param swap if true then the rows and columns are swapped.
      * @return the table.
+     * @throws java.io.FileNotFoundException if file URL references is not found
      * @throws UnsupportedEncodingException if the encoding is not supported.
      * @throws TransformerException if an error occurs while transforming the
      * XML into a document.
      */
-    public String[][] table(final String url, final boolean swap) throws UnsupportedEncodingException, TransformerException {
-        final Document document = read(url);
-        return table(document, swap);
+    public String[][] table(final String url, final boolean swap) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
+        return table(read(FileUtils.toFile(new URL(url))), swap);
     }
 
     /**

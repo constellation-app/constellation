@@ -48,7 +48,10 @@ public final class DataAccessUserPreferences {
     public static final BiFunction<Class<? extends Plugin>, String, String> PLUGIN_PARAMETER_KEY_GENERATOR =
             (pluginClass, parameterName) -> String.format(PLUGIN_PARAMETER_KEY_FORMAT,
                     pluginClass.getSimpleName(), parameterName);
-    
+
+    @JsonProperty(value = "step")
+    private String stepCaption = "";
+
     @JsonProperty(value = "global")
     private Map<String, String> globalParameters;
     
@@ -101,7 +104,16 @@ public final class DataAccessUserPreferences {
                 
                 });
     }
-    
+
+
+    public String getStepCaption() {
+        return stepCaption;
+    }
+
+    public void setStepCaption(final String stepCaption) {
+        this.stepCaption = stepCaption;
+    }
+
     public Map<String, String> getGlobalParameters() {
         return globalParameters;
     }
@@ -131,6 +143,7 @@ public final class DataAccessUserPreferences {
         final DataAccessUserPreferences rhs = (DataAccessUserPreferences) o;
 
         return new EqualsBuilder()
+                .append(getStepCaption(), rhs.getStepCaption())
                 .append(getGlobalParameters(), rhs.getGlobalParameters())
                 .append(getPluginParameters(), rhs.getPluginParameters())
                 .isEquals();
@@ -139,6 +152,7 @@ public final class DataAccessUserPreferences {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
+                .append(getStepCaption())
                 .append(getGlobalParameters())
                 .append(getPluginParameters())
                 .toHashCode();
@@ -147,6 +161,7 @@ public final class DataAccessUserPreferences {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
+                .append("step", getStepCaption())
                 .append("globalParameters", getGlobalParameters())
                 .append("pluginParameters", getPluginParameters())
                 .toString();

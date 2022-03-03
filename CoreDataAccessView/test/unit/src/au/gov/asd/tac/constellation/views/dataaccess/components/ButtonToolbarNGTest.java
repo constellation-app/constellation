@@ -74,10 +74,11 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ButtonToolbarNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(ButtonToolbarNGTest.class.getName());
-    
+
     private DataAccessPane dataAccessPane;
-    
+
     private ButtonToolbar buttonToolbar;
 
     @BeforeClass
@@ -95,14 +96,14 @@ public class ButtonToolbarNGTest {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
-    
+
     @BeforeMethod
     public void setUpMethod() throws Exception {
         dataAccessPane = mock(DataAccessPane.class);
-        
+
         buttonToolbar = spy(new ButtonToolbar(dataAccessPane));
     }
-    
+
     @Test
     public void init() {
         final QualityControlAutoButton qualityControlAutoButtonCopy = new QualityControlAutoButton() {
@@ -116,7 +117,7 @@ public class ButtonToolbarNGTest {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         };
-        
+
         final QualityControlAutoButton qualityControlAutoButton = new QualityControlAutoButton() {
             @Override
             protected void update(QualityControlState state) {
@@ -128,19 +129,18 @@ public class ButtonToolbarNGTest {
                 return qualityControlAutoButtonCopy;
             }
         };
-        
+
         try (final MockedStatic<Lookup> lookupMockedStatic = Mockito.mockStatic(Lookup.class)) {
-            
+
             final Lookup lookup = mock(Lookup.class);
             lookupMockedStatic.when(Lookup::getDefault).thenReturn(lookup);
-            
+
             when(lookup.lookup(QualityControlAutoButton.class)).thenReturn(qualityControlAutoButton);
-            
+
             buttonToolbar.init();
         }
-        
+
         // Help Button
-        
         verifyButton(
                 buttonToolbar.getHelpButton(),
                 "",
@@ -149,9 +149,8 @@ public class ButtonToolbarNGTest {
                 UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())
         );
         assertEquals(buttonToolbar.getHelpButton().getPadding(), new Insets(0, 8, 0, 0));
-        
+
         // Add Button
-        
         verifyButton(
                 buttonToolbar.getAddButton(),
                 "",
@@ -159,11 +158,10 @@ public class ButtonToolbarNGTest {
                 "Add new run tab",
                 UserInterfaceIconProvider.ADD.buildImage(16)
         );
-        
+
         verifyAddTabAction(buttonToolbar.getAddButton());
-        
+
         // Favourite Button
-        
         verifyButton(
                 buttonToolbar.getFavouriteButton(),
                 "",
@@ -171,18 +169,16 @@ public class ButtonToolbarNGTest {
                 "Manage your favourites",
                 AnalyticIconProvider.STAR.buildImage(16, ConstellationColor.YELLOW.getJavaColor())
         );
-        
+
         doNothing().when(buttonToolbar).manageFavourites();
-        
+
         final ActionEvent actionEvent = mock(ActionEvent.class);
         buttonToolbar.getFavouriteButton().getOnAction().handle(actionEvent);
-        
+
         verify(buttonToolbar).manageFavourites();
         verify(actionEvent).consume();
-        
-        
+
         // Execute Button
-        
         verifyButton(
                 buttonToolbar.getExecuteButtonTop(),
                 "Go",
@@ -190,7 +186,7 @@ public class ButtonToolbarNGTest {
                 null,
                 null
         );
-        
+
         verifyButton(
                 buttonToolbar.getExecuteButtonBottom(),
                 "Go",
@@ -198,13 +194,12 @@ public class ButtonToolbarNGTest {
                 null,
                 null
         );
-        
+
         assertTrue(buttonToolbar.getExecuteButtonTop().getOnAction() instanceof ExecuteListener);
         assertTrue(buttonToolbar.getExecuteButtonBottom().getOnAction() instanceof ExecuteListener);
         assertSame(buttonToolbar.getExecuteButtonTop().getOnAction(), buttonToolbar.getExecuteButtonBottom().getOnAction());
-        
+
         // Help, Add and Favourite HBox
-        
         assertEquals(
                 buttonToolbar.getHelpAddFavHBox().getChildren(),
                 List.of(
@@ -214,41 +209,38 @@ public class ButtonToolbarNGTest {
                 )
         );
         assertEquals(buttonToolbar.getHelpAddFavHBox().getSpacing(), 4.0);
-        
+
         // Rab Region Execute HBox Top
-        
         assertSame(
                 buttonToolbar.getRabRegionExectueHBoxTop().getChildren().get(0),
                 qualityControlAutoButton
         );
-        
+
         final Region topSpacer = (Region) buttonToolbar.getRabRegionExectueHBoxTop().getChildren().get(1);
         assertEquals(topSpacer.getMinWidth(), 20.0);
         assertEquals(topSpacer.getMinHeight(), 0.0);
-        
+
         assertEquals(
                 buttonToolbar.getRabRegionExectueHBoxTop().getChildren().get(2),
                 buttonToolbar.getExecuteButtonTop()
         );
-        
+
         // Rab Region Execute HBox Bottom
-        
         assertSame(
                 buttonToolbar.getRabRegionExectueHBoxBottom().getChildren().get(0),
                 qualityControlAutoButtonCopy
         );
-        
+
         final Region bottomSpacer = (Region) buttonToolbar.getRabRegionExectueHBoxBottom().getChildren().get(1);
         assertEquals(bottomSpacer.getMinWidth(), 27.0);
         assertEquals(bottomSpacer.getMinHeight(), 0.0);
-        
+
         assertEquals(
                 buttonToolbar.getRabRegionExectueHBoxBottom().getChildren().get(2),
                 buttonToolbar.getExecuteButtonBottom()
         );
-        
+
         // Options Toolbar
-        
         assertEquals(buttonToolbar.getOptionsToolbar().getPadding(), new Insets(4));
         assertEquals(buttonToolbar.getOptionsToolbar().getHgap(), 4.0);
         assertEquals(buttonToolbar.getOptionsToolbar().getVgap(), 4.0);
@@ -262,45 +254,45 @@ public class ButtonToolbarNGTest {
                 )
         );
     }
-    
+
     @Test
     public void changeExecuteButtonState_withoutDisableFlag() {
         final Button executeButton = mock(Button.class);
         doReturn(executeButton).when(buttonToolbar).getExecuteButtonTop();
         doReturn(executeButton).when(buttonToolbar).getExecuteButtonBottom();
-        
+
         when(executeButton.isDisable()).thenReturn(false);
-        
+
         buttonToolbar.changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.STOP);
-        
+
         WaitForAsyncUtils.waitForFxEvents();
-        
+
         verify(executeButton, times(2)).setText("Stop");
         verify(executeButton, times(2)).setStyle("-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
         verify(executeButton, times(2)).setDisable(false);
     }
-    
+
     @Test
     public void changeExecuteButtonState_withDisableFlag() {
         final Button executeButton = mock(Button.class);
         doReturn(executeButton).when(buttonToolbar).getExecuteButtonTop();
         doReturn(executeButton).when(buttonToolbar).getExecuteButtonBottom();
-        
+
         buttonToolbar.changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.STOP, false);
-        
+
         WaitForAsyncUtils.waitForFxEvents();
-        
+
         verify(executeButton, times(2)).setText("Stop");
         verify(executeButton, times(2)).setStyle("-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
         verify(executeButton, times(2)).setDisable(false);
     }
-    
+
     @Test
     public void resizingPanes() {
         buttonToolbar.init();
-        
+
         buttonToolbar.handleShrinkingPane();
-        
+
         assertEquals(
                 buttonToolbar.getOptionsToolbar().getChildren(),
                 FXCollections.observableArrayList(
@@ -308,14 +300,14 @@ public class ButtonToolbarNGTest {
                         buttonToolbar.getHelpAddFavHBox()
                 )
         );
-        
+
         assertEquals(buttonToolbar.getOptionsToolbar().getRowCount(), 2);
         assertEquals(buttonToolbar.getOptionsToolbar().getColumnCount(), 1);
-        
+
         assertEquals(GridPane.getHalignment(buttonToolbar.getHelpAddFavHBox()), HPos.LEFT);
-        
+
         buttonToolbar.handleGrowingPane();
-        
+
         assertEquals(
                 buttonToolbar.getOptionsToolbar().getChildren(),
                 FXCollections.observableArrayList(
@@ -323,133 +315,134 @@ public class ButtonToolbarNGTest {
                         buttonToolbar.getRabRegionExectueHBoxTop()
                 )
         );
-        
+
         assertEquals(buttonToolbar.getOptionsToolbar().getRowCount(), 1);
         assertEquals(buttonToolbar.getOptionsToolbar().getColumnCount(), 2);
-        
+
         assertEquals(GridPane.getHalignment(buttonToolbar.getHelpAddFavHBox()), HPos.CENTER);
     }
-    
+
     @Test
     public void manageFavourites_no_plugins_selected() {
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         final QueryPhasePane currentQueryPhasePane = mock(QueryPhasePane.class);
-        
+
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         when(dataAccessTabPane.getQueryPhasePaneOfCurrentTab()).thenReturn(currentQueryPhasePane);
         when(currentQueryPhasePane.getDataAccessPanes()).thenReturn(List.of());
-        
-        try (final MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic =
-                Mockito.mockStatic(NotifyDisplayer.class)) {
+
+        try (final MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic
+                = Mockito.mockStatic(NotifyDisplayer.class)) {
             buttonToolbar.manageFavourites();
-            
+
             notifyDisplayerMockedStatic.verify(() -> NotifyDisplayer
                     .display("No plugins selected.", NotifyDescriptor.WARNING_MESSAGE));
         }
     }
-    
+
     @Test
     public void manageFavourites_plugins_user_selects_add() {
         final String pluginTitle = "myPlugin";
-        
+
         verifyManageFavouritesWithUserInput(
                 pluginTitle,
                 "Add",
                 () -> DataAccessPreferenceUtilities.setFavourite(pluginTitle, true));
     }
-    
+
     @Test
     public void manageFavourites_plugins_user_selects_remove() {
         final String pluginTitle = "myPlugin";
-        
+
         verifyManageFavouritesWithUserInput(
                 pluginTitle,
                 "Remove",
                 () -> DataAccessPreferenceUtilities.setFavourite(pluginTitle, false));
     }
-    
+
     @Test
     public void manageFavourites_plugins_user_selects_cancel() {
         final String pluginTitle = "myPlugin";
-        
+
         verifyManageFavouritesWithUserInput(
                 pluginTitle,
                 NotifyDescriptor.CANCEL_OPTION,
                 null);
     }
-    
+
     @Test
     public void executeButtonStates() {
         assertEquals(ButtonToolbar.ExecuteButtonState.GO.getText(), "Go");
         assertEquals(ButtonToolbar.ExecuteButtonState.GO.getStyle(), "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;");
-        
+
         assertEquals(ButtonToolbar.ExecuteButtonState.STOP.getText(), "Stop");
         assertEquals(ButtonToolbar.ExecuteButtonState.STOP.getStyle(), "-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
-        
+
         assertEquals(ButtonToolbar.ExecuteButtonState.CONTINUE.getText(), "Continue");
         assertEquals(ButtonToolbar.ExecuteButtonState.CONTINUE.getStyle(), "-fx-background-color: rgb(255,180,0); -fx-padding: 2 5 2 5;");
-        
+
         assertEquals(ButtonToolbar.ExecuteButtonState.CALCULATING.getText(), "Calculating");
         assertEquals(ButtonToolbar.ExecuteButtonState.CALCULATING.getStyle(), "-fx-background-color: rgb(0,100,255); -fx-padding: 2 5 2 5;");
     }
-    
+
     /**
-     * Verifies that when manage favourites is called, depending on the user action
-     * against the dialog, different outcomes will occur.
+     * Verifies that when manage favourites is called, depending on the user
+     * action against the dialog, different outcomes will occur.
      *
-     * @param pluginTitle the plugin title of the only selected pane that is enabled
+     * @param pluginTitle the plugin title of the only selected pane that is
+     * enabled
      * @param selectedOption the option that the user selection in the dialog
-     * @param preferenceUtilsVerification the verification against {@link DataAccessPreferenceUtilities}
+     * @param preferenceUtilsVerification the verification against
+     * {@link DataAccessPreferenceUtilities}
      */
     private void verifyManageFavouritesWithUserInput(final String pluginTitle,
-                                                     final Object selectedOption,
-                                                     final Verification preferenceUtilsVerification) {
+            final Object selectedOption,
+            final Verification preferenceUtilsVerification) {
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         final QueryPhasePane currentQueryPhasePane = mock(QueryPhasePane.class);
-        
+
         final DataSourceTitledPane dataSourceTitledPane1 = mock(DataSourceTitledPane.class);
         final DataSourceTitledPane dataSourceTitledPane2 = mock(DataSourceTitledPane.class);
-        
+
         final Plugin plugin = mock(Plugin.class);
-        
+
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         when(dataAccessTabPane.getQueryPhasePaneOfCurrentTab()).thenReturn(currentQueryPhasePane);
         when(currentQueryPhasePane.getDataAccessPanes())
                 .thenReturn(List.of(dataSourceTitledPane1, dataSourceTitledPane2));
-        
+
         when(dataSourceTitledPane1.isQueryEnabled()).thenReturn(false);
         when(dataSourceTitledPane2.isQueryEnabled()).thenReturn(true);
-        
+
         when(dataSourceTitledPane2.getPlugin()).thenReturn(plugin);
         when(plugin.getName()).thenReturn(pluginTitle);
-        
+
         try (
-                final MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic =
-                        Mockito.mockStatic(NotifyDisplayer.class);
-                final MockedStatic<DataAccessPreferenceUtilities> prefUtilsMockedStatic =
-                        Mockito.mockStatic(DataAccessPreferenceUtilities.class);
-        ) {
+                final MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic
+                = Mockito.mockStatic(NotifyDisplayer.class); final MockedStatic<DataAccessPreferenceUtilities> prefUtilsMockedStatic
+                = Mockito.mockStatic(DataAccessPreferenceUtilities.class);) {
             notifyDisplayerMockedStatic.when(() -> NotifyDisplayer.displayAndWait(any(NotifyDescriptor.class)))
                     .thenAnswer(iom -> {
                         final NotifyDescriptor descriptor = iom.getArgument(0);
-                        
+
                         final String expectedMessage = "Add or remove plugins from your favourites category.\n\n"
-                            + "The following plugins were selected:\n"
-                            + pluginTitle + "\n"
-                            + "\nNote that you need to restart before changes take effect.";
-            
+                                + "The following plugins were selected:\n"
+                                + pluginTitle + "\n"
+                                + "\nNote that you need to restart before changes take effect.";
+
                         assertEquals(descriptor.getMessage(), expectedMessage);
                         assertEquals(descriptor.getTitle(), "Manage Favourites");
                         assertEquals(descriptor.getOptionType(), NotifyDescriptor.DEFAULT_OPTION);
                         assertEquals(descriptor.getMessageType(), NotifyDescriptor.QUESTION_MESSAGE);
                         assertEquals(descriptor.getOptions(), new Object[]{"Add", "Remove", NotifyDescriptor.CANCEL_OPTION});
                         assertEquals(descriptor.getValue(), NotifyDescriptor.OK_OPTION);
-                        
-                        return CompletableFuture.completedFuture(selectedOption);
+
+                        // Simulating the value returned when the function is called on the FX thread
+                        return CompletableFuture.completedFuture(CompletableFuture.completedFuture(selectedOption));
                     });
-            
+
             buttonToolbar.manageFavourites();
-            
+
             if (preferenceUtilsVerification != null) {
                 prefUtilsMockedStatic.verify(preferenceUtilsVerification);
             } else {
@@ -457,72 +450,73 @@ public class ButtonToolbarNGTest {
             }
         }
     }
-    
+
     /**
-     * Verifies that the add button creates a new tab using the global plugin configuration
-     * from the last tab if available.
+     * Verifies that the add button creates a new tab using the global plugin
+     * configuration from the last tab if available.
      *
      * @param addButton the button to verify
      */
     private void verifyAddTabAction(final Button addButton) {
         final ActionEvent actionEvent = mock(ActionEvent.class);
-        
+
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
-        
+
         // Set up the current tab pane. The code will take the last tab, i.e. tab2
         final Tab tab1 = mock(Tab.class);
         final Tab tab2 = mock(Tab.class);
         final ObservableList<Tab> tabs = FXCollections.observableArrayList(tab1, tab2);
         doReturn(tabs).when(buttonToolbar).getTabs();
-        
+
         final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
         final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
         final PluginParameters pluginParameters = mock(PluginParameters.class);
-        
+
         when(queryPhasePane.getGlobalParametersPane()).thenReturn(globalParametersPane);
         when(globalParametersPane.getParams()).thenReturn(pluginParameters);
-        
-        try (final MockedStatic<DataAccessTabPane> tabPaneMockedStatic =
-                Mockito.mockStatic(DataAccessTabPane.class)) {
+
+        try (final MockedStatic<DataAccessTabPane> tabPaneMockedStatic
+                = Mockito.mockStatic(DataAccessTabPane.class)) {
             // There will be no interaction with tab1 so only mock out tab2
             tabPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(tab2))
                     .thenReturn(queryPhasePane);
-            
+
             // Run the action
             addButton.getOnAction().handle(actionEvent);
-            
+
             // Verify a new tab is created with the existing last tab's parameters
-            verify(dataAccessTabPane).newTab(pluginParameters);
+            verify(dataAccessTabPane).newTab(pluginParameters, "");
             verify(actionEvent).consume();
         }
     }
-    
+
     /**
-     * Verifies the passed button has the correct text, style, tool tip and icon.
+     * Verifies the passed button has the correct text, style, tool tip and
+     * icon.
      *
      * @param button the button to test
      * @param text the text that should be on the button
      * @param style the style the button should have
-     * @param tooltipText the tool tip text the button should have or null if
-     *     no tool tip should be set
+     * @param tooltipText the tool tip text the button should have or null if no
+     * tool tip should be set
      * @param icon the icon that should be on the button or null if no icon
-     *     should be set
+     * should be set
      */
     private void verifyButton(final Button button,
-                              final String text,
-                              final String style,
-                              final String tooltipText,
-                              final Image icon) {
+            final String text,
+            final String style,
+            final String tooltipText,
+            final Image icon) {
         assertEquals(button.getText(), text);
         assertEquals(button.getStyle(), style);
-        
+
         if (tooltipText != null) {
             assertEquals(button.getTooltip().getText(), tooltipText);
         } else {
             assertNull(button.getTooltip());
         }
-        
+
         if (icon != null) {
             assertTrue(isImageEqual(
                     ((ImageView) button.getGraphic()).getImage(), icon
@@ -531,10 +525,10 @@ public class ButtonToolbarNGTest {
             assertNull(button.getGraphic());
         }
     }
-    
+
     /**
-     * Verifies that two JavaFX images are equal. Unfortunately they don't provide
-     * a nice way to do this so we check pixel by pixel.
+     * Verifies that two JavaFX images are equal. Unfortunately they don't
+     * provide a nice way to do this so we check pixel by pixel.
      *
      * @param firstImage the first image to compare
      * @param secondImage the second image to compare
@@ -542,30 +536,32 @@ public class ButtonToolbarNGTest {
      */
     private static boolean isImageEqual(Image firstImage, Image secondImage) {
         // Prevent `NullPointerException`
-        if(firstImage != null && secondImage == null) {
+        if (firstImage != null && secondImage == null) {
             return false;
         }
-        
-        if(firstImage == null) {
+
+        if (firstImage == null) {
             return secondImage == null;
         }
 
         // Compare images size
-        if(firstImage.getWidth() != secondImage.getWidth()) {
+        if (firstImage.getWidth() != secondImage.getWidth()) {
             return false;
         }
-        
-        if(firstImage.getHeight() != secondImage.getHeight()) {
+
+        if (firstImage.getHeight() != secondImage.getHeight()) {
             return false;
         }
 
         // Compare images color
-        for(int x = 0; x < firstImage.getWidth(); x++){
-            for(int y = 0; y < firstImage.getHeight(); y++){
+        for (int x = 0; x < firstImage.getWidth(); x++) {
+            for (int y = 0; y < firstImage.getHeight(); y++) {
                 int firstArgb = firstImage.getPixelReader().getArgb(x, y);
                 int secondArgb = secondImage.getPixelReader().getArgb(x, y);
 
-                if(firstArgb != secondArgb) return false;
+                if (firstArgb != secondArgb) {
+                    return false;
+                }
             }
         }
 

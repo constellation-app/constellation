@@ -414,7 +414,7 @@ public class AnalyticConfigurationPane extends VBox {
      * @param pluginWasSelected true if the triggered update was from a plugin
      * being selected
      */
-    protected void updateState(boolean pluginWasSelected) {
+    protected void updateState(final boolean pluginWasSelected) {
         stateChanged = true;
         PluginExecution.withPlugin(new AnalyticViewStateUpdater(this, pluginWasSelected)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
@@ -555,8 +555,8 @@ public class AnalyticConfigurationPane extends VBox {
         private final CheckBox checkbox;
         private ListCell<SelectableAnalyticPlugin> parent;
         private final AnalyticPlugin plugin;
-        private PluginParameters parameters;
-        private PluginParameters updatedParameters;
+        private final PluginParameters parameters;
+        private final PluginParameters updatedParameters;
 
         public SelectableAnalyticPlugin(final AnalyticPlugin<?> plugin) {
             this.checkbox = new CheckBox();
@@ -635,9 +635,8 @@ public class AnalyticConfigurationPane extends VBox {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final AnalyticViewState newState;
             final int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
-            newState = graph.getObjectValue(stateAttributeId, 0) == null ? new AnalyticViewState()
+            final AnalyticViewState newState = graph.getObjectValue(stateAttributeId, 0) == null ? new AnalyticViewState()
                     : new AnalyticViewState(graph.getObjectValue(stateAttributeId, 0));
             newState.addAnalyticQuestion(question, plugins);
             graph.setObjectValue(stateAttributeId, 0, newState);

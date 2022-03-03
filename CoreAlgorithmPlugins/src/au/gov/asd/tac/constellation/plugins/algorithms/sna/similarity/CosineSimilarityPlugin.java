@@ -224,13 +224,13 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
 
     }
 
-    BitSet getCommonNeighbours(final BitSet leftVertexNeighbours, final BitSet rightVertexNeighbours) {
+    protected BitSet getCommonNeighbours(final BitSet leftVertexNeighbours, final BitSet rightVertexNeighbours) {
         final BitSet intersection = (BitSet) leftVertexNeighbours.clone();
         intersection.and(rightVertexNeighbours);
         return intersection;
     }
 
-    float getNeighbourDotProduct(final VertexWithNeighbours vertex1, final VertexWithNeighbours vertex2, final BitSet intersection) {
+    protected float getNeighbourDotProduct(final VertexWithNeighbours vertex1, final VertexWithNeighbours vertex2, final BitSet intersection) {
         float dot = 0;
         for (int index = intersection.nextSetBit(0); index >= 0; index = intersection.nextSetBit(index + 1)) {
             dot += vertex1.neighbourWeightsMap.get(index) * vertex2.neighbourWeightsMap.get(index);

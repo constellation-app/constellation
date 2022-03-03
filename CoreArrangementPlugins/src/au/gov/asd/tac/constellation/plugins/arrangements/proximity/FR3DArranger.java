@@ -171,10 +171,6 @@ public class FR3DArranger implements Arranger {
             interaction.setProgress(i + 1, MAX_ITERATIONS, ARRANGING_INTERACTION, true);
 
             wg.vertexStream().parallel().forEach(vertexId -> repulse(vertexId)
-            //                if(Thread.interrupted())
-            //                {
-            //                    throw new InterruptedException();
-            //                }
             );
 
             if (Thread.interrupted()) {
@@ -182,10 +178,6 @@ public class FR3DArranger implements Arranger {
             }
 
             wg.linkStream().parallel().forEach(txId -> attract(txId)
-            //                if(Thread.interrupted())
-            //                {
-            //                    throw new InterruptedException();
-            //                }
             );
 
             if (Thread.interrupted()) {
@@ -193,10 +185,6 @@ public class FR3DArranger implements Arranger {
             }
 
             wg.vertexStream().parallel().forEach(vertexId -> position(vertexId)
-            //                if(Thread.interrupted())
-            //                {
-            //                    throw new InterruptedException();
-            //                }
             );
 
             cool(i);
@@ -315,7 +303,7 @@ public class FR3DArranger implements Arranger {
     }
 
     @Override
-    public void setMaintainMean(boolean b) {
+    public void setMaintainMean(final boolean b) {
         maintainMean = b;
     }
 }

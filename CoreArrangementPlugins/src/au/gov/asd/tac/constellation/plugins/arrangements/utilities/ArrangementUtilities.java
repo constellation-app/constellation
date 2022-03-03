@@ -40,7 +40,7 @@ import java.util.Set;
  */
 public final class ArrangementUtilities {
 
-    public static final int FUNDAMENTAL_SIZE = 2;
+    public static final int FUNDAMENTAL_SIZE = 2;  
     
     private ArrangementUtilities() {
         throw new IllegalStateException("Utility class");
@@ -282,20 +282,20 @@ public final class ArrangementUtilities {
      * (weak) component.
      */
     public static GraphTaxonomy getComponents(final GraphWriteMethods wg) {
-        Map<Integer, Set<Integer>> components = new HashMap<>();
-        Map<Integer, Integer> nodeToComponent = new HashMap<>();
+        final Map<Integer, Set<Integer>> components = new HashMap<>();
+        final Map<Integer, Integer> nodeToComponent = new HashMap<>();
         final int singletonsComponentID = -1;
         final int doubletsComponentID = -2;
         components.put(singletonsComponentID, new HashSet<>());
         components.put(doubletsComponentID, new HashSet<>());
         final BitSet potentials = vertexBits(wg);
         for (int vxID = potentials.nextSetBit(0); vxID >= 0; vxID = potentials.nextSetBit(vxID + 1)) {
-            Set<Integer> component = new HashSet<>();
+            final Set<Integer> component = new HashSet<>();
             component.add(vxID);
             nodeToComponent.put(vxID, vxID);
             potentials.clear(vxID);
             if (wg.getVertexNeighbourCount(vxID) != 0) {
-                Deque<Integer> neighbours = new LinkedList<>();
+                final Deque<Integer> neighbours = new LinkedList<>();
                 neighbours.add(vxID);
                 while (!neighbours.isEmpty()) {
                     final Integer nxID = neighbours.remove();
@@ -315,7 +315,7 @@ public final class ArrangementUtilities {
                 nodeToComponent.put(vxID, singletonsComponentID);
             } else if (component.size() == 2) {
                 components.get(doubletsComponentID).addAll(component);
-                for (int vert : component) {
+                for (final int vert : component) {
                     nodeToComponent.put(vert, doubletsComponentID);
                 }
             } else {
@@ -387,7 +387,7 @@ public final class ArrangementUtilities {
                 tax.put(component.iterator().next(), component);
 
                 // Clear the vertices in this component from the vertices BitSet.
-                for (int i : component) {
+                for (final int i : component) {
                     tmp.clear(i);
                 }
             }

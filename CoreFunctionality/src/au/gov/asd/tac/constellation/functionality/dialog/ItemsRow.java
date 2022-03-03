@@ -31,7 +31,7 @@ public class ItemsRow<I> {
     private final StringProperty label;
     private final StringProperty description;
 
-    public ItemsRow(I item, String label, String description) {
+    public ItemsRow(final I item, final String label, final String description) {
         this.item = item;
         this.label = new SimpleStringProperty(label);
         this.description = new SimpleStringProperty(description);

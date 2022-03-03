@@ -33,11 +33,8 @@ public class RawAttributeInteraction extends AbstractAttributeInteraction<RawDat
     }
 
     @Override
-    public String getDisplayText(Object value) {
-        if (value == null) {
-            return null;
-        }
-        return value.toString();
+    public String getDisplayText(final Object value) {
+        return value == null ? null : value.toString();
     }
 
     @Override

@@ -184,12 +184,15 @@ public abstract class Response {
         b.append(String.format("code    : %d%n", code));
         b.append(String.format("message : %s%n", message));
         b.append(DASH_STRING);
-        headers.entrySet().stream().forEach(header -> {
-            b.append(String.format("header  : %s%n", header.getKey()));
-            header.getValue().stream().forEach(v -> b.append(String.format("        : %s%n", v)));
-        });
+        
+        if (headers != null) {
+            headers.entrySet().stream().forEach(header -> {
+                b.append(String.format("header  : %s%n", header.getKey()));
+                header.getValue().stream().forEach(v -> b.append(String.format("        : %s%n", v)));
+            });
 
-        b.append(DASH_STRING);
+            b.append(DASH_STRING);
+        }
 
         boolean jsonShown = false;
         if (json != null) {
@@ -197,14 +200,14 @@ public abstract class Response {
                 b.append(jsonToString(json));
                 b.append(SeparatorConstants.NEWLINE);
                 jsonShown = true;
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
             }
         }
 
         if (!jsonShown && bytes != null) {
             try {
                 b.append(new String(bytes, StandardCharsets.UTF_8.name()));
-            } catch (UnsupportedEncodingException ex) {
+            } catch (final UnsupportedEncodingException ex) {
                 b.append(String.format("(bytes: length %d)", bytes.length));
             }
         }

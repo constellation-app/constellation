@@ -1,0 +1,3 @@
+<parent attr1="attrib 1 value" attr2="attrib 2 value">
+  <child>child_value1</child>
+</parent>

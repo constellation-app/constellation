@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
@@ -111,12 +112,40 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         originalGraph.setName("Original Graph");
         originalGraph.setDescription("The graph used as the starting point for the comparison");
         parameters.addParameter(originalGraph);
+        
+        // Controller listens for value change so that the compare graph cannot be compared against itself
+        parameters.addController(ORIGINAL_GRAPH_PARAMETER_ID, (PluginParameter<?> master, Map<String, PluginParameter<?>> params, ParameterChange change) -> {
+            // When value has changed, remove choice from the comparison graph dialog
+            if (change == ParameterChange.VALUE) {
+                final String originalGraphName = params.get(ORIGINAL_GRAPH_PARAMETER_ID).getStringValue();
+                if (originalGraphName != null) {
+                    
+                    final List<String> graphNames = new ArrayList<>();
+                    final Map<String, Graph> allGraphs = GraphNode.getAllGraphs();
+                    if (allGraphs != null) {
+                        for (final String graphId : allGraphs.keySet()) {
+                            graphNames.add(GraphNode.getGraphNode(graphId).getDisplayName());
+                        }
+                    }
+                    // remove the current original graph selection from the list of graphs allowed to compare with
+                    graphNames.remove(originalGraphName);
+                    
+                    // sort drop down list
+                    graphNames.sort(String::compareTo);
+                    
+                          
+                    @SuppressWarnings("unchecked") //COMPARE_GRAPH_PARAMETER_ID will always be of type SingleChoiceParameterValue
+                    final PluginParameter<SingleChoiceParameterValue> compareParamter = (PluginParameter<SingleChoiceParameterValue>) params.get(COMPARE_GRAPH_PARAMETER_ID);
+                    SingleChoiceParameterType.setOptions(compareParamter, graphNames);
+                }
+            }
+        });
 
         final PluginParameter<SingleChoiceParameterValue> compareGraph = SingleChoiceParameterType.build(COMPARE_GRAPH_PARAMETER_ID);
         compareGraph.setName("Compare With Graph");
         compareGraph.setDescription("The graph used to compare against the original graph");
         parameters.addParameter(compareGraph);
-
+        
         final PluginParameter<MultiChoiceParameterValue> ignoreVertexAttributes = MultiChoiceParameterType.build(IGNORE_VERTEX_ATTRIBUTES_PARAMETER_ID);
         ignoreVertexAttributes.setName("Ignore Node Attributes");
         ignoreVertexAttributes.setDescription("Ignore these attributes when comparing nodes");
@@ -198,10 +227,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         SingleChoiceParameterType.setOptions(originalGraph, graphNames);
         SingleChoiceParameterType.setChoice(originalGraph, GraphNode.getGraphNode(graph.getId()).getDisplayName());
 
-        @SuppressWarnings("unchecked") //COMPARE_GRAPH_PARAMETER will always be of type SingleChoiceParameter
-        final PluginParameter<SingleChoiceParameterValue> compareGraph = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(COMPARE_GRAPH_PARAMETER_ID);
-        SingleChoiceParameterType.setOptions(compareGraph, graphNames);
-
         @SuppressWarnings("unchecked") //IGNORE_VERTEX_ATTRIBUTES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> ignoreVertexAttributes = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(IGNORE_VERTEX_ATTRIBUTES_PARAMETER_ID);
         MultiChoiceParameterType.setOptions(ignoreVertexAttributes, new ArrayList<>(registeredVertexAttributes));
@@ -251,7 +276,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
             throw new PluginException(PluginNotificationLevel.ERROR, String.format(GRAPH_NOT_FOUND_ERROR, compareGraphName));
         }
 
-        ReadableGraph rg;
         final GraphRecordStore originalAll;
         final GraphRecordStore compareAll;
 
@@ -259,7 +283,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final Set<String> transactionPrimaryKeys;
 
         // get a copy of the graph's record store and statistical info
-        rg = originalGraph.getReadableGraph();
+        ReadableGraph rg = originalGraph.getReadableGraph();
         try {
             originalAll = GraphRecordStoreUtilities.getAll(rg, false, true);
             vertexPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg, GraphElementType.VERTEX);
@@ -279,9 +303,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         ignoreVertexAttributes.add("[id]");
         ignoreTransactionAttributes.add("[id]");
 
-        // statistics
-        // TODO: add statistics to the log output.
-//        final Map<String, Integer> statisticalDifferences = calculateStatisticalDifferences(originalStatistics, compareStatistics);
         // graph changes
         final String title = String.format("Compare: %s <> %s", originalGraphName, compareGraphName);
         final GraphRecordStore changes = compareGraphs(title, originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, addedColourValue, removedColourValue, changedColourValue, unchangedColourValue);
@@ -418,6 +439,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                                 break;
                             case "destination":
                             case "transaction":
+                                // Intentionally left blank
                                 break;
                             default:
                                 break;

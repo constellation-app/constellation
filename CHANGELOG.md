@@ -1,6 +1,24 @@
-# Constellation Changes
+# Constellation Changes	
+
+## Changes in February 2022
+
+-   Removed unused classes `DecoratorUtilities` and `LabelUtilities` from Core 
+    Visual Schema
+
+-   Added a new parameter `tabCaption` in `newTab` public methods in `DataAccessTabPane` class 
+	to provide the Step tab caption when required. This is used when the user renames the 
+	default caption.
+	
+## Changes in December 2021
+
+-   Changed the return type of `processVertices` and `processTransactions` methods 
+    in `ImportJDBCPlugin` and `ImportDelimitedPlugin` classes to return the number
+	of imported rows. Added a new parameter `totalRows` in `displaySummaryAlert`
+	method of `ImportJDBCPlugin` class. These allow a more meaningful
+    summary status message after importing.
 
 ## Changes in November 2021
+
 
 -   Added `netbeans.exception.report.min.level=900` and
     `netbeans.exception.alert.min.level=900` with both set to `900` to make
