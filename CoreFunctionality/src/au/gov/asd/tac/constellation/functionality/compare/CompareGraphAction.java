@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -50,7 +51,9 @@ public final class CompareGraphAction implements ActionListener {
                 .interactively(true)
                 .executeLater(context.getGraph());
         } else {
-            NotifyDisplayer.displayAlert("Compare Graph", "Warning", "Two or more graphs need to be open before comparing.", Alert.AlertType.WARNING);
+            Platform.runLater(()-> {
+                NotifyDisplayer.displayAlert("Compare Graph", "Warning", "Two or more graphs need to be open before comparing.", Alert.AlertType.WARNING);
+            });
         }
     }
 }
