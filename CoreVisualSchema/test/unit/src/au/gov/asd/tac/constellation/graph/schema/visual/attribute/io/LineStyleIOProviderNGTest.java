@@ -54,9 +54,7 @@ public class LineStyleIOProviderNGTest {
     @Test
     public void testGetName() {
         System.out.println("LineStyleIOProviderNGTest.testGetName");
-        
         LineStyleIOProvider instance = new LineStyleIOProvider();
-        String result = instance.getName();
-        assertEquals(result, LineStyleAttributeDescription.ATTRIBUTE_NAME);
+        assertEquals(instance.getName(), LineStyleAttributeDescription.ATTRIBUTE_NAME);
     }
 }

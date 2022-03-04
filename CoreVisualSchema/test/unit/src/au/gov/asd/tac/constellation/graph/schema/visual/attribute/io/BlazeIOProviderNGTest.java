@@ -54,9 +54,7 @@ public class BlazeIOProviderNGTest {
     @Test
     public void testGetName() {
         System.out.println("BlazeIOProviderNGTest.testGetName");
-        
         BlazeIOProvider instance = new BlazeIOProvider();
-        String result = instance.getName();
-        assertEquals(result, BlazeAttributeDescription.ATTRIBUTE_NAME);
+        assertEquals(instance.getName(), BlazeAttributeDescription.ATTRIBUTE_NAME);
     }
 }

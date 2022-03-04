@@ -63,6 +63,7 @@ public final class AbstractGraphLabelsIOProviderNGTest {
     ArgumentCaptor<Integer> captorElementId;
     ArgumentCaptor<GraphLabels> captorAttrVal;
 
+    // Test variables
     final int attributeId = 23;
     final int elementId = 41;
     final String attribValue = "TestAttrib";
@@ -110,7 +111,7 @@ public final class AbstractGraphLabelsIOProviderNGTest {
     public void testReadObject() throws Exception {
         System.out.println("AbstractGraphLabelsIOProviderNGTest.testReadObject");
         
-        // Test case where isNull returns true and isArray is false, 
+        // Test case where isNull returns true and isArray is false,
         resetMocking();
         when(mockJsonNode.isNull()).thenReturn(true);
         when(mockJsonNode.isArray()).thenReturn(false);

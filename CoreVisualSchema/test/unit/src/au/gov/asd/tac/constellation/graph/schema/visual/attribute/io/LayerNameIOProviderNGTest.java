@@ -59,10 +59,8 @@ public class LayerNameIOProviderNGTest {
     @Test
     public void testGetName() {
         System.out.println("LayerNameIOProvider.testGetName");
-        
         LayerNameIOProvider instance = new LayerNameIOProvider();
-        String result = instance.getName();
-        assertEquals(result, LayerNameAttributeDescription.ATTRIBUTE_NAME);
+        assertEquals(instance.getName(), LayerNameAttributeDescription.ATTRIBUTE_NAME);
     }
 
     /**
