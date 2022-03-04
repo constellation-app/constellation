@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
@@ -27,6 +28,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -48,7 +52,8 @@ public final class AbstractGraphLabelsIOProviderNGTest {
     VertexGraphLabelsIOProvider instance;
 
     // Define mocks
-    GraphWriteMethods mockGraph;
+    GraphReadMethods mockGraphReadMethods;
+    GraphWriteMethods mockGraphWriteMethods;
     JsonNode mockJsonNode;
     JsonGenerator mockJsonGenerator;
     ColorIOProvider mockColorIOProvider;
@@ -56,13 +61,12 @@ public final class AbstractGraphLabelsIOProviderNGTest {
     // Create argument captors
     ArgumentCaptor<Integer> captorAtributeId;
     ArgumentCaptor<Integer> captorElementId;
-    ArgumentCaptor<String> captorAttrNameStr;
-    ArgumentCaptor<String> captorAttrValStr;
     ArgumentCaptor<GraphLabels> captorAttrVal;
 
-    int attributeId = 23;
-    int elementId = 41;
-    GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.VERTEX, "attrType", "attrName", "attrDesc",  null, null);
+    final int attributeId = 23;
+    final int elementId = 41;
+    final String attribValue = "TestAttrib";
+    final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.VERTEX, "attrType", "attrName", "attrDesc",  null, null);
 
     public AbstractGraphLabelsIOProviderNGTest() {
         resetMocking();
@@ -89,14 +93,13 @@ public final class AbstractGraphLabelsIOProviderNGTest {
      * Perform reset of all mocks and argument captors to ensure clean test steps.
      */
     public void resetMocking() {
-        mockGraph = mock(GraphWriteMethods.class);
+        mockGraphReadMethods = mock(GraphReadMethods.class);
+        mockGraphWriteMethods = mock(GraphWriteMethods.class);
         mockJsonNode = mock(JsonNode.class);
         mockJsonGenerator = mock(JsonGenerator.class);
         mockColorIOProvider = mock(ColorIOProvider.class);
         captorAtributeId = ArgumentCaptor.forClass(Integer.class);
         captorElementId = ArgumentCaptor.forClass(Integer.class);
-        captorAttrNameStr = ArgumentCaptor.forClass(String.class);
-        captorAttrValStr = ArgumentCaptor.forClass(String.class);
         captorAttrVal = ArgumentCaptor.forClass(GraphLabels.class);
     }
 
@@ -105,52 +108,49 @@ public final class AbstractGraphLabelsIOProviderNGTest {
      */
     @Test
     public void testReadObject() throws Exception {
-        System.out.println("AbstractGraphLabelsIOProvider.testReadObject");
+        System.out.println("AbstractGraphLabelsIOProviderNGTest.testReadObject");
         
-        // Test case where isNull returns true and isArray is false
+        // Test case where isNull returns true and isArray is false, 
         resetMocking();
         when(mockJsonNode.isNull()).thenReturn(true);
         when(mockJsonNode.isArray()).thenReturn(false);
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
         Mockito.verify(mockJsonNode, times(0)).textValue();
-        Mockito.verify(mockGraph, times(1)).setStringValue(captorAtributeId.capture(), captorElementId.capture(), captorAttrValStr.capture());
-        assertEquals((int)captorAtributeId.getValue(), attributeId);
-        assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(captorAttrValStr.getValue(), null);
+        Mockito.verify(mockGraphWriteMethods, times(0)).setObjectValue(anyInt(), anyInt(), any(GraphAttribute.class));
+        Mockito.verify(mockGraphWriteMethods, times(1)).setStringValue(attributeId, elementId, null);
 
-        // Test case where isNull returns false but isArray is true
+        // Test case where isNull returns false but isArray is true, the jnode returns string
         resetMocking();
         when(mockJsonNode.isNull()).thenReturn(false);
         when(mockJsonNode.isArray()).thenReturn(false);
-        when(mockJsonNode.textValue()).thenReturn("attrVal");
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
+        when(mockJsonNode.textValue()).thenReturn(attribValue);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
         Mockito.verify(mockJsonNode, times(1)).textValue();
-        Mockito.verify(mockGraph, times(1)).setStringValue(captorAtributeId.capture(), captorElementId.capture(), captorAttrValStr.capture());
-        assertEquals((int)captorAtributeId.getValue(), attributeId);
-        assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(captorAttrValStr.getValue(), "attrVal");
+        Mockito.verify(mockGraphWriteMethods, times(0)).setObjectValue(anyInt(), anyInt(), any(GraphAttribute.class));
+        Mockito.verify(mockGraphWriteMethods, times(1)).setStringValue(attributeId, elementId, attribValue);
 
-        // Test case where isNull returns true and isArray is true (in reality this isnt possible
-        // unless there was a bug in JsonNode
+        // Test case where isNull returns true and isArray is true (in reality this isnt possible unless there was a
+        // bug in JsonNode
         resetMocking();
         when(mockJsonNode.isNull()).thenReturn(true);
         when(mockJsonNode.isArray()).thenReturn(true);
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
         Mockito.verify(mockJsonNode, times(0)).textValue();
-        Mockito.verify(mockGraph, times(1)).setStringValue(captorAtributeId.capture(), captorElementId.capture(), captorAttrValStr.capture());
-        assertEquals((int)captorAtributeId.getValue(), attributeId);
-        assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(captorAttrValStr.getValue(), null);
+        Mockito.verify(mockGraphWriteMethods, times(0)).setObjectValue(anyInt(), anyInt(), any(GraphAttribute.class));
+        Mockito.verify(mockGraphWriteMethods, times(1)).setStringValue(attributeId, elementId, null);
         
         // Test case where a valid non null array exists
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode testNode = mapper.readTree("[{\"attribute_name\":\"test_name1\",\"color\":{\"name\":\"red\"},\"radius\":0.1},{\"attribute_name\":\"test_name2\",\"color\":{\"name\":\"blue\"},\"radius\":0.2}]");
+        final ObjectMapper mapper = new ObjectMapper();
+        final JsonNode testNode = mapper.readTree("[{\"attribute_name\":\"test_name1\",\"color\":{\"name\":\"red\"},\"radius\":0.1},{\"attribute_name\":\"test_name2\",\"color\":{\"name\":\"blue\"},\"radius\":0.2}]");
         resetMocking();
-        instance.readObject(attributeId, elementId, testNode, mockGraph, null, null, null, null);
-        Mockito.verify(mockGraph, times(1)).setObjectValue(captorAtributeId.capture(), captorElementId.capture(), captorAttrVal.capture());
+        when(mockJsonNode.isNull()).thenReturn(false);
+        when(mockJsonNode.isArray()).thenReturn(true);
+        instance.readObject(attributeId, elementId, testNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockGraphWriteMethods, times(0)).setStringValue(anyInt(), anyInt(), anyString());
+        Mockito.verify(mockGraphWriteMethods, times(1)).setObjectValue(captorAtributeId.capture(), captorElementId.capture(), captorAttrVal.capture());
+        GraphLabels labels = (GraphLabels)captorAttrVal.getValue();
         assertEquals((int)captorAtributeId.getValue(), attributeId);
         assertEquals((int)captorElementId.getValue(), elementId);
-        GraphLabels labels = (GraphLabels)captorAttrVal.getValue();
         assertEquals(labels.getNumberOfLabels(), 2);
         assertEquals(labels.getLabels().get(0).getAttributeName(), "test_name1");
         assertEquals(labels.getLabels().get(1).getAttributeName(), "test_name2");
@@ -165,32 +165,34 @@ public final class AbstractGraphLabelsIOProviderNGTest {
      */
     @Test
     public void testWriteObject() throws Exception {
+        System.out.println("AbstractGraphLabelsIOProviderNGTest.testWriteObject");
         
         // Test case where not verbose and default graph value
         resetMocking();
-        when(mockGraph.isDefaultValue(attributeId, elementId)).thenReturn(true);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
-        Mockito.verify(mockGraph, times(0)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
+        when(mockGraphReadMethods.isDefaultValue(attributeId, elementId)).thenReturn(true);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, false);
+        Mockito.verify(mockGraphReadMethods, times(0)).getObjectValue(anyInt(), anyInt());
 
         // Test case where not verbose and not default graph value
         resetMocking();
-        when(mockGraph.isDefaultValue(attributeId, elementId)).thenReturn(false);
-        when(mockGraph.getObjectValue(attributeId, elementId)).thenReturn(null);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
-        Mockito.verify(mockGraph, times(1)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrNameStr.capture());
-        assertEquals(captorAttrNameStr.getValue(), attr.getName());
+        when(mockGraphReadMethods.isDefaultValue(attributeId, elementId)).thenReturn(false);
+        when(mockGraphReadMethods.getObjectValue(attributeId, elementId)).thenReturn(null);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, false);
+        Mockito.verify(mockGraphReadMethods, times(1)).getObjectValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(attr.getName());
+        Mockito.verify(mockJsonGenerator, times(0)).writeArrayFieldStart(anyString());
 
         // Test case where verbose and default graph value
         final List<GraphLabel> labels = new ArrayList<>();
         labels.add(new GraphLabel("test_name1", ConstellationColor.RED, 0.1f));
         labels.add(new GraphLabel("test_name2", ConstellationColor.BLUE, 0.2f));
         resetMocking();
-        when(mockGraph.isDefaultValue(attributeId, elementId)).thenReturn(true);
-        when(mockGraph.getObjectValue(attributeId, elementId)).thenReturn(new GraphLabels(labels));
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
-        Mockito.verify(mockGraph, times(1)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeArrayFieldStart(captorAttrNameStr.capture());
+        when(mockGraphReadMethods.isDefaultValue(attributeId, elementId)).thenReturn(true);
+        when(mockGraphReadMethods.getObjectValue(attributeId, elementId)).thenReturn(new GraphLabels(labels));
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
+        Mockito.verify(mockGraphReadMethods, times(1)).getObjectValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(0)).writeNullField(anyString());
+        Mockito.verify(mockJsonGenerator, times(1)).writeArrayFieldStart(attr.getName());
         Mockito.verify(mockJsonGenerator, times(2)).writeStartObject();
         Mockito.verify(mockJsonGenerator, times(1)).writeStringField("attribute_name", "test_name1");
         Mockito.verify(mockJsonGenerator, times(1)).writeStringField("attribute_name", "test_name2");
@@ -201,8 +203,11 @@ public final class AbstractGraphLabelsIOProviderNGTest {
 
         // Test case where verbose and not default graph value
         resetMocking();
-        when(mockGraph.isDefaultValue(attributeId, elementId)).thenReturn(false);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
-        Mockito.verify(mockGraph, times(1)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
+        when(mockGraphReadMethods.isDefaultValue(attributeId, elementId)).thenReturn(false);
+        when(mockGraphReadMethods.getObjectValue(attributeId, elementId)).thenReturn(null);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
+        Mockito.verify(mockGraphReadMethods, times(1)).getObjectValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(attr.getName());
+        Mockito.verify(mockJsonGenerator, times(0)).writeArrayFieldStart(anyString());
     }
 }
