@@ -263,4 +263,11 @@ public class ConfigurationPane extends AnchorPane {
     public void clearFilters() {
         tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> runPane.clearFilters());
     }
+
+    /**
+     * Check whether the configuration pane has queried data.
+     */
+    public boolean hasDataQueried() {
+        return tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).anyMatch(runPane -> runPane.hasDataQueried());
+    }
 }

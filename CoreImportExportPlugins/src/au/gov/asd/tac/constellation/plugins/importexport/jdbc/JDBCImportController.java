@@ -144,6 +144,11 @@ public class JDBCImportController extends ImportController {
         }
     }
 
+    private void clearSampleData() {
+        currentColumns = new String[0];
+        currentData = new ArrayList<>();
+    }
+
     @Override
     protected void updateSampleData() {
         final StringBuilder previewQuery = new StringBuilder(query);
@@ -155,8 +160,7 @@ public class JDBCImportController extends ImportController {
         }
 
         if (connection == null || StringUtils.isBlank(previewQuery)) {
-            currentColumns = new String[0];
-            currentData = new ArrayList<>();
+            clearSampleData();
         } else {
             try (final Connection dbConnection = connection.getConnection(username, password);
                     final PreparedStatement ps = dbConnection.prepareStatement(previewQuery.toString());
@@ -186,6 +190,7 @@ public class JDBCImportController extends ImportController {
             } catch (final MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException
                     | InstantiationException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException ex) {
+                clearSampleData();
                 NotifyDisplayer.displayAlert(JDBC_IMPORT, QUERY_ERROR, ex.getMessage(), AlertType.ERROR);
                 LOGGER.log(Level.WARNING, ex.getMessage());
             }
