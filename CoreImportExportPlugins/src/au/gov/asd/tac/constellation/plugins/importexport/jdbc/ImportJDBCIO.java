@@ -55,7 +55,7 @@ import org.openide.util.NbPreferences;
 
 public final class ImportJDBCIO {
 
-    private static final String IMPORT_JDBC_DIR = "DatabaseImporterTemplates";
+    private static final String IMPORT_JDBC_DIR = "ImportDatabase";
     private static final Logger LOGGER = Logger.getLogger(ImportJDBCIO.class.getName());
 
     private static final String SOURCE = "source";
