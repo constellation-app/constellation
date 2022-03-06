@@ -1,12 +1,23 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2022 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DrawFlagsAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
@@ -30,6 +41,23 @@ import org.testng.annotations.Test;
  * @author serpens24
  */
 public class DrawFlagsIOProviderNGTest {
+        
+    // Create object under test
+    DrawFlagsIOProvider instance = new DrawFlagsIOProvider();
+
+    // Define mocks
+    GraphReadMethods mockGraphReadMethods;
+    GraphWriteMethods mockGraphWriteMethods;
+    JsonNode mockJsonNode;
+    JsonGenerator mockJsonGenerator;
+        
+    // Test variables
+    final int attributeId = 23;
+    final int elementId = 41;
+    final int flagId = 13;
+    final String attribValue = "TestAttrib";
+    final String decoratorStr = "TestDecorator";
+    final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
     
     public DrawFlagsIOProviderNGTest() {
     }
@@ -49,17 +77,24 @@ public class DrawFlagsIOProviderNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
+    
+    /**
+     * Perform reset of all mocks and argument captors to ensure clean test steps.
+     */
+    public void resetMocking() {
+        mockGraphReadMethods = mock(GraphReadMethods.class);
+        mockGraphWriteMethods = mock(GraphWriteMethods.class);
+        mockJsonNode = mock(JsonNode.class);
+        mockJsonGenerator = mock(JsonGenerator.class);
+    }
 
     /**
      * Test of getName method, of class DrawFlagsIOProvider.
      */
     @Test
     public void testGetName() {
-        System.out.println("DrawFlagsIOProvider.testGetName");
-        
-        DrawFlagsIOProvider instance = new DrawFlagsIOProvider();
-        String result = instance.getName();
-        assertEquals(result, DrawFlagsAttributeDescription.ATTRIBUTE_NAME);
+        System.out.println("DrawFlagsIOProviderNGTest.testGetName");
+        assertEquals(instance.getName(), DrawFlagsAttributeDescription.ATTRIBUTE_NAME);
     }
 
     /**
@@ -67,34 +102,23 @@ public class DrawFlagsIOProviderNGTest {
      */
     @Test
     public void testReadObject() throws Exception {
-        System.out.println("DrawFlagsIOProvider.testReadObject");
-        
-        // Create object under test
-        DrawFlagsIOProvider instance = new DrawFlagsIOProvider();
-        
-        // Create mocks
-        final JsonNode mockJsonNode = mock(JsonNode.class);
-        GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
-               
-        // Create argument captors
-        final ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
-        final ArgumentCaptor<Integer> captorElementId = ArgumentCaptor.forClass(Integer.class);
-        final ArgumentCaptor<Integer> captorAttributeValue = ArgumentCaptor.forClass(Integer.class);
-                
-        int attributeId = 23;
-        int elementId = 41;
+        System.out.println("DrawFlagsIOProviderNGTest.testReadObject");
 
-        // isNull returns true
+        // isNull returns true, default flags returned
+        resetMocking();
         when(mockJsonNode.isNull()).thenReturn(true);
-        when(mockGraph.getAttributeDefaultValue(anyInt())).thenReturn(new DrawFlags(13));
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
-        Mockito.verify(mockGraph, times(1)).getAttributeDefaultValue(captorAtributeId.capture());
-        Mockito.verify(mockGraph, times(1)).setIntValue(captorAtributeId.capture(), captorElementId.capture(), captorAttributeValue.capture());
-        assertEquals((int)captorAtributeId.getAllValues().get(0), attributeId);
-        assertEquals((int)captorAtributeId.getAllValues().get(1), attributeId);
-        assertEquals((int)captorElementId.getAllValues().get(0), elementId);
-        assertEquals((int)captorAttributeValue.getAllValues().get(0), 13);
+        when(mockGraphWriteMethods.getAttributeDefaultValue(anyInt())).thenReturn(new DrawFlags(flagId));
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockGraphWriteMethods, times(1)).getAttributeDefaultValue(attributeId);
+        Mockito.verify(mockGraphWriteMethods, times(1)).setIntValue(attributeId, elementId, flagId);
 
+        // isNull returns false, flag value returned from node
+        resetMocking();
+        when(mockJsonNode.isNull()).thenReturn(false);
+        when(mockJsonNode.intValue()).thenReturn(flagId);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockGraphWriteMethods, times(0)).getAttributeDefaultValue(anyInt());
+        Mockito.verify(mockGraphWriteMethods, times(1)).setIntValue(attributeId, elementId, flagId);
     }
 
     /**
@@ -102,76 +126,38 @@ public class DrawFlagsIOProviderNGTest {
      */
     @Test
     public void testWriteObject() throws Exception {
-        System.out.println("DrawFlagsIOProvider.testWriteObject");
-        
-        // Create object under test
-        DrawFlagsIOProvider instance = new DrawFlagsIOProvider();
-        
-        // Create mocks
-        JsonGenerator mockJsonGenerator = mock(JsonGenerator.class);
-        GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
-
-        // Create argument captors
-        final ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
-        final ArgumentCaptor<Integer> captorElementId = ArgumentCaptor.forClass(Integer.class);
-        ArgumentCaptor<String> captorAttrName = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Integer> captorValue = ArgumentCaptor.forClass(Integer.class);
-
-        int attributeId = 23;
-        int elementId = 41;
-        String attrType = "attrType";
-        String attrName = "attrName";
-        String attrDesc = "attrDesc";
-        GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, attrType, attrName, attrDesc,
-            null, null);
+        System.out.println("DrawFlagsIOProviderNGTest.testWriteObject");
 
         // Test not verbose and graph.IsDefaultValue is true skips all processing
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
-        Mockito.verify(mockGraph, times(0)).getIntValue(captorAtributeId.capture(), captorElementId.capture());
+        resetMocking();
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, false);
+        Mockito.verify(mockGraphReadMethods, times(0)).getIntValue(anyInt(), anyInt());
 
         // Test not verbose but graph.IsDefaultValue is false
+        resetMocking();
         mockJsonGenerator = mock(JsonGenerator.class);
-        mockGraph = mock(GraphWriteMethods.class);
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
-        when(mockGraph.getIntValue(anyInt(), anyInt())).thenReturn(13);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
-        Mockito.verify(mockGraph, times(1)).getIntValue(captorAtributeId.capture(), captorElementId.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(captorAttrName.capture(), captorValue.capture());
-        assertEquals((int)captorAtributeId.getValue(), attributeId);
-        assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(captorAttrName.getValue(), attrName);
-        assertEquals((int)captorValue.getValue(), 13);
-
+        mockGraphReadMethods = mock(GraphWriteMethods.class);
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraphReadMethods.getIntValue(anyInt(), anyInt())).thenReturn(flagId);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, false);
+        Mockito.verify(mockGraphReadMethods, times(1)).getIntValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(attr.getName(), flagId);
         
         // Test verbose and graph.IsDefaultValue is false
-        mockJsonGenerator = mock(JsonGenerator.class);
-        mockGraph = mock(GraphWriteMethods.class);
-        captorAttrName = ArgumentCaptor.forClass(String.class);
-        captorValue = ArgumentCaptor.forClass(Integer.class);
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
-        when(mockGraph.getIntValue(anyInt(), anyInt())).thenReturn(13);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
-        Mockito.verify(mockGraph, times(1)).getIntValue(captorAtributeId.capture(), captorElementId.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(captorAttrName.capture(), captorValue.capture());
-        assertEquals((int)captorAtributeId.getValue(), attributeId);
-        assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(captorAttrName.getValue(), attrName);
-        assertEquals((int)captorValue.getValue(), 13);
+        resetMocking();
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraphReadMethods.getIntValue(anyInt(), anyInt())).thenReturn(flagId);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
+        Mockito.verify(mockGraphReadMethods, times(1)).getIntValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(attr.getName(), flagId);
 
         // Test verbose and graph.IsDefaultValue is true
-        mockJsonGenerator = mock(JsonGenerator.class);
-        mockGraph = mock(GraphWriteMethods.class);
-        captorAttrName = ArgumentCaptor.forClass(String.class);
-        captorValue = ArgumentCaptor.forClass(Integer.class);
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
-        when(mockGraph.getIntValue(anyInt(), anyInt())).thenReturn(13);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
-        Mockito.verify(mockGraph, times(1)).getIntValue(captorAtributeId.capture(), captorElementId.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(captorAttrName.capture(), captorValue.capture());
-        assertEquals((int)captorAtributeId.getValue(), attributeId);
-        assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(captorAttrName.getValue(), attrName);
-        assertEquals((int)captorValue.getValue(), 13);
+        resetMocking();
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraphReadMethods.getIntValue(anyInt(), anyInt())).thenReturn(flagId);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
+        Mockito.verify(mockGraphReadMethods, times(1)).getIntValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(attr.getName(), flagId);
     }
 }
