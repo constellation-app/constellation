@@ -629,4 +629,11 @@ public final class RunPane extends BorderPane implements KeyListener {
     public void setAttributePaneHeight() {
         attributePane.setPrefSize(ATTRIBUTEPANE_PREF_WIDTH, attributeCount * ATTRIBUTE_PADDING_HEIGHT);
     }
+
+    /**
+     * Check whether this pane has queried data.
+     */
+    public boolean hasDataQueried() {
+        return !currentRows.isEmpty();
+    }
 }

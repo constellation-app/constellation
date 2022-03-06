@@ -17,7 +17,9 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
 import au.gov.asd.tac.constellation.plugins.importexport.ConfigurationPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportPane;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import javafx.scene.input.KeyCode;
+import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 
 public class JDBCImportPane extends ImportPane {
@@ -28,6 +30,17 @@ public class JDBCImportPane extends ImportPane {
             final JDBCImportController importController, final ConfigurationPane configurationPane,
             final JDBCSourcePane sourcePane) {
         super(jdbcImportTopComponent, importController, configurationPane, sourcePane);
+
+        loadButton.setOnAction(event -> {
+            if (configurationPane.hasDataQueried()) {
+                ImportJDBCIO.loadParameters(this.getParentWindow(), importController);
+            } else {
+                NotifyDisplayer.display("Run a query first.", NotifyDescriptor.WARNING_MESSAGE);
+            }
+        });
+
+        // save menu item
+        saveButton.setOnAction(event -> ImportJDBCIO.saveParameters(this.getParentWindow(), importController));
 
         helpButton.setOnAction(event -> new HelpCtx(HELP_CTX).display());
         // Setting help keyevent to f1

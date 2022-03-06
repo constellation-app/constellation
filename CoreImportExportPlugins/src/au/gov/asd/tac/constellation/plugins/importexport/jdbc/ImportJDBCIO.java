@@ -55,7 +55,7 @@ import org.openide.util.NbPreferences;
 
 public final class ImportJDBCIO {
 
-    private static final String IMPORT_DELIMITED_DIR = "ImportDelimited";
+    private static final String IMPORT_JDBC_DIR = "ImportDatabase";
     private static final Logger LOGGER = Logger.getLogger(ImportJDBCIO.class.getName());
 
     private static final String SOURCE = "source";
@@ -82,7 +82,7 @@ public final class ImportJDBCIO {
     public static void saveParameters(final Window parentWindow, final JDBCImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-        final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
+        final File delimIoDir = new File(userDir, IMPORT_JDBC_DIR);
         if (!delimIoDir.exists()) {
             delimIoDir.mkdir();
         }
@@ -197,7 +197,7 @@ public final class ImportJDBCIO {
     public static void loadParameters(final Window parentWindow, final JDBCImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-        final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
+        final File delimIoDir = new File(userDir, IMPORT_JDBC_DIR);
 
         final String templName = new TemplateListDialog(parentWindow, true).getName(delimIoDir);
         if (templName != null) {
