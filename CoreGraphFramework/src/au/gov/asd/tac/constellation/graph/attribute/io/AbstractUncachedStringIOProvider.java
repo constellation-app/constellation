@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
+package au.gov.asd.tac.constellation.graph.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
-import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
-import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,12 +25,12 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Abstract class implementing common read/write functionality for IO providers that operate process single string JSON
+ * Abstract class implementing common read/write functionality for IO providers that process single uncached string JSON
  * nodes.
  *
  * @author serpens24
  */
-public abstract class AbstractGraphStringIOProvider extends AbstractGraphIOProvider {
+public abstract class AbstractUncachedStringIOProvider extends AbstractGraphIOProvider {
 
     /**
      * Deserialise an object from a JsonNode.
@@ -43,20 +40,19 @@ public abstract class AbstractGraphStringIOProvider extends AbstractGraphIOProvi
      * @param attributeId The id of the attribute being read.
      * @param elementId The id of the element being read.
      * @param jnode The JsonNode to read from.
-     * @param graph The graph that the resulting object will be placed in. Provided in case
-     * the object requires some graph data.
-     * @param vertexMap (not used) A mapping from a vertex id in the file to the vertex id
-     * in the graph.
-     * @param transactionMap (not used) A mapping from a transaction id in the file to the
-     * transaction id in the graph.
-     * @param byteReader (not used) The byte reader containing ancillary data (e.g. images)
-     * that doesn't easily fit into a JSON document.
-     * @param cache (not used) a cache that can be used to dedup identical instances of the
-     * same immutable objects.
+     * @param graph The graph that the resulting object will be placed in. Provided in case the object requires some
+     * graph data.
+     * @param vertexMap (not used) A mapping from a vertex id in the file to the vertex id in the graph.
+     * @param transactionMap (not used) A mapping from a transaction id in the file to the transaction id in the graph.
+     * @param byteReader (not used) The byte reader containing ancillary data (e.g. images)  that doesn't easily fit
+     * into a JSON document.
+     * @param cache (not used) a cache that can be used to dedup identical instances of the same immutable objects.
      * @throws java.io.IOException If there's a problem reading the document. 
      */
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, 
+            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer,
+            Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
         final String attributeValue = jnode.isNull() ? null : jnode.textValue();
         graph.setStringValue(attributeId, elementId, attributeValue);
     }
@@ -69,10 +65,8 @@ public abstract class AbstractGraphStringIOProvider extends AbstractGraphIOProvi
      * @param attr The attribute being written.
      * @param elementId The id of the element being written.
      * @param jsonGenerator The JsonGenerator used to write to the JSON document.
-     * @param graph The graph that the object belongs to. Provided in case the object requires some 
-     * graph data.
-     * @param byteWriter (not used)  For ancillary data (e.g. images) that doesn't easily
-     * fit into a JSON document.
+     * @param graph The graph that the object belongs to. Provided in case the object requires some  graph data.
+     * @param byteWriter (not used)  For ancillary data (e.g. images) that doesn't easily fit into a JSON document.
      * @param verbose Determines whether to write default values of attributes or not.
      * @throws IOException 
      */

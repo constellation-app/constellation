@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
+import au.gov.asd.tac.constellation.graph.attribute.io.AbstractUncachedStringIOProvider;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.BlazeAttributeDescription;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -26,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twinkle2_little
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
-public class BlazeIOProvider extends AbstractGraphStringIOProvider {
+public class BlazeIOProvider extends AbstractUncachedStringIOProvider {
 
     /**
      * Get a string representing the type of data that this provider handles.

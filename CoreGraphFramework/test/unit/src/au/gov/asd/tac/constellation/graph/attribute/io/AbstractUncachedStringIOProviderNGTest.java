@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
+package au.gov.asd.tac.constellation.graph.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -37,10 +37,10 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public final class AbstractGraphStringIOProviderNGTest {
+public class AbstractUncachedStringIOProviderNGTest {
     
     // Create object under test
-    BlazeIOProvider instance;
+    DateIOProvider instance;
 
     // Define mocks
     GraphReadMethods mockGraphReadMethods;
@@ -54,8 +54,8 @@ public final class AbstractGraphStringIOProviderNGTest {
     final String attribValue = "TestAttrib";
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
 
-    public AbstractGraphStringIOProviderNGTest() {
-        resetMocking();
+    
+    public AbstractUncachedStringIOProviderNGTest() {
     }
 
     @BeforeClass
@@ -68,7 +68,7 @@ public final class AbstractGraphStringIOProviderNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        instance = new BlazeIOProvider();
+        instance = new DateIOProvider();
     }
 
     @AfterMethod
@@ -85,12 +85,13 @@ public final class AbstractGraphStringIOProviderNGTest {
         mockJsonGenerator = mock(JsonGenerator.class);
     }
 
+
     /**
-     * Test of readObject method, of class AbstractGraphStringIOProvider.
+     * Test of readObject method, of class AbstractUncachedStringIOProvider.
      */
     @Test
     public void testReadObject() throws Exception {
-        System.out.println("AbstractGraphStringIOProviderNGTest.testReadObject");
+        System.out.println("AbstractUncachedStringIOProviderNGTest.testReadObject");
         
         // Call method under test with JsonNode set to return isNull = true
         resetMocking();
@@ -107,11 +108,11 @@ public final class AbstractGraphStringIOProviderNGTest {
     }
 
     /**
-     * Test of writeObject method, of class AbstractGraphStringIOProvider.
+     * Test of writeObject method, of class AbstractUncachedStringIOProvider.
      */
     @Test
     public void testWriteObject() throws Exception {
-        System.out.println("AbstractGraphStringIOProviderNGTest.testWriteObject");
+        System.out.println("AbstractUncachedStringIOProviderNGTest.testWriteObject");
         
         // Test not verbose and graph.IsDefaultValue is true
         resetMocking();
@@ -142,5 +143,5 @@ public final class AbstractGraphStringIOProviderNGTest {
         instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
         Mockito.verify(mockJsonGenerator, times(1)).writeNullField(attr.getName());
         Mockito.verify(mockJsonGenerator, times(0)).writeStringField(anyString(), anyString());
-    } 
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
+import au.gov.asd.tac.constellation.graph.attribute.io.AbstractUncachedStringIOProvider;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LineStyleAttributeDescription;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -26,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twinkle2_little
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
-public class LineStyleIOProvider extends AbstractGraphStringIOProvider {
+public class LineStyleIOProvider extends AbstractUncachedStringIOProvider {
 
     /**
      * Get a string representing the type of data that this provider handles.
