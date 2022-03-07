@@ -48,7 +48,7 @@ import org.testng.annotations.Test;
 public final class ColorIOProviderNGTest {
         
     // Create object under test
-    ColorIOProvider instance = new ColorIOProvider();
+    ColorIOProvider instance;
 
     // Define mocks
     GraphReadMethods mockGraphReadMethods;
@@ -67,7 +67,6 @@ public final class ColorIOProviderNGTest {
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
     
     public ColorIOProviderNGTest() {
-        resetMocking();
     }
 
     @BeforeClass

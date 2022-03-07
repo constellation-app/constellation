@@ -1,12 +1,23 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2022 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Plane;
@@ -39,7 +50,22 @@ import org.testng.annotations.Test;
  * @author serpens24
  */
 public class PlaneStateIOProviderNGTest {
+        
+    // Create object under test
+    PlaneStateIOProvider instance;
+
+    // Define mocks
+    GraphReadMethods mockGraphReadMethods;
+    GraphWriteMethods mockGraphWriteMethods;
+    JsonNode mockJsonNode;
+    JsonGenerator mockJsonGenerator;
+    GraphByteReader mockByteReader;
     
+    // Test variables
+    final int attributeId = 23;
+    final int elementId = 41;
+    GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
+
     public PlaneStateIOProviderNGTest() {
     }
 
@@ -53,10 +79,22 @@ public class PlaneStateIOProviderNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        instance = new PlaneStateIOProvider();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+    }
+    
+    /**
+     * Perform reset of all mocks and argument captors to ensure clean test steps.
+     */
+    public void resetMocking() {
+        mockGraphReadMethods = mock(GraphReadMethods.class);
+        mockGraphWriteMethods = mock(GraphWriteMethods.class);
+        mockJsonNode = mock(JsonNode.class);
+        mockJsonGenerator = mock(JsonGenerator.class);
+        mockByteReader = mock(GraphByteReader.class);
     }
 
     /**
@@ -64,11 +102,8 @@ public class PlaneStateIOProviderNGTest {
      */
     @Test
     public void testGetName() {
-        System.out.println("PlaneStateIOProvider.testGetName");
-        
-        PlaneStateIOProvider instance = new PlaneStateIOProvider();
-        String result = instance.getName();
-        assertEquals(result, PlaneState.ATTRIBUTE_NAME);
+        System.out.println("PlaneStateIOProviderNGTest.testGetName");
+        assertEquals(instance.getName(), PlaneState.ATTRIBUTE_NAME);
     }
 
     /**
@@ -76,29 +111,18 @@ public class PlaneStateIOProviderNGTest {
      */
     @Test
     public void testReadObject() throws Exception {
-        System.out.println("PlaneStateIOProvider.testReadObject");
+        System.out.println("PlaneStateIOProviderNGTest.testReadObject");
         
-        // Create object under test
-        PlaneStateIOProvider instance = new PlaneStateIOProvider();
-        
-        // Create mocks
-        final JsonNode mockJsonNode = mock(JsonNode.class);
-        GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
-        GraphByteReader mockByteReader = mock(GraphByteReader.class);
-        
-        // Create argument captors
-        ArgumentCaptor<String> captorString = ArgumentCaptor.forClass(String.class);
+//        // Create argument captors
         ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<Integer> captorElementId = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<PlaneState> captorState = ArgumentCaptor.forClass(PlaneState.class);
-        
-        int attributeId = 23;
-        int elementId = 41;
 
         // Call method under test with JsonNode.isNull=true and confirm nothing happens
+        resetMocking();
         when(mockJsonNode.isNull()).thenReturn(true);
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
-        Mockito.verify(mockJsonNode, times(0)).get(captorString.capture());
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockJsonNode, times(0)).get(anyString());
       
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode plane1 = mapper.createObjectNode();
@@ -125,6 +149,7 @@ public class PlaneStateIOProviderNGTest {
         arrayNode.addAll(Arrays.asList(plane1, plane2));
         
         // Call method under test with JsonNode.isNull=false
+        resetMocking();
         when(mockJsonNode.isNull()).thenReturn(false);
         when(mockJsonNode.get(anyString())).thenReturn(arrayNode);
 
@@ -132,8 +157,8 @@ public class PlaneStateIOProviderNGTest {
             mockPlane.when(() -> Plane.readNode(any(), any(), any()))
                    .thenReturn(new Plane("plane", 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, new BufferedImage(1,2,3), 5, 6));
 
-            instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, mockByteReader, null);
-            Mockito.verify(mockGraph, times(1)).setObjectValue(captorAtributeId.capture(), captorElementId.capture(), captorState.capture());
+            instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, mockByteReader, null);
+            Mockito.verify(mockGraphWriteMethods, times(1)).setObjectValue(captorAtributeId.capture(), captorElementId.capture(), captorState.capture());
             assertEquals((int)captorAtributeId.getValue(), attributeId);
             assertEquals((int)captorElementId.getValue(), elementId);
             assertEquals(((PlaneState)captorState.getValue()).toString(), "%s[\nPlane[plane@(0.000000,0.100000,0.200000) 5x6]\n" +
@@ -146,65 +171,32 @@ public class PlaneStateIOProviderNGTest {
      */
     @Test
     public void testWriteObject() throws Exception {
-        System.out.println("PlaneStateIOProvider.testWriteOption");
-        
-        // Create object under test
-        PlaneStateIOProvider instance = new PlaneStateIOProvider();
-        
-        // Create mocks
-        JsonGenerator mockJsonGenerator = mock(JsonGenerator.class);
-        GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
-        
-        // Create argument captors
-        ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
-        ArgumentCaptor<Integer> captorElementId = ArgumentCaptor.forClass(Integer.class);
-        ArgumentCaptor<String> captorAttrName = ArgumentCaptor.forClass(String.class);
-
-        int attributeId = 23;
-        int elementId = 41;
-        String attrType = "attrType";
-        String attrName = "attrName";
-        String attrDesc = "attrDesc";
-        GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, attrType, attrName, attrDesc,
-            null, null);
+        System.out.println("PlaneStateIOProviderNGTest.testWriteOption");
         
         // Test not verbose and graph.IsDefaultValue is true skips all processing
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
-        Mockito.verify(mockGraph, times(0)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
+        resetMocking();
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, false);
+        Mockito.verify(mockGraphReadMethods, times(0)).getObjectValue(anyInt(), anyInt());
 
         // Test not verbose but graph.IsDefaultValue is false, graph.getObjectValue returns null
-        mockJsonGenerator = mock(JsonGenerator.class);
-        mockGraph = mock(GraphWriteMethods.class);
-        captorAtributeId = ArgumentCaptor.forClass(Integer.class);
-        captorElementId = ArgumentCaptor.forClass(Integer.class);
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
-        when(mockGraph.getObjectValue(anyInt(), anyInt())).thenReturn(null);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
-        Mockito.verify(mockGraph, times(1)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
-        assertEquals((int)captorAtributeId.getValue(), attributeId);
-        assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(captorAttrName.getValue(), attrName);
+        resetMocking();
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraphReadMethods.getObjectValue(anyInt(), anyInt())).thenReturn(null);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, false);
+        Mockito.verify(mockGraphReadMethods, times(1)).getObjectValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(attr.getName());
 
-        // Test verbose and graph.IsDefaultValue is false, graph.getObjectValue returns null 
-        mockJsonGenerator = mock(JsonGenerator.class);
-        mockGraph = mock(GraphWriteMethods.class);
-        captorAtributeId = ArgumentCaptor.forClass(Integer.class);
-        captorElementId = ArgumentCaptor.forClass(Integer.class);
-        captorAttrName = ArgumentCaptor.forClass(String.class);
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
-        when(mockGraph.getObjectValue(anyInt(), anyInt())).thenReturn(null);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
-        Mockito.verify(mockGraph, times(1)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
-        assertEquals((int)captorAtributeId.getValue(), attributeId);
-        assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(captorAttrName.getValue(), attrName);
+        // Test verbose and graph.IsDefaultValue is false, graph.getObjectValue returns non null 
+        resetMocking();
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraphReadMethods.getObjectValue(anyInt(), anyInt())).thenReturn(null);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
+        Mockito.verify(mockGraphReadMethods, times(1)).getObjectValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(attr.getName());
 
         // Test verbose and graph.IsDefaultValue is true, graph.getObjectValue returns PlaneState object
-        
         // Note, wasnt able to test this case ATM as writeNode could not be mocked as this method comes off internal
-        // objects, also wsn't able to mock calls made within writeNode
+        // objects, also wasn't able to mock calls made within writeNode
     }
 }

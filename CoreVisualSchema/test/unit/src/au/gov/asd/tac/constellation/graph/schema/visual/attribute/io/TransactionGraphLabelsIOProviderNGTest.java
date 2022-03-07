@@ -57,9 +57,7 @@ public class TransactionGraphLabelsIOProviderNGTest {
      */
     @Test
     public void testGetName() {
-        System.out.println("TransactionGraphLabelsIOProvider.testGetName");
-        
-        String result = instance.getName();
-        assertEquals(result, TransactionGraphLabelsAttributeDescription.ATTRIBUTE_NAME);
+        System.out.println("TransactionGraphLabelsIOProviderNGTest.testGetName");
+        assertEquals(instance.getName(), TransactionGraphLabelsAttributeDescription.ATTRIBUTE_NAME);
     }
 }

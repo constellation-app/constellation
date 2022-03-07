@@ -58,9 +58,6 @@ public class VertexGraphLabelsIOProviderNGTest {
     @Test
     public void testGetName() {
         System.out.println("VertexGraphLabelsIOProvider.testGetName");
-        
-        VertexGraphLabelsIOProvider instance = new VertexGraphLabelsIOProvider();
-        String result = instance.getName();
-        assertEquals(result, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME);
+        assertEquals(instance.getName(), VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME);
     } 
 }

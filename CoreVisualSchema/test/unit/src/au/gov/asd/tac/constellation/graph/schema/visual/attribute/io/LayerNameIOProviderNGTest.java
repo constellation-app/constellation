@@ -7,14 +7,18 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LayerNameAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.LayerName;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.Mockito;
@@ -33,6 +37,20 @@ import org.testng.annotations.Test;
  * @author serpens24
  */
 public class LayerNameIOProviderNGTest {
+        
+    // Create object under test
+    LayerNameIOProvider instance;
+
+    // Define mocks
+    GraphReadMethods mockGraphReadMethods;
+    GraphWriteMethods mockGraphWriteMethods;
+    JsonNode mockJsonNode;
+    JsonGenerator mockJsonGenerator;
+    
+    // Test variables
+    int attributeId = 23;
+    int elementId = 41;
+    GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
     
     public LayerNameIOProviderNGTest() {
     }
@@ -47,10 +65,21 @@ public class LayerNameIOProviderNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        instance = new LayerNameIOProvider();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+    }
+    
+    /**
+     * Perform reset of all mocks and argument captors to ensure clean test steps.
+     */
+    public void resetMocking() {
+        mockGraphReadMethods = mock(GraphReadMethods.class);
+        mockGraphWriteMethods = mock(GraphWriteMethods.class);
+        mockJsonNode = mock(JsonNode.class);
+        mockJsonGenerator = mock(JsonGenerator.class);
     }
 
     /**
@@ -58,8 +87,7 @@ public class LayerNameIOProviderNGTest {
      */
     @Test
     public void testGetName() {
-        System.out.println("LayerNameIOProvider.testGetName");
-        LayerNameIOProvider instance = new LayerNameIOProvider();
+        System.out.println("LayerNameIOProviderNGTest.testGetName");
         assertEquals(instance.getName(), LayerNameAttributeDescription.ATTRIBUTE_NAME);
     }
 
@@ -68,48 +96,73 @@ public class LayerNameIOProviderNGTest {
      */
     @Test
     public void testReadObject() throws Exception {
-        System.out.println("LayerNameIOProvider.testReadObject");
-        
-        // Create object under test
-        LayerNameIOProvider instance = new LayerNameIOProvider();
-        
-        // Create mocks
-        final JsonNode mockJsonNode = mock(JsonNode.class);
-        GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
-        
-        // Create argument captors
-        ArgumentCaptor<String> captorString = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
-        ArgumentCaptor<Integer> captorElementId = ArgumentCaptor.forClass(Integer.class);
-        final ArgumentCaptor<LayerName> captorObjectAttributeValue = ArgumentCaptor.forClass(LayerName.class);
-        
-        int attributeId = 23;
-        int elementId = 41;
-        JsonNode layerNameNode = new TextNode("layerName");
-        JsonNode layerValueNode = new IntNode(15);
-    
-        // Call method under test with JsonNode.isNull=true and confirm nothing happens
+        System.out.println("LayerNameIOProviderNGTest.testReadObject");
+
+        // Call method under test with JsonNode.isNull=true, name and layer tags found
+        resetMocking();
         when(mockJsonNode.isNull()).thenReturn(true);
         when(mockJsonNode.has(anyString())).thenReturn(true);
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
-        Mockito.verify(mockJsonNode, times(0)).get(captorString.capture());
-        
-        // Call method under test with JsonNode.isNull=false and jnode has all required tags
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockJsonNode, times(0)).get(any());
+    
+        // Call method under test with JsonNode.isNull=true, name tag not found
+        resetMocking();
+        when(mockJsonNode.isNull()).thenReturn(true);
+        when(mockJsonNode.has("name")).thenReturn(false);
+        when(mockJsonNode.has("layer")).thenReturn(true);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockJsonNode, times(0)).get(any());
+    
+        // Call method under test with JsonNode.isNull=true, layer tag not found
+        resetMocking();
+        when(mockJsonNode.isNull()).thenReturn(true);
+        when(mockJsonNode.has("name")).thenReturn(true);
+        when(mockJsonNode.has("layer")).thenReturn(false);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockJsonNode, times(0)).get(any());
+    
+        // Call method under test with JsonNode.isNull=true, name and layers tag not found
+        resetMocking();
+        when(mockJsonNode.isNull()).thenReturn(true);
+        when(mockJsonNode.has("name")).thenReturn(false);
+        when(mockJsonNode.has("layer")).thenReturn(false);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockJsonNode, times(0)).get(any());
+    
+        // Call method under test with JsonNode.isNull=false, name and layers tag not found
+        resetMocking();
+        when(mockJsonNode.isNull()).thenReturn(false);
+        when(mockJsonNode.has("name")).thenReturn(false);
+        when(mockJsonNode.has("layer")).thenReturn(false);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockJsonNode, times(0)).get(any());
+    
+        // Call method under test with JsonNode.isNull=false, name tag not found
+        resetMocking();
+        when(mockJsonNode.isNull()).thenReturn(false);
+        when(mockJsonNode.has("name")).thenReturn(false);
+        when(mockJsonNode.has("layer")).thenReturn(true);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockJsonNode, times(0)).get(any());
+    
+        // Call method under test with JsonNode.isNull=false, layer tag not found
+        resetMocking();
+        when(mockJsonNode.isNull()).thenReturn(false);
+        when(mockJsonNode.has("name")).thenReturn(true);
+        when(mockJsonNode.has("layer")).thenReturn(false);
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockJsonNode, times(0)).get(any());
+    
+        // Call method under test with JsonNode.isNull=false, name and layer tags found
+        resetMocking();
         when(mockJsonNode.isNull()).thenReturn(false);
         when(mockJsonNode.has(anyString())).thenReturn(true);
-        
-        when(mockJsonNode.get("name")).thenReturn(layerNameNode);
-        when(mockJsonNode.get("layer")).thenReturn(layerValueNode);
-        
-        instance.readObject(attributeId, elementId, mockJsonNode, mockGraph, null, null, null, null);
-        Mockito.verify(mockJsonNode, times(2)).get(captorString.capture());
-        Mockito.verify(mockGraph, times(1)).setObjectValue(captorAtributeId.capture(), captorElementId.capture(), captorObjectAttributeValue.capture());
-        assertEquals(captorString.getAllValues().get(0), "name");
-        assertEquals(captorString.getAllValues().get(1), "layer");
-        assertEquals((int)captorAtributeId.getAllValues().get(0), attributeId);
-        assertEquals((int)captorElementId.getAllValues().get(0), elementId);
-        assertEquals(((LayerName)captorObjectAttributeValue.getAllValues().get(0)).getName(), "layerName");
-        assertEquals(((LayerName)captorObjectAttributeValue.getAllValues().get(0)).getLayer(), 15);
+        when(mockJsonNode.get("name")).thenReturn(new TextNode("name"));
+        when(mockJsonNode.get("layer")).thenReturn(new IntNode(23));
+        instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
+        Mockito.verify(mockJsonNode, times(1)).get("name");
+        Mockito.verify(mockJsonNode, times(1)).get("layer");
+        Mockito.verify(mockGraphWriteMethods, times(1)).setObjectValue(attributeId, elementId, new LayerName(23, "name"));
     }
 
     /**
@@ -117,74 +170,42 @@ public class LayerNameIOProviderNGTest {
      */
     @Test
     public void testWriteObject() throws Exception {
-        System.out.println("LayerNameIOProvider.testWriteObject");
-        
-        // Create object under test
-        LayerNameIOProvider instance = new LayerNameIOProvider();
-        
-        // Create mocks
-        JsonGenerator mockJsonGenerator = mock(JsonGenerator.class);
-        GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
-        
-        // Create argument captors
-        final ArgumentCaptor<Integer> captorAtributeId = ArgumentCaptor.forClass(Integer.class);
-        final ArgumentCaptor<Integer> captorElementId = ArgumentCaptor.forClass(Integer.class);
-        final ArgumentCaptor<String> captorAttrName = ArgumentCaptor.forClass(String.class);
-        final ArgumentCaptor<String> captorFieldStart = ArgumentCaptor.forClass(String.class);
-        final ArgumentCaptor<String> captorField = ArgumentCaptor.forClass(String.class);
-        final ArgumentCaptor<String> captorValue = ArgumentCaptor.forClass(String.class);
-        final ArgumentCaptor<String> captorLayerName = ArgumentCaptor.forClass(String.class);
-        final ArgumentCaptor<Integer> captorLayer = ArgumentCaptor.forClass(Integer.class);
-
-        int attributeId = 23;
-        int elementId = 41;
-        String attrType = "attrType";
-        String attrName = "attrName";
-        String attrDesc = "attrDesc";
-        GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, attrType, attrName, attrDesc,
-            null, null);
+        System.out.println("LayerNameIOProviderNGTest.testWriteObject");
 
         // Test not verbose and graph.IsDefaultValue is true skips all processing
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
-        Mockito.verify(mockGraph, times(0)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
+        resetMocking();
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, false);
+        Mockito.verify(mockGraphReadMethods, times(0)).getObjectValue(anyInt(), anyInt());
 
-        // Test not verbose but graph.IsDefaultValue is false, graph.getObjectValue returns null
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
-        when(mockGraph.getObjectValue(anyInt(), anyInt())).thenReturn(null);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, false);
-        Mockito.verify(mockGraph, times(1)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
-        assertEquals((int)captorAtributeId.getValue(), attributeId);
-        assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(captorAttrName.getValue(), attrName);
-        
-        // Test verbose and graph.IsDefaultValue is false, graph.getObjectValue returns null 
-        mockJsonGenerator = mock(JsonGenerator.class);
-        mockGraph = mock(GraphWriteMethods.class);
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
-        when(mockGraph.getObjectValue(anyInt(), anyInt())).thenReturn(null);
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
-        Mockito.verify(mockGraph, times(1)).getObjectValue(captorAtributeId.capture(), captorElementId.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(captorAttrName.capture());
-        assertEquals((int)captorAtributeId.getValue(), attributeId);
-        assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(captorAttrName.getValue(), attrName);
-        
-        // Test verbose and graph.IsDefaultValue is true, graph.getObjectValue returns decotrator object
-        when(mockGraph.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
-        when(mockGraph.getObjectValue(anyInt(), anyInt())).thenReturn(new LayerName(33, "TestLayer"));
-        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraph, null, true);
-        Mockito.verify(mockJsonGenerator, times(1)).writeObjectFieldStart(captorFieldStart.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeStringField(captorField.capture(), captorLayerName.capture());
-        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(captorField.capture(), captorLayer.capture());
+        // Test verbose, graph.IsDefaultValue is true, graph.getObjectValue returns null
+        resetMocking();
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
+        when(mockGraphReadMethods.getObjectValue(anyInt(), anyInt())).thenReturn(null);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
+        Mockito.verify(mockGraphReadMethods, times(1)).getObjectValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(attr.getName());
+        Mockito.verify(mockJsonGenerator, times(0)).writeObjectFieldStart(any());
+
+        // Test verbose, graph.IsDefaultValue is false, graph.getObjectValue returns LayerName object
+        resetMocking();
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraphReadMethods.getObjectValue(anyInt(), anyInt())).thenReturn(new LayerName(23, "name"));
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
+        Mockito.verify(mockGraphReadMethods, times(1)).getObjectValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(0)).writeNullField(attr.getName());
+        Mockito.verify(mockJsonGenerator, times(1)).writeObjectFieldStart(any());
+        Mockito.verify(mockJsonGenerator, times(1)).writeStringField("name", "name");
+        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField("layer", 23);
         Mockito.verify(mockJsonGenerator, times(1)).writeEndObject();
-        assertEquals(captorFieldStart.getValue(), attrName);
-        assertEquals(captorLayerName.getValue(), "TestLayer");
-        assertEquals((int)captorLayer.getValue(), 33);
-        assertEquals(captorField.getAllValues().get(0), "name");
-        assertEquals(captorField.getAllValues().get(1), "layer");
-       
+
+        // Test not verbose, graph.IsDefaultValue is false, graph.getObjectValue returns null
+        resetMocking();
+        when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
+        when(mockGraphReadMethods.getObjectValue(anyInt(), anyInt())).thenReturn(null);
+        instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, false);
+        Mockito.verify(mockGraphReadMethods, times(1)).getObjectValue(attributeId, elementId);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNullField(attr.getName());
+        Mockito.verify(mockJsonGenerator, times(0)).writeObjectFieldStart(any());
     }
-    
 }
