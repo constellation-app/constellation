@@ -46,14 +46,13 @@ public final class CompareGraphAction implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent e) {
         // Check current graphs opened
-        if(GraphManager.getDefault().getAllGraphs().size() > 1){
+        if (GraphManager.getDefault().getAllGraphs().size() > 1) {
             PluginExecution.withPlugin(CorePluginRegistry.COMPARE_GRAPH)
                 .interactively(true)
                 .executeLater(context.getGraph());
         } else {
-            Platform.runLater(()-> {
-                NotifyDisplayer.displayAlert("Compare Graph", "Warning", "Two or more graphs need to be open before comparing.", Alert.AlertType.WARNING);
-            });
+            Platform.runLater(() -> NotifyDisplayer.displayAlert("Compare Graph", "Warning", 
+                    "Two or more graphs need to be open before comparing.", Alert.AlertType.WARNING));
         }
     }
 }
