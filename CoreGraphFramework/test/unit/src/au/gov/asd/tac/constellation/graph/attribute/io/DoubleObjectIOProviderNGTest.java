@@ -20,11 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.DoubleObjectAttributeDescription;
-import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
-import java.util.Map;
-import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.Mockito;
@@ -58,7 +56,6 @@ public class DoubleObjectIOProviderNGTest {
     final int elementId = 41;
     final String attribValue = "TestAttrib";
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
-
     
     public DoubleObjectIOProviderNGTest() {
     }
@@ -141,7 +138,7 @@ public class DoubleObjectIOProviderNGTest {
         when(mockGraphReadMethods.getObjectValue(anyInt(), anyInt())).thenReturn(null);
         instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
         Mockito.verify(mockJsonGenerator, times(1)).writeNullField(attr.getName());
-        Mockito.verify(mockJsonGenerator, times(0)).writeBooleanField(anyString(), anyBoolean());
+        Mockito.verify(mockJsonGenerator, times(0)).writeNumberField(anyString(), anyDouble());
         
         // Test not verbose and graph.IsDefaultValue is false, getObjectValue returns null 
         resetMocking();
@@ -149,7 +146,7 @@ public class DoubleObjectIOProviderNGTest {
         when(mockGraphReadMethods.getObjectValue(anyInt(), anyInt())).thenReturn(null);
         instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, false);
         Mockito.verify(mockJsonGenerator, times(1)).writeNullField(attr.getName());
-        Mockito.verify(mockJsonGenerator, times(0)).writeBooleanField(anyString(), anyBoolean());
+        Mockito.verify(mockJsonGenerator, times(0)).writeNumberField(anyString(), anyDouble());
         
         // Test verbose and graph.IsDefaultValue is false, getObjectValue returns bool
         resetMocking();
@@ -159,5 +156,4 @@ public class DoubleObjectIOProviderNGTest {
         Mockito.verify(mockJsonGenerator, times(0)).writeNullField(anyString());
         Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(attr.getName(), 0.5);
     }
-    
 }

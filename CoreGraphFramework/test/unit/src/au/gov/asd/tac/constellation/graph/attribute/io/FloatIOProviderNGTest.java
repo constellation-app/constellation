@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.DoubleAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -38,10 +38,10 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class DoubleIOProviderNGTest {
+public class FloatIOProviderNGTest {
 
     // Create object under test
-    DoubleIOProvider instance;
+    FloatIOProvider instance;
 
     // Define mocks
     GraphReadMethods mockGraphReadMethods;
@@ -55,7 +55,7 @@ public class DoubleIOProviderNGTest {
     final String attribValue = "TestAttrib";
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
 
-    public DoubleIOProviderNGTest() {
+    public FloatIOProviderNGTest() {
     }
 
     @BeforeClass
@@ -68,7 +68,7 @@ public class DoubleIOProviderNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        instance = new DoubleIOProvider();
+        instance = new FloatIOProvider();
     }
 
     @AfterMethod
@@ -85,36 +85,37 @@ public class DoubleIOProviderNGTest {
         mockJsonGenerator = mock(JsonGenerator.class);
     }
 
+
     /**
-     * Test of getName method, of class DoubleIOProvider.
+     * Test of getName method, of class FloatIOProvider.
      */
     @Test
     public void testGetName() {
-        System.out.println("DoubleIOProviderNGTest.testGetName");
-        assertEquals(instance.getName(), DoubleAttributeDescription.ATTRIBUTE_NAME);
+        System.out.println("FloatIOProviderNGTest.testGetName");
+        assertEquals(instance.getName(), FloatAttributeDescription.ATTRIBUTE_NAME);
     }
 
     /**
-     * Test of readObject method, of class DoubleIOProvider.
+     * Test of readObject method, of class FloatIOProvider.
      */
     @Test
     public void testReadObject() throws Exception {
-        System.out.println("DoubleIOProviderNGTest.testReadObject");
+        System.out.println("FloatIOProviderNGTest.testReadObject");
         
         // Call method under test with JsonNode set to return isNull = true
         resetMocking();
         when(mockJsonNode.doubleValue()).thenReturn(0.5);
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
         Mockito.verify(mockJsonNode, times(1)).doubleValue();
-        Mockito.verify(mockGraphWriteMethods, times(1)).setDoubleValue(attributeId, elementId, 0.5);
+        Mockito.verify(mockGraphWriteMethods, times(1)).setFloatValue(attributeId, elementId, 0.5f);
     }
 
     /**
-     * Test of writeObject method, of class DoubleIOProvider.
+     * Test of writeObject method, of class FloatIOProvider.
      */
     @Test
     public void testWriteObject() throws Exception {
-        System.out.println("DoubleIOProviderNGTest.testWriteObject");
+        System.out.println("FloatIOProviderNGTest.testWriteObject");
         
         // Test not verbose and graph.IsDefaultValue is true
         resetMocking();
@@ -125,22 +126,22 @@ public class DoubleIOProviderNGTest {
         // Test verbose and graph.IsDefaultValue is true
         resetMocking();
         when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(true);
-        when(mockGraphReadMethods.getDoubleValue(anyInt(), anyInt())).thenReturn(0.5);
+        when(mockGraphReadMethods.getFloatValue(anyInt(), anyInt())).thenReturn(0.5f);
         instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
-        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(attr.getName(), 0.5);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(attr.getName(), 0.5f);
         
         // Test not verbose and graph.IsDefaultValue is false
         resetMocking();
         when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
-        when(mockGraphReadMethods.getDoubleValue(anyInt(), anyInt())).thenReturn(0.5);
+        when(mockGraphReadMethods.getFloatValue(anyInt(), anyInt())).thenReturn(0.5f);
         instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, false);
-        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(attr.getName(), 0.5);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(attr.getName(), 0.5f);
         
         // Test verbose and graph.IsDefaultValue is false
         resetMocking();
         when(mockGraphReadMethods.isDefaultValue(anyInt(), anyInt())).thenReturn(false);
-        when(mockGraphReadMethods.getDoubleValue(anyInt(), anyInt())).thenReturn(0.5);
+        when(mockGraphReadMethods.getFloatValue(anyInt(), anyInt())).thenReturn(0.5f);
         instance.writeObject(attr, elementId, mockJsonGenerator, mockGraphReadMethods, null, true);
-        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(attr.getName(), 0.5);
-    }  
+        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField(attr.getName(), 0.5f);
+    }
 }
