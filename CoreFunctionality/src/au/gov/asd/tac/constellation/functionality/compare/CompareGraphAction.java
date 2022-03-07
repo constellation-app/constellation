@@ -16,10 +16,14 @@
 package au.gov.asd.tac.constellation.functionality.compare;
 
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -41,8 +45,14 @@ public final class CompareGraphAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        PluginExecution.withPlugin(CorePluginRegistry.COMPARE_GRAPH)
+        // Check current graphs opened
+        if (GraphManager.getDefault().getAllGraphs().size() > 1) {
+            PluginExecution.withPlugin(CorePluginRegistry.COMPARE_GRAPH)
                 .interactively(true)
                 .executeLater(context.getGraph());
+        } else {
+            Platform.runLater(() -> NotifyDisplayer.displayAlert("Compare Graph", "Warning", 
+                    "Two or more graphs need to be open before comparing.", Alert.AlertType.WARNING));
+        }
     }
 }
