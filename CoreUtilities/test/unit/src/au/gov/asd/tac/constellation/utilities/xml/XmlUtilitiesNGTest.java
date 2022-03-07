@@ -1,13 +1,24 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2021 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.utilities.xml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -26,16 +37,17 @@ import org.testng.reporters.Files;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
  * @author serpens24
  */
 public class XmlUtilitiesNGTest {
-    
+
     private static final String OUTPUT_FILE = "testOutputFile.xml";
     private static final String XML_HDR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    
+
     public XmlUtilitiesNGTest() {
     }
 
@@ -49,7 +61,6 @@ public class XmlUtilitiesNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-//        }
     }
 
     @AfterMethod
@@ -57,17 +68,17 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of newDocument method, of class XmlUtilities. This effectively creates a new empty 
-     * document.
+     * Test of newDocument method, of class XmlUtilities. This effectively
+     * creates a new empty document.
      */
     @Test
     public void testNewDocument() {
         System.out.println("testNewDocument");
         XmlUtilities instance = new XmlUtilities();
-       
+
         Document expResult = null;
         try {
-            expResult = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument(); 
+            expResult = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         } catch (ParserConfigurationException ex) {
             fail("Exception thrown creating sample data");
         }
@@ -77,6 +88,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of write method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -85,25 +97,22 @@ public class XmlUtilitiesNGTest {
         XmlUtilities instance = new XmlUtilities();
 
         String expectedStr = XML_HDR + "<parent>\n"
-                + "  <child1>child1_value</child1>\n"
-                + "  <child2>child2_value</child2>\n"
-                + "  <child3>child3a_value</child3>\n"
-                + "  <child3>child3b_value</child3>\n"
-                + "  <child4><child4.1>child4.1</child4.1></child4>\n"
+                + "<child1>child1_value</child1>\n"
+                + "<child2>child2_value</child2>\n"
+                + "<child3>child3a_value</child3>\n"
+                + "<child3>child3b_value</child3>\n"
+                + "<child4><child4.1>child4.1</child4.1></child4>\n"
                 + "</parent>\n";
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWrite_Document.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
-
-        byte[] results = instance.write(document);
-        String resultStr = (new String(results));
-        assertTrue(resultStr.replaceAll("\\s+","").equals(expectedStr.replaceAll("\\s+","")));
+        Document document = getXmlDocument("resources/testWrite_Document.xml", false);
+        String results = new String(instance.write(document));
+        
+        assertEquals(removeWhitespacing(results),removeWhitespacing(expectedStr));
     }
 
     /**
      * Test of write method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -112,46 +121,42 @@ public class XmlUtilitiesNGTest {
         XmlUtilities instance = new XmlUtilities();
 
         String expectedOutput = XML_HDR + "<parent>\n"
-                + "  <child>child_value</child>\n"
+                + "<child>child_value</child>\n"
                 + "</parent>\n";
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWrite_Document_File.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
-
+        Document document = getXmlDocument("resources/testWrite_Document_File.xml", false);
         String outputFilename = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + OUTPUT_FILE;
         File outputFile = new File(outputFilename);
         instance.write(document, outputFile);
         String output = Files.readFile(outputFile);
-        assertTrue(output.replaceAll("\\s+","").equals(expectedOutput.replaceAll("\\s+","")));
+        
+        assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
     }
 
     /**
      * Test of writeToString method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
     public void testWriteToString_Document() throws Exception {
         System.out.println("testWriteToString_Document");
         XmlUtilities instance = new XmlUtilities();
-        
+
         String expectedOutput = XML_HDR + "<parent>\n"
-                + "  <child>child_value</child>\n"
+                + "<child>child_value</child>\n"
                 + "</parent>\n";
 
         // Read the test file into a Document object
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWriteToString_Document.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
-
+        Document document = getXmlDocument("resources/testWriteToString_Document.xml", false);
         String output = instance.writeToString(document);
-        assertTrue(output.replaceAll("\\s+","").equals(expectedOutput.replaceAll("\\s+","")));
+        
+        assertEquals(removeWhitespacing(output),removeWhitespacing(expectedOutput));
     }
 
     /**
      * Test of writeToString method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -159,16 +164,17 @@ public class XmlUtilitiesNGTest {
         System.out.println("testWriteToString_InputStream_int");
         XmlUtilities instance = new XmlUtilities();
 
-        String expectedOutput = new String("<parent>   <child>child_value</child> </parent> ");
-
+        String expectedOutput = "<parent>   <child>child_value</child> </parent> ";
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWriteToString_InputStream_int.xml").getPath();
         InputStream inputStream = new FileInputStream(new File(testFile));
         String output = instance.writeToString(inputStream, inputStream.available());
-        assertTrue(output.equals(expectedOutput));
+        
+        assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
     }
 
     /**
      * Test of read method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -184,14 +190,14 @@ public class XmlUtilitiesNGTest {
         Node parent = parentNodeList.item(0);
         NodeList childNodeList = parent.getChildNodes();
 
-        for (int child = 1; child <= 3; child ++) {
+        for (int child = 1; child <= 3; child++) {
             boolean foundChild = false;
-            String nodeName = new String("child" + child);
+            String nodeName = "child" + child;
             for (int i = 0; i < childNodeList.getLength(); i++) {
                 Node childNode = childNodeList.item(i);
                 if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
                     String nodeValue = childNode.getFirstChild().getNodeValue();
-                    assertTrue(nodeValue.equals(new String("child" + child + "_value")));
+                    assertTrue(nodeValue.equals("child" + child + "_value"));
                     foundChild = true;
                     break;
                 }
@@ -202,6 +208,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of read method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -209,11 +216,11 @@ public class XmlUtilitiesNGTest {
         System.out.println("testRead_String");
         XmlUtilities instance = new XmlUtilities();
 
-        String data = new String("<parent>\n"
-                + "  <child1>child1_value</child1>\n"
-                + "  <child2>child2_value</child2>\n"
-                + "  <child3>child3_value</child3>\n"
-                + "</parent>\n");
+        String data = "<parent>\n"
+                + "<child1>child1_value</child1>\n"
+                + "<child2>child2_value</child2>\n"
+                + "<child3>child3_value</child3>\n"
+                + "</parent>\n";
 
         Document document = instance.read(data);
 
@@ -222,14 +229,14 @@ public class XmlUtilitiesNGTest {
         Node parent = parentNodeList.item(0);
         NodeList childNodeList = parent.getChildNodes();
 
-        for (int child = 1; child <= 3; child ++) {
+        for (int child = 1; child <= 3; child++) {
             boolean foundChild = false;
-            String nodeName = new String("child" + child);
+            String nodeName = "child" + child;
             for (int i = 0; i < childNodeList.getLength(); i++) {
                 Node childNode = childNodeList.item(i);
                 if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
                     String nodeValue = childNode.getFirstChild().getNodeValue();
-                    assertTrue(nodeValue.equals(new String("child" + child + "_value")));
+                    assertTrue(nodeValue.equals("child" + child + "_value"));
                     foundChild = true;
                     break;
                 }
@@ -240,6 +247,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of read method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -255,14 +263,14 @@ public class XmlUtilitiesNGTest {
         Node parent = parentNodeList.item(0);
         NodeList childNodeList = parent.getChildNodes();
 
-        for (int child = 1; child <= 3; child ++) {
+        for (int child = 1; child <= 3; child++) {
             boolean foundChild = false;
-            String nodeName = new String("child" + child);
+            String nodeName = "child" + child;
             for (int i = 0; i < childNodeList.getLength(); i++) {
                 Node childNode = childNodeList.item(i);
                 if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
                     String nodeValue = childNode.getFirstChild().getNodeValue();
-                    assertTrue(nodeValue.equals(new String("child" + child + "_value")));
+                    assertTrue(nodeValue.equals("child" + child + "_value"));
                     foundChild = true;
                     break;
                 }
@@ -273,6 +281,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of getNode method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -280,10 +289,7 @@ public class XmlUtilitiesNGTest {
         System.out.println("testGetNode");
         XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNode.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
+        Document document = getXmlDocument("resources/testGetNode.xml", false);
         NodeList nodeList = document.getElementsByTagName("parent");
         Node parent = nodeList.item(0);
         NodeList children = parent.getChildNodes();
@@ -311,6 +317,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of getNodeNS method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -318,11 +325,7 @@ public class XmlUtilitiesNGTest {
         System.out.println("testGetNodeNS");
         XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeNS.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        docBuilderFactory.setNamespaceAware(true);
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
+        Document document = getXmlDocument("resources/testGetNodeNS.xml", true);
         NodeList nodeList = document.getElementsByTagName("c:parent");
         Node parent = nodeList.item(0);
         NodeList children = parent.getChildNodes();
@@ -354,17 +357,15 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of getNodes method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
     public void testGetNodes() throws Exception {
         System.out.println("testGetNodes");
         XmlUtilities instance = new XmlUtilities();
-        
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodes.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
+
+        Document document = getXmlDocument("resources/testGetNodes.xml", false);
         NodeList nodeList = document.getElementsByTagName("parent");
         Node parent = nodeList.item(0);
         NodeList children = parent.getChildNodes();
@@ -398,6 +399,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of getNodesNS method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -405,11 +407,7 @@ public class XmlUtilitiesNGTest {
         System.out.println("testGetNodesNS");
         XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodesNS.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        docBuilderFactory.setNamespaceAware(true);
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
+        Document document = getXmlDocument("resources/testGetNodesNS.xml", true);
         NodeList nodeList = document.getElementsByTagName("c:parent");
         Node parent = nodeList.item(0);
         NodeList children = parent.getChildNodes();
@@ -448,6 +446,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of getNodeValue method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -455,10 +454,7 @@ public class XmlUtilitiesNGTest {
         System.out.println("testGetNodeValue_Node");
         XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeValue_Node.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
+        Document document = getXmlDocument("resources/testGetNodeValue_Node.xml", false);
         NodeList nodeList = document.getElementsByTagName("parent");
         Node parent = nodeList.item(0);
         NodeList children = parent.getChildNodes();
@@ -474,6 +470,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of getNodeValue method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -481,10 +478,7 @@ public class XmlUtilitiesNGTest {
         System.out.println("testGetNodeValue_String_NodeList");
         XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeValue_String_NodeList.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
+        Document document = getXmlDocument("resources/testGetNodeValue_String_NodeList.xml", false);
         NodeList nodeList = document.getElementsByTagName("parent");
         Node parent = nodeList.item(0);
         NodeList children = parent.getChildNodes();
@@ -508,6 +502,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of getNodeValueNS method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -515,11 +510,7 @@ public class XmlUtilitiesNGTest {
         System.out.println("testGetNodeValueNS");
         XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeValueNS.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        docBuilderFactory.setNamespaceAware(true);
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
+        Document document = getXmlDocument("resources/testGetNodeValueNS.xml", true);
         NodeList nodeList = document.getElementsByTagName("c:parent");
         Node parent = nodeList.item(0);
         NodeList children = parent.getChildNodes();
@@ -551,6 +542,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of getNodeAttr method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -558,29 +550,26 @@ public class XmlUtilitiesNGTest {
         System.out.println("testGetNodeAttr_String_Node");
         XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeAttr_String_Node.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        docBuilderFactory.setNamespaceAware(true);
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
+        Document document = getXmlDocument("resources/testGetNodeAttr_String_Node.xml", false);
         NodeList nodeList = document.getElementsByTagName("parent");
         Node parent = nodeList.item(0);
 
         // Show attribute values are read
         String result = instance.getNodeAttr("attr1", parent);
-        assertEquals(result, "attrib 1 value", "Successfully finds attribute");    
+        assertEquals(result, "attrib 1 value", "Successfully finds attribute");
 
         // Show attributes other than first can be read
         result = instance.getNodeAttr("attr2", parent);
-        assertEquals(result, "attrib 2 value", "Successfully finds attribute");    
+        assertEquals(result, "attrib 2 value", "Successfully finds attribute");
 
         // Handling of missing attributes
         result = instance.getNodeAttr("attr3", parent);
-        assertNull(result, "Null returned if attribute is not found");  
+        assertNull(result, "Null returned if attribute is not found");
     }
 
     /**
      * Test of getNodeAttr method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -588,11 +577,7 @@ public class XmlUtilitiesNGTest {
         System.out.println("testGetNodeAttr_3args");
         XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeAttr_3args.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        docBuilderFactory.setNamespaceAware(true);
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
+        Document document = getXmlDocument("resources/testGetNodeAttr_3args.xml", true);
         NodeList nodeList = document.getElementsByTagName("parent");
         Node parent = nodeList.item(0);
         NodeList children = parent.getChildNodes();
@@ -616,6 +601,7 @@ public class XmlUtilitiesNGTest {
 
     /**
      * Test of getNodeAttrNS method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -623,11 +609,7 @@ public class XmlUtilitiesNGTest {
         System.out.println("testGetNodeAttrNS");
         XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testGetNodeAttrNS.xml").getPath();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        docBuilderFactory.setNamespaceAware(true);
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new File(testFile));
+        Document document = getXmlDocument("resources/testGetNodeAttrNS.xml", true);
         NodeList nodeList = document.getElementsByTagName("parent");
         Node parent = nodeList.item(0);
         NodeList children = parent.getChildNodes();
@@ -648,9 +630,10 @@ public class XmlUtilitiesNGTest {
         result = instance.getNodeAttrNS("http://www.consty.com/star", "offspring", "attr1", children);
         assertEquals(result, "c:attrib 1 value", "TODO");
     }
-    
+
     /**
      * Test of map method, of class XmlUtilities which takes in a URL.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -660,9 +643,9 @@ public class XmlUtilitiesNGTest {
 
         // Extract content and validate it is as expected
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();            
+        URL url = new File(testFile).toURI().toURL();
         List<Map<String, String>> result = instance.map(url.toString());
-        assertEquals(4,result.size());
+        assertEquals(4, result.size());
         assertEquals(3, result.get(0).size());
         assertEquals(3, result.get(1).size());
         assertEquals(3, result.get(2).size());
@@ -679,38 +662,41 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of map method, of class XmlUtilities, showing file not found exception
-     * thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found
+     * exception thrown if file cant be found.
+     *
      * @throws java.lang.Exception
      */
-    @Test (expectedExceptions = FileNotFoundException.class)
+    @Test(expectedExceptions = FileNotFoundException.class)
     public void testMap_String_FilenotFound() throws Exception {
         System.out.println("testMap_String_FilenotFound");
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
-        URL url = new File(testFile).toURI().toURL();            
+        URL url = new File(testFile).toURI().toURL();
         List<Map<String, String>> result = instance.map(url.toString());
     }
- 
+
     /**
-     * Test of map method, of class XmlUtilities, showing file not found exception
-     * thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found
+     * exception thrown if file cant be found.
+     *
      * @throws java.lang.Exception
      */
-    @Test (expectedExceptions = TransformerException.class)
+    @Test(expectedExceptions = TransformerException.class)
     public void testMap_String_TransformerException() throws Exception {
         System.out.println("testMap_String_TransformerException");
         XmlUtilities instance = new XmlUtilities();
 
         // Execute test
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_TransformerException.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();            
+        URL url = new File(testFile).toURI().toURL();
         List<Map<String, String>> result = instance.map(url.toString());
     }
-    
+
     /**
      * Test of map method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -719,9 +705,9 @@ public class XmlUtilitiesNGTest {
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();            
+        URL url = new File(testFile).toURI().toURL();
         List<Map<String, String>> result = instance.map(url.toString(), "child");
-        assertEquals(3,result.size());
+        assertEquals(3, result.size());
         assertEquals(3, result.get(0).size());
         assertEquals(3, result.get(1).size());
         assertEquals(0, result.get(2).size());
@@ -733,39 +719,41 @@ public class XmlUtilitiesNGTest {
         assertNotNull(result.get(1).get("col3"), "fff");
     }
 
-
     /**
-     * Test of map method, of class XmlUtilities, showing file not found exception
-     * thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found
+     * exception thrown if file cant be found.
+     *
      * @throws java.lang.Exception
      */
-    @Test (expectedExceptions = FileNotFoundException.class)
+    @Test(expectedExceptions = FileNotFoundException.class)
     public void testMap_String_String_FilenotFound() throws Exception {
         System.out.println("testMap_String_String_FilenotFound");
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
-        URL url = new File("Missing" + testFile).toURI().toURL();            
+        URL url = new File("Missing" + testFile).toURI().toURL();
         List<Map<String, String>> result = instance.map(url.toString(), "child");
     }
- 
+
     /**
-     * Test of map method, of class XmlUtilities, showing file not found exception
-     * thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found
+     * exception thrown if file cant be found.
+     *
      * @throws java.lang.Exception
      */
-    @Test (expectedExceptions = TransformerException.class)
+    @Test(expectedExceptions = TransformerException.class)
     public void testMap_String_String_TransformerException() throws Exception {
         System.out.println("testMap_String_String_TransformerException");
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String_TransformerException.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();            
+        URL url = new File(testFile).toURI().toURL();
         List<Map<String, String>> result = instance.map(url.toString(), "child");
     }
 
     /**
      * Test of table method, of class XmlUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -774,7 +762,7 @@ public class XmlUtilitiesNGTest {
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean.xml").getPath();
-        URL url = new File(testFile).toURI().toURL(); 
+        URL url = new File(testFile).toURI().toURL();
         String[][] result = instance.table(url.toString(), false);
         assertEquals(result.length, 3);
         assertEquals(result[0].length, 3);
@@ -806,33 +794,47 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of table method, of class XmlUtilities, showing file not found exception
-     * thrown if file cant be found.
+     * Test of table method, of class XmlUtilities, showing file not found
+     * exception thrown if file cant be found.
+     *
      * @throws java.lang.Exception
      */
-    @Test (expectedExceptions = FileNotFoundException.class)
+    @Test(expectedExceptions = FileNotFoundException.class)
     public void testTable_String_Boolean_FilenotFound() throws Exception {
         System.out.println("testTable_String_Boolean_FilenotFound");
         XmlUtilities instance = new XmlUtilities();
- 
+
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
         URL url = new File(testFile).toURI().toURL();
         String[][] result = instance.table(url.toString(), false);
     }
- 
+
     /**
-     * Test of table method, of class XmlUtilities, showing file not found exception
-     * thrown if file cant be found.
+     * Test of table method, of class XmlUtilities, showing file not found
+     * exception thrown if file cant be found.
+     *
      * @throws java.lang.Exception
      */
-    @Test (expectedExceptions = TransformerException.class)
+    @Test(expectedExceptions = TransformerException.class)
     public void testTable_String_Boolean_TransformerException() throws Exception {
         System.out.println("testTable_String_Boolean_TransformerException");
         XmlUtilities instance = new XmlUtilities();
-        
+
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean_TransformerException.xml").getPath();
         URL url = new File(testFile).toURI().toURL();
         String[][] result = instance.table(url.toString(), false);
+    }
+
+    private String removeWhitespacing(final String input) {
+        return input != null ? input.replaceAll("\\s+", "") : null;
+    }
+
+    private Document getXmlDocument(final String filename, final boolean namespace) throws ParserConfigurationException, IOException, SAXException {
+        final String testFile = XmlUtilitiesNGTest.class.getResource(filename).getPath();
+        final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        docBuilderFactory.setNamespaceAware(namespace);
+        final DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        return docBuilder.parse(new File(testFile));
     }
 
 }
