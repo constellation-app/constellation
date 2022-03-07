@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
+package au.gov.asd.tac.constellation.graph.attribute.io;
 
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -27,9 +27,9 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class IconIOProviderNGTest {
+public class StringIOProviderNGTest {
     
-    public IconIOProviderNGTest() {
+    public StringIOProviderNGTest() {
     }
 
     @BeforeClass
@@ -49,13 +49,13 @@ public class IconIOProviderNGTest {
     }
 
     /**
-     * Test of getName method, of class IconIOProvider.
+     * Test of getName method, of class StringIOProvider.
      */
     @Test
     public void testGetName() {
-        System.out.println("IconIOProviderNGTest.getName");
-        
-        IconIOProvider instance = new IconIOProvider();
-        assertEquals(instance.getName(), IconAttributeDescription.ATTRIBUTE_NAME);
+        System.out.println("StringIOProviderNGTest.testGetName");
+        StringIOProvider instance = new StringIOProvider();
+        assertEquals(instance.getName(), StringAttributeDescription.ATTRIBUTE_NAME);
     }
+    
 }

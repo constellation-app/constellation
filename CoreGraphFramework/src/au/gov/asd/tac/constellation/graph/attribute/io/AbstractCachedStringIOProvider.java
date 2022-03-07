@@ -25,12 +25,12 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Abstract class implementing common read/write functionality for IO providers that process single uncached string JSON
- * nodes.
+ * IOProvider for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription}
  *
  * @author serpens24
  */
-public abstract class AbstractUncachedStringIOProvider extends AbstractGraphIOProvider {
+public abstract class AbstractCachedStringIOProvider extends AbstractGraphIOProvider {
 
     /**
      * Deserialise an object from a JsonNode.
@@ -42,22 +42,22 @@ public abstract class AbstractUncachedStringIOProvider extends AbstractGraphIOPr
      * @param jnode The JsonNode to read from.
      * @param graph The graph that the resulting object will be placed in.
      * Provided in case the object requires some graph data.
-     * @param vertexMap (not used) A mapping from a vertex id in the file to the
-     * vertex id in the graph.
+     * @param vertexMap (not used) A mapping from a vertex id in the file to
+     * the vertex id in the graph.
      * @param transactionMap (not used) A mapping from a transaction id in the
      * file to the transaction id in the graph.
      * @param byteReader (not used) The byte reader containing ancillary data
      * (e.g. images)  that doesn't easily fit into a JSON document.
-     * @param cache (not used) a cache that can be used to dedup identical
-     * instances of the same immutable objects.
+     * @param cache a cache that can be used to dedup identical instances of the
+     * same immutable objects.
      * @throws java.io.IOException If there's a problem reading the document. 
      */
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, 
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
             final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
-            final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
+            final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         final String attributeValue = jnode.isNull() ? null : jnode.textValue();
-        graph.setStringValue(attributeId, elementId, attributeValue);
+        graph.setStringValue(attributeId, elementId, cache.deduplicate(attributeValue));
     }
 
     /**
@@ -75,7 +75,6 @@ public abstract class AbstractUncachedStringIOProvider extends AbstractGraphIOPr
      * doesn't easily fit into a JSON document.
      * @param verbose Determines whether to write default values of attributes
      * or not.
-     * @throws IOException 
      */
     @Override
     public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator,
