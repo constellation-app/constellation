@@ -1,5 +1,13 @@
 # Constellation Changes
 
+## Changes in March 2022
+
+-   Added abstract classes `AbstractCachedStringIOProvider` and 
+    `AbstractUncachedStringIOProvider` classes to Core Graph Framework
+    and '`AbstractGraphLabelsIOProvider` class to Core Visual Schema
+    and updated multiple IO Provider classes to implement these classes
+    to avoid code duplication.
+
 ## Changes in February 2022
 
 -   Removed unused classes `DecoratorUtilities` and `LabelUtilities` from Core 

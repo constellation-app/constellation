@@ -23,13 +23,12 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DrawFlagsAttri
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
