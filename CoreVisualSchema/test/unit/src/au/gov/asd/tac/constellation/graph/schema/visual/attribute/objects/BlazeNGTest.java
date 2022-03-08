@@ -17,7 +17,11 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects;
 
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze.IllegalBlazeFormatException;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -136,7 +140,10 @@ public class BlazeNGTest {
     public void testHashCode() {
         System.out.println("BlazeNGTest.testHashCode");
         Blaze instance = new Blaze(23, ConstellationColor.RED);
-        assertEquals(instance.hashCode(), -472389919);  
+        assertEquals(instance.hashCode(), -472389919);
+
+        instance = new Blaze(23, null);
+        assertEquals(instance.hashCode(), 20540);  
     }
 
     /**
