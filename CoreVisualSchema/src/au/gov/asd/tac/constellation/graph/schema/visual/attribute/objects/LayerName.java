@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,24 +25,50 @@ public class LayerName implements Comparable<LayerName> {
     private final String name;
     private final int layer;
 
+    /** Default constructor.
+     * 
+     * @param layer Layer to assign.
+     * @param name Name of the layer.
+     */
     public LayerName(final int layer, final String name) {
         this.name = name;
         this.layer = layer;
     }
 
+    /**
+     * Get the layer of the object.
+     * 
+     * @return LAyer of object.
+     */
     public int getLayer() {
         return layer;
     }
 
+    /**
+     * Get the name of the object.
+     * 
+     * @return Name of object.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Get string representation of the object.
+     * 
+     * @return String representation of object.
+     */
     @Override
     public String toString() {
         return name;
     }
 
+    /**
+     * Implement compareTo operator that provides ordering of LayerName objects.
+     * Only the layer value is considered.
+     * @param o Object to compare against.
+     * @return -1, 0, or 1 indicating comparison between objects.
+     */
     @Override
     public int compareTo(final LayerName o) {
         if (o.layer > this.layer) {
@@ -54,6 +80,10 @@ public class LayerName implements Comparable<LayerName> {
         }
     }
 
+    /**
+     * Generate a hash code for the LayerName object.
+     * @return The generated hash code.
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -62,6 +92,12 @@ public class LayerName implements Comparable<LayerName> {
         return hash;
     }
 
+    /**
+     * Perform LAyerName equality.
+     * This check considers both the name and layer of the object.
+     * @param obj Object to compare against.
+     * @return True if objects are equal.
+     */
     @Override
     public boolean equals(final Object obj) {
         if (obj == null) {
