@@ -99,5 +99,9 @@ public class PlaneStateNGTest {
         assertEquals(instance.getVisiblePlanes().toString(), "{1, 2}");
         
         assertEquals(instance.toString(), "%s[\nPlane[label1@(1.000000,2.000000,3.000000) 7x8]\nPlane[label2@(1.000000,2.000000,3.000000) 7x8]\nPlane[label3@(1.000000,2.000000,3.000000) 7x8]\n]");   
+
+        PlaneState newPlaneState = new PlaneState(instance);
+        assertEquals(newPlaneState.toString(), instance.toString());   
+
     }
 }
