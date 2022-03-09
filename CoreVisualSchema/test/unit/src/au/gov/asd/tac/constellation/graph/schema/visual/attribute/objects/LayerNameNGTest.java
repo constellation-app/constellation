@@ -110,5 +110,9 @@ public class LayerNameNGTest {
         assertFalse(layerName.equals(new LayerName(layer, null)));
         assertTrue(layerName.equals(new LayerName(layer, name)));
         assertFalse(layerName.equals(new LayerName(layer + 1, name)));
+        layerName = new LayerName(layer, null);
+        assertTrue(layerName.equals(new LayerName(layer, null)));
+        assertFalse(layerName.equals(new LayerName(layer, name)));
+        assertFalse(layerName.equals(new LayerName(layer + 1, name)));
     } 
 }

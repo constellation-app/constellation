@@ -93,7 +93,7 @@ public class LayerName implements Comparable<LayerName> {
     }
 
     /**
-     * Perform LAyerName equality.
+     * Perform LayerName equality.
      * This check considers both the name and layer of the object.
      * @param obj Object to compare against.
      * @return True if objects are equal.
