@@ -59,18 +59,12 @@ public class VisualSchemaV2UpdateProviderNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         instance = new VisualSchemaV2UpdateProvider();
+        mockStoreGraph = mock(StoreGraph.class);
+        mockSchemaFactory = mock(SchemaFactoryUtilities.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-    }
-
-    /**
-     * Perform reset of all mocks and argument captors to ensure clean test steps.
-     */
-    public void resetMocking() {
-        mockStoreGraph = mock(StoreGraph.class);
-        mockSchemaFactory = mock(SchemaFactoryUtilities.class);
     }
 
     /**
@@ -79,7 +73,6 @@ public class VisualSchemaV2UpdateProviderNGTest {
     @Test
     public void testGetSchema() {
         System.out.println("VisualSchemaV2UpdateProviderNGTest.getSchema");
-        resetMocking();
         SchemaFactory factory = instance.getSchema();
         assertEquals(factory.getName(), VisualSchemaFactory.VISUAL_SCHEMA_ID);
     }
@@ -90,7 +83,6 @@ public class VisualSchemaV2UpdateProviderNGTest {
     @Test
     public void testGetFromVersionNumber() {
         System.out.println("VisualSchemaV2UpdateProviderNGTest.getFromVersionNumber");
-        resetMocking();
         assertEquals(instance.getFromVersionNumber(), VisualSchemaV1UpdateProvider.SCHEMA_VERSION_THIS_UPDATE);
     }
 
@@ -100,7 +92,6 @@ public class VisualSchemaV2UpdateProviderNGTest {
     @Test
     public void testGetToVersionNumber() {
         System.out.println("VisualSchemaV2UpdateProviderNGTest.getToVersionNumber");
-        resetMocking();
         assertEquals(instance.getToVersionNumber(), VisualSchemaV2UpdateProvider.SCHEMA_VERSION_THIS_UPDATE);
     }
 
@@ -109,6 +100,7 @@ public class VisualSchemaV2UpdateProviderNGTest {
      */
     @Test
     public void testSchemaUpdate() {
+        System.out.println("VisualSchemaV2UpdateProviderNGTest.testSchemaUpdate");
         
         ArgumentCaptor<Integer> attributeCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
@@ -116,7 +108,6 @@ public class VisualSchemaV2UpdateProviderNGTest {
         
         when(mockStoreGraph.getVertexCount()).thenReturn(10);
         when(mockStoreGraph.getVertex(anyInt())).thenReturn(0,1,2,3,4,5,6,7,8,9);
-        ConstellationIcon icon =  new ConstellationIcon.Builder("Background.Sphere", new ImageIconData((BufferedImage)null)).build();
         when(mockStoreGraph.getObjectValue(anyInt(), anyInt())).thenReturn(
                 new ConstellationIcon.Builder("Sphere", new ImageIconData((BufferedImage)null)).build(),
                 new ConstellationIcon.Builder("Background.Sphere", new ImageIconData((BufferedImage)null)).build(),
