@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,37 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class LongIOProvider extends AbstractGraphIOProvider {
 
+    /**
+     * Get a string representing the type of data that this provider handles.
+     * 
+     * @return A unique name indicating the type of data handled by this
+     * provider.
+     */
     @Override
     public String getName() {
         return LongAttributeDescription.ATTRIBUTE_NAME;
     }
 
+    /**
+     * Deserialise an object from a JsonNode.
+     * <p>
+     * Refer to base class for detailed description.
+     * 
+     * @param attributeId The id of the attribute being read.
+     * @param elementId The id of the element being read.
+     * @param jnode The JsonNode to read from.
+     * @param graph The graph that the resulting object will be placed in. Provided in case
+     * the object requires some graph data.
+     * @param vertexMap (not used) A mapping from a vertex id in the file to the vertex id
+     * in the graph.
+     * @param transactionMap (not used) A mapping from a transaction id in the file to the
+     * transaction id in the graph.
+     * @param byteReader (not used) The byte reader containing ancillary data (e.g. images)
+     * that doesn't easily fit into a JSON document.
+     * @param cache (not used) A cache that can be used to dedup identical instances of the
+     * same immutable objects.
+     * @throws java.io.IOException If there's a problem reading the document. 
+     */
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
             final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
@@ -48,6 +74,21 @@ public class LongIOProvider extends AbstractGraphIOProvider {
         graph.setLongValue(attributeId, elementId, attributeValue);
     }
 
+    /**
+     * Write this object to the JSON generator.
+     * <p>
+     * Refer to base class for detailed description.
+     * 
+     * @param attribute The attribute being written.
+     * @param elementId The id of the element being written.
+     * @param jsonGenerator The JsonGenerator used to write to the JSON document.
+     * @param graph The graph that the object belongs to. Provided in case the object requires some 
+     * graph data.
+     * @param byteWriter (not used)  For ancillary data (e.g. images) that doesn't easily
+     * fit into a JSON document.
+     * @param verbose Determines whether to write default values of attributes or not.
+     * @throws IOException 
+     */
     @Override
     public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator,
             final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
