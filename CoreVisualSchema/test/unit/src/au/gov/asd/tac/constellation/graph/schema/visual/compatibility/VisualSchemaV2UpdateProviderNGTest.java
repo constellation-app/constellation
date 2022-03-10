@@ -19,7 +19,15 @@ import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.ImageIconData;
+import java.awt.image.BufferedImage;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.anyInt;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -101,6 +109,37 @@ public class VisualSchemaV2UpdateProviderNGTest {
      */
     @Test
     public void testSchemaUpdate() {
-    }
-    
+        
+        ArgumentCaptor<Integer> attributeCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Object> iconCaptor = ArgumentCaptor.forClass(Object.class);
+        
+        when(mockStoreGraph.getVertexCount()).thenReturn(10);
+        when(mockStoreGraph.getVertex(anyInt())).thenReturn(0,1,2,3,4,5,6,7,8,9);
+        ConstellationIcon icon =  new ConstellationIcon.Builder("Background.Sphere", new ImageIconData((BufferedImage)null)).build();
+        when(mockStoreGraph.getObjectValue(anyInt(), anyInt())).thenReturn(
+                new ConstellationIcon.Builder("Sphere", new ImageIconData((BufferedImage)null)).build(),
+                new ConstellationIcon.Builder("Background.Sphere", new ImageIconData((BufferedImage)null)).build(),
+                new ConstellationIcon.Builder("Square", new ImageIconData((BufferedImage)null)).build(),
+                new ConstellationIcon.Builder("Background.Square", new ImageIconData((BufferedImage)null)).build(),
+                new ConstellationIcon.Builder("Circle", new ImageIconData((BufferedImage)null)).build(),
+                new ConstellationIcon.Builder("Background.Circle", new ImageIconData((BufferedImage)null)).build(),
+                new ConstellationIcon.Builder("SoftSquare", new ImageIconData((BufferedImage)null)).build(),
+                new ConstellationIcon.Builder("Background.SoftSquare", new ImageIconData((BufferedImage)null)).build(),
+                new ConstellationIcon.Builder("Background.Soft Square", new ImageIconData((BufferedImage)null)).build(),
+                new ConstellationIcon.Builder("default", new ImageIconData((BufferedImage)null)).build());
+        instance.schemaUpdate(mockStoreGraph);
+        Mockito.verify(mockStoreGraph, times(1)).updateAttributeDefaultValue(0, "Background.Flat Square");
+        Mockito.verify(mockStoreGraph, times(10)).getObjectValue(anyInt(), anyInt());
+        Mockito.verify(mockStoreGraph, times(9)).setObjectValue(attributeCaptor.capture(), idCaptor.capture(), iconCaptor.capture());
+        assertEquals(((ConstellationIcon)iconCaptor.getAllValues().get(0)).getName(), "Round Circle");
+        assertEquals(((ConstellationIcon)iconCaptor.getAllValues().get(1)).getName(), "Round Circle");
+        assertEquals(((ConstellationIcon)iconCaptor.getAllValues().get(2)).getName(), "Round Square");
+        assertEquals(((ConstellationIcon)iconCaptor.getAllValues().get(3)).getName(), "Round Square");
+        assertEquals(((ConstellationIcon)iconCaptor.getAllValues().get(4)).getName(), "Flat Circle");
+        assertEquals(((ConstellationIcon)iconCaptor.getAllValues().get(5)).getName(), "Flat Circle");
+        assertEquals(((ConstellationIcon)iconCaptor.getAllValues().get(6)).getName(), "Flat Square");
+        assertEquals(((ConstellationIcon)iconCaptor.getAllValues().get(7)).getName(), "Flat Square");
+        assertEquals(((ConstellationIcon)iconCaptor.getAllValues().get(8)).getName(), "Flat Square");
+    } 
 }
