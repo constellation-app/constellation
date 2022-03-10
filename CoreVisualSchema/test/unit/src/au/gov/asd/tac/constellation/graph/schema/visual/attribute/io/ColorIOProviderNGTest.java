@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.node.FloatNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -119,7 +118,7 @@ public final class ColorIOProviderNGTest {
         when(mockJsonNode.isObject()).thenReturn(true);
         when(mockJsonNode.has(anyString())).thenReturn(true);
         when(mockJsonNode.get(anyString())).thenReturn(new TextNode("red"));
-        when(mockCache.deduplicate(anyObject())).thenReturn(redAttribValue);
+        when(mockCache.deduplicate(any())).thenReturn(redAttribValue);
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, mockCache);
         Mockito.verify(mockGraphWriteMethods, times(1)).setObjectValue(attributeId, elementId, redAttribValue);
 
@@ -131,7 +130,7 @@ public final class ColorIOProviderNGTest {
         when(mockJsonNode.get("green")).thenReturn(new FloatNode(0.5f));
         when(mockJsonNode.get("blue")).thenReturn(new FloatNode(0.5f));
         when(mockJsonNode.get("alpha")).thenReturn(new FloatNode(1.0f));
-        when(mockCache.deduplicate(anyObject())).thenReturn(tealAttribValue);
+        when(mockCache.deduplicate(any())).thenReturn(tealAttribValue);
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, mockCache);
         Mockito.verify(mockGraphWriteMethods, times(1)).setObjectValue(attributeId, elementId, tealAttribValue);
         Mockito.verify(mockGraphWriteMethods, times(0)).setStringValue(anyInt(), anyInt(), anyString());
@@ -141,7 +140,7 @@ public final class ColorIOProviderNGTest {
         when(mockJsonNode.isNull()).thenReturn(false);
         when(mockJsonNode.isObject()).thenReturn(false);
         when(mockJsonNode.textValue()).thenReturn(attribValue);
-        when(mockCache.deduplicate(anyObject())).thenReturn(attribValue);
+        when(mockCache.deduplicate(any())).thenReturn(attribValue);
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, mockCache);
         Mockito.verify(mockGraphWriteMethods, times(0)).setObjectValue(anyInt(), anyInt(), any(ConstellationColor.class));
         Mockito.verify(mockGraphWriteMethods, times(1)).setStringValue(attributeId, elementId, attribValue);

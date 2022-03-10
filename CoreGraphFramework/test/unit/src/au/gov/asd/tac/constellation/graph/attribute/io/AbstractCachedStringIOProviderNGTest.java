@@ -100,7 +100,7 @@ public class AbstractCachedStringIOProviderNGTest {
         // Call method under test with JsonNode set to returen isNull = true
         resetMocking();
         when(mockJsonNode.isNull()).thenReturn(true);
-        when(mockCache.deduplicate(anyObject())).thenReturn(attribValue);
+        when(mockCache.deduplicate(any())).thenReturn(attribValue);
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, mockCache);
         Mockito.verify(mockJsonNode, times(0)).textValue();
         Mockito.verify(mockCache, times(1)).deduplicate(null);
@@ -109,7 +109,7 @@ public class AbstractCachedStringIOProviderNGTest {
         resetMocking();
         when(mockJsonNode.isNull()).thenReturn(false);
         when(mockJsonNode.textValue()).thenReturn(attribValue);
-        when(mockCache.deduplicate(anyObject())).thenReturn(attribValue);
+        when(mockCache.deduplicate(any())).thenReturn(attribValue);
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, mockCache);
         Mockito.verify(mockJsonNode, times(1)).textValue();
         Mockito.verify(mockCache, times(1)).deduplicate(attribValue);
