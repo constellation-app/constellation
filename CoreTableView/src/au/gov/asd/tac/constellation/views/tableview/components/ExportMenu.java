@@ -340,10 +340,7 @@ public class ExportMenu {
                         final String name = file.getName();
                         // if it is an actual file and it ends with the expected extension
 
-                        if (file.isFile() && StringUtils.endsWithIgnoreCase(name, expectedFileExtension)) {
-                            return true;
-                        }
-                        return file.isDirectory();
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, expectedFileExtension)) || file.isDirectory();
                     }
                     @Override
                     public String getDescription() {
