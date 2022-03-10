@@ -67,7 +67,6 @@ public class PlaneNGTest {
         assertEquals(value.getWidth(), bufferedImage.getWidth());
         assertEquals(value.getHeight(), bufferedImage.getHeight());
         assertEquals(value.getType(), bufferedImage.getType());
-        assertEquals(value.getType(), bufferedImage.getType());
     }
 
     /**
