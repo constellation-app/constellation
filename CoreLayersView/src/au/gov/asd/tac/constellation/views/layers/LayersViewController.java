@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.layers.context.LayerAction;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
@@ -47,6 +48,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.openide.NotifyDescriptor;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -54,7 +57,7 @@ import java.util.logging.Logger;
  * @author aldebaran30701
  */
 public class LayersViewController {
-    
+
     private static final Logger LOGGER = Logger.getLogger(LayersViewController.class.getName());
 
     // Layers view controller instance
@@ -300,6 +303,32 @@ public class LayersViewController {
     }
 
     /**
+     * Create a layer by writing data to the UI and saving that state
+     */
+    protected void createLayer() {
+        final int layerCount = Math.max(getTxQueryCollection().getHighestQueryIndex(), getVxQueryCollection().getHighestQueryIndex());
+
+        if (layerCount <= BitMaskQueryCollection.MAX_QUERY_AMT) {
+            final LayersViewPane pane = parent.getContent();
+            pane.createLayer(layerCount + 1, false, null, StringUtils.EMPTY, StringUtils.EMPTY, true, true);
+            writeState();
+        } else {
+            NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers", NotifyDescriptor.WARNING_MESSAGE);
+            LOGGER.log(Level.INFO, "Layer count maximum reached. Maximum is currently: {0}", BitMaskQueryCollection.MAX_QUERY_AMT);
+        }
+    }
+
+    /**
+     * Deselect all layers in each collection
+     */
+    protected void deselectAll() {
+        getVxQueryCollection().setVisibilityOnAll(false);
+        getTxQueryCollection().setVisibilityOnAll(false);
+        execute();
+        writeState();
+    }
+
+    /**
      * Read the current state from the graph.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
@@ -394,7 +423,7 @@ public class LayersViewController {
     protected static class UpdateQueryPlugin extends SimpleEditPlugin {
 
         protected UpdateQueryPlugin() {
-            
+
         }
 
         @Override

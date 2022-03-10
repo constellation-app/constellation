@@ -16,34 +16,23 @@
 package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.graph.value.utilities.ExpressionUtilities;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.query.Query;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.NotifyDescriptor;
-import org.openide.util.HelpCtx;
 
 /**
  * Layers View Pane.
@@ -57,9 +46,8 @@ public class LayersViewPane extends BorderPane {
     private final GridPane layersGridPane;
     protected final VBox layersViewPane;
     protected final VBox noGraphPane;
-    private final HBox options;
-    private final Label errorLabel;
-    private static final String QUERY_WARNING_TEXT = "Invalid query structure";
+    private final MenuBar options;
+
     private static final String QUERY_WARNING_STYLE = "-fx-background-color: rgba(241,74,74,0.85);";
     private static final String QUERY_DEFAULT_STYLE = "-fx-shadow-highlight-color; -fx-text-box-border; -fx-control-inner-background;";
 
@@ -75,12 +63,7 @@ public class LayersViewPane extends BorderPane {
         final Label txqueryHeadingText = new Label("Transaction Query");
         final Label descriptionHeadingText = new Label("Description");
 
-        errorLabel = new Label(QUERY_WARNING_TEXT);
-        errorLabel.setPadding(new Insets(2, 0, 0, 0));
-        errorLabel.setTextAlignment(TextAlignment.CENTER);
-        errorLabel.setStyle("-fx-text-fill: rgba(241,74,74,0.85);");
-        errorLabel.setVisible(false);
-        HBox.setHgrow(errorLabel, Priority.ALWAYS);
+        this.options = new MenuBar();
 
         // create gridpane and alignments
         layersGridPane = new GridPane();
@@ -110,40 +93,6 @@ public class LayersViewPane extends BorderPane {
         controller.getTxQueryCollection().setDefaultQueries();
         setLayers(BitMaskQueryCollection.DEFAULT_VX_QUERIES, BitMaskQueryCollection.DEFAULT_TX_QUERIES);
 
-        // create options
-        final Button addButton = new Button("Add New Layer");
-        addButton.setAlignment(Pos.CENTER_RIGHT);
-        addButton.setTooltip(new Tooltip("CTRL + ALT + L"));
-        addButton.setOnAction(event -> {
-            if (layersGridPane.getRowCount() <= BitMaskQueryCollection.MAX_QUERY_AMT) {
-                final int newQueryIndex = Math.max(controller.getTxQueryCollection().getHighestQueryIndex() + 1,
-                        controller.getVxQueryCollection().getHighestQueryIndex() + 1);
-                createLayer(newQueryIndex, false, null, StringUtils.EMPTY, StringUtils.EMPTY, true, true);
-                controller.writeState();
-            } else {
-                NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers", NotifyDescriptor.WARNING_MESSAGE);
-                LOGGER.log(Level.INFO, "Layer count maximum reached. Maximum is currently: {0}", BitMaskQueryCollection.MAX_QUERY_AMT);
-            }
-            event.consume();
-        });
-        HBox.setHgrow(addButton, Priority.ALWAYS);
-
-        final Button deselectAllButton = new Button("Deselect All Layers");
-        deselectAllButton.setTooltip(new Tooltip("CTRL + ALT + D"));
-        deselectAllButton.setAlignment(Pos.CENTER_RIGHT);
-        deselectAllButton.setOnAction(event -> {
-            controller.getVxQueryCollection().setVisibilityOnAll(false);
-            controller.getTxQueryCollection().setVisibilityOnAll(false);
-            controller.execute();
-            controller.writeState();
-            event.consume();
-        });
-        HBox.setHgrow(deselectAllButton, Priority.ALWAYS);
-
-        this.options = new HBox(5, addButton, deselectAllButton, createHelpButton(), errorLabel);
-        options.setAlignment(Pos.TOP_LEFT);
-        options.setPadding(new Insets(0, 0, 0, 10));
-
         // add layers grid and options to pane
         this.layersViewPane = new VBox(5, layersGridPane, options);
 
@@ -152,29 +101,15 @@ public class LayersViewPane extends BorderPane {
         options.prefWidthProperty().bind(layersViewPane.widthProperty());
 
         this.setCenter(layersViewPane);
-        
-        final Label noGraphLabel = new Label("Open or create a graph to enable the Layers View.");
+
         // add layers grid and options to pane
-        this.noGraphPane = new VBox(5, noGraphLabel, createHelpButton());
-        noGraphPane.setPadding(new Insets(0,0,0,0));
+        this.noGraphPane = new NoGraphPane();
 
         // create layout bindings
         noGraphPane.prefWidthProperty().bind(this.widthProperty());
     }
-    
-    private Button createHelpButton() {
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
-        helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
-        helpButton.setTooltip(new Tooltip("Display help for Layers View"));
-        helpButton.setOnAction(event -> new HelpCtx(LayersViewTopComponent.class.getName()).display());
 
-        // Get rid of the ugly button look so the icon stands alone.
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
-        
-        return helpButton;
-    }
-
-    private void createLayer(final int currentIndex, final boolean checkBoxSelected, final String vxQuery, final String txQuery, final String description, final boolean showVertices, final boolean showTransactions) {
+    protected void createLayer(final int currentIndex, final boolean checkBoxSelected, final String vxQuery, final String txQuery, final String description, final boolean showVertices, final boolean showTransactions) {
 
         // Layer ID
         final Label layerIdText = new Label(String.format("%02d", currentIndex));
@@ -268,9 +203,9 @@ public class LayersViewPane extends BorderPane {
             controller.getTxQueryCollection().add(txbitMaskQuery);
         }
 
-        if (!errorLabel.isVisible()) {
-            // check tx and vx
-            errorLabel.setVisible(!testQueryValidity(vxQuery) || !testQueryValidity(txQuery));
+        // Only show the error label, never hide
+        if (!options.getQueryErrorLabelVisibility()) {
+            options.displayQueryErrorLabel(!testQueryValidity(vxQuery) || !testQueryValidity(txQuery));
         }
 
         // Add created items to grid pane
@@ -288,7 +223,7 @@ public class LayersViewPane extends BorderPane {
     private void updateLayers(final BitMaskQuery[] vxQueries, final BitMaskQuery[] txQueries) {
         synchronized (this) {
             layersGridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) > 0);
-            errorLabel.setVisible(false);
+            options.displayQueryErrorLabel(false);
             final int iteratorEnd = Math.max(vxQueries.length, txQueries.length);
             for (int position = 0; position < iteratorEnd; position++) {
                 final BitMaskQuery vxQuery = vxQueries[position];
@@ -317,24 +252,14 @@ public class LayersViewPane extends BorderPane {
     }
 
     /**
-     * Tests if the Expression String parses correctly. Does not check if there
-     * are returnable results. Suppresses the error dialogs within the parse
-     * method.
+     * Tests if the text parses correctly or if the query is empty Allows null
+     * values as that is how inactive layers are represented
      *
      * @param queryText the expression string to test
-     * @return true if the query is valid, false otherwise
+     * @return true if the query is valid or null, false otherwise
      */
     private boolean testQueryValidity(final String queryText) {
-        boolean validity = true;
-        if (queryText == null) {
-            return validity;
-        }
-        ExpressionParser.hideErrorPrompts(true);
-        if (ExpressionParser.parse(queryText) == null) {
-            validity = false;
-        }
-        ExpressionParser.hideErrorPrompts(false);
-        return validity;
+        return queryText == null || ExpressionUtilities.testQueryValidity(queryText);
     }
 
     private synchronized void syncLayers() {
@@ -362,7 +287,7 @@ public class LayersViewPane extends BorderPane {
                     boolean validQuery = testQueryValidity(vxQuery);
                     if (!hasErrors) {
                         hasErrors = !validQuery;
-                        errorLabel.setVisible(hasErrors);
+                        options.displayQueryErrorLabel(hasErrors);
                     }
                     ((TextArea) item).setStyle(validQuery ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
                     break;
@@ -371,7 +296,7 @@ public class LayersViewPane extends BorderPane {
                     boolean validQuery2 = testQueryValidity(txQuery);
                     if (!hasErrors) {
                         hasErrors = !validQuery2;
-                        errorLabel.setVisible(hasErrors);
+                        options.displayQueryErrorLabel(hasErrors);
                     }
                     ((TextArea) item).setStyle(validQuery2 ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
                     break;
@@ -404,9 +329,9 @@ public class LayersViewPane extends BorderPane {
     }
 
     /**
-     * Set the pane enabled will switch between the real layers pane and a 
+     * Set the pane enabled will switch between the real layers pane and a
      * message pane notifying the user that a graph is required.
-     * 
+     *
      * @param enable true if there is a graph
      */
     protected void setEnabled(final boolean enable) {

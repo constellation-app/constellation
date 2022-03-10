@@ -108,6 +108,7 @@
                 <package>au.gov.asd.tac.constellation.graph.value.operations</package>
                 <package>au.gov.asd.tac.constellation.graph.value.readables</package>
                 <package>au.gov.asd.tac.constellation.graph.value.stores</package>
+                <package>au.gov.asd.tac.constellation.graph.value.utilities</package>
                 <package>au.gov.asd.tac.constellation.graph.value.values</package>
                 <package>au.gov.asd.tac.constellation.graph.value.variables</package>
                 <package>au.gov.asd.tac.constellation.graph.value.writables</package>
