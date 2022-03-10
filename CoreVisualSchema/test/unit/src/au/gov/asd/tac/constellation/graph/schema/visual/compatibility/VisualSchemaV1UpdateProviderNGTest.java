@@ -70,16 +70,6 @@ public class VisualSchemaV1UpdateProviderNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         instance = new VisualSchemaV1UpdateProvider();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
-    /**
-     * Perform reset of all mocks and argument captors to ensure clean test steps.
-     */
-    public void resetMocking() {
         mockStoreGraph = mock(StoreGraph.class);
         mockSchemaFactory = mock(SchemaFactoryUtilities.class);
         attributeCaptor = ArgumentCaptor.forClass(Integer.class);
@@ -87,13 +77,16 @@ public class VisualSchemaV1UpdateProviderNGTest {
         listCaptor = ArgumentCaptor.forClass(Object.class);
     }
 
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+    }
+
     /**
      * Test of getSchema method, of class VisualSchemaV1UpdateProvider.
      */
     @Test
     public void testGetSchema() {
-        System.out.println("VisualSchemaV1UpdateProviderNGTest.getSchema");
-        resetMocking();
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testGetSchema");
         SchemaFactory factory = instance.getSchema();
         assertEquals(factory.getName(), VisualSchemaFactory.VISUAL_SCHEMA_ID);
     }
@@ -103,8 +96,7 @@ public class VisualSchemaV1UpdateProviderNGTest {
      */
     @Test
     public void testGetFromVersionNumber() {
-        System.out.println("VisualSchemaV1UpdateProviderNGTest.getFromVersionNumber");
-        resetMocking();
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testGetFromVersionNumber");
         assertEquals(instance.getFromVersionNumber(), UpdateProvider.DEFAULT_VERSION);
     }
 
@@ -113,8 +105,7 @@ public class VisualSchemaV1UpdateProviderNGTest {
      */
     @Test
     public void testGetToVersionNumber() {
-        System.out.println("VisualSchemaV1UpdateProviderNGTest.getToVersionNumber");
-        resetMocking();
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testGetToVersionNumber");
         assertEquals(instance.getToVersionNumber(), VisualSchemaV1UpdateProvider.SCHEMA_VERSION_THIS_UPDATE);
     }
 
@@ -122,20 +113,22 @@ public class VisualSchemaV1UpdateProviderNGTest {
      * Test of schemaUpdate method, of class VisualSchemaV1UpdateProvider.
      */
     @Test
-    public void testSchemaUpdate() {
-        System.out.println("VisualSchemaV1UpdateProviderNGTest.schemaUpdate");
-        
-        // labels getAttribute returns NOT_FOUND
-        resetMocking();
+    public void testSchemaUpdate_labels_getAttributeNotFound() {
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testSchemaUpdate_labels_getAttributeNotFound");
         when(mockStoreGraph.getAttribute(GraphElementType.META, "labels")).thenReturn(Graph.NOT_FOUND);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_top")).thenReturn(Graph.NOT_FOUND);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_bottom")).thenReturn(Graph.NOT_FOUND);
         instance.schemaUpdate(mockStoreGraph);
         Mockito.verify(mockStoreGraph, times(0)).getObjectValue(anyInt(), anyInt());
         Mockito.verify(mockStoreGraph, times(0)).removeAttribute(anyInt());
-        
-        // labels getAttribute returns null
-        resetMocking();
+    }
+
+    /**
+     * Test of schemaUpdate method, of class VisualSchemaV1UpdateProvider.
+     */
+    @Test
+    public void testSchemaUpdate_labels_getAttributeNull() {
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testSchemaUpdate_labels_getAttributeNull");
         when(mockStoreGraph.getAttribute(GraphElementType.META, "labels")).thenReturn(23);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_top")).thenReturn(Graph.NOT_FOUND);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_bottom")).thenReturn(Graph.NOT_FOUND);
@@ -144,9 +137,14 @@ public class VisualSchemaV1UpdateProviderNGTest {
         Mockito.verify(mockStoreGraph, times(1)).getObjectValue(anyInt(), anyInt());
         Mockito.verify(mockStoreGraph, times(1)).removeAttribute(anyInt());
         Mockito.verify(mockStoreGraph, times(0)).setObjectValue(anyInt(), anyInt(), any());
-        
-        // labels getAttribute and getObjectValue return valid data
-        resetMocking();
+    }
+
+    /**
+     * Test of schemaUpdate method, of class VisualSchemaV1UpdateProvider.
+     */
+    @Test
+    public void testSchemaUpdate_labels_getAttributeValid() {
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testSchemaUpdate_labels_getAttributeValid");
         GraphLabelsAndDecoratorsV0 labelsAndDecorators = new GraphLabelsAndDecoratorsV0();
         labelsAndDecorators.addBottomLabel(new GraphLabelV0("bottom;red;1"));
         labelsAndDecorators.addTopLabel(new GraphLabelV0("top;red;1"));
@@ -156,8 +154,8 @@ public class VisualSchemaV1UpdateProviderNGTest {
         labelsAndDecorators.addConnectionLabel(new GraphLabelV0("connection;red;3"));
         labelsAndDecorators.setDecoratorLabel(Decorator.NW, "NW");
         labelsAndDecorators.setDecoratorLabel(Decorator.SW, "SW");
-        labelsAndDecorators.setDecoratorLabel(Decorator.NE, "NE");
-        labelsAndDecorators.setDecoratorLabel(Decorator.SE, "SE");
+        labelsAndDecorators.setDecoratorLabel(Decorator.NE, "");
+        labelsAndDecorators.setDecoratorLabel(Decorator.SE, "null");
 
         when(mockStoreGraph.getAttribute(GraphElementType.META, "labels")).thenReturn(23);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_top")).thenReturn(Graph.NOT_FOUND);
@@ -177,10 +175,15 @@ public class VisualSchemaV1UpdateProviderNGTest {
         assertEquals(((GraphLabels)listCaptor.getAllValues().get(0)).toString(), "bottom;Red;1.0");
         assertEquals(((GraphLabels)listCaptor.getAllValues().get(1)).toString(), "top;Red;1.0|top;Red;2.0");
         assertEquals(((GraphLabels)listCaptor.getAllValues().get(2)).toString(), "connection;Red;1.0|connection;Red;2.0|connection;Red;3.0");
-        assertEquals(((VertexDecorators)listCaptor.getAllValues().get(3)).toString(), "\"NW\";\"SW\";\"SE\";\"NE\";");
-        
-        // labels_top getAttribute returns NOT_FOUND
-        resetMocking();
+        assertEquals(((VertexDecorators)listCaptor.getAllValues().get(3)).toString(), "\"NW\";\"SW\";;;");        
+    }
+
+    /**
+     * Test of schemaUpdate method, of class VisualSchemaV1UpdateProvider.
+     */
+    @Test
+    public void testSchemaUpdate_labelstop_getAttributeNotFound() {
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testSchemaUpdate_labelstop_getAttributeNotFound");
         when(mockStoreGraph.getAttribute(GraphElementType.META, "labels")).thenReturn(Graph.NOT_FOUND);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_top")).thenReturn(23);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_bottom")).thenReturn(Graph.NOT_FOUND);
@@ -192,9 +195,14 @@ public class VisualSchemaV1UpdateProviderNGTest {
         assertEquals((int)attributeCaptor.getAllValues().get(0), 0);
         assertEquals((int)idCaptor.getAllValues().get(0), 0);
         assertEquals(((GraphLabels)listCaptor.getAllValues().get(0)).toString(), "a;LightBlue;1.0|b;LightBlue;1.0|c;LightBlue;1.0");
-        
-        // labels_top getAttribute and getObjectValue return valid data
-        resetMocking();
+    }
+
+    /**
+     * Test of schemaUpdate method, of class VisualSchemaV1UpdateProvider.
+     */
+    @Test
+    public void testSchemaUpdate_labelstop_getAttributeNull() {
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testSchemaUpdate_labelstop_getAttributeNull");    
         when(mockStoreGraph.getAttribute(GraphElementType.META, "labels")).thenReturn(Graph.NOT_FOUND);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_top")).thenReturn(23);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_bottom")).thenReturn(Graph.NOT_FOUND);
@@ -206,9 +214,33 @@ public class VisualSchemaV1UpdateProviderNGTest {
         assertEquals((int)attributeCaptor.getAllValues().get(0), 0);
         assertEquals((int)idCaptor.getAllValues().get(0), 0);
         assertEquals(((GraphLabels)listCaptor.getAllValues().get(0)).toString(), "a;LightBlue;1.0|b;LightBlue;1.0|c;LightBlue;1.0");
-        
-        // labels_bottom getAttribute returns NOT_FOUND
-        resetMocking();
+    }
+
+    /**
+     * Test of schemaUpdate method, of class VisualSchemaV1UpdateProvider.
+     */
+    @Test
+    public void testSchemaUpdate_labelstop_getAttributeValid() {
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testSchemaUpdate_labelstop_getAttributeValid");
+        when(mockStoreGraph.getAttribute(GraphElementType.META, "labels")).thenReturn(Graph.NOT_FOUND);
+        when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_top")).thenReturn(23);
+        when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_bottom")).thenReturn(Graph.NOT_FOUND);
+        when(mockStoreGraph.getStringValue(23, 0)).thenReturn("a,b,c");
+        instance.schemaUpdate(mockStoreGraph);
+        Mockito.verify(mockStoreGraph, times(1)).getStringValue(anyInt(), anyInt());
+        Mockito.verify(mockStoreGraph, times(1)).removeAttribute(anyInt());
+        Mockito.verify(mockStoreGraph, times(1)).setObjectValue(attributeCaptor.capture(), idCaptor.capture(), listCaptor.capture());
+        assertEquals((int)attributeCaptor.getAllValues().get(0), 0);
+        assertEquals((int)idCaptor.getAllValues().get(0), 0);
+        assertEquals(((GraphLabels)listCaptor.getAllValues().get(0)).toString(), "a;LightBlue;1.0|b;LightBlue;1.0|c;LightBlue;1.0");
+    }
+
+    /**
+     * Test of schemaUpdate method, of class VisualSchemaV1UpdateProvider.
+     */
+    @Test
+    public void testSchemaUpdate_labelsbottom_getAttributeNotFound() {
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testSchemaUpdate_labelsbottom_getAttributeNotFound");
         when(mockStoreGraph.getAttribute(GraphElementType.META, "labels")).thenReturn(Graph.NOT_FOUND);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_top")).thenReturn(Graph.NOT_FOUND);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_bottom")).thenReturn(23);
@@ -220,9 +252,14 @@ public class VisualSchemaV1UpdateProviderNGTest {
         assertEquals((int)attributeCaptor.getAllValues().get(0), 0);
         assertEquals((int)idCaptor.getAllValues().get(0), 0);
         assertEquals(((GraphLabels)listCaptor.getAllValues().get(0)).toString(), "a;LightBlue;1.0|b;LightBlue;1.0|c;LightBlue;1.0");
-        
-        // labels_bottom getAttribute and getObjectValue return valid data
-        resetMocking();
+    }
+
+    /**
+     * Test of schemaUpdate method, of class VisualSchemaV1UpdateProvider.
+     */
+    @Test
+    public void testSchemaUpdate_labelsbottom_getAttributeValid() {
+        System.out.println("VisualSchemaV1UpdateProviderNGTest.testSchemaUpdate_labelsbottom_getAttributeValid");
         when(mockStoreGraph.getAttribute(GraphElementType.META, "labels")).thenReturn(Graph.NOT_FOUND);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_top")).thenReturn(Graph.NOT_FOUND);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "labels_bottom")).thenReturn(23);
@@ -234,6 +271,5 @@ public class VisualSchemaV1UpdateProviderNGTest {
         assertEquals((int)attributeCaptor.getAllValues().get(0), 0);
         assertEquals((int)idCaptor.getAllValues().get(0), 0);
         assertEquals(((GraphLabels)listCaptor.getAllValues().get(0)).toString(), "a;LightBlue;1.0|b;LightBlue;1.0|c;LightBlue;1.0");
-        
     }
 }
