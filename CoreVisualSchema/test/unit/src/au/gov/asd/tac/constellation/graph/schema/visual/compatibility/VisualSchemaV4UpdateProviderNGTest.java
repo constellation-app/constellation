@@ -129,7 +129,6 @@ public class VisualSchemaV4UpdateProviderNGTest {
         when(mockStoreGraph.getStringValue(0, 0)).thenReturn("LabelValue");
         when(mockStoreGraph.getStringValue(0, 1)).thenReturn(null);
         when(mockStoreGraph.getSchema()).thenReturn(new Schema(new VisualSchemaFactory()));
-              
         instance.schemaUpdate(mockStoreGraph);
         Mockito.verify(mockStoreGraph, times(1)).setPrimaryKey(GraphElementType.VERTEX);
         Mockito.verify(mockStoreGraph, times(2)).setPrimaryKey(GraphElementType.TRANSACTION);

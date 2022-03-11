@@ -15,11 +15,15 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.compatibility;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -101,6 +105,19 @@ public class VisualSchemaV6UpdateProviderNGTest {
      */
     @Test
     public void testSchemaUpdate() {
+        System.out.println("VisualSchemaV6UpdateProviderNGTest.testSchemaUpdate");
+        when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "node_labels_bottom")).thenReturn(23);
+        when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "node_labels_top")).thenReturn(24);
+        when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "transaction_labels")).thenReturn(25);
+        when(mockStoreGraph.getStringValue(23, 0)).thenReturn("strBottom");
+        when(mockStoreGraph.getStringValue(24, 0)).thenReturn("strTop");
+        when(mockStoreGraph.getStringValue(25, 0)).thenReturn("strTrans");
+        instance.schemaUpdate(mockStoreGraph);
+        Mockito.verify(mockStoreGraph, times(1)).setStringValue(0, 0, "strBottom");
+        Mockito.verify(mockStoreGraph, times(1)).setStringValue(0, 0, "strTop");
+        Mockito.verify(mockStoreGraph, times(1)).setStringValue(0, 0, "strTrans");
+        Mockito.verify(mockStoreGraph, times(1)).removeAttribute(23);
+        Mockito.verify(mockStoreGraph, times(1)).removeAttribute(24);
+        Mockito.verify(mockStoreGraph, times(1)).removeAttribute(25);
     }
-    
 }
