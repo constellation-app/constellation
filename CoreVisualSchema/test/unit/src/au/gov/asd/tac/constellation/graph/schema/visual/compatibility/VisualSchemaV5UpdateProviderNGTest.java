@@ -15,11 +15,17 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.compatibility;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -101,6 +107,17 @@ public class VisualSchemaV5UpdateProviderNGTest {
      */
     @Test
     public void testSchemaUpdate() {
-    }
-    
+        System.out.println("VisualSchemaV5UpdateProviderNGTest.testSchemaUpdate");
+
+        ArgumentCaptor<Integer> attributeCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<VertexDecorators> decoratorsCaptor = ArgumentCaptor.forClass(VertexDecorators.class);
+        
+        when(mockStoreGraph.getObjectValue(0, 0)).thenReturn(new VertexDecorators("oldNW", "oldNE", "oldSE", "oldSW"));
+        instance.schemaUpdate(mockStoreGraph);
+        Mockito.verify(mockStoreGraph, times(1)).setObjectValue(attributeCaptor.capture(), idCaptor.capture(), decoratorsCaptor.capture());
+        assertEquals((int)attributeCaptor.getValue(), 0);
+        assertEquals((int)idCaptor.getValue(), 0);
+        assertEquals(decoratorsCaptor.getValue().toString(), "\"oldNW\";;\"oldSE\";\"oldSW\";");
+    }   
 }
