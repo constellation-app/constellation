@@ -55,18 +55,12 @@ public class VisualSchemaV6UpdateProviderNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         instance = new VisualSchemaV6UpdateProvider();
+        mockStoreGraph = mock(StoreGraph.class);
+        mockSchemaFactory = mock(SchemaFactoryUtilities.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-    }
-
-    /**
-     * Perform reset of all mocks and argument captors to ensure clean test steps.
-     */
-    public void resetMocking() {
-        mockStoreGraph = mock(StoreGraph.class);
-        mockSchemaFactory = mock(SchemaFactoryUtilities.class);
     }
 
     /**
@@ -75,7 +69,6 @@ public class VisualSchemaV6UpdateProviderNGTest {
     @Test
     public void testGetSchema() {
         System.out.println("VisualSchemaV6UpdateProviderNGTest.getSchema");
-        resetMocking();
         SchemaFactory factory = instance.getSchema();
         assertEquals(factory.getName(), VisualSchemaFactory.VISUAL_SCHEMA_ID);
     }
@@ -86,7 +79,6 @@ public class VisualSchemaV6UpdateProviderNGTest {
     @Test
     public void testGetFromVersionNumber() {
         System.out.println("VisualSchemaV6UpdateProviderNGTest.getFromVersionNumber");
-        resetMocking();
         assertEquals(instance.getFromVersionNumber(), VisualSchemaV5UpdateProvider.SCHEMA_VERSION_THIS_UPDATE);
     }
 
@@ -96,7 +88,6 @@ public class VisualSchemaV6UpdateProviderNGTest {
     @Test
     public void testGetToVersionNumber() {
         System.out.println("VisualSchemaV6UpdateProviderNGTest.getToVersionNumber");
-        resetMocking();
         assertEquals(instance.getToVersionNumber(), VisualSchemaV6UpdateProvider.SCHEMA_VERSION_THIS_UPDATE);
     }
 
