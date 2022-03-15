@@ -227,7 +227,7 @@ public class DelimitedImportController extends ImportController {
     
     protected void notifyFileStructureMismatchWarning(final List<File> filesToRemove) {
         final StringBuilder warningMsg = new StringBuilder((filesToRemove.size() > 1 ? "These files have" : "This file has"))
-                .append(" a different structure and will be deleted: ").append(SeparatorConstants.NEWLINE);
+                .append(" a different structure and will be removed: ").append(SeparatorConstants.NEWLINE);
 
         filesToRemove.forEach(file -> warningMsg.append(file.getPath()).append(SeparatorConstants.NEWLINE));
 
