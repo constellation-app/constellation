@@ -136,6 +136,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.TRANSACTION));
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.VERTEX));
         SingleChoiceParameterType.setOptionsData(elementTypeParameter, elementTypes);
+        SingleChoiceParameterType.setChoiceData(elementTypeParameter, new ElementTypeParameterValue(GraphElementType.VERTEX));
         parameters.addParameter(elementTypeParameter);
 
         final PluginParameter<MultiChoiceParameterValue> attributesParameter = MultiChoiceParameterType.build(ATTRIBUTES_PARAMETER_ID, GraphAttributeParameterValue.class);
@@ -147,7 +148,6 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
         selectedOnlyParameter.setName("Selected Only");
         selectedOnlyParameter.setDescription("If True, only export the selected nodes. The default is False.");
-        selectedOnlyParameter.setBooleanValue(false);
         parameters.addParameter(selectedOnlyParameter);
 
         parameters.addController(ELEMENT_TYPE_PARAMETER_ID, (master, params, change) -> {
@@ -264,7 +264,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String vertexPoint = Shape.generateShape(vertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) vertexLongitude, (double) vertexLatitude)));
                             shapes.put(vertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
@@ -324,7 +324,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String transactionPoint = Shape.generateShape(transactionIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) transactionLongitude, (double) transactionLatitude)));
                             shapes.put(transactionIdentifier, transactionPoint);
                             shapeFound = true;
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
@@ -371,7 +371,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String vertexPoint = Shape.generateShape(sourceVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) sourceVertexLongitude, (double) sourceVertexLatitude)));
                             shapes.put(sourceVertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
@@ -418,7 +418,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String vertexPoint = Shape.generateShape(destinationVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) destinationVertexLongitude, (double) destinationVertexLatitude)));
                             shapes.put(destinationVertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
@@ -461,7 +461,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
         try {
             exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
 

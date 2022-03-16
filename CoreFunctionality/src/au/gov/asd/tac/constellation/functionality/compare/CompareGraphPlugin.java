@@ -137,6 +137,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                     @SuppressWarnings("unchecked") //COMPARE_GRAPH_PARAMETER_ID will always be of type SingleChoiceParameterValue
                     final PluginParameter<SingleChoiceParameterValue> compareParamter = (PluginParameter<SingleChoiceParameterValue>) params.get(COMPARE_GRAPH_PARAMETER_ID);
                     SingleChoiceParameterType.setOptions(compareParamter, graphNames);
+                    SingleChoiceParameterType.setChoice(compareParamter, graphNames.get(0));
                 }
             }
         });

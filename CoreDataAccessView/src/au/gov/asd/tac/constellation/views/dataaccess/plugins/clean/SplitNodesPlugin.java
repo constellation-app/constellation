@@ -74,7 +74,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     public static final String DUPLICATE_TRANSACTIONS_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split_level");
     public static final String TRANSACTION_TYPE_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "transaction_type");
     public static final String ALL_OCCURRENCES_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "all_occurances");
-
     public static final String COMPLETE_WITH_SCHEMA_OPTION_ID = PluginParameter.buildId(SplitNodesPlugin.class, "complete_schema");
 
     @Override
@@ -99,7 +98,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         final PluginParameter<StringParameterValue> split = StringParameterType.build(SPLIT_PARAMETER_ID);
         split.setName("Split Character(s)");
         split.setDescription("A new term will be extracted from the first instance of this character(s) in the Identifier");
-        split.setStringValue(null);
         params.addParameter(split);
 
         final PluginParameter<BooleanParameterValue> duplicateTransactionsParameter = BooleanParameterType.build(DUPLICATE_TRANSACTIONS_PARAMETER_ID);
@@ -153,8 +151,10 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
 
             SingleChoiceParameterType.setOptions(transactionType, types);
             transactionType.suppressEvent(true, new ArrayList<>());
-            if (transactionType.getSingleChoice() == null && types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
-                SingleChoiceParameterType.setChoice(transactionType, AnalyticConcept.TransactionType.CORRELATION.getName());
+            if (!types.isEmpty() && transactionType.getSingleChoice() == null) {
+                final String correlationTypeName = AnalyticConcept.TransactionType.CORRELATION.getName();
+                // set the transaction type to Correlation if it exists and the first option otherwise
+                SingleChoiceParameterType.setChoice(transactionType, types.contains(correlationTypeName) ? correlationTypeName : types.get(0));
             }
             transactionType.suppressEvent(false, new ArrayList<>());
 

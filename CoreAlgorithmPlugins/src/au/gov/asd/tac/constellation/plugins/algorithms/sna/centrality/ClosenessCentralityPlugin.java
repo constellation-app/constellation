@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -69,7 +70,6 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> harmonicParameter = BooleanParameterType.build(HARMONIC_PARAMETER_ID);
         harmonicParameter.setName("Harmonic");
         harmonicParameter.setDescription("Calculate scores using the harmonic mean");
-        harmonicParameter.setBooleanValue(false);
         parameters.addParameter(harmonicParameter);
 
         final PluginParameter<BooleanParameterValue> includeConnectionsInParameter = BooleanParameterType.build(INCLUDE_CONNECTIONS_IN_PARAMETER_ID);
@@ -99,20 +99,35 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> normaliseByAvailableParameter = BooleanParameterType.build(NORMALISE_AVAILABLE_PARAMETER_ID);
         normaliseByAvailableParameter.setName("Normalise By Max Available Score");
         normaliseByAvailableParameter.setDescription("Normalise calculated scores by the maximum calculated score");
-        normaliseByAvailableParameter.setBooleanValue(false);
         parameters.addParameter(normaliseByAvailableParameter);
 
         final PluginParameter<BooleanParameterValue> normaliseConnectedComponentsParameter = BooleanParameterType.build(NORMALISE_CONNECTED_COMPONENTS_PARAMETER_ID);
         normaliseConnectedComponentsParameter.setName("Normalise Connected Components");
         normaliseConnectedComponentsParameter.setDescription("Apply normalisation separately for each connected component");
-        normaliseConnectedComponentsParameter.setBooleanValue(false);
         parameters.addParameter(normaliseConnectedComponentsParameter);
 
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
         selectedOnlyParameter.setName("Selected Only");
         selectedOnlyParameter.setDescription("Calculate using only selected elements");
-        selectedOnlyParameter.setBooleanValue(false);
         parameters.addParameter(selectedOnlyParameter);
+        
+        parameters.addController(NORMALISE_POSSIBLE_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE) {
+                if (master.getBooleanValue()) {
+                    // only one of normalise by max possible or max available can be enabled
+                    params.get(NORMALISE_AVAILABLE_PARAMETER_ID).setBooleanValue(false);
+                }
+            }
+        });
+        
+        parameters.addController(NORMALISE_AVAILABLE_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE) {
+                if (master.getBooleanValue()) {
+                    // only one of normalise by max possible or max available can be enabled
+                    params.get(NORMALISE_POSSIBLE_PARAMETER_ID).setBooleanValue(false);
+                }
+            }
+        });
 
         return parameters;
     }

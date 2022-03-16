@@ -304,6 +304,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 }
             }
         });
+        if (!dateTimeAttributes.isEmpty()) {
+            SingleChoiceParameterType.setChoice(dtAttrParam, dateTimeAttributes.get(0));
+        }
     }
 
     @Override

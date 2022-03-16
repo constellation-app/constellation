@@ -163,19 +163,6 @@ public class MergeTransactionsPluginNGTest {
     }
 
     /**
-     * Test of edit method with a null merge transaction type name
-     *
-     * @throws Exception
-     */
-    @Test(expectedExceptions = PluginException.class)
-    public void testEditNullTypeName() throws Exception {
-        MergeTransactionsPlugin instance = new MergeTransactionsPlugin();
-        PluginInteraction interaction = new TextPluginInteraction();
-        PluginParameters parameters = instance.createParameters();
-        instance.edit(graph, interaction, parameters);
-    }
-
-    /**
      * Test of edit method with an unknown merge transaction type
      *
      * @throws Exception

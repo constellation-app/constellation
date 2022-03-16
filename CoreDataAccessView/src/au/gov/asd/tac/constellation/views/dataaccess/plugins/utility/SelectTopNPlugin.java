@@ -107,6 +107,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         modeParameter.setName("Mode");
         modeParameter.setDescription("Select either the Node or Transaction mode");
         SingleChoiceParameterType.setOptions(modeParameter, modes);
+        SingleChoiceParameterType.setChoice(modeParameter, NODE);
         params.addParameter(modeParameter);
 
         final PluginParameter<SingleChoiceParameterValue> typeCategoryParameter = SingleChoiceParameterType.build(TYPE_CATEGORY_PARAMETER_ID);
@@ -125,7 +126,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         limitParameter.setIntegerValue(10);
         params.addParameter(limitParameter);
 
-        params.addController(MODE_PARAMETER_ID, (PluginParameter<?> master, Map<String, PluginParameter<?>> parameters, ParameterChange change) -> {
+        params.addController(MODE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String mode = parameters.get(MODE_PARAMETER_ID).getStringValue();
                 if (mode != null) {
@@ -153,11 +154,14 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                     final PluginParameter<SingleChoiceParameterValue> typeCategoryParamter = (PluginParameter<SingleChoiceParameterValue>) parameters.get(TYPE_CATEGORY_PARAMETER_ID);
                     types.sort(String::compareTo);
                     SingleChoiceParameterType.setOptions(typeCategoryParamter, types);
+                    if (!types.isEmpty()) {
+                        SingleChoiceParameterType.setChoice(typeCategoryParamter, types.get(0));
+                    }
                 }
             }
         });
 
-        params.addController(TYPE_CATEGORY_PARAMETER_ID, (PluginParameter<?> master, Map<String, PluginParameter<?>> parameters, ParameterChange change) -> {
+        params.addController(TYPE_CATEGORY_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String mode = parameters.get(MODE_PARAMETER_ID).getStringValue();
                 final String typeCategory = parameters.get(TYPE_CATEGORY_PARAMETER_ID).getStringValue();
@@ -193,6 +197,9 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 }
             }
         });
+        
+        // needed to trigger the population of parameter values dependent on the mode parameter
+        params.getParameters().get(MODE_PARAMETER_ID).fireChangeEvent(ParameterChange.VALUE);
 
         return params;
     }
