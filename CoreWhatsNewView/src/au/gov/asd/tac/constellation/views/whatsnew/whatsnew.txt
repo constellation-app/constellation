@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-03-16 Data Access View
+<p>A new tab has been added in SetUp -> Options -> Data Access View to hide data access categories that are not used by the users.</p>
+
 == 2022-02-22 Find View (Experimental)
 <p>A new version of the Find View can be accessed via Experimental -> Views or Ctrl + B. This version is intended to replace the current Find View at some stage.</p>
 
