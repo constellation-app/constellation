@@ -334,6 +334,7 @@ public class ExportMenu {
         public FileChooserBuilder getExportFileChooser() {
             return new FileChooserBuilder(fileChooserTitle)
                     .setTitle(fileChooserTitle)
+                    .setFilesOnly(true)
                     .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File file) {

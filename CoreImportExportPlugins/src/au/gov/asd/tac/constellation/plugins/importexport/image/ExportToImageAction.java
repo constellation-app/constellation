@@ -51,6 +51,7 @@ public final class ExportToImageAction implements ActionListener {
     public void actionPerformed(final ActionEvent ev) {
         final FileChooserBuilder fChooser = new FileChooserBuilder("ExportToImage")
                 .setTitle("Export to Image")
+                .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {

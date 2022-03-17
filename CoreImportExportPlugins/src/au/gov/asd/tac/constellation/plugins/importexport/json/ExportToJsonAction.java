@@ -48,6 +48,7 @@ public final class ExportToJsonAction implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         final FileChooserBuilder fChooser = new FileChooserBuilder("ExportJson")
                 .setTitle("Export to JSON")
+                .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {

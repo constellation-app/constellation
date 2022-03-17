@@ -46,6 +46,7 @@ public class DataAccessResultsDirChooser {
         fileChooser = new FileChooserBuilder(FILE_CHOOSER_GROUP)
                 .setDefaultWorkingDirectory(new File(System.getProperty("user.dir")))
                 .setTitle(TITLE)
+                .setFilesOnly(true)
                 .setDirectoriesOnly(true);
     }
     
