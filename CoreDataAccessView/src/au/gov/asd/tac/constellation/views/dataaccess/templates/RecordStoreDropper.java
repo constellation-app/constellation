@@ -40,7 +40,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -53,6 +54,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GraphDropper.class, position = 1)
 public class RecordStoreDropper implements GraphDropper {
 
+    private static final Logger LOGGER = Logger.getLogger(RecordStoreDropper.class.getName());
+    
     private static final byte[] RECORD_STORE_BYTES;
 
     protected static final DataFlavor RECORD_STORE_FLAVOR;
@@ -64,8 +67,10 @@ public class RecordStoreDropper implements GraphDropper {
         try {
             recordStoreFlavor = new DataFlavor("text/plain;class=java.io.InputStream;charset=UTF-8");
             recordStoreBytes = "RecordStore=".getBytes(StandardCharsets.UTF_8.name());
-        } catch (ClassNotFoundException | UnsupportedEncodingException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ClassNotFoundException ex) {
+            LOGGER.log(Level.SEVERE, "The specified class could not be loaded", ex);
+        } catch (final UnsupportedEncodingException ex) {
+            LOGGER.log(Level.SEVERE, "The specified charset isn't supported", ex);
         }
 
         RECORD_STORE_FLAVOR = recordStoreFlavor;
@@ -93,8 +98,10 @@ public class RecordStoreDropper implements GraphDropper {
                     }
                 }
             }
-        } catch (UnsupportedFlavorException | IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final UnsupportedFlavorException ex) {
+            LOGGER.log(Level.SEVERE, "The requested data flavour isn't supported", ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return null;

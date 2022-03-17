@@ -22,9 +22,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -42,6 +43,8 @@ import org.openide.util.Lookup;
  */
 public abstract class GlobalParameters {
 
+    private static final Logger LOGGER = Logger.getLogger(GlobalParameters.class.getName());
+    
     private static PluginParameters globalParameters = null;
 
     /**
@@ -118,7 +121,7 @@ public abstract class GlobalParameters {
                         container.put(line.substring(0, ix), line.substring(ix + 1));
                     });
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Failed to read data properly", ex);
         }
     }
 

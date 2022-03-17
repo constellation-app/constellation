@@ -30,7 +30,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -100,8 +99,8 @@ public class HelpServlet extends HttpServlet {
 
             tryCopy(path, response);
 
-        } catch (UnsupportedEncodingException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final UnsupportedEncodingException ex) {
+            LOGGER.log(Level.SEVERE, "Character encoding not supported", ex);
         }
     }
 

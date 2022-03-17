@@ -26,10 +26,11 @@ import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessConcept;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javax.swing.SwingUtilities;
-import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -38,6 +39,8 @@ import org.openide.windows.WindowManager;
  * @author algol
  */
 public class DataAccessUtilities {
+
+    private static final Logger LOGGER = Logger.getLogger(DataAccessUtilities.class.getName());
 
     private DataAccessUtilities() {
         throw new IllegalStateException("Utility class");
@@ -61,10 +64,10 @@ public class DataAccessUtilities {
         try {
             SwingUtilities.invokeAndWait(() -> panes[0] = getInternalDataAccessPane());
         } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
         } catch (final InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return panes[0];
@@ -85,19 +88,16 @@ public class DataAccessUtilities {
             final ReadableGraph readableGraph = graph.getReadableGraph();
             
             try {
-                final int dataAccessStateAttribute = DataAccessConcept.MetaAttribute
-                        .DATAACCESS_STATE.get(readableGraph);
+                final int dataAccessStateAttribute = DataAccessConcept.MetaAttribute.DATAACCESS_STATE.get(readableGraph);
                 
                 if (dataAccessStateAttribute != Graph.NOT_FOUND) {
-                    final DataAccessState dataAccessState = readableGraph.getObjectValue(
-                            dataAccessStateAttribute, 0);
+                    final DataAccessState dataAccessState = readableGraph.getObjectValue(dataAccessStateAttribute, 0);
                     
                     if (dataAccessState != null && !dataAccessState.getState().isEmpty()) {
                         // TODO: support multiple tabs (not just first one in state) and not
                         //       introduce memory leaks
                         final Map<String, String> tabState = dataAccessState.getState().get(0);
-                        final Tab step = dataAccessPane.getDataAccessTabPane().getTabPane()
-                                .getTabs().get(0);
+                        final Tab step = dataAccessPane.getDataAccessTabPane().getTabPane().getTabs().get(0);
                         
                         DataAccessTabPane.getQueryPhasePane(step)
                                 .getGlobalParametersPane().getParams().getParameters().entrySet().stream()
@@ -155,7 +155,7 @@ public class DataAccessUtilities {
                 
                 wg.setObjectValue(dataAccessStateAttribute, 0, dataAccessState);
             } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 Thread.currentThread().interrupt();
             } finally {
                 if (wg != null) {
