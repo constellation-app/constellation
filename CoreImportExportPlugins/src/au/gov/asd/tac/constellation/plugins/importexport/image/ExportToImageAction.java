@@ -55,7 +55,7 @@ public final class ExportToImageAction implements ActionListener {
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
-                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(FileExtensionConstants.PNG, pathName.getName())) {
+                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(pathName.getName(), FileExtensionConstants.PNG)) {
                             return true;
                         }
                         return pathName.isDirectory();
