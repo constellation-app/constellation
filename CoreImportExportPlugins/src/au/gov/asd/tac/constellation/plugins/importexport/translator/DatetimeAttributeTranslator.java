@@ -60,8 +60,8 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         DATETIME_FORMATS.put("yyyyMMdd HHmmss'Z'", "yyyyMMdd HHmmss'Z'");
         DATETIME_FORMATS.put("yyyyMMddHHmmss", "yyyyMMddHHmmss");
         DATETIME_FORMATS.put("EPOCH", null);
-        DATETIME_FORMATS.put(CUSTOM, null);
         DATETIME_FORMATS.put(EXCEL, null);
+        DATETIME_FORMATS.put(CUSTOM, null);
     }
 
     public DatetimeAttributeTranslator() {
@@ -115,10 +115,9 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
                     dateTime = df.parse(value);
                     break;
                 }
-                case EXCEL: {
+                case EXCEL: 
                     dateTime = TemporalFormatting.zonedDateTimeFromLong(DateUtil.getJavaDate(Double.parseDouble(value)).getTime());
-                    break;
-                }
+                    break;                
                 default: {
                     format = DATETIME_FORMATS.get(format);
                     final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
