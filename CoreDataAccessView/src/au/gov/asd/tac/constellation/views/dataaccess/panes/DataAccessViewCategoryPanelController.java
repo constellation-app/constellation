@@ -93,9 +93,11 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
     @Override
     public boolean isChanged() {
+        final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
         final DataAccessViewCategoryPanel panel = getPanel();
         final List<String> hiddenCategory = panel.getHiddenCategory();
-        final boolean hiddenChanged = !hiddenCategory.isEmpty();
+        final boolean hiddenChanged = (!hiddenCategory.isEmpty())
+                || (!prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT.toString()).isEmpty());
         return hiddenChanged;
     }
 

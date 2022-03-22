@@ -42,8 +42,10 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
         // Remove hidden data access categories
         if (!DAV_CATS.isEmpty()) {
             String[] arrayOfcategory = addCategoryToList(DAV_CATS);
-            for (int i = 0; i < arrayOfcategory.length; i++) {
-                plugins.remove(arrayOfcategory[i].trim());
+            if (arrayOfcategory.length > 0) {
+                for (int i = 0; i < arrayOfcategory.length; i++) {
+                    plugins.remove(arrayOfcategory[i].trim());
+                }
             }
         }
 
