@@ -58,7 +58,7 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
 /**
- * Split nodes based on
+ * Split Nodes Based on Identifier Plugin
  *
  * @author canis_majoris
  * @author antares
@@ -103,7 +103,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         final PluginParameter<BooleanParameterValue> duplicateTransactionsParameter = BooleanParameterType.build(DUPLICATE_TRANSACTIONS_PARAMETER_ID);
         duplicateTransactionsParameter.setName("Duplicate Transactions");
         duplicateTransactionsParameter.setDescription("Duplicate transactions for split nodes");
-        duplicateTransactionsParameter.setBooleanValue(false);
         params.addParameter(duplicateTransactionsParameter);
 
         final PluginParameter<SingleChoiceParameterValue> transactionType = SingleChoiceParameterType.build(TRANSACTION_TYPE_PARAMETER_ID);
@@ -114,7 +113,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         final PluginParameter<BooleanParameterValue> allOccurrences = BooleanParameterType.build(ALL_OCCURRENCES_PARAMETER_ID);
         allOccurrences.setName("Split on All Occurrences");
         allOccurrences.setDescription("Choose to split on all instances of the character(s) rather than just the first instance");
-        allOccurrences.setBooleanValue(false);
         params.addParameter(allOccurrences);
 
         final PluginParameter<BooleanParameterValue> completeSchema = BooleanParameterType.build(COMPLETE_WITH_SCHEMA_OPTION_ID);

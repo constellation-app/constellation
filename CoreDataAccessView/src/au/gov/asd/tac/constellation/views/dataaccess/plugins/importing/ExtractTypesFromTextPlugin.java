@@ -83,6 +83,7 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
         StringParameterType.setLines(text, 15);
         text.setName("Text");
         text.setDescription("Text to extract from");
+        text.setRequired(true);
         text.setStringValue("example text");
         params.addParameter(text);
 

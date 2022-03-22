@@ -106,6 +106,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final PluginParameter<SingleChoiceParameterValue> modeParameter = SingleChoiceParameterType.build(MODE_PARAMETER_ID);
         modeParameter.setName("Mode");
         modeParameter.setDescription("Select either the Node or Transaction mode");
+        modeParameter.setRequired(true);
         SingleChoiceParameterType.setOptions(modeParameter, modes);
         SingleChoiceParameterType.setChoice(modeParameter, NODE);
         params.addParameter(modeParameter);
@@ -113,11 +114,13 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final PluginParameter<SingleChoiceParameterValue> typeCategoryParameter = SingleChoiceParameterType.build(TYPE_CATEGORY_PARAMETER_ID);
         typeCategoryParameter.setName("Type Category");
         typeCategoryParameter.setDescription("The high level type category");
+        typeCategoryParameter.setRequired(true);
         params.addParameter(typeCategoryParameter);
 
         final PluginParameter<MultiChoiceParameterValue> typeParameter = MultiChoiceParameterType.build(TYPE_PARAMETER_ID);
         typeParameter.setName("Specific Types");
         typeParameter.setDescription("The specific types to include when calculating the top N");
+        typeParameter.setRequired(true);
         params.addParameter(typeParameter);
 
         final PluginParameter<IntegerParameterValue> limitParameter = IntegerParameterType.build(LIMIT_PARAMETER_ID);

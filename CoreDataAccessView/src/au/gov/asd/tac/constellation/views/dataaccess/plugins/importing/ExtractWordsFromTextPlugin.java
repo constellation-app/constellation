@@ -116,26 +116,24 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final PluginParameter<SingleChoiceParameterValue> attributeType = SingleChoiceParameterType.build(ATTRIBUTE_PARAMETER_ID);
         attributeType.setName("Content Attribute");
         attributeType.setDescription("Set the attribute from which to extract words");
+        attributeType.setRequired(true);
         params.addParameter(attributeType);
 
         final PluginParameter<StringParameterValue> text = StringParameterType.build(WORDS_PARAMETER_ID);
         StringParameterType.setLines(text, 15);
         text.setName("Words to Extract");
         text.setDescription("Whitelist of words to extract from content (new line delimited, extract all words if empty)");
-        text.setStringValue(null);
         params.addParameter(text);
 
         final PluginParameter<BooleanParameterValue> useRegex = BooleanParameterType.build(USE_REGEX_PARAMETER_ID);
         useRegex.setName("Use Regular Expressions");
         useRegex.setDescription("Words to Extract will be treated as regex patterns");
-        useRegex.setBooleanValue(false);
         useRegex.setEnabled(false);
         params.addParameter(useRegex);
 
         final PluginParameter<BooleanParameterValue> wholeWordsOnly = BooleanParameterType.build(WHOLE_WORDS_ONLY_PARAMETER_ID);
         wholeWordsOnly.setName("Whole Words Only");
         wholeWordsOnly.setDescription("Words to Extract will be treated as whole words only");
-        wholeWordsOnly.setBooleanValue(false);
         wholeWordsOnly.setEnabled(false);
         params.addParameter(wholeWordsOnly);
 
@@ -167,6 +165,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final PluginParameter<SingleChoiceParameterValue> inOrOutParam = SingleChoiceParameterType.build(IN_OR_OUT_PARAMETER_ID);
         inOrOutParam.setName("Transactions");
         inOrOutParam.setDescription("Link nodes to outgoing or incoming words: 'outgoing' or 'incoming'");
+        inOrOutParam.setRequired(true);
         SingleChoiceParameterType.setOptions(inOrOutParam, List.of(OUTGOING, INCOMING));
         inOrOutParam.setStringValue(OUTGOING);
         params.addParameter(inOrOutParam);
@@ -174,13 +173,11 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final PluginParameter<BooleanParameterValue> selected = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
         selected.setName("Selected Transactions Only");
         selected.setDescription("Only extract words from selected transactions only");
-        selected.setBooleanValue(false);
         params.addParameter(selected);
 
         final PluginParameter<BooleanParameterValue> regexOnlyParam = BooleanParameterType.build(REGEX_ONLY_PARAMETER_ID);
         regexOnlyParam.setName("Regular Expression Only");
         regexOnlyParam.setDescription("The regexes control everything");
-        regexOnlyParam.setBooleanValue(false);
         params.addParameter(regexOnlyParam);
 
         params.addController(WORDS_PARAMETER_ID, (master, parameters, change) -> {

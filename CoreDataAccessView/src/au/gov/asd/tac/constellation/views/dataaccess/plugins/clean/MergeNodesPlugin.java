@@ -137,6 +137,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final PluginParameter<SingleChoiceParameterValue> mergeType = SingleChoiceParameterType.build(MERGE_TYPE_PARAMETER_ID);
         mergeType.setName("Merge By");
         mergeType.setDescription("Nodes will be merged based on this");
+        mergeType.setRequired(true);
         final List<String> mergeTypes = new ArrayList<>(MERGE_TYPES.keySet());
         SingleChoiceParameterType.setOptions(mergeType, mergeTypes);
         SingleChoiceParameterType.setChoice(mergeType, mergeTypes.get(0));

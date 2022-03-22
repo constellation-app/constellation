@@ -454,6 +454,7 @@ public class PluginParameter<V extends ParameterValue> {
         copy.setEnabled(enabled);
         copy.setVisible(visible);
         copy.setError(error);
+        copy.setRequired(isRequired);
         copy.enclosingParameter = enclosingParameter;
         copy.properties = new HashMap<>(properties);
         return copy;
@@ -814,8 +815,7 @@ public class PluginParameter<V extends ParameterValue> {
     }
 
     /**
-     * Is the parameter required? Required parameters are marked as required in
-     * swagger.
+     * Is the parameter required?
      *
      * @return True if the parameter is required, false otherwise.
      */
@@ -824,8 +824,7 @@ public class PluginParameter<V extends ParameterValue> {
     }
 
     /**
-     * Set whether the parameter is required. Required parameters are marked as
-     * required in swagger.
+     * Set whether the parameter is required.
      *
      * @param isRequired A boolean indicating whether the parameter is required.
      */

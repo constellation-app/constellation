@@ -111,6 +111,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final PluginParameter<SingleChoiceParameterValue> originalGraph = SingleChoiceParameterType.build(ORIGINAL_GRAPH_PARAMETER_ID);
         originalGraph.setName("Original Graph");
         originalGraph.setDescription("The graph used as the starting point for the comparison");
+        originalGraph.setRequired(true);
         parameters.addParameter(originalGraph);
         
         // Controller listens for value change so that the compare graph cannot be compared against itself
@@ -145,6 +146,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final PluginParameter<SingleChoiceParameterValue> compareGraph = SingleChoiceParameterType.build(COMPARE_GRAPH_PARAMETER_ID);
         compareGraph.setName("Compare With Graph");
         compareGraph.setDescription("The graph used to compare against the original graph");
+        compareGraph.setRequired(true);
         parameters.addParameter(compareGraph);
         
         final PluginParameter<MultiChoiceParameterValue> ignoreVertexAttributes = MultiChoiceParameterType.build(IGNORE_VERTEX_ATTRIBUTES_PARAMETER_ID);

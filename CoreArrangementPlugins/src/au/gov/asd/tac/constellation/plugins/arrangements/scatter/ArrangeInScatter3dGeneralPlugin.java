@@ -73,58 +73,25 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
     private static final String DO_NOT_USE_SCALE = "Do not use final Scaling algorithm";
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
-        final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
-        radiusSetter.setRadii();
-
-        final Map<String, PluginParameter<?>> pp = parameters.getParameters();
-        final Scatter3dChoiceParameters scatter3dParams = Scatter3dChoiceParameters.getDefaultParameters();
-
-        final String xDimensionName = pp.get(SCATTER_3D_X_ATTRIBUTE).getStringValue();
-        final String yDimensionName = pp.get(SCATTER_3D_Y_ATTRIBUTE).getStringValue();
-        final String zDimensionName = pp.get(SCATTER_3D_Z_ATTRIBUTE).getStringValue();
-
-        if (StringUtils.isAnyBlank(new String[]{xDimensionName, yDimensionName, zDimensionName})) {
-            interaction.notify(PluginNotificationLevel.FATAL, "You must supply all 3 attribute names for Scatter 3D");
-            return;
-        }
-
-        scatter3dParams.setXDimension(xDimensionName);
-        scatter3dParams.setYDimension(yDimensionName);
-        scatter3dParams.setZDimension(zDimensionName);
-        scatter3dParams.setLogarithmicX(pp.get(SCATTER_3D_X_LOGARITHMIC).getBooleanValue());
-        scatter3dParams.setLogarithmicY(pp.get(SCATTER_3D_Y_LOGARITHMIC).getBooleanValue());
-        scatter3dParams.setLogarithmicZ(pp.get(SCATTER_3D_Z_LOGARITHMIC).getBooleanValue());
-        scatter3dParams.setDoNotScale(pp.get(SCATTER_3D_DO_NOT_SCALE).getBooleanValue());
-
-        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(graph, SelectedInclusionGraph.Connections.NONE);
-        selectedGraph.addAttributeToCopy(new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, xDimensionName)));
-        selectedGraph.addAttributeToCopy(new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, yDimensionName)));
-        selectedGraph.addAttributeToCopy(new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, zDimensionName)));
-
-        final Scatter3dArranger arranger = new Scatter3dArranger(scatter3dParams);
-        arranger.arrange(selectedGraph.getInclusionGraph());
-        selectedGraph.retrieveCoords();
-    }
-
-    @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<SingleChoiceParameterValue> xAttribute = SingleChoiceParameterType.build(SCATTER_3D_X_ATTRIBUTE);
         xAttribute.setName(X_ATTRIBUTE);
         xAttribute.setDescription("The attribute to use for the x dimension");
+        xAttribute.setRequired(true);
         parameters.addParameter(xAttribute);
 
         final PluginParameter<SingleChoiceParameterValue> yAttribute = SingleChoiceParameterType.build(SCATTER_3D_Y_ATTRIBUTE);
         yAttribute.setName(Y_ATTRIBUTE);
         yAttribute.setDescription("The attribute to use for the y dimension");
+        yAttribute.setRequired(true);
         parameters.addParameter(yAttribute);
 
         final PluginParameter<SingleChoiceParameterValue> zAttribute = SingleChoiceParameterType.build(SCATTER_3D_Z_ATTRIBUTE);
         zAttribute.setName(Z_ATTRIBUTE);
         zAttribute.setDescription("The attribute to use for the z dimension");
+        zAttribute.setRequired(true);
         parameters.addParameter(zAttribute);
 
         final PluginParameter<BooleanParameterValue> xLogarithmic = BooleanParameterType.build(SCATTER_3D_X_LOGARITHMIC);
@@ -177,5 +144,41 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
             SingleChoiceParameterType.setOptions(zAttribute, keys);
             SingleChoiceParameterType.setChoice(zAttribute, keys.size() > 2 ? keys.get(2) : keys.get(0));
         }
+    }
+    
+    @Override
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+
+        final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
+        radiusSetter.setRadii();
+
+        final Map<String, PluginParameter<?>> pp = parameters.getParameters();
+        final Scatter3dChoiceParameters scatter3dParams = Scatter3dChoiceParameters.getDefaultParameters();
+
+        final String xDimensionName = pp.get(SCATTER_3D_X_ATTRIBUTE).getStringValue();
+        final String yDimensionName = pp.get(SCATTER_3D_Y_ATTRIBUTE).getStringValue();
+        final String zDimensionName = pp.get(SCATTER_3D_Z_ATTRIBUTE).getStringValue();
+
+        if (StringUtils.isAnyBlank(new String[]{xDimensionName, yDimensionName, zDimensionName})) {
+            interaction.notify(PluginNotificationLevel.FATAL, "You must supply all 3 attribute names for Scatter 3D");
+            return;
+        }
+
+        scatter3dParams.setXDimension(xDimensionName);
+        scatter3dParams.setYDimension(yDimensionName);
+        scatter3dParams.setZDimension(zDimensionName);
+        scatter3dParams.setLogarithmicX(pp.get(SCATTER_3D_X_LOGARITHMIC).getBooleanValue());
+        scatter3dParams.setLogarithmicY(pp.get(SCATTER_3D_Y_LOGARITHMIC).getBooleanValue());
+        scatter3dParams.setLogarithmicZ(pp.get(SCATTER_3D_Z_LOGARITHMIC).getBooleanValue());
+        scatter3dParams.setDoNotScale(pp.get(SCATTER_3D_DO_NOT_SCALE).getBooleanValue());
+
+        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(graph, SelectedInclusionGraph.Connections.NONE);
+        selectedGraph.addAttributeToCopy(new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, xDimensionName)));
+        selectedGraph.addAttributeToCopy(new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, yDimensionName)));
+        selectedGraph.addAttributeToCopy(new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, zDimensionName)));
+
+        final Scatter3dArranger arranger = new Scatter3dArranger(scatter3dParams);
+        arranger.arrange(selectedGraph.getInclusionGraph());
+        selectedGraph.retrieveCoords();
     }
 }

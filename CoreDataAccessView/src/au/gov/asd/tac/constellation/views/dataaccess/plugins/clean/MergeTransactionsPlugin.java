@@ -149,6 +149,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         final PluginParameter<SingleChoiceParameterValue> mergeType = SingleChoiceParameterType.build(MERGE_TYPE_PARAMETER_ID);
         mergeType.setName("Merge By");
         mergeType.setDescription("Transactions will be merged based on this");
+        mergeType.setRequired(true);
         final List<String> mergeTypes = new ArrayList<>(MERGE_TYPES.keySet());
         SingleChoiceParameterType.setOptions(mergeType, mergeTypes);
         SingleChoiceParameterType.setChoice(mergeType, mergeTypes.get(0));
@@ -182,7 +183,6 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         final PluginParameter<BooleanParameterValue> selectedParam = BooleanParameterType.build(SELECTED_PARAMETER_ID);
         selectedParam.setName("Selected Only");
         selectedParam.setDescription("Merge Only Selected Transactions");
-        selectedParam.setBooleanValue(false);
         selectedParam.setEnabled(false);
         params.addParameter(selectedParam);
 

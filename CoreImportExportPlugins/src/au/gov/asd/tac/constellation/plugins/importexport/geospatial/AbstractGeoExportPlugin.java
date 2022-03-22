@@ -114,6 +114,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         final PluginParameter<FileParameterValue> outputParameter = FileParameterType.build(OUTPUT_PARAMETER_ID);
         outputParameter.setName("Output File");
         outputParameter.setDescription("The name of the output file");
+        outputParameter.setRequired(true);
         FileParameterType.setKind(outputParameter, FileParameterType.FileParameterKind.SAVE);
         FileParameterType.setFileFilters(outputParameter, getExportType());
         parameters.addParameter(outputParameter);
@@ -132,6 +133,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         final PluginParameter<SingleChoiceParameterValue> elementTypeParameter = SingleChoiceParameterType.build(ELEMENT_TYPE_PARAMETER_ID, ElementTypeParameterValue.class);
         elementTypeParameter.setName("Element Type");
         elementTypeParameter.setDescription("The graph element type");
+        elementTypeParameter.setRequired(true);
         final List<ElementTypeParameterValue> elementTypes = new ArrayList<>();
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.TRANSACTION));
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.VERTEX));
