@@ -46,6 +46,8 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
     private DataAccessViewCategoryPanel thePanel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private boolean panelRefreshed = false;
+
     /* This method enables to refresh the lists when the panel is opened */
     @Override
     public void update() {
@@ -53,10 +55,13 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
         SwingUtilities.invokeLater(() -> {
             final DataAccessViewCategoryPanel panel = getPanel();
-            panel.setLeftCategory(prefs.get(DataAccessViewPreferenceKeys.LEFT_DA_VIEW, DataAccessViewPreferenceKeys.LEFT_DA_VIEW_DEFAULT.toString()));
-            panel.setRightCategory(prefs.get(DataAccessViewPreferenceKeys.RIGHT_DA_VIEW, DataAccessViewPreferenceKeys.RIGHT_DA_VIEW_DEFAULT.toString()));
+            if (!panelRefreshed) {
+                panel.setVisibleCategory(panel.visibleResultList.toString());
+                panel.setHiddenCategory(prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT.toString()));
+            }
         });
     }
+
     /* This method enables to write the contents of the lists to the file */
     @Override
     public void applyChanges() {
@@ -65,11 +70,10 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
             if (isChanged()) {
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
-
                 final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
                 final DataAccessViewCategoryPanel panel = getPanel();
-                prefs.put(DataAccessViewPreferenceKeys.LEFT_DA_VIEW, panel.getLeftCategory().toString().replace("[,", "["));
-                prefs.put(DataAccessViewPreferenceKeys.RIGHT_DA_VIEW, panel.getRightCategory().toString().replace("[,", "["));
+                prefs.put(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, panel.getHiddenCategory().toString().replace("[,", "["));
+                panelRefreshed = true;
             }
         }
     }
@@ -82,18 +86,17 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
     @Override
     public boolean isValid() {
         final DataAccessViewCategoryPanel panel = getPanel();
-        final List<String> leftSide = panel.getLeftCategory();
-        final List<String> rightSide = panel.getRightCategory();
-        return !leftSide.equals(rightSide);
+        final List<String> visibleSide = panel.getVisibleCategory();
+        final List<String> hiddenSide = panel.getHiddenCategory();
+        return !visibleSide.equals(hiddenSide);
     }
 
     @Override
     public boolean isChanged() {
         final DataAccessViewCategoryPanel panel = getPanel();
-        final List<String> leftCategory = panel.getLeftCategory();
-
-        final boolean leftChanged = !leftCategory.equals(DataAccessViewCategoryPanel.DAV_CATEGORIES);
-        return leftChanged;
+        final List<String> hiddenCategory = panel.getHiddenCategory();
+        final boolean hiddenChanged = !hiddenCategory.isEmpty();
+        return hiddenChanged;
     }
 
     @Override

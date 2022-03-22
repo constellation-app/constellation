@@ -32,8 +32,8 @@ import org.openide.util.NbPreferences;
  */
 public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPlugin>>> {
 
-    final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
-    private final String DAV_CATS = prefs.get(DataAccessViewPreferenceKeys.RIGHT_DA_VIEW, DataAccessViewPreferenceKeys.RIGHT_DA_VIEW_DEFAULT.toString());
+    public static final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
+    public static final String DAV_CATS = prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT.toString());
 
     @Override
     public Map<String, List<DataAccessPlugin>> get() {
@@ -50,10 +50,10 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
         return plugins;
     }
 
-    private String[] addCategoryToList(String categories) {
+    public static String[] addCategoryToList(String categories) {
         if (!categories.trim().isEmpty()) {
             String hiddenCategory = categories.replaceAll("\\[", "").replaceAll("\\]", "");
-            final String[] hidden = hiddenCategory.split(",");
+            final String[] hidden = hiddenCategory.replace(" ", "").split(",");
             return hidden;
         }
         return null;
