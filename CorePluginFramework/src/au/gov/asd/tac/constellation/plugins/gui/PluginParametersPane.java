@@ -226,7 +226,7 @@ public final class PluginParametersPane extends GridPane {
                 separator.setStyle("-fx-background-color:#444444;");
                 HBox separatorBox = new HBox(separator);
                 HBox.setHgrow(separator, Priority.ALWAYS);
-                return separatorBox;
+                return new VBox(new Label("test"), separatorBox);
             }
             final PluginParametersNode child = node.getChildren().get(currentChild);
             return child.getFormatter().getParamPane(child);
@@ -548,10 +548,22 @@ public final class PluginParametersPane extends GridPane {
             paramGroupPane.setMinHeight(0);
             GridPane.setHalignment(paramGroupPane, HPos.LEFT);
             paramGroupPane.setPadding(Insets.EMPTY);
-
+            
             int row = 0;
             final DoubleProperty descriptionWidth = new SimpleDoubleProperty();
             DoubleProperty maxLabelWidth = new SimpleDoubleProperty();
+            
+            final long requiredParamsCount = node.getLeaves().stream()
+                    .map(paramNode -> paramNode.getParameter())
+                    .filter(parameter -> parameter.isRequired())
+                    .count();
+            if (requiredParamsCount > 0) {
+                // if there are any parameters marked as required,
+                // add the key for the label which is appended at the end of required parameters
+                final Label requiredParamsKey = new Label("* = parameter requires a value");
+                paramGroupPane.add(requiredParamsKey, 0, 0);
+                row++;
+            }
 
             for (final PluginParametersNode child : node.getChildren()) {
                 while (child.getFormatter().nextElement(child)) {
