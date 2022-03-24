@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,6 @@ public class DataAccessViewPreferenceKeys {
     public static final String VISIBLE_DA_VIEW = "dataaccessview.visible";
     public static final String HIDDEN_DA_VIEW = "dataaccessview.hidden";
 
-    public static final List<String> HIDDEN_DA_VIEW_DEFAULT = Collections.<String>emptyList();
+    public static final List<String> HIDDEN_DA_VIEW_DEFAULT = Collections.emptyList();
 
 }

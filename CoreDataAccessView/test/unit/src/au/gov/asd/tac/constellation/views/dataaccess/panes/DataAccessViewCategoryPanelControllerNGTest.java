@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2022 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
@@ -105,34 +115,34 @@ public class DataAccessViewCategoryPanelControllerNGTest {
 
 
         /* Test visible types*/
-        final JList<String> list1 = new JList<String>();
+        final JList<String> list1 = new JList();
         final DefaultListModel listModel1 = new DefaultListModel();
-        listModel1.addElement(new String("Import"));
-        listModel1.addElement(new String("Utility"));
+        listModel1.addElement("Import");
+        listModel1.addElement("Utility");
 
         list1.setModel(listModel1);
 
         when(dataAccessViewCategoryPanelSpy.getVisibleCategory())
                 .thenReturn(Arrays.asList(list1.getModel().getElementAt(0), list1.getModel().getElementAt(1)));
 
-        List expResult = Arrays.asList(new String[]{"Import", "Utility"});
-        List result = dataAccessViewCategoryPanelSpy.getVisibleCategory();
+        List<String> expResult = Arrays.asList(new String[]{"Import", "Utility"});
+        List<String> result = dataAccessViewCategoryPanelSpy.getVisibleCategory();
         verify(dataAccessViewCategoryPanelSpy, times(1)).getVisibleCategory();
         assertEquals(result, expResult);
 
         /* Test hidden types*/
-        final JList<String> list2 = new JList<String>();
+        final JList<String> list2 = new JList();
         final DefaultListModel listModel2 = new DefaultListModel();
-        listModel2.addElement(new String("Clean"));
-        listModel2.addElement(new String("Developer"));
+        listModel2.addElement("Clean");
+        listModel2.addElement("Developer");
 
         list2.setModel(listModel2);
 
         when(dataAccessViewCategoryPanelSpy.getHiddenCategory())
                 .thenReturn(Arrays.asList(list2.getModel().getElementAt(0), list2.getModel().getElementAt(1)));
 
-        List expResult2 = Arrays.asList(new String[]{"Clean", "Developer"});
-        List result2 = dataAccessViewCategoryPanelSpy.getHiddenCategory();
+        List<String> expResult2 = Arrays.asList(new String[]{"Clean", "Developer"});
+        List<String> result2 = dataAccessViewCategoryPanelSpy.getHiddenCategory();
         verify(dataAccessViewCategoryPanelSpy, times(1)).getHiddenCategory();
         assertEquals(result2, expResult2);
     }

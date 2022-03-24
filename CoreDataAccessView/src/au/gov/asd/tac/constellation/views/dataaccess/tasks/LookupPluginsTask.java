@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.tasks;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
@@ -38,10 +39,10 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
     @Override
     public Map<String, List<DataAccessPlugin>> get() {
         // Creates a map with the key set being every available data access plugin type.
-        Map<String, List<DataAccessPlugin>> plugins = DataAccessUtilities.getAllPlugins();
+        final Map<String, List<DataAccessPlugin>> plugins = DataAccessUtilities.getAllPlugins();
         // Remove hidden data access categories
         if (!DAV_CATS.isEmpty()) {
-            String[] arrayOfcategory = addCategoryToList(DAV_CATS);
+           final String[] arrayOfcategory = addCategoryToList(DAV_CATS);
             if (arrayOfcategory.length > 0) {
                 for (int i = 0; i < arrayOfcategory.length; i++) {
                     plugins.remove(arrayOfcategory[i].trim());
@@ -52,10 +53,10 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
         return plugins;
     }
 
-    public static String[] addCategoryToList(String categories) {
+    public static String[] addCategoryToList(final String categories) {
         if (!categories.trim().isEmpty()) {
-            String hiddenCategory = categories.replaceAll("\\[", "").replaceAll("\\]", "");
-            final String[] hidden = hiddenCategory.replace(" ", "").split(",");
+            final String hiddenCategory = categories.replaceAll("\\[", "").replaceAll("\\]", "");
+            final String[] hidden = hiddenCategory.replace(" ", "").split(SeparatorConstants.COMMA);
             return hidden;
         }
         return null;

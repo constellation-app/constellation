@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
@@ -44,7 +45,8 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     public static final List<String> DAV_CATEGORIES = new ArrayList<>(categories.keySet());
     public final List<String> visibleResultList;
 
-    DefaultListModel visibleListModel, hiddenListModel;
+    public DefaultListModel visibleListModel;
+    public DefaultListModel hiddenListModel;
 
     DataAccessViewCategoryPanel(DataAccessViewCategoryPanelController controller) {
         this.controller = controller;
@@ -56,53 +58,53 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         final String davHiddenString = LookupPluginsTask.DAV_CATS;
         final List<String> davHiddenList = Arrays.asList(LookupPluginsTask.addCategoryToList(davHiddenString));
 
-        visibleResultList = ((davHiddenList == null || davHiddenList.isEmpty())) ? DAV_CATEGORIES : ListUtils.subtract(DAV_CATEGORIES, davHiddenList);
+        visibleResultList = (davHiddenList == null || davHiddenList.isEmpty()) ? DAV_CATEGORIES : ListUtils.subtract(DAV_CATEGORIES, davHiddenList);
     }
 
     public List<String> getVisibleCategory() {
         if (visibleList.getModel().getSize() != 0) {
-            List<String> LEFT_DAV_CATEGORY_ARRAY = new ArrayList(visibleList.getModel().getSize());
+            final List<String> VISIBLE_DAV_CATEGORY_ARRAY = new ArrayList(visibleList.getModel().getSize());
             for (int i = 0; i < visibleList.getModel().getSize(); i++) {
-                LEFT_DAV_CATEGORY_ARRAY.add(visibleList.getModel().getElementAt(i));
+                VISIBLE_DAV_CATEGORY_ARRAY.add(visibleList.getModel().getElementAt(i));
             }
-            return LEFT_DAV_CATEGORY_ARRAY;
+            return VISIBLE_DAV_CATEGORY_ARRAY;
         }
-        return Collections.<String>emptyList();
+        return Collections.emptyList();
     }
 
     public List<String> getHiddenCategory() {
         if (hiddenList.getModel().getSize() != 0) {
-            List<String> RIGHT_DAV_CATEGORY_ARRAY = new ArrayList(hiddenList.getModel().getSize());
+            final List<String> HIDDEN_DAV_CATEGORY_ARRAY = new ArrayList(hiddenList.getModel().getSize());
             for (int i = 0; i < hiddenList.getModel().getSize(); i++) {
-                RIGHT_DAV_CATEGORY_ARRAY.add(hiddenList.getModel().getElementAt(i));
+                HIDDEN_DAV_CATEGORY_ARRAY.add(hiddenList.getModel().getElementAt(i));
             }
-            return RIGHT_DAV_CATEGORY_ARRAY;
+            return HIDDEN_DAV_CATEGORY_ARRAY;
         }
-        return Collections.<String>emptyList();
+        return Collections.emptyList();
     }
 
-    public void setVisibleCategory(String visibleCategories) {
-//      Set listLeft with the preference file options OR default values
-        if (!visibleCategories.trim().isEmpty()) {
+    public void setVisibleCategory(final String categories) {
+//      Set visible list with the dynamic list of categories
+        if (!categories.trim().isEmpty()) {
             getlistModelLeft().removeAllElements();
-            visibleCategories = visibleCategories.replaceAll("\\[", "").replaceAll("\\]", "");
-            final String[] visible = visibleCategories.split(",");
-            for (int i = 0; i < visible.length; i++) {
-                getlistModelLeft().addElement(visible[i].trim());
+            final String visibleCategories = categories.replaceAll("\\[", "").replaceAll("\\]", "");
+            final String[] visibleArray = visibleCategories.split(SeparatorConstants.COMMA);
+            for (int i = 0; i < visibleArray.length; i++) {
+                getlistModelLeft().addElement(visibleArray[i].trim());
             }
         }
         visibleList.removeAll();
         visibleList.setModel(getlistModelLeft());
     }
 
-    public void setHiddenCategory(String hiddenCategories) {
-//      Set listLeft with the preference file options OR default
-        if (!hiddenCategories.trim().isEmpty()) {
+    public void setHiddenCategory(final String categories) {
+//      Set hidden list with the preference file options OR default
+        if (!categories.trim().isEmpty()) {
             getlistModelRight().removeAllElements();
-            hiddenCategories = hiddenCategories.replaceAll("\\[", "").replaceAll("\\]", "");
-            final String[] hidden = hiddenCategories.split(",");
-            for (int i = 0; i < hidden.length; i++) {
-                getlistModelRight().addElement(hidden[i].trim());
+            final String hiddenCategories = categories.replaceAll("\\[", "").replaceAll("\\]", "");
+            final String[] hiddenArray = hiddenCategories.split(SeparatorConstants.COMMA);
+            for (int i = 0; i < hiddenArray.length; i++) {
+                getlistModelRight().addElement(hiddenArray[i].trim());
             }
         }
         hiddenList.removeAll();
@@ -131,8 +133,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         hiddenList = new javax.swing.JList<>();
         jLabel3 = new javax.swing.JLabel();
-        buttonSingleRight = new javax.swing.JButton();
-        buttonSingleLeft = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -144,22 +144,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         jScrollPane2.setViewportView(hiddenList);
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.jLabel3.text")); // NOI18N
-
-        buttonSingleRight.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(buttonSingleRight, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.buttonSingleRight.text")); // NOI18N
-        buttonSingleRight.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSingleRightActionPerformed(evt);
-            }
-        });
-
-        buttonSingleLeft.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(buttonSingleLeft, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.buttonSingleLeft.text")); // NOI18N
-        buttonSingleLeft.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSingleLeftActionPerformed(evt);
-            }
-        });
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.jLabel1.text")); // NOI18N
 
@@ -209,10 +193,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46)
                         .addGroup(OptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(OptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(buttonDoubleRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(buttonSingleLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(buttonSingleRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(buttonDoubleRight)
                             .addComponent(buttonDoubleLeft))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -229,12 +210,8 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(OptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(OptionPanelLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(buttonSingleRight)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(53, 53, 53)
                         .addComponent(buttonDoubleRight)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonSingleLeft)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonDoubleLeft))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
@@ -251,7 +228,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(OptionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(430, Short.MAX_VALUE))
+                .addContainerGap(440, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,63 +239,24 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonSingleRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSingleRightActionPerformed
-        // TODO add your handling code here:
-        String str2 = visibleList.getSelectedValue();
-        if (visibleList.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
-        } else {
-            //Add options to list Right
-            int value = visibleList.getSelectedIndex();
-            hiddenListModel.addElement(str2);
-            hiddenList.setModel(hiddenListModel);
-
-            //Remove options from list Left
-            if (visibleListModel.getSize() != 0) {
-                visibleListModel.removeElementAt(value);
-                visibleList.setModel(visibleListModel);
-            }
-        }
-    }//GEN-LAST:event_buttonSingleRightActionPerformed
-
-    private void buttonSingleLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSingleLeftActionPerformed
-        // TODO add your handling code here:
-        String str2 = hiddenList.getSelectedValue();
-        if (hiddenList.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(OptionPanel, "No data selected...", "Error", 1);
-        } else {
-            //Add options to list Left
-            int value = hiddenList.getSelectedIndex();
-            visibleListModel.addElement(str2);
-            visibleList.setModel(visibleListModel);
-
-            //Remove options from list Right
-            if (hiddenListModel.getSize() != 0) {
-                hiddenListModel.removeElementAt(value);
-                hiddenList.setModel(hiddenListModel);
-            }
-        }
-    }//GEN-LAST:event_buttonSingleLeftActionPerformed
-
     private void buttonDoubleRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDoubleRightActionPerformed
-        // TODO add your handling code here:
         if (visibleList.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
         } else {
-            //Add options to list Right
-            List list = visibleList.getSelectedValuesList();
-            int[] selectedIndices = visibleList.getSelectedIndices();
-            Object ss[] = list.toArray();
+            //Add selected options to hidden list
+           final List<String> selectedValues = visibleList.getSelectedValuesList();
+           final int[] selectedIndices = visibleList.getSelectedIndices();
+           final Object selectedValuesArray[] = selectedValues.toArray();
 
-            for (int i = 0; i < list.size(); i++) {
-                hiddenListModel.addElement(ss[i]);
+            for (int i = 0; i < selectedValues.size(); i++) {
+                hiddenListModel.addElement(selectedValuesArray[i]);
             }
             hiddenList.setModel(hiddenListModel);
 
-            //Remove options from list Left
+            //Remove seleted options from visible list
             if (visibleListModel.getSize() != 0) {
-                for (int i = 0; i < list.size(); i++) {
-                    visibleListModel.removeElement(ss[i]);
+                for (int i = 0; i < selectedValues.size(); i++) {
+                    visibleListModel.removeElement(selectedValuesArray[i]);
                 }
             }
             visibleList.setModel(visibleListModel);
@@ -327,24 +265,23 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonDoubleRightActionPerformed
 
     private void buttonDoubleLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDoubleLeftActionPerformed
-        // TODO add your handling code here:
          if (hiddenList.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
         } else {
-            //Add options to list Right
-            List list = hiddenList.getSelectedValuesList();
-            int[] selectedIndices = hiddenList.getSelectedIndices();
-            Object ss[] = list.toArray();
+            //Add selected options to visible list
+           final List<String> selectedValues = hiddenList.getSelectedValuesList();
+           final int[] selectedIndices = hiddenList.getSelectedIndices();
+           final Object selectedValuesArray[] = selectedValues.toArray();
 
-            for (int i = 0; i < list.size(); i++) {
-                visibleListModel.addElement(ss[i]);
+            for (int i = 0; i < selectedValues.size(); i++) {
+                visibleListModel.addElement(selectedValuesArray[i]);
             }
             visibleList.setModel(visibleListModel);
 
-            //Remove options from list Left
+            //Remove selected options from hidden list
             if (hiddenListModel.getSize() != 0) {
-                for (int i = 0; i < list.size(); i++) {
-                    hiddenListModel.removeElement(ss[i]);
+                for (int i = 0; i < selectedValues.size(); i++) {
+                    hiddenListModel.removeElement(selectedValuesArray[i]);
                 }
             }
             hiddenList.setModel(hiddenListModel);
@@ -355,8 +292,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private javax.swing.JPanel OptionPanel;
     private javax.swing.JButton buttonDoubleLeft;
     private javax.swing.JButton buttonDoubleRight;
-    private javax.swing.JButton buttonSingleLeft;
-    private javax.swing.JButton buttonSingleRight;
     private javax.swing.JList<String> hiddenList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
