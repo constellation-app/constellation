@@ -83,8 +83,8 @@
                           <Component id="jScrollPane1" min="-2" pref="172" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="buttonDoubleRight" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="buttonDoubleLeft" min="-2" max="-2" attributes="0"/>
+                              <Component id="buttonRight" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="buttonLeft" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace pref="91" max="32767" attributes="0"/>
                           <Component id="jScrollPane2" min="-2" pref="180" max="-2" attributes="0"/>
@@ -107,9 +107,9 @@
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
-                          <Component id="buttonDoubleRight" min="-2" max="-2" attributes="0"/>
+                          <Component id="buttonRight" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="buttonDoubleLeft" min="-2" max="-2" attributes="0"/>
+                          <Component id="buttonLeft" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jScrollPane1" alignment="0" pref="153" max="32767" attributes="0"/>
                       <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
@@ -194,30 +194,30 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="buttonDoubleRight">
+        <Component class="javax.swing.JButton" name="buttonRight">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="11" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="au/gov/asd/tac/constellation/views/dataaccess/panes/Bundle.properties" key="DataAccessViewCategoryPanel.buttonDoubleRight.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="au/gov/asd/tac/constellation/views/dataaccess/panes/Bundle.properties" key="DataAccessViewCategoryPanel.buttonRight.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonDoubleRightActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonRightActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="buttonDoubleLeft">
+        <Component class="javax.swing.JButton" name="buttonLeft">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="11" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="au/gov/asd/tac/constellation/views/dataaccess/panes/Bundle.properties" key="DataAccessViewCategoryPanel.buttonDoubleLeft.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="au/gov/asd/tac/constellation/views/dataaccess/panes/Bundle.properties" key="DataAccessViewCategoryPanel.buttonLeft.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonDoubleLeftActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonLeftActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
