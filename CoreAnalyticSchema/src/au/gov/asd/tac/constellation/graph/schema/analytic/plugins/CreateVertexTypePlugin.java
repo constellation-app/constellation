@@ -71,14 +71,12 @@ public class CreateVertexTypePlugin extends SimpleEditPlugin {
         nameParam.setName("Name");
         nameParam.setDescription("The name of the new vertex type");
         nameParam.setRequired(true);
-        nameParam.setStringValue("My new type");
         params.addParameter(nameParam);
 
         final PluginParameter<StringParameterValue> descriptionParam = StringParameterType.build(DESCRIPTION_PARAMETER_ID);
         descriptionParam.setName("Description");
         descriptionParam.setDescription("The description of the new vertex type");
         descriptionParam.setRequired(true);
-        descriptionParam.setStringValue("Description of my new type");
         params.addParameter(descriptionParam);
 
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
