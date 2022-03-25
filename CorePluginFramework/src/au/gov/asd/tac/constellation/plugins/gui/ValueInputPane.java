@@ -236,7 +236,8 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             field.textProperty().addListener((ov, t, t1) -> {
                 final String error = parameter.validateString(field.getText());
                 if ((required && StringUtils.isBlank(field.getText())) || error != null) {
-                    tooltip.setText(error);
+                    // if error is blank, the situation must be that a required parameter is blank
+                    tooltip.setText(StringUtils.isNotBlank(error) ? error : "Value is required!");
                     field.setTooltip(tooltip);
                     field.setId("invalid");
                 } else {

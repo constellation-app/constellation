@@ -192,7 +192,7 @@ public class FileInputPane extends HBox {
             // Validation
             final String error = parameter.validateString(field.getText());
             if ((required && StringUtils.isBlank(field.getText())) || error != null) {
-                tooltip.setText(error);
+                tooltip.setText(StringUtils.isNotBlank(error) ? error : "File is required!");
                 field.setTooltip(tooltip);
                 field.setId("invalid");
             } else {
