@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  *
  * @author mimosa
@@ -27,6 +24,6 @@ public class DataAccessViewPreferenceKeys {
     public static final String VISIBLE_DA_VIEW = "dataaccessview.visible";
     public static final String HIDDEN_DA_VIEW = "dataaccessview.hidden";
 
-    public static final List<String> HIDDEN_DA_VIEW_DEFAULT = Collections.emptyList();
+    public static final String HIDDEN_DA_VIEW_DEFAULT = "";
 
 }

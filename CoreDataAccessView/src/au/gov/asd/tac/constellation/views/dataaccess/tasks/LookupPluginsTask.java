@@ -33,7 +33,7 @@ import org.openide.util.NbPreferences;
  */
 public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPlugin>>> {
 
-    public static final Preferences PREFS = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
+    private static final Preferences PREFS = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
     public static final String DAV_CATS = PREFS.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT.toString());
 
     @Override
@@ -41,7 +41,7 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
         // Creates a map with the key set being every available data access plugin type.
         final Map<String, List<DataAccessPlugin>> plugins = DataAccessUtilities.getAllPlugins();
         // Remove hidden data access categories
-        if ((!DAV_CATS.isEmpty()) & (!DAV_CATS.isBlank())) {
+        if ((!DAV_CATS.isEmpty()) && (!DAV_CATS.isBlank())) {
            final String[] arrayOfcategory = addCategoryToList(DAV_CATS);
             if (arrayOfcategory.length > 0) {
                 for (int i = 0; i < arrayOfcategory.length; i++) {
@@ -53,9 +53,10 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
     }
 
     public static String[] addCategoryToList(final String categories) {
-        if ((!categories.trim().isEmpty())& (!categories.trim().isBlank())) {
-            final String hiddenCategory = categories.replaceAll("\\[", "").replaceAll("\\]", "");
-            final String[] hidden = hiddenCategory.replace(" ", "").split(SeparatorConstants.COMMA);
+        if ((!categories.trim().isEmpty()) && (!categories.trim().isBlank())) {
+            final String hiddenCategory = categories.replace("[", "");
+            final String hiddenCategoryFinal = hiddenCategory.replace("]", "");
+            final String[] hidden = hiddenCategoryFinal.replace(" ", "").split(SeparatorConstants.COMMA);
             return hidden;
         }
         return new String[0];

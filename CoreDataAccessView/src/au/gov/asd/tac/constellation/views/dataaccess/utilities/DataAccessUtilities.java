@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCor
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessConcept;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
-import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import java.lang.reflect.InvocationTargetException;
@@ -53,7 +52,7 @@ import org.openide.windows.WindowManager;
  */
 public class DataAccessUtilities {
 
-    private static final Logger LOGGER = Logger.getLogger(LookupPluginsTask.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DataAccessUtilities.class.getName());
 
     private DataAccessUtilities() {
         throw new IllegalStateException("Utility class");

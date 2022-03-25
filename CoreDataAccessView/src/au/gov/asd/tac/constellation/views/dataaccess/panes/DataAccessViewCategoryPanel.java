@@ -36,17 +36,17 @@ import org.apache.commons.collections4.ListUtils;
  */
 final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
-    protected final DataAccessViewCategoryPanelController controller;
-    public static final Map<String, List<DataAccessPlugin>> ALL_PLUGINS = DataAccessUtilities.getAllPlugins();
-    public static final Map<String, List<DataAccessPlugin>> CATEGORIES = ALL_PLUGINS.entrySet()
+    private final DataAccessViewCategoryPanelController controller;
+    private static final Map<String, List<DataAccessPlugin>> ALL_PLUGINS = DataAccessUtilities.getAllPlugins();
+    private static final Map<String, List<DataAccessPlugin>> CATEGORIES = ALL_PLUGINS.entrySet()
             .stream()
             .filter(entry -> !entry.getValue().isEmpty())
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    protected static final List<String> DAV_CATEGORIES = new ArrayList<>(CATEGORIES.keySet());
-    protected final List<String> visibleResultList;
+    private static final List<String> DAV_CATEGORIES = new ArrayList<>(CATEGORIES.keySet());
+    private final List<String> visibleResultList;
 
-    public static DefaultListModel visibleListModel;
-    public static DefaultListModel hiddenListModel;
+    private final DefaultListModel visibleListModel;
+    private final DefaultListModel hiddenListModel;
 
     DataAccessViewCategoryPanel(DataAccessViewCategoryPanelController controller) {
         this.controller = controller;
@@ -74,11 +74,11 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
     public List<String> getHiddenCategory() {
         if (hiddenList.getModel().getSize() != 0) {
-            final List<String> hiddenCategoryLiast = new ArrayList(hiddenList.getModel().getSize());
+            final List<String> hiddenCategoryList = new ArrayList(hiddenList.getModel().getSize());
             for (int i = 0; i < hiddenList.getModel().getSize(); i++) {
-                hiddenCategoryLiast.add(hiddenList.getModel().getElementAt(i));
+                hiddenCategoryList.add(hiddenList.getModel().getElementAt(i));
             }
-            return hiddenCategoryLiast;
+            return hiddenCategoryList;
         }
         return Collections.emptyList();
     }
@@ -87,8 +87,9 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 //      Set visible list with the dynamic list of categories
         if (!categories.trim().isEmpty()) {
             getlistModelLeft().removeAllElements();
-            final String visibleCategories = categories.replaceAll("\\[", "").replaceAll("\\]", "");
-            final String[] visibleArray = visibleCategories.split(SeparatorConstants.COMMA);
+            final String visibleCategories = categories.replace("[", "");
+            final String visibleCategoriesFinal = visibleCategories.replace("]", "");
+            final String[] visibleArray = visibleCategoriesFinal.split(SeparatorConstants.COMMA);
             for (int i = 0; i < visibleArray.length; i++) {
                 getlistModelLeft().addElement(visibleArray[i].trim());
             }
@@ -101,8 +102,9 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 //      Set hidden list with the preference file options OR default
         if (!categories.trim().isEmpty()) {
             getlistModelRight().removeAllElements();
-            final String hiddenCategories = categories.replaceAll("\\[", "").replaceAll("\\]", "");
-            final String[] hiddenArray = hiddenCategories.split(SeparatorConstants.COMMA);
+            final String hiddenCatergories = categories.replace("[", "");
+            final String hiddenCatergoriesFinal = hiddenCatergories.replace("]", "");
+            final String[] hiddenArray = hiddenCatergoriesFinal.split(SeparatorConstants.COMMA);
             for (int i = 0; i < hiddenArray.length; i++) {
                 getlistModelRight().addElement(hiddenArray[i].trim());
             }
@@ -112,11 +114,15 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     }
 
     public DefaultListModel getlistModelLeft() {
-        return visibleListModel;
+        return this.visibleListModel;
     }
 
     public DefaultListModel getlistModelRight() {
-        return hiddenListModel;
+        return this.hiddenListModel;
+    }
+
+    public List<String> getVisibleResultList() {
+        return this.visibleResultList;
     }
 
     /**
@@ -245,9 +251,8 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
         } else {
             //Add selected options to hidden list
-           final List<String> selectedValues = visibleList.getSelectedValuesList();
-//           final int[] selectedIndices = visibleList.getSelectedIndices();
-           final Object selectedValuesArray[] = selectedValues.toArray();
+            final List<String> selectedValues = visibleList.getSelectedValuesList();
+            final Object[] selectedValuesArray = selectedValues.toArray();
 
             for (int i = 0; i < selectedValues.size(); i++) {
                 hiddenListModel.addElement(selectedValuesArray[i]);
@@ -271,9 +276,8 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
         } else {
             //Add selected options to visible list
-           final List<String> selectedValues = hiddenList.getSelectedValuesList();
-//           final int[] selectedIndices = hiddenList.getSelectedIndices();
-           final Object selectedValuesArray[] = selectedValues.toArray();
+            final List<String> selectedValues = hiddenList.getSelectedValuesList();
+            final Object[] selectedValuesArray = selectedValues.toArray();
 
             for (int i = 0; i < selectedValues.size(); i++) {
                 visibleListModel.addElement(selectedValuesArray[i]);
