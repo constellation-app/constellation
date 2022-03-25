@@ -108,7 +108,6 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         modeParameter.setDescription("Select either the Node or Transaction mode");
         modeParameter.setRequired(true);
         SingleChoiceParameterType.setOptions(modeParameter, modes);
-        SingleChoiceParameterType.setChoice(modeParameter, NODE);
         params.addParameter(modeParameter);
 
         final PluginParameter<SingleChoiceParameterValue> typeCategoryParameter = SingleChoiceParameterType.build(TYPE_CATEGORY_PARAMETER_ID);
@@ -200,9 +199,6 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 }
             }
         });
-        
-        // needed to trigger the population of parameter values dependent on the mode parameter
-        params.getParameters().get(MODE_PARAMETER_ID).fireChangeEvent(ParameterChange.VALUE);
 
         return params;
     }

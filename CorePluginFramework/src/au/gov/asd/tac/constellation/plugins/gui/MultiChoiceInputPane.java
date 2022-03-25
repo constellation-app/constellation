@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
-import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
@@ -50,12 +49,13 @@ import org.controlsfx.control.CheckComboBox;
  */
 public class MultiChoiceInputPane extends HBox {
 
+    private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
+    
     public static final int DEFAULT_WIDTH = 300;
 
     private final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
     private final MultiChoiceComboBox<ParameterValue> field;
     private boolean isAdjusting = false;
-    private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
 
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
         options.addAll(MultiChoiceParameterType.getOptionsData(parameter));
@@ -81,7 +81,7 @@ public class MultiChoiceInputPane extends HBox {
                 }
             });
 
-            field.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends ParameterValue> c) -> {
+            field.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends ParameterValue> c) -> {
                 if (!isAdjusting) {
                     MultiChoiceParameterType.setChoicesData(parameter, field.getCheckModel().getCheckedItems());
                 }
@@ -90,9 +90,9 @@ public class MultiChoiceInputPane extends HBox {
 
         field.setPrefWidth(DEFAULT_WIDTH);
 
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
+        parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
                 @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
-                PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) pluginParameter;
+                final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) pluginParameter;
                 switch (change) {
                     case VALUE:
                         isAdjusting = true;
@@ -100,12 +100,18 @@ public class MultiChoiceInputPane extends HBox {
                         options.clear();
                         options.addAll(MultiChoiceParameterType.getOptionsData(mcPluginParameter));
                         @SuppressWarnings("unchecked") //checkedItems will be list of parameter values
-                        List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
+                        final List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
 
                         field.getCheckModel().getCheckedItems();
                         checkedItems.forEach(checked -> {
                             field.getCheckModel().check(checked);
                         });
+                        
+                        // give a visual indicator if a required parameter is empty
+                        field.setId(mcPluginParameter.isRequired() && field.getCheckModel().isEmpty() ? "invalid selection" : "");
+                        if ("invalid selection".equals(field.getId())) {
+                            field.setStyle("-fx-color: #8A1D1D");
+                        }
 
                         isAdjusting = false;
                         break;
