@@ -36,6 +36,7 @@ import org.apache.commons.collections4.ListUtils;
  */
 final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
+    private final DataAccessViewCategoryPanelController controller;
     private static final Map<String, List<DataAccessPlugin>> ALL_PLUGINS = DataAccessUtilities.getAllPlugins();
     private static final Map<String, List<DataAccessPlugin>> CATEGORIES = ALL_PLUGINS.entrySet()
             .stream()
@@ -48,6 +49,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private final DefaultListModel<String> hiddenListModel;
 
     DataAccessViewCategoryPanel(DataAccessViewCategoryPanelController controller) {
+        this.controller = controller;
         initComponents();
 
         visibleListModel = new DefaultListModel<>();
