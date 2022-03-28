@@ -96,20 +96,16 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
         parameters.addParameter(normaliseByAvailableParameter);
         
         parameters.addController(NORMALISE_POSSIBLE_PARAMETER_ID, (master, params, change) -> {
-            if (change == ParameterChange.VALUE) {
-                if (master.getBooleanValue()) {
-                    // only one of normalise by max possible or max available can be enabled
-                    params.get(NORMALISE_AVAILABLE_PARAMETER_ID).setBooleanValue(false);
-                }
+            if (change == ParameterChange.VALUE && master.getBooleanValue()) {
+                // only one of normalise by max possible or max available can be enabled
+                params.get(NORMALISE_AVAILABLE_PARAMETER_ID).setBooleanValue(false);
             }
         });
         
         parameters.addController(NORMALISE_AVAILABLE_PARAMETER_ID, (master, params, change) -> {
-            if (change == ParameterChange.VALUE) {
-                if (master.getBooleanValue()) {
-                    // only one of normalise by max possible or max available can be enabled
-                    params.get(NORMALISE_POSSIBLE_PARAMETER_ID).setBooleanValue(false);
-                }
+            if (change == ParameterChange.VALUE && master.getBooleanValue()) {
+                // only one of normalise by max possible or max available can be enabled
+                params.get(NORMALISE_POSSIBLE_PARAMETER_ID).setBooleanValue(false);
             }
         });
 

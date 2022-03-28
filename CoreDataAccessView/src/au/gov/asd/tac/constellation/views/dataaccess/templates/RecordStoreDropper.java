@@ -70,7 +70,7 @@ public class RecordStoreDropper implements GraphDropper {
         } catch (final ClassNotFoundException ex) {
             LOGGER.log(Level.SEVERE, "The specified class could not be loaded", ex);
         } catch (final UnsupportedEncodingException ex) {
-            LOGGER.log(Level.SEVERE, "The specified charset isn't supported", ex);
+            LOGGER.log(Level.SEVERE, "The specified charset isn\'t supported", ex);
         }
 
         RECORD_STORE_FLAVOR = recordStoreFlavor;
@@ -99,7 +99,7 @@ public class RecordStoreDropper implements GraphDropper {
                 }
             }
         } catch (final UnsupportedFlavorException ex) {
-            LOGGER.log(Level.SEVERE, "The requested data flavour isn't supported", ex);
+            LOGGER.log(Level.SEVERE, "The requested data flavour isn\'t supported", ex);
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }

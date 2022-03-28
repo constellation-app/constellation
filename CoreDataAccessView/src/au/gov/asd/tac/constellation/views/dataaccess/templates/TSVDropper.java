@@ -131,7 +131,7 @@ public class TSVDropper implements GraphDropper {
                     return (graph, dropInfo) -> PluginExecution.withPlugin(new TSVDropperToGraphPlugin(recordStore, files)).executeLater(graph);
                 }
             } catch (final UnsupportedFlavorException ex) {
-                LOGGER.log(Level.SEVERE, "The requested data flavour isn't supported", ex);
+                LOGGER.log(Level.SEVERE, "The requested data flavour isn\'t supported", ex);
             } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
