@@ -21,6 +21,8 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
  */
 public class DataAccessViewPreferenceKeys {
 
+    private DataAccessViewPreferenceKeys() {
+    }
     public static final String VISIBLE_DA_VIEW = "dataaccessview.visible";
     public static final String HIDDEN_DA_VIEW = "dataaccessview.hidden";
 

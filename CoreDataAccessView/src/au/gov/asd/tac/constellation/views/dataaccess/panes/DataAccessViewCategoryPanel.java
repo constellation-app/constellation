@@ -36,7 +36,7 @@ import org.apache.commons.collections4.ListUtils;
  */
 final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
-    private final DataAccessViewCategoryPanelController controller;
+    private DataAccessViewCategoryPanelController controller;
     private static final Map<String, List<DataAccessPlugin>> ALL_PLUGINS = DataAccessUtilities.getAllPlugins();
     private static final Map<String, List<DataAccessPlugin>> CATEGORIES = ALL_PLUGINS.entrySet()
             .stream()
@@ -45,15 +45,15 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private static final List<String> DAV_CATEGORIES = new ArrayList<>(CATEGORIES.keySet());
     private final List<String> visibleResultList;
 
-    private final DefaultListModel visibleListModel;
-    private final DefaultListModel hiddenListModel;
+    private final DefaultListModel<String> visibleListModel;
+    private final DefaultListModel<String> hiddenListModel;
 
     DataAccessViewCategoryPanel(DataAccessViewCategoryPanelController controller) {
         this.controller = controller;
         initComponents();
 
-        visibleListModel = new DefaultListModel();
-        hiddenListModel = new DefaultListModel();
+        visibleListModel = new DefaultListModel<String>();
+        hiddenListModel = new DefaultListModel<String>();
 
         final String davHiddenString = LookupPluginsTask.DAV_CATS;
         final List<String> davHiddenList = Arrays.asList(LookupPluginsTask.addCategoryToList(davHiddenString));
@@ -113,16 +113,16 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         hiddenList.setModel(getlistModelRight());
     }
 
-    public DefaultListModel getlistModelLeft() {
+    public DefaultListModel<String> getlistModelLeft() {
         return this.visibleListModel;
     }
 
-    public DefaultListModel getlistModelRight() {
+    public DefaultListModel<String> getlistModelRight() {
         return this.hiddenListModel;
     }
 
     public List<String> getVisibleResultList() {
-        return this.visibleResultList;
+        return visibleResultList;
     }
 
     /**
@@ -155,11 +155,9 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.jLabel2.text")); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel4.setIcon(new javax.swing.ImageIcon("D:\\Code\\C\\constellation\\CorePreferences\\src\\au\\gov\\asd\\tac\\constellation\\preferences\\resources\\warning.png")); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.jLabel4.text")); // NOI18N
 
-        buttonRight.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(buttonRight, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.buttonRight.text")); // NOI18N
         buttonRight.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -167,7 +165,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
             }
         });
 
-        buttonLeft.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(buttonLeft, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.buttonLeft.text")); // NOI18N
         buttonLeft.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -255,7 +252,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
             final Object[] selectedValuesArray = selectedValues.toArray();
 
             for (int i = 0; i < selectedValues.size(); i++) {
-                hiddenListModel.addElement(selectedValuesArray[i]);
+                hiddenListModel.addElement(selectedValuesArray[i].toString());
             }
             hiddenList.setModel(hiddenListModel);
 
@@ -280,7 +277,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
             final Object[] selectedValuesArray = selectedValues.toArray();
 
             for (int i = 0; i < selectedValues.size(); i++) {
-                visibleListModel.addElement(selectedValuesArray[i]);
+                visibleListModel.addElement(selectedValuesArray[i].toString());
             }
             visibleList.setModel(visibleListModel);
 
