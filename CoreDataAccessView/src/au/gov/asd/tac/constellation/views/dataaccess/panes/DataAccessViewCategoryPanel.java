@@ -36,7 +36,6 @@ import org.apache.commons.collections4.ListUtils;
  */
 final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
-    private DataAccessViewCategoryPanelController controller;
     private static final Map<String, List<DataAccessPlugin>> ALL_PLUGINS = DataAccessUtilities.getAllPlugins();
     private static final Map<String, List<DataAccessPlugin>> CATEGORIES = ALL_PLUGINS.entrySet()
             .stream()
@@ -49,11 +48,10 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private final DefaultListModel<String> hiddenListModel;
 
     DataAccessViewCategoryPanel(DataAccessViewCategoryPanelController controller) {
-        this.controller = controller;
         initComponents();
 
-        visibleListModel = new DefaultListModel<String>();
-        hiddenListModel = new DefaultListModel<String>();
+        visibleListModel = new DefaultListModel<>();
+        hiddenListModel = new DefaultListModel<>();
 
         final String davHiddenString = LookupPluginsTask.DAV_CATS;
         final List<String> davHiddenList = Arrays.asList(LookupPluginsTask.addCategoryToList(davHiddenString));
@@ -63,7 +61,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
     public List<String> getVisibleCategory() {
         if (visibleList.getModel().getSize() != 0) {
-            final List<String> visibleCategoryList = new ArrayList(visibleList.getModel().getSize());
+            final List<String> visibleCategoryList = new ArrayList<>(visibleList.getModel().getSize());
             for (int i = 0; i < visibleList.getModel().getSize(); i++) {
                 visibleCategoryList.add(visibleList.getModel().getElementAt(i));
             }
@@ -74,7 +72,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
     public List<String> getHiddenCategory() {
         if (hiddenList.getModel().getSize() != 0) {
-            final List<String> hiddenCategoryList = new ArrayList(hiddenList.getModel().getSize());
+            final List<String> hiddenCategoryList = new ArrayList<>(hiddenList.getModel().getSize());
             for (int i = 0; i < hiddenList.getModel().getSize(); i++) {
                 hiddenCategoryList.add(hiddenList.getModel().getElementAt(i));
             }
@@ -122,7 +120,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     }
 
     public List<String> getVisibleResultList() {
-        return visibleResultList;
+        return this.visibleResultList;
     }
 
     /**

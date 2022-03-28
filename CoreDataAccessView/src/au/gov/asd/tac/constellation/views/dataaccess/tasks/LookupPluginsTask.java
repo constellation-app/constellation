@@ -42,7 +42,7 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
         final Map<String, List<DataAccessPlugin>> plugins = DataAccessUtilities.getAllPlugins();
         // Remove hidden data access categories
         if ((!DAV_CATS.isEmpty()) && (!DAV_CATS.isBlank())) {
-           final String[] arrayOfcategory = addCategoryToList(DAV_CATS);
+            final String[] arrayOfcategory = addCategoryToList(DAV_CATS);
             if (arrayOfcategory.length > 0) {
                 for (int i = 0; i < arrayOfcategory.length; i++) {
                     plugins.remove(arrayOfcategory[i].trim());
@@ -56,8 +56,7 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
         if ((!categories.trim().isEmpty()) && (!categories.trim().isBlank())) {
             final String hiddenCategory = categories.replace("[", "");
             final String hiddenCategoryFinal = hiddenCategory.replace("]", "");
-            final String[] hidden = hiddenCategoryFinal.replace(" ", "").split(SeparatorConstants.COMMA);
-            return hidden;
+            return hiddenCategoryFinal.replace(" ", "").split(SeparatorConstants.COMMA);
         }
         return new String[0];
     }
