@@ -48,10 +48,11 @@ public final class ExportToJsonAction implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         final FileChooserBuilder fChooser = new FileChooserBuilder("ExportJson")
                 .setTitle("Export to JSON")
+                .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
-                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(FileExtensionConstants.JSON, pathName.getName())) {
+                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(pathName.getName(), FileExtensionConstants.JSON)) {
                             return true;
                         }
                         return pathName.isDirectory();
@@ -70,9 +71,9 @@ public final class ExportToJsonAction implements ActionListener {
                 fnam += FileExtensionConstants.JSON;
             }
 
-            PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_JSON)
+                PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_JSON)
                     .withParameter(ExportToJsonPlugin.FILE_NAME_PARAMETER_ID, fnam)
-                    .executeLater(context.getGraph());
+                        .executeLater(context.getGraph());
         }
     }
 }

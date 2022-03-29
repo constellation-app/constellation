@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,6 +47,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
     public static final String CUSTOM_PARAMETER_ID = PluginParameter.buildId(DatetimeAttributeTranslator.class, "custom");
 
     private static final String CUSTOM = "CUSTOM";
+    private static final String EXCEL = "EXCEL";
 
     private static final Map<String, String> DATETIME_FORMATS = new LinkedHashMap<>();
 
@@ -58,6 +60,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         DATETIME_FORMATS.put("yyyyMMdd HHmmss'Z'", "yyyyMMdd HHmmss'Z'");
         DATETIME_FORMATS.put("yyyyMMddHHmmss", "yyyyMMddHHmmss");
         DATETIME_FORMATS.put("EPOCH", null);
+        DATETIME_FORMATS.put(EXCEL, null);
         DATETIME_FORMATS.put(CUSTOM, null);
     }
 
@@ -112,6 +115,9 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
                     dateTime = df.parse(value);
                     break;
                 }
+                case EXCEL: 
+                    dateTime = TemporalFormatting.zonedDateTimeFromLong(DateUtil.getJavaDate(Double.parseDouble(value)).getTime());
+                    break;                
                 default: {
                     format = DATETIME_FORMATS.get(format);
                     final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
