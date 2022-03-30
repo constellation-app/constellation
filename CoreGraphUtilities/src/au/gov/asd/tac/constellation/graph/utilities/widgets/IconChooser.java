@@ -264,6 +264,7 @@ private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
         final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
                 .setTitle("Add icons")
+                .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
@@ -332,6 +333,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         final String iconName = getSelectedIconName();
         if (iconName != null) {
             final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
+                    .setFilesOnly(true)
                     .setTitle("Save icon");
 
             // We need to get a JFileChooser because FileChooserBuilder doesn't have setSelectedFile().

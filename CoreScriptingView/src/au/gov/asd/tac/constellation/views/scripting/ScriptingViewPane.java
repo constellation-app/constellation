@@ -255,6 +255,7 @@ public class ScriptingViewPane extends JPanel {
     private void openScript() {
         final JFileChooser fileChooser = new FileChooserBuilder(ScriptingViewTopComponent.class)
                 .setTitle(String.format("Save %s script", LANGUAGE))
+                .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
@@ -281,6 +282,7 @@ public class ScriptingViewPane extends JPanel {
     private void saveScript() {
         final JFileChooser fileChooser = new FileChooserBuilder(ScriptingViewTopComponent.class)
                 .setTitle(String.format("Save %s script", LANGUAGE))
+                .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
