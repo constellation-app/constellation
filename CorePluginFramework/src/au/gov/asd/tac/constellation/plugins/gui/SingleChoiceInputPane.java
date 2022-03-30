@@ -90,9 +90,7 @@ public class SingleChoiceInputPane extends HBox {
                         
                         // give a visual indicator if a required parameter is empty
                         field.setId(scParameter.isRequired() && field.getSelectionModel().isEmpty() ? "invalid selection" : "");
-                        if ("invalid selection".equals(field.getId())) {
-                            field.setStyle("-fx-color: #8A1D1D");
-                        }
+                        field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
                         break;
                     case PROPERTY:
                         final ObservableList<ParameterValue> options = FXCollections.observableArrayList();

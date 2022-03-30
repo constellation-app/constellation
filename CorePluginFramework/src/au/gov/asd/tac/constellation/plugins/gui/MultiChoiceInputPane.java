@@ -109,9 +109,7 @@ public class MultiChoiceInputPane extends HBox {
                         
                         // give a visual indicator if a required parameter is empty
                         field.setId(mcPluginParameter.isRequired() && field.getCheckModel().isEmpty() ? "invalid selection" : "");
-                        if ("invalid selection".equals(field.getId())) {
-                            field.setStyle("-fx-color: #8A1D1D");
-                        }
+                        field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
 
                         isAdjusting = false;
                         break;
