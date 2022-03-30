@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
@@ -48,7 +49,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private final DefaultListModel<String> visibleListModel;
     private final DefaultListModel<String> hiddenListModel;
 
-    DataAccessViewCategoryPanel(DataAccessViewCategoryPanelController controller) {
+    DataAccessViewCategoryPanel(final DataAccessViewCategoryPanelController controller) {
         this.controller = controller;
         initComponents();
 
@@ -249,22 +250,21 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         } else {
             //Add selected options to hidden list
             final List<String> selectedValues = visibleList.getSelectedValuesList();
-            final Object[] selectedValuesArray = selectedValues.toArray();
-
-            for (int i = 0; i < selectedValues.size(); i++) {
-                hiddenListModel.addElement(selectedValuesArray[i].toString());
+            ListIterator<String> selectedValuesIterator = selectedValues.listIterator();
+            while (selectedValuesIterator.hasNext()) {
+                hiddenListModel.addElement(selectedValuesIterator.next());
             }
             hiddenList.setModel(hiddenListModel);
 
             //Remove seleted options from visible list
             if (visibleListModel.getSize() != 0) {
-                for (int i = 0; i < selectedValues.size(); i++) {
-                    visibleListModel.removeElement(selectedValuesArray[i]);
+                selectedValuesIterator = selectedValues.listIterator();
+                while (selectedValuesIterator.hasNext()) {
+                    visibleListModel.removeElement(selectedValuesIterator.next());
                 }
             }
             visibleList.setModel(visibleListModel);
         }
-
     }//GEN-LAST:event_buttonRightActionPerformed
 
     private void buttonLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLeftActionPerformed
@@ -274,17 +274,17 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         } else {
             //Add selected options to visible list
             final List<String> selectedValues = hiddenList.getSelectedValuesList();
-            final Object[] selectedValuesArray = selectedValues.toArray();
-
-            for (int i = 0; i < selectedValues.size(); i++) {
-                visibleListModel.addElement(selectedValuesArray[i].toString());
+            ListIterator<String> selectedValuesIterator = selectedValues.listIterator();
+            while (selectedValuesIterator.hasNext()) {
+                visibleListModel.addElement(selectedValuesIterator.next());
             }
             visibleList.setModel(visibleListModel);
 
             //Remove selected options from hidden list
             if (hiddenListModel.getSize() != 0) {
-                for (int i = 0; i < selectedValues.size(); i++) {
-                    hiddenListModel.removeElement(selectedValuesArray[i]);
+                selectedValuesIterator = selectedValues.listIterator();
+                while (selectedValuesIterator.hasNext()) {
+                    hiddenListModel.removeElement(selectedValuesIterator.next());
                 }
             }
             hiddenList.setModel(hiddenListModel);

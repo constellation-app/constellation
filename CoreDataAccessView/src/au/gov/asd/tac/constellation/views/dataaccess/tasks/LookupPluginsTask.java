@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -34,14 +35,14 @@ import org.openide.util.NbPreferences;
 public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPlugin>>> {
 
     private static final Preferences PREFS = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
-    public static final String DAV_CATS = PREFS.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT.toString());
+    public static final String DAV_CATS = PREFS.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
 
     @Override
     public Map<String, List<DataAccessPlugin>> get() {
         // Creates a map with the key set being every available data access plugin type.
         final Map<String, List<DataAccessPlugin>> plugins = DataAccessUtilities.getAllPlugins();
         // Remove hidden data access categories
-        if ((!DAV_CATS.isEmpty()) && (!DAV_CATS.isBlank())) {
+        if (StringUtils.isNotBlank(DAV_CATS)) {
             final String[] arrayOfcategory = addCategoryToList(DAV_CATS);
             if (arrayOfcategory.length > 0) {
                 for (int i = 0; i < arrayOfcategory.length; i++) {
@@ -53,7 +54,7 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
     }
 
     public static String[] addCategoryToList(final String categories) {
-        if ((!categories.trim().isEmpty()) && (!categories.trim().isBlank())) {
+        if (StringUtils.isNotBlank(categories)) {
             final String hiddenCategory = categories.replace("[", "");
             final String hiddenCategoryFinal = hiddenCategory.replace("]", "");
             return hiddenCategoryFinal.replace(" ", "").split(SeparatorConstants.COMMA);

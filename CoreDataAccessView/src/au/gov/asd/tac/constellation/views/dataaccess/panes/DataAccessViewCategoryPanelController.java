@@ -97,7 +97,7 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         final DataAccessViewCategoryPanel panel = getPanel();
         final List<String> hiddenCategory = panel.getHiddenCategory();
         return (!hiddenCategory.isEmpty())
-                || (!prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT.toString()).isEmpty());
+                || (!prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty());
     }
 
     @Override
