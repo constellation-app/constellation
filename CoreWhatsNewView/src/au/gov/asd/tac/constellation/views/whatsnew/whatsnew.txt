@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-03-22 New Datetime formatter in the File Importer
+<p>A new Datetime formatter has been added to the File Importer for parsing native Excel datetimes into Constellation. You can use it by right-clicking an attribute, navigating to Formatter -> Datetime and choosing 'EXCEL' from the format dropdown list.</p>
+
 == 2022-02-22 Find View (Experimental)
 <p>A new version of the Find View can be accessed via Experimental -> Views or Ctrl + B. This version is intended to replace the current Find View at some stage.</p>
 
