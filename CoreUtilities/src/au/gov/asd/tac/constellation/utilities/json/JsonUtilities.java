@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.utilities.json;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 
 /**
  * JSON Utilities
@@ -42,13 +40,13 @@ import org.openide.util.Exceptions;
  * @author arcturus
  */
 public class JsonUtilities {
-    
+
     private JsonUtilities() {
         throw new IllegalStateException("Utility class");
     }
-    
+
     private static final Logger LOGGER = Logger.getLogger(JsonUtilities.class.getName());
-        
+
     public static String getTextField(final JsonNode node, final String... keys) {
         return getTextField(null, node, keys);
     }
@@ -251,9 +249,10 @@ public class JsonUtilities {
     }
 
     /**
-     * Return the {@code JsonNode} found after traversing through nodes with supplied
-     * keys from starting {@code JsonNode} - or null if path doesn't return a valid
-     * node.
+     * Return the {@code JsonNode} found after traversing through nodes with
+     * supplied keys from starting {@code JsonNode} - or null if path doesn't
+     * return a valid node.
+     *
      * @param node Node to start iteration from.
      * @param keys Text names of nodes to traverse through.
      * @return {@code JsonNode} at end of traversal.
@@ -268,19 +267,23 @@ public class JsonUtilities {
         }
         return current;
     }
-    
+
     /**
-     * Private helper method returning string value of node.
-     * No validation of node is performed, it is the responsibility of calling method to 
-     * ensure node is not null.
+     * Private helper method returning string value of node. No validation of
+     * node is performed, it is the responsibility of calling method to ensure
+     * node is not null.
+     *
      * @param node Node to extract string value from.
-     * @return  String representation of node.
+     * @return String representation of node except returns null if the node is
+     * null.
      */
     public static String getNodeText(final JsonNode node) {
-        if (node.isTextual()) {
+        if (node.isNull()) {
+            return null;
+        } else if (node.isTextual()) {
             return node.textValue();
         }
-        return node.toString();     
+        return node.toString();
     }
 
     /**
@@ -294,7 +297,7 @@ public class JsonUtilities {
      */
     public static String getTextValue(final String attribute, final JsonNode node) {
         if (node.has(attribute)) {
-            return getNodeText(node.get(attribute));       
+            return getNodeText(node.get(attribute));
         }
         return null;
     }
@@ -337,8 +340,8 @@ public class JsonUtilities {
      * @return a {@code String} or null if not found
      */
     public static String getTextValueOfFirstSubElement(final String attribute, final String innerAttribute, final JsonNode node) {
-    
-        if (node.has(attribute)) {          
+
+        if (node.has(attribute)) {
             if (node.get(attribute).has(0) && node.get(attribute).get(0).has(innerAttribute)) {
                 return getNodeText(node.get(attribute).get(0).get(innerAttribute));
             } else {
