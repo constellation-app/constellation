@@ -35,11 +35,11 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
- * Select TopN Test.
+ * Select Top N Test.
  *
  * @author arcturus
  */
-public class SelectTopNNGTest {
+public class SelectTopNPluginNGTest {
     
     /**
      * Test of edit method, of class SelectTopNPlugin.

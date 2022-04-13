@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
-import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
@@ -46,12 +45,12 @@ import org.controlsfx.control.SearchableComboBox;
  */
 public class SingleChoiceInputPane extends HBox {
 
+    private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
+    
     public static final int DEFAULT_WIDTH = 300;
 
     private final SearchableComboBox<ParameterValue> field;
     private boolean initialRun = true;
-
-    private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
         field = new SearchableComboBox<>();
@@ -73,9 +72,9 @@ public class SingleChoiceInputPane extends HBox {
             parameter.getParameterValue().getGuiInit().init(field);
         }
 
-        field.setOnAction((final ActionEvent t) -> SingleChoiceParameterType.setChoiceData(parameter, field.getSelectionModel().getSelectedItem()));
+        field.setOnAction(event -> SingleChoiceParameterType.setChoiceData(parameter, field.getSelectionModel().getSelectedItem()));
 
-        parameter.addListener((final PluginParameter<?> scParameter, final ParameterChange change) -> Platform.runLater(() -> {
+        parameter.addListener((scParameter, change) -> Platform.runLater(() -> {
                 assert (scParameter.getParameterValue() instanceof SingleChoiceParameterValue);
                 final SingleChoiceParameterValue scParameterValue = (SingleChoiceParameterValue) scParameter.getParameterValue();
                 switch (change) {
@@ -88,10 +87,14 @@ public class SingleChoiceInputPane extends HBox {
                         if (!param.contains(value)) {
                             field.getSelectionModel().select(scParameterValue.getChoiceData());
                         }
+                        
+                        // give a visual indicator if a required parameter is empty
+                        field.setId(scParameter.isRequired() && field.getSelectionModel().isEmpty() ? "invalid selection" : "");
+                        field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
                         break;
                     case PROPERTY:
                         final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
-                        EventHandler<ActionEvent> handler = field.getOnAction();
+                        final EventHandler<ActionEvent> handler = field.getOnAction();
                         field.setOnAction(null);
 
                         options.setAll(scParameterValue.getOptionsData());

@@ -161,7 +161,7 @@ public class MergeTransactionsPluginNGTest {
         assertEquals(graph.getTransaction(txId3), 2);
         assertEquals(graph.getTransaction(txId4), 3);
     }
-
+    
     /**
      * Test of edit method with a null merge transaction type name
      *
@@ -172,6 +172,7 @@ public class MergeTransactionsPluginNGTest {
         MergeTransactionsPlugin instance = new MergeTransactionsPlugin();
         PluginInteraction interaction = new TextPluginInteraction();
         PluginParameters parameters = instance.createParameters();
+        parameters.getParameters().get(MergeTransactionsPlugin.MERGE_TYPE_PARAMETER_ID).setStringValue(null);
         instance.edit(graph, interaction, parameters);
     }
 

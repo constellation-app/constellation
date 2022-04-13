@@ -78,7 +78,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -92,7 +91,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import org.netbeans.api.annotations.common.StaticResource;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -330,7 +328,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         sleepParam.setIntegerValue(0);
         params.addParameter(sleepParam);
 
-        params.addController(SELECTED_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> parameters, final ParameterChange change) -> {
+        params.addController(SELECTED_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final boolean masterBoolean = master.getBooleanValue();
 
@@ -356,7 +354,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             }
         });
 
-        params.addController(REFRESH_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> parameters, final ParameterChange change) -> {
+        params.addController(REFRESH_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
                 @SuppressWarnings("unchecked") //ROBOT_PARAMETER will always be of type SingleChoiceParameter
                 final PluginParameter<SingleChoiceParameterValue> robot = (PluginParameter<SingleChoiceParameterValue>) parameters.get(ROBOT_PARAMETER_ID);
@@ -376,8 +374,8 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             LOGGER.log(Level.INFO, "sleep {0}/{1}", new Object[]{i, sleep});
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Thread sleep was interrupted", ex);
                 Thread.currentThread().interrupt();
             }
         }
@@ -409,8 +407,10 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             final File fout = new File(outputDir, fnam);
             try (final PrintWriter writer = new PrintWriter(fout, StandardCharsets.UTF_8.name())) {
                 parameters.getParameters().values().stream().forEach(param -> writer.printf("%s: '%s'", param.getName(), param.getStringValue()));
-            } catch (final FileNotFoundException | UnsupportedEncodingException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final FileNotFoundException ex) {
+                LOGGER.log(Level.SEVERE, "File not found", ex);
+            } catch (final UnsupportedEncodingException ex) {
+                LOGGER.log(Level.SEVERE, "The specified file encoding is unsupported", ex);
             }
         }
 
@@ -428,8 +428,8 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         try {
             interaction.setProgress(1, 0, String.format("Pretended to add %d node(s), modify %d node(s)", r.nextInt(100) + 1, r.nextInt(100) + 1), false);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
         }
 
@@ -583,10 +583,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             final GraphElementTypeParameterValue other = (GraphElementTypeParameterValue) obj;

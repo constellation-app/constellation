@@ -73,6 +73,80 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
     private static final String DO_NOT_USE_SCALE = "Do not use final Scaling algorithm";
 
     @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<SingleChoiceParameterValue> xAttribute = SingleChoiceParameterType.build(SCATTER_3D_X_ATTRIBUTE);
+        xAttribute.setName(X_ATTRIBUTE);
+        xAttribute.setDescription("The attribute to use for the x dimension");
+        xAttribute.setRequired(true);
+        parameters.addParameter(xAttribute);
+
+        final PluginParameter<SingleChoiceParameterValue> yAttribute = SingleChoiceParameterType.build(SCATTER_3D_Y_ATTRIBUTE);
+        yAttribute.setName(Y_ATTRIBUTE);
+        yAttribute.setDescription("The attribute to use for the y dimension");
+        yAttribute.setRequired(true);
+        parameters.addParameter(yAttribute);
+
+        final PluginParameter<SingleChoiceParameterValue> zAttribute = SingleChoiceParameterType.build(SCATTER_3D_Z_ATTRIBUTE);
+        zAttribute.setName(Z_ATTRIBUTE);
+        zAttribute.setDescription("The attribute to use for the z dimension");
+        zAttribute.setRequired(true);
+        parameters.addParameter(zAttribute);
+
+        final PluginParameter<BooleanParameterValue> xLogarithmic = BooleanParameterType.build(SCATTER_3D_X_LOGARITHMIC);
+        xLogarithmic.setName(X_LOGARITHMIC);
+        xLogarithmic.setDescription("Scale the X axis in Logarithmic Scale");
+        parameters.addParameter(xLogarithmic);
+
+        final PluginParameter<BooleanParameterValue> yLogarithmic = BooleanParameterType.build(SCATTER_3D_Y_LOGARITHMIC);
+        yLogarithmic.setName(Y_LOGARITHMIC);
+        yLogarithmic.setDescription("Scale the Y axis in Logarithmic Scale");
+        parameters.addParameter(yLogarithmic);
+
+        final PluginParameter<BooleanParameterValue> zLogarithmic = BooleanParameterType.build(SCATTER_3D_Z_LOGARITHMIC);
+        zLogarithmic.setName(Z_LOGARITHMIC);
+        zLogarithmic.setDescription("Scale the Z axis in Logarithmic Scale");
+        parameters.addParameter(zLogarithmic);
+
+        final PluginParameter<BooleanParameterValue> doNotScale = BooleanParameterType.build(SCATTER_3D_DO_NOT_SCALE);
+        doNotScale.setName(DO_NOT_USE_SCALE);
+        doNotScale.setDescription("Don't scale resultant scattergram");
+        parameters.addParameter(doNotScale);
+
+        return parameters;
+    }
+
+    @Override
+    public void updateParameters(final Graph graph, final PluginParameters parameters) {
+
+        // Get the list of non-default attributes
+        final ReadableGraph rg = graph.getReadableGraph();
+        Map<String, Integer> vertexAttributes = null;
+        try {
+            vertexAttributes = AttributeUtilities.getVertexAttributes(rg, 0);
+        } finally {
+            rg.release();
+        }
+
+        if (vertexAttributes != null) {
+            final List<String> keys = new ArrayList<>(vertexAttributes.keySet());
+
+            final PluginParameter<SingleChoiceParameterValue> xAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_X_ATTRIBUTE);
+            SingleChoiceParameterType.setOptions(xAttribute, keys);
+            SingleChoiceParameterType.setChoice(xAttribute, keys.get(0));
+
+            final PluginParameter<SingleChoiceParameterValue> yAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Y_ATTRIBUTE);
+            SingleChoiceParameterType.setOptions(yAttribute, keys);
+            SingleChoiceParameterType.setChoice(yAttribute, keys.size() > 1 ? keys.get(1) : keys.get(0));
+            
+            final PluginParameter<SingleChoiceParameterValue> zAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Z_ATTRIBUTE);
+            SingleChoiceParameterType.setOptions(zAttribute, keys);
+            SingleChoiceParameterType.setChoice(zAttribute, keys.size() > 2 ? keys.get(2) : keys.get(0));
+        }
+    }
+    
+    @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
         final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
@@ -106,80 +180,5 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
         final Scatter3dArranger arranger = new Scatter3dArranger(scatter3dParams);
         arranger.arrange(selectedGraph.getInclusionGraph());
         selectedGraph.retrieveCoords();
-    }
-
-    @Override
-    public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        final PluginParameter<SingleChoiceParameterValue> xAttribute = SingleChoiceParameterType.build(SCATTER_3D_X_ATTRIBUTE);
-        xAttribute.setName(X_ATTRIBUTE);
-        xAttribute.setDescription("The attribute to use for the x dimension");
-        xAttribute.setStringValue("");
-        parameters.addParameter(xAttribute);
-
-        final PluginParameter<SingleChoiceParameterValue> yAttribute = SingleChoiceParameterType.build(SCATTER_3D_Y_ATTRIBUTE);
-        yAttribute.setName(Y_ATTRIBUTE);
-        yAttribute.setDescription("The attribute to use for the y dimension");
-        yAttribute.setStringValue("");
-        parameters.addParameter(yAttribute);
-
-        final PluginParameter<SingleChoiceParameterValue> zAttribute = SingleChoiceParameterType.build(SCATTER_3D_Z_ATTRIBUTE);
-        zAttribute.setName(Z_ATTRIBUTE);
-        zAttribute.setDescription("The attribute to use for the z dimension");
-        zAttribute.setStringValue("");
-        parameters.addParameter(zAttribute);
-
-        final PluginParameter<BooleanParameterValue> xLogarithmic = BooleanParameterType.build(SCATTER_3D_X_LOGARITHMIC);
-        xLogarithmic.setName(X_LOGARITHMIC);
-        xLogarithmic.setDescription("Scale the X axis in Logarithmic Scale");
-        xLogarithmic.setBooleanValue(false);
-        parameters.addParameter(xLogarithmic);
-
-        final PluginParameter<BooleanParameterValue> yLogarithmic = BooleanParameterType.build(SCATTER_3D_Y_LOGARITHMIC);
-        yLogarithmic.setName(Y_LOGARITHMIC);
-        yLogarithmic.setDescription("Scale the Y axis in Logarithmic Scale");
-        yLogarithmic.setBooleanValue(false);
-        parameters.addParameter(yLogarithmic);
-
-        final PluginParameter<BooleanParameterValue> zLogarithmic = BooleanParameterType.build(SCATTER_3D_Z_LOGARITHMIC);
-        zLogarithmic.setName(Z_LOGARITHMIC);
-        zLogarithmic.setDescription("Scale the Z axis in Logarithmic Scale");
-        zLogarithmic.setBooleanValue(false);
-        parameters.addParameter(zLogarithmic);
-
-        final PluginParameter<BooleanParameterValue> doNotScale = BooleanParameterType.build(SCATTER_3D_DO_NOT_SCALE);
-        doNotScale.setName(DO_NOT_USE_SCALE);
-        doNotScale.setDescription("Don't scale resultant scattergram");
-        doNotScale.setBooleanValue(false);
-        parameters.addParameter(doNotScale);
-
-        return parameters;
-    }
-
-    @Override
-    public void updateParameters(final Graph graph, final PluginParameters parameters) {
-
-        // Get the list of non-default attributes
-        final ReadableGraph rg = graph.getReadableGraph();
-        Map<String, Integer> vertexAttributes = null;
-        try {
-            vertexAttributes = AttributeUtilities.getVertexAttributes(rg, 0);
-        } finally {
-            rg.release();
-        }
-
-        if (vertexAttributes != null) {
-            final List<String> keys = new ArrayList<>(vertexAttributes.keySet());
-
-            final PluginParameter<SingleChoiceParameterValue> xAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_X_ATTRIBUTE);
-            SingleChoiceParameterType.setOptions(xAttribute, keys);
-
-            final PluginParameter<SingleChoiceParameterValue> yAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Y_ATTRIBUTE);
-            SingleChoiceParameterType.setOptions(yAttribute, keys);
-
-            final PluginParameter<SingleChoiceParameterValue> zAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Z_ATTRIBUTE);
-            SingleChoiceParameterType.setOptions(zAttribute, keys);
-        }
     }
 }

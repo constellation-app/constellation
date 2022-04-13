@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-04-13 Plugins
+<p>Some plugin parameters have been updated to have '*' at the end of the name to indicate that the plugin will require a value in order for the plugin to work.</p>
+
 == 2022-03-30 Data Access View
 <p>A new tab has been added in SetUp -> Options -> Data Access View to be able to hide data access categories that you don't want to see.</p>
 

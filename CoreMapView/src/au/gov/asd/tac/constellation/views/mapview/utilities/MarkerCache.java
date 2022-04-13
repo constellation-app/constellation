@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationPolygonMa
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
 import de.fhpotsdam.unfolding.geo.Location;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +51,6 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -136,7 +136,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                             final GraphElement element = new GraphElement(elementId, graphElementType);
                                             add(marker, element);
                                         });
-                                    } catch (Exception ex) {
+                                    } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException ex) {
                                         LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
                                     }
                                 }
@@ -151,7 +151,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                         final ConstellationAbstractMarker marker = markerFactory.createMarker(point);
                                         final GraphElement element = new GraphElement(elementId, graphElementType);
                                         add(marker, element);
-                                    } catch (Exception ex) {
+                                    } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException ex) {
                                         LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
                                     }
                                 }
@@ -207,8 +207,8 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                     clusterMarker.setMarkers(markersInCluster);
                     clusterMarkers.add(clusterMarker);
                     add(clusterMarker, GraphElement.NON_ELEMENT);
-                } catch (Exception ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final Exception ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             });
         }
