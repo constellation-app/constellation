@@ -64,7 +64,7 @@ public class DataAccessTabPane {
     private static final Logger LOGGER = Logger.getLogger(DataAccessTabPane.class.getName());
     
     private static final String TAB_TITLE = "Step %d";
-    private static final String LOCAL_DATE_PARAMETER_TYPE = "LocalDateParameterType";
+    public static final String LOCAL_DATE_PARAMETER_TYPE = "LocalDateParameterType";
     private static final int DOUBLE_CLICK_COUNT = 2;
     
     /**
@@ -430,38 +430,7 @@ public class DataAccessTabPane {
     protected void storeParameterValues() {
         getTabPane().getTabs().parallelStream().forEach(tab -> {
             final QueryPhasePane pluginPane = getQueryPhasePane(tab);
-            
-            // Store global parameters
-            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream()
-                    .filter(param ->
-                            param.getValue().getStringValue() != null
-                                    && !param.getValue().getStringValue().isEmpty()
-                    )
-                    .forEach(param -> RecentParameterValues.storeRecentValue(
-                            param.getKey(), param.getValue().getStringValue()
-                    ));
-            
-            // Store data access plugin parameters
-            pluginPane.getDataAccessPanes().stream()
-                    .map(DataSourceTitledPane::getParameters)
-                    .filter(Objects::nonNull)
-                    .map(PluginParameters::getParameters)
-                    .map(Map::entrySet)
-                    .flatMap(Collection::stream)
-                    .filter(param -> param.getValue().getObjectValue() != null)
-                    .forEach(param -> {
-                        if (!param.getValue().getType().toString().contains(LOCAL_DATE_PARAMETER_TYPE)) {
-                            RecentParameterValues.storeRecentValue(
-                                    param.getKey(),
-                                    param.getValue().getStringValue()
-                            );
-                        } else {
-                            RecentParameterValues.storeRecentValue(
-                                    param.getKey(),
-                                    param.getValue().getObjectValue().toString()
-                            );
-                        }
-                    });
+            pluginPane.storeParameterValues();
         });
     }
     
