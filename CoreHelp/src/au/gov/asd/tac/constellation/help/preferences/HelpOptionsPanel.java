@@ -38,6 +38,13 @@ public class HelpOptionsPanel extends javax.swing.JPanel {
         this.onlineHelpCheckBox.setSelected(setOnlineHelp);
     }
 
+    public int getOfflineHelpPort() {
+        return (Integer) offlinePortSpinner.getModel().getValue();
+    }
+
+    public void setOfflineHelpPort(final int offineHelpPort) {
+        offlinePortSpinner.getModel().setValue(offineHelpPort);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -50,6 +57,8 @@ public class HelpOptionsPanel extends javax.swing.JPanel {
 
         onlineHelpPanel = new javax.swing.JPanel();
         onlineHelpCheckBox = new javax.swing.JCheckBox();
+        offlinePortLbl = new javax.swing.JLabel();
+        offlinePortSpinner = new javax.swing.JSpinner();
 
         onlineHelpPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(HelpOptionsPanel.class, "HelpOptionsPanel.onlineHelpPanel.border.title"))); // NOI18N
 
@@ -60,21 +69,32 @@ public class HelpOptionsPanel extends javax.swing.JPanel {
             }
         });
 
+        org.openide.awt.Mnemonics.setLocalizedText(offlinePortLbl, org.openide.util.NbBundle.getMessage(HelpOptionsPanel.class, "HelpOptionsPanel.offlinePortLbl.text")); // NOI18N
+
         javax.swing.GroupLayout onlineHelpPanelLayout = new javax.swing.GroupLayout(onlineHelpPanel);
         onlineHelpPanel.setLayout(onlineHelpPanelLayout);
         onlineHelpPanelLayout.setHorizontalGroup(
             onlineHelpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(onlineHelpPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(onlineHelpCheckBox)
-                .addContainerGap(489, Short.MAX_VALUE))
+                .addGap(31, 31, 31)
+                .addGroup(onlineHelpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(onlineHelpCheckBox)
+                    .addGroup(onlineHelpPanelLayout.createSequentialGroup()
+                        .addComponent(offlinePortLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(offlinePortSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(384, Short.MAX_VALUE))
         );
         onlineHelpPanelLayout.setVerticalGroup(
             onlineHelpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(onlineHelpPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(onlineHelpCheckBox)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(onlineHelpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(offlinePortSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(offlinePortLbl))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -84,14 +104,14 @@ public class HelpOptionsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addComponent(onlineHelpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(onlineHelpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addComponent(onlineHelpPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -100,6 +120,8 @@ public class HelpOptionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_onlineHelpCheckBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel offlinePortLbl;
+    private javax.swing.JSpinner offlinePortSpinner;
     private javax.swing.JCheckBox onlineHelpCheckBox;
     private javax.swing.JPanel onlineHelpPanel;
     // End of variables declaration//GEN-END:variables
