@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -116,8 +117,8 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
                     break;
                 }
                 case EXCEL: 
-                    dateTime = TemporalFormatting.zonedDateTimeFromLong(DateUtil.getJavaDate(Double.parseDouble(value)).getTime());
-                    break;                
+                    dateTime = TemporalFormatting.zonedDateTimeFromLong(DateUtil.getJavaDate(Double.parseDouble(value), TimeZone.getTimeZone("GMT")).getTime());
+                    break;
                 default: {
                     format = DATETIME_FORMATS.get(format);
                     final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
