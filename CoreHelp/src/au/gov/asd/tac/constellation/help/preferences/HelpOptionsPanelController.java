@@ -50,6 +50,7 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
         final HelpOptionsPanel helpOptionsPanel = getPanel();
 
         helpOptionsPanel.setOnlineHelpOption(prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP));
+        helpOptionsPanel.setOfflineHelpPort(prefs.getInt(HelpPreferenceKeys.OFFLINE_HELP_PORT, HelpPreferenceKeys.OFFLINE_HELP_PORT_DEFAULT));
     }
 
     protected PropertyChangeSupport getPropertyChangeSupport() {
@@ -66,6 +67,7 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
                 final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
                 final HelpOptionsPanel helpOptionsPanel = getPanel();
                 prefs.putBoolean(HelpPreferenceKeys.HELP_KEY, helpOptionsPanel.isOnlineHelpSelected());
+                prefs.putInt(HelpPreferenceKeys.OFFLINE_HELP_PORT, helpOptionsPanel.getOfflineHelpPort());
             }
         }
     }
@@ -77,15 +79,16 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
 
     @Override
     public boolean isValid() {
-        // the checkbox will always have a valid response
-        return true;
+        final HelpOptionsPanel helpOptionsPanel = getPanel();
+        return helpOptionsPanel.getOfflineHelpPort() > 0;
     }
 
     @Override
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
         final HelpOptionsPanel helpOptionsPanel = getPanel();
-        return helpOptionsPanel.isOnlineHelpSelected() != prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP);
+        return !(helpOptionsPanel.isOnlineHelpSelected() == prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP)
+                && helpOptionsPanel.getOfflineHelpPort() == prefs.getInt(HelpPreferenceKeys.OFFLINE_HELP_PORT, HelpPreferenceKeys.OFFLINE_HELP_PORT_DEFAULT));
     }
 
     @Override

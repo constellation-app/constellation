@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help;
 
+import au.gov.asd.tac.constellation.help.preferences.HelpPreferenceKeys;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import java.net.InetAddress;
@@ -23,11 +24,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 
 /**
  *
@@ -56,8 +59,9 @@ public class HelpWebServer {
     public static synchronized int start() {
         if (!running) {
             try {
+                final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
                 final InetAddress loopback = InetAddress.getLoopbackAddress();
-                port = 1517;
+                port = prefs.getInt(HelpPreferenceKeys.OFFLINE_HELP_PORT, HelpPreferenceKeys.OFFLINE_HELP_PORT_DEFAULT);
 
                 // Build the server.
                 final Server server = new Server(new InetSocketAddress(loopback, port));

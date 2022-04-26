@@ -28,6 +28,12 @@ public class HelpPreferenceKeys {
     public static final String HELP_KEY = "onlineHelp";
     public static final boolean ONLINE_HELP = false;
 
+    /**
+     * Offline Help listening port.
+     */
+    public static final String OFFLINE_HELP_PORT = "offlineHelpPort";
+    public static final int OFFLINE_HELP_PORT_DEFAULT = 1518;
+
     private HelpPreferenceKeys() {
 
     }
