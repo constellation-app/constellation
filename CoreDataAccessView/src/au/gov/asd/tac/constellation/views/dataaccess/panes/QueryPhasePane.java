@@ -23,15 +23,19 @@ import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
+import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -284,6 +288,8 @@ public class QueryPhasePane extends VBox {
                 
                     DataAccessPaneState.addRunningPlugin(pluginResult, plugin.getName());
                 });
+
+        storeParameterValues();
         
         return newAsync;
     }
@@ -318,5 +324,43 @@ public class QueryPhasePane extends VBox {
 
     protected Set<MenuItem> getPluginDependentMenuItems() {
         return pluginDependentMenuItems;
+    }
+
+    /**
+     * Store current parameter values for all tabs and plug-ins in the {@link RecentParameterValues} repository. It will store both global and plugin
+     * parameters.
+     */
+    public void storeParameterValues() {
+        // Store global parameters
+        getGlobalParametersPane().getParams().getParameters().entrySet().stream()
+                .filter(param
+                        -> param.getValue().getStringValue() != null
+                && !param.getValue().getStringValue().isEmpty()
+                )
+                .forEach(param -> RecentParameterValues.storeRecentValue(
+                param.getKey(), param.getValue().getStringValue()
+        ));
+
+        // Store data access plugin parameters
+        getDataAccessPanes().stream()
+                .map(DataSourceTitledPane::getParameters)
+                .filter(Objects::nonNull)
+                .map(PluginParameters::getParameters)
+                .map(Map::entrySet)
+                .flatMap(Collection::stream)
+                .filter(param -> param.getValue().getObjectValue() != null)
+                .forEach(param -> {
+                    if (!param.getValue().getType().toString().contains(DataAccessTabPane.LOCAL_DATE_PARAMETER_TYPE)) {
+                        RecentParameterValues.storeRecentValue(
+                                param.getKey(),
+                                param.getValue().getStringValue()
+                        );
+                    } else {
+                        RecentParameterValues.storeRecentValue(
+                                param.getKey(),
+                                param.getValue().getObjectValue().toString()
+                        );
+                    }
+                });
     }
 }
