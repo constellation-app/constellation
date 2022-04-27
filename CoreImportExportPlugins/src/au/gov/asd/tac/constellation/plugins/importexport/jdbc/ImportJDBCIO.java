@@ -277,7 +277,7 @@ public final class ImportJDBCIO {
 
                 importController.setClearManuallyAdded(false);
                 try {
-                    ((JDBCImportPane) importController.getStage()).update(importController, definitions);
+                    ((JDBCImportPane) importController.getImportPane()).update(importController, definitions);
                 } finally {
                     importController.setClearManuallyAdded(true);
                 }

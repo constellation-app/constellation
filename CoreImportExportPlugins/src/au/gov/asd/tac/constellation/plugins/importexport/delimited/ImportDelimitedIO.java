@@ -22,8 +22,10 @@ import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
 import au.gov.asd.tac.constellation.plugins.importexport.GraphDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportConstants;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPreferenceKeys;
 import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
@@ -43,6 +45,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -85,6 +88,8 @@ public final class ImportDelimitedIO {
     private static final String DEFAULT_VALUE = "default_value";
     private static final String LOAD_TEMPLATE = "Load Template";
     private static final String SAVE_TEMPLATE = "Save Template";
+
+    private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
     private ImportDelimitedIO() {
         // private constructor to hide implicit public one - java:S1118
@@ -225,6 +230,8 @@ public final class ImportDelimitedIO {
 
     private static void loadParameterFile(final DelimitedImportController importController, final File delimIoDir,
             final String templName) {
+        final List<String> missingUserAttributes = new ArrayList<>();
+        int tabCount = 0;
         try {
             final ObjectMapper mapper = new ObjectMapper();
             final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON));
@@ -247,16 +254,20 @@ public final class ImportDelimitedIO {
 
             final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) != null
                     && source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();
-            importController.setShowAllSchemaAttributes(showAllSchemaAttributes);
+
+            ((ImportController) importController).getImportPane().setTemplateOptions(showAllSchemaAttributes);
 
             final String destination = source.get(DESTINATION).textValue();
             final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(destination);
+
             if (schemaFactory != null) {
                 importController.setDestination(new SchemaDestination(schemaFactory));
 
                 final List<ImportDefinition> definitions = new ArrayList<>();
                 final ArrayNode definitionsArray = (ArrayNode) root.withArray(DEFINITIONS);
                 for (final JsonNode definitionNode : definitionsArray) {
+                    missingUserAttributes.clear();
+                    tabCount++;
                     final int firstRow = definitionNode.get(FIRST_ROW).intValue();
                     final RowFilter filter = new RowFilter();
                     if (definitionNode.has(FILTER)) {
@@ -275,15 +286,21 @@ public final class ImportDelimitedIO {
                     final ImportDefinition impdef = new ImportDefinition("", firstRow, filter);
 
                     final JsonNode attributesNode = definitionNode.get(ATTRIBUTES);
+
                     for (final AttributeType attrType : AttributeType.values()) {
                         final ArrayNode columnArray = (ArrayNode) attributesNode.withArray(attrType.toString());
                         for (final JsonNode column : columnArray) {
                             final String columnLabel = column.get(COLUMN_LABEL).textValue();
                             final String label = column.get(ATTRIBUTE_LABEL).textValue();
+
                             if (!importController.hasAttribute(attrType.getElementType(), label)) {
+                                if (!column.has(ATTRIBUTE_TYPE)) {
+                                    missingUserAttributes.add(label);
+                                    continue;
+                                }
                                 // Manually created attribute.
                                 final String type = column.get(ATTRIBUTE_TYPE).textValue();
-                                final String descr = column.get(ATTRIBUTE_DESCRIPTION).textValue();
+                                final String descr = (column.has(ATTRIBUTE_DESCRIPTION)) ? column.get(ATTRIBUTE_DESCRIPTION).textValue() : "";
                                 final NewAttribute a = new NewAttribute(attrType.getElementType(), type, label, descr);
                                 importController.createManualAttribute(a);
                             }
@@ -303,11 +320,21 @@ public final class ImportDelimitedIO {
                     }
 
                     definitions.add(impdef);
+
+                    if (!missingUserAttributes.isEmpty()) {
+                        final String message = String.format("A possible Template Error occured. In the tab `Run %d` following attributes are considered user added "
+                                + "for the destination `%s` with %s, as specified in the template. Hence they require `attribute_type` property. \n\n %s \n\n Consider using a new "
+                                + "template or add the missing attributes manually.", tabCount, schemaFactory.getLabel(),
+                                (showAllSchemaAttributes ? "`showAllSchemaAttributes` enabled" : "`showAllSchemaAttributes` disabled"), Arrays.toString(missingUserAttributes.toArray()));
+
+                        NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.WARNING);
+                        continue;
+                    }
                 }
 
                 importController.setClearManuallyAdded(false);
                 try {
-                    ((DelimitedImportPane) importController.getStage()).update(importController, definitions);
+                    ((DelimitedImportPane) importController.getImportPane()).update(importController, definitions);
                 } finally {
                     importController.setClearManuallyAdded(true);
                 }
@@ -315,6 +342,11 @@ public final class ImportDelimitedIO {
                 final String message = String.format("Can't find schema factory '%s'", destination);
                 NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Destination Schema Error", message, Alert.AlertType.ERROR);
             }
+        } catch (final NullPointerException ex) {
+            //To handle npe when json parsor accessing missing required fields in the template
+            final String message = String.format("A possible Template Error occured. Consider using a new template.");
+            LOGGER.log(Level.SEVERE, message);
+            NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.ERROR);
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }

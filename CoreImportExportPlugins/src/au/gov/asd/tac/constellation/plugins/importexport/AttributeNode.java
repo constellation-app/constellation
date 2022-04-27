@@ -151,7 +151,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
                 attributeList.getRunPane().validate(AttributeNode.this.column);
             }
         } else {
-            final Window parent = attributeList.importController.getStage().getParentWindow();
+            final Window parent = attributeList.importController.getImportPane().getParentWindow();
             final PluginParametersDialog dialog = new PluginParametersDialog(
                     parent, at.getLabel() + " Parameters",
                     parameters, "OK", "Cancel");
