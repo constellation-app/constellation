@@ -166,7 +166,6 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
         final PluginParameter<MultiChoiceParameterValue> transactionTypeParameter = MultiChoiceParameterType.build(TRANSACTION_TYPES_PARAMETER_ID, TransactionTypeParameterValue.class);
         transactionTypeParameter.setName("Transaction Types");
         transactionTypeParameter.setDescription("Calculate analytic only on the subgraph of transactions of these types");
-        transactionTypeParameter.setRequired(true);
         MultiChoiceParameterType.setOptionsData(transactionTypeParameter, new ArrayList<>());
         MultiChoiceParameterType.setChoicesData(transactionTypeParameter, new ArrayList<>());
         parameters.addParameter(transactionTypeParameter);
