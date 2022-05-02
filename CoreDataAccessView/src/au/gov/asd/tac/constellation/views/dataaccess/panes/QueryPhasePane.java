@@ -340,27 +340,32 @@ public class QueryPhasePane extends VBox {
                 .forEach(param -> RecentParameterValues.storeRecentValue(
                 param.getKey(), param.getValue().getStringValue()
         ));
-
-        // Store data access plugin parameters
-        getDataAccessPanes().stream()
-                .map(DataSourceTitledPane::getParameters)
-                .filter(Objects::nonNull)
-                .map(PluginParameters::getParameters)
-                .map(Map::entrySet)
-                .flatMap(Collection::stream)
-                .filter(param -> param.getValue().getObjectValue() != null)
-                .forEach(param -> {
-                    if (!param.getValue().getType().toString().contains(DataAccessTabPane.LOCAL_DATE_PARAMETER_TYPE)) {
-                        RecentParameterValues.storeRecentValue(
-                                param.getKey(),
-                                param.getValue().getStringValue()
-                        );
-                    } else {
-                        RecentParameterValues.storeRecentValue(
-                                param.getKey(),
-                                param.getValue().getObjectValue().toString()
-                        );
-                    }
-                });
+     
+         //#1608: In javaFX only the FX thread can modify the ui elements. 
+         // Any change to a Node that is part of a "live" scene graph must happen on the JavaFX application thread.
+         // Platform.runLater need to be used to execute those updates on the JavaFX application thread.
+         Platform.runLater(() -> {
+             // Store data access plugin parameters
+            getDataAccessPanes().stream()
+                    .map(DataSourceTitledPane::getParameters)
+                    .filter(Objects::nonNull)
+                    .map(PluginParameters::getParameters)
+                    .map(Map::entrySet)
+                    .flatMap(Collection::stream)
+                    .filter(param -> param.getValue().getObjectValue() != null)
+                    .forEach(param -> {
+                        if (!param.getValue().getType().toString().contains(DataAccessTabPane.LOCAL_DATE_PARAMETER_TYPE)) {
+                            RecentParameterValues.storeRecentValue(
+                                    param.getKey(),
+                                    param.getValue().getStringValue()
+                            );
+                        } else {
+                            RecentParameterValues.storeRecentValue(
+                                    param.getKey(),
+                                    param.getValue().getObjectValue().toString()
+                            );
+                        }
+                    });
+         });
     }
 }
