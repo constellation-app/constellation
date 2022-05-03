@@ -38,7 +38,6 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
@@ -291,14 +290,8 @@ public class DataAccessTabPane {
         
         DataAccessPaneState.setQueriesRunning(activeGraphId, true);
 
-        // TODO This was being called every time runPlugins is called but can't
-        //      see the point..could break!!!
-        //#1608: In javaFX only the FX thread can modify the ui elements. 
-         // Any change to a Node that is part of a "live" scene graph must happen on the JavaFX application thread.
-         // Platform.runLater need to be used to execute those updates on the JavaFX application thread.
-         Platform.runLater(() -> {
-            storeParameterValues();
-         });
+        // TODO This was being called every time runPlugins is called but can't see the point..could break!!!
+        storeParameterValues();
         
         List<Future<?>> barrier = null;
         for (int i = firstTab; i <= lastTab; i++) {
