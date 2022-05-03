@@ -290,7 +290,8 @@ public class DataAccessTabPane {
         
         DataAccessPaneState.setQueriesRunning(activeGraphId, true);
 
-        // TODO This was being called every time runPlugins is called but can't see the point..could break!!!
+        // TODO This was being called every time runPlugins is called but can't
+        //      see the point..could break!!!
         storeParameterValues();
         
         List<Future<?>> barrier = null;
