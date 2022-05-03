@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 public class BitMaskQuery {
 
     public static final String DEFAULT_QUERY_STRING = "Default";
-    public static final String DEFAULT_QUERY_DESCRIPTION = "Show All";
+    public static final String DEFAULT_QUERY_DESCRIPTION = "Show Complete Graph";
 
     private Query query;
     private String description;
@@ -71,6 +71,10 @@ public class BitMaskQuery {
 
     public String getQueryString() {
         return query.getQueryString();
+    }
+    
+    public void setQueryString(final String queryString) {
+        query = new Query(query.getElementType(),queryString);
     }
 
     public GraphElementType getQueryElementType() {

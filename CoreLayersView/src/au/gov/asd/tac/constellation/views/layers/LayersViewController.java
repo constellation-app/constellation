@@ -33,9 +33,11 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.views.layers.components.LayersViewPane;
 import au.gov.asd.tac.constellation.views.layers.context.LayerAction;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
+import au.gov.asd.tac.constellation.views.layers.query.Query;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
@@ -162,6 +164,7 @@ public class LayersViewController {
      * View pane.
      */
     public void readState() {
+        LOGGER.log(Level.SEVERE, "read state in method1");
         if (parent == null) {
             return;
         }
@@ -179,6 +182,7 @@ public class LayersViewController {
     }
 
     public void readStateFuture() {
+        LOGGER.log(Level.SEVERE, "read state in method2");
         if (parent == null) {
             return;
         }
@@ -206,11 +210,13 @@ public class LayersViewController {
      * @return a future of the plugin
      */
     public Future<?> writeState() {
+        LOGGER.log(Level.SEVERE, "write state in method");
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph == null) {
             return null;
         }
 
+        // controller oiut of sync with graph...
         return PluginExecution.withPlugin(new LayersStateWriterPlugin(vxBitMaskCollection.getQueries(),
                 txBitMaskCollection.getQueries()))
                 .executeLater(graph);
@@ -305,25 +311,93 @@ public class LayersViewController {
     /**
      * Create a layer by writing data to the UI and saving that state
      */
-    protected void createLayer() {
+    public void createLayer() {
         final int layerCount = Math.max(getTxQueryCollection().getHighestQueryIndex(), getVxQueryCollection().getHighestQueryIndex());
 
         if (layerCount <= BitMaskQueryCollection.MAX_QUERY_AMT) {
             final LayersViewPane pane = parent.getContent();
-            pane.createLayer(layerCount + 1, false, null, StringUtils.EMPTY, StringUtils.EMPTY, true, true);
+            Query vxQuery = new Query(GraphElementType.VERTEX, "");
+            getVxQueryCollection().add(vxQuery, layerCount + 1, null);
+            Query txQuery = new Query(GraphElementType.TRANSACTION, "");
+            getTxQueryCollection().add(txQuery, layerCount + 1, null);
+            //pane.setLayers(getVxQueryCollection().getQueries(), getTxQueryCollection().getQueries());
+
+            //pane.createLayer(layerCount + 1, false, null, StringUtils.EMPTY, StringUtils.EMPTY, true, true);
             writeState();
         } else {
             NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers", NotifyDescriptor.WARNING_MESSAGE);
             LOGGER.log(Level.INFO, "Layer count maximum reached. Maximum is currently: {0}", BitMaskQueryCollection.MAX_QUERY_AMT);
         }
     }
+    
+    /**
+     * Delete the layer at the specified index
+     * @param index 
+     */
+    public void deleteLayer(final int index) {
+        if(index != 0){
+            getVxQueryCollection().removeQueryAndSort(index);
+        getTxQueryCollection().removeQueryAndSort(index);
+        removeBitmaskFromElements(index);
+        shuffleElementBitmasks(index);
+        writeState();
+        execute();
+        }else{
+            // TODO: Alert user they cannot delete the default layer ?
+        }
+        
+    }
 
     /**
      * Deselect all layers in each collection
      */
-    protected void deselectAll() {
+    public void deselectAll() {
         getVxQueryCollection().setVisibilityOnAll(false);
         getTxQueryCollection().setVisibilityOnAll(false);
+        execute();
+        writeState();
+    }
+    
+    public void changeLayerVisibility(final int index, final boolean isVisible) {
+        final BitMaskQuery vxQuery = getVxQueryCollection().getQuery(index);
+        final BitMaskQuery txQuery = getTxQueryCollection().getQuery(index);
+        
+        if(vxQuery != null){
+            vxQuery.setVisibility(isVisible);
+        }
+        if(txQuery != null){
+            txQuery.setVisibility(isVisible);
+        }
+        // TODO: testing for race conditinon uncomment 
+        execute();
+        writeState();
+    }
+    
+    public void updateDescription(final String newString, final int index) {
+        final BitMaskQuery vxQuery = getVxQueryCollection().getQuery(index);
+        final BitMaskQuery txQuery = getTxQueryCollection().getQuery(index);
+        
+        if(vxQuery != null){
+            vxQuery.setDescription(newString);
+        }
+        if(txQuery != null){
+            txQuery.setDescription(newString);
+        }
+        //execute();
+        writeState();
+    }
+
+    public void updateQuery(final String newQueryString, final int index) {
+        
+        final BitMaskQuery vxQuery = getVxQueryCollection().getQuery(index);
+        final BitMaskQuery txQuery = getTxQueryCollection().getQuery(index);
+        
+        if(vxQuery != null){
+            vxQuery.setQueryString(newQueryString);
+        }
+        if(txQuery != null){
+            txQuery.setQueryString(newQueryString);
+        }
         execute();
         writeState();
     }
@@ -345,6 +419,7 @@ public class LayersViewController {
             if (graph == null) {
                 return;
             }
+            LOGGER.log(Level.SEVERE, "Reading state in plugin");
 
             final int layersViewStateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
             if (layersViewStateAttributeId == Graph.NOT_FOUND) {
@@ -383,6 +458,7 @@ public class LayersViewController {
             if (graph == null) {
                 return;
             }
+            LOGGER.log(Level.SEVERE, "Writing state in plugin");
 
             final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
             LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);

@@ -20,9 +20,12 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.views.layers.components.LayersViewPane;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -59,6 +62,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     private final LayersViewController layersViewController;
     private final LayersViewPane layersViewPane;
+    private static final Logger LOGGER = Logger.getLogger(LayersViewTopComponent.class.getName());
 
     public LayersViewTopComponent() {
         setName(Bundle.CTL_LayersViewTopComponent());
@@ -75,12 +79,14 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
                 return;
             }
 
+            LOGGER.log(Level.SEVERE, "statechanged");
             layersViewController.readStateFuture();
             layersViewController.updateQueries(graph);
         });
     }
 
     public void update() {
+        LOGGER.log(Level.SEVERE, "update in method");
         layersViewController.readState();
         layersViewController.updateQueries(GraphManager.getDefault().getActiveGraph());
     }
@@ -130,6 +136,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
             preparePane();
         }
         setPaneStatus();
+        // TODO: Not setting pane as empty
     }
 
     @Override
@@ -138,17 +145,24 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         preparePane();
         setPaneStatus();
     }
+    
+    // component showing loads layers
+    // component opened sets default layers and overrites.
 
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        preparePane();
+        createContent().setEnabled(true);
+        LOGGER.log(Level.SEVERE, "componentshowing in method");
+        layersViewController.readState();
+        layersViewController.addAttributes();
         setPaneStatus();
     }
 
     protected void preparePane() {
         createContent().setEnabled(true);
         createContent().setDefaultLayers();
+        LOGGER.log(Level.SEVERE, "perparepane in method");
         layersViewController.readState();
         layersViewController.addAttributes();
     }

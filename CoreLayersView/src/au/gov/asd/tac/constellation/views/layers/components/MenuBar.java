@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.layers;
+package au.gov.asd.tac.constellation.views.layers.components;
 
+import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -68,7 +69,7 @@ public class MenuBar extends HBox {
     }
 
     private Button createAddButton() {
-        final Button addLayerButton = new Button("Add New Layer");
+        final Button addLayerButton = new Button("Add Layer");
         addLayerButton.setAlignment(Pos.CENTER_RIGHT);
         addLayerButton.setTooltip(new Tooltip("CTRL + ALT + L"));
         addLayerButton.setOnAction(event -> {
@@ -81,7 +82,7 @@ public class MenuBar extends HBox {
     }
 
     private Button createDeselectButton() {
-        final Button deselectAllButton = new Button("Deselect All Layers");
+        final Button deselectAllButton = new Button("Deselect Layers");
         deselectAllButton.setTooltip(new Tooltip("CTRL + ALT + D"));
         deselectAllButton.setAlignment(Pos.CENTER_RIGHT);
         deselectAllButton.setOnAction(event -> {
