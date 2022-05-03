@@ -129,7 +129,7 @@ public class LayerTitlePane extends TitledPane {
         
         final Region region = new Region();
         region.setPrefSize(7, 7);
-        final HBox box = isCompleteGraphLayer ? new HBox(8, region, enabled, label) : new HBox(10, enabled, label);
+        final HBox box = isCompleteGraphLayer ? new HBox(8, region, label) : new HBox(10, enabled, label);
         final BorderPane border = new BorderPane();
         border.setLeft(box);
         border.setRight(isCompleteGraphLayer ? null : deleteButton);
@@ -160,20 +160,32 @@ public class LayerTitlePane extends TitledPane {
     
     public void setQuery(final BitMaskQuery query) {
         this.query = query;
+        
+        enabled.selectedProperty().removeListener(enabledChanged);
+        enabled.setSelected(query.isVisible());
+        enabled.selectedProperty().addListener(enabledChanged);
+        
         final GraphElementType type = query.getQueryElementType();
+        
         
         if(type == GraphElementType.VERTEX) {
             setVxQuery(query.getQueryString());
         } else if(type == GraphElementType.TRANSACTION){
             setTxQuery(query.getQueryString());
         }
-        enabled.selectedProperty().removeListener(enabledChanged);
-        enabled.setSelected(query.isVisible());
-        enabled.selectedProperty().addListener(enabledChanged);
+        
         
     }
     
+    public void setSelected(final boolean value) {
+        enabled.selectedProperty().removeListener(enabledChanged);
+        enabled.setSelected(value);
+        enabled.selectedProperty().addListener(enabledChanged);
+        recolourLayer();
+    }
+    
     public void setVxQuery(final String query) {
+        vxQuery.setValidity(true);
         vxQuery.setQuery(query);
         recheckValidity();
         
@@ -185,6 +197,7 @@ public class LayerTitlePane extends TitledPane {
     }
     
     public void setTxQuery(final String query) {
+        txQuery.setValidity(true);
         txQuery.setQuery(query);
         recheckValidity();
         if(!isValid){
@@ -203,6 +216,7 @@ public class LayerTitlePane extends TitledPane {
     
     private void recolourLayer() {
         if (enabled.isSelected()) {
+            LOGGER.log(Level.SEVERE, "recolouring: " + this.layerId);
             getStyleClass().add(SELECTED_STYLE);
         } else if(!isValid) {
             // not selected and invalid

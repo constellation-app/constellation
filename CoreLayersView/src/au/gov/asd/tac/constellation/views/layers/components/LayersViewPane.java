@@ -313,6 +313,7 @@ public class LayersViewPane extends BorderPane {
         final List<Node> layers = new ArrayList<>();
         
         final int iteratorEnd = Math.max(getHighestQueryIndex(vxQueries), getHighestQueryIndex(txQueries)) + 1;
+        boolean isQueryActive = false;
         
         for (int position = 0; position < iteratorEnd; position++) {
             final BitMaskQuery vxQuery = vxQueries[position];
@@ -336,6 +337,11 @@ public class LayersViewPane extends BorderPane {
             }else{
                 // TX query found
                 q = new Query(GraphElementType.TRANSACTION, txqueryString);
+            }
+            
+            if(position != 0 && queryVisibility){
+                // not default layer and a layer is visible.
+                isQueryActive = true;
             }
 
             // TODO: It rebuilds the whole pane whenever the text is changed - partial update?
@@ -361,9 +367,16 @@ public class LayersViewPane extends BorderPane {
 
         // remove the remaining old layers.
         final int totalLayers = layersnew.getChildren().size();
-        if(totalLayers > iteratorEnd){
+        if(totalLayers > iteratorEnd) {
             layersnew.getChildren().remove(iteratorEnd, totalLayers); // was -1
         }
+        
+        // set layer 0 selected when no other layer is enabled.
+        LayerTitlePane oldTp = (LayerTitlePane) layersnew.getChildren().remove(0);
+        oldTp.setSelected(!isQueryActive);
+        layersnew.getChildren().add(0, oldTp);
+        
+                
         
         //layersnew.getChildren().clear();
         //layersnew.getChildren().addAll(layers);
