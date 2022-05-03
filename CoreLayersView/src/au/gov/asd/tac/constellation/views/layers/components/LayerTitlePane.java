@@ -263,7 +263,7 @@ public class LayerTitlePane extends TitledPane {
     }
     
     public void recheckValidity() {
-        boolean validity = ExpressionUtilities.testQueryValidity(query.getQueryString());
+        boolean validity = query.getQueryString() == null || ExpressionUtilities.testQueryValidity(query.getQueryString());
         this.isValid = validity;
         setValidity(validity);
     }

@@ -125,6 +125,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     @Override
     protected void handleGraphOpened(final Graph graph) {
         if (needsUpdate() && graph != null) {
+            //createContent().setDefaultLayers();
             preparePane();
         }
         setPaneStatus();
@@ -165,6 +166,14 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         LOGGER.log(Level.SEVERE, "perparepane in method");
         layersViewController.readState();
         layersViewController.addAttributes();
+    }
+    
+    protected void clearPane() {
+        //createContent().setEnabled(true);
+        createContent().setDefaultLayers();
+        LOGGER.log(Level.SEVERE, "clearPane in method");
+//        layersViewController.readState();
+//        layersViewController.addAttributes();
     }
     
     /**

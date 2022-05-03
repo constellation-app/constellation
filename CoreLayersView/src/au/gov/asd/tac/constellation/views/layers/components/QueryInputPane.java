@@ -219,7 +219,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
 //            }
             // TODO: update desc, vx or tx depdneing on ffield
             if(validityCheckRequired) {
-                final boolean isValid = ExpressionUtilities.testQueryValidity(field.getText());
+                final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
                 
                 updateQuery(field.getText());
                 setValidity(isValid);
@@ -258,7 +258,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     }
     
     public String getQuery() {
-        return field.getText();
+        return field.getText() == "" ? null : field.getText();
     }
     
     public void setQuery(final String query) {

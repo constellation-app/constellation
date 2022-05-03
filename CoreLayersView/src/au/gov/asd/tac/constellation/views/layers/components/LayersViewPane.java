@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.query.Query;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -39,6 +40,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 
 /**
  * Layers View Pane.
@@ -48,16 +50,6 @@ import org.apache.commons.lang3.StringUtils;
 public class LayersViewPane extends BorderPane {
     
     
-    
-    
-    // TODO>: Works for changing graphs but toggling a layer shows the wrong graph layers....
-  
-    
-    
-    
-    
-    
-
     private static final Logger LOGGER = Logger.getLogger(LayersViewPane.class.getName());
     private final LayersViewController controller;
     //private final GridPane layersGridPane;
@@ -272,10 +264,10 @@ public class LayersViewPane extends BorderPane {
      * Set the layers to the defaults.
      */
     public synchronized void setDefaultLayers() {
-        
+        CountDownLatch cdl1 = new CountDownLatch(1);
         Platform.runLater(() -> {
             controller.getVxQueryCollection().setDefaultQueries();
-        controller.getTxQueryCollection().setDefaultQueries();
+            controller.getTxQueryCollection().setDefaultQueries();
             options.displayQueryErrorLabel(false);
             
             final VBox oldLayers = (VBox) attributeScrollPane.getContent();
@@ -284,7 +276,13 @@ public class LayersViewPane extends BorderPane {
             this.layersViewPane = new VBox(layersHeading, attributeScrollPane, options);
             // trigger refresh using enabled method
             setEnabled(true);
+            cdl1.countDown();
         });
+        try {
+            cdl1.await();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 //
 //    /**
