@@ -24,10 +24,6 @@ import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
-import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
-import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -344,7 +340,7 @@ public class QueryPhasePane extends VBox {
          //#1608: In javaFX only the FX thread can modify the ui elements. 
          // Any change to a Node that is part of a "live" scene graph must happen on the JavaFX application thread.
          // Platform.runLater need to be used to execute those updates on the JavaFX application thread.
-        // Platform.runLater(() -> {
+         Platform.runLater(() -> {
              // Store data access plugin parameters
             getDataAccessPanes().stream()
                     .map(DataSourceTitledPane::getParameters)
@@ -366,6 +362,6 @@ public class QueryPhasePane extends VBox {
                             );
                         }
                     });
-         //});
+         });
     }
 }
