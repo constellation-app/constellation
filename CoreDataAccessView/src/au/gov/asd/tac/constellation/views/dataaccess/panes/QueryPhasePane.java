@@ -339,7 +339,7 @@ public class QueryPhasePane extends VBox {
         //#1608: In javaFX only the FX thread can modify the ui elements. 
         // Any change to a Node that is part of a "live" scene graph must happen on the JavaFX application thread.
         // Platform.runLater need to be used to execute those updates on the JavaFX application thread.
-        Platform.runLater(() -> {
+        //Platform.runLater(() -> {
 
             // Store global parameters
             getGlobalParametersPane().getParams().getParameters().entrySet().stream()
@@ -372,6 +372,6 @@ public class QueryPhasePane extends VBox {
                             );
                         }
                     });
-        });
+      //  });
     }
 }
