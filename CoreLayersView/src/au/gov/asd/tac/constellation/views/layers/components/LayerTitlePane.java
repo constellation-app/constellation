@@ -170,8 +170,10 @@ public class LayerTitlePane extends TitledPane {
         
         if(type == GraphElementType.VERTEX) {
             setVxQuery(query.getQueryString());
+            setTxQuery(null);
         } else if(type == GraphElementType.TRANSACTION){
             setTxQuery(query.getQueryString());
+            setVxQuery(null);
         }
         
         
