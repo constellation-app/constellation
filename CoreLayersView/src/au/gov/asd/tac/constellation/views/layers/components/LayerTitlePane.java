@@ -128,7 +128,7 @@ public class LayerTitlePane extends TitledPane {
         deleteButton.setDisable(isCompleteGraphLayer);
         
         final Region region = new Region();
-        region.setPrefSize(7, 7);
+        region.setPrefSize(33.5, 7);
         final HBox box = isCompleteGraphLayer ? new HBox(8, region, label) : new HBox(10, enabled, label);
         final BorderPane border = new BorderPane();
         border.setLeft(box);
