@@ -350,19 +350,18 @@ public class QueryPhasePane extends VBox {
                 .flatMap(Collection::stream)
                 .filter(param -> param.getValue().getObjectValue() != null)
                 .forEach(param -> {
-                    Platform.runLater(() -> {
-                        if (!param.getValue().getType().toString().contains(DataAccessTabPane.LOCAL_DATE_PARAMETER_TYPE)) {
-                            RecentParameterValues.storeRecentValue(
-                                    param.getKey(),
-                                    param.getValue().getStringValue()
-                            );
-                        } else {
-                            RecentParameterValues.storeRecentValue(
-                                    param.getKey(),
-                                    param.getValue().getObjectValue().toString()
-                            );
-                        }
-                    });
+                    Platform.setImplicitExit(false);
+                    if (!param.getValue().getType().toString().contains(DataAccessTabPane.LOCAL_DATE_PARAMETER_TYPE)) {
+                        RecentParameterValues.storeRecentValue(
+                                param.getKey(),
+                                param.getValue().getStringValue()
+                        );
+                    } else {
+                        RecentParameterValues.storeRecentValue(
+                                param.getKey(),
+                                param.getValue().getObjectValue().toString()
+                        );
+                    }
                 });
     }
 }
