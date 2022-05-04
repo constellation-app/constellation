@@ -242,12 +242,13 @@ public class LayersViewPane extends BorderPane {
     }
 
     public synchronized void setLayers(final BitMaskQuery[] vxLayers, final BitMaskQuery[] txLayers) {
-        
+        CountDownLatch cdl1 = new CountDownLatch(1);
+        Platform.runLater(() -> {
                     controller.getVxQueryCollection().clear();
         controller.getTxQueryCollection().clear();
         controller.getVxQueryCollection().setQueries(vxLayers);
         controller.getTxQueryCollection().setQueries(txLayers);
-        Platform.runLater(() -> {
+        
 
             options.displayQueryErrorLabel(false);
             
@@ -257,7 +258,13 @@ public class LayersViewPane extends BorderPane {
             this.layersViewPane = new VBox(layersHeading, attributeScrollPane, options);
             // trigger refresh using enabled method
             setEnabled(true);
+            cdl1.countDown();
         });
+        try {
+            cdl1.await();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     /**
