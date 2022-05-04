@@ -349,8 +349,7 @@ public class QueryPhasePane extends VBox {
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
                 .filter(param -> param.getValue().getObjectValue() != null)
-                .forEach(param -> {
-                    Platform.setImplicitExit(false);
+                .forEach(param -> {                    
                     if (!param.getValue().getType().toString().contains(DataAccessTabPane.LOCAL_DATE_PARAMETER_TYPE)) {
                         RecentParameterValues.storeRecentValue(
                                 param.getKey(),
