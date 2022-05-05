@@ -461,8 +461,11 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                 throw new PluginException(PluginNotificationLevel.ERROR, "Invalid element type");
         }
 
-        try {
-            exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);
+        try {            
+            //#1646: Check for valid path
+            if(isValidPath(output)) {
+              exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);  
+            }            
         } catch (final IOException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
@@ -474,4 +477,18 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                 ConstellationLoggerHelper.SUCCESS
         );
     }
-}
+    
+    private boolean isValidPath(File output) {
+        if(StringUtils.isEmpty(output.getPath())) {
+            NotifyDisplayer.display("Invalid output file provided, cannot be empty", NotifyDescriptor.ERROR_MESSAGE);
+            return false;
+        }
+        if(output.isDirectory() || (!output.isDirectory() 
+                && output.getParentFile() != null && output.getParentFile().exists())) {
+            return true;
+        } else {
+            NotifyDisplayer.display("Invalid file path", NotifyDescriptor.ERROR_MESSAGE);
+            return false;
+        }        
+    }
+} 
