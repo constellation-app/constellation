@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
 import org.openide.util.NbPreferences;
 
 /**
@@ -108,7 +109,8 @@ public class RecentParameterValues {
     public static void fireChangeEvent(RecentValuesChangeEvent e) {
         synchronized (LISTENERS) {
             for (RecentValuesListener listener : LISTENERS) {
-                listener.recentValuesChanged(e);
+                //JavaFX code allows updating the UI from an JavaFX application thread.            
+                Platform.runLater(() -> listener.recentValuesChanged(e));
             }
         }
     }
