@@ -95,25 +95,6 @@ public class LayerTitlePane extends TitledPane {
         deleteButton.setTooltip(new Tooltip("Delete this layer"));
         deleteButton.setOnMouseClicked(e -> delete());
         
-//        final GraphElementType type = query.getQueryElementType();
-//        recheckValidity();
-//        if(type == GraphElementType.VERTEX) {
-//            
-//        if(!isValid){
-//            // when tx is invalid, 
-//            vxQuery.setValidity(false);
-//            
-//        }
-//            //setVxQuery(query.getQueryString());
-//        } else if(type == GraphElementType.TRANSACTION){
-//            //setTxQuery(query.getQueryString());
-//            if(!isValid){
-//            // when tx is invalid, 
-//            txQuery.setValidity(false);
-//            
-//        }
-//        }
-        
         if(enabled.isSelected()) {
             getStyleClass().add(SELECTED_STYLE);
         } else if(!isValid){
@@ -139,9 +120,6 @@ public class LayerTitlePane extends TitledPane {
         setGraphic(border);
         setExpanded(false);
         
-
-        
-        
         setPadding(Insets.EMPTY);
         setTooltip(new Tooltip("Expand this layer to view more details"));
         setContent(createLayerDetailsPane(query));
@@ -153,7 +131,6 @@ public class LayerTitlePane extends TitledPane {
         descinput = new QueryInputPane(this, "Query Description", QUERY_DESCRIPTION, query.getDescription(), false);
         final VBox box = new VBox(10, descinput, vxQuery, txQuery);
         box.prefWidthProperty().bind(this.widthProperty());
-
 
         return box;
     }
@@ -167,7 +144,6 @@ public class LayerTitlePane extends TitledPane {
         
         final GraphElementType type = query.getQueryElementType();
         
-        
         if(type == GraphElementType.VERTEX) {
             setVxQuery(query.getQueryString());
             setTxQuery(null);
@@ -175,8 +151,6 @@ public class LayerTitlePane extends TitledPane {
             setTxQuery(query.getQueryString());
             setVxQuery(null);
         }
-        
-        
     }
     
     public void setSelected(final boolean value) {
@@ -194,7 +168,6 @@ public class LayerTitlePane extends TitledPane {
         if(!isValid){
             // when vx is invalid, 
             vxQuery.setValidity(false);
-            
         }
     }
     
@@ -205,7 +178,6 @@ public class LayerTitlePane extends TitledPane {
         if(!isValid){
             // when tx is invalid, 
             txQuery.setValidity(false);
-            
         }
     }
     
@@ -213,7 +185,6 @@ public class LayerTitlePane extends TitledPane {
         descinput.setQuery(description);
         final String displayedLayerName = StringUtils.truncate(description, MAX_DISPLAYED_CHARS);
         label.setText(StringUtils.isBlank(description) ? String.format("%d", layerId) : String.format("%-2.2s - %s",String.valueOf(layerId), displayedLayerName));
-        
     }
     
     private void recolourLayer() {
@@ -236,11 +207,6 @@ public class LayerTitlePane extends TitledPane {
             }
             enabled.setDisable(false);
         }
-        
-        // not selected
-            // invalid
-            // valid
-        // selected
     }
     
     
@@ -248,8 +214,6 @@ public class LayerTitlePane extends TitledPane {
      * Delete this layer
      */
     private void delete() {
-        // TODO: Add validation to this
-        LOGGER.log(Level.SEVERE, "Trying to delete layer: {0}", layerId);
         LayersViewController.getDefault().deleteLayer(layerId);
     }
     
@@ -258,10 +222,8 @@ public class LayerTitlePane extends TitledPane {
     }
     
     public void setValidity(final boolean isValid){
-        //if(this.isValid != isValid) {
-            this.isValid = isValid;
-            recolourLayer();
-       //}
+        this.isValid = isValid;
+        recolourLayer();
     }
     
     public void recheckValidity() {
@@ -284,5 +246,4 @@ public class LayerTitlePane extends TitledPane {
     protected BitMaskQuery getQuery() {
         return query;
     }
-
 }

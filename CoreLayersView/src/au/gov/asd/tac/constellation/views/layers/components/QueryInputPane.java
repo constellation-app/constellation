@@ -70,7 +70,6 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
 
     public QueryInputPane(final LayerTitlePane parent, final String parameter, final String description, final String value, final boolean requiresValidityCheck) {
         this(parent, parameter, description, value, DEFAULT_WIDTH, null, requiresValidityCheck);
-        
     }
 
     public QueryInputPane(final LayerTitlePane parent, final String parameter, final String description, final String value, int defaultWidth, final boolean requiresValidityCheck) {
@@ -90,7 +89,8 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         if (suggestedHeight == null) {
             suggestedHeight = 75;
         }
-        parameterId = "LAYER_QUERIES";//parameter.getId(); // TODO:
+        // TODO: Parameter saving has not been fully implemented (only this Id has been changed)
+        parameterId = "LAYER_QUERIES";
 
         final Label l = new Label(title);
         l.setStyle(l.getStyle() + "-fx-font-size:13; -fx-font-weight: bold");
@@ -113,20 +113,18 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
 
         recentValuesCombo.setTooltip(new Tooltip("Recent values"));
         recentValuesCombo.setMaxWidth(5);
-        List<String> recentValues = RecentParameterValues.getRecentValues(parameterId);
+        final List<String> recentValues = RecentParameterValues.getRecentValues(parameterId);
         if (recentValues != null) {
             recentValuesCombo.setItems(FXCollections.observableList(recentValues));
         } else {
             recentValuesCombo.setDisable(true);
         }
 
-        ListCell<String> button = new ListCell<String>() {
+        final ListCell<String> button = new ListCell<String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-
                 setText("...");
-
             }
         };
         recentValuesCombo.setButtonCell(button);
@@ -135,7 +133,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         field.setMinHeight(suggestedHeight);
         
 
-        field.setPromptText(title); // TODO: Set descrioption of a query
+        field.setPromptText(title);
         field.setText(value);
 
         field.setMinWidth(defaultWidth);
@@ -155,9 +153,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         // If parameter is enabled, ensure widget is both enabled and editable.
         field.setEditable(true);
         field.setDisable(false);
-        //field.setManaged(parameter.isVisible()); // TODO:? 
         field.setVisible(true);
-        //this.setManaged(true); /? TODO: ?
         this.setVisible(true);
         recentValuesCombo.setDisable(false);
 
@@ -201,35 +197,14 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         final Tooltip tooltip = new Tooltip("");
         tooltip.setStyle("-fx-text-fill: white;");
         field.focusedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
-            if(t1){
-                
-            } else{
-                
-            
-//            final boolean isValid = ExpressionUtilities.testQueryValidity(field.getText());
-//            //String error = parameter.testQueryValidity(field.getText());
-//            if (!isValid) {
-//                tooltip.setText("TOERE WAS A QUERY ERROR"); // TODO: meaningful stirng
-//                field.setTooltip(tooltip);
-//                field.setId("invalid");
-//            } else {
-//                tooltip.setText("");
-//                field.setTooltip(null);
-//                field.setId("");
-//            }
-            // TODO: update desc, vx or tx depdneing on ffield
-            if(validityCheckRequired) {
-                final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
-                
-                updateQuery(field.getText());
-                setValidity(isValid);
-                //parent.recheckValidity();
-            }else{
-                updateDescription(field.getText());
-            }
-            
-            //parent.recheckValidity();
-            // TODO: set string value to query 
+            if(!t1){
+                if(validityCheckRequired) {
+                    final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
+                    updateQuery(field.getText());
+                    setValidity(isValid);
+                }else{
+                    updateDescription(field.getText());
+                }
             }
         });
         
@@ -276,28 +251,14 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         }else {
             field.setId(INVALID_ID);
         }
-        
     }
+    
     /**
      * Update this query from a text edit event.
      * @param fieldText 
      */
     private void updateDescription(final String fieldText) {
         LayersViewController.getDefault().updateDescription(fieldText, parent.getQuery().getIndex());
-        // TODO: Store the updated field into the relevant query collection
-//        LayersViewController.getDefault().getTxQueryCollection()..add(txQueryObject);
-//
-//        final BitMaskQuery vxQueryObject = new BitMaskQuery(new Query(GraphElementType.VERTEX, vxQuery), index, description);
-//        vxQueryObject.setVisibility(visible);
-//        controller.getVxQueryCollection().add(vxQueryObject);
-//
-//        if (StringUtils.isBlank(vxQuery) && StringUtils.isNotBlank(txQuery)) {
-//            controller.getVxQueryCollection().removeQuery(index);
-//        } else if (StringUtils.isBlank(txQuery) && StringUtils.isNotBlank(vxQuery)) {
-//            controller.getTxQueryCollection().removeQuery(index);
-//        } else {
-//            // Do nothing
-//        }
     }
     /**
      * Update this query from a text edit event.
@@ -305,25 +266,10 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
      */
     private void updateQuery(final String fieldText) {
         LayersViewController.getDefault().updateQuery(fieldText, parent.getQuery().getIndex());
-        // TODO: Store the updated field into the relevant query collection
-//        LayersViewController.getDefault().getTxQueryCollection()..add(txQueryObject);
-//
-//        final BitMaskQuery vxQueryObject = new BitMaskQuery(new Query(GraphElementType.VERTEX, vxQuery), index, description);
-//        vxQueryObject.setVisibility(visible);
-//        controller.getVxQueryCollection().add(vxQueryObject);
-//
-//        if (StringUtils.isBlank(vxQuery) && StringUtils.isNotBlank(txQuery)) {
-//            controller.getVxQueryCollection().removeQuery(index);
-//        } else if (StringUtils.isBlank(txQuery) && StringUtils.isNotBlank(vxQuery)) {
-//            controller.getTxQueryCollection().removeQuery(index);
-//        } else {
-//            // Do nothing
-//        }
     }
 
     @Override
-    public void recentValuesChanged(final RecentValuesChangeEvent e
-    ) {
+    public void recentValuesChanged(final RecentValuesChangeEvent e) {
         if (recentValuesCombo != null && parameterId.equals(e.getId())) {
             recentValuesCombo.getSelectionModel().selectedIndexProperty().removeListener(recentValueSelectionListener);
             final List<String> recentValues = e.getNewValues();

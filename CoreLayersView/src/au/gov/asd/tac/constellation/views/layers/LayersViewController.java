@@ -50,7 +50,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
 
 /**
@@ -320,9 +319,6 @@ public class LayersViewController {
             getVxQueryCollection().add(vxQuery, layerCount + 1, null);
             Query txQuery = new Query(GraphElementType.TRANSACTION, "");
             getTxQueryCollection().add(txQuery, layerCount + 1, null);
-            //pane.setLayers(getVxQueryCollection().getQueries(), getTxQueryCollection().getQueries());
-
-            //pane.createLayer(layerCount + 1, false, null, StringUtils.EMPTY, StringUtils.EMPTY, true, true);
             writeState();
         } else {
             NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers", NotifyDescriptor.WARNING_MESSAGE);
@@ -337,15 +333,14 @@ public class LayersViewController {
     public void deleteLayer(final int index) {
         if(index != 0){
             getVxQueryCollection().removeQueryAndSort(index);
-        getTxQueryCollection().removeQueryAndSort(index);
-        removeBitmaskFromElements(index);
-        shuffleElementBitmasks(index);
-        writeState();
-        execute();
+            getTxQueryCollection().removeQueryAndSort(index);
+            removeBitmaskFromElements(index);
+            shuffleElementBitmasks(index);
+            writeState();
+            execute();
         }else{
-            // TODO: Alert user they cannot delete the default layer ?
+            NotifyDisplayer.display("You cannot delete the default layer!", NotifyDescriptor.WARNING_MESSAGE);
         }
-        
     }
 
     /**
@@ -368,8 +363,8 @@ public class LayersViewController {
         if(txQuery != null){
             txQuery.setVisibility(isVisible);
         }
-        // TODO: testing for race conditinon uncomment 
-        execute();
+        
+        executeFuture();
         writeState();
     }
     
@@ -383,7 +378,6 @@ public class LayersViewController {
         if(txQuery != null){
             txQuery.setDescription(newString);
         }
-        //execute();
         writeState();
     }
 
@@ -470,6 +464,7 @@ public class LayersViewController {
                 currentState = new LayersViewState(currentState);
             }
 
+            LOGGER.log(Level.SEVERE, "is query visible already?: " + currentState.getVxQueriesCollection().getQuery(1).isVisible());
             currentState.setVxLayers(vxLayers);
             currentState.setTxLayers(txLayers);
             if (currentState.getVxQueriesCollection().getHighestQueryIndex() == 0 && currentState.getTxQueriesCollection().getHighestQueryIndex() == 0) {
@@ -585,6 +580,5 @@ public class LayersViewController {
             LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
             LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
         }
-
     }
 }

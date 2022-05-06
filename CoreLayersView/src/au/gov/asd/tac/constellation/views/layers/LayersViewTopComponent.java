@@ -79,14 +79,12 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
                 return;
             }
 
-            LOGGER.log(Level.SEVERE, "statechanged");
             layersViewController.readStateFuture();
             layersViewController.updateQueries(graph);
         });
     }
 
     public void update() {
-        LOGGER.log(Level.SEVERE, "update in method");
         layersViewController.readState();
         layersViewController.updateQueries(GraphManager.getDefault().getActiveGraph());
     }
@@ -125,7 +123,6 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     @Override
     protected void handleGraphOpened(final Graph graph) {
         if (needsUpdate() && graph != null) {
-            //createContent().setDefaultLayers();
             preparePane();
         }
         setPaneStatus();
@@ -137,7 +134,6 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
             preparePane();
         }
         setPaneStatus();
-        // TODO: Not setting pane as empty
     }
 
     @Override
@@ -146,15 +142,11 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         preparePane();
         setPaneStatus();
     }
-    
-    // component showing loads layers
-    // component opened sets default layers and overrites.
 
     @Override
     protected void componentShowing() {
         super.componentShowing();
         createContent().setEnabled(true);
-        LOGGER.log(Level.SEVERE, "componentshowing in method");
         layersViewController.readState();
         layersViewController.addAttributes();
         setPaneStatus();
@@ -163,17 +155,12 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     protected void preparePane() {
         createContent().setEnabled(true);
         createContent().setDefaultLayers();
-        LOGGER.log(Level.SEVERE, "perparepane in method");
         layersViewController.readState();
         layersViewController.addAttributes();
     }
     
     protected void clearPane() {
-        //createContent().setEnabled(true);
         createContent().setDefaultLayers();
-        LOGGER.log(Level.SEVERE, "clearPane in method");
-//        layersViewController.readState();
-//        layersViewController.addAttributes();
     }
     
     /**
@@ -182,7 +169,6 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
      */
     protected void setPaneStatus(){
         createContent().setEnabled(GraphManager.getDefault().getActiveGraph() != null);
-        
     }
 
     /**

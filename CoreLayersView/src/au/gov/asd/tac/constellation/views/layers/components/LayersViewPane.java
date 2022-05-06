@@ -52,7 +52,6 @@ public class LayersViewPane extends BorderPane {
     
     private static final Logger LOGGER = Logger.getLogger(LayersViewPane.class.getName());
     private final LayersViewController controller;
-    //private final GridPane layersGridPane;
     protected VBox layersViewPane;
     protected final VBox noGraphPane;
     private final MenuBar options;
@@ -63,9 +62,6 @@ public class LayersViewPane extends BorderPane {
     private static final int SCROLLPANE_HEIGHT = 1000;
     private static final int SCROLLPANE_VIEW_WIDTH = 400;
     private static final int SCROLLPANE_VIEW_HEIGHT = 900;
-
-    private static final String QUERY_WARNING_STYLE = "-fx-background-color: rgba(241,74,74,0.85);";
-    private static final String QUERY_DEFAULT_STYLE = "-fx-shadow-highlight-color; -fx-text-box-border; -fx-control-inner-background;";
 
     public LayersViewPane(final LayersViewController controller) {
 
@@ -80,14 +76,6 @@ public class LayersViewPane extends BorderPane {
         final Label descriptionHeadingText = new Label("Description");
 
         this.options = new MenuBar();
-
-        // create gridpane and alignments
-//        layersGridPane = new GridPane();
-//        layersGridPane.setHgap(5);
-//        layersGridPane.setVgap(5);
-//        layersGridPane.setPadding(new Insets(0, 10, 10, 10));
-//        layersGridPane.addRow(0, layerIdHeadingText, visibilityHeadingText,
-//                vxqueryHeadingText, txqueryHeadingText, descriptionHeadingText);
 
         // set heading alignments
         GridPane.setMargin(layerIdHeadingText, new Insets(15, 0, 0, 0));
@@ -107,7 +95,6 @@ public class LayersViewPane extends BorderPane {
         // set default layers
         controller.getVxQueryCollection().setDefaultQueries();
         controller.getTxQueryCollection().setDefaultQueries();
-        //setLayers(BitMaskQueryCollection.DEFAULT_VX_QUERIES, BitMaskQueryCollection.DEFAULT_TX_QUERIES);
         
         layersHeading = new TitledPane();
         layersHeading.setText("Layers");
@@ -117,7 +104,6 @@ public class LayersViewPane extends BorderPane {
         
         // Add Layers Dynamically
         final VBox layersnew = new VBox();
-        //setLayers( controller.getVxQueryCollection().getQueries(), controller.getTxQueryCollection().getQueries());
         createLayers(layersnew, controller.getVxQueryCollection().getQueries(), controller.getTxQueryCollection().getQueries());
         
         // A scroll pane to hold the attribute boxes
@@ -148,7 +134,7 @@ public class LayersViewPane extends BorderPane {
     }
 
     public void createLayer(final int currentIndex, final boolean checkBoxSelected, final String vxQuery, final String txQuery, final String description, final boolean showVertices, final boolean showTransactions) {
-
+// Old implementation - can delete - just use for example of working implementation
 //        // Layer ID
 //        final Label layerIdText = new Label(String.format("%02d", currentIndex));
 //        layerIdText.setMinWidth(30);
@@ -291,18 +277,6 @@ public class LayersViewPane extends BorderPane {
             Exceptions.printStackTrace(ex);
         }
     }
-//
-//    /**
-//     * Tests if the text parses correctly or if the query is empty Allows null
-//     * values as that is how inactive layers are represented
-//     *
-//     * @param queryText the expression string to test
-//     * @return true if the query is valid or null, false otherwise
-//     */
-//    private boolean testQueryValidity(final String queryText) {
-//        return queryText == null || ExpressionUtilities.testQueryValidity(queryText);
-//    }
-
 
     /**
      * Set the pane enabled will switch between the real layers pane and a
@@ -333,7 +307,7 @@ public class LayersViewPane extends BorderPane {
             final String vxqueryString = vxQuery != null ? vxQuery.getQueryString() : StringUtils.EMPTY;
             final String txqueryString = txQuery != null ? txQuery.getQueryString() : StringUtils.EMPTY;
             final String queryDescription = vxQuery != null ? vxQuery.getDescription() : txQuery.getDescription();
-            //createLayer(queryIndex, queryVisibility, vxqueryString, txqueryString, queryDescription, vxQuery != null, txQuery != null);
+            
             final Query q;
             if(StringUtils.isEmpty(txqueryString) && StringUtils.isNotEmpty(vxqueryString)) {
                 // VX query found
@@ -349,11 +323,8 @@ public class LayersViewPane extends BorderPane {
                 isQueryActive = true;
             }
 
-            // TODO: It rebuilds the whole pane whenever the text is changed - partial update?
             final BitMaskQuery bmq = new BitMaskQuery(q, position, queryDescription);
             bmq.setVisibility(queryVisibility);
-
-            //layers.add(tp);
 
             if(layersnew.getChildren().size() -1 < queryIndex){
                 LOGGER.log(Level.WARNING, "Creating new layer: " + queryIndex + " - current layer count = " + (layersnew.getChildren().size() - 1));
@@ -366,28 +337,19 @@ public class LayersViewPane extends BorderPane {
                 oldTp.setQuery(bmq);
                 layersnew.getChildren().add(queryIndex, oldTp);
             }
-
-
         }
 
         // remove the remaining old layers.
         final int totalLayers = layersnew.getChildren().size();
         if(totalLayers > iteratorEnd) {
-            layersnew.getChildren().remove(iteratorEnd, totalLayers); // was -1
+            layersnew.getChildren().remove(iteratorEnd, totalLayers);
         }
         
         // set layer 0 selected when no other layer is enabled.
         LayerTitlePane oldTp = (LayerTitlePane) layersnew.getChildren().remove(0);
         oldTp.setSelected(!isQueryActive);
         layersnew.getChildren().add(0, oldTp);
-        
-                
-        
-        //layersnew.getChildren().clear();
-        //layersnew.getChildren().addAll(layers);
     }
-    
-    
     
     public int getHighestQueryIndex(final BitMaskQuery[] queries) {
         int highestIndex = 0;
