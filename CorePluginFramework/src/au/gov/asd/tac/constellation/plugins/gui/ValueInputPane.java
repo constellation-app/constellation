@@ -294,21 +294,18 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
     @Override
     public void recentValuesChanged(final RecentValuesChangeEvent e) {
         if (recentValuesCombo != null && parameterId.equals(e.getId())) {
-            //JavaFX code allows updating the UI from an JavaFX application thread.
-            // Platform.runLater(() -> {             
-                recentValuesCombo.getSelectionModel().selectedIndexProperty().removeListener(recentValueSelectionListener);
-                final List<String> recentValues = e.getNewValues();
-                if (recentValues != null) {
-                    recentValuesCombo.setItems(FXCollections.observableList(recentValues));
-                    recentValuesCombo.setDisable(false);
-                } else {
-                    final List<String> empty = Collections.emptyList();
-                    recentValuesCombo.setItems(FXCollections.observableList(empty));
-                    recentValuesCombo.setDisable(true);
-                }
-                recentValuesCombo.setPromptText("...");
-                recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);
-            //});
+            recentValuesCombo.getSelectionModel().selectedIndexProperty().removeListener(recentValueSelectionListener);
+            final List<String> recentValues = e.getNewValues();
+            if (recentValues != null) {
+                recentValuesCombo.setItems(FXCollections.observableList(recentValues));
+                recentValuesCombo.setDisable(false);
+            } else {
+                final List<String> empty = Collections.emptyList();
+                recentValuesCombo.setItems(FXCollections.observableList(empty));
+                recentValuesCombo.setDisable(true);
+            }
+            recentValuesCombo.setPromptText("...");
+            recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);            
         }
     }
 }
