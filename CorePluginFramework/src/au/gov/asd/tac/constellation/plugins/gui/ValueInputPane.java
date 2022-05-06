@@ -294,7 +294,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
     @Override
     public void recentValuesChanged(final RecentValuesChangeEvent e) {
         if (recentValuesCombo != null && parameterId.equals(e.getId())) {
-            //#1608: JavaFX code allows updating the UI from an JavaFX application thread.
+            //JavaFX code allows updating the UI from an JavaFX application thread.
              Platform.runLater(() -> {             
                 recentValuesCombo.getSelectionModel().selectedIndexProperty().removeListener(recentValueSelectionListener);
                 final List<String> recentValues = e.getNewValues();
