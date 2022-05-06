@@ -462,7 +462,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         }
 
         try {            
-            //#1646: Check for valid path
+            //Check for valid path
             if(isValidPath(output)) {
               exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);  
             }            
