@@ -110,9 +110,7 @@ public class RecentParameterValues {
         synchronized (LISTENERS) {
             for (RecentValuesListener listener : LISTENERS) {
                 //JavaFX code allows updating the UI from an JavaFX application thread.            
-                Platform.runLater(() -> {
-                    listener.recentValuesChanged(e);
-                });
+                Platform.runLater(() -> listener.recentValuesChanged(e));
             }
         }
     }
