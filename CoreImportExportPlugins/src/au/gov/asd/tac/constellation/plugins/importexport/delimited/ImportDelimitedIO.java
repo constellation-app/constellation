@@ -230,7 +230,7 @@ public final class ImportDelimitedIO {
 
     private static void loadParameterFile(final DelimitedImportController importController, final File delimIoDir,
             final String templName) {
-        final List<String> missingUserAttributes = new ArrayList<>();
+        List<String> missingUserAttributes = new ArrayList<>();
         int tabCount = 0;
         try {
             final ObjectMapper mapper = new ObjectMapper();
@@ -344,7 +344,7 @@ public final class ImportDelimitedIO {
             }
         } catch (final NullPointerException ex) {
             //To handle npe when json parsor accessing missing required fields in the template
-            final String message = String.format("A possible Template Error occured. Consider using a new template.");
+            final String message = "A possible Template Error occured. Consider using a new template.";
             LOGGER.log(Level.SEVERE, message);
             NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.ERROR);
         } catch (final IOException ex) {

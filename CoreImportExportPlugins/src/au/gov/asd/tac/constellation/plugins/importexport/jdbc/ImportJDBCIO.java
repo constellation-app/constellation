@@ -22,8 +22,10 @@ import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
 import au.gov.asd.tac.constellation.plugins.importexport.GraphDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportConstants;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPreferenceKeys;
 import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
@@ -42,11 +44,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javafx.scene.control.Alert;
 import javafx.stage.Window;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -74,6 +78,12 @@ public final class ImportJDBCIO {
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_ARGS = "translator_args";
     private static final String DEFAULT_VALUE = "default_value";
+    private static final String SHOW_ALL_SCHEMA_ATTRIBUTES = "show_all_schema_attributes";
+    private static final String LOAD_TEMPLATE = "Load Template";
+    private static final String SAVE_TEMPLATE = "Save Template";
+
+
+    private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
     private ImportJDBCIO() {
         // add a private constructor to hide the implicit public one - java:S1118
@@ -88,8 +98,8 @@ public final class ImportJDBCIO {
         }
 
         if (!delimIoDir.isDirectory()) {
-            final String msg = String.format("Can't create directory '%s'.", delimIoDir);
-            NotifyDisplayer.display(msg, NotifyDescriptor.ERROR_MESSAGE);
+            final String message = String.format("Can't create directory '%s'.", delimIoDir);
+            NotifyDisplayer.displayAlert(SAVE_TEMPLATE, "Templates Directory Error", message, Alert.AlertType.ERROR);
             return;
         }
 
@@ -102,6 +112,7 @@ public final class ImportJDBCIO {
 
             final ObjectNode source = rootNode.putObject(SOURCE);
             source.put(SCHEMA_INIT, importController.isSchemaInitialised());
+            source.put(SHOW_ALL_SCHEMA_ATTRIBUTES, importController.isShowAllSchemaAttributesEnabled());
 
             // We don't want to rely on a particular kind of graph being current when we load this definition.
             // Therefore, we only save a schema factory as the destination.
@@ -211,6 +222,8 @@ public final class ImportJDBCIO {
     }
 
     private static void loadParameterFile(final JDBCImportController importController, final File delimIoDir, final String templName) {
+        List<String> missingUserAttributes = new ArrayList<>();
+        int tabCount = 0;
         try {
             final ObjectMapper mapper = new ObjectMapper();
             final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON));
@@ -218,6 +231,10 @@ public final class ImportJDBCIO {
 
             final boolean schemaInit = source.get(SCHEMA_INIT).booleanValue();
             importController.setSchemaInitialised(schemaInit);
+
+            final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) != null
+                    && source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();
+            ((ImportController) importController).getImportPane().setTemplateOptions(showAllSchemaAttributes);
 
             final String destination = source.get(DESTINATION).textValue();
             final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(destination);
@@ -227,6 +244,8 @@ public final class ImportJDBCIO {
                 final List<ImportDefinition> definitions = new ArrayList<>();
                 final ArrayNode definitionsArray = (ArrayNode) root.withArray(DEFINITIONS);
                 for (final JsonNode definitionNode : definitionsArray) {
+                    missingUserAttributes.clear();
+                    tabCount++;
                     final int firstRow = definitionNode.get(FIRST_ROW).intValue();
                     final RowFilter filter = new RowFilter();
                     if (definitionNode.has(FILTER)) {
@@ -251,9 +270,13 @@ public final class ImportJDBCIO {
                             final String columnLabel = column.get(COLUMN_LABEL).textValue();
                             final String label = column.get(ATTRIBUTE_LABEL).textValue();
                             if (!importController.hasAttribute(attrType.getElementType(), label)) {
+                                if (!column.has(ATTRIBUTE_TYPE)) {
+                                    missingUserAttributes.add(label);
+                                    continue;
+                                }
                                 // Manually created attribute.
                                 final String type = column.get(ATTRIBUTE_TYPE).textValue();
-                                final String descr = column.get(ATTRIBUTE_DESCRIPTION).textValue();
+                                final String descr = (column.has(ATTRIBUTE_DESCRIPTION)) ? column.get(ATTRIBUTE_DESCRIPTION).textValue() : "";
                                 final NewAttribute a = new NewAttribute(attrType.getElementType(), type, label, descr);
                                 importController.createManualAttribute(a);
                             }
@@ -273,6 +296,16 @@ public final class ImportJDBCIO {
                     }
 
                     definitions.add(impdef);
+
+                    if (!missingUserAttributes.isEmpty()) {
+                        final String message = String.format("A possible Template Error occured. In the tab `Run %d` following attributes are considered user added "
+                                + "for the destination `%s` with %s, as specified in the template. Hence they require `attribute_type` property. \n\n %s \n\n Consider using a new "
+                                + "template or add the missing attributes manually.", tabCount, schemaFactory.getLabel(),
+                                (showAllSchemaAttributes ? "`showAllSchemaAttributes` enabled" : "`showAllSchemaAttributes` disabled"), Arrays.toString(missingUserAttributes.toArray()));
+
+                        NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.WARNING);
+                        continue;
+                    }
                 }
 
                 importController.setClearManuallyAdded(false);
@@ -282,10 +315,14 @@ public final class ImportJDBCIO {
                     importController.setClearManuallyAdded(true);
                 }
             } else {
-                final String msg = String.format("Can't find schema factory '%s'", destination);
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
+                final String message = String.format("Can't find schema factory '%s'", destination);
+                NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Destination Schema Error", message, Alert.AlertType.ERROR);
             }
+        } catch (final NullPointerException ex) {
+            //To handle npe when json parsor accessing missing required fields in the template
+            final String message = "A possible Template Error occured. Consider using a new template.";
+            LOGGER.log(Level.SEVERE, message);
+            NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.ERROR);
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }

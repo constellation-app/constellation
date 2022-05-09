@@ -196,7 +196,6 @@ public class ImportPane extends BorderPane {
     }
 
     public void setTemplateOptions(final boolean showAllSchemaAttributes) {
-        //importController.setClearManuallyAdded(false); //importController.setDestination relies on this?
         importController.setShowAllSchemaAttributes(showAllSchemaAttributes);
         showSchemaAttributesCheckBox.setSelected(showAllSchemaAttributes);
         importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, showAllSchemaAttributes);
