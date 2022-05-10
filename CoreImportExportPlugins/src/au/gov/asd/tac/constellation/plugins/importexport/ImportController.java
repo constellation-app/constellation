@@ -165,21 +165,18 @@ public abstract class ImportController<D> {
         }
         keys.clear();
 
-            CompletableFuture.runAsync(() -> {
-                    
+        CompletableFuture.runAsync(() -> {
             final boolean showSchemaAttributes = importExportPrefs.getBoolean(
                     ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
                     ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
 
                 loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
-            }).thenRun(() -> {
-                if (Platform.isFxApplicationThread()) {
-                    updateDisplayedAttributes();
-                } else {
-                    Platform.runLater(() -> {
-                        updateDisplayedAttributes();
-                    });
-                }
+        }).thenRun(() -> {
+            if (Platform.isFxApplicationThread()) {
+                updateDisplayedAttributes();
+            } else {
+                Platform.runLater(() -> updateDisplayedAttributes());
+            }
         });
     }
 

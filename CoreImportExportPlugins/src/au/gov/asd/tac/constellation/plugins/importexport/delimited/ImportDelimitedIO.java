@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportConstants;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPreferenceKeys;
 import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
@@ -88,8 +87,6 @@ public final class ImportDelimitedIO {
     private static final String DEFAULT_VALUE = "default_value";
     private static final String LOAD_TEMPLATE = "Load Template";
     private static final String SAVE_TEMPLATE = "Save Template";
-
-    private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
     private ImportDelimitedIO() {
         // private constructor to hide implicit public one - java:S1118
@@ -328,7 +325,6 @@ public final class ImportDelimitedIO {
                                 (showAllSchemaAttributes ? "`showAllSchemaAttributes` enabled" : "`showAllSchemaAttributes` disabled"), Arrays.toString(missingUserAttributes.toArray()));
 
                         NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.WARNING);
-                        continue;
                     }
                 }
 
