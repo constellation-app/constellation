@@ -170,7 +170,7 @@ public abstract class ImportController<D> {
                     ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
                     ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
 
-                loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
+            loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
         }).thenRun(() -> {
             if (Platform.isFxApplicationThread()) {
                 updateDisplayedAttributes();
