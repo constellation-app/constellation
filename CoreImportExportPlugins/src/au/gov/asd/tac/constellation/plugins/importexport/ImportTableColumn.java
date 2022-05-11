@@ -86,6 +86,9 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
 
                 for (final TableRow row : data) {
                     columnFailed = processRow(row, attributeDescription, parser, parserParameters, defaultValue);
+                    if (columnFailed) {
+                        break;
+                    }
                 }
             } catch (final IllegalAccessException | IllegalArgumentException
                     | InstantiationException | NoSuchMethodException
