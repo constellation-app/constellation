@@ -98,8 +98,8 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         parameters.addParameter(customParam);
 
         final PluginParameter<SingleChoiceParameterValue> timeZoneParam = SingleChoiceParameterType.build(TIMEZONE_PARAMETER_ID);
-        timeZoneParam.setName("Custom Format");
-        timeZoneParam.setDescription("A custom datetime format");
+        timeZoneParam.setName("Time Zone");
+        timeZoneParam.setDescription("The time zone the dates represent");
 
         final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
         ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
