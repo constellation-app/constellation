@@ -37,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.lang3.StringUtils;
@@ -117,6 +118,16 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
             if (change == ParameterChange.VALUE) {
                 final PluginParameter<?> slave = params.get(CUSTOM_PARAMETER_ID);
                 slave.setEnabled(master.getStringValue().equals(CUSTOM));
+
+                //disable Time Zone if the Datettime Format contains a Time Zone
+                params.get(TIMEZONE_PARAMETER_ID).setEnabled(!Pattern.matches(".*[XxZzOV']$", master.getStringValue()));
+            }
+        });
+
+        parameters.addController(CUSTOM_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> params, final ParameterChange change) -> {
+            if (change == ParameterChange.VALUE) {
+                //disable Time Zone if the Custom Format contains a Time Zone
+                params.get(TIMEZONE_PARAMETER_ID).setEnabled(!Pattern.matches(".*[XxZzOV']$", master.getStringValue()));
             }
         });
 
@@ -164,7 +175,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
     }
     
     private String translateFromTemporalAccessorDateTime(final String value, final String format, final String timeZone){
-         final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+        final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
         // ZonedDateTime.parse requires a time zone identifier in the string (`value`)
         // hence zonedDateTime = ZonedDateTime.parse(value, df); doesn't work for all other formats
         if (!StringUtils.isBlank(timeZone)) {
