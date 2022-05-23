@@ -367,7 +367,13 @@ public class LayersViewController {
         executeFuture();
         writeState();
     }
-    
+
+    /**
+     * Update description text for the layer
+     *
+     * @param newString
+     * @param index
+     */
     public void updateDescription(final String newString, final int index) {
         final BitMaskQuery vxQuery = getVxQueryCollection().getQuery(index);
         final BitMaskQuery txQuery = getTxQueryCollection().getQuery(index);
@@ -381,15 +387,22 @@ public class LayersViewController {
         writeState();
     }
 
-    public void updateQuery(final String newQueryString, final int index) {
+    /**
+     * Update a query
+       *
+     * @param newQueryString
+     * @param index
+     * @param queryType
+     */
+    public void updateQuery(final String newQueryString, final int index, final String queryType) {
         
         final BitMaskQuery vxQuery = getVxQueryCollection().getQuery(index);
         final BitMaskQuery txQuery = getTxQueryCollection().getQuery(index);
         
-        if(vxQuery != null){
+        if (vxQuery != null && queryType.equals("Vertex Query: ")) {
             vxQuery.setQueryString(newQueryString);
         }
-        if(txQuery != null){
+        if (txQuery != null && queryType.equals("Transaction Query: ")) {
             txQuery.setQueryString(newQueryString);
         }
         execute();

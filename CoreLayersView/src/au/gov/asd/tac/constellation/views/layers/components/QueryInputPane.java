@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
-import static au.gov.asd.tac.constellation.views.layers.components.LayerTitlePane.SELECTED_STYLE;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -200,7 +199,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
             if(!t1){
                 if(validityCheckRequired) {
                     final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
-                    updateQuery(field.getText());
+                    updateQuery(field.getText(), field.getPromptText());
                     setValidity(isValid);
                 }else{
                     updateDescription(field.getText());
@@ -255,6 +254,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     
     /**
      * Update this query from a text edit event.
+     *
      * @param fieldText 
      */
     private void updateDescription(final String fieldText) {
@@ -262,10 +262,12 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     }
     /**
      * Update this query from a text edit event.
-     * @param fieldText 
+     *
+     * @param fieldText
+     * @param promptText
      */
-    private void updateQuery(final String fieldText) {
-        LayersViewController.getDefault().updateQuery(fieldText, parent.getQuery().getIndex());
+    private void updateQuery(final String fieldText, final String promptText) {
+        LayersViewController.getDefault().updateQuery(fieldText, parent.getQuery().getIndex(), promptText);
     }
 
     @Override
