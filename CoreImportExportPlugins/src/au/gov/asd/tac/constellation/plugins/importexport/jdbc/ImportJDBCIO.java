@@ -15,22 +15,18 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
 import au.gov.asd.tac.constellation.plugins.importexport.GraphDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportConstants;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
-import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.TemplateListDialog;
-import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.importexport.TemplateUtilities;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
@@ -42,9 +38,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -218,92 +213,17 @@ public final class ImportJDBCIO {
     }
 
     private static void loadParameterFile(final JDBCImportController importController, final File delimIoDir, final String templName) {
-        List<String> missingUserAttributes = new ArrayList<>();
-        int tabCount = 0;
         try {
             final ObjectMapper mapper = new ObjectMapper();
             final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON));
-            final JsonNode source = root.get(SOURCE);
+            final JsonNode source = TemplateUtilities.getRequiredFieldFromTemplate(root, SOURCE);
 
-            final boolean schemaInit = source.get(SCHEMA_INIT).booleanValue();
-            importController.setSchemaInitialised(schemaInit);
-
-            final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) != null
-                    && source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();
-            ((ImportController) importController).getImportPane().setTemplateOptions(showAllSchemaAttributes);
-
-            final String destination = source.get(DESTINATION).textValue();
+            final String destination = TemplateUtilities.getRequiredFieldFromTemplate(source, DESTINATION).textValue();
             final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(destination);
+
             if (schemaFactory != null) {
-                importController.setDestination(new SchemaDestination(schemaFactory));
+                final List<ImportDefinition> definitions = TemplateUtilities.getImportDefinitions(importController, root, templName);
 
-                final List<ImportDefinition> definitions = new ArrayList<>();
-                final ArrayNode definitionsArray = (ArrayNode) root.withArray(DEFINITIONS);
-                for (final JsonNode definitionNode : definitionsArray) {
-                    missingUserAttributes.clear();
-                    tabCount++;
-                    final int firstRow = definitionNode.get(FIRST_ROW).intValue();
-                    final RowFilter filter = new RowFilter();
-                    if (definitionNode.has(FILTER)) {
-                        final JsonNode filterNode = definitionNode.get(FILTER);
-                        final String script = filterNode.get(SCRIPT).textValue();
-                        final JsonNode columnsArray = filterNode.withArray(COLUMNS);
-                        final List<String> columns = new ArrayList<>();
-                        for (final JsonNode column : columnsArray) {
-                            columns.add(column.textValue());
-                        }
-
-                        filter.setScript(script);
-                        filter.setColumns(columns.toArray(new String[columns.size()]));
-                    }
-
-                    final ImportDefinition impdef = new ImportDefinition("", firstRow, filter);
-
-                    final JsonNode attributesNode = definitionNode.get(ATTRIBUTES);
-                    for (final AttributeType attrType : AttributeType.values()) {
-                        final ArrayNode columnArray = (ArrayNode) attributesNode.withArray(attrType.toString());
-                        for (final JsonNode column : columnArray) {
-                            final String columnLabel = column.get(COLUMN_LABEL).textValue();
-                            final String label = column.get(ATTRIBUTE_LABEL).textValue();
-                            if (!importController.hasAttribute(attrType.getElementType(), label)) {
-                                if (!column.has(ATTRIBUTE_TYPE)) {
-                                    missingUserAttributes.add(label);
-                                    continue;
-                                }
-                                // Manually created attribute.
-                                final String type = column.get(ATTRIBUTE_TYPE).textValue();
-                                final String descr = (column.has(ATTRIBUTE_DESCRIPTION)) ? column.get(ATTRIBUTE_DESCRIPTION).textValue() : "";
-                                final NewAttribute a = new NewAttribute(attrType.getElementType(), type, label, descr);
-                                importController.createManualAttribute(a);
-                            }
-
-                            final Attribute attribute = importController.getAttribute(attrType.getElementType(), label);
-
-                            final AttributeTranslator translator = AttributeTranslator.getTranslator(column.get(TRANSLATOR).textValue());
-                            final String args = column.get(TRANSLATOR_ARGS).textValue();
-                            final String defaultValue = column.get(DEFAULT_VALUE).textValue();
-                            final PluginParameters params = translator.createParameters();
-                            translator.setParameterValues(params, args);
-
-                            final ImportAttributeDefinition iad = new ImportAttributeDefinition(columnLabel, defaultValue,
-                                    attribute, translator, params);
-                            impdef.addDefinition(attrType, iad);
-                        }
-                    }
-
-                    definitions.add(impdef);
-
-                    if (!missingUserAttributes.isEmpty()) {
-                        final String message = String.format("A possible Template Error occured. In the tab `Run %d` following attributes are considered user added "
-                                + "for the destination `%s` with %s, as specified in the template. Hence they require `attribute_type` property. \n\n %s \n\n Consider using a new "
-                                + "template or add the missing attributes manually.", tabCount, schemaFactory.getLabel(),
-                                (showAllSchemaAttributes ? "`showAllSchemaAttributes` enabled" : "`showAllSchemaAttributes` disabled"), Arrays.toString(missingUserAttributes.toArray()));
-
-                        NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.WARNING);
-                    }
-                }
-
-                importController.setClearManuallyAdded(false);
                 try {
                     ((JDBCImportPane) importController.getImportPane()).update(importController, definitions);
                 } finally {
@@ -313,11 +233,8 @@ public final class ImportJDBCIO {
                 final String message = String.format("Can't find schema factory '%s'", destination);
                 NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Destination Schema Error", message, Alert.AlertType.ERROR);
             }
-        } catch (final NullPointerException ex) {
-            //To handle npe when json parsor accessing missing required fields in the template
-            final String message = "A possible Template Error occured. Consider using a new template.";
-            LOGGER.log(Level.SEVERE, message);
-            NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.ERROR);
+        } catch (final NoSuchElementException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
