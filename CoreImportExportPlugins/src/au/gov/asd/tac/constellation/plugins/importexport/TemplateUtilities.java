@@ -73,10 +73,10 @@ public class TemplateUtilities {
     public static List<ImportDefinition> getImportDefinitions(final ImportController importController, final JsonNode root, final String templName) {
         final List<ImportDefinition> definitions = new ArrayList<>();
         int tabCount = 0;
-        final JsonNode source = TemplateUtilities.getRequiredFieldFromTemplate(root, SOURCE);
-        final String destination = TemplateUtilities.getRequiredFieldFromTemplate(source, DESTINATION).textValue();
+        final JsonNode source = getRequiredFieldFromTemplate(root, SOURCE);
+        final String destination = getRequiredFieldFromTemplate(source, DESTINATION).textValue();
         final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(destination);
-        final boolean schemaInit = TemplateUtilities.getRequiredFieldFromTemplate(source, SCHEMA_INIT).booleanValue();
+        final boolean schemaInit = getRequiredFieldFromTemplate(source, SCHEMA_INIT).booleanValue();
 
         importController.setDestination(new SchemaDestination(schemaFactory));
         importController.setSchemaInitialised(schemaInit);
@@ -88,7 +88,7 @@ public class TemplateUtilities {
         final ArrayNode definitionsArray = (ArrayNode) root.withArray(DEFINITIONS);
         for (final JsonNode definitionNode : definitionsArray) {
             tabCount++;
-            final int firstRow = TemplateUtilities.getRequiredFieldFromTemplate(definitionNode, FIRST_ROW).intValue();
+            final int firstRow = getRequiredFieldFromTemplate(definitionNode, FIRST_ROW).intValue();
 
             final RowFilter filter = populateFilter(definitionNode);
             final ImportDefinition impdef = new ImportDefinition("", firstRow, filter);
@@ -112,10 +112,10 @@ public class TemplateUtilities {
     private static RowFilter populateFilter(final JsonNode definitionNode) {
         final RowFilter filter = new RowFilter();
         if (definitionNode.has(FILTER)) {
-            final JsonNode filterNode = TemplateUtilities.getRequiredFieldFromTemplate(definitionNode, FILTER);
-            final String script = TemplateUtilities.getRequiredFieldFromTemplate(filterNode, SCRIPT).textValue();
+            final JsonNode filterNode = getRequiredFieldFromTemplate(definitionNode, FILTER);
+            final String script = getRequiredFieldFromTemplate(filterNode, SCRIPT).textValue();
             final JsonNode columnsArray = filterNode.withArray(COLUMNS);
-            final ArrayList<String> columns = new ArrayList<>();
+            final List<String> columns = new ArrayList<>();
             for (final JsonNode column : columnsArray) {
                 columns.add(column.textValue());
             }
@@ -128,20 +128,20 @@ public class TemplateUtilities {
 
     private static List<String> populateImportDefinitions(final ImportController importController, final JsonNode definitionNode, final ImportDefinition impdef) {
         final List<String> missingUserAttributes = new ArrayList<>();
-        final JsonNode attributesNode = TemplateUtilities.getRequiredFieldFromTemplate(definitionNode, ATTRIBUTES);
+        final JsonNode attributesNode = getRequiredFieldFromTemplate(definitionNode, ATTRIBUTES);
 
         for (final AttributeType attrType : AttributeType.values()) {
             final ArrayNode columnArray = (ArrayNode) attributesNode.withArray(attrType.toString());
 
             for (final JsonNode column : columnArray) {
-                final String label = TemplateUtilities.getRequiredFieldFromTemplate(column, ATTRIBUTE_LABEL).textValue();
+                final String label = getRequiredFieldFromTemplate(column, ATTRIBUTE_LABEL).textValue();
                 if (!importController.hasAttribute(attrType.getElementType(), label)) {
                     if (!column.has(ATTRIBUTE_TYPE)) {
                         missingUserAttributes.add(label);
                         continue;
                     }
                     // Manually created attribute.
-                    final String type = TemplateUtilities.getRequiredFieldFromTemplate(column, ATTRIBUTE_TYPE).textValue();
+                    final String type = getRequiredFieldFromTemplate(column, ATTRIBUTE_TYPE).textValue();
                     final String descr = (column.has(ATTRIBUTE_DESCRIPTION)) ? column.get(ATTRIBUTE_DESCRIPTION).textValue() : "";
                     final NewAttribute a = new NewAttribute(attrType.getElementType(), type, label, descr);
                     importController.createManualAttribute(a);
@@ -153,12 +153,12 @@ public class TemplateUtilities {
     }
 
     private static ImportAttributeDefinition getImportAttributeDefinition(final ImportController importController, final AttributeType attrType, final JsonNode column, final String label) {
-        final String columnLabel = TemplateUtilities.getRequiredFieldFromTemplate(column, COLUMN_LABEL).textValue();
+        final String columnLabel = getRequiredFieldFromTemplate(column, COLUMN_LABEL).textValue();
         final Attribute attribute = importController.getAttribute(attrType.getElementType(), label);
 
         final AttributeTranslator translator = AttributeTranslator.getTranslator(TemplateUtilities.getRequiredFieldFromTemplate(column, TRANSLATOR).textValue());
-        final String args = TemplateUtilities.getRequiredFieldFromTemplate(column, TRANSLATOR_ARGS).textValue();
-        final String defaultValue = TemplateUtilities.getRequiredFieldFromTemplate(column, DEFAULT_VALUE).textValue();
+        final String args = getRequiredFieldFromTemplate(column, TRANSLATOR_ARGS).textValue();
+        final String defaultValue = getRequiredFieldFromTemplate(column, DEFAULT_VALUE).textValue();
         final PluginParameters params = translator.createParameters();
         translator.setParameterValues(params, args);
 
