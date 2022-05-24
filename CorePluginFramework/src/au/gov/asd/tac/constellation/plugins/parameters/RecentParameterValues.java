@@ -32,7 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import javafx.application.Platform;
 import org.openide.util.NbPreferences;
 
 /**
@@ -108,11 +107,9 @@ public class RecentParameterValues {
      */
     public static void fireChangeEvent(RecentValuesChangeEvent e) {
         synchronized (LISTENERS) {
-            Platform.runLater(() -> {
-                for (RecentValuesListener listener : LISTENERS) {
-                  listener.recentValuesChanged(e);
-                }
-            });               
+            for (RecentValuesListener listener : LISTENERS) {
+                listener.recentValuesChanged(e);
+            }               
         }
     }
 
