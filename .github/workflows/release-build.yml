@@ -38,7 +38,7 @@ jobs:
           path: ./workspace/constellation-applications
       - name: Update Version Number
         run: |
-               sed -i "s/(under development)/$ADAPTORS_VERSION/" CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
+               sed -i "s/(under development)/$ADAPTORS_VERSION/" ./workspace/constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
       - name: Add Execute Privilege to Scripts
         run: |
               chmod +x ./workspace/constellation-applications/build-zip.sh
