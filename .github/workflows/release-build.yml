@@ -1,8 +1,6 @@
 name: Create Release Build
 
-on:
-  release:
-    types: [prereleased, released]
+on: workflow_dispatch
  
 jobs:
   create-release-build:
