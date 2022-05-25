@@ -1,10 +1,10 @@
-name: Trigger GHPages to update documentation
-# When documentation needs an update, a push to documentation_update branch will trigger
-# this action to send a request to the GHPages repository to update the online documentation.
-
-# Workflow
+name: GH Pages to Update Docs
+# When documentation needs an update, a push to documentation_update branch will
+# trigger this action to send a request to the constellation-app.github.io to 
+# update the online documentation.
+#
 # When a commit occurs online to GitHub on the documentation_update branch,
-# This job will send a ping to the website repository - hinting that a refresh
+# this job will send a ping to the website repository - hinting that a refresh
 # is needed for the online documentation.
 
 on:
