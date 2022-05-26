@@ -65,6 +65,7 @@ import static org.mockito.ArgumentMatchers.same;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -329,6 +330,8 @@ public class DataAccessTabPaneNGTest {
         final ScrollPane scrollPane = mock(ScrollPane.class);
         final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
 
+        doCallRealMethod().when(queryPhasePane).storeParameterValues();
+
         final PluginParameter pluginParameter1 = mock(PluginParameter.class);
         final PluginParameter pluginParameter2 = mock(PluginParameter.class);
         final PluginParameter pluginParameter3 = mock(PluginParameter.class);
@@ -377,6 +380,8 @@ public class DataAccessTabPaneNGTest {
         final Tab tab1 = mock(Tab.class);
         final ScrollPane scrollPane = mock(ScrollPane.class);
         final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
+
+        doCallRealMethod().when(queryPhasePane).storeParameterValues();
 
         // Set up our fake tab pane
         doReturn(tabPane).when(dataAccessTabPane).getTabPane();

@@ -81,6 +81,7 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
         final PluginParameter<SingleChoiceParameterValue> removeType = SingleChoiceParameterType.build(REMOVE_TYPE_PARAMETER_ID);
         removeType.setName("Remove By");
         removeType.setDescription("Nodes will be removed based on this");
+        removeType.setRequired(true);
         SingleChoiceParameterType.setOptions(removeType, removeTypes);
         SingleChoiceParameterType.setChoice(removeType, REMOVE_TYPE_LENGTH);
         params.addParameter(removeType);

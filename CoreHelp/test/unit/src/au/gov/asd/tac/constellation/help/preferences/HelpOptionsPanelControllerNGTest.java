@@ -70,14 +70,18 @@ public class HelpOptionsPanelControllerNGTest {
         System.out.println("updateFalse");
 
         final boolean returnValue = false;
+        final int port = 0;
         final String key = HelpPreferenceKeys.HELP_KEY;
+        final String portKey = HelpPreferenceKeys.OFFLINE_HELP_PORT;
         HelpOptionsPanelController instance = mock(HelpOptionsPanelController.class, Mockito.CALLS_REAL_METHODS);
         HelpOptionsPanel panel = mock(HelpOptionsPanel.class, Mockito.CALLS_REAL_METHODS);
         doNothing().when(panel).setOnlineHelpOption(returnValue);
+        doNothing().when(panel).setOfflineHelpPort(port);
         when(instance.getPanel()).thenReturn(panel);
 
         prefs = mock(Preferences.class);
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(returnValue);
+        when(prefs.getInt(Mockito.eq(portKey), Mockito.anyInt())).thenReturn(port);
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
@@ -87,6 +91,7 @@ public class HelpOptionsPanelControllerNGTest {
 
             // verify that the panel was set with the proper value
             verify(panel, times(1)).setOnlineHelpOption(Mockito.eq(returnValue));
+            verify(panel, times(1)).setOfflineHelpPort(Mockito.eq(port));
 
         }
 
@@ -100,14 +105,18 @@ public class HelpOptionsPanelControllerNGTest {
         System.out.println("updateTrue");
 
         final boolean returnValue = true;
+        final int port = 1518;
         final String key = HelpPreferenceKeys.HELP_KEY;
+        final String portKey = HelpPreferenceKeys.OFFLINE_HELP_PORT;
         HelpOptionsPanelController instance = mock(HelpOptionsPanelController.class, Mockito.CALLS_REAL_METHODS);
         HelpOptionsPanel panel = mock(HelpOptionsPanel.class, Mockito.CALLS_REAL_METHODS);
         doNothing().when(panel).setOnlineHelpOption(returnValue);
+        doNothing().when(panel).setOfflineHelpPort(port);
         when(instance.getPanel()).thenReturn(panel);
 
         prefs = mock(Preferences.class);
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(returnValue);
+        when(prefs.getInt(Mockito.eq(portKey), Mockito.anyInt())).thenReturn(port);
 
         // Create static mock of NbPreferences to return the preferences mock
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
@@ -117,6 +126,7 @@ public class HelpOptionsPanelControllerNGTest {
 
             // verify that the panel was set with the proper value
             verify(panel, times(1)).setOnlineHelpOption(Mockito.eq(returnValue));
+            verify(panel, times(1)).setOfflineHelpPort(Mockito.eq(port));
 
         }
 

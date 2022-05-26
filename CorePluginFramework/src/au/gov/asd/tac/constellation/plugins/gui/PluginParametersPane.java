@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
-import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters.PluginParametersNode;
@@ -226,7 +225,7 @@ public final class PluginParametersPane extends GridPane {
                 separator.setStyle("-fx-background-color:#444444;");
                 HBox separatorBox = new HBox(separator);
                 HBox.setHgrow(separator, Priority.ALWAYS);
-                return separatorBox;
+                return new VBox(new Label("test"), separatorBox);
             }
             final PluginParametersNode child = node.getChildren().get(currentChild);
             return child.getFormatter().getParamPane(child);
@@ -446,12 +445,12 @@ public final class PluginParametersPane extends GridPane {
         private void addElements(final PluginParametersNode node, final Region... elements) {
             final HBox singleParam = new HBox();
             singleParam.setSpacing(10);
-            for (Region element : elements) {
+            for (final Region element : elements) {
                 if (element != null) {
                     singleParam.getChildren().addAll(element);
                 }
             }
-            ColumnConstraints paramConstraints = new ColumnConstraints();
+            final ColumnConstraints paramConstraints = new ColumnConstraints();
             if (!SHOULD_NOT_EXPAND.contains(node.getParameter().getType().getId())) {
                 singleParam.setMinWidth(USE_PREF_SIZE);
             }
@@ -477,7 +476,7 @@ public final class PluginParametersPane extends GridPane {
                 HBox.setMargin(firstButton, new Insets(0, PADDING, 0, 0));
             }
 
-            for (PluginParametersNode child : node.getChildren().subList(1, node.getChildren().size() - 1)) {
+            for (final PluginParametersNode child : node.getChildren().subList(1, node.getChildren().size() - 1)) {
                 final LabelDescriptionBox label = child.getFormatter().getParamLabel(child);
                 label.setStyle("-fx-label-padding: " + -PADDING);
                 final Pane paramPane = child.getFormatter().getParamPane(child);
@@ -548,7 +547,7 @@ public final class PluginParametersPane extends GridPane {
             paramGroupPane.setMinHeight(0);
             GridPane.setHalignment(paramGroupPane, HPos.LEFT);
             paramGroupPane.setPadding(Insets.EMPTY);
-
+            
             int row = 0;
             final DoubleProperty descriptionWidth = new SimpleDoubleProperty();
             DoubleProperty maxLabelWidth = new SimpleDoubleProperty();
@@ -652,7 +651,7 @@ public final class PluginParametersPane extends GridPane {
             // Set the formatter for the root to buildId a parameter pane
             root.setFormatter(new ParameterPaneLayout());
             // Set the formatter appropriately for all leaf nodes
-            for (PluginParametersNode node : root.getLeaves()) {
+            for (final PluginParametersNode node : root.getLeaves()) {
                 if (excludedParameters != null && excludedParameters.contains(node.name)) {
                     node.setFormatter(new NullLayout());
                 } else {
@@ -702,8 +701,8 @@ public final class PluginParametersPane extends GridPane {
             description.maxWidthProperty().bind(property);
         }
 
-        public DoubleProperty updateBindingWithLabelWidth(DoubleProperty property) {
-            DoubleProperty newBinding = new SimpleDoubleProperty();
+        public DoubleProperty updateBindingWithLabelWidth(final DoubleProperty property) {
+            final DoubleProperty newBinding = new SimpleDoubleProperty();
             newBinding.bind(Bindings.max(property, label.widthProperty()));
             return newBinding;
         }
@@ -729,18 +728,22 @@ public final class PluginParametersPane extends GridPane {
         private int validParams = 0;
         private final PluginParametersPaneListener top;
 
-        public PluginParameterPaneConstructor(PluginParametersPaneListener top) {
+        public PluginParameterPaneConstructor(final PluginParametersPaneListener top) {
             this.top = top;
         }
 
         @Override
-        public Button buildParameterHelp(PluginParameter<?> parameter) {
+        public Button buildParameterHelp(final PluginParameter<?> parameter) {
             return buildHelpButton(parameter.getHelpID(), String.format("parameter '%s'", parameter.getName()));
         }
 
         @Override
         public final LabelDescriptionBox buildParameterLabel(final PluginParameter<?> parameter) {
-            final Label label = new Label(parameter.getName());
+            final StringBuilder labelBuilder = new StringBuilder(parameter.getName());
+            if (parameter.isRequired()) {
+                labelBuilder.append("*");
+            }
+            final Label label = new Label(labelBuilder.toString());
             final Label description = new Label(parameter.getDescription());
             label.setMinWidth(145);
             label.setWrapText(true);
@@ -764,7 +767,7 @@ public final class PluginParametersPane extends GridPane {
         }
 
         public void linkParameterLabelToTop(final PluginParameter<?> parameter, final LabelDescriptionBox ldb) {
-            parameter.addListener((PluginParameter<?> parameter1, ParameterChange change) -> {
+            parameter.addListener((parameter1, change) -> {
                 switch (change) {
                     case NAME:
                         ldb.label.setText(parameter1.getName());
@@ -783,7 +786,7 @@ public final class PluginParametersPane extends GridPane {
         }
 
         public void linkParameterWidgetToTop(final PluginParameter<?> parameter) {
-            parameter.addListener((PluginParameter<?> parameter1, ParameterChange change) -> {
+            parameter.addListener((parameter1, change) -> {
                 switch (change) {
                     case ERROR:
                         if (parameter1.getError() == null) {

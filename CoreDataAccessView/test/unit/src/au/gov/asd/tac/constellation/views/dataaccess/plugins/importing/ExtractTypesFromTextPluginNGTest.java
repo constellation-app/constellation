@@ -126,6 +126,8 @@ public class ExtractTypesFromTextPluginNGTest {
         PluginInteraction interaction = new TextPluginInteraction();
 
         PluginParameters parameters = instance.createParameters();
+        parameters.getParameters().get(ExtractTypesFromTextPlugin.TEXT_PARAMETER_ID).setStringValue(null);
+        
         RecordStore result = instance.query(query, interaction, parameters);
     }
 

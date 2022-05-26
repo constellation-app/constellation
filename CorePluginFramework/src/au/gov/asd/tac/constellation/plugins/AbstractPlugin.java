@@ -25,7 +25,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.MissingResourceException;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 
@@ -38,6 +39,8 @@ import org.openide.util.NbBundle;
  * @author sirius
  */
 public abstract class AbstractPlugin implements Plugin {
+
+    private static final Logger LOGGER = Logger.getLogger(AbstractPlugin.class.getName());
 
     private final String pluginName;
 
@@ -82,7 +85,7 @@ public abstract class AbstractPlugin implements Plugin {
             // This attempts to make it obvious (and also helps when the @Message() annotation has been forgotten).
             final String msg = String.format("Have you added @Messages() or overridden getName() for class '%s'?", this.getClass().getName());
             final Exception iae = new IllegalArgumentException(msg, ex);
-            Exceptions.printStackTrace(iae);
+            LOGGER.log(Level.SEVERE, iae.getLocalizedMessage(), iae);
 
             // Throw the original exception as if we hadn't intercepted it.
             throw ex;

@@ -57,6 +57,7 @@ public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
         final PluginParameter<SingleChoiceParameterValue> geometryTypeParameter = SingleChoiceParameterType.build(GEOMETRY_TYPE_PARAMETER_ID, GeometryTypeParameterValue.class);
         geometryTypeParameter.setName("Geometry Type");
         geometryTypeParameter.setDescription("The GeometryType enum value to export");
+        geometryTypeParameter.setRequired(true);
         final List<GeometryTypeParameterValue> geometryTypeOptions = new ArrayList<>();
         Arrays.asList(GeometryType.values()).forEach(geometryType -> geometryTypeOptions.add(new GeometryTypeParameterValue(geometryType)));
         SingleChoiceParameterType.setOptionsData(geometryTypeParameter, geometryTypeOptions);
