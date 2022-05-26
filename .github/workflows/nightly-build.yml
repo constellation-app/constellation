@@ -2,12 +2,13 @@ name: Create Nightly Build
 
 on:
   schedule:
+    # 20 past midnight on week days
     - cron: '0 20 * * 1-5'
   release:
     types: [prereleased, released]
  
 jobs:
-  Create-Nightly-Build:
+  create-nightly-build:
     runs-on: ubuntu-latest
     env:
       RUNNER_IMAGE: "constellationapplication/netbeans-runner:12.0.4"
@@ -17,7 +18,10 @@ jobs:
     steps:
       - name: Update GH Actions Tools 
         run: |
-          apk update && apk upgrade && apk add --no-cache coreutils && apk add bash && apk add docker && apk add git
+          apk update
+          apk upgrade
+          apk add --no-cache coreutils
+          apk add bash docker git
       - name: Create Workspace Dir for operations
         run: |
               mkdir -p ./workspace
@@ -36,12 +40,18 @@ jobs:
         with:
           repository: constellation-app/constellation-applications
           path: ./workspace/constellation-applications
-      - name: add execute privilege to scripts
+      - name: Add Execute Privilege to Scripts
         run: |
-              chmod +x ./workspace/constellation-applications/build-zip.sh && chmod +x ./workspace/constellation-applications/functions.sh
+              chmod +x ./workspace/constellation-applications/build-zip.sh
+              chmod +x ./workspace/constellation-applications/functions.sh
       - name: Run build process within Docker container
         run: |
-            docker pull "${RUNNER_IMAGE}" && docker run -e GIT_DISCOVERY_ACROSS_FILESYSTEM=1 --mount "type=bind,source=/,target=/home/runner/work/constellation" --workdir /home/runner/work/constellation/home/runner/work/constellation/constellation/workspace/constellation-applications constellationapplication/netbeans-runner:12 ./build-zip.sh -a constellation -m "constellation constellation-adaptors"
+            docker pull "${RUNNER_IMAGE}"
+            docker run -e GIT_DISCOVERY_ACROSS_FILESYSTEM=1 \
+            --mount "type=bind,source=/,target=/home/runner/work/constellation" \
+            --workdir /home/runner/work/constellation/home/runner/work/constellation/constellation/workspace/constellation-applications \
+            constellationapplication/netbeans-runner:12 \
+            ./build-zip.sh -a constellation -m "constellation constellation-adaptors"
       - name: Upload Linux Build
         uses: actions/upload-artifact@v2.3.0
         with:
