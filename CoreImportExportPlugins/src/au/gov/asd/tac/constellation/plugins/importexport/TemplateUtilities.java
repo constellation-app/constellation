@@ -29,6 +29,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import javafx.scene.control.Alert;
 
+/**
+ * Contains common functions performed by ImportDelimitedIO and ImportJDBCIO
+ * when handling Templates
+ *
+ * @author algol
+ */
 public class TemplateUtilities {
     private static final String SOURCE = "source";
     private static final String SCHEMA_INIT = "schema_init";
