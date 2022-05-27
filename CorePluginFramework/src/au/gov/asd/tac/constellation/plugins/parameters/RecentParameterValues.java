@@ -109,7 +109,7 @@ public class RecentParameterValues {
         synchronized (LISTENERS) {
             for (RecentValuesListener listener : LISTENERS) {
                 listener.recentValuesChanged(e);
-            }
+            }               
         }
     }
 
