@@ -195,7 +195,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         final Tooltip tooltip = new Tooltip("");
         tooltip.setStyle("-fx-text-fill: white;");
         field.focusedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
-            if(!t1){
+            if (!t1) {
                 if(validityCheckRequired) {
                     final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
                     updateQuery(field.getText(), field.getPromptText());
@@ -204,7 +204,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
                         recentValues.add(field.getText());
                         setRecentValuesCombo(recentValues);
                     }
-                }else{
+                } else {
                     updateDescription(field.getText());
                 }
             }
@@ -248,9 +248,9 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     private static final String INVALID_ID = "invalid";
     
     public void setValidity(final boolean isValid) {
-        if(isValid){
+        if (isValid) {
             field.setId(StringUtils.EMPTY);
-        }else {
+        } else {
             field.setId(INVALID_ID);
         }
     }
@@ -263,6 +263,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     private void updateDescription(final String fieldText) {
         LayersViewController.getDefault().updateDescription(fieldText, parent.getQuery().getIndex());
     }
+
     /**
      * Update this query from a text edit event.
      *

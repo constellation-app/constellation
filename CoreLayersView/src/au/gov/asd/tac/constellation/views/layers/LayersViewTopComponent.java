@@ -24,8 +24,6 @@ import au.gov.asd.tac.constellation.views.layers.components.LayersViewPane;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -62,7 +60,6 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     private final LayersViewController layersViewController;
     private final LayersViewPane layersViewPane;
-    private static final Logger LOGGER = Logger.getLogger(LayersViewTopComponent.class.getName());
 
     public LayersViewTopComponent() {
         setName(Bundle.CTL_LayersViewTopComponent());

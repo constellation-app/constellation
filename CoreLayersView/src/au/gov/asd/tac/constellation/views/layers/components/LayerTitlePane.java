@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -95,9 +94,9 @@ public class LayerTitlePane extends TitledPane {
         deleteButton.setTooltip(new Tooltip("Delete this layer"));
         deleteButton.setOnMouseClicked(e -> delete());
         
-        if(enabled.isSelected()) {
+        if (enabled.isSelected()) {
             getStyleClass().add(SELECTED_STYLE);
-        } else if(!isValid){
+        } else if (!isValid) {
             getStyleClass().add(INVALID_STYLE);
             enabled.setDisable(true);
         }
@@ -144,10 +143,10 @@ public class LayerTitlePane extends TitledPane {
         
         final GraphElementType type = query.getQueryElementType();
         
-        if(type == GraphElementType.VERTEX) {
+        if (type == GraphElementType.VERTEX) {
             setVxQuery(query.getQueryString());
             setTxQuery(null);
-        } else if(type == GraphElementType.TRANSACTION){
+        } else if (type == GraphElementType.TRANSACTION) {
             setTxQuery(query.getQueryString());
             setVxQuery(null);
         }
@@ -165,7 +164,7 @@ public class LayerTitlePane extends TitledPane {
         vxQuery.setQuery(query);
         recheckValidity();
         
-        if(!isValid){
+        if (!isValid) {
             // when vx is invalid, 
             vxQuery.setValidity(false);
         }
@@ -175,7 +174,7 @@ public class LayerTitlePane extends TitledPane {
         txQuery.setValidity(true);
         txQuery.setQuery(query);
         recheckValidity();
-        if(!isValid){
+        if (!isValid) {
             // when tx is invalid, 
             txQuery.setValidity(false);
         }
@@ -191,7 +190,7 @@ public class LayerTitlePane extends TitledPane {
         if (enabled.isSelected()) {
             LOGGER.log(Level.SEVERE, "recolouring: " + this.layerId);
             getStyleClass().add(SELECTED_STYLE);
-        } else if(!isValid) {
+        } else if (!isValid) {
             // not selected and invalid
             while (getStyleClass().contains(SELECTED_STYLE)) {
                 getStyleClass().remove(SELECTED_STYLE);
@@ -217,11 +216,11 @@ public class LayerTitlePane extends TitledPane {
         LayersViewController.getDefault().deleteLayer(layerId);
     }
     
-    public boolean isValid(){
+    public boolean isValid() {
         return isValid;
     }
     
-    public void setValidity(final boolean isValid){
+    public void setValidity(final boolean isValid) {
         this.isValid = isValid;
         recolourLayer();
     }

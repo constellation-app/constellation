@@ -36,11 +36,13 @@ public class BitMaskQueryCollection {
 
     public static final BitMaskQuery[] DEFAULT_VX_QUERIES = new BitMaskQuery[]{
         new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
-        new BitMaskQuery(new Query(GraphElementType.VERTEX, null), 1, StringUtils.EMPTY)};
+        new BitMaskQuery(new Query(GraphElementType.VERTEX, null), 1, StringUtils.EMPTY)
+    };
 
     public static final BitMaskQuery[] DEFAULT_TX_QUERIES = new BitMaskQuery[]{
         new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
-        new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), 1, StringUtils.EMPTY)};
+        new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), 1, StringUtils.EMPTY)
+    };
 
     private final BitMaskQuery[] queries = new BitMaskQuery[MAX_QUERY_AMT];
     private final GraphElementType elementType;

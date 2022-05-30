@@ -314,7 +314,6 @@ public class LayersViewController {
         final int layerCount = Math.max(getTxQueryCollection().getHighestQueryIndex(), getVxQueryCollection().getHighestQueryIndex());
 
         if (layerCount <= BitMaskQueryCollection.MAX_QUERY_AMT) {
-            final LayersViewPane pane = parent.getContent();
             Query vxQuery = new Query(GraphElementType.VERTEX, "");
             getVxQueryCollection().add(vxQuery, layerCount + 1, null);
             Query txQuery = new Query(GraphElementType.TRANSACTION, "");
@@ -331,14 +330,14 @@ public class LayersViewController {
      * @param index 
      */
     public void deleteLayer(final int index) {
-        if(index != 0){
+        if (index != 0) {
             getVxQueryCollection().removeQueryAndSort(index);
             getTxQueryCollection().removeQueryAndSort(index);
             removeBitmaskFromElements(index);
             shuffleElementBitmasks(index);
             writeState();
             execute();
-        }else{
+        } else {
             NotifyDisplayer.display("You cannot delete the default layer!", NotifyDescriptor.WARNING_MESSAGE);
         }
     }
@@ -357,10 +356,10 @@ public class LayersViewController {
         final BitMaskQuery vxQuery = getVxQueryCollection().getQuery(index);
         final BitMaskQuery txQuery = getTxQueryCollection().getQuery(index);
         
-        if(vxQuery != null){
+        if (vxQuery != null) {
             vxQuery.setVisibility(isVisible);
         }
-        if(txQuery != null){
+        if (txQuery != null) {
             txQuery.setVisibility(isVisible);
         }
         
@@ -378,10 +377,10 @@ public class LayersViewController {
         final BitMaskQuery vxQuery = getVxQueryCollection().getQuery(index);
         final BitMaskQuery txQuery = getTxQueryCollection().getQuery(index);
         
-        if(vxQuery != null){
+        if (vxQuery != null) {
             vxQuery.setDescription(newString);
         }
-        if(txQuery != null){
+        if (txQuery != null) {
             txQuery.setDescription(newString);
         }
         writeState();
@@ -399,10 +398,10 @@ public class LayersViewController {
         final BitMaskQuery vxQuery = getVxQueryCollection().getQuery(index);
         final BitMaskQuery txQuery = getTxQueryCollection().getQuery(index);
         
-        if (vxQuery != null && queryType.equals("Vertex Query: ")) {
+        if (vxQuery != null && "Vertex Query: ".equals(queryType)) {
             vxQuery.setQueryString(newQueryString);
         }
-        if (txQuery != null && queryType.equals("Transaction Query: ")) {
+        if (txQuery != null && "Transaction Query: ".equals(queryType)) {
             txQuery.setQueryString(newQueryString);
         }
         execute();
