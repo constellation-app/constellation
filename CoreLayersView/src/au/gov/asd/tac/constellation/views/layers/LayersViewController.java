@@ -215,7 +215,7 @@ public class LayersViewController {
             return null;
         }
 
-        // controller oiut of sync with graph...
+        // controller out of sync with graph...
         return PluginExecution.withPlugin(new LayersStateWriterPlugin(vxBitMaskCollection.getQueries(),
                 txBitMaskCollection.getQueries()))
                 .executeLater(graph);
@@ -389,7 +389,7 @@ public class LayersViewController {
 
     /**
      * Update a query
-       *
+     *
      * @param newQueryString
      * @param index
      * @param queryType

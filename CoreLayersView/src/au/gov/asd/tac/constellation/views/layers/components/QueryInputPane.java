@@ -88,7 +88,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         if (suggestedHeight == null) {
             suggestedHeight = 75;
         }
-        // TODO: Parameter saving has not been fully implemented (only this Id has been changed)
+
         parameterId = "LAYER_QUERIES";
 
         final Label l = new Label(title);
@@ -113,11 +113,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         recentValuesCombo.setTooltip(new Tooltip("Recent values"));
         recentValuesCombo.setMaxWidth(5);
         final List<String> recentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (recentValues != null) {
-            recentValuesCombo.setItems(FXCollections.observableList(recentValues));
-        } else {
-            recentValuesCombo.setDisable(true);
-        }
+        setRecentValuesCombo(recentValues);
 
         final ListCell<String> button = new ListCell<String>() {
             @Override
@@ -142,6 +138,9 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
                 String recentValue = recentValuesCombo.getValue();
                 if (recentValue != null) {
                     field.setText(recentValuesCombo.getValue());
+                    final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
+                    updateQuery(field.getText(), field.getPromptText());
+                    setValidity(isValid);
                 }
             };
             recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);
@@ -201,6 +200,10 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
                     final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
                     updateQuery(field.getText(), field.getPromptText());
                     setValidity(isValid);
+                    if (isValid && !recentValues.contains(field.getText())) {
+                        recentValues.add(field.getText());
+                        setRecentValuesCombo(recentValues);
+                    }
                 }else{
                     updateDescription(field.getText());
                 }
@@ -285,6 +288,19 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
             }
             recentValuesCombo.setPromptText("...");
             recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);
+        }
+    }
+
+    /**
+     * Set the values for the recent values combo box
+     *
+     * @param recentValues
+     */
+    public void setRecentValuesCombo(final List recentValues) {
+        if (recentValues != null) {
+            recentValuesCombo.setItems(FXCollections.observableList(recentValues));
+        } else {
+            recentValuesCombo.setDisable(true);
         }
     }
 }
