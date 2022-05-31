@@ -189,9 +189,9 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         final String timeZone = timeZoneParam.getStringValue();
         // ZonedDateTime.parse requires a time zone identifier in the string (`value`)
         // hence zonedDateTime = ZonedDateTime.parse(value, df); doesn't work for all other formats
+        if (timeZoneParam.isEnabled() && StringUtils.isNotBlank(timeZone)) {
             ZonedDateTime dateTimeInSpecifiedTimeZone = ZonedDateTime.parse(value, df.withZone(TimeZone.getTimeZone(StringUtils.substringBetween(timeZone, "[", "]")).toZoneId()));
             return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(dateTimeInSpecifiedTimeZone);
-        if (timeZoneParam.isEnabled() && StringUtils.isNotBlank(timeZone)) {
         } else {
             final TemporalAccessor temporalAccessorDateTime = df.parse(value);
             return TemporalFormatting.formatAsZonedDateTime(temporalAccessorDateTime);
