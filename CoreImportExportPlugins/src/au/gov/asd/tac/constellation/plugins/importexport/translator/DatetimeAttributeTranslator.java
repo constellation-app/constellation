@@ -138,7 +138,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         params.get(TIMEZONE_PARAMETER_ID).setEnabled(!containsTimeZone(format) && !format.equals(EPOCH));
     }
 
-    private boolean containsTimeZone(String format){
+    private boolean containsTimeZone(final String format){
         return Pattern.matches(".*[XxZzOV']$", format);
     }
 
@@ -176,7 +176,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
 
     private String translateFromZonedDateTime( final ZonedDateTime zonedDateTime, final PluginParameter timeZoneParam){
         final String timeZone = timeZoneParam.getStringValue();
-        if ( timeZoneParam.isEnabled() && !StringUtils.isBlank(timeZone)) {
+        if (timeZoneParam.isEnabled() && StringUtils.isNotBlank(timeZone)) {
             ZonedDateTime dateTimeInSpecifiedTimeZone = zonedDateTime.withZoneSameLocal(TimeZone.getTimeZone(StringUtils.substringBetween(timeZone, "[", "]")).toZoneId());
             return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(dateTimeInSpecifiedTimeZone);
         } else {
@@ -189,9 +189,9 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         final String timeZone = timeZoneParam.getStringValue();
         // ZonedDateTime.parse requires a time zone identifier in the string (`value`)
         // hence zonedDateTime = ZonedDateTime.parse(value, df); doesn't work for all other formats
-        if (timeZoneParam.isEnabled() && !StringUtils.isBlank(timeZone)) {
             ZonedDateTime dateTimeInSpecifiedTimeZone = ZonedDateTime.parse(value, df.withZone(TimeZone.getTimeZone(StringUtils.substringBetween(timeZone, "[", "]")).toZoneId()));
             return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(dateTimeInSpecifiedTimeZone);
+        if (timeZoneParam.isEnabled() && StringUtils.isNotBlank(timeZone)) {
         } else {
             final TemporalAccessor temporalAccessorDateTime = df.parse(value);
             return TemporalFormatting.formatAsZonedDateTime(temporalAccessorDateTime);
