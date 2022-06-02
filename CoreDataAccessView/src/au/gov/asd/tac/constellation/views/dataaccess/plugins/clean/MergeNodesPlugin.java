@@ -140,7 +140,6 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         mergeType.setRequired(true);
         final List<String> mergeTypes = new ArrayList<>(MERGE_TYPES.keySet());
         SingleChoiceParameterType.setOptions(mergeType, mergeTypes);
-        SingleChoiceParameterType.setChoice(mergeType, mergeTypes.get(0));
         params.addParameter(mergeType);
 
         final PluginParameter<IntegerParameterValue> threshold = IntegerParameterType.build(THRESHOLD_PARAMETER_ID);
@@ -183,6 +182,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 }
             }
         });
+        SingleChoiceParameterType.setChoice(mergeType, mergeTypes.get(0));
 
         return params;
     }
