@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -65,7 +64,6 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     private final String parameterId;
     private final LayerTitlePane parent;
     private final boolean validityCheckRequired;
-    private static final Logger LOGGER = Logger.getLogger(QueryInputPane.class.getName());
 
     public QueryInputPane(final LayerTitlePane parent, final String parameter, final String description, final String value, final boolean requiresValidityCheck) {
         this(parent, parameter, description, value, DEFAULT_WIDTH, null, requiresValidityCheck);
@@ -297,7 +295,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
      *
      * @param recentValues
      */
-    public void setRecentValuesCombo(final List recentValues) {
+    private void setRecentValuesCombo(final List<String> recentValues) {
         if (recentValues != null) {
             recentValuesCombo.setItems(FXCollections.observableList(recentValues));
         } else {
