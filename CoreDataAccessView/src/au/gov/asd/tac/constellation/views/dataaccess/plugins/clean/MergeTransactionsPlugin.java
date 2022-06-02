@@ -194,6 +194,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
                 }
             }
         });
+        // value is set after the controller definition so that the controller gets triggered
         SingleChoiceParameterType.setChoice(mergeType, mergeTypes.get(0));
 
         return params;
