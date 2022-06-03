@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -38,7 +39,8 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_ExportToJsonAction=To JSON...")
 public final class ExportToJsonAction implements ActionListener {
 
-    final GraphNode context;
+    private static final String TITLE = "Export To JSON";
+    private final GraphNode context;
 
     public ExportToJsonAction(final GraphNode context) {
         this.context = context;
@@ -46,34 +48,40 @@ public final class ExportToJsonAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        final FileChooserBuilder fChooser = new FileChooserBuilder("ExportJson")
-                .setTitle("Export to JSON")
-                .setFilesOnly(true)
-                .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File pathName) {
-                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(pathName.getName(), FileExtensionConstants.JSON)) {
-                            return true;
-                        }
-                        return pathName.isDirectory();
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "JSON file";
-                    }
-                });
-
-        final File file = fChooser.showSaveDialog();
-        if (file != null) {
+        FileChooser.openSaveDialog(getExportToJSONFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
             String fnam = file.getAbsolutePath();
+
             if (!StringUtils.endsWithIgnoreCase(fnam, FileExtensionConstants.JSON)) {
                 fnam += FileExtensionConstants.JSON;
             }
 
-                PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_JSON)
+            PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_JSON)
                     .withParameter(ExportToJsonPlugin.FILE_NAME_PARAMETER_ID, fnam)
-                        .executeLater(context.getGraph());
-        }
+                    .executeLater(context.getGraph());
+        }));
+    }
+
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getExportToJSONFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)) || file.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "JSON Files (" + FileExtensionConstants.JSON + ")";
+                    }
+                });
     }
 }

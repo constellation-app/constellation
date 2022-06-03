@@ -56,13 +56,13 @@ public class SupportPackage {
         byte[] buffer = new byte[1024];
 
         final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
+        try ( ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             for (final String filename : files) {
                 if (!filesToIgnore(filename)) {
                     final ZipEntry zipEntry = new ZipEntry(filename);
                     zipOutputStream.putNextEntry(zipEntry);
 
-                    try (FileInputStream fileInputStream = new FileInputStream(sourceFolder + File.separator + filename)) {
+                    try ( FileInputStream fileInputStream = new FileInputStream(sourceFolder + File.separator + filename)) {
                         int len;
                         while ((len = fileInputStream.read(buffer)) > 0) {
                             zipOutputStream.write(buffer, 0, len);
@@ -101,7 +101,7 @@ public class SupportPackage {
      * @return A String of the directory the user log files are saved
      */
     public static String getUserLogDirectory() {
-        return String.format("%s%svar%slog", Places.getUserDirectory().getPath(), File.separator, File.separator);
+        return String.format("%s%svar%slog", (Places.getUserDirectory() != null ? Places.getUserDirectory().getPath() : new File(System.getProperty("user.home"))), File.separator, File.separator);
     }
 
     private String generateZipEntry(final String file, final String sourcePath) {

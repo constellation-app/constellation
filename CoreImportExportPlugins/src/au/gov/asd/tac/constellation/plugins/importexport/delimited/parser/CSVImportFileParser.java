@@ -16,15 +16,18 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -75,8 +78,24 @@ public class CSVImportFileParser extends ImportFileParser {
         return results;
     }
 
+    /**
+     * Returns the file filter to use when browsing for files of this type.
+     *
+     * @return the file filter to use when browsing for files of this type.
+     */
     @Override
-    public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("CSV Files", "*.csv");
+    public FileFilter getFileFilter() {
+        return new FileFilter() {
+            @Override
+            public boolean accept(final File file) {
+                final String name = file.getName();
+                return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.COMMA_SEPARATED_VALUE)) || file.isDirectory();
+            }
+
+            @Override
+            public String getDescription() {
+                return "CSV Files (" + FileExtensionConstants.COMMA_SEPARATED_VALUE + ")";
+            }
+        };
     }
 }

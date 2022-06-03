@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -57,6 +58,7 @@ import org.openide.filesystems.FileChooserBuilder;
  */
 public final class IconChooser extends javax.swing.JPanel implements TreeSelectionListener, ListSelectionListener {
 
+    private static final String TITLE = "Add icons";
     private final Set<ConstellationIcon> icons;
     private static final boolean ICON_ADDED = false;
 
@@ -259,35 +261,10 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
     }// </editor-fold>//GEN-END:initComponents
 
 private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        // Add an icon to the icon list.
-        String addedIcon = null;
+        FileChooser.openMultiDialog(getAddIconFileChooser()).thenAccept(optionalFiles -> optionalFiles.ifPresent(files -> {
+            // Add an icon to the icon list.
+            String addedIcon = null;
 
-        final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
-                .setTitle("Add icons")
-                .setFilesOnly(true)
-                .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File pathName) {
-                        final int extlen = 4;
-                        final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && StringUtils.endsWithAny(name, (CharSequence[]) new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
-                            final String label = name.substring(0, name.length() - extlen);
-
-                            // The name must contain at least one category (a '.' in position 1 or greater).
-                            return label.indexOf('.') > 0;
-                        }
-
-                        return pathName.isDirectory();
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "Graph Icon";
-                    }
-                });
-
-        final File[] files = fChooser.showMultiOpenDialog();
-        if (files != null) {
             for (File file : files) {
                 // The name must contain at least one category (a '.' in position 1 or greater).
                 final int extlen = 4;
@@ -304,13 +281,13 @@ private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                     }
                 }
             }
-        }
 
-        if (addedIcon != null) {
-            icons.clear();
-            icons.addAll(IconManager.getIcons());
-            init(addedIcon);
-        }
+            if (addedIcon != null) {
+                icons.clear();
+                icons.addAll(IconManager.getIcons());
+                init(addedIcon);
+            }
+        }));
 }//GEN-LAST:event_addButtonActionPerformed
 
 private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
@@ -391,6 +368,33 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     public void valueChanged(final ListSelectionEvent e) {
         saveButton.setEnabled(true);
         removeButton.setEnabled(true);
+    }
+
+    public FileChooserBuilder getAddIconFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File pathName) {
+                        final int extlen = 4;
+                        final String name = pathName.getName().toLowerCase();
+                        if (pathName.isFile() && StringUtils.endsWithAny(name, (CharSequence[]) new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
+                            final String label = name.substring(0, name.length() - extlen);
+
+                            // The name must contain at least one category (a '.' in position 1 or greater).
+                            return label.indexOf('.') > 0;
+                        }
+
+                        return pathName.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Graph Icon";
+                    }
+                });
     }
 }
 

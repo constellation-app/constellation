@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -41,6 +42,7 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_ExportToImage=To Screenshot Image...")
 public final class ExportToImageAction implements ActionListener {
 
+    private static final String TITLE = "Export to Image";
     private final GraphNode context;
 
     public ExportToImageAction(final GraphNode context) {
@@ -49,27 +51,9 @@ public final class ExportToImageAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        final FileChooserBuilder fChooser = new FileChooserBuilder("ExportToImage")
-                .setTitle("Export to Image")
-                .setFilesOnly(true)
-                .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File pathName) {
-                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(pathName.getName(), FileExtensionConstants.PNG)) {
-                            return true;
-                        }
-                        return pathName.isDirectory();
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "Image PNG file";
-                    }
-                });
-
-        final File file = fChooser.showSaveDialog();
-        if (file != null) {
+        FileChooser.openSaveDialog(getExportToImageFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
             String fnam = file.getAbsolutePath();
+
             if (!fnam.toLowerCase().endsWith(FileExtensionConstants.PNG)) {
                 fnam += FileExtensionConstants.PNG;
             }
@@ -77,6 +61,30 @@ public final class ExportToImageAction implements ActionListener {
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_IMAGE)
                     .withParameter(ExportToImagePlugin.FILE_NAME_PARAMETER_ID, fnam)
                     .executeLater(context.getGraph());
-        }
+        }));
+    }
+
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getExportToImageFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG)) || file.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Image Files (" + FileExtensionConstants.PNG + ")";
+                    }
+                });
     }
 }

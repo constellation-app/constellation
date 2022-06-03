@@ -36,16 +36,20 @@ public class HashmodCSVImportFileParser {
 
     public List<String[]> parse(final HashmodInputSource input, final PluginParameters parameters) throws IOException {
         final ArrayList<String[]> results = new ArrayList<>();
-        try (final CSVParser csvFileParser = CSVFormat.RFC4180.parse(new InputStreamReader(input.getInputStream(), StandardCharsets.UTF_8.name()))) {
-            final List<CSVRecord> records = csvFileParser.getRecords();
-            for (final CSVRecord record : records) {
-                final String[] line = new String[record.size()];
-                for (int i = 0; i < record.size(); i++) {
-                    line[i] = record.get(i);
+
+        if (input.getInputStream() != null) {
+            try (final CSVParser csvFileParser = CSVFormat.RFC4180.parse(new InputStreamReader(input.getInputStream(), StandardCharsets.UTF_8.name()))) {
+                final List<CSVRecord> records = csvFileParser.getRecords();
+                for (final CSVRecord record : records) {
+                    final String[] line = new String[record.size()];
+                    for (int i = 0; i < record.size(); i++) {
+                        line[i] = record.get(i);
+                    }
+                    results.add(line);
                 }
-                results.add(line);
             }
         }
+
         return results;
     }
 

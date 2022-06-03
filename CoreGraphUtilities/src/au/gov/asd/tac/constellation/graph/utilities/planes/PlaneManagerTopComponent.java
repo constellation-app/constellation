@@ -36,6 +36,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
@@ -50,7 +52,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -102,6 +105,7 @@ import org.openide.windows.TopComponent;
 })
 public final class PlaneManagerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
 
+    private static final String TITLE = "Import plane";
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
     private Graph graph;
@@ -159,11 +163,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     }
 
     private void importPlaneActionPerformed(final ActionEvent e) {
-        final FileNameExtensionFilter filter = new FileNameExtensionFilter("Image file", "png", "jpg");
-        final File f = new FileChooserBuilder("Import plane").addFileFilter(filter).showOpenDialog();
-        if (f != null) {
-            PluginExecution.withPlugin(new ImportPlanePlugin(f)).executeLater(graph);
-        }
+        FileChooser.openOpenDialog(getPlaneFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> PluginExecution.withPlugin(new ImportPlanePlugin(file)).executeLater(graph)));
     }
 
     private void removeSelectedPlanesActionPerformed(final ActionEvent e) {
@@ -402,6 +402,33 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         isAdjustingList = false;
     }
 
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getPlaneFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && (StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG)
+                                || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JPG)))
+                                || file.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Image Files ("
+                                + FileExtensionConstants.PNG + ", "
+                                + FileExtensionConstants.JPG + ")";
+                    }
+                });
+    }
 
     /**
      * Plugin to update the plane visibility on the graph.
@@ -439,7 +466,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
      */
     @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.IMPORT})
     private static class ImportPlanePlugin extends SimpleEditPlugin {
-        
+
         private static final Logger LOGGER = Logger.getLogger(ImportPlanePlugin.class.getName());
 
         private final File f;
