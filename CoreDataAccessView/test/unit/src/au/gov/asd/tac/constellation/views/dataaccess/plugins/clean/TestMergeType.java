@@ -47,8 +47,8 @@ public class TestMergeType implements MergeNodeType {
     }
 
     @Override
-    public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void updateParameters(final Map<String, PluginParameter<?>> parameters) {
+        //Do nothing
     }
 
     @Override
