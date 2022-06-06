@@ -279,7 +279,6 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             final Button addFilesButton = new Button("Add File(s)...");
             final Button addDirButton = new Button("Add Directory...");
             final Button removeButton = new Button("Remove");
-            final Button clearAllButton = new Button("Clear All");
 
             addFilesButton.setOnAction(event -> {
                 final FileChooserBuilder iconEditorFileChooser = getIconEditorFileChooser()
@@ -312,7 +311,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                 }
             });
 
-            addRemoveBox.getChildren().addAll(addFilesButton, addDirButton, removeButton, clearAllButton);
+            addRemoveBox.getChildren().addAll(addFilesButton, addDirButton, removeButton);
             return addRemoveBox;
         }
 
