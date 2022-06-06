@@ -44,7 +44,7 @@ public final class ExportGlyphTexturesAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        FileChooser.openOpenDialog(getExportGlyphTexturesFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> SharedDrawable.exportGlyphTextures(file)));
+        FileChooser.openSaveDialog(getExportGlyphTexturesFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> SharedDrawable.exportGlyphTextures(file)));
     }
 
     /**
