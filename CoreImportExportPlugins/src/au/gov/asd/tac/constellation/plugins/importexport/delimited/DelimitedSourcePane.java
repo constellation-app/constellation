@@ -203,7 +203,7 @@ public class DelimitedSourcePane extends SourcePane {
                                 // Append the name of each file that could not be imported.
                                 sb.append("\n");
                                 sb.append(file.getName());
-                                LOGGER.log(Level.INFO, "Unable to parse the file {0}, " + "excluding from import set.", new Object[]{file.toString()});
+                                LOGGER.log(Level.WARNING, "Unable to parse the file {0}, excluding from import set.", new Object[]{file.toString()});
                                 LOGGER.log(Level.WARNING, ex.toString());
                             }
                         }

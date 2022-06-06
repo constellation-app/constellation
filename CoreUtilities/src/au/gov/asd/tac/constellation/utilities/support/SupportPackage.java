@@ -56,13 +56,13 @@ public class SupportPackage {
         byte[] buffer = new byte[1024];
 
         final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
-        try ( ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
+        try (final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             for (final String filename : files) {
                 if (!filesToIgnore(filename)) {
                     final ZipEntry zipEntry = new ZipEntry(filename);
                     zipOutputStream.putNextEntry(zipEntry);
 
-                    try ( FileInputStream fileInputStream = new FileInputStream(sourceFolder + File.separator + filename)) {
+                    try (final FileInputStream fileInputStream = new FileInputStream(sourceFolder + File.separator + filename)) {
                         int len;
                         while ((len = fileInputStream.read(buffer)) > 0) {
                             zipOutputStream.write(buffer, 0, len);

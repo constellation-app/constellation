@@ -100,7 +100,7 @@ public class CSVImportFileParserNGTest {
         final String[] line = new String[1];
         line[0] = "test";
 
-        final ArrayList<String[]> list = new ArrayList<>();
+        final List<String[]> list = new ArrayList<>();
         list.add(line);
         list.add(line);
 
@@ -145,7 +145,7 @@ public class CSVImportFileParserNGTest {
         final String[] line = new String[1];
         line[0] = "test";
 
-        final ArrayList<String[]> explist = new ArrayList<>();
+        final List<String[]> explist = new ArrayList<>();
         explist.add(line);
 
         // Only 1 record should be returned by preview().

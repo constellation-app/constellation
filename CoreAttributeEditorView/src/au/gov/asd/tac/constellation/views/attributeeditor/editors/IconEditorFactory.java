@@ -312,15 +312,6 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                 }
             });
 
-            // Added for testing
-            clearAllButton.setOnAction(event -> {
-                if (!listView.getItems().isEmpty()) {
-                    listView.getItems().forEach(icon -> IconManager.removeIcon(icon));
-                }
-
-                reloadUserDefinedIcons("");
-            });
-
             addRemoveBox.getChildren().addAll(addFilesButton, addDirButton, removeButton, clearAllButton);
             return addRemoveBox;
         }
