@@ -180,52 +180,50 @@ public class DelimitedSourcePane extends SourcePane {
             final FileFilter fileFilter = parser.getFileFilter();
 
             if (fileFilter != null) {
-                FileChooser.openMultiDialog(getDelimitedImportFileChooser().setFileFilter(fileFilter)).thenAccept(optionalFiles -> optionalFiles.ifPresent(newFiles -> {
-                    Platform.runLater(() -> {
-                        DelimitedSourcePane.this.importFileParserComboBox.setDisable(true);
+                FileChooser.openMultiDialog(getDelimitedImportFileChooser().setFileFilter(fileFilter)).thenAccept(optionalFiles -> optionalFiles.ifPresent(newFiles -> Platform.runLater(() -> {
+                    DelimitedSourcePane.this.importFileParserComboBox.setDisable(true);
 
-                        final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
-                        final StringBuilder sb = new StringBuilder();
-                        final String alertText = "The following files could not be parsed and have been excluded from the import set:\n";
-                        sb.append(alertText);
+                    final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
+                    final StringBuilder sb = new StringBuilder();
+                    final String alertText = "The following files could not be parsed and have been excluded from the import set:\n";
+                    sb.append(alertText);
 
-                        for (final File file : newFiles) {
-                            // prevent adding the same file again
-                            if (fileAlreadyAdded(file)) {
-                                continue;
-                            }
-
-                            // Attempt to parse/preview, if a failure is detected don't add the file to the set of files to import.
-                            try {
-                                parser.preview(new InputSource(file), null, PREVIEW_LIMIT);
-                                files.add(file);
-                            } catch (final IOException ex) {
-                                // Append the name of each file that could not be imported.
-                                sb.append("\n");
-                                sb.append(file.getName());
-                                LOGGER.log(Level.WARNING, "Unable to parse the file {0}, excluding from import set.", new Object[]{file.toString()});
-                                LOGGER.log(Level.WARNING, ex.toString());
-                            }
+                    for (final File file : newFiles) {
+                        // prevent adding the same file again
+                        if (fileAlreadyAdded(file)) {
+                            continue;
                         }
 
-                        // If file names have been appended to sb, then some files could not be imported, so notify user.
-                        if (!sb.toString().equals(alertText)) {
-                            NotifyDisplayer.displayAlert("Import from File", "Invalid file(s) found", sb.toString(), Alert.AlertType.WARNING);
+                        // Attempt to parse/preview, if a failure is detected don't add the file to the set of files to import.
+                        try {
+                            parser.preview(new InputSource(file), null, PREVIEW_LIMIT);
+                            files.add(file);
+                        } catch (final IOException ex) {
+                            // Append the name of each file that could not be imported.
+                            sb.append("\n");
+                            sb.append(file.getName());
+                            LOGGER.log(Level.WARNING, "Unable to parse the file {0}, excluding from import set.", new Object[]{file.toString()});
+                            LOGGER.log(Level.WARNING, ex.toString());
                         }
+                    }
 
-                        fileListView.setItems(files);
+                    // If file names have been appended to sb, then some files could not be imported, so notify user.
+                    if (!sb.toString().equals(alertText)) {
+                        NotifyDisplayer.displayAlert("Import from File", "Invalid file(s) found", sb.toString(), Alert.AlertType.WARNING);
+                    }
 
-                        if (!newFiles.isEmpty()) {
-                            fileListView.getSelectionModel().select(newFiles.get(0));
-                            fileListView.requestFocus();
-                        }
+                    fileListView.setItems(files);
 
-                        final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
+                    if (!newFiles.isEmpty()) {
+                        fileListView.getSelectionModel().select(newFiles.get(0));
+                        fileListView.requestFocus();
+                    }
 
-                        importController.setFiles(files, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
-                        importController.validateFileStructure(newFiles);
-                    });
-                }));
+                    final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
+
+                    importController.setFiles(files, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
+                    importController.validateFileStructure(newFiles);
+                })));
             }
         }
     }
