@@ -24,7 +24,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -40,7 +39,6 @@ public class OpenFileActionNGTest {
 
     private static MockedStatic<PluginExecution> pluginExecutionStaticMock;
     private static PluginExecution pluginExecutionMock;
-    private static Thread threadMock;
 
     public OpenFileActionNGTest() {
     }
@@ -57,7 +55,6 @@ public class OpenFileActionNGTest {
     public void setUpMethod() throws Exception {
         pluginExecutionStaticMock = Mockito.mockStatic(PluginExecution.class);
         pluginExecutionMock = Mockito.mock(PluginExecution.class);
-        threadMock = Mockito.mock(Thread.class);
     }
 
     @AfterMethod
@@ -84,21 +81,5 @@ public class OpenFileActionNGTest {
         instance.actionPerformed(e);
 
         verify(pluginExecutionMock, times(1)).executeNow(Mockito.any(StoreGraph.class));
-
-        // If a PluginException is thrown during plugin execution.
-        pluginExecutionStaticMock.when(()
-                -> PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE).executeNow(Mockito.any(StoreGraph.class))).thenThrow(PluginException.class);
-
-        instance.actionPerformed(e);
-
-        verifyNoInteractions(threadMock);
-
-        // If an InterruptedException is thrown during plugin execution.
-        pluginExecutionStaticMock.when(()
-                -> PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE).executeNow(Mockito.any(StoreGraph.class))).thenThrow(InterruptedException.class);
-
-        instance.actionPerformed(e);
-
-        verify(threadMock, times(1)).currentThread().interrupt();
     }
 }
