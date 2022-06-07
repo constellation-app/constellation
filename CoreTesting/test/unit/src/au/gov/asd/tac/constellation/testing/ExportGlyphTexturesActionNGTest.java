@@ -15,20 +15,25 @@
  */
 package au.gov.asd.tac.constellation.testing;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
 import org.openide.filesystems.FileChooserBuilder;
 import org.testfx.api.FxToolkit;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -100,5 +105,42 @@ public class ExportGlyphTexturesActionNGTest {
 
         sharedDrawableStaticMock.verify(()
                 -> SharedDrawable.exportGlyphTextures(Mockito.eq(file)), times(1));
+    }
+
+    /**
+     * Test of getExportGlyphTexturesFileChooser method, of class
+     * OpenFilePlugin.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testGetExportGlyphTexturesFileChooser() throws IOException {
+        System.out.println("testGetExportGlyphTexturesFileChooser");
+
+        final String fileChooserTitle = "Export Glyph Textures";
+        final String fileChooserDescription = "Image Files (" + FileExtensionConstants.PNG + ")";
+
+        final ExportGlyphTexturesAction instance = new ExportGlyphTexturesAction();
+        final JFileChooser fileChooser = instance.getExportGlyphTexturesFileChooser().createFileChooser();
+
+        // Ensure file chooser is constructed correctly.
+        assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
+        assertEquals(fileChooser.getChoosableFileFilters().length, 1);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].getDescription(), fileChooserDescription);
+
+        // If file is invalid and does not end with correct extension.
+        final File file1 = File.createTempFile("fileInvalid", ".invalid");
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file1), false);
+
+        // If file does not exist.
+        final File file2 = new File("/invalidPath/filePng" + FileExtensionConstants.PNG);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file2), false);
+
+        // If file exists, is valid and ends with correct extension.
+        final File file3 = File.createTempFile("filePng", FileExtensionConstants.PNG);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file3), true);
+
+        Files.deleteIfExists(file1.toPath());
+        Files.deleteIfExists(file3.toPath());
     }
 }
