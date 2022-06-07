@@ -15,22 +15,30 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.image;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import org.openide.filesystems.FileChooserBuilder;
 import org.testfx.api.FxToolkit;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -48,7 +56,10 @@ public class ExportToImageActionNGTest {
 
     private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<PluginExecution> pluginExecutionStaticMock;
-    private static GraphNode context;
+    private static PluginExecution withPluginMock;
+    private static PluginExecution withParameterMock;
+    private static GraphNode contextMock;
+    private static Graph graphMock;
 
     public ExportToImageActionNGTest() {
     }
@@ -73,7 +84,10 @@ public class ExportToImageActionNGTest {
     public void setUpMethod() throws Exception {
         fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
         pluginExecutionStaticMock = Mockito.mockStatic(PluginExecution.class);
-        context = Mockito.mock(GraphNode.class);
+        withPluginMock = Mockito.mock(PluginExecution.class);
+        withParameterMock = Mockito.mock(PluginExecution.class);
+        contextMock = Mockito.mock(GraphNode.class);
+        graphMock = Mockito.mock(Graph.class);
     }
 
     @AfterMethod
@@ -89,10 +103,20 @@ public class ExportToImageActionNGTest {
     public void testActionPerformed() {
         System.out.println("testActionPerformed");
 
-        final ExportToImageAction instance = new ExportToImageAction(context);
+        final ExportToImageAction instance = new ExportToImageAction(contextMock);
         final ActionEvent e = null;
-        final File file = new File("test.png");
-        final Optional<File> optionalFile = Optional.ofNullable(file);
+
+        pluginExecutionStaticMock.when(()
+                -> PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_IMAGE))
+                .thenReturn(withPluginMock);
+
+        doReturn(withParameterMock).when(withPluginMock).withParameter(Mockito.any(String.class), Mockito.any(String.class));
+
+        doReturn(graphMock).when(contextMock).getGraph();
+
+        // If the file ends with the correct file extension.
+        final File file1 = new File("file1.png");
+        final Optional<File> optionalFile = Optional.ofNullable(file1);
 
         fileChooserStaticMock.when(()
                 -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
@@ -100,7 +124,59 @@ public class ExportToImageActionNGTest {
 
         instance.actionPerformed(e);
 
-        pluginExecutionStaticMock.verify(()
-                -> PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_IMAGE), times(1));
+        // Check if the plugin executed correctly.
+        verify(withPluginMock, times(1)).withParameter(ExportToImagePlugin.FILE_NAME_PARAMETER_ID, file1.getAbsolutePath());
+        verify(withParameterMock, times(1)).executeLater(graphMock);
+        verify(contextMock, times(1)).getGraph();
+
+        // If the file ends with the incorrect file extension.
+        final File file2 = new File("file2");
+        final Optional<File> optionalFile2 = Optional.ofNullable(file2);
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
+                .thenReturn(CompletableFuture.completedFuture(optionalFile2));
+
+        instance.actionPerformed(e);
+
+        // Check that the correct file extension was added.
+        verify(withPluginMock, times(1)).withParameter(ExportToImagePlugin.FILE_NAME_PARAMETER_ID, file2.getAbsolutePath() + FileExtensionConstants.PNG);
+    }
+
+    /**
+     * Test of testGetExportToImageFileChooser method, of class
+     * ExportToImageAction.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testGetExportToImageFileChooser() throws IOException {
+        System.out.println("testGetExportToImageFileChooser");
+
+        final String fileChooserTitle = "Export To Image";
+        final String fileChooserDescription = "Image Files (" + FileExtensionConstants.PNG + ")";
+
+        final ExportToImageAction instance = new ExportToImageAction(contextMock);
+        final JFileChooser fileChooser = instance.getExportToImageFileChooser().createFileChooser();
+
+        // Ensure file chooser is constructed correctly.
+        assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
+        assertEquals(fileChooser.getChoosableFileFilters().length, 1);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].getDescription(), fileChooserDescription);
+
+        // If file is invalid and does not end with correct extension.
+        final File file1 = File.createTempFile("fileInvalid", ".invalid");
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file1), false);
+
+        // If file does not exist.
+        final File file2 = new File("/invalidPath/filePng" + FileExtensionConstants.PNG);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file2), false);
+
+        // If file exists, is valid and ends with correct extension.
+        final File file3 = File.createTempFile("filePng", FileExtensionConstants.PNG);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file3), true);
+
+        Files.deleteIfExists(file1.toPath());
+        Files.deleteIfExists(file3.toPath());
     }
 }
