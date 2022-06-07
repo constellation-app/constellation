@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,7 +49,6 @@ public class CSVImportFileParserNGTest {
     private static CSVParser CSVParserMock;
     private static Iterator<CSVRecord> iteratorMock;
     private static CSVRecord CSVRecordMock;
-    private static IOException IOExceptionMock;
 
     public CSVImportFileParserNGTest() {
     }
@@ -68,7 +68,6 @@ public class CSVImportFileParserNGTest {
         CSVParserMock = Mockito.mock(CSVParser.class);
         iteratorMock = Mockito.mock(Iterator.class);
         CSVRecordMock = Mockito.mock(CSVRecord.class);
-        IOExceptionMock = Mockito.mock(IOException.class);
     }
 
     @AfterMethod
@@ -85,12 +84,11 @@ public class CSVImportFileParserNGTest {
         System.out.println("testParse");
 
         final CSVImportFileParser instance = spy(new CSVImportFileParser());
+        doCallRealMethod().when(instance).parse(Mockito.any(InputSource.class), Mockito.any(PluginParameters.class));
 
         // When the CSV file is empty.
         doReturn(CSVParserMock).when(instance).getCSVParser(inputSourceMock);
         doReturn(iteratorMock).when(CSVParserMock).iterator();
-
-        doCallRealMethod().when(instance).parse(inputSourceMock, pluginParametersMock);
 
         final List<String[]> expResult1 = new ArrayList<>();
         final List<String[]> result1 = instance.parse(inputSourceMock, pluginParametersMock);
@@ -126,6 +124,7 @@ public class CSVImportFileParserNGTest {
         System.out.println("testPreview");
 
         final CSVImportFileParser instance = spy(new CSVImportFileParser());
+        doCallRealMethod().when(instance).preview(Mockito.any(InputSource.class), Mockito.any(PluginParameters.class), Mockito.anyInt());
 
         // When the CSV file is empty.
         doReturn(CSVParserMock).when(instance).getCSVParser(inputSourceMock);
@@ -134,8 +133,6 @@ public class CSVImportFileParserNGTest {
         // The limit value is irrelevant in this case.
         final SecureRandom rand = new SecureRandom();
         final int limit = rand.nextInt(10) + 1;
-
-        doCallRealMethod().when(instance).preview(inputSourceMock, pluginParametersMock, limit);
 
         final List<String[]> expResult1 = new ArrayList<>();
         final List<String[]> result1 = instance.preview(inputSourceMock, pluginParametersMock, limit);
@@ -171,14 +168,6 @@ public class CSVImportFileParserNGTest {
         final List<String[]> result3 = instance.preview(inputSourceMock, pluginParametersMock, 2);
 
         assertEquals(result3, expResult3);
-
-//        // When the parser throws an IOException.
-//        doThrow(IOExceptionMock).when(instance).getCSVParser(inputSourceMock);
-//
-//        final List<String[]> expResult4 = new ArrayList<>();
-//        final List<String[]> result4 = instance.preview(inputSourceMock, pluginParametersMock, limit);
-//
-//        assertEquals(result4, expResult4);
     }
 
     /**
@@ -208,5 +197,8 @@ public class CSVImportFileParserNGTest {
         // If file exists, is valid and ends with correct extension.
         final File file3 = File.createTempFile("fileCsv", FileExtensionConstants.COMMA_SEPARATED_VALUE);
         assertEquals(fileFilter.accept(file3), true);
+
+        Files.deleteIfExists(file1.toPath());
+        Files.deleteIfExists(file3.toPath());
     }
 }
