@@ -109,7 +109,7 @@ public class ExportGlyphTexturesActionNGTest {
 
     /**
      * Test of getExportGlyphTexturesFileChooser method, of class
-     * OpenFilePlugin.
+     * ExportGlyphTexturesAction.
      *
      * @throws IOException
      */
