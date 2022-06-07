@@ -16,10 +16,14 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import java.io.File;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.filechooser.FileFilter;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.mockito.Mockito;
@@ -44,6 +48,7 @@ public class CSVImportFileParserNGTest {
     private static CSVParser CSVParserMock;
     private static Iterator<CSVRecord> iteratorMock;
     private static CSVRecord CSVRecordMock;
+    private static IOException IOExceptionMock;
 
     public CSVImportFileParserNGTest() {
     }
@@ -63,6 +68,7 @@ public class CSVImportFileParserNGTest {
         CSVParserMock = Mockito.mock(CSVParser.class);
         iteratorMock = Mockito.mock(Iterator.class);
         CSVRecordMock = Mockito.mock(CSVRecord.class);
+        IOExceptionMock = Mockito.mock(IOException.class);
     }
 
     @AfterMethod
@@ -72,10 +78,10 @@ public class CSVImportFileParserNGTest {
     /**
      * Test of parse method, of class CSVImportFileParser.
      *
-     * @throws java.lang.Exception
+     * @throws IOException
      */
     @Test
-    public void testParse() throws Exception {
+    public void testParse() throws IOException {
         System.out.println("testParse");
 
         final CSVImportFileParser instance = spy(new CSVImportFileParser());
@@ -113,10 +119,10 @@ public class CSVImportFileParserNGTest {
     /**
      * Test of preview method, of class CSVImportFileParser.
      *
-     * @throws java.lang.Exception
+     * @throws IOException
      */
     @Test
-    public void testPreview() throws Exception {
+    public void testPreview() throws IOException {
         System.out.println("testPreview");
 
         final CSVImportFileParser instance = spy(new CSVImportFileParser());
@@ -132,7 +138,7 @@ public class CSVImportFileParserNGTest {
         doCallRealMethod().when(instance).preview(inputSourceMock, pluginParametersMock, limit);
 
         final List<String[]> expResult1 = new ArrayList<>();
-        final List<String[]> result1 = instance.parse(inputSourceMock, pluginParametersMock);
+        final List<String[]> result1 = instance.preview(inputSourceMock, pluginParametersMock, limit);
 
         assertEquals(result1, expResult1);
 
@@ -165,5 +171,42 @@ public class CSVImportFileParserNGTest {
         final List<String[]> result3 = instance.preview(inputSourceMock, pluginParametersMock, 2);
 
         assertEquals(result3, expResult3);
+
+//        // When the parser throws an IOException.
+//        doThrow(IOExceptionMock).when(instance).getCSVParser(inputSourceMock);
+//
+//        final List<String[]> expResult4 = new ArrayList<>();
+//        final List<String[]> result4 = instance.preview(inputSourceMock, pluginParametersMock, limit);
+//
+//        assertEquals(result4, expResult4);
+    }
+
+    /**
+     * Test of getFileFilter method, of class CSVImportFileParser.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testGetFileFilter() throws IOException {
+        System.out.println("testGetFileFilter");
+
+        final String fileChooserDescription = "CSV Files (" + FileExtensionConstants.COMMA_SEPARATED_VALUE + ")";
+
+        final CSVImportFileParser instance = new CSVImportFileParser();
+        final FileFilter fileFilter = instance.getFileFilter();
+
+        assertEquals(fileFilter.getDescription(), fileChooserDescription);
+
+        // If file is invalid and does not end with correct extension.
+        final File file1 = File.createTempFile("fileInvalid", ".invalid");
+        assertEquals(fileFilter.accept(file1), false);
+
+        // If file does not exist.
+        final File file2 = new File("/invalidPath/fileCsv" + FileExtensionConstants.COMMA_SEPARATED_VALUE);
+        assertEquals(fileFilter.accept(file2), false);
+
+        // If file exists, is valid and ends with correct extension.
+        final File file3 = File.createTempFile("fileCsv", FileExtensionConstants.COMMA_SEPARATED_VALUE);
+        assertEquals(fileFilter.accept(file3), true);
     }
 }
