@@ -42,7 +42,7 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_ExportToImage=To Screenshot Image...")
 public final class ExportToImageAction implements ActionListener {
 
-    private static final String TITLE = "Export to Image";
+    private static final String TITLE = "Export To Image";
     private final GraphNode context;
 
     public ExportToImageAction(final GraphNode context) {
