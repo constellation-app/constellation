@@ -37,12 +37,6 @@ public class Query {
     private final GraphElementType elementType;
     private final String queryString;
 
-    private String graphId = null;
-
-    private long globalModificationCounter;
-    private long structureModificationCounter;
-    private long attributeModificationCounter;
-
     private int[] attributeIds = null;
     private long[] valueModificationCounters = null;
 
@@ -65,11 +59,6 @@ public class Query {
         final GraphVariableProvider variableProvider = new GraphVariableProvider(graph, elementType);
 
         final Object result = ExpressionCompiler.compileSequenceExpression(expression, variableProvider, index, Operators.getDefault());
-
-        graphId = graph.getId();
-        globalModificationCounter = graph.getGlobalModificationCounter();
-        structureModificationCounter = graph.getStructureModificationCounter();
-        attributeModificationCounter = graph.getAttributeModificationCounter();
 
         attributeIds = variableProvider.getAttributeIds();
         valueModificationCounters = new long[attributeIds.length];

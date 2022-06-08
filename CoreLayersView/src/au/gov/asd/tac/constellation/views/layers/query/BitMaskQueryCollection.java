@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilit
 import au.gov.asd.tac.constellation.graph.value.values.IntValue;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -31,8 +30,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author sirius
  */
 public class BitMaskQueryCollection {
-
-    private static final Logger LOGGER = Logger.getLogger(BitMaskQueryCollection.class.getName());
 
     public static final int MAX_QUERY_AMT = 64;
     private static final String INVALID_INDEX_ERROR = " is not a valid index for a layer";

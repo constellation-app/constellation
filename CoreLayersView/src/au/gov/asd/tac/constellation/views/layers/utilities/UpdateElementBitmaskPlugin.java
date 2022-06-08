@@ -57,9 +57,9 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
             if (!selectedOnly || graph.getBooleanValue(vertexSelectedAttributeId, vertexId)) {
-                if (layerAction.equals(LayerAction.ADD)) {
+                if (layerAction == LayerAction.ADD) {
                     graph.setLongValue(vertexBitmaskAttributeId, vertexId, graph.getLongValue(vertexBitmaskAttributeId, vertexId) | (1 << targetMask));
-                } else if (layerAction.equals(LayerAction.REMOVE)) {
+                } else if (layerAction == LayerAction.REMOVE) {
                     graph.setLongValue(vertexBitmaskAttributeId, vertexId, graph.getLongValue(vertexBitmaskAttributeId, vertexId) & ~(1 << targetMask));
                 } else {
                     // Do nothing
@@ -75,9 +75,9 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
             final int transactionId = graph.getTransaction(transactionPosition);
             if (!selectedOnly || graph.getBooleanValue(transactionSelectedAttributeId, transactionId)) {
-                if (layerAction.equals(LayerAction.ADD)) {
+                if (layerAction == LayerAction.ADD) {
                     graph.setLongValue(transactionBitmaskAttributeId, transactionId, graph.getLongValue(transactionBitmaskAttributeId, transactionId) | (1 << targetMask));
-                } else if (layerAction.equals(LayerAction.REMOVE)) {
+                } else if (layerAction == LayerAction.REMOVE) {
                     graph.setLongValue(transactionBitmaskAttributeId, transactionId, graph.getLongValue(transactionBitmaskAttributeId, transactionId) & ~(1 << targetMask));
                 } else {
                     // Do nothing

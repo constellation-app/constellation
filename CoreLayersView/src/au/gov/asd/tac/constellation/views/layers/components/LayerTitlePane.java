@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.value.utilities.ExpressionUtilities;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -189,7 +188,6 @@ public class LayerTitlePane extends TitledPane {
     
     private void recolourLayer() {
         if (enabled.isSelected()) {
-            LOGGER.log(Level.SEVERE, "recolouring: " + this.layerId);
             getStyleClass().add(SELECTED_STYLE);
         } else if (!isValid) {
             // not selected and invalid

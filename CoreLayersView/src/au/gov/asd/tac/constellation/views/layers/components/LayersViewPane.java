@@ -44,7 +44,7 @@ public class LayersViewPane extends BorderPane {
     
     private static final Logger LOGGER = Logger.getLogger(LayersViewPane.class.getName());
     private final LayersViewController controller;
-    protected VBox layersViewPane;
+    protected VBox layersViewVBox;
     protected final VBox noGraphPane;
     private final MenuBar options;
     
@@ -110,13 +110,13 @@ public class LayersViewPane extends BorderPane {
         attributeScrollPane.setPrefHeight(SCROLLPANE_HEIGHT);
         
         // add layers grid and options to pane
-        this.layersViewPane = new VBox(layersHeading, attributeScrollPane, options);
+        this.layersViewVBox = new VBox(layersHeading, attributeScrollPane, options);
 
         // create layout bindings
-        layersViewPane.prefWidthProperty().bind(this.widthProperty());
-        options.prefWidthProperty().bind(layersViewPane.widthProperty());
+        layersViewVBox.prefWidthProperty().bind(this.widthProperty());
+        options.prefWidthProperty().bind(layersViewVBox.widthProperty());
 
-        this.setCenter(layersViewPane);
+        this.setCenter(layersViewVBox);
 
         // add layers grid and options to pane
         this.noGraphPane = new NoGraphPane();
@@ -138,7 +138,7 @@ public class LayersViewPane extends BorderPane {
             final VBox oldLayers = (VBox) attributeScrollPane.getContent();
             createLayers(oldLayers, vxLayers, txLayers);
             attributeScrollPane.setContent(oldLayers);
-            this.layersViewPane = new VBox(layersHeading, attributeScrollPane, options);
+            this.layersViewVBox = new VBox(layersHeading, attributeScrollPane, options);
             // trigger refresh using enabled method
             setEnabled(true);
             cdl1.countDown();
@@ -163,7 +163,7 @@ public class LayersViewPane extends BorderPane {
             final VBox oldLayers = (VBox) attributeScrollPane.getContent();
             createLayers(oldLayers, controller.getVxQueryCollection().getQueries(), controller.getTxQueryCollection().getQueries());
             attributeScrollPane.setContent(oldLayers);
-            this.layersViewPane = new VBox(layersHeading, attributeScrollPane, options);
+            this.layersViewVBox = new VBox(layersHeading, attributeScrollPane, options);
             // trigger refresh using enabled method
             setEnabled(true);
             cdl1.countDown();
@@ -182,7 +182,7 @@ public class LayersViewPane extends BorderPane {
      * @param enable true if there is a graph
      */
     public void setEnabled(final boolean enable) {
-        Platform.runLater(() -> this.setCenter(enable ? layersViewPane : noGraphPane));
+        Platform.runLater(() -> this.setCenter(enable ? layersViewVBox : noGraphPane));
     }
     
     private void createLayers(final VBox layersnew, final BitMaskQuery[] vxQueries, final BitMaskQuery[] txQueries) {
@@ -221,12 +221,14 @@ public class LayersViewPane extends BorderPane {
             final BitMaskQuery bmq = new BitMaskQuery(q, position, queryDescription);
             bmq.setVisibility(queryVisibility);
 
-            if(layersnew.getChildren().size() -1 < queryIndex){
-                LOGGER.log(Level.WARNING, "Creating new layer: " + queryIndex + " - current layer count = " + (layersnew.getChildren().size() - 1));
+            if (layersnew.getChildren().size() - 1 < queryIndex) {
+                String creatingLayer = "Creating new layer: " + queryIndex + " - current layer count = " + (layersnew.getChildren().size() - 1);
+                LOGGER.log(Level.WARNING, creatingLayer);
                 LayerTitlePane tp = new LayerTitlePane(queryIndex,queryDescription, bmq);
                 layersnew.getChildren().add(queryIndex, tp);
-            } else{
-                LOGGER.log(Level.WARNING, "Using existing layer: " + queryIndex + " - current layer count = " + (layersnew.getChildren().size() - 1));
+            } else {
+                String usingLayer = "Using existing layer: " + queryIndex + " - current layer count = " + (layersnew.getChildren().size() - 1);
+                LOGGER.log(Level.WARNING, usingLayer);
                 LayerTitlePane oldTp = (LayerTitlePane) layersnew.getChildren().remove(queryIndex); // no 0 in list of 0
                 oldTp.setDescription(queryDescription);
                 oldTp.setQuery(bmq);

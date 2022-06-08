@@ -104,7 +104,7 @@ public class LayersViewPaneNGTest {
         latch.await();
         
         verify(spiedLvp).setEnabled(Mockito.eq(true));
-        verify(spiedLvp).setCenter(Mockito.same(spiedLvp.layersViewPane));
+        verify(spiedLvp).setCenter(Mockito.same(spiedLvp.layersViewVBox));
     }
     
     /**
