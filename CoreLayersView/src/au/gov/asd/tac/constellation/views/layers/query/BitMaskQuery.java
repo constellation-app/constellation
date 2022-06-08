@@ -90,17 +90,13 @@ public class BitMaskQuery {
     }
 
     public boolean update(final GraphReadMethods graph, final IntReadable index) {
-        if (query.requiresUpdate(graph)) {
-            if (StringUtils.isNotBlank(query.getQueryString()) && bitIndex != 0) {
-                final Object compiledExpression = query.compile(graph, index);
-                if (compiledExpression != null) {
-                    this.result = Access.getDefault().getRegistry(BooleanReadable.class).convert(compiledExpression);
-                }
+        if (StringUtils.isNotBlank(query.getQueryString()) && bitIndex != 0) {
+            final Object compiledExpression = query.compile(graph, index);
+            if (compiledExpression != null) {
+                this.result = Access.getDefault().getRegistry(BooleanReadable.class).convert(compiledExpression);
             }
-            return true;
-        } else {
-            return false;
         }
+        return true;
     }
 
     public long updateBitMask(final long original) {

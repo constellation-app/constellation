@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilit
 import au.gov.asd.tac.constellation.graph.value.values.IntValue;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -30,6 +31,8 @@ import org.apache.commons.lang3.StringUtils;
  * @author sirius
  */
 public class BitMaskQueryCollection {
+
+    private static final Logger LOGGER = Logger.getLogger(BitMaskQueryCollection.class.getName());
 
     public static final int MAX_QUERY_AMT = 64;
     private static final String INVALID_INDEX_ERROR = " is not a valid index for a layer";
@@ -103,9 +106,6 @@ public class BitMaskQueryCollection {
         updateQueries.clear();
         for (final BitMaskQuery activeQuery : activeQueries) {
             if (activeQuery != null && activeQuery.update(graph, index)) {
-                if (activeQuery.getIndex() != 0 && updateQueries.size() > 0) {
-                    updateQueries.remove(0);
-                }
                 updateQueries.add(activeQuery);
             }
         }

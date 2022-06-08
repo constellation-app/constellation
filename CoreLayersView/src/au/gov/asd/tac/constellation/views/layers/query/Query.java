@@ -59,28 +59,6 @@ public class Query {
         return elementType;
     }
 
-    public boolean requiresUpdate(final GraphReadMethods graph) {
-        if (graphId == null || !graphId.equals(graph.getId())) {
-            return true;
-        }
-
-        if (globalModificationCounter != graph.getGlobalModificationCounter()) {
-            if (attributeModificationCounter != graph.getAttributeModificationCounter()) {
-                return true;
-            }
-            if (structureModificationCounter != graph.getStructureModificationCounter()) {
-                return true;
-            }
-
-            for (int i = 0; i < attributeIds.length; i++) {
-                if (valueModificationCounters[i] != graph.getValueModificationCounter(attributeIds[i])) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public Object compile(final GraphReadMethods graph, final IntReadable index) {
         final SequenceExpression expression = ExpressionParser.parse(queryString);
 

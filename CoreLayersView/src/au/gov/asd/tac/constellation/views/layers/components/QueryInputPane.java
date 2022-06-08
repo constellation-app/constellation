@@ -131,20 +131,16 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
 
         field.setMinWidth(defaultWidth);
 
-        if (recentValuesCombo != null) {
-            recentValueSelectionListener = (ov, t, t1) -> {
-                String recentValue = recentValuesCombo.getValue();
-                if (recentValue != null) {
-                    field.setText(recentValuesCombo.getValue());
-                    final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
-                    updateQuery(field.getText(), field.getPromptText());
-                    setValidity(isValid);
-                }
-            };
-            recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);
-        } else {
-            recentValueSelectionListener = null;
-        }
+        recentValueSelectionListener = (ov, t, t1) -> {
+            String recentValue = recentValuesCombo.getValue();
+            if (recentValue != null) {
+                field.setText(recentValuesCombo.getValue());
+                final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
+                updateQuery(field.getText(), field.getPromptText());
+                setValidity(isValid);
+            }
+        };
+        recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);
 
         // If parameter is enabled, ensure widget is both enabled and editable.
         field.setEditable(true);
