@@ -1,4 +1,4 @@
-name: Mark stale issues and pull requests
+name: Mark Stale Issues and Pull Requests
 
 on:
   schedule:
@@ -12,6 +12,7 @@ jobs:
     - uses: actions/stale@v3
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
+
         stale-issue-message: >
           This issue is stale because it has been open for 6 months with no activity.
           Consider reviewing and taking an action on this issue.
@@ -21,6 +22,9 @@ jobs:
           Consider reviewing and taking an action on this pull request.
           
         stale-issue-label: 'no-issue-activity'
+
         stale-pr-label: 'no-pr-activity'
+
         days-before-stale: 180
+
         days-before-close: -1

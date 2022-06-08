@@ -4,68 +4,80 @@ on: workflow_dispatch
  
 jobs:
   create-release-build:
+
     runs-on: ubuntu-latest
+
     env:
-      RUNNER_IMAGE: "constellationapplication/netbeans-runner:12.0.4"
-      ADAPTORS_VERSION: "v2.7.0"
-    container:
-      image: docker://pandoc/latex:2.9
-      options: --entrypoint=bash
-    steps:
-      - name: Update GH Actions Tools 
-        run: |
-          apk update
-          apk upgrade
-          apk add --no-cache coreutils
-          apk add bash docker git sed
-      - name: Create Workspace Dir for operations
-        run: |
-              mkdir -p ./workspace
+      VERSION: "v2.7.0"
+
       - name: Checkout Constellation repository
         uses: actions/checkout@v2
         with:
           repository: constellation-app/constellation
-          path: ./workspace/constellation
+          path: constellation
+
       - name: Checkout Constellation Adaptors repository
         uses: actions/checkout@v2
         with:
           repository: constellation-app/constellation-adaptors
-          path: ./workspace/constellation-adaptors
+          path: constellation-adaptors
+
       - name: Checkout Constellation Applications repository
         uses: actions/checkout@v2
         with:
           repository: constellation-app/constellation-applications
-          path: ./workspace/constellation-applications
+          path: constellation-applications
+
       - name: Update Version Number
         run: |
-               sed -i "s/(under development)/$ADAPTORS_VERSION/" ./workspace/constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
+          sed -i "s/(under development)/$VERSION/" constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
+
+      # Cache the ivy dependencies
+      - name: Restore Ivy Cache
+        id: cache-dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.ivy2
+          key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
+
+      - name: Create Ivy Cache
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: |
+          mkdir ~/.ivy2
+
       - name: Add Execute Privilege to Scripts
         run: |
-              chmod +x ./workspace/constellation-applications/build-zip.sh
-              chmod +x ./workspace/constellation-applications/functions.sh
-      - name: Run build process within Docker container
-        run: |
-            docker pull "${RUNNER_IMAGE}"
-            docker run -e GIT_DISCOVERY_ACROSS_FILESYSTEM=1 \
-            --mount "type=bind,source=/,target=/home/runner/work/constellation" \
-            --workdir /home/runner/work/constellation/home/runner/work/constellation/constellation/workspace/constellation-applications \
-            constellationapplication/netbeans-runner:12 \
+          chmod +x constellation-applications/build-zip.sh
+          chmod +x constellation-applications/functions.sh
+
+      - name: Build Zips
+        uses: addnab/docker-run-action@v3
+        with:
+          image: constellationapplication/netbeans-runner:12.0.4
+          options: |
+            --volume ${{ github.workspace }}:/code 
+            --volume /home/runner/.ivy2:/root/.ivy2
+            --workdir /code/constellation-applications
+          run: |
             ./build-zip.sh -a constellation -m "constellation constellation-adaptors"
+
       - name: Upload Linux Build
         uses: actions/upload-artifact@v2.3.0
         with:
           name: Linux Release Build
-          path: ./workspace/constellation-applications/constellation/dist/constellation-linux**
+          path: constellation-applications/constellation/dist/constellation-linux**
           retention-days: 2
+
       - name: Upload MacOS Build
         uses: actions/upload-artifact@v2.3.0
         with:
           name: MacOSX Release Build
-          path: ./workspace/constellation-applications/constellation/dist/constellation-macosx**
+          path: constellation-applications/constellation/dist/constellation-macosx**
           retention-days: 2
+
       - name: Upload Windows Build
         uses: actions/upload-artifact@v2.3.0
         with:
           name: Windows Release Build
-          path: ./workspace/constellation-applications/constellation/dist/constellation-win**.zip
+          path: constellation-applications/constellation/dist/constellation-win**.zip
           retention-days: 2

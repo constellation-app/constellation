@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled]
     branches:
@@ -12,50 +13,63 @@ on:
 jobs:
   unit_tests:
     name: Unit Tests
+
     runs-on: ubuntu-latest
+
     env:
-      RUNNER_IMAGE: "constellationapplication/netbeans-runner:12.0.4"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      TRAVIS_REPO_SLUG: "${{ github.repository }}"
       DESTINATION_BRANCH: "${{ github.base_ref }}"
       PULL_REQUEST_NUMBER: "${{ github.event.number }}"
       SOURCE_BRANCH: "${{ github.head_ref }}"
       SONARCLOUD_URL: sonarcloud.io
 
     steps:
-      # Checkout this commit
+    # Checkout this commit
     - name: Checkout Branch
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
       
       # Set the verbose flag as a variable
     - name: Set Verbosity
+      id: verbosity
       run: |
         if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo '::set-output name=VERBOSITY::-v -verbose' && echo 'Verbose Logging Enabled'; else echo '::set-output name=VERBOSITY::-v " "' && echo 'Verbose Logging Disabled'; fi
-      id: verbosity
 
-    - name: Create Cache Folder
-      run: mkdir -p ${HOME}/.ivy2/cache
-
-      # Cache the ivy dependencies to the home directory.
-    - name: Initialise Cache
+    # Cache the ivy dependencies
+    - name: Restore Ivy Cache
       id: cache-dependencies
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-dependencies
+      uses: actions/cache@v3
       with:
-        path: ${HOME}/.ivy2/cache
-        key: ${{ runner.os }}-dependencies-${{ env.cache-name }}-${{ hashFiles('CoreDependencies/src/ivy.xml') }}
+        path: ~/.ivy2
+        key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
 
-      # Update the project dependencies and run tests
-    - name: Run Tests
+    - name: Create Ivy Cache
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        chmod +x /home/runner/work/constellation/constellation/.githubutilities/run-tests.sh
-        docker pull "${RUNNER_IMAGE}"
-        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" .githubutilities/run-tests.sh ${{ steps.verbosity.outputs.VERBOSITY }}
+        mkdir ~/.ivy2
+
+    - name: Add Execute Privilege to Scripts
+      run: |
+        chmod +x constellation/.githubutilities/run-tests.sh
+        chmod +x constellation/.githubutilities/sonar.sh
+
+    - name: Run Tests
+      uses: addnab/docker-run-action@v3
+      with:
+        image: constellationapplication/netbeans-runner:12.0.4
+        options: |
+          --volume ${{ github.workspace }}:/code
+          --volume /home/runner/.ivy2:/root/.ivy2
+          --workdir /code/constellation
+        run: |
+          .githubutilities/run-tests.sh ${{ steps.verbosity.outputs.VERBOSITY }}
 
     - name: Run Sonar
-      run: |
-        chmod +x /home/runner/work/constellation/constellation/.githubutilities/sonar.sh
-        docker pull "${RUNNER_IMAGE}"
-        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" .githubutilities/sonar.sh "${GITHUB_REPOSITORY}" "${PULL_REQUEST_NUMBER}" "${DESTINATION_BRANCH}" "${SOURCE_BRANCH}" "${SONAR_TOKEN}"
+      uses: addnab/docker-run-action@v3
+      with:
+        image: constellationapplication/netbeans-runner:12.0.4
+        options: |
+          --volume ${{ github.workspace }}:/code 
+          --workdir /code/constellation
+        run: |
+          .githubutilities/sonar.sh "${GITHUB_REPOSITORY}" "${PULL_REQUEST_NUMBER}" "${DESTINATION_BRANCH}" "${SOURCE_BRANCH}" "${SONAR_TOKEN}"
