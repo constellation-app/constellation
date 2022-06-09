@@ -61,8 +61,8 @@ jobs:
       with:
         image: constellationapplication/netbeans-runner:12.0.4
         options: |
-          --volume ${{ github.workspace }}:/code
-          --volume /home/runner/.ivy2:/root/.ivy2
+          --mount "type=bind,source=${{ github.workspace }},target=/code"
+          --mount "type=bind,source=/home/runner/.ivy2,target=/root/.ivy2"
           --workdir /code/constellation
         run: |
           .githubutilities/run-tests.sh ${{ steps.verbosity.outputs.VERBOSITY }}
@@ -72,7 +72,7 @@ jobs:
       with:
         image: constellationapplication/netbeans-runner:12.0.4
         options: |
-          --volume ${{ github.workspace }}:/code 
+          --mount "type=bind,source=${{ github.workspace }},target=/code"
           --workdir /code/constellation
         run: |
           .githubutilities/sonar.sh "${GITHUB_REPOSITORY}" "${PULL_REQUEST_NUMBER}" "${DESTINATION_BRANCH}" "${SOURCE_BRANCH}" "${SONAR_TOKEN}"
