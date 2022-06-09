@@ -28,8 +28,11 @@ jobs:
     # Checkout this commit
     - name: Checkout Branch
       uses: actions/checkout@v2
+      with:
+        repository: constellation-app/constellation
+        path: constellation
       
-      # Set the verbose flag as a variable
+    # Set the verbose flag as a variable
     - name: Set Verbosity
       id: verbosity
       run: |
