@@ -52,7 +52,7 @@ public class SupportPackage {
      * @param files A list of files to zip within the sourceFolder
      * @param destinationZipFilename The destination zip filename
      */
-    void zipFolder(final String sourceFolder, final List<String> files, final String destinationZipFilename) throws IOException {
+    public void zipFolder(final String sourceFolder, final List<String> files, final String destinationZipFilename) throws IOException {
         byte[] buffer = new byte[1024];
 
         final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
@@ -83,7 +83,7 @@ public class SupportPackage {
      * @param list A list of files
      * @param startFolder The starting folder
      */
-    void generateFileList(final File node, final List<String> list, final String startFolder) {
+    public void generateFileList(final File node, final List<String> list, final String startFolder) {
         if (node.isFile()) {
             list.add(generateZipEntry(node.getAbsoluteFile().toString(), startFolder));
         }
@@ -105,6 +105,7 @@ public class SupportPackage {
     }
 
     private String generateZipEntry(final String file, final String sourcePath) {
+        System.out.println(file + " | " + sourcePath);
         return file.substring(sourcePath.length() + 1, file.length());
     }
 
@@ -116,7 +117,7 @@ public class SupportPackage {
      * @param filename The filename
      * @return True to ignore the file, False otherwise
      */
-    private boolean filesToIgnore(final String filename) {
+    protected boolean filesToIgnore(final String filename) {
         return "heapdump.hprof".equals(filename) || "heapdump.hprof.old".equals(filename);
     }
 }
