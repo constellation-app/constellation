@@ -138,7 +138,9 @@ public class SupportPackageNGTest {
         instance.generateFileList(file2, list2, file2.getPath());
         instance.zipFolder(file2.getPath(), list2, destination.getPath());
 
-        assertTrue(list2.size() > 0);
+        assertEquals(list2.size(), 137);
+
+        Files.deleteIfExists(destination.toPath());
     }
 
     /**
@@ -186,6 +188,8 @@ public class SupportPackageNGTest {
         final String result2 = SupportPackage.getUserLogDirectory();
 
         assertEquals(result2, expResult2);
+
+        Files.deleteIfExists(file.toPath());
     }
 
     /**
