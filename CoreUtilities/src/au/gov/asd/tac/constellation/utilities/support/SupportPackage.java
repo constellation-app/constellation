@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.openide.modules.Places;
@@ -31,6 +33,8 @@ import org.openide.modules.Places;
  * @author arcturus
  */
 public class SupportPackage {
+
+    private static final Logger LOGGER = Logger.getLogger(SupportPackage.class.getName());
 
     /**
      * A convenient method to create a support package
@@ -52,7 +56,7 @@ public class SupportPackage {
      * @param files A list of files to zip within the sourceFolder
      * @param destinationZipFilename The destination zip filename
      */
-    public void zipFolder(final String sourceFolder, final List<String> files, final String destinationZipFilename) throws IOException {
+    public void zipFolder(final String sourceFolder, final Iterable<String> files, final String destinationZipFilename) throws IOException {
         byte[] buffer = new byte[1024];
 
         final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
@@ -105,7 +109,7 @@ public class SupportPackage {
     }
 
     private String generateZipEntry(final String file, final String sourcePath) {
-        System.out.println(file + " | " + sourcePath);
+        LOGGER.log(Level.INFO, String.format("%s | %s", file, sourcePath));
         return file.substring(sourcePath.length() + 1, file.length());
     }
 
