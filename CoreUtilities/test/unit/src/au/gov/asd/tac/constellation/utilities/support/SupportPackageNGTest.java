@@ -22,7 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.testng.Assert;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -73,7 +74,7 @@ public class SupportPackageNGTest {
         instance.generateFileList(file, list, file.getPath());
         instance.zipFolder(file.getPath(), list, destination.getPath());
 
-        Assert.assertTrue(destination.exists());
+        assertTrue(destination.exists());
     }
 
     /**
@@ -86,7 +87,24 @@ public class SupportPackageNGTest {
         final SupportPackage instance = new SupportPackage();
         instance.generateFileList(node, list, node.getPath());
 
-        Assert.assertTrue(list.size() > 0);
+        assertTrue(list.size() > 0);
     }
 
+    /**
+     * Test of filesToIgnore method, of class SupportPackage.
+     */
+    @Test
+    public void testFilesToIgnore() {
+        System.out.println("testFilesToIgnore");
+
+        final SupportPackage instance = new SupportPackage();
+
+        final File file1 = new File("heapdump.hprof");
+        final File file2 = new File("heapdump.hprof.old");
+        final File file3 = new File("file");
+
+        assertTrue(instance.filesToIgnore(file1.getName()));
+        assertTrue(instance.filesToIgnore(file2.getName()));
+        assertFalse(instance.filesToIgnore(file3.getName()));
+    }
 }
