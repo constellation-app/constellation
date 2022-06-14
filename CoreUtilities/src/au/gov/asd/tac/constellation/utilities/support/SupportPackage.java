@@ -109,7 +109,8 @@ public class SupportPackage {
     }
 
     private String generateZipEntry(final String file, final String sourcePath) {
-        LOGGER.log(Level.INFO, String.format("%s | %s", file, sourcePath));
+        final String logString = file + " | " + sourcePath;
+        LOGGER.log(Level.INFO, logString);
         return file.substring(sourcePath.length() + 1, file.length());
     }
 
