@@ -28,6 +28,7 @@ import javafx.scene.image.ImageView;
 import org.openide.util.HelpCtx;
 
 /**
+ * Utilities class for layers view 
  *
  * @author aldebaran30701
  */

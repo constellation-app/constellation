@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Query element that holds either a vertex or transaction query for each layer 
  *
  * @author sirius
  */
@@ -38,7 +39,6 @@ public class Query {
     private final String queryString;
 
     private int[] attributeIds = null;
-    private long[] valueModificationCounters = null;
 
     public Query(final GraphElementType elementType, final String queryString) {
         this.elementType = elementType;
@@ -61,7 +61,7 @@ public class Query {
         final Object result = ExpressionCompiler.compileSequenceExpression(expression, variableProvider, index, Operators.getDefault());
 
         attributeIds = variableProvider.getAttributeIds();
-        valueModificationCounters = new long[attributeIds.length];
+        long[] valueModificationCounters = new long[attributeIds.length];
         for (int i = 0; i < attributeIds.length; i++) {
             valueModificationCounters[i] = graph.getValueModificationCounter(attributeIds[i]);
         }

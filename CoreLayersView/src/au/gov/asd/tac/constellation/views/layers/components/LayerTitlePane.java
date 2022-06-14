@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.value.utilities.ExpressionUtilities;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
-import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -41,8 +40,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author aldebaran30701
  */
 public class LayerTitlePane extends TitledPane {
-
-    private static final Logger LOGGER = Logger.getLogger(LayerTitlePane.class.getName());
     
     // Descriptions
     public static final String VERTEX_DESCRIPTION = "Enter a valid query for Vertices here.";
@@ -123,6 +120,12 @@ public class LayerTitlePane extends TitledPane {
         setContent(createLayerDetailsPane(query));
     }
 
+    /**
+     * Create the pane containing the details for the layer
+     *
+     * @param query
+     * @return vbox
+     */
     private Pane createLayerDetailsPane(final BitMaskQuery query) {
         vxQuery = new QueryInputPane(this, "Vertex Query: ", VERTEX_DESCRIPTION, query.getQueryElementType() == GraphElementType.VERTEX ? query.getQueryString() : StringUtils.EMPTY, true);
         txQuery = new QueryInputPane(this, "Transaction Query: ", TRANSACTION_DESCRIPTION, query.getQueryElementType() == GraphElementType.TRANSACTION ? query.getQueryString() : StringUtils.EMPTY, true);
@@ -132,7 +135,12 @@ public class LayerTitlePane extends TitledPane {
 
         return box;
     }
-    
+
+    /**
+     * Set the vertex or transaction query to the given query
+     *
+     * @param query
+     */
     public void setQuery(final BitMaskQuery query) {
         this.query = query;
         
@@ -150,7 +158,12 @@ public class LayerTitlePane extends TitledPane {
             setVxQuery(null);
         }
     }
-    
+
+    /**
+     * Set the current layer as selected
+       *
+     * @param value
+     */
     public void setSelected(final boolean value) {
         enabled.selectedProperty().removeListener(enabledChanged);
         enabled.setSelected(value);
@@ -158,7 +171,12 @@ public class LayerTitlePane extends TitledPane {
         query.setVisibility(value);
         recolourLayer();
     }
-    
+
+    /**
+     * Set the current vertex query to the given query and check if it is valid
+     *
+     * @param query
+     */
     public void setVxQuery(final String query) {
         vxQuery.setValidity(true);
         vxQuery.setQuery(query);
@@ -169,7 +187,12 @@ public class LayerTitlePane extends TitledPane {
             vxQuery.setValidity(false);
         }
     }
-    
+
+    /**
+     * Set the current transaction query to the given query and check if it is valid
+     *
+     * @param query
+     */
     public void setTxQuery(final String query) {
         txQuery.setValidity(true);
         txQuery.setQuery(query);
@@ -179,13 +202,21 @@ public class LayerTitlePane extends TitledPane {
             txQuery.setValidity(false);
         }
     }
-    
+
+    /**
+     * Set the description of the current query
+     *
+     * @param description
+     */
     public void setDescription(final String description) {
         descinput.setQuery(description);
         final String displayedLayerName = StringUtils.truncate(description, MAX_DISPLAYED_CHARS);
         label.setText(StringUtils.isBlank(description) ? String.format("%d", layerId) : String.format("%-2.2s - %s",String.valueOf(layerId), displayedLayerName));
     }
-    
+
+    /**
+     * Set the colour of the current layer to the selected style when selected or to the invalid style when a query is invalid
+     */
     private void recolourLayer() {
         if (enabled.isSelected()) {
             getStyleClass().add(SELECTED_STYLE);

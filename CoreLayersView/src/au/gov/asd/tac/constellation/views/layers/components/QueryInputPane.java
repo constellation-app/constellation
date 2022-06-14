@@ -268,6 +268,11 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         LayersViewController.getDefault().updateQuery(fieldText, parent.getQuery().getIndex(), promptText);
     }
 
+    /**
+     * Update the combo boxes next to each query with recent queries
+     *
+     * @param e
+     */
     @Override
     public void recentValuesChanged(final RecentValuesChangeEvent e) {
         if (recentValuesCombo != null && parameterId.equals(e.getId())) {

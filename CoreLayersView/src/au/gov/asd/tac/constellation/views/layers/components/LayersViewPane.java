@@ -40,8 +40,7 @@ import org.openide.util.Exceptions;
  * @author aldebaran30701
  */
 public class LayersViewPane extends BorderPane {
-    
-    
+
     private static final Logger LOGGER = Logger.getLogger(LayersViewPane.class.getName());
     private final LayersViewController controller;
     protected VBox layersViewVBox;
@@ -125,6 +124,12 @@ public class LayersViewPane extends BorderPane {
         noGraphPane.prefWidthProperty().bind(this.widthProperty());
     }
 
+    /**
+     * Refresh the layers pane and update each layer
+     *
+     * @param vxLayers
+     * @param txLayers
+     */
     public synchronized void setLayers(final BitMaskQuery[] vxLayers, final BitMaskQuery[] txLayers) {
         CountDownLatch cdl1 = new CountDownLatch(1);
         Platform.runLater(() -> {
@@ -184,7 +189,14 @@ public class LayersViewPane extends BorderPane {
     public void setEnabled(final boolean enable) {
         Platform.runLater(() -> this.setCenter(enable ? layersViewVBox : noGraphPane));
     }
-    
+
+    /**
+     * Create a new layer
+     *
+     * @param layersnew
+     * @param vxQueries
+     * @param txQueries
+     */
     private void createLayers(final VBox layersnew, final BitMaskQuery[] vxQueries, final BitMaskQuery[] txQueries) {
         final int iteratorEnd = Math.max(getHighestQueryIndex(vxQueries), getHighestQueryIndex(txQueries)) + 1;
         boolean isQueryActive = false;
@@ -247,7 +259,13 @@ public class LayersViewPane extends BorderPane {
         oldTp.setSelected(!isQueryActive);
         layersnew.getChildren().add(0, oldTp);
     }
-    
+
+    /**
+     * Get the index of the last query created
+     *
+     * @param queries
+     * @return
+     */
     public int getHighestQueryIndex(final BitMaskQuery[] queries) {
         int highestIndex = 0;
         for (final BitMaskQuery bitMaskQuery : queries) {

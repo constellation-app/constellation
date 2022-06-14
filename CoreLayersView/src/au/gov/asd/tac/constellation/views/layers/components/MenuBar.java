@@ -68,6 +68,11 @@ public class MenuBar extends HBox {
         this.getChildren().add(queryErrorLabel);
     }
 
+    /**
+     * Create an add layer button for the menu bar
+     *
+     * @return add layer button
+     */
     private Button createAddButton() {
         final Button addLayerButton = new Button("Add Layer");
         addLayerButton.setAlignment(Pos.CENTER_RIGHT);
@@ -81,6 +86,11 @@ public class MenuBar extends HBox {
         return addLayerButton;
     }
 
+    /**
+     * Create a deselect layer button for the menu bar
+     *
+     * @return
+     */
     private Button createDeselectButton() {
         final Button deselectAllButton = new Button("Deselect Layers");
         deselectAllButton.setTooltip(new Tooltip("CTRL + ALT + D"));
@@ -94,6 +104,11 @@ public class MenuBar extends HBox {
         return deselectAllButton;
     }
 
+    /**
+     * Create an error label for the menu bar
+     *
+     * @return
+     */
     private Label createErrorLabel() {
         final Label errorLabel = new Label(QUERY_WARNING_TEXT);
         errorLabel.setPadding(new Insets(2, 0, 0, 0));
@@ -105,10 +120,20 @@ public class MenuBar extends HBox {
         return errorLabel;
     }
 
+    /**
+     * Determine if the error label is visible
+     *
+     * @param isVisible
+     */
     public void displayQueryErrorLabel(final boolean isVisible) {
         queryErrorLabel.setVisible(isVisible);
     }
 
+    /**
+     * Check if the error label is currently visible
+       *
+     * @return whether error label is visible
+     */
     public boolean getQueryErrorLabelVisibility() {
         return queryErrorLabel.isVisible();
     }

@@ -22,6 +22,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 /**
+ * Create a blank view when the layers view is open without a graph being open at the same time. 
+ * Stops the user from being able to interact with layers view without a graph being open
  *
  * @author aldebaran30701
  */
