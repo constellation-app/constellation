@@ -18,19 +18,10 @@ package au.gov.asd.tac.constellation.utilities.support;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static junit.framework.Assert.assertEquals;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.openide.modules.Places;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -46,37 +37,23 @@ import org.testng.annotations.Test;
  */
 public class SupportPackageNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(SupportPackageNGTest.class.getName());
-
-    private static MockedStatic<Places> placesStaticMock;
-
     public SupportPackageNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        placesStaticMock = Mockito.mockStatic(Places.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        placesStaticMock.close();
     }
 
     /**
@@ -111,38 +88,6 @@ public class SupportPackageNGTest {
         instance.generateFileList(node, list, node.getPath());
 
         assertTrue(list.size() > 0);
-    }
-
-    /**
-     * Test of getUserLogDirectory method, of class SupportPackage.
-     *
-     * @throws IOException
-     */
-    @Test
-    public void testGetUserLogDirectory() throws IOException {
-        System.out.println("testGetUserLogDirectory");
-
-        final File file = File.createTempFile("file", ".file");
-
-        placesStaticMock.when(()
-                -> Places.getUserDirectory())
-                .thenReturn(file);
-
-        final String expResult1 = String.format("%s%svar%slog", file.getPath(), File.separator, File.separator);
-        final String result1 = SupportPackage.getUserLogDirectory();
-
-        assertEquals(result1, expResult1);
-
-        placesStaticMock.when(()
-                -> Places.getUserDirectory())
-                .thenReturn(null);
-
-        final String expResult2 = String.format("%s%svar%slog", new File(System.getProperty("user.home")).getPath(), File.separator, File.separator);
-        final String result2 = SupportPackage.getUserLogDirectory();
-
-        assertEquals(result2, expResult2);
-
-        Files.deleteIfExists(file.toPath());
     }
 
     /**
