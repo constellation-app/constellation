@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-05-27 Option to specify time zone in Importers
+<p>A new field 'Time Zone' is added in the Datetime formatter of attributes in the File Importer and Database Importer. You can find it by right-clicking an attribute, navigating to Formatter -&gt; Datetime. Choosing 'EPOCH' as the Datetime format or entering a format that already contains a time zone will disable this field.</p>
+
 == 2022-04-13 Plugins
 <p>Some plugin parameters have been updated to have '*' at the end of the name to indicate that the plugin will require a value in order for the plugin to work.</p>
 
