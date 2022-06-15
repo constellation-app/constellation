@@ -32,7 +32,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 
 /**
  * Layers View Pane.
@@ -151,7 +150,8 @@ public class LayersViewPane extends BorderPane {
         try {
             cdl1.await();
         } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.WARNING, ex.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -176,7 +176,8 @@ public class LayersViewPane extends BorderPane {
         try {
             cdl1.await();
         } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.WARNING, ex.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 
