@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
  */
 public class XMLImportFileParserNGTest {
 
-    private File directoryMock;
+    private static File directoryMock;
 
     public XMLImportFileParserNGTest() {
     }
