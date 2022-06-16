@@ -36,31 +36,22 @@ import org.testng.annotations.Test;
  */
 public class XMLImportFileParserNGTest {
 
-//    private static final Logger LOGGER = Logger.getLogger(XMLImportFileParser.class.getName());
-    private static File fileMock;
+    private File directoryMock;
 
     public XMLImportFileParserNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        if (!FxToolkit.isFXApplicationThreadRunning()) {
-//            FxToolkit.registerPrimaryStage();
-//        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-//        try {
-//            FxToolkit.cleanupStages();
-//        } catch (TimeoutException ex) {
-//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-//        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        fileMock = Mockito.mock(File.class);
+        directoryMock = Mockito.mock(File.class);
     }
 
     @AfterMethod
@@ -69,18 +60,22 @@ public class XMLImportFileParserNGTest {
 
     /**
      * Test of parse method, of class XMLImportFileParser.
+     *
+     * @throws IOException
      */
     @Test
-    public void testParse() throws Exception {
+    public void testParse() throws IOException {
         System.out.println("testParse");
 
     }
 
     /**
      * Test of preview method, of class XMLImportFileParser.
+     *
+     * @throws IOException
      */
     @Test
-    public void testPreview() throws Exception {
+    public void testPreview() throws IOException {
         System.out.println("testPreview");
 
     }
@@ -114,10 +109,10 @@ public class XMLImportFileParserNGTest {
         assertEquals(fileFilter.accept(file3), true);
 
         // If file is a directory.
-        doReturn("directory").when(fileMock).getName();
-        doReturn(false).when(fileMock).isFile();
-        doReturn(true).when(fileMock).isDirectory();
-        assertEquals(fileFilter.accept(fileMock), true);
+        doReturn("directory").when(directoryMock).getName();
+        doReturn(false).when(directoryMock).isFile();
+        doReturn(true).when(directoryMock).isDirectory();
+        assertEquals(fileFilter.accept(directoryMock), true);
 
         Files.deleteIfExists(file1.toPath());
         Files.deleteIfExists(file3.toPath());
