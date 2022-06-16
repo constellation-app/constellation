@@ -19,7 +19,13 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.filechooser.FileFilter;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.doReturn;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -34,19 +40,32 @@ import org.testng.annotations.Test;
  */
 public class XMLImportFileParserNGTest {
 
+    private static final Logger LOGGER = Logger.getLogger(XMLImportFileParser.class.getName());
+
+    private static File fileMock;
+
     public XMLImportFileParserNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        fileMock = Mockito.mock(File.class);
     }
 
     @AfterMethod
@@ -98,6 +117,12 @@ public class XMLImportFileParserNGTest {
         // If file exists, is valid and ends with correct extension.
         final File file3 = File.createTempFile("fileXml", FileExtensionConstants.XML);
         assertEquals(fileFilter.accept(file3), true);
+
+        // If file is a directory.
+        doReturn("directory").when(fileMock).getName();
+        doReturn(false).when(fileMock).isFile();
+        doReturn(true).when(fileMock).isDirectory();
+        assertEquals(fileFilter.accept(fileMock), true);
 
         Files.deleteIfExists(file1.toPath());
         Files.deleteIfExists(file3.toPath());
