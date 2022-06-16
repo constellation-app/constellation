@@ -44,12 +44,12 @@ import org.testng.annotations.Test;
  */
 public class CSVImportFileParserNGTest {
 
-    private InputSource inputSourceMock;
-    private PluginParameters pluginParametersMock;
-    private CSVParser CSVParserMock;
-    private Iterator<CSVRecord> iteratorMock;
-    private CSVRecord CSVRecordMock;
-    private File directoryMock;
+    private static InputSource inputSourceMock;
+    private static PluginParameters pluginParametersMock;
+    private static CSVParser CSVParserMock;
+    private static Iterator<CSVRecord> iteratorMock;
+    private static CSVRecord CSVRecordMock;
+    private static File directoryMock;
 
     public CSVImportFileParserNGTest() {
     }
