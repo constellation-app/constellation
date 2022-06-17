@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -184,15 +183,11 @@ public class ShapeNGTest {
             crsMockedStatic.when(() -> CRS.decode(anyString())).thenThrow(FactoryException.class);
             // must be run before any other test that populates the CRS cache
             // see test method comment
-            final File dummy = File.createTempFile("dummy", "dummy");
-
             Shape.generateGeoPackage("dummy",
                     Collections.emptyMap(),
                     Collections.emptyMap(),
-                    dummy,
+                    File.createTempFile("dummy", "dummy"),
                     Shape.SpatialReference.WGS84);
-
-            Files.deleteIfExists(dummy.toPath());
         }
     }
 
@@ -217,15 +212,11 @@ public class ShapeNGTest {
             crsMockedStatic.when(() -> CRS.decode(anyString())).thenThrow(FactoryException.class);
             // must be run before any other test that populates the CRS cache
             // see test method comment
-            final File dummy = File.createTempFile("dummy", "dummy");
-
             Shape.generateShapefile("dummy", POINT,
                     Collections.emptyMap(),
                     Collections.emptyMap(),
-                    dummy,
+                    File.createTempFile("dummy", "dummy"),
                     Shape.SpatialReference.WGS84);
-
-            Files.deleteIfExists(dummy.toPath());
         }
     }
 
@@ -1145,8 +1136,6 @@ public class ShapeNGTest {
                 store.dispose();
             }
         }
-
-        Files.deleteIfExists(f.toPath());
     }
 
     /**
@@ -1212,8 +1201,6 @@ public class ShapeNGTest {
                 // check that the class attempted to get features from both shapes
                 verify(mockFeatureJson.constructed().get(0), times(2))
                         .streamFeatureCollection(any());
-
-                Files.deleteIfExists(f.toPath());
             }
         }
 
@@ -1276,10 +1263,6 @@ public class ShapeNGTest {
                 nullAttrStore.dispose();
             }
         }
-
-        Files.deleteIfExists(noShapesFile.toPath());
-        Files.deleteIfExists(noAttrFile.toPath());
-        Files.deleteIfExists(nullAttrFile.toPath());
     }
 
     /**
@@ -1328,8 +1311,6 @@ public class ShapeNGTest {
                 store.dispose();
             }
         }
-
-        Files.deleteIfExists(f.toPath());
     }
 
     /* Convenience method to get a data store providing access to a test
@@ -1378,8 +1359,6 @@ public class ShapeNGTest {
                 store.dispose();
             }
         }
-
-        Files.deleteIfExists(f.toPath());
     }
 
     /**
@@ -1435,8 +1414,6 @@ public class ShapeNGTest {
 
             // check that the class attempted to get features from both shapes
             verify(mockFeatureJson.constructed().get(0), times(2)).streamFeatureCollection(any());
-
-            Files.deleteIfExists(f.toPath());
         }
     }
 
@@ -1497,10 +1474,6 @@ public class ShapeNGTest {
                 nullAttrStore.dispose();
             }
         }
-
-        Files.deleteIfExists(noShapesFile.toPath());
-        Files.deleteIfExists(noAttrFile.toPath());
-        Files.deleteIfExists(nullAttrFile.toPath());
     }
 
     /**
@@ -1573,7 +1546,5 @@ public class ShapeNGTest {
                 store.dispose();
             }
         }
-
-        Files.deleteIfExists(f.toPath());
     }
 }
