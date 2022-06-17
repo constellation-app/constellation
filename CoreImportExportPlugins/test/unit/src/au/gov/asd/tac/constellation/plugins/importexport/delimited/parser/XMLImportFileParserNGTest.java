@@ -19,9 +19,13 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.filechooser.FileFilter;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -36,6 +40,8 @@ import org.testng.annotations.Test;
  */
 public class XMLImportFileParserNGTest {
 
+    private static final Logger LOGGER = Logger.getLogger(XMLImportFileParser.class.getName());
+
     private static File directoryMock;
 
     public XMLImportFileParserNGTest() {
@@ -43,10 +49,18 @@ public class XMLImportFileParserNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
