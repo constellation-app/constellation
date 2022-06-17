@@ -180,7 +180,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         }
     }
 
-    private String translateFromZonedDateTime( final ZonedDateTime zonedDateTime, final PluginParameters parameters){
+    private String translateFromZonedDateTime(final ZonedDateTime zonedDateTime, final PluginParameters parameters) {
         final PluginParameter timeZoneParam = parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
         final PluginParameter convertedTimeZoneParam = parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
 

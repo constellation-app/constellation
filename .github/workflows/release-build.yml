@@ -1,17 +1,13 @@
-name: Create Nightly Build
+name: Create Release Build
 
-on:
-  schedule:
-    # 20 past midnight on week days
-    - cron: '0 20 * * 1-5'
-  release:
-    types: [prereleased, released]
+on: workflow_dispatch
  
 jobs:
-  create-nightly-build:
+  create-release-build:
     runs-on: ubuntu-latest
     env:
       RUNNER_IMAGE: "constellationapplication/netbeans-runner:12.0.4"
+      ADAPTORS_VERSION: "v2.7.0"
     container:
       image: docker://pandoc/latex:2.9
       options: --entrypoint=bash
@@ -21,7 +17,7 @@ jobs:
           apk update
           apk upgrade
           apk add --no-cache coreutils
-          apk add bash docker git
+          apk add bash docker git sed
       - name: Create Workspace Dir for operations
         run: |
               mkdir -p ./workspace
@@ -40,6 +36,9 @@ jobs:
         with:
           repository: constellation-app/constellation-applications
           path: ./workspace/constellation-applications
+      - name: Update Version Number
+        run: |
+               sed -i "s/(under development)/$ADAPTORS_VERSION/" ./workspace/constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
       - name: Add Execute Privilege to Scripts
         run: |
               chmod +x ./workspace/constellation-applications/build-zip.sh
@@ -55,18 +54,18 @@ jobs:
       - name: Upload Linux Build
         uses: actions/upload-artifact@v2.3.0
         with:
-          name: Linux Nightly Build
+          name: Linux Release Build
           path: ./workspace/constellation-applications/constellation/dist/constellation-linux**
           retention-days: 2
       - name: Upload MacOS Build
         uses: actions/upload-artifact@v2.3.0
         with:
-          name: MacOSX Nightly Build
+          name: MacOSX Release Build
           path: ./workspace/constellation-applications/constellation/dist/constellation-macosx**
           retention-days: 2
       - name: Upload Windows Build
         uses: actions/upload-artifact@v2.3.0
         with:
-          name: Windows Nightly Build
+          name: Windows Release Build
           path: ./workspace/constellation-applications/constellation/dist/constellation-win**.zip
           retention-days: 2

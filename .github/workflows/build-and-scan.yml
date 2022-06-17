@@ -1,5 +1,4 @@
-# build-and-scan.yml
-name: CI
+name: Build and Scan
 
 on:
   push:
