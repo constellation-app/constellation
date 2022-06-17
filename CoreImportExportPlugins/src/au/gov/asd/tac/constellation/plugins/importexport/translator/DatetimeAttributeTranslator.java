@@ -219,10 +219,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
     }
 
     private ZonedDateTime convertToDisplayTimeZone(final ZonedDateTime dateTime, final String displayTimeZone){
-        if (StringUtils.isNotBlank(displayTimeZone)) {
-            return dateTime.withZoneSameInstant(getTimeZoneId(displayTimeZone));
-        }
-        return dateTime;
+        return StringUtils.isNotBlank(displayTimeZone) ? dateTime.withZoneSameInstant(getTimeZoneId(displayTimeZone)) : dateTime;
     }
 
     private ZoneId getTimeZoneId(final String timeZone){
