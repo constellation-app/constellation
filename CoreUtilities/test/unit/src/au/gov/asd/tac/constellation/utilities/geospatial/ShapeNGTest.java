@@ -86,7 +86,8 @@ public class ShapeNGTest {
     /**
      * An IOException is thrown if a FactoryException is thrown by CRS.
      *
-     * This test will fail if the CRS cache in {
+     * This test will fail if the CRS cache in
+     * {
      *
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.Shape.SpatialReference}
@@ -114,7 +115,8 @@ public class ShapeNGTest {
      * An IOException is thrown when retrieving the spacial reference to use
      * while creating GeoJson from a collection of shapes.
      *
-     * This test will fail if the CRS cache in {
+     * This test will fail if the CRS cache in
+     * {
      *
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.Shape.SpatialReference}
@@ -140,7 +142,8 @@ public class ShapeNGTest {
      * An IOException is thrown when retrieving the spacial reference to use
      * while creating KML from a collection of shapes.
      *
-     * This test will fail if the CRS cache in {
+     * This test will fail if the CRS cache in
+     * {
      *
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.Shape.SpatialReference}
@@ -166,7 +169,8 @@ public class ShapeNGTest {
      * An IOException is thrown when retrieving the spacial reference to use
      * while creating a GeoPackage from a collection of shapes.
      *
-     * This test will fail if the CRS cache in {
+     * This test will fail if the CRS cache in
+     * {
      *
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.Shape.SpatialReference}
@@ -195,7 +199,8 @@ public class ShapeNGTest {
      * An IOException is thrown when retrieving the spacial reference to use
      * while creating a Shapefile from a collection of shapes.
      *
-     * This test will fail if the CRS cache in {
+     * This test will fail if the CRS cache in
+     * {
      *
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.Shape.SpatialReference}
@@ -699,11 +704,13 @@ public class ShapeNGTest {
 
     /**
      * Verifies a collection of geo features generated from the test shapes and
-     * attributes. See the method comments of {
+     * attributes. See the method comments of
+     * {
      *
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestShapes}
-     * and {
+     * and
+     * {
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestAttributes}
      * for a list of different cases exercised.
@@ -851,11 +858,13 @@ public class ShapeNGTest {
     /**
      * Can construct GeoJson to represent a collection of shapes with
      * attributes. The test collection includes a number of different shapes so
-     * that a variety of different decision points can be verified. See {
+     * that a variety of different decision points can be verified. See
+     * {
      *
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestShapes}
-     * and {
+     * and
+     * {
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestAttributes}.
      *
@@ -985,11 +994,13 @@ public class ShapeNGTest {
     /**
      * Can construct KML to represent a collection of shapes with attributes.
      * The test collection includes a number of different shapes so that a
-     * variety of different decision points can be verified. See {
+     * variety of different decision points can be verified. See
+     * {
      *
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestShapes}
-     * and {
+     * and
+     * {
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestAttributes}.
      *
@@ -1105,11 +1116,13 @@ public class ShapeNGTest {
     /**
      * Can construct a GeoPackage to represent a collection of shapes with
      * attributes. The test collection includes a number of different shapes so
-     * that a variety of different decision points can be verified. See {
+     * that a variety of different decision points can be verified. See
+     * {
      *
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestShapes}
-     * and {
+     * and
+     * {
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestAttributes}.
      *
@@ -1327,11 +1340,13 @@ public class ShapeNGTest {
     /**
      * Can construct a Shapefile to represent a collection of shapes with
      * attributes. The test collection includes a number of different shapes so
-     * that a variety of different decision points can be verified. See {
+     * that a variety of different decision points can be verified. See
+     * {
      *
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestShapes}
-     * and {
+     * and
+     * {
      * @see
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestAttributes}.
      *
@@ -1547,4 +1562,5 @@ public class ShapeNGTest {
             }
         }
     }
+
 }
