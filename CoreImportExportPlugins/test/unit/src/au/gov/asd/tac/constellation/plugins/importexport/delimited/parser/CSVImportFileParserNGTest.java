@@ -49,6 +49,7 @@ public class CSVImportFileParserNGTest {
     private static CSVParser CSVParserMock;
     private static Iterator<CSVRecord> iteratorMock;
     private static CSVRecord CSVRecordMock;
+    private static File fileMock;
 
     public CSVImportFileParserNGTest() {
     }
@@ -68,6 +69,7 @@ public class CSVImportFileParserNGTest {
         CSVParserMock = Mockito.mock(CSVParser.class);
         iteratorMock = Mockito.mock(Iterator.class);
         CSVRecordMock = Mockito.mock(CSVRecord.class);
+        fileMock = Mockito.mock(File.class);
     }
 
     @AfterMethod
@@ -197,6 +199,12 @@ public class CSVImportFileParserNGTest {
         // If file exists, is valid and ends with correct extension.
         final File file3 = File.createTempFile("fileCsv", FileExtensionConstants.COMMA_SEPARATED_VALUE);
         assertEquals(fileFilter.accept(file3), true);
+
+        // If file is a directory.
+        doReturn("directory").when(fileMock).getName();
+        doReturn(false).when(fileMock).isFile();
+        doReturn(true).when(fileMock).isDirectory();
+        assertEquals(fileFilter.accept(fileMock), true);
 
         Files.deleteIfExists(file1.toPath());
         Files.deleteIfExists(file3.toPath());

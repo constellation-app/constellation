@@ -36,7 +36,6 @@ import org.testng.annotations.Test;
  */
 public class XMLImportFileParserNGTest {
 
-//    private static final Logger LOGGER = Logger.getLogger(XMLImportFileParser.class.getName());
     private static File fileMock;
 
     public XMLImportFileParserNGTest() {
@@ -44,18 +43,10 @@ public class XMLImportFileParserNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        if (!FxToolkit.isFXApplicationThreadRunning()) {
-//            FxToolkit.registerPrimaryStage();
-//        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-//        try {
-//            FxToolkit.cleanupStages();
-//        } catch (TimeoutException ex) {
-//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-//        }
     }
 
     @BeforeMethod
@@ -69,18 +60,22 @@ public class XMLImportFileParserNGTest {
 
     /**
      * Test of parse method, of class XMLImportFileParser.
+     *
+     * @throws IOException
      */
     @Test
-    public void testParse() throws Exception {
+    public void testParse() throws IOException {
         System.out.println("testParse");
 
     }
 
     /**
      * Test of preview method, of class XMLImportFileParser.
+     *
+     * @throws IOException
      */
     @Test
-    public void testPreview() throws Exception {
+    public void testPreview() throws IOException {
         System.out.println("testPreview");
 
     }
