@@ -77,7 +77,7 @@ public class NotifyDisplayerNGTest {
         display(true, true, true);
         display(true, false, true);
         display(false, true, true);
-//        display(false, false, false);
+        display(false, false, false);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class NotifyDisplayerNGTest {
         displayWithIcon(true, true, true);
         displayWithIcon(true, false, true);
         displayWithIcon(false, true, true);
-//        displayWithIcon(false, false, false);
+        displayWithIcon(false, false, false);
     }
 
     @Test
