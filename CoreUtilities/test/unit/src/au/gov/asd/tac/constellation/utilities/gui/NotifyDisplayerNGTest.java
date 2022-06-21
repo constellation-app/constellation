@@ -77,7 +77,7 @@ public class NotifyDisplayerNGTest {
         display(true, true, true);
         display(true, false, true);
         display(false, true, true);
-        display(false, false, false);
+//        display(false, false, false);
     }
 
     @Test
@@ -272,14 +272,14 @@ public class NotifyDisplayerNGTest {
             swingUtilitiesMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(isEventDispatchThread);
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(isFxApplicationThread);
 
-//            final NotifyDescriptor descriptor = mock(NotifyDescriptor.class);
-            final NotifyDescriptor descriptor = new NotifyDescriptor(
-                    "message",
-                    "title",
-                    NotifyDescriptor.DEFAULT_OPTION,
-                    NotifyDescriptor.ERROR_MESSAGE,
-                    new Object[]{NotifyDescriptor.OK_OPTION},
-                    NotifyDescriptor.OK_OPTION);
+            final NotifyDescriptor descriptor = mock(NotifyDescriptor.class);
+//            final NotifyDescriptor descriptor = new NotifyDescriptor(
+//                    "message",
+//                    "title",
+//                    NotifyDescriptor.DEFAULT_OPTION,
+//                    NotifyDescriptor.ERROR_MESSAGE,
+//                    new Object[]{NotifyDescriptor.OK_OPTION},
+//                    NotifyDescriptor.OK_OPTION);
 
             NotifyDisplayer.display(descriptor);
 
