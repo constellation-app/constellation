@@ -85,7 +85,7 @@ public class NotifyDisplayerNGTest {
         displayWithIcon(true, true, true);
         displayWithIcon(true, false, true);
         displayWithIcon(false, true, true);
-        displayWithIcon(false, false, false);
+//        displayWithIcon(false, false, false);
     }
 
     @Test
@@ -273,13 +273,6 @@ public class NotifyDisplayerNGTest {
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(isFxApplicationThread);
 
             final NotifyDescriptor descriptor = mock(NotifyDescriptor.class);
-//            final NotifyDescriptor descriptor = new NotifyDescriptor(
-//                    "message",
-//                    "title",
-//                    NotifyDescriptor.DEFAULT_OPTION,
-//                    NotifyDescriptor.ERROR_MESSAGE,
-//                    new Object[]{NotifyDescriptor.OK_OPTION},
-//                    NotifyDescriptor.OK_OPTION);
 
             NotifyDisplayer.display(descriptor);
 
