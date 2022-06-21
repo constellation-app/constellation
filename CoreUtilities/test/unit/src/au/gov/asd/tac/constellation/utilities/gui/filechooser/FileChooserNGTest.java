@@ -66,10 +66,20 @@ public class FileChooserNGTest {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
+
+        swingUtilsMockedStatic = Mockito.mockStatic(SwingUtilities.class);
+        platformMockedStatic = Mockito.mockStatic(Platform.class);
+        eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class);
+        completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        swingUtilsMockedStatic.close();
+        platformMockedStatic.close();
+        eventQueueMockedStatic.close();
+        completableFutureMockedStatic.close();
+
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
@@ -79,11 +89,6 @@ public class FileChooserNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        swingUtilsMockedStatic = Mockito.mockStatic(SwingUtilities.class);
-        platformMockedStatic = Mockito.mockStatic(Platform.class);
-        eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class);
-        completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class);
-
         completableFutureMockedStatic.when(() -> CompletableFuture.completedFuture(
                 ArgumentMatchers.<Optional<File>>any())
         )
@@ -143,15 +148,10 @@ public class FileChooserNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        swingUtilsMockedStatic.close();
-        platformMockedStatic.close();
-        eventQueueMockedStatic.close();
-        completableFutureMockedStatic.close();
-
-//        swingUtilsMockedStatic.reset();
-//        platformMockedStatic.reset();
-//        eventQueueMockedStatic.reset();
-//        completableFutureMockedStatic.reset();
+        swingUtilsMockedStatic.reset();
+        platformMockedStatic.reset();
+        eventQueueMockedStatic.reset();
+        completableFutureMockedStatic.reset();
     }
 
     @Test
