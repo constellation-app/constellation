@@ -28,7 +28,6 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javax.swing.Icon;
 import javax.swing.SwingUtilities;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
 
@@ -96,10 +95,10 @@ public class NotifyDisplayer {
             CompletableFuture.runAsync(() -> display(descriptor));
             LOGGER.log(Level.INFO, "TITLE: {0} | MESSAGE: {1}", new Object[]{descriptor.getTitle(), descriptor.getMessage()});
         } else {
-            EventQueue.invokeLater(() -> {
-                DialogDisplayer.getDefault().notify(descriptor);
-                LOGGER.log(Level.INFO, "TITLE: {0} | MESSAGE: {1}", new Object[]{descriptor.getTitle(), descriptor.getMessage()});
-            });
+//            EventQueue.invokeLater(() -> {
+//                DialogDisplayer.getDefault().notify(descriptor);
+//                LOGGER.log(Level.INFO, "TITLE: {0} | MESSAGE: {1}", new Object[]{descriptor.getTitle(), descriptor.getMessage()});
+//            });
         }
     }
 
