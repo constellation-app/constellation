@@ -21,7 +21,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.stage.FileChooser.ExtensionFilter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -40,11 +39,14 @@ public class HashmodCSVImportFileParser {
         if (input.getInputStream() != null) {
             try (final CSVParser csvFileParser = CSVFormat.RFC4180.parse(new InputStreamReader(input.getInputStream(), StandardCharsets.UTF_8.name()))) {
                 final List<CSVRecord> records = csvFileParser.getRecords();
+
                 for (final CSVRecord record : records) {
                     final String[] line = new String[record.size()];
+
                     for (int i = 0; i < record.size(); i++) {
                         line[i] = record.get(i);
                     }
+
                     results.add(line);
                 }
             }
@@ -56,25 +58,27 @@ public class HashmodCSVImportFileParser {
     public List<String[]> preview(final HashmodInputSource input, final PluginParameters parameters, final int limit) throws IOException {
         // Leave the header on, as the importer expects this as the first entry.
         final ArrayList<String[]> results = new ArrayList<>();
+
         try (final CSVParser csvFileParser = CSVFormat.RFC4180.parse(new InputStreamReader(input.getInputStream(), StandardCharsets.UTF_8.name()))) {
             int count = 0;
             final List<CSVRecord> records = csvFileParser.getRecords();
+
             for (final CSVRecord record : records) {
                 final String[] line = new String[record.size()];
+
                 for (int i = 0; i < record.size(); i++) {
                     line[i] = record.get(i);
                 }
+
                 results.add(line);
                 count++;
+
                 if (count >= limit) {
                     return results;
                 }
             }
         }
-        return results;
-    }
 
-    public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("CSV Files", "*.csv");
+        return results;
     }
 }
