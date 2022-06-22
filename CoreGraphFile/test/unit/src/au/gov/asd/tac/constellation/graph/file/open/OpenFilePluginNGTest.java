@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import org.openide.filesystems.FileChooserBuilder;
 import org.testfx.api.FxToolkit;
@@ -155,6 +157,13 @@ public class OpenFilePluginNGTest {
         final File file5 = File.createTempFile("fileNebula", FileExtensionConstants.NEBULA);
         assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file4), true);
         assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file5), true);
+
+        // If file is a directory.
+        final File fileMock = mock(File.class);
+        doReturn("directory").when(fileMock).getName();
+        doReturn(false).when(fileMock).isFile();
+        doReturn(true).when(fileMock).isDirectory();
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(fileMock), true);
 
         Files.deleteIfExists(file1.toPath());
         Files.deleteIfExists(file4.toPath());
