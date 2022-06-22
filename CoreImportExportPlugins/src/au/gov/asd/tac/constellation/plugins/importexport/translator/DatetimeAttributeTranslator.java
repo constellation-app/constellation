@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -55,6 +56,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
     public static final String FORMAT_PARAMETER_ID = PluginParameter.buildId(DatetimeAttributeTranslator.class, "format");
     public static final String CUSTOM_PARAMETER_ID = PluginParameter.buildId(DatetimeAttributeTranslator.class, "custom");
     public static final String TIMEZONE_PARAMETER_ID = PluginParameter.buildId(DatetimeAttributeTranslator.class, "timezone");
+    public static final String CONVERTED_TIMEZONE_PARAMETER_ID = PluginParameter.buildId(DatetimeAttributeTranslator.class, "convertedtimezone");
 
     private static final String CUSTOM = "CUSTOM";
     private static final String EXCEL = "EXCEL";
@@ -100,10 +102,6 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         customParam.setStringValue("");
         parameters.addParameter(customParam);
 
-        final PluginParameter<SingleChoiceParameterValue> timeZoneParam = SingleChoiceParameterType.build(TIMEZONE_PARAMETER_ID);
-        timeZoneParam.setName("Time Zone");
-        timeZoneParam.setDescription("The time zone the dates represent");
-
         final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
         ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
         final ObservableList<ZoneId> timeZonesSorted = timeZones.sorted(zoneIdComparator);
@@ -112,9 +110,19 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         timeZonesSortedString.add("");
         timeZonesSorted.forEach(id -> timeZonesSortedString.add(TimeZoneUtilities.getTimeZoneAsString(id)));
 
+        final PluginParameter<SingleChoiceParameterValue> timeZoneParam = SingleChoiceParameterType.build(TIMEZONE_PARAMETER_ID);
+        timeZoneParam.setName("Time Zone");
+        timeZoneParam.setDescription("The time zone the dates represent");
         SingleChoiceParameterType.setOptions(timeZoneParam, timeZonesSortedString);
         SingleChoiceParameterType.setChoice(timeZoneParam, timeZonesSortedString.get(0));
         parameters.addParameter(timeZoneParam);
+
+        final PluginParameter<SingleChoiceParameterValue> convertedTimeZoneParam = SingleChoiceParameterType.build(CONVERTED_TIMEZONE_PARAMETER_ID);
+        convertedTimeZoneParam.setName("Display Time Zone");
+        convertedTimeZoneParam.setDescription("The time zone to convert and display the dates");
+        SingleChoiceParameterType.setOptions(convertedTimeZoneParam, timeZonesSortedString);
+        SingleChoiceParameterType.setChoice(convertedTimeZoneParam, timeZonesSortedString.get(0));
+        parameters.addParameter(convertedTimeZoneParam);
 
         parameters.addController(FORMAT_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> params, final ParameterChange change) -> {
             if (change == ParameterChange.VALUE) {
@@ -148,25 +156,23 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
 
         try {
             String format = parameters.getParameters().get(FORMAT_PARAMETER_ID).getStringValue();
-            final PluginParameter timeZoneParam = parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
-
             final ZonedDateTime zonedDateTime;
             switch (format) {
                 case EPOCH:
                     zonedDateTime = TemporalFormatting.zonedDateTimeFromLong(Long.parseLong(value));
-                    return translateFromZonedDateTime(zonedDateTime, timeZoneParam);
+                    return translateFromZonedDateTime(zonedDateTime, parameters);
                 case EXCEL:
-                    // "GMT" is used here to avoid it using the user's local time zone. 
+                    // "GMT" is used here to avoid it using the user's local time zone.
                     // If the user has selected a time zone, it is applied seperately in `translateFromZonedDateTime`
                     zonedDateTime = TemporalFormatting.zonedDateTimeFromLong(DateUtil.getJavaDate(Double.parseDouble(value), TimeZone.getTimeZone("GMT")).getTime());
-                    return translateFromZonedDateTime(zonedDateTime, timeZoneParam);
+                    return translateFromZonedDateTime(zonedDateTime, parameters);
                 case CUSTOM: {
                     format = parameters.getParameters().get(CUSTOM_PARAMETER_ID).getStringValue();
-                    return translateFromTemporalAccessorDateTime(value, format, timeZoneParam);
-                }                
+                    return translateFromTemporalAccessorDateTime(value, format, parameters);
+                }
                 default: {
                     format = DATETIME_FORMATS.get(format);
-                    return translateFromTemporalAccessorDateTime(value, format, timeZoneParam);
+                    return translateFromTemporalAccessorDateTime(value, format, parameters);
                 }
             }
         } catch (final DateTimeException | IllegalArgumentException ex) {
@@ -174,28 +180,50 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         }
     }
 
-    private String translateFromZonedDateTime( final ZonedDateTime zonedDateTime, final PluginParameter timeZoneParam){
-        final String timeZone = timeZoneParam.getStringValue();
-        if (timeZoneParam.isEnabled() && StringUtils.isNotBlank(timeZone)) {
-            ZonedDateTime dateTimeInSpecifiedTimeZone = zonedDateTime.withZoneSameLocal(TimeZone.getTimeZone(StringUtils.substringBetween(timeZone, "[", "]")).toZoneId());
-            return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(dateTimeInSpecifiedTimeZone);
+    private String translateFromZonedDateTime(final ZonedDateTime zonedDateTime, final PluginParameters parameters) {
+        final PluginParameter timeZoneParam = parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
+        final PluginParameter convertedTimeZoneParam = parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
+
+        final String timeZoneString = timeZoneParam.getStringValue();
+        if (timeZoneParam.isEnabled() && StringUtils.isNotBlank(timeZoneString)) {
+            ZonedDateTime dateTimeInSpecifiedTimeZone = zonedDateTime.withZoneSameLocal(getTimeZoneId(timeZoneString));
+            return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(convertToDisplayTimeZone(dateTimeInSpecifiedTimeZone, convertedTimeZoneParam.getStringValue()));
         } else {
-            return TemporalFormatting.formatAsZonedDateTime(zonedDateTime);
+            return TemporalFormatting.formatAsZonedDateTime(convertToDisplayTimeZone(zonedDateTime, convertedTimeZoneParam.getStringValue()));
         }
     }
-    
-    private String translateFromTemporalAccessorDateTime(final String value, final String format, final PluginParameter timeZoneParam){
+
+    private String translateFromTemporalAccessorDateTime(final String value, final String format, final PluginParameters parameters){
+        final PluginParameter timeZoneParam = parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
+        final PluginParameter convertedTimeZoneParam = parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
+
         final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
-        final String timeZone = timeZoneParam.getStringValue();
+        final String timeZoneString = timeZoneParam.getStringValue();
         // ZonedDateTime.parse requires a time zone identifier in the string (`value`)
         // hence zonedDateTime = ZonedDateTime.parse(value, df); doesn't work for all other formats
-        if (timeZoneParam.isEnabled() && StringUtils.isNotBlank(timeZone)) {
-            ZonedDateTime dateTimeInSpecifiedTimeZone = ZonedDateTime.parse(value, df.withZone(TimeZone.getTimeZone(StringUtils.substringBetween(timeZone, "[", "]")).toZoneId()));
-            return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(dateTimeInSpecifiedTimeZone);
+        if (timeZoneParam.isEnabled() && StringUtils.isNotBlank(timeZoneString)) {
+            final ZonedDateTime dateTimeInSpecifiedTimeZone = ZonedDateTime.parse(value, df.withZone(getTimeZoneId(timeZoneString)));
+            return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(convertToDisplayTimeZone(dateTimeInSpecifiedTimeZone, convertedTimeZoneParam.getStringValue()));
+
+
         } else {
             final TemporalAccessor temporalAccessorDateTime = df.parse(value);
+            if (StringUtils.isNotBlank(convertedTimeZoneParam.getStringValue())) {
+                final LocalDateTime localDateTime = LocalDateTime.parse(value, df);
+                final ZoneId zoneId = (!containsTimeZone(format) || format.endsWith("'Z'")) ? ZoneId.of("UTC") : ZoneId.from(temporalAccessorDateTime);
+                final ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, zoneId);
+                return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(convertToDisplayTimeZone(zonedDateTime, convertedTimeZoneParam.getStringValue()));
+            }
             return TemporalFormatting.formatAsZonedDateTime(temporalAccessorDateTime);
         }
+    }
+
+    private ZonedDateTime convertToDisplayTimeZone(final ZonedDateTime dateTime, final String displayTimeZone){
+        return StringUtils.isNotBlank(displayTimeZone) ? dateTime.withZoneSameInstant(getTimeZoneId(displayTimeZone)) : dateTime;
+    }
+
+    private ZoneId getTimeZoneId(final String timeZone){
+        return TimeZone.getTimeZone(StringUtils.substringBetween(timeZone, "[", "]")).toZoneId();
     }
 
     private final Comparator<ZoneId> zoneIdComparator = (t1, t2) -> {
