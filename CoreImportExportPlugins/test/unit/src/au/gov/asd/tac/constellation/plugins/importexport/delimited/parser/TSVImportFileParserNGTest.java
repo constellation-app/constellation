@@ -30,7 +30,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test class for TSVImportFileParserNGTest.
+ * Test class for TSVImportFileParser.
  *
  * @author sol695510
  */
@@ -62,6 +62,7 @@ public class TSVImportFileParserNGTest {
      */
     @Test
     public void testParse() throws IOException {
+        System.out.println("testParse");
     }
 
     /**
@@ -71,6 +72,7 @@ public class TSVImportFileParserNGTest {
      */
     @Test
     public void testPreview() throws IOException {
+        System.out.println("testPreview");
     }
 
     /**

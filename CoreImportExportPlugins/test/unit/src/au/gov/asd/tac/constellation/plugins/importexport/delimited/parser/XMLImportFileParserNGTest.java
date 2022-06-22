@@ -20,8 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import javax.swing.filechooser.FileFilter;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -36,8 +36,6 @@ import org.testng.annotations.Test;
  */
 public class XMLImportFileParserNGTest {
 
-    private static File fileMock;
-
     public XMLImportFileParserNGTest() {
     }
 
@@ -51,7 +49,6 @@ public class XMLImportFileParserNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        fileMock = Mockito.mock(File.class);
     }
 
     @AfterMethod
@@ -66,7 +63,6 @@ public class XMLImportFileParserNGTest {
     @Test
     public void testParse() throws IOException {
         System.out.println("testParse");
-
     }
 
     /**
@@ -77,7 +73,6 @@ public class XMLImportFileParserNGTest {
     @Test
     public void testPreview() throws IOException {
         System.out.println("testPreview");
-
     }
 
     /**
@@ -109,6 +104,7 @@ public class XMLImportFileParserNGTest {
         assertEquals(fileFilter.accept(file3), true);
 
         // If file is a directory.
+        final File fileMock = mock(File.class);
         doReturn("directory").when(fileMock).getName();
         doReturn(false).when(fileMock).isFile();
         doReturn(true).when(fileMock).isDirectory();
