@@ -177,6 +177,11 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
         return parameters;
     }
 
+    @Override
+    public void updateParameters(final Graph graph, final PluginParameters parameters) {
+        getWorkflow().forEach(pluginName -> PluginRegistry.get(pluginName).updateParameters(graph, parameters));
+    }
+    
     protected int getDefaultBatchSize() {
         return BATCH_SIZE_PARAM_DEFAULT;
     }
