@@ -18,10 +18,20 @@ package au.gov.asd.tac.constellation.utilities.support;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import org.mockito.MockedStatic;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import org.openide.modules.Places;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -37,6 +47,8 @@ import org.testng.annotations.Test;
  */
 public class SupportPackageNGTest {
 
+    private static MockedStatic<Places> placesStaticMock;
+
     public SupportPackageNGTest() {
     }
 
@@ -50,10 +62,35 @@ public class SupportPackageNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        placesStaticMock = mockStatic(Places.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        placesStaticMock.close();
+    }
+
+    /**
+     * Test of createSupportPackage method, of class SupportPackage.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testCreateSupportPackage() throws IOException {
+        System.out.println("testCreateSupportPackage");
+
+        final SupportPackage instance = spy(new SupportPackage());
+
+        final File sourceDirectory = new File(SupportPackage.getUserLogDirectory());
+        final File destinationDirectory = File.createTempFile("file", ".file");
+
+        instance.createSupportPackage(sourceDirectory, destinationDirectory);
+
+        verify(instance, times(1)).generateFileList(eq(sourceDirectory), any(List.class), eq(sourceDirectory.getPath()));
+        verify(instance, times(1)).zipFolder(eq(sourceDirectory.getPath()), any(List.class), eq(destinationDirectory.getPath()));
+
+        Files.deleteIfExists(sourceDirectory.toPath());
+        Files.deleteIfExists(destinationDirectory.toPath());
     }
 
     /**
@@ -88,6 +125,38 @@ public class SupportPackageNGTest {
         instance.generateFileList(node, list, node.getPath());
 
         assertTrue(list.size() > 0);
+    }
+
+    /**
+     * Test of getUserLogDirectory method, of class SupportPackage.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testGetUserLogDirectory() throws IOException {
+        System.out.println("testGetUserLogDirectory");
+
+        final File file = File.createTempFile("file", ".file");
+
+        placesStaticMock.when(()
+                -> Places.getUserDirectory())
+                .thenReturn(file);
+
+        final String expResult1 = String.format("%s%svar%slog", file.getPath(), File.separator, File.separator);
+        final String result1 = SupportPackage.getUserLogDirectory();
+
+        assertEquals(result1, expResult1);
+
+        placesStaticMock.when(()
+                -> Places.getUserDirectory())
+                .thenReturn(null);
+
+        final String expResult2 = String.format("%s%svar%slog", new File(System.getProperty("user.home")).getPath(), File.separator, File.separator);
+        final String result2 = SupportPackage.getUserLogDirectory();
+
+        assertEquals(result2, expResult2);
+
+        Files.deleteIfExists(file.toPath());
     }
 
     /**
