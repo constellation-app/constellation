@@ -117,6 +117,7 @@ public class ExcelImportFileParserNGTest {
         assertEquals(fileFilter.accept(fileMock), true);
 
         Files.deleteIfExists(file1.toPath());
-        Files.deleteIfExists(file3.toPath());
+        Files.deleteIfExists(file4.toPath());
+        Files.deleteIfExists(file5.toPath());
     }
 }
