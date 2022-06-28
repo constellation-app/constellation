@@ -215,9 +215,9 @@ public class RecentGraphScreenshotUtilities {
 
         RecentFiles.getUniqueRecentFiles().forEach(item -> {
             filesInHistory.add(item.getFileName() + ".png");
-            findScreenshot(item.getPath(), item.getFileName()).ifPresent(file -> {
-                filesInHistory.add(file.getAbsolutePath());
-            });
+            findScreenshot(item.getPath(), item.getFileName()).ifPresent(file
+                    -> filesInHistory.add(file.getAbsolutePath())
+            );
         });
 
         filesInDirectory.forEach(file -> {
