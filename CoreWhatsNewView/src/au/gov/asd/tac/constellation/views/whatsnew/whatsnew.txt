@@ -1,9 +1,58 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-04-13 Plugins
+<p>Some plugin parameters have been updated to have '*' at the end of the name to indicate that the plugin will require a value in order for the plugin to work.</p>
+
+== 2022-03-30 Data Access View
+<p>A new tab has been added in SetUp -&gt; Options -&gt; Data Access View to be able to hide data access categories that you don't want to see.</p>
+
+== 2022-03-22 New Datetime formatter in the File Importer
+<p>A new Datetime formatter has been added to the File Importer for parsing native Excel datetimes into Constellation. You can use it by right-clicking an attribute, navigating to Formatter -&gt; Datetime and choosing 'EXCEL' from the format dropdown list.</p>
+
+== 2022-02-22 Find View (Experimental)
+<p>A new version of the Find View can be accessed via Experimental -&gt; Views or Ctrl + B. This version is intended to replace the current Find View at some stage.</p>
+
+== 2022-02-21 Compare Graph Parameters
+<p>The dialog for comparing graphs in the Tools -&gt; Compare graph menu will now update to prevent the user from comparing against the original graph.</p>
+
+== 2022-02-17 Add description to Step Tab names in Data Access View
+<p> The Step Tab names in the Data Access View can now be double clicked to add a brief description. E.g. If "Initial run" is entered, "Step 1 - Initial run" will be displayed in the Tab name. This is also saved and loaded as part of the templates.</p>
+
+== 2022-01-24 Histogram Bins Selected Count
+<p>The Histogram now shows the amount of bins selected out of the total bins present.</p>
+
+== 2022-01-21 File Importer
+<p>File Importer enforces all files that are being added have the same column structure.
+When the 'Files Include Headers' option is enabled, the column headings of all the files should be the same. When it is disabled,
+the number of columns should be the same. Otherwise a warning message is displayed and the files with a different structure to the
+first file added are removed.</p>
+
+== 2021-12-16 Quality Control Categories
+<p>The dialog to change the Quality Control category levels will now show when the level is different from the default.</p>
+
+== 2021-11-23 Context Menu
+<p>The right-click context menu in the graph window has been updated to include Selection and Reset View options.</p>
+
+== 2021-11-02 Data Access View Templates
+<p>A bug relating to the Data Access View template structure has been resolved. Unfortunately this change means that existing DAV templates will no longer work and therefore they will need to be re-created.</p>
+
+== 2021-10-29 New Online &amp; Offline Help
+<p>The help documentation is now able to be viewed both online through the constellation-app.com website and offline through a local server.</p>
+<p>A preference has been added where you choose to view help documentation either online or offline. This can be found via
+Setup -&gt; Options -&gt; CONSTELLATION -&gt; Help -&gt; Online Help. The help documentation is accessible through the blue question mark icons found in each view. </p>
+
+== 2021-10-27 Layers View Graph Context
+<p> Layers View now requires a graph to be present before presenting the full feature set of the view.</p>
+
 == 2021-10-20 Conversation Search scroll
 <p> When searching in the conversation viewer you will be taken to the messages that contain the search term.</p>
 <p> You can also iterate through the search terms using the new buttons</p>
+
+== 2021-10-18 Data Access View
+<p>There is a known issue with the Data Access View that it will open in the graph tab section during the latest update.
+You should be able to manually reposition it to the left pane section and it will open as expected from then on wards.
+This is a side affect of some back end changes we had to make.</p>
 
 == 2021-10-15 User Settable Bin Size in Histogram
 <p>The user can now manually increase or decrease the height of the bins in the histogram (Added to the popup displayed when you click the Actions button in the bottom right of the histogram panel).</p>
@@ -14,9 +63,13 @@
 == 2021-10-06 Plugin Parameters
 <p>If you enter a value into a number parameter field that is either less than the minimum allowed or more than maximum allowed, the field turns red.</p>
 
+== 2021-09-28 Error Handling
+<p>Fatal errors and exceptions will now be presented as a dialog box in the executable version.</p>
+<p>Previously only a small red icon on the bottom right of the application was shown when an exception occurred.</p>
+
 == 2021-09-28 Hashmod Improvements
 <p>Significant speed up in ingesting CSV files with a header line in as separate vertices and you can now specify
-(via a header field with format 'COLUMN1...COLUMN2;;;COLUMN3') that any transactions that hashmod creates via 
+(via a header field with format 'COLUMN1...COLUMN2;;;COLUMN3') that any transactions that hashmod creates via
 matching COLUMN1 and COLUMN2 values will also gain the COLUMN3 attribute from one of the vertices it connects.</p>
 
 == 2021-09-17 Anaglyphic Display
@@ -112,7 +165,7 @@ to the Getting Started help page.</p>
 == 2021-05-21 Application Font Setting
 <p>In the Constellation settings a tab has been added to set the default font family and font size for all of the views in Constellation.</p>
 <p>The setting requires a restart of Constellation for it to be applied. </p>
-<p>The setting can be found via Setup -> Options -> Constellation -> Application Font. </p>
+<p>The setting can be found via Setup -&gt; Options -&gt; Constellation -&gt; Application Font. </p>
 
 == 2021-05-19 Ability to Pin/Unpin Nodes
 <p>Nodes can now be pinned, either through the pin/unpin toolbar icons in the arrangements panel, or via the corresponding Arrange menu options. Once pinned, nodes do not move when arrangement plugins are run, but can be manually moved. The 'pinned' node attribute stores this information.</p>
@@ -132,7 +185,7 @@ to the Getting Started help page.</p>
 == 2021-02-25 Blaze Colors - Presets
 <p>The blaze menus have been updated to show preset blaze colors. An option to save a custom color as a preset is represented by a checkbox in the color dialog.</p>
 <p>The blaze toolbar menu now displays up to 10 preset colors. It now has the ability to change the color stored by clicking the tile to load a color picker.</p>
-<p>The preferences found via Setup -> Options -> Constellation -> Graph now stores preset blaze colors. These can be edited via the color picker upon clicking the colored tile.</p>
+<p>The preferences found via Setup -&gt; Options -&gt; Constellation -&gt; Graph now stores preset blaze colors. These can be edited via the color picker upon clicking the colored tile.</p>
 
 == 2021-02-24 Plugin Reporter Drop-Down Lists
 <p>To avoid confusion with the Plugin Reporter, the two drop-down lists for filtering and ignoring plugins to be displayed have been combined.</p>

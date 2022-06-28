@@ -47,13 +47,9 @@ public class DelimitedImportPane extends ImportPane {
         });
 
         // save menu item
-        saveButton.setOnAction(event -> {
-            ImportDelimitedIO.saveParameters(this.getParentWindow(), importController);
-        });
+        saveButton.setOnAction(event -> ImportDelimitedIO.saveParameters(this.getParentWindow(), importController));
 
-        helpButton.setOnAction(event -> {
-            new HelpCtx(HELP_CTX).display();
-        });
+        helpButton.setOnAction(event -> new HelpCtx(HELP_CTX).display());
 
         // Setting help keyevent to f1
         setOnKeyPressed(event -> {

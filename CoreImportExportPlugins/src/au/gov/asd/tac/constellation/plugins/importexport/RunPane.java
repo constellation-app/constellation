@@ -86,7 +86,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final String FILTER_STYLE = "-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;";
     private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;";
 
-    protected final ImportController importController;
+    private final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
     private final AttributeList sourceVertexAttributeList;
     private final AttributeList destinationVertexAttributeList;
@@ -100,7 +100,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private int attributeCount = 0;
 
     private final TextField filterField;
-    protected static RowFilter rowFilter;
+    private static RowFilter rowFilter;
     private String filter = "";
 
     private final TextField attributeFilterTextField = new TextField();
@@ -117,7 +117,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
     private String[] currentColumnLabels = new String[0];
 
-    protected static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
+    private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
     
     // made protected purely so that FilterStartUp load can trigger the process for this on startup
     // needs to declared CompletableFuture rather than simply Future so that we can call thenRun() later on
@@ -180,13 +180,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
         filterField.setStyle(FILTER_STYLE);
-        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (setFilter(newValue)) {
-                filterField.setStyle(FILTER_STYLE);
-            } else {
-                filterField.setStyle(FILTER_STYLE_ALERT);
-            }
-        });
+        filterField.textProperty().addListener((observable, oldValue, newValue) -> setFilterStyle(newValue));
 
         filterField.setPromptText("Currently unavailable. The filter will be ready to use shortly");
         FILTER_LOAD.thenRun(() -> filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\""));
@@ -303,6 +297,10 @@ public final class RunPane extends BorderPane implements KeyListener {
                 mouseOverColumn = null;
             }
         });
+    }
+
+    private void setFilterStyle(final String value) {
+        filterField.setStyle(setFilter(value) ? FILTER_STYLE : FILTER_STYLE_ALERT);
     }
 
     /**
@@ -457,7 +455,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
         currentRows = newRows;
         sampleDataView.setItems(currentRows);
-        setFilter(filter);
+        setFilterStyle(filter);
     }
 
     public void clearFilters() {
@@ -490,7 +488,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         return false;
     }
 
-    public boolean setFilter(final String filter) {
+    private boolean setFilter(final String filter) {
         this.filter = filter;
         if (filter.isEmpty()) {
             currentRows.forEach(tableRow -> tableRow.setIncluded(true));
@@ -571,7 +569,7 @@ public final class RunPane extends BorderPane implements KeyListener {
             script = "";
         }
         filterField.setText(script);
-        setFilter(script);
+        setFilterStyle(script);
 
         updateColumns(impdef, sourceVertexAttributeList, AttributeType.SOURCE_VERTEX);
         updateColumns(impdef, destinationVertexAttributeList, AttributeType.DESTINATION_VERTEX);
@@ -630,5 +628,12 @@ public final class RunPane extends BorderPane implements KeyListener {
 
     public void setAttributePaneHeight() {
         attributePane.setPrefSize(ATTRIBUTEPANE_PREF_WIDTH, attributeCount * ATTRIBUTE_PADDING_HEIGHT);
+    }
+
+    /**
+     * Check whether this pane has queried data.
+     */
+    public boolean hasDataQueried() {
+        return !currentRows.isEmpty();
     }
 }

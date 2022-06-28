@@ -47,7 +47,7 @@ public class GraphDataLoader extends UniFileLoader {
     }
 
     @Override
-    protected MultiDataObject createMultiObject(FileObject primaryFile) throws DataObjectExistsException, IOException {
+    protected MultiDataObject createMultiObject(final FileObject primaryFile) throws DataObjectExistsException, IOException {
         return new GraphDataObject(primaryFile, this);
     }
 

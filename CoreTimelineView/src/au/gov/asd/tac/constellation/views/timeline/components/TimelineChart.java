@@ -93,11 +93,8 @@ public class TimelineChart extends XYChart<Number, Number> {
     private final Tooltip tooltip;
     private final Rectangle selection;
     // Attributes and Instance Variables:
-    private final long lowestObservedTime = Long.MAX_VALUE;
-    private final long highestObservedTime = Long.MIN_VALUE;
     private long lowestObservedDisplayPos = Long.MAX_VALUE;
     private long highestObservedDisplayPos = Long.MIN_VALUE;
-    private double shiftYAxis = 0.0;
     private double mouseOrigin = 0.0;
     private double mouseDistanceFromOrigin = 0.0;
     private double tickUnit = 1.0;
@@ -235,16 +232,13 @@ public class TimelineChart extends XYChart<Number, Number> {
 
         this.xAxis = (NumberAxis) xAxis;
         this.yAxis = yAxis;
-//        this.xAxis.setLowerBound(System.currentTimeMillis() - (31536000000l * 5));
-//        this.xAxis.setUpperBound(System.currentTimeMillis());
-//        setExtents(System.currentTimeMillis() - (31536000000l * 5), System.currentTimeMillis(), true);
         tooltip = createTooltip();
 
         formatAxes();
         // Create the selection box:
         selection = createSelectionRectange();
         selection.setStroke(Color.SILVER);
-        selection.setStrokeWidth(2d);
+        selection.setStrokeWidth(2D);
         final LinearGradient gradient
                 = new LinearGradient(0.0, 0.0, 0.0, 0.75, true, CycleMethod.NO_CYCLE, new Stop[]{
             new Stop(0, Color.LIGHTGREY),
@@ -299,7 +293,7 @@ public class TimelineChart extends XYChart<Number, Number> {
             final double msMouse = lowerTimeExtent + ((mouseX * (upperTimeExtent - lowerTimeExtent)) / width);
 
             // We are zooming in:
-            if (se.getDeltaY() > 0d) {
+            if (se.getDeltaY() > 0D) {
                 // Only zoom in if we haven't reached the minimum size:
                 if (quantum >= 0.5) {
                     lowerTimeExtent = (msMouse - ((msMouse - lowerTimeExtent) * 0.9)); // Zoom in by 10%
@@ -309,7 +303,7 @@ public class TimelineChart extends XYChart<Number, Number> {
                     parent.coordinator.setExtents(lowerTimeExtent, upperTimeExtent);
                 }
             } else { // We are zooming out:
-                if (quantum <= YEAR * 10d) {
+                if (quantum <= YEAR * 10D) {
                     lowerTimeExtent = (long) (msMouse - ((msMouse - lowerTimeExtent) * 1.1)); // Zoom out by 10%
                     upperTimeExtent = (long) (msMouse + ((upperTimeExtent - msMouse) * 1.1));
 
@@ -341,8 +335,8 @@ public class TimelineChart extends XYChart<Number, Number> {
         xAxis.setAutoRanging(false);
         xAxis.setMinorTickVisible(false);
         xAxis.setTickMarkVisible(true);
-        xAxis.setLowerBound(0d);
-        xAxis.setUpperBound(1d);
+        xAxis.setLowerBound(0D);
+        xAxis.setUpperBound(1D);
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override
             public String toString(final Number object) {
@@ -359,16 +353,13 @@ public class TimelineChart extends XYChart<Number, Number> {
                 lowerTimeExtentProperty.setValue(extentFormatter.format(new Date((long) lowerTimeExtent)));
                 upperTimeExtentProperty.setValue(extentFormatter.format(new Date((long) upperTimeExtent)));
 
-                // return the label
-                String formatted;
-                try {
+                if(tickDate != null) {
                     tickDate.setTimeZone(currentTimezone);
-                    formatted = tickDate.format(date);
-                } catch (NullPointerException npe) {
-                    formatted = ""; // We don't have a valid timeline;
+                    return tickDate.format(date);
                 }
 
-                return formatted;
+                // We don't have a valid timeline
+                return "";
             }
 
             @Override
@@ -653,9 +644,7 @@ public class TimelineChart extends XYChart<Number, Number> {
             // fade out old item:
             final FadeTransition ft = new FadeTransition(Duration.millis(500), child);
             ft.setToValue(0);
-            ft.setOnFinished((final ActionEvent actionEvent) -> {
-                getPlotChildren().remove(child);
-            });
+            ft.setOnFinished((final ActionEvent actionEvent) -> getPlotChildren().remove(child));
             ft.play();
         } else {
             getPlotChildren().remove(child);
@@ -703,9 +692,7 @@ public class TimelineChart extends XYChart<Number, Number> {
             // fade out old item:
             final FadeTransition ft = new FadeTransition(Duration.millis(500), child);
             ft.setToValue(0);
-            ft.setOnFinished((final ActionEvent actionEvent) -> {
-                getPlotChildren().clear();
-            });
+            ft.setOnFinished((final ActionEvent actionEvent) -> getPlotChildren().clear());
             ft.play();
         } else {
             getPlotChildren().clear();
@@ -731,7 +718,6 @@ public class TimelineChart extends XYChart<Number, Number> {
         final double timeExtentDifference = upperTimeExtent - lowerTimeExtent;
         final double amountX = timeExtentDifference == 0 ? this.getWidth() : this.getWidth() / (upperTimeExtent - lowerTimeExtent);
 
-        shiftYAxis = yAxis.getLayoutY();
         // Update all node positions:
         for (int seriesIndex = 0; seriesIndex < getData().size(); seriesIndex++) {
             final Series<Number, Number> series = getData().get(seriesIndex);
@@ -810,8 +796,6 @@ public class TimelineChart extends XYChart<Number, Number> {
             final Axis<Number> ya = getYAxis();
             List<Number> xData = null;
             List<Number> yData = null;
-
-            shiftYAxis = this.getHeight() - yAxis.getHeight();
 
             if (xa.isAutoRanging()) {
                 xData = new ArrayList<>();

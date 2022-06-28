@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.BitSet;
 import org.openide.util.NbBundle;
@@ -44,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ResourceAllocationIndexPlugin=Resource Allocation Index")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class ResourceAllocationIndexPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute RESOURCE_ALLOCATION_INDEX_ATTRIBUTE = SnaConcept.TransactionAttribute.RESOURCE_ALLOCATION_INDEX;
@@ -171,9 +172,9 @@ public class ResourceAllocationIndexPlugin extends SimpleEditPlugin {
 
                     final int vertexOneId = graph.getVertex(vertexOnePosition);
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
-                    float sum = 0f;
+                    float sum = 0F;
                     for (int commonNeighbour = intersection.nextSetBit(0); commonNeighbour >= 0; commonNeighbour = intersection.nextSetBit(commonNeighbour + 1)) {
-                        sum += (1f / graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour)));
+                        sum += (1F / graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour)));
                     }
                     SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, sum);
                 }

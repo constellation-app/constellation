@@ -14,14 +14,14 @@
         <ivy:retrieve pattern="release/modules/ext/[artifact]-[revision].[ext]" sync="true"/>
 
         <!--- START OF DELETABLE SECTION WHEN THIS IS IN MAVEN -->
-        <echo message="installing unfolding-maps..." if:set="third.party.depdendencies"/>
+        <echo level="info" message="installing unfolding-maps..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies"
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
              usetimestamp="true">
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/unfolding-master-20171010.jar"/>
         </get>
     
-        <echo message="installing gluegen..." if:set="third.party.depdendencies"/>
+        <echo level="info" message="installing gluegen..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies"
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
              usetimestamp="true">
@@ -33,7 +33,7 @@
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/gluegen-rt-natives-windows-i586.jar"/>
         </get>
     
-        <echo message="installing jocl..." if:set="third.party.depdendencies"/>
+        <echo level="info" message="installing jocl..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies" 
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
              usetimestamp="true">
@@ -45,7 +45,7 @@
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jocl-natives-windows-i586.jar"/>
         </get>
     
-        <echo message="installing jogl..." if:set="third.party.depdendencies"/>
+        <echo level="info" message="installing jogl..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies" 
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
              usetimestamp="true">
@@ -57,7 +57,7 @@
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jogl-all-natives-windows-i586.jar"/>
         </get>
     
-        <echo message="installing newt..." if:set="third.party.depdendencies"/>
+        <echo level="info" message="installing newt..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies" 
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
              usetimestamp="true">
@@ -65,7 +65,7 @@
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/newt-natives-windows-i586.jar"/>
         </get>
     
-        <echo message="installing mainwindow..." if:set="third.party.depdendencies"/>
+        <echo level="info" message="installing mainwindow..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies" 
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
              usetimestamp="true">
@@ -73,7 +73,7 @@
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/nativewindow.jar"/>
         </get>
     
-        <echo message="installing processing..." if:set="third.party.depdendencies"/>
+        <echo level="info" message="installing processing..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies"
              src="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/Processing%204.0/core.jar"
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
@@ -87,7 +87,7 @@
     </target>
     
     <target name="skip-update-dependencies" unless="update.dependencies">
-        <echo>Skipping dependency management for ${basedir}</echo>
+        <echo level="info">Skipping dependency management for ${basedir}</echo>
     </target>
 
     <target name="build-project-updater" if="update.dependencies">
@@ -101,7 +101,7 @@
     
     <target name="-download-ivy" unless="ivy.skip.download" depends="-check-ivy">
         <mkdir dir="${ivy.jar.dir}"/>
-        <echo message="installing ivy..."/>
+        <echo level="info" message="installing ivy..."/>
         <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
              dest="${ivy.jar.file}" 
              usetimestamp="true"/>

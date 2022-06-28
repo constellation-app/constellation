@@ -111,7 +111,6 @@ public class RecentParameterValues {
                 listener.recentValuesChanged(e);
             }
         }
-//        saveToPreferences();
     }
 
     public static void saveToPreferences() {

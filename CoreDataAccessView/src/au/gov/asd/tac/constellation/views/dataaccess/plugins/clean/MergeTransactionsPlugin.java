@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -66,7 +67,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @Messages("MergeTransactionsPlugin=Merge Transactions")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     private static final Map<String, Comparator<Long>> LEAD_TRANSACTION_CHOOSERS = new LinkedHashMap<>();
@@ -134,8 +135,8 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         MERGERS.put("Copy merged transaction attributes if present", new PriorityMergedGraphElementMerger());
         MERGERS.put("Copy merged transaction attributes always", new IgnoreSurvivingGraphElementMerger());
 
-        Collection<? extends MergeTransactionType> mergeTransactionTypes = Lookup.getDefault().lookupAll(MergeTransactionType.class);
-        for (MergeTransactionType mergeTransactionType : mergeTransactionTypes) {
+        final Collection<? extends MergeTransactionType> mergeTransactionTypes = Lookup.getDefault().lookupAll(MergeTransactionType.class);
+        for (final MergeTransactionType mergeTransactionType : mergeTransactionTypes) {
             MERGE_TYPES.put(mergeTransactionType.getName(), mergeTransactionType);
         }
     }
@@ -148,8 +149,10 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         final PluginParameter<SingleChoiceParameterValue> mergeType = SingleChoiceParameterType.build(MERGE_TYPE_PARAMETER_ID);
         mergeType.setName("Merge By");
         mergeType.setDescription("Transactions will be merged based on this");
-        List<String> mergeTypes = new ArrayList<>(MERGE_TYPES.keySet());
+        mergeType.setRequired(true);
+        final List<String> mergeTypes = new ArrayList<>(MERGE_TYPES.keySet());
         SingleChoiceParameterType.setOptions(mergeType, mergeTypes);
+        SingleChoiceParameterType.setChoice(mergeType, mergeTypes.get(0));
         params.addParameter(mergeType);
 
         final PluginParameter<IntegerParameterValue> threshold = IntegerParameterType.build(THRESHOLD_PARAMETER_ID);
@@ -162,7 +165,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         final PluginParameter<SingleChoiceParameterValue> mergingRule = SingleChoiceParameterType.build(MERGER_PARAMETER_ID);
         mergingRule.setName("Merging Rule");
         mergingRule.setDescription("The rule deciding how attributes are merged");
-        List<String> mergerNames = new ArrayList<>(MERGERS.keySet());
+        final List<String> mergerNames = new ArrayList<>(MERGERS.keySet());
         SingleChoiceParameterType.setOptions(mergingRule, mergerNames);
         SingleChoiceParameterType.setChoice(mergingRule, mergerNames.get(0));
         mergingRule.setEnabled(false);
@@ -171,7 +174,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         final PluginParameter<SingleChoiceParameterValue> leadParam = SingleChoiceParameterType.build(LEAD_PARAMETER_ID);
         leadParam.setName("Lead Transaction");
         leadParam.setDescription("The rule deciding how to choose the lead transaction");
-        List<String> leadTransactionChooserNames = new ArrayList<>(LEAD_TRANSACTION_CHOOSERS.keySet());
+        final List<String> leadTransactionChooserNames = new ArrayList<>(LEAD_TRANSACTION_CHOOSERS.keySet());
         SingleChoiceParameterType.setOptions(leadParam, leadTransactionChooserNames);
         SingleChoiceParameterType.setChoice(leadParam, leadTransactionChooserNames.get(0));
         leadParam.setEnabled(false);
@@ -180,11 +183,10 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         final PluginParameter<BooleanParameterValue> selectedParam = BooleanParameterType.build(SELECTED_PARAMETER_ID);
         selectedParam.setName("Selected Only");
         selectedParam.setDescription("Merge Only Selected Transactions");
-        selectedParam.setBooleanValue(false);
         selectedParam.setEnabled(false);
         params.addParameter(selectedParam);
 
-        params.addController(MERGE_TYPE_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> parameters, final ParameterChange change) -> {
+        params.addController(MERGE_TYPE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String selectedMergeType = parameters.get(MERGE_TYPE_PARAMETER_ID).getStringValue();
                 if (MERGE_TYPES.containsKey(selectedMergeType)) {
@@ -215,7 +217,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
 
         final int threshold = parameters.getParameters().get(THRESHOLD_PARAMETER_ID).getIntegerValue();
         final GraphElementMerger merger = MERGERS.get(parameters.getParameters().get(MERGER_PARAMETER_ID).getStringValue());
-        String leadTransactionChooserName = parameters.getParameters().get(LEAD_PARAMETER_ID).getStringValue();
+        final String leadTransactionChooserName = parameters.getParameters().get(LEAD_PARAMETER_ID).getStringValue();
         final Comparator<Long> leadTransactionChooser = LEAD_TRANSACTION_CHOOSERS.get(leadTransactionChooserName);
         final boolean selectedOnly = parameters.getParameters().get(SELECTED_PARAMETER_ID).getBooleanValue();
 
@@ -223,7 +225,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         final Map<Integer, Set<Integer>> transactionsToMerge;
         try {
             transactionsToMerge = mergeTransactionType.getTransactionsToMerge(graph, leadTransactionChooser, threshold, selectedOnly);
-        } catch (MergeException ex) {
+        } catch (final MergeException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
 
@@ -236,7 +238,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }
 
-    protected int mergeTransactions(GraphWriteMethods graph, Set<Integer> transactionsToMerge, int leadTransaction, GraphElementMerger merger) {
+    protected int mergeTransactions(final GraphWriteMethods graph, final Set<Integer> transactionsToMerge, final int leadTransaction, final GraphElementMerger merger) {
         int mergedCount = 0;
 
         for (final int transaction : transactionsToMerge) {

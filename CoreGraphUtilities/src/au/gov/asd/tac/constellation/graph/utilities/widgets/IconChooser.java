@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -45,6 +46,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
@@ -56,7 +58,7 @@ import org.openide.filesystems.FileChooserBuilder;
 public final class IconChooser extends javax.swing.JPanel implements TreeSelectionListener, ListSelectionListener {
 
     private final Set<ConstellationIcon> icons;
-    private final boolean iconAdded = false;
+    private static final boolean ICON_ADDED = false;
 
     public IconChooser(final Set<ConstellationIcon> icons, final String selectedIconName) {
         initComponents();
@@ -170,7 +172,7 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
     }
 
     public boolean isIconAdded() {
-        return iconAdded;
+        return ICON_ADDED;
     }
 
     /**
@@ -262,12 +264,13 @@ private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
         final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
                 .setTitle("Add icons")
+                .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
                         final int extlen = 4;
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && (name.endsWith(".png") || name.endsWith(".jpg"))) {
+                        if (pathName.isFile() && StringUtils.endsWithAny(name, (CharSequence[]) new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
                             final String label = name.substring(0, name.length() - extlen);
 
                             // The name must contain at least one category (a '.' in position 1 or greater).
@@ -319,7 +322,6 @@ private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
             final IconListElement element = listModel.getElementAt(index);
             final TreePath path = iconFolders.getSelectionPath();
             if (path != null) {
-//            final IconFoldersTreeModel treeModel = (IconFoldersTreeModel)iconFolders.getModel();
                 final IconTreeFolder folder = (IconTreeFolder) path.getLastPathComponent();
                 folder.removeChild(new IconTreeFolder(element.name));
             }
@@ -331,13 +333,13 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         final String iconName = getSelectedIconName();
         if (iconName != null) {
             final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
+                    .setFilesOnly(true)
                     .setTitle("Save icon");
-//        final File file = fChooser.showSaveDialog();
 
             // We need to get a JFileChooser because FileChooserBuilder doesn't have setSelectedFile().
             final JFileChooser chooser = fChooser.createFileChooser();
 
-            chooser.setSelectedFile(new File(iconName + ".png"));
+            chooser.setSelectedFile(new File(iconName + FileExtensionConstants.PNG));
             final int result = chooser.showSaveDialog(this);
             final File file = result == JFileChooser.APPROVE_OPTION ? chooser.getSelectedFile() : null;
 

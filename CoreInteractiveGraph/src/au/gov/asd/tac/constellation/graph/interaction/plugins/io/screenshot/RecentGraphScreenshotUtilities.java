@@ -37,6 +37,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,7 +46,7 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import org.openide.util.NbPreferences;
-        
+
 /**
  * Recent Graph Screenshot Utilities
  *
@@ -87,44 +89,51 @@ public class RecentGraphScreenshotUtilities {
 
     /**
      * Creates a MD5 hash of the filepath.
+     *
      * @param filepath The filepath of the graph
      * @return MD5 hash of filepath
      */
-    private static String hashFilePath(final String filepath){
+    protected static String hashFilePath(final String filepath) {
         final MessageDigest md;
         try {
             md = MessageDigest.getInstance("MD5");
             md.update(filepath.getBytes(StandardCharsets.UTF_8));
             final byte[] digest = md.digest();
-            return DatatypeConverter.printHexBinary(digest).toUpperCase();            
+            return DatatypeConverter.printHexBinary(digest).toUpperCase();
         } catch (final NoSuchAlgorithmException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
         return filepath;
     }
-    
+
     /**
      * Finds the path for the screenshot
+     *
      * @param filepath the filepath for the graph
      * @param filename the filename of the graph
      * @return the filepath to the screenshot png
      */
-    public static String findScreenshot(final String filepath, final String filename){
+    public static Optional<File> findScreenshot(final String filepath, final String filename) {
         final String screenshotFilenameFormat = getScreenshotsDir() + File.separator + "%s.png";
         final String screenshotHash = RecentGraphScreenshotUtilities.hashFilePath(filepath);
         final String screenshotFilename = String.format(screenshotFilenameFormat, screenshotHash);
         final String legacyScreenshotFilename = String.format(screenshotFilenameFormat, filename);
+
+        LOGGER.info("screenshotHash=" + screenshotHash);
+        LOGGER.info("screenshotFilename=" + screenshotFilename);
+        LOGGER.info("legacyScreenshotFilename=" + legacyScreenshotFilename);
+
         if (new File(screenshotFilename).exists()) {
-            return screenshotFilename;
+            return Optional.of(new File(screenshotFilename));
         } else if (new File(legacyScreenshotFilename).exists()) {
-            return legacyScreenshotFilename;
+            return Optional.of(new File(legacyScreenshotFilename));
         }
-        return "";
+        return Optional.empty();
     }
-    
+
     /**
      * Take a screenshot of the graph and save it to the screenshots directory
-     * so that it can be used by the Welcome View.
+     * so that it can be used by the Welcome View. hashFilePath
      *
      * @param filepath The filepath of the graph
      */
@@ -207,13 +216,27 @@ public class RecentGraphScreenshotUtilities {
         if (screenShotsDir != null) {
             filesInDirectory.addAll(Arrays.asList(screenShotsDir.listFiles()));
         }
+
         RecentFiles.getUniqueRecentFiles().forEach(item -> {
             filesInHistory.add(item.getFileName() + ".png");
-            filesInHistory.add(findScreenshot(item.getPath(), item.getFileName()));
+            findScreenshot(item.getPath(), item.getFileName()).ifPresent(file -> {
+                filesInHistory.add(file.getAbsolutePath());
+            });
         });
+
         filesInDirectory.forEach(file -> {
             // Backward compatible with <filename>.png and newer <hashed filepath>.png
-            if (!filesInHistory.contains(file.getName()) && !filesInHistory.contains(findScreenshot(file.getPath(), file.getName()))){
+            final boolean[] found = new boolean[1];
+            filesInHistory
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .forEach(f -> {
+                        if (f.contains(file.getName())) {
+                            found[0] = true;
+                        }
+                    });
+
+            if (!found[0]) {
                 try {
                     Files.delete(file.toPath());
                 } catch (final IOException ex) {

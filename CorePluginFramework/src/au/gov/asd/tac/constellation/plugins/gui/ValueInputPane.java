@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
-import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
@@ -29,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.IndexRange;
@@ -43,6 +41,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.textfield.TextFields;
 
 /**
@@ -67,13 +66,14 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
     private final ComboBox<String> recentValuesCombo;
     private final TextInputControl field;
     private final String parameterId;
+    private final boolean required;
     private static final Logger LOGGER = Logger.getLogger(ValueInputPane.class.getName());
 
     public ValueInputPane(final PluginParameter<?> parameter) {
         this(parameter, DEFAULT_WIDTH, null);
     }
 
-    public ValueInputPane(final PluginParameter<?> parameter, int defaultWidth) {
+    public ValueInputPane(final PluginParameter<?> parameter, final int defaultWidth) {
         this(parameter, defaultWidth, null);
     }
 
@@ -84,11 +84,12 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
      * @param defaultWidth default width (in pixels)
      * @param suggestedHeight suggested hight (in lines)
      */
-    public ValueInputPane(final PluginParameter<?> parameter, int defaultWidth, Integer suggestedHeight) {
+    public ValueInputPane(final PluginParameter<?> parameter, final int defaultWidth, Integer suggestedHeight) {
         if (suggestedHeight == null) {
             suggestedHeight = 1;
         }
         parameterId = parameter.getId();
+        required = parameter.isRequired();
 
         final boolean isLabel = StringParameterType.isLabel(parameter);
         if (isLabel) {
@@ -99,8 +100,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             l.setWrapText(true);
             l.setPrefWidth(defaultWidth);
             getChildren().add(l);
-            parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> {
-                Platform.runLater(() -> {
+            parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
                     switch (change) {
                         case VALUE:
                             // Don't change the value if it isn't necessary.
@@ -120,8 +120,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                         default:
                             break;
                     }
-                });
-            });
+                }));
         } else {
             final boolean isPassword = PasswordParameterType.ID.equals(parameter.getType().getId());
             if (isPassword) {
@@ -132,16 +131,16 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 
                 recentValuesCombo.setTooltip(new Tooltip("Recent values"));
                 recentValuesCombo.setMaxWidth(5);
-                List<String> recentValues = RecentParameterValues.getRecentValues(parameterId);
+                final List<String> recentValues = RecentParameterValues.getRecentValues(parameterId);
                 if (recentValues != null) {
                     recentValuesCombo.setItems(FXCollections.observableList(recentValues));
                 } else {
                     recentValuesCombo.setDisable(true);
                 }
 
-                ListCell<String> button = new ListCell<String>() {
+                final ListCell<String> button = new ListCell<String>() {
                     @Override
-                    protected void updateItem(String item, boolean empty) {
+                    protected void updateItem(final String item, final boolean empty) {
                         super.updateItem(item, empty);
 
                         setText("...");
@@ -159,9 +158,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 ((TextArea) field).setPrefRowCount(suggestedHeight);
             } else {
                 field = new TextField();
-                Platform.runLater(() -> {
-                    TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.getItems());
-                });
+                Platform.runLater(() -> TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.getItems()));
             }
 
             field.setPromptText(parameter.getDescription());
@@ -173,7 +170,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 
             if (recentValuesCombo != null) {
                 recentValueSelectionListener = (ov, t, t1) -> {
-                    String value = recentValuesCombo.getValue();
+                    final String value = recentValuesCombo.getValue();
                     if (value != null) {
                         field.setText(recentValuesCombo.getValue());
                     }
@@ -197,9 +194,9 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 recentValuesCombo.setDisable(!parameter.isEnabled());
             }
 
-            field.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+            field.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                 if (event.getCode() == KeyCode.DELETE) {
-                    IndexRange selection = field.getSelection();
+                    final IndexRange selection = field.getSelection();
                     if (selection.getLength() == 0) {
                         field.deleteNextChar();
                     } else {
@@ -236,10 +233,11 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 
             final Tooltip tooltip = new Tooltip("");
             tooltip.setStyle("-fx-text-fill: white;");
-            field.textProperty().addListener((ObservableValue<? extends String> ov, String t, String t1) -> {
-                String error = parameter.validateString(field.getText());
-                if (error != null) {
-                    tooltip.setText(error);
+            field.textProperty().addListener((ov, t, t1) -> {
+                final String error = parameter.validateString(field.getText());
+                if ((required && StringUtils.isBlank(field.getText())) || error != null) {
+                    // if error is blank, the situation must be that a required parameter is blank
+                    tooltip.setText(StringUtils.isNotBlank(error) ? error : "Value is required!");
                     field.setTooltip(tooltip);
                     field.setId("invalid");
                 } else {
@@ -251,8 +249,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 parameter.setStringValue(field.getText());
             });
 
-            parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> {
-                Platform.runLater(() -> {
+            parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
                     switch (change) {
                         case VALUE:
                             // Don't change the value if it isn't necessary.
@@ -260,11 +257,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                             // being entered right-to-left.
                             final String param = parameter.getStringValue();
                             if (!field.getText().equals(param)) {
-                                if (param != null) {
-                                    field.setText(param);
-                                } else {
-                                    field.setText("");
-                                }
+                                field.setText(param != null ? param : "");
                             }
                             break;
                         case ENABLED:
@@ -283,10 +276,9 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                             LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                             break;
                     }
-                });
-            });
+                }));
 
-            HBox fieldAndRecentValues = new HBox();
+            final HBox fieldAndRecentValues = new HBox();
             fieldAndRecentValues.setSpacing(2);
             fieldAndRecentValues.getChildren().add(field);
             if (!isPassword) {

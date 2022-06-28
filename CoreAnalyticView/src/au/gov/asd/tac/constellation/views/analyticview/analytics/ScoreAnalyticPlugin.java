@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.views.analyticview.analytics;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.TRANSACTION;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.VERTEX;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -110,9 +112,12 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
             }
 
             for (int graphElementPosition = 0; graphElementPosition < graphElementCount; graphElementPosition++) {
-                final int graphElementId = graphElementType == GraphElementType.VERTEX
-                        ? graph.getVertex(graphElementPosition) : graphElementType == GraphElementType.TRANSACTION
-                        ? graph.getTransaction(graphElementPosition) : Graph.NOT_FOUND;
+                final int graphElementId;
+                if (graphElementType == GraphElementType.VERTEX) {
+                    graphElementId = graph.getVertex(graphElementPosition);
+                } else {
+                    graphElementId = graphElementType == GraphElementType.TRANSACTION ? graph.getTransaction(graphElementPosition) : Graph.NOT_FOUND;
+                }
                 final String identifier = graph.getStringValue(identifierAttributeId, graphElementId);
                 final Map<String, Float> namedScores = new HashMap<>();
                 boolean isNull = true;
@@ -171,9 +176,10 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
     public final PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue> transactionTypeParameter = MultiChoiceParameterType.build(TRANSACTION_TYPES_PARAMETER_ID, TransactionTypeParameterValue.class);
+        final PluginParameter<MultiChoiceParameterValue> transactionTypeParameter = MultiChoiceParameterType.build(TRANSACTION_TYPES_PARAMETER_ID, TransactionTypeParameterValue.class);
         transactionTypeParameter.setName("Transaction Types");
         transactionTypeParameter.setDescription("Calculate analytic only on the subgraph of transactions of these types");
+        transactionTypeParameter.setRequired(true);
         MultiChoiceParameterType.setOptionsData(transactionTypeParameter, new ArrayList<>());
         MultiChoiceParameterType.setChoicesData(transactionTypeParameter, new ArrayList<>());
         parameters.addParameter(transactionTypeParameter);
@@ -210,9 +216,8 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
             } else {
                 // create subgraph
                 final Set<SchemaTransactionType> transactionTypes = new HashSet<>();
-                parameters.getMultiChoiceValue(TRANSACTION_TYPES_PARAMETER_ID).getChoicesData().forEach(parameterValue -> {
-                    transactionTypes.add((SchemaTransactionType) ((TransactionTypeParameterValue) parameterValue).getObjectValue());
-                });
+                parameters.getMultiChoiceValue(TRANSACTION_TYPES_PARAMETER_ID).getChoicesData().forEach(parameterValue
+                        -> transactionTypes.add((SchemaTransactionType) ((TransactionTypeParameterValue) parameterValue).getObjectValue()));
                 assert transactionTypes.size() > 0 : "You must select at least one transaction type";
                 final StoreGraph subgraph = getSubgraph(graph, SchemaFactoryUtilities.getDefaultSchemaFactory(), transactionTypes);
 

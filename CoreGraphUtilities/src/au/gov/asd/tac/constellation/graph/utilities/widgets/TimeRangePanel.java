@@ -36,8 +36,6 @@ import org.openide.util.NbBundle;
 public class TimeRangePanel extends javax.swing.JPanel {
 
     private final DateTimeListenerInterface parentPanel;
-    private JSpinner.DateEditor de1;
-    private JSpinner.DateEditor de2;
     private Calendar firstDate = null;
     private Calendar secondDate = null;
 
@@ -60,10 +58,10 @@ public class TimeRangePanel extends javax.swing.JPanel {
         }
         initComponents();
 
-        de1 = new JSpinner.DateEditor(spnTime1, Bundle.TimeFormat());
+        final JSpinner.DateEditor de1 = new JSpinner.DateEditor(spnTime1, Bundle.TimeFormat());
         spnTime1.setEditor(de1);
 
-        de2 = new JSpinner.DateEditor(spnTime2, Bundle.TimeFormat());
+        final JSpinner.DateEditor de2 = new JSpinner.DateEditor(spnTime2, Bundle.TimeFormat());
         spnTime2.setEditor(de2);
     }
 

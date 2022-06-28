@@ -33,11 +33,11 @@ public abstract class SimplePluginAction extends AbstractAction {
     protected final String pluginName;
     protected final boolean interactive;
 
-    public SimplePluginAction(final GraphNode context, final String pluginName) {
+    protected SimplePluginAction(final GraphNode context, final String pluginName) {
         this(context, pluginName, false);
     }
 
-    public SimplePluginAction(final GraphNode context, final String pluginName, final boolean interactive) {
+    protected SimplePluginAction(final GraphNode context, final String pluginName, final boolean interactive) {
         this.context = context;
         this.pluginName = pluginName;
         this.interactive = interactive;

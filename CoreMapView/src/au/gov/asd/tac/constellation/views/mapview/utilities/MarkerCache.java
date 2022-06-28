@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ObjectCache;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationAbstractFeature;
-import au.gov.asd.tac.constellation.views.mapview.features.ConstellationMultiFeature;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationPointFeature;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationClusterMarker;
@@ -38,6 +37,7 @@ import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationPolygonMa
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
 import de.fhpotsdam.unfolding.geo.Location;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,7 +51,6 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -67,7 +66,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
     private static final int CLUSTER_DISTANCE = 80;
     private static final String MULTIPLE_VALUES = "<Multiple Values>";
 
-    protected final Object LOCK = new Object();
+    protected final Object lock = new Object();
 
     public static MarkerCache getDefault() {
         return Lookup.getDefault().lookup(MarkerCache.class);
@@ -77,12 +76,10 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
         assert !SwingUtilities.isEventDispatchThread();
 
         // clear cache (retaining custom markers)
-        synchronized (LOCK) {
+        synchronized (lock) {
             final Set<ConstellationAbstractMarker> customMarkers = getCustomMarkers();
             clear();
-            customMarkers.forEach(marker -> {
-                add(marker, GraphElement.NON_ELEMENT);
-            });
+            customMarkers.forEach(marker -> add(marker, GraphElement.NON_ELEMENT));
 
             if (graph != null && markerFactory != null) {
                 // update cache (calculate graph markers)
@@ -132,14 +129,14 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                     final List<ConstellationAbstractFeature> shapes = new ArrayList<>();
                                     try {
                                         final List<ConstellationAbstractFeature> features = GeoJSONReader.loadDataFromJSON(null, elementShape).stream()
-                                                .map(feature -> FeatureUtilities.convert(feature)).collect(Collectors.toList());
+                                                .map(FeatureUtilities::convert).collect(Collectors.toList());
                                         shapes.addAll(features);
                                         shapeAdded = true;
                                         markerFactory.createMarkers(shapes).forEach(marker -> {
                                             final GraphElement element = new GraphElement(elementId, graphElementType);
                                             add(marker, element);
                                         });
-                                    } catch (Exception ex) {
+                                    } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException ex) {
                                         LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
                                     }
                                 }
@@ -154,7 +151,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                         final ConstellationAbstractMarker marker = markerFactory.createMarker(point);
                                         final GraphElement element = new GraphElement(elementId, graphElementType);
                                         add(marker, element);
-                                    } catch (Exception ex) {
+                                    } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException ex) {
                                         LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
                                     }
                                 }
@@ -175,7 +172,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
 
         // clear cache of cluster markers
         final Set<ConstellationAbstractMarker> oldClusterMarkers = cache.keySet().stream()
-                .filter(marker -> (marker instanceof ConstellationClusterMarker))
+                .filter(ConstellationClusterMarker.class::isInstance)
                 .collect(Collectors.toSet());
         oldClusterMarkers.forEach(marker -> cache.remove(marker));
 
@@ -202,17 +199,16 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
             clusters.forEach(cluster -> {
                 try {
                     final List<ConstellationAbstractMarker> markersInCluster = cluster.getPoints().stream()
-                            .map(point -> markerPoints.get(point))
+                            .map(markerPoints::get)
                             .flatMap(List::stream)
                             .collect(Collectors.toList());
-                    final ConstellationMultiFeature clusterFeature = new ConstellationMultiFeature(ConstellationAbstractFeature.ConstellationFeatureType.CLUSTER);
                     final ConstellationClusterMarker clusterMarker = new ConstellationClusterMarker();
                     clusterMarker.setColor(MarkerUtilities.DEFAULT_CLUSTER_COLOR);
                     clusterMarker.setMarkers(markersInCluster);
                     clusterMarkers.add(clusterMarker);
                     add(clusterMarker, GraphElement.NON_ELEMENT);
-                } catch (Exception ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final Exception ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             });
         }
@@ -229,7 +225,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
             try {
                 final int elementMixColorAttributeId = VisualConcept.GraphAttribute.MIX_COLOR.get(readableGraph);
                 final ConstellationColor mixColor = elementMixColorAttributeId != Graph.NOT_FOUND ? readableGraph.getObjectValue(elementMixColorAttributeId, 0) : null;
-                synchronized (LOCK) {
+                synchronized (lock) {
                     forEach((marker, elementList) -> {
                         if (marker != null) {
                             final Set<String> labels = new HashSet<>();
@@ -247,23 +243,38 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                             for (final GraphElement element : elementList) {
                                 switch (element.getType()) {
                                     case VERTEX:
-                                        elementLabelAttributeId = markerState.getLabel() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getLabel().getVertexAttribute() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getLabel().getVertexAttribute().get(readableGraph);
-                                        elementColorAttributeId = markerState.getColorScheme() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getColorScheme().getVertexAttribute() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getColorScheme().getVertexAttribute().get(readableGraph);
+                                        if (markerState.getLabel() == null) {
+                                            elementLabelAttributeId = GraphConstants.NOT_FOUND;
+                                        } else {
+                                            elementLabelAttributeId = markerState.getLabel().getVertexAttribute() == null ? GraphConstants.NOT_FOUND
+                                                    : markerState.getLabel().getVertexAttribute().get(readableGraph);
+                                        }
+
+                                        if (markerState.getColorScheme() == null) {
+                                            elementColorAttributeId = GraphConstants.NOT_FOUND;
+                                        } else {
+                                            elementColorAttributeId = markerState.getColorScheme().getVertexAttribute() == null ? GraphConstants.NOT_FOUND
+                                                    : markerState.getColorScheme().getVertexAttribute().get(readableGraph);
+                                        }
                                         elementSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
                                         elementDimmedAttributeId = VisualConcept.VertexAttribute.DIMMED.get(readableGraph);
                                         elementVisibilityAttributeId = VisualConcept.VertexAttribute.VISIBILITY.get(readableGraph);
                                         break;
                                     case TRANSACTION:
-                                        elementLabelAttributeId = markerState.getLabel() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getLabel().getTransactionAttribute() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getLabel().getTransactionAttribute().get(readableGraph);
-                                        elementColorAttributeId = markerState.getColorScheme() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getColorScheme().getTransactionAttribute() == null ? GraphConstants.NOT_FOUND
-                                                : markerState.getColorScheme().getTransactionAttribute().get(readableGraph);
+                                        if (markerState.getLabel() == null) {
+                                            elementLabelAttributeId = GraphConstants.NOT_FOUND;
+                                        } else {
+                                            elementLabelAttributeId = markerState.getLabel().getTransactionAttribute() == null ? GraphConstants.NOT_FOUND
+                                                    : markerState.getLabel().getTransactionAttribute().get(readableGraph);
+                                        }
+
+                                        if (markerState.getColorScheme() == null) {
+                                            elementColorAttributeId = GraphConstants.NOT_FOUND;
+                                        } else {
+                                            elementColorAttributeId = markerState.getColorScheme().getTransactionAttribute() == null ? GraphConstants.NOT_FOUND
+                                                    : markerState.getColorScheme().getTransactionAttribute().get(readableGraph);
+                                        }
+
                                         elementSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
                                         elementDimmedAttributeId = VisualConcept.TransactionAttribute.DIMMED.get(readableGraph);
                                         elementVisibilityAttributeId = VisualConcept.TransactionAttribute.VISIBILITY.get(readableGraph);

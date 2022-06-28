@@ -51,7 +51,7 @@ public class RandomArranger implements Arranger {
         final int vxCount = wg.getVertexCount();
 
         // We want the side to be long enough that a subsequent uncollide doesn't take too long.
-        final float side = 4f * (float) Math.sqrt(vxCount);
+        final float side = 4F * (float) Math.sqrt(vxCount);
 
         final Vector3f xyz = new Vector3f();
         for (int position = 0; position < vxCount; position++) {
@@ -63,8 +63,8 @@ public class RandomArranger implements Arranger {
 
             // Arrange in a circle/sphere.
             do {
-                xyz.set(0.5f - random.nextFloat(), 0.5f - random.nextFloat(), dimensions == 3 ? 0.5f - random.nextFloat() : 0);
-            } while (xyz.getLength() > 0.5f);
+                xyz.set(0.5F - random.nextFloat(), 0.5F - random.nextFloat(), dimensions == 3 ? 0.5F - random.nextFloat() : 0);
+            } while (xyz.getLength() > 0.5F);
 
             wg.setFloatValue(xId, vxId, side * xyz.getX());
             wg.setFloatValue(yId, vxId, side * xyz.getY());
@@ -77,7 +77,7 @@ public class RandomArranger implements Arranger {
     }
 
     @Override
-    public void setMaintainMean(boolean b) {
+    public void setMaintainMean(final boolean b) {
         maintainMean = b;
     }
 }

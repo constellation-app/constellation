@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -46,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("CreateCompositesFromDominantNodesPlugin=Composite Correlated Nodes")
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
 public class CreateCompositesFromDominantNodesPlugin extends SimpleEditPlugin {
 
     private void findCorrelations(final GraphReadMethods graph, final int vxTypeAttr, final int txTypeAttr, final int vxId, final Set<Integer> allCorrelatedVerts, final Set<Integer> correlationGroup) {

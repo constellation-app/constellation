@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributeData;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class AttributeValueEditOperation extends PluginSequenceEditOperation {
     private final AttributeValueTranslator translator;
     private Object value;
 
-    public AttributeValueEditOperation(AttributeData attributeData, boolean completeWithSchema, AttributeValueTranslator translator) {
+    public AttributeValueEditOperation(final AttributeData attributeData, final boolean completeWithSchema, final AttributeValueTranslator translator) {
         this.attributeData = attributeData;
         this.completeWithSchema = completeWithSchema;
         this.translator = translator;
@@ -55,7 +56,7 @@ public class AttributeValueEditOperation extends PluginSequenceEditOperation {
         return new AttributeEditPlugin();
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     private final class AttributeEditPlugin extends SimpleEditPlugin {
 
         @Override
@@ -77,7 +78,7 @@ public class AttributeValueEditOperation extends PluginSequenceEditOperation {
             final List<String> previousValues = new ArrayList<>(elementCount);
 
             for (int position = 0; position < elementCount; position++) {
-                int element = elementType.getElement(graph, position);
+                final int element = elementType.getElement(graph, position);
                 if (!elementType.canBeSelected() || elementType.isSelected(graph, element, selectedAttribute)) {
                     previousValues.add(
                             graph.getObjectValue(attributeData.getAttributeId(), position) != null ? graph.getStringValue(attributeData.getAttributeId(), position) : ""

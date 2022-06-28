@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -129,9 +130,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             listView = new ListView<>();
             listView.setCellFactory(param -> new IconNodeCell());
             listView.getStyleClass().add("rounded");
-            listView.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
-                update();
-            });
+            listView.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> update());
 
             treeRoot = new TreeItem<>(new IconNode("Icons", new HashSet<>()));
             treeRoot.setExpanded(true);
@@ -140,9 +139,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             treeView.setShowRoot(true);
             treeView.setRoot(treeRoot);
             treeView.getStyleClass().add("rounded");
-            treeView.setOnMouseClicked((MouseEvent event) -> {
-                refreshIconList();
-            });
+            treeView.setOnMouseClicked((MouseEvent event) -> refreshIconList());
 
             final SplitPane splitPane = new SplitPane();
             splitPane.setId("hiddenSplitter");
@@ -178,15 +175,18 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         }
 
         private List<File> pngWalk(final File path, final List<File> files) {
-            final File[] filesInPath = path.listFiles((File pathname) -> {
-                if (pathname.isDirectory()) {
-                    return true;
+            final List<File> addedFiles = new ArrayList<>();
+            for(final File f : path.listFiles()){
+                if (f.isDirectory()) {
+                    addedFiles.add(f);
                 } else {
-                    final String filename = pathname.getAbsolutePath();
-                    return filename.endsWith(".png") || filename.endsWith(".PNG");
+                    if(StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
+                        addedFiles.add(f);
+                    }
                 }
-            });
-            for (final File file : filesInPath) {
+            }
+            
+            for (final File file : addedFiles) {
                 if (file.isDirectory()) {
                     pngWalk(file, files);
                 } else {

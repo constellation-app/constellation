@@ -50,6 +50,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.GeometryType;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.NotifyDescriptor;
 
 /**
  * Abstract geo export plugin.
@@ -112,6 +114,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         final PluginParameter<FileParameterValue> outputParameter = FileParameterType.build(OUTPUT_PARAMETER_ID);
         outputParameter.setName("Output File");
         outputParameter.setDescription("The name of the output file");
+        outputParameter.setRequired(true);
         FileParameterType.setKind(outputParameter, FileParameterType.FileParameterKind.SAVE);
         FileParameterType.setFileFilters(outputParameter, getExportType());
         parameters.addParameter(outputParameter);
@@ -130,10 +133,12 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         final PluginParameter<SingleChoiceParameterValue> elementTypeParameter = SingleChoiceParameterType.build(ELEMENT_TYPE_PARAMETER_ID, ElementTypeParameterValue.class);
         elementTypeParameter.setName("Element Type");
         elementTypeParameter.setDescription("The graph element type");
+        elementTypeParameter.setRequired(true);
         final List<ElementTypeParameterValue> elementTypes = new ArrayList<>();
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.TRANSACTION));
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.VERTEX));
         SingleChoiceParameterType.setOptionsData(elementTypeParameter, elementTypes);
+        SingleChoiceParameterType.setChoiceData(elementTypeParameter, new ElementTypeParameterValue(GraphElementType.VERTEX));
         parameters.addParameter(elementTypeParameter);
 
         final PluginParameter<MultiChoiceParameterValue> attributesParameter = MultiChoiceParameterType.build(ATTRIBUTES_PARAMETER_ID, GraphAttributeParameterValue.class);
@@ -145,7 +150,6 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
         selectedOnlyParameter.setName("Selected Only");
         selectedOnlyParameter.setDescription("If True, only export the selected nodes. The default is False.");
-        selectedOnlyParameter.setBooleanValue(false);
         parameters.addParameter(selectedOnlyParameter);
 
         parameters.addController(ELEMENT_TYPE_PARAMETER_ID, (master, params, change) -> {
@@ -208,6 +212,14 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
     @Override
     public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        if (parameters.getStringValue(OUTPUT_PARAMETER_ID) == null) {
+            NotifyDisplayer.display("Invalid output file provided, cannot be empty", NotifyDescriptor.ERROR_MESSAGE);
+            return;
+        }
+        if (parameters.getSingleChoice(ELEMENT_TYPE_PARAMETER_ID) == null) {
+            NotifyDisplayer.display("Invalid element type provided, cannot be empty", NotifyDescriptor.ERROR_MESSAGE);
+            return;
+        }
         final File output = new File(parameters.getStringValue(OUTPUT_PARAMETER_ID));
         final GraphElementType elementType = (GraphElementType) ((ElementTypeParameterValue) parameters.getSingleChoice(ELEMENT_TYPE_PARAMETER_ID)).getObjectValue();
         final List<GraphAttribute> graphAttributes = parameters.getMultiChoiceValue(ATTRIBUTES_PARAMETER_ID).getChoicesData().stream()
@@ -254,7 +266,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String vertexPoint = Shape.generateShape(vertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) vertexLongitude, (double) vertexLatitude)));
                             shapes.put(vertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
@@ -314,7 +326,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String transactionPoint = Shape.generateShape(transactionIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) transactionLongitude, (double) transactionLatitude)));
                             shapes.put(transactionIdentifier, transactionPoint);
                             shapeFound = true;
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
@@ -361,7 +373,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String vertexPoint = Shape.generateShape(sourceVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) sourceVertexLongitude, (double) sourceVertexLatitude)));
                             shapes.put(sourceVertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
@@ -408,7 +420,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String vertexPoint = Shape.generateShape(destinationVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) destinationVertexLongitude, (double) destinationVertexLatitude)));
                             shapes.put(destinationVertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
@@ -451,7 +463,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
         try {
             exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
 

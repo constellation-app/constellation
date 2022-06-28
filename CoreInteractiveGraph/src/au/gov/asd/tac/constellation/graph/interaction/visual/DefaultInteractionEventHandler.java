@@ -49,6 +49,7 @@ import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -250,9 +251,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             if (interactionGraph != null) {
                                 interactionGraph = interactionGraph.flush(announceNextFlush);
                             }
-                            operations.forEach(op -> {
-                                manager.addOperation(op);
-                            });
+                            operations.forEach(op -> manager.addOperation(op));
                             announceNextFlush = false;
                         }
                         final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION));
@@ -365,16 +364,16 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         CameraUtilities.changeMixRatio(camera, false, isCtrl);
                         eventState.addEventName(MIX_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_A) {
-                        CameraUtilities.pan(camera, -0.5f * (isShift ? 10 : 1), 0);
+                        CameraUtilities.pan(camera, -0.5F * (isShift ? 10 : 1), 0);
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_D) {
-                        CameraUtilities.pan(camera, 0.5f * (isShift ? 10 : 1), 0);
+                        CameraUtilities.pan(camera, 0.5F * (isShift ? 10 : 1), 0);
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_S) {
-                        CameraUtilities.pan(camera, 0, -0.5f * (isShift ? 10 : 1));
+                        CameraUtilities.pan(camera, 0, -0.5F * (isShift ? 10 : 1));
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else if (keyCode == KeyEvent.VK_W) {
-                        CameraUtilities.pan(camera, 0, 0.5f * (isShift ? 10 : 1));
+                        CameraUtilities.pan(camera, 0, 0.5F * (isShift ? 10 : 1));
                         eventState.addEventName(PAN_ACTION_NAME);
                     } else {
                         // Do nothing
@@ -424,11 +423,11 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         case ROTATING:
                             from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
                             to = point;
-                            final boolean zAxisRotation = !VisualGraphUtilities.getDisplayModeIs3D(wg) || (event.isControlDown() && event.isShiftDown());
+                            final boolean zAxisRotation = !VisualGraphUtilities.isDisplayModeIn3D(wg) || (event.isControlDown() && event.isShiftDown());
                             if (zAxisRotation) {
                                 CameraUtilities.spin(camera, visualInteraction.convertTranslationToSpin(from, to));
                             } else {
-                                CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : (from.y - to.y) / 2.0f, event.isControlDown() ? 0 : (from.x - to.x) / 2.0f);
+                                CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : (from.y - to.y) / 2.0F, event.isControlDown() ? 0 : (from.x - to.x) / 2.0F);
                             }
                             cameraChange = true;
                             break;
@@ -507,9 +506,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 } else if (SwingUtilities.isRightMouseButton(event) && !eventState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
                     eventState.setCurrentAction(SceneAction.DRAG_NODES);
                 } else if (SwingUtilities.isLeftMouseButton(event)) {
-                    if ((wg == null || !VisualGraphUtilities.getIsDrawingMode(wg)) && event.isAltDown()) {
+                    if ((wg == null || !VisualGraphUtilities.isDrawingMode(wg)) && event.isAltDown()) {
                         eventState.setCurrentAction(SceneAction.FREEFORM_SELECTING);
-                    } else if (wg == null || !VisualGraphUtilities.getIsDrawingMode(wg)) {
+                    } else if (wg == null || !VisualGraphUtilities.isDrawingMode(wg)) {
                         eventState.setCurrentAction(SceneAction.SELECTING);
                     } else {
                         eventState.setCurrentAction(SceneAction.CREATING);
@@ -532,7 +531,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     @SuppressWarnings("fallthrough")
     @Override
-    public void mouseReleased(MouseEvent event) {
+    public void mouseReleased(final MouseEvent event) {
         queue.add(wg -> {
             // If a button other than the original button is involved, or a mouse pressed event was never registered (can happen when left clicking off a context menu) we ignore this event.
             if (eventState.isMousePressed() && eventState.getCurrentButton() == event.getButton()) {
@@ -569,27 +568,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 performPointSelection(event.isControlDown(), clearSelection, eventState.getCurrentHitType().elementType, eventState.getCurrentHitId());
                             }
                             break;
-                        case CREATING:
-                            switch (eventState.getCurrentCreationMode()) {
-                                case CREATING_VERTEX:
-                                    createVertex(camera, point);
-                                    eventState.setCurrentCreationMode(CreationMode.NONE);
-                                    break;
-                                case FINISHING_TRANSACTION:
-                                    createTransaction(wg, eventState.getAddTransactionSourceVertex(), eventState.getAddTransactionDestinationVertex(), VisualGraphUtilities.getIsDrawingDirectedTransactions(wg));
-                                    if (event.isShiftDown()) {
-                                        eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
-                                    } else if (event.isControlDown()) {
-                                        eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
-                                        eventState.setAddTransactionSourceVertex(eventState.getAddTransactionDestinationVertex());
-                                    } else {
-                                        eventState.setCurrentCreationMode(CreationMode.NONE);
-                                        clearNewLineModel(camera);
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
+                        case CREATING:                            
+                            setCurrentCreationMode(camera, point, wg, event);
                             break;
                         case ROTATING:
                             if (!eventState.isMouseDragged() && eventState.getCurrentHitType().equals(HitType.VERTEX)) {
@@ -635,6 +615,29 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         });
     }
 
+    private void setCurrentCreationMode(final Camera camera, final Point point, final GraphWriteMethods wg, final MouseEvent event) {
+        switch (eventState.getCurrentCreationMode()) {
+            case CREATING_VERTEX:
+                createVertex(camera, point);
+                eventState.setCurrentCreationMode(CreationMode.NONE);
+                break;
+            case FINISHING_TRANSACTION:
+                createTransaction(wg, eventState.getAddTransactionSourceVertex(), eventState.getAddTransactionDestinationVertex(), VisualGraphUtilities.isDrawingDirectedTransactions(wg));
+                if (event.isShiftDown()) {
+                    eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
+                } else if (event.isControlDown()) {
+                    eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
+                    eventState.setAddTransactionSourceVertex(eventState.getAddTransactionDestinationVertex());
+                } else {
+                    eventState.setCurrentCreationMode(CreationMode.NONE);
+                    clearNewLineModel(camera);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     public void mouseMoved(final MouseEvent event) {
         queue.add(wg -> {
@@ -649,7 +652,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent event) {
+    public void mouseWheelMoved(final MouseWheelEvent event) {
         queue.add(wg -> {
             if (wg != null) {
                 final Camera camera = new Camera(VisualGraphUtilities.getCamera(wg));
@@ -695,7 +698,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(final MouseEvent e) {
         // Method override required, intentionally left blank
     }
 
@@ -724,7 +727,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     private void updateHitTestAndNewLine(final GraphReadMethods rg, final Point point) {
         final boolean newLine = eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION);
         // We need to wait for the results of the hit test if we are creating a transaction
-//        orderHitTest(point, newLine);
         if (newLine) {
             orderHitTest(point, HitTestMode.HANDLE_ASYNCHRONOUSLY, eventState -> scheduleNewLineChangeOperation(rg, point, VisualGraphUtilities.getCamera(rg), false, eventState));
         } else {
@@ -809,7 +811,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      */
     private void orderHitTest(final Point point, final HitTestMode mode, final Consumer<EventState> resultConsumer) {
         final BlockingQueue<HitState> hitTestQueue = new ArrayBlockingQueue<>(1);
-        manager.addOperation(visualAnnotator.hitTestCursor(point.x, point.y, new EventState(eventState), !mode.equals(HitTestMode.REQUEST_ONLY) ? hitTestQueue : null));
+        manager.addOperation(visualAnnotator.hitTestCursor(point.x, point.y, new EventState(eventState), mode != HitTestMode.REQUEST_ONLY ? hitTestQueue : null));
 
         final Runnable handleResult = () -> {
             while (true) {
@@ -1041,7 +1043,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         return selectedIds;
     }
 
-    private void performDrag(GraphWriteMethods wg, final Camera camera, final Point from, final Point to) {
+    private void performDrag(final GraphWriteMethods wg, final Camera camera, final Point from, final Point to) {
         // Get the ids of the selected nodes (and those of the associated transaction as well)
         final List<Integer> draggedNodes = gatherSelectedNodes(wg);
         int nodeBeingDraggedId = eventState.getCurrentHitType().equals(HitType.TRANSACTION) ? wg.getTransactionSourceVertex(eventState.getCurrentHitId()) : eventState.getCurrentHitId();
@@ -1196,7 +1198,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     }
                 } else {
                     JComponent currentMenu = popup;
-                    levelLoop:
                     for (final String level : menuPath) {
                         int childCount = currentMenu.getComponentCount();
                         for (int i = 0; i < childCount; i++) {
@@ -1205,7 +1206,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 JMenu childMenu = (JMenu) childComponent;
                                 if (childMenu.getText().equals(level)) {
                                     currentMenu = childComponent;
-                                    continue levelLoop;
+                                    break;
                                 }
                             }
                         }
@@ -1242,7 +1243,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         popup.show(manager.getVisualComponent(), screenLocation.x, screenLocation.y);
     }
 
-    private void scaleMousePointByDPIFactor(Point pointToScale) {
+    private void scaleMousePointByDPIFactor(final Point pointToScale) {
         // HACK_DPI - Get the DPI scale factor and multiply the point by it
         final float dpiScalingFactor = this.visualInteraction.getDPIScalingFactor();
         pointToScale.x *= dpiScalingFactor;
@@ -1252,7 +1253,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     /**
      * Plugin to select graph item.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class SelectGraphItem extends SimplePlugin {
 
         private final ContextMenuProvider pmp;

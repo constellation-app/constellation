@@ -351,14 +351,14 @@ public class GraphVisualAccessNGTest {
 
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
 
-        final boolean directed = instance.getConnectionDirected(0);
+        final boolean directed = instance.isConnectionDirected(0);
         assertEquals(directed, false);
     }
 
     private void assertConnectionDirected(final GraphVisualAccess access) {
         access.beginUpdate();
         access.updateInternally();
-        final boolean directed = access.getConnectionDirected(0);
+        final boolean directed = access.isConnectionDirected(0);
         access.endUpdate();
 
         assertEquals(directed, true);
@@ -418,8 +418,8 @@ public class GraphVisualAccessNGTest {
 
         final String backgroundIcon = instance.getBackgroundIcon(0);
         final String foregroundIcon = instance.getForegroundIcon(0);
-        final boolean vertexSelected = instance.getVertexSelected(0);
-        final boolean vertexDimmed = instance.getVertexDimmed(0);
+        final boolean vertexSelected = instance.isVertexSelected(0);
+        final boolean vertexDimmed = instance.isVertexDimmed(0);
         final float radius = instance.getRadius(0);
 
         final String nwDecorator = instance.getNWDecorator(0);
@@ -512,8 +512,8 @@ public class GraphVisualAccessNGTest {
 
         final String backgroundIcon = instance.getBackgroundIcon(0);
         final String foregroundIcon = instance.getForegroundIcon(0);
-        final boolean vertexSelected = instance.getVertexSelected(0);
-        final boolean vertexDimmed = instance.getVertexDimmed(0);
+        final boolean vertexSelected = instance.isVertexSelected(0);
+        final boolean vertexDimmed = instance.isVertexDimmed(0);
         final float radius = instance.getRadius(0);
 
         final String nwDecorator = instance.getNWDecorator(0);

@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("PagerankCentralityPlugin=Pagerank Centrality")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class PagerankCentralityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute PAGERANK_ATTRIBUTE = SnaConcept.VertexAttribute.PAGERANK_CENTRALITY;
@@ -70,7 +71,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> dampingFactorParameter = FloatParameterType.build(DAMPING_FACTOR_PARAMETER_ID);
         dampingFactorParameter.setName("Damping Factor");
         dampingFactorParameter.setDescription("The damping factor to apply at each iteration");
-        dampingFactorParameter.setFloatValue(0.85f);
+        dampingFactorParameter.setFloatValue(0.85F);
         parameters.addParameter(dampingFactorParameter);
 
         final PluginParameter<IntegerParameterValue> iterationsParameter = IntegerParameterType.build(ITERATIONS_PARAMETER_ID);
@@ -82,7 +83,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> epsilonParameter = FloatParameterType.build(EPSILON_PARAMETER_ID);
         epsilonParameter.setName("Epsilon");
         epsilonParameter.setDescription("The change threshold at which equilibrium can be considered reached");
-        epsilonParameter.setFloatValue(1E-8f);
+        epsilonParameter.setFloatValue(1E-8F);
         parameters.addParameter(epsilonParameter);
 
         final PluginParameter<BooleanParameterValue> normaliseByAvailableParameter = BooleanParameterType.build(NORMALISE_AVAILABLE_PARAMETER_ID);
@@ -224,7 +225,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
             reset();
         }
 
-        private static void commitPagerankToGraph(PagerankVertex pagerankVertex) {
+        private static void commitPagerankToGraph(final PagerankVertex pagerankVertex) {
             graph.setDoubleValue(pagerankAttribute, pagerankVertex.vertexId, pagerankVertex.pagerank);
         }
 
@@ -271,5 +272,4 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
             stagedPagerank = baseContribution + (dampingFactor * neighbourContribution);
         }
     }
-
 }

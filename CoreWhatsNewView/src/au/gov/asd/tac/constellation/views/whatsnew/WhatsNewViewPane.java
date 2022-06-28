@@ -116,7 +116,7 @@ public class WhatsNewViewPane extends BorderPane {
                     // An <a> without an href doesn't get underlined, so use href="" in addition to helpId="...".
                     final EventListener listener = event -> {
                         final String eventType = event.getType();
-                        if (eventType.equals("click")) {
+                        if ("click".equals(eventType)) {
                             event.preventDefault();
 
                             final String href = ((Element) event.getTarget()).getAttribute("href");
@@ -158,9 +158,7 @@ public class WhatsNewViewPane extends BorderPane {
     private String getWhatsNew() throws ParseException {
         final Collection<? extends WhatsNewProvider> whatsNew = Lookup.getDefault().lookupAll(WhatsNewProvider.class);
         final List<WhatsNewEntry> wnList = new ArrayList<>();
-        whatsNew.stream().forEach(wnp -> {
-            wnList.addAll(WhatsNewProvider.getWhatsNew(wnp.getClass(), wnp.getResource(), wnp.getSection()));
-        });
+        whatsNew.stream().forEach(wnp -> wnList.addAll(WhatsNewProvider.getWhatsNew(wnp.getClass(), wnp.getResource(), wnp.getSection())));
 
         Collections.sort(wnList);
 

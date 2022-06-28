@@ -24,6 +24,8 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author cygnus_x-1
  */
 public class GaussianBlur {
+    
+    private static final String TARGET_SMALLER_THAN_SOURCE = "Target channel is smaller than source channel.";
 
     protected static final int[] RAINBOW = {
         0x0034f8, 0x0037f6, 0x003af3, 0x003df0, 0x003fed, 0x0041ea, 0x0044e7, 0x0046e4,
@@ -70,10 +72,10 @@ public class GaussianBlur {
                         double wsum = Double.MIN_VALUE;
                         for (int iy = (i - rs); iy < (i + rs + 1); iy++) {
                             for (int ix = (j - rs); ix < (j + rs + 1); ix++) {
-                                int x = Math.min(width - 1, Math.max(0, ix));
-                                int y = Math.min(height - 1, Math.max(0, iy));
-                                int dsq = (ix - j) * (ix - j) + (iy - i) * (iy - i);
-                                double wght = Math.exp(-dsq / (2.0 * radius * radius)) / (Math.PI * 2.0 * radius * radius);
+                                final int x = Math.min(width - 1, Math.max(0, ix));
+                                final int y = Math.min(height - 1, Math.max(0, iy));
+                                final int dsq = (ix - j) * (ix - j) + (iy - i) * (iy - i);
+                                final double wght = Math.exp(-dsq / (2.0 * radius * radius)) / (Math.PI * 2.0 * radius * radius);
                                 val += sourceChannel[y * width + x] * wght;
                                 wsum += wght;
                             }
@@ -82,7 +84,7 @@ public class GaussianBlur {
                     }
                 }
             } else {
-                throw new IllegalArgumentException("Target channel is smaller than source channel.");
+                throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
             }
         } else {
             throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
@@ -102,7 +104,7 @@ public class GaussianBlur {
         if (sourceChannel.length == width * height) {
             if (sourceChannel.length <= targetChannel.length) {
                 float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
-                int[] boxes = boxesForGauss(radius, passes);
+                final int[] boxes = boxesForGauss(radius, passes);
                 for (int i = 0; i < passes; i++) {
                     switch (type) {
                         case STANDARD:
@@ -122,7 +124,7 @@ public class GaussianBlur {
                     tempChannel = targetChannel;
                 }
             } else {
-                throw new IllegalArgumentException("Target channel is smaller than source channel.");
+                throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
             }
         } else {
             throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
@@ -131,17 +133,17 @@ public class GaussianBlur {
     }
 
     private static int[] boxesForGauss(final float sigma, final int n) {
-        double wIdeal = Math.sqrt((12 * sigma * sigma / n) + 1);
+        final double wIdeal = Math.sqrt((12 * sigma * sigma / n) + 1);
         int wl = (int) Math.floor(wIdeal);
         if (wl % 2 == 0) {
             wl--;
         }
-        int wu = wl + 2;
+        final int wu = wl + 2;
 
-        double mIdeal = (12 * sigma * sigma - n * wl * wl - 4 * n * wl - 3 * n) / (-4 * wl - 4);
-        int m = (int) Math.round(mIdeal);
+        final double mIdeal = (12 * sigma * sigma - n * wl * wl - 4 * n * wl - 3 * n) / (-4 * wl - 4);
+        final int m = (int) Math.round(mIdeal);
 
-        int[] sizes = new int[n];
+        final int[] sizes = new int[n];
         for (int i = 0; i < n; i++) {
             sizes[i] = i < m ? wl : wu;
         }
@@ -156,8 +158,8 @@ public class GaussianBlur {
                 double val = 0;
                 for (int iy = (i - radius); iy < (i + radius + 1); iy++) {
                     for (int ix = (j - radius); ix < (j + radius + 1); ix++) {
-                        int x = Math.min(width - 1, Math.max(0, ix));
-                        int y = Math.min(height - 1, Math.max(0, iy));
+                        final int x = Math.min(width - 1, Math.max(0, ix));
+                        final int y = Math.min(height - 1, Math.max(0, iy));
                         val += sourceChannel[y * width + x];
                     }
                 }
@@ -172,7 +174,7 @@ public class GaussianBlur {
             for (int j = 0; j < width; j++) {
                 double val = 0;
                 for (int ix = (j - radius); ix < (j + radius + 1); ix++) {
-                    int x = Math.min(width - 1, Math.max(0, ix));
+                    final int x = Math.min(width - 1, Math.max(0, ix));
                     val += sourceChannel[i * width + x];
                 }
                 targetChannel[i * width + j] = (float) (val / (radius + radius + 1));
@@ -186,7 +188,7 @@ public class GaussianBlur {
             for (int j = 0; j < width; j++) {
                 double val = 0;
                 for (int iy = (i - radius); iy < (i + radius + 1); iy++) {
-                    int y = Math.min(height - 1, Math.max(0, iy));
+                    final int y = Math.min(height - 1, Math.max(0, iy));
                     val += sourceChannel[y * width + j];
                 }
                 targetChannel[i * width + j] = (float) (val / (radius + radius + 1));
@@ -196,13 +198,13 @@ public class GaussianBlur {
 
     private static void boxBlurFFH(final float[] sourceChannel, final float[] targetChannel,
             final int width, final int height, final int radius) {
-        float iarr = 1f / (radius + radius + 1);
+        final float iarr = 1F / (radius + radius + 1);
         for (int i = 0; i < height; i++) {
             int ti = i * width;
             int li = ti;
             int ri = ti + radius;
-            float fv = sourceChannel[ti];
-            float lv = sourceChannel[ti + width - 1];
+            final float fv = sourceChannel[ti];
+            final float lv = sourceChannel[ti + width - 1];
             float val = (radius + 1) * fv;
             for (int j = 0; j < radius; j++) {
                 val += sourceChannel[ti + j];
@@ -224,13 +226,13 @@ public class GaussianBlur {
 
     private static void boxBlurFFT(final float[] sourceChannel, final float[] targetChannel,
             final int width, final int height, final int radius) {
-        float iarr = 1f / (radius + radius + 1);
+        final float iarr = 1F / (radius + radius + 1);
         for (int i = 0; i < width; i++) {
             int ti = i;
             int li = ti;
             int ri = ti + radius * width;
-            float fv = sourceChannel[ti];
-            float lv = sourceChannel[ti + width * (height - 1)];
+            final float fv = sourceChannel[ti];
+            final float lv = sourceChannel[ti + width * (height - 1)];
             float val = (radius + 1) * fv;
             for (int j = 0; j < radius; j++) {
                 val += sourceChannel[ti + j * width];
@@ -272,12 +274,16 @@ public class GaussianBlur {
     public static void colorise(final float[] sourceChannel, final int[] targetChannel,
             final int threshold, final float severity) {
         if (threshold >= 0 && threshold < 255) {
-            GaussianBlur.normalise(sourceChannel, 255);
-            for (int i = 0; i < sourceChannel.length; i++) {
-                final int paletteIndex = (int) Math.floor(sourceChannel[i]);
-                final int alpha = paletteIndex < threshold ? 0
-                        : Math.min((int) Math.floor((paletteIndex * severity) - threshold), 192);
-                targetChannel[i] = GaussianBlur.RAINBOW[paletteIndex] + (alpha << 24);
+            if (sourceChannel.length <= targetChannel.length) {
+                GaussianBlur.normalise(sourceChannel, 255);
+                for (int i = 0; i < sourceChannel.length; i++) {
+                    final int paletteIndex = (int) Math.floor(sourceChannel[i]);
+                    final int alpha = paletteIndex < threshold ? 0
+                            : Math.min((int) Math.floor((paletteIndex * severity) - threshold), 192);
+                    targetChannel[i] = GaussianBlur.RAINBOW[paletteIndex] + (alpha << 24);
+                }
+            } else {
+                throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
             }
         } else {
             throw new IllegalArgumentException("Threshold must be a value between 0 and 255");

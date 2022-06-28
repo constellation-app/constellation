@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
@@ -41,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
 @Messages("CreateTransactionTypePlugin=Create Transaction Type")
 public class CreateTransactionTypePlugin extends SimpleEditPlugin {
 
@@ -61,13 +62,13 @@ public class CreateTransactionTypePlugin extends SimpleEditPlugin {
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(NAME_PARAMETER_ID);
         nameParam.setName("Name");
         nameParam.setDescription("The name of the new transaction type");
-        nameParam.setStringValue(null);
+        nameParam.setRequired(true);
         params.addParameter(nameParam);
 
         final PluginParameter<StringParameterValue> descriptionParam = StringParameterType.build(DESCRIPTION_PARAMETER_ID);
         descriptionParam.setName("Description");
         descriptionParam.setDescription("The description of the new transaction type");
-        descriptionParam.setStringValue(null);
+        descriptionParam.setRequired(true);
         params.addParameter(descriptionParam);
 
         final PluginParameter<ColorParameterType.ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
@@ -91,19 +92,16 @@ public class CreateTransactionTypePlugin extends SimpleEditPlugin {
         final PluginParameter<StringParameterValue> superTypeParam = StringParameterType.build(SUPER_TYPE_PARAMETER_ID);
         superTypeParam.setName("Super Type");
         superTypeParam.setDescription("The name of the super type of the new transaction type");
-        superTypeParam.setStringValue(null);
         params.addParameter(superTypeParam);
 
         final PluginParameter<StringParameterValue> overriddenTypeParam = StringParameterType.build(OVERRIDDEN_TYPE_PARAMETER_ID);
         overriddenTypeParam.setName("Overridden Type");
         overriddenTypeParam.setDescription("The name of the overridden type of the new transaction type");
-        overriddenTypeParam.setStringValue(null);
         params.addParameter(overriddenTypeParam);
 
         final PluginParameter<BooleanParameterType.BooleanParameterValue> incompleteParam = BooleanParameterType.build(INCOMPLETE_PARAMETER_ID);
         incompleteParam.setName("Incomplete");
         incompleteParam.setDescription("Is the new transaction type incomplete?");
-        incompleteParam.setBooleanValue(false);
         params.addParameter(incompleteParam);
 
         return params;

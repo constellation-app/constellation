@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.layers.context.LayerAction;
@@ -170,7 +171,7 @@ public class LayersViewController {
                 .executeLater(graph);
     }
 
-    public boolean getParentVisibility() {
+    public boolean hasParentVisibility() {
         return parent != null && parent.getVisibility();
     }
 
@@ -218,7 +219,7 @@ public class LayersViewController {
         if (graph == null) {
             return;
         }
-        PluginExecution.withPlugin(new UpdateQueryPlugin(vxBitMaskCollection, txBitMaskCollection)).executeLater(graph);
+        PluginExecution.withPlugin(new UpdateQueryPlugin()).executeLater(graph);
     }
 
     public void updateQueriesFuture(final Graph currentGraph) {
@@ -226,8 +227,7 @@ public class LayersViewController {
         if (graph == null) {
             return;
         }
-        final Future<?> f = PluginExecution.withPlugin(new UpdateQueryPlugin(vxBitMaskCollection,
-                txBitMaskCollection)).executeLater(graph);
+        final Future<?> f = PluginExecution.withPlugin(new UpdateQueryPlugin()).executeLater(graph);
         try {
             f.get();
         } catch (final InterruptedException ex) {
@@ -302,7 +302,7 @@ public class LayersViewController {
     /**
      * Read the current state from the graph.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL", "MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
     protected static final class LayersStateReaderPlugin extends SimpleReadPlugin {
 
         private final LayersViewPane pane;
@@ -338,7 +338,7 @@ public class LayersViewController {
     /**
      * Write the current state to the graph.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL", "MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
     protected static final class LayersStateWriterPlugin extends SimpleEditPlugin {
 
         private final BitMaskQuery[] vxLayers;
@@ -390,15 +390,11 @@ public class LayersViewController {
      * Plugin to update all bit masks relating to the queries held in both
      * vertex and transaction query collections.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL", "MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
     protected static class UpdateQueryPlugin extends SimpleEditPlugin {
 
-        private final BitMaskQueryCollection vxBitMasks;
-        private final BitMaskQueryCollection txBitMasks;
-
-        protected UpdateQueryPlugin(final BitMaskQueryCollection vxbitMasks, final BitMaskQueryCollection txbitMasks) {
-            this.vxBitMasks = vxbitMasks;
-            this.txBitMasks = txbitMasks;
+        protected UpdateQueryPlugin() {
+            
         }
 
         @Override
@@ -434,7 +430,7 @@ public class LayersViewController {
      * Plugin to capture the listened attributes on the graph. This list allows
      * the view to update the graph when one of those attributes changes value.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
     protected static class CaptureListenedAttributesPlugin extends SimpleReadPlugin {
 
         final List<SchemaAttribute> changeListeners;
@@ -467,7 +463,7 @@ public class LayersViewController {
     /**
      * Plugin to add the required Layers View attributes.
      */
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
     protected static class AddAttributesPlugin extends SimpleEditPlugin {
 
         @Override

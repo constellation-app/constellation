@@ -173,12 +173,12 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public float getFloat(final int id) {
-        return data[id] ? 1.0f : 0.0f;
+        return data[id] ? 1.0F : 0.0F;
     }
 
     @Override
     public void setFloat(final int id, final float value) {
-        data[id] = value != 0.0f;
+        data[id] = value != 0.0F;
     }
 
     @Override

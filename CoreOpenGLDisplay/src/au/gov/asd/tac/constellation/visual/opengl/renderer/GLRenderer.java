@@ -145,9 +145,7 @@ public final class GLRenderer implements GLEventListener {
         gl.glEnable(GL.GL_LINE_SMOOTH);
         gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST);
 
-        renderables.forEach(renderable -> {
-            renderable.init(drawable);
-        });
+        renderables.forEach(renderable -> renderable.init(drawable));
 
         // Reset to the default framebuffer.
         gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, 0);
@@ -155,20 +153,14 @@ public final class GLRenderer implements GLEventListener {
 
     @Override
     public void dispose(final GLAutoDrawable drawable) {
-        renderables.forEach(renderable -> {
-            renderable.dispose(drawable);
-        });
+        renderables.forEach(renderable -> renderable.dispose(drawable));
     }
 
     @Override
     public void display(final GLAutoDrawable drawable) {
-        renderables.forEach(renderable -> {
-            renderable.update(drawable);
-        });
+        renderables.forEach(renderable -> renderable.update(drawable));
         parent.signalUpdateComplete();
-        renderables.forEach(renderable -> {
-            renderable.display(drawable, projectionMatrix);
-        });
+        renderables.forEach(renderable -> renderable.display(drawable, projectionMatrix));
         parent.signalProcessorIdle();
     }
 
@@ -181,8 +173,8 @@ public final class GLRenderer implements GLEventListener {
         // If JOGL is ever fixed or another solution is found, either change
         // needsManualDPIScaling to return false (so there is effectively no
         // DPI scaling here) or remove the scaled height and width below.         
-        float dpiScaleX = 1.0f;
-        float dpiScaleY = 1.0f;
+        float dpiScaleX = 1.0F;
+        float dpiScaleY = 1.0F;
         if (GLTools.needsManualDPIScaling()) {
             dpiScaleX = (float) ((Graphics2D) (parent.canvas).getGraphics()).getTransform().getScaleX();
             dpiScaleY = (float) ((Graphics2D) (parent.canvas).getGraphics()).getTransform().getScaleY();
@@ -203,9 +195,7 @@ public final class GLRenderer implements GLEventListener {
         // but never get smaller. Explicitly set the minimum size to get around this.
         ((Component) drawable).setMinimumSize(new Dimension(0, 0));
 
-        renderables.forEach(renderable -> {
-            renderable.reshape(x, y, dpiScaledWidth, dpiScaledHeight);
-        });
+        renderables.forEach(renderable -> renderable.reshape(x, y, dpiScaledWidth, dpiScaledHeight));
 
         viewport[0] = x;
         viewport[1] = y;

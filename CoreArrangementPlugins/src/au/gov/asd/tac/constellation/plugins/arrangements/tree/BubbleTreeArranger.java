@@ -38,7 +38,6 @@ public class BubbleTreeArranger implements Arranger {
     private final boolean isMinimal;
     private final boolean nAlgo;
     private GraphWriteMethods tree;
-//    private int startVx;
     private boolean maintainMean;
 
     private int xId;
@@ -240,7 +239,7 @@ public class BubbleTreeArranger implements Arranger {
                     }
                 }
 
-                sumRadius += 2f * maxRadius;
+                sumRadius += 2F * maxRadius;
             }
 
             for (int i = 0; i < nc; i++) {
@@ -398,14 +397,6 @@ public class BubbleTreeArranger implements Arranger {
         }
     }
 
-//    public void setRoot(final int startVx)
-//    {
-//        this.startVx = startVx;
-//    }
-//    public void setAlgo(final boolean nAlgo)
-//    {
-//        this.nAlgo = nAlgo;
-//    }
     @Override
     public void setMaintainMean(final boolean b) {
         maintainMean = b;

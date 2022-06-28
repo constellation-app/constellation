@@ -53,6 +53,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -105,7 +107,8 @@ public class LogViewerSupport implements Runnable {
         // displaying everything
         try {
             while ((line = ins.readLine()) != null) {
-                ring.add(line);
+                final String time = "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + "] ";
+                ring.add(time + line);
             } // end of while ((line = ins.readLine()) != null)
         } catch (final IOException ex) {
             LOGGER.log(Level.INFO, null, ex);
@@ -131,7 +134,8 @@ public class LogViewerSupport implements Runnable {
 
                 while ((line = ins.readLine()) != null) {
                     if ((line = ring.add(line)) != null) {
-                        io.getOut().println(line);
+                        final String time = "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + "] ";
+                        io.getOut().println(time + line);
                         lines++;
                     } // end of if ((line = ring.add(line)) != null)
                 }
@@ -141,7 +145,6 @@ public class LogViewerSupport implements Runnable {
             }
             task.schedule(1000);
         } else {
-            ///System.out.println("end of infinite loop for log viewer\n\n\n\n");
             stopUpdatingLogViewer();
         }
     }

@@ -32,7 +32,7 @@ public class CircTreeChoiceParameters {
 
     int rootVxId;
 
-    public CircTreeChoiceParameters(final float scale, final boolean strictCircularLayout, final int rootAttrId, String rootValue) {
+    public CircTreeChoiceParameters(final float scale, final boolean strictCircularLayout, final int rootAttrId, final String rootValue) {
         this.scale = scale;
         this.strictCircularLayout = strictCircularLayout;
         this.rootAttrId = rootAttrId;

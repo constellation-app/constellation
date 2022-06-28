@@ -26,11 +26,11 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
  * @author algol
  * @author Nova
  */
-class BoundingBox3D extends AbstractBoundingBox {
+public class BoundingBox3D extends AbstractBoundingBox {
 
-    final float minZ;
-    final float maxZ;
-    final float midZ;
+    protected final float minZ;
+    protected final float maxZ;
+    protected final float midZ;
 
     /**
      * Generate a 3D bounding box for the graph.
@@ -42,7 +42,7 @@ class BoundingBox3D extends AbstractBoundingBox {
      * @param wg the graph
      * @return instance of class BoundingBox2D based on input graph
      */
-    BoundingBox3D(final GraphReadMethods wg) {
+    protected BoundingBox3D(final GraphReadMethods wg) {
         super(wg);
 
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
@@ -85,7 +85,7 @@ class BoundingBox3D extends AbstractBoundingBox {
      *
      * @return BoundingBox3D
      */
-    BoundingBox3D topLeftFrontOctant() {
+    protected BoundingBox3D topLeftFrontOctant() {
         return new BoundingBox3D(minX, midX, midY, maxY, midZ, maxZ);
     }
 
@@ -94,7 +94,7 @@ class BoundingBox3D extends AbstractBoundingBox {
      *
      * @return BoundingBox3D
      */
-    BoundingBox3D topRightFrontOctant() {
+    protected BoundingBox3D topRightFrontOctant() {
         return new BoundingBox3D(midX, maxX, midY, maxY, midZ, maxZ);
     }
 
@@ -103,7 +103,7 @@ class BoundingBox3D extends AbstractBoundingBox {
      *
      * @return BoundingBox3D
      */
-    BoundingBox3D bottomLeftFrontOctant() {
+    protected BoundingBox3D bottomLeftFrontOctant() {
         return new BoundingBox3D(minX, midX, minY, midY, midZ, maxZ);
     }
 
@@ -112,7 +112,7 @@ class BoundingBox3D extends AbstractBoundingBox {
      *
      * @return BoundingBox3D
      */
-    BoundingBox3D bottomRightFrontOctant() {
+    protected BoundingBox3D bottomRightFrontOctant() {
         return new BoundingBox3D(midX, maxX, minY, midY, midZ, maxZ);
     }
 
@@ -121,7 +121,7 @@ class BoundingBox3D extends AbstractBoundingBox {
      *
      * @return BoundingBox3D
      */
-    BoundingBox3D topLeftBackOctant() {
+    protected BoundingBox3D topLeftBackOctant() {
         return new BoundingBox3D(minX, midX, midY, maxY, minZ, midZ);
     }
 
@@ -130,7 +130,7 @@ class BoundingBox3D extends AbstractBoundingBox {
      *
      * @return BoundingBox3D
      */
-    BoundingBox3D topRightBackOctant() {
+    protected BoundingBox3D topRightBackOctant() {
         return new BoundingBox3D(midX, maxX, midY, maxY, minZ, midZ);
     }
 
@@ -139,7 +139,7 @@ class BoundingBox3D extends AbstractBoundingBox {
      *
      * @return BoundingBox3D
      */
-    BoundingBox3D bottomLeftBackOctant() {
+    protected BoundingBox3D bottomLeftBackOctant() {
         return new BoundingBox3D(minX, midX, minY, midY, minZ, midZ);
     }
 
@@ -148,7 +148,7 @@ class BoundingBox3D extends AbstractBoundingBox {
      *
      * @return BoundingBox3D
      */
-    BoundingBox3D bottomRightBackOctant() {
+    protected BoundingBox3D bottomRightBackOctant() {
         return new BoundingBox3D(midX, maxX, minY, midY, minZ, midZ);
     }
 }

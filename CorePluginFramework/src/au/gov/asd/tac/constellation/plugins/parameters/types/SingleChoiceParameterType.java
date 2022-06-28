@@ -266,6 +266,8 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         private static final Logger LOGGER = Logger.getLogger(SingleChoiceParameterValue.class.getName());
 
         // innerClass is the type of choice and the type of the elements of options.
+        // If it's a nested class, make sure it's a static nested class rather than an inner class,
+        // to avoid possible NoSuchMethodExceptions
         private final List<ParameterValue> options;
         private ParameterValue choice;
         private final Class<? extends ParameterValue> innerClass;
@@ -326,9 +328,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          */
         public List<String> getOptions() {
             final List<String> optionStrings = new ArrayList<>();
-            options.stream().forEach(option -> {
-                optionStrings.add(option.toString());
-            });
+            options.stream().forEach(option -> optionStrings.add(option.toString()));
 
             return Collections.unmodifiableList(optionStrings);
         }

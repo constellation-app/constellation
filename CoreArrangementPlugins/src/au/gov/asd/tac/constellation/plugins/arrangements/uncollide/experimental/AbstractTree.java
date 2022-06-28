@@ -28,10 +28,10 @@ import java.util.List;
  *
  * @author Nova
  */
-abstract class AbstractTree {
+public abstract class AbstractTree {
 
-    static final int MAX_OBJECTS = 50;
-    static final int MAX_LEVELS = 4;
+    protected static final int MAX_OBJECTS = 50;
+    protected static final int MAX_LEVELS = 4;
 
     final int xId;
     final int yId;
@@ -48,7 +48,7 @@ abstract class AbstractTree {
      *
      * @param graph The graph the QuadTree should be based on
      */
-    AbstractTree(final GraphReadMethods graph, final Dimensions d) {
+    protected AbstractTree(final GraphReadMethods graph, final Dimensions d) {
         this.level = 0;
         this.objects = new ArrayList<>();
         this.nodes = null;
@@ -66,7 +66,7 @@ abstract class AbstractTree {
      * @param parent
      * @param box
      */
-    AbstractTree(AbstractTree parent, final AbstractBoundingBox box) {
+    protected AbstractTree(final AbstractTree parent, final AbstractBoundingBox box) {
         this.level = parent.level + 1;
         this.box = box;
         objects = new ArrayList<>();
@@ -83,7 +83,7 @@ abstract class AbstractTree {
      * <p>
      * Divide the node into 2^X equal parts and initialise the 2^X subnodes with the new bounds.
      */
-    abstract void split();
+    protected abstract void split();
 
     /*
      * Determine which node the object belongs to.
@@ -92,11 +92,11 @@ abstract class AbstractTree {
      * <p>
      * Determine where an object belongs in the quadtree by determining which node the object can fit into.
      */
-    abstract int getIndex(final int vxId);
+    protected abstract int getIndex(final int vxId);
 
-    abstract double getDelta(final int vertex1, final int vertex2);
+    protected abstract double getDelta(final int vertex1, final int vertex2);
 
-    abstract double getCollisionDistance(final int vertex1, final int vertex2);
+    protected abstract double getCollisionDistance(final int vertex1, final int vertex2);
 
     /*
      * Insert the object into the tree. If the node exceeds the capacity, it will split and add
@@ -136,7 +136,7 @@ abstract class AbstractTree {
     /**
      * Insert all verticies in the graph into the tree.
      */
-    final void insertAll() {
+    protected final void insertAll() {
         for (int position = 0; position < wg.getVertexCount(); position++) {
             insert(wg.getVertex(position));
         }
@@ -145,7 +145,7 @@ abstract class AbstractTree {
     /*
      * Return all objects that could collide with the given object.
      */
-    final List<Integer> getPossibleColliders(final List<Integer> colliders, final int vxId) {
+    protected final List<Integer> getPossibleColliders(final List<Integer> colliders, final int vxId) {
         // Recursively find all child colliders...
         final int index = getIndex(vxId);
         if (index != -1 && nodes != null) {
@@ -182,7 +182,7 @@ abstract class AbstractTree {
      * edges of each neighbor.
      * @return the number of collisions.
      */
-    final boolean nodeCollides(final int subject) {
+    protected final boolean nodeCollides(final int subject) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
 

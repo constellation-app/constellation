@@ -1,0 +1,8 @@
+<parent>
+  <child>child_value1</child>
+  <child>child_value2</child>
+  <child3>child_value3</child3>
+  <child4><child_nest>child_nest_value</child_nest></child4>
+  <child4>child_value4</child4>
+  <child5><child_nest>child_nest_value</child_nest></child5>
+</parent>

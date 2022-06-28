@@ -106,13 +106,13 @@ public class TaxFromTrees {
 
             if (valences[neighbourId] != Graph.NOT_FOUND) {
                 // Get the set of the neighbour's members.
-                Set<Integer> neighbourVertices = members.get(neighbourId);
+                final Set<Integer> neighbourVertices = members.get(neighbourId);
 
                 // Pass the members of the vertex being removed along to the neighbour.
-                Set<Integer> vertices = members.get(vxToRemoveId);
+                final Set<Integer> vertices = members.get(vxToRemoveId);
                 neighbourVertices.addAll(vertices);
 
-                for (int vertex : vertices) {
+                for (final int vertex : vertices) {
                     nodeToTaxa.put(vertex, neighbourId);
                 }
 
@@ -140,19 +140,6 @@ public class TaxFromTrees {
             }
         }
 
-        // Each remaining vertex (valences[vxId]!=Graph.NOT_FOUND) is the root of a tree.
-        // The object "members" contains a set of members for each such tree, keyed by root id.
-        //        debug("members=%d\n", members.size());
-//        for(Integer i : members.keySet())
-//        {
-//            final Set<Integer> m = members.get(i);
-//            debug(": %d (size %d)\n", i, m.size());
-//            for(int j : m)
-//            {
-//                debug(" %d ", j);
-//            }
-//            debug(SeparatorConstants.NEWLINE);
-//        }
         return new GraphTaxonomy(graph, members, nodeToTaxa);
     }
 }

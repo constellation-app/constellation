@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.BetweennessCentralityPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,14 +39,14 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = AnalyticPlugin.class),
     @ServiceProvider(service = Plugin.class)
 })
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 @AnalyticInfo(analyticCategory = "Centrality")
 @NbBundle.Messages("BetweennessCentralityAnalytic=Betweenness Centrality Analytic")
 public class BetweennessCentralityAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-betweenness-centrality.html";
+        return getHelpPath() + "analytic-betweenness-centrality.md";
     }
 
     @Override
@@ -60,9 +61,12 @@ public class BetweennessCentralityAnalytic extends ScoreAnalyticPlugin {
         final boolean includeConnectionsIn = parameters.getBooleanValue(BetweennessCentralityPlugin.INCLUDE_CONNECTIONS_IN_PARAMETER_ID);
         final boolean includeConnectionsOut = parameters.getBooleanValue(BetweennessCentralityPlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID);
         final Set<SchemaAttribute> analyticAttributes = new HashSet<>();
-        analyticAttributes.add(includeConnectionsIn && !includeConnectionsOut ? SnaConcept.VertexAttribute.IN_BETWEENNESS_CENTRALITY
-                : !includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_BETWEENNESS_CENTRALITY
-                        : SnaConcept.VertexAttribute.BETWEENNESS_CENTRALITY);
+        if (includeConnectionsIn && !includeConnectionsOut) {
+            analyticAttributes.add(SnaConcept.VertexAttribute.IN_BETWEENNESS_CENTRALITY);
+        } else {
+            analyticAttributes.add(!includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_BETWEENNESS_CENTRALITY
+                    : SnaConcept.VertexAttribute.BETWEENNESS_CENTRALITY);
+        }
         return Collections.unmodifiableSet(analyticAttributes);
     }
 

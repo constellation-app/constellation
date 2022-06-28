@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.ClosenessCentralityPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,14 +39,14 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = AnalyticPlugin.class),
     @ServiceProvider(service = Plugin.class)
 })
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 @AnalyticInfo(analyticCategory = "Centrality")
 @NbBundle.Messages("ClosenessCentralityAnalytic=Closeness Centrality Analytic")
 public class ClosenessCentralityAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-closeness-centrality.html";
+        return getHelpPath() + "analytic-closeness-centrality.md";
     }
 
     @Override
@@ -62,13 +63,19 @@ public class ClosenessCentralityAnalytic extends ScoreAnalyticPlugin {
         final boolean includeConnectionsOut = parameters.getBooleanValue(ClosenessCentralityPlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID);
         final Set<SchemaAttribute> analyticAttributes = new HashSet<>();
         if (harmonic) {
-            analyticAttributes.add(includeConnectionsIn && !includeConnectionsOut ? SnaConcept.VertexAttribute.IN_HARMONIC_CLOSENESS_CENTRALITY
-                    : !includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_HARMONIC_CLOSENESS_CENTRALITY
-                            : SnaConcept.VertexAttribute.HARMONIC_CLOSENESS_CENTRALITY);
+            if (includeConnectionsIn && !includeConnectionsOut) {
+                analyticAttributes.add(SnaConcept.VertexAttribute.IN_HARMONIC_CLOSENESS_CENTRALITY);
+            } else {
+                analyticAttributes.add(!includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_HARMONIC_CLOSENESS_CENTRALITY
+                        : SnaConcept.VertexAttribute.HARMONIC_CLOSENESS_CENTRALITY);
+            }
         } else {
-            analyticAttributes.add(includeConnectionsIn && !includeConnectionsOut ? SnaConcept.VertexAttribute.IN_CLOSENESS_CENTRALITY
-                    : !includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_CLOSENESS_CENTRALITY
-                            : SnaConcept.VertexAttribute.CLOSENESS_CENTRALITY);
+            if (includeConnectionsIn && !includeConnectionsOut) {
+                analyticAttributes.add(SnaConcept.VertexAttribute.IN_CLOSENESS_CENTRALITY);
+            } else {
+                analyticAttributes.add(!includeConnectionsIn && includeConnectionsOut ? SnaConcept.VertexAttribute.OUT_CLOSENESS_CENTRALITY
+                        : SnaConcept.VertexAttribute.CLOSENESS_CENTRALITY);
+            }
         }
         return Collections.unmodifiableSet(analyticAttributes);
     }

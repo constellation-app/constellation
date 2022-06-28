@@ -96,7 +96,7 @@ public class AnalyticViewState {
      * @param currentCategory the currently selected plugin category to remove
      * from
      */
-    public void removePluginsMatchingCategory(String currentCategory) {
+    public void removePluginsMatchingCategory(final String currentCategory) {
         if (!activeSelectablePlugins.isEmpty()) {
             activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin
                     -> (plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class)

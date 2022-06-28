@@ -38,9 +38,8 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class ExtractTypesFromTextPluginNGTest {
-
     private StoreGraph graph;
-
+    
     @BeforeMethod
     public void setUpMethod() throws Exception {
         graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
@@ -127,6 +126,8 @@ public class ExtractTypesFromTextPluginNGTest {
         PluginInteraction interaction = new TextPluginInteraction();
 
         PluginParameters parameters = instance.createParameters();
+        parameters.getParameters().get(ExtractTypesFromTextPlugin.TEXT_PARAMETER_ID).setStringValue(null);
+        
         RecordStore result = instance.query(query, interaction, parameters);
     }
 

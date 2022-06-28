@@ -6,7 +6,4 @@
         <tocitem text="Getting Started" target="au.gov.asd.tac.constellation.functionality.gettingstarted"/>
         <tocitem text="The Graph Window" target="au.gov.asd.tac.constellation.functionality.graphwindow"/>
     </tocitem>
-    <tocitem text="Tools" mergetype="javax.help.SortMerge">
-        <tocitem text="Compare Graph" target="au.gov.asd.tac.constellation.functionality.compare"/>
-    </tocitem>
 </toc>

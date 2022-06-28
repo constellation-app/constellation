@@ -42,7 +42,7 @@ public class TaxFromNeighbours {
         // We'll use a Map<Set, Set<Integer>>, where a Set key represents a set of neighbour vertexIds defined by
         // the bits that are set.
         final Map<Set<Integer>, Set<Integer>> commonNeighbours = new HashMap<>();
-        for (int vxId : verticesToConsider) {
+        for (final int vxId : verticesToConsider) {
             // Get neighbours of this vertex.
             final HashSet<Integer> neighbours = new HashSet<>();
             final int nn = graph.getVertexNeighbourCount(vxId);
@@ -67,7 +67,7 @@ public class TaxFromNeighbours {
             final Set<Integer> vertices = entry.getValue();
             final Integer key = vertices.iterator().next();
             tax.put(key, vertices);
-            for (int vertex : vertices) {
+            for (final int vertex : vertices) {
                 nodeToTaxa.put(vertex, key);
             }
         }

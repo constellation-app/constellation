@@ -44,22 +44,20 @@ public class FastNewman {
         run(graph, interaction, interactive, new HashSet<>(), AnalyticConcept.VertexAttribute.WEIGHT.getName());
     }
 
-    public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive, final Set<Integer> initialLinkIds, String weightAttribute) throws InterruptedException {
+    public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive, final Set<Integer> initialLinkIds, final String weightAttribute) throws InterruptedException {
 
         final int vertexCount = graph.getVertexCount();
         final int linkCount = graph.getLinkCount();
         final int transactionCount = graph.getTransactionCount();
 
-        final ConstellationColor[] colors = ConstellationColor.createPalette(vertexCount, 0.5f, 0.95f);
+        final ConstellationColor[] colors = ConstellationColor.createPalette(vertexCount, 0.5F, 0.95F);
         int nextColor = vertexCount - 1;
 
         final Group[] groups = new Group[graph.getVertexCapacity()];
         final NavigableSet<Link> links = new TreeSet<>();
 
-        int weightAttributeId = Graph.NOT_FOUND;
-        if (weightAttribute != null) {
-            weightAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, weightAttribute);
-        }
+        final int weightAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, weightAttribute);
+        
         float totalWeight = 0;
         if (weightAttributeId != Graph.NOT_FOUND) {
             for (int p = 0; p < transactionCount; p++) {
@@ -73,7 +71,7 @@ public class FastNewman {
         // Once a Group is added to the array, the value of vertex doesn't change,
         // and the Group isn't subsequently moved. Therefore, the index of a Group
         // is it's position. Therefore, the index of groups[i].parent can be found
-        // by graph.getVertexPosition(parent.vertex);
+        // by graph getVertexPosition (parent.vertex)
         for (int position = 0; position < vertexCount; position++) {
             final int vxId = graph.getVertex(position);
 
@@ -115,7 +113,7 @@ public class FastNewman {
                     }
                     link.weight /= totalWeight;
                 }
-                link.deltaQ = 2f * (link.weight - link.highGroup.weight * link.lowGroup.weight);
+                link.deltaQ = 2F * (link.weight - link.highGroup.weight * link.lowGroup.weight);
 
                 link.initial = initialLinkIds.contains(linkId);
                 links.add(link);
@@ -238,15 +236,15 @@ public class FastNewman {
 
         final int coiAttr = ClusteringConcept.MetaAttribute.HIERARCHICAL_CLUSTERING_STATE.ensure(graph);
         final HierarchicalState state = new HierarchicalState(step - 1, maxStep, groups, graph.getVertexCapacity());
-        state.strucModificationCount = graph.getStructureModificationCounter();
-        state.interactive = interactive;
+        state.setStrucModificationCount(graph.getStructureModificationCounter());
+        state.setInteractive(interactive);
         graph.setObjectValue(coiAttr, 0, state);
     }
 
     public static class Group {
 
         private int vertex;
-        private float weight = 0.0f;
+        private float weight = 0.0F;
         private Group parent = null;
         private int mergeStep = Integer.MAX_VALUE;
         private Map<Group, Link> links = new HashMap<>();
@@ -298,7 +296,7 @@ public class FastNewman {
 
         private Group highGroup;
         private Group lowGroup;
-        private float weight = 0.0f;
+        private float weight = 0.0F;
         private float deltaQ;
         private boolean initial = false;
 

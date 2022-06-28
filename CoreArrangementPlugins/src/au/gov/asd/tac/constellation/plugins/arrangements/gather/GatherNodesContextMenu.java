@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
@@ -63,16 +64,16 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int element, final Vector3f unprojected) {
         switch (elementType) {
-
             case GRAPH:
-                PluginExecution.withPlugin(new GatherNodesForGraphContextMenuPlugin(unprojected))
-                        .executeLater(graph);
+                PluginExecution.withPlugin(new GatherNodesForGraphContextMenuPlugin(unprojected)).executeLater(graph);
                 break;
-
             case VERTEX:
-                PluginExecution.withPlugin(new GatherNodesForVertexContextMenuPlugin(element))
-                        .executeLater(graph);
+                PluginExecution.withPlugin(new GatherNodesForVertexContextMenuPlugin(element)).executeLater(graph);
                 break;
+            case META:
+            case LINK:
+            case EDGE:
+            case TRANSACTION:
             default:
                 break;
         }
@@ -100,7 +101,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
         return vertexBits;
     }
 
-    @PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
     public static class GatherNodesForGraphContextMenuPlugin extends SimpleEditPlugin {
 
         final Vector3f unprojected;
@@ -110,7 +111,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
         }
 
         @Override
-        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             final BitSet gathers = selectedVertexBits(graph);
 
             PluginExecution.withPlugin(ArrangementPluginRegistry.GATHER_NODES_IN_GRAPH)
@@ -126,7 +127,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
 
     }
 
-    @PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
     public static class GatherNodesForVertexContextMenuPlugin extends SimpleEditPlugin {
 
         private final int element;
@@ -136,7 +137,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
         }
 
         @Override
-        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             final BitSet gathers = selectedVertexBits(graph);
 
             PluginExecution.withPlugin(ArrangementPluginRegistry.GATHER_NODES)

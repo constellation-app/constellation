@@ -136,9 +136,7 @@ public class LineBatcher implements SceneBatcher {
     public GLRenderableUpdateTask disposeBatch() {
         connections.clear();
         connectionPosToBufferPos.clear();
-        return gl -> {
-            batch.dispose(gl);
-        };
+        return gl -> batch.dispose(gl);
     }
 
     private final SortedMap<Integer, Integer> connectionPosToBufferPos = new TreeMap<>();
@@ -206,7 +204,7 @@ public class LineBatcher implements SceneBatcher {
             final int representativeTransactionId = access.getConnectionId(pos);
             final int lowVertex = access.getConnectionLowVertex(pos);
             final int highVertex = access.getConnectionHighVertex(pos);
-            final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);
+            final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int lineStyle = access.getConnectionLineStyle(pos).ordinal();
             final ConnectionDirection connectionDirection = access.getConnectionDirection(pos);
 
@@ -229,10 +227,10 @@ public class LineBatcher implements SceneBatcher {
             final int representativeTransactionId = access.getConnectionId(pos);
             final int lowVertex = access.getConnectionLowVertex(pos);
             final int highVertex = access.getConnectionHighVertex(pos);
-            final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);
+            final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int lineStyle = access.getConnectionLineStyle(pos).ordinal();
             final ConnectionDirection connectionDirection;
-            if (access.getConnectionDirected(pos)) {
+            if (access.isConnectionDirected(pos)) {
                 if (access.getConnectionDirection(pos) != ConnectionDirection.UNDIRECTED) { // covers the case where the transaction was initially undirected
                     connectionDirection = access.getConnectionDirection(pos);
                 } else {
@@ -271,26 +269,20 @@ public class LineBatcher implements SceneBatcher {
     }
 
     public GLRenderableUpdateTask updateInfo(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateIntBufferTask(change, access, this::updateConnectionInfo, gl -> {
-            return batch.connectIntBuffer(gl, connectionInfoTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, connectionInfoTarget);
-        }, new boolean[]{true, true, true, false, true, true, true, true});
+        return SceneBatcher.updateIntBufferTask(change, access, this::updateConnectionInfo, gl -> batch.connectIntBuffer(gl, connectionInfoTarget),
+                 gl -> batch.disconnectBuffer(gl, connectionInfoTarget),
+                 new boolean[]{true, true, true, false, true, true, true, true});
     }
 
     public GLRenderableUpdateTask updateColors(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
-            return batch.connectFloatBuffer(gl, colorTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, colorTarget);
-        }, COLOR_BUFFER_WIDTH * 2);
+        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> batch.connectFloatBuffer(gl, colorTarget),
+                 gl -> batch.disconnectBuffer(gl, colorTarget),
+                 COLOR_BUFFER_WIDTH * 2);
     }
 
     public GLRenderableUpdateTask updateOpacity(final VisualAccess access) {
         final float updatedOpacity = access.getConnectionOpacity();
-        return gl -> {
-            opacity = updatedOpacity;
-        };
+        return gl -> opacity = updatedOpacity;
     }
 
     public void setNextDrawIsHitTest() {
@@ -307,9 +299,7 @@ public class LineBatcher implements SceneBatcher {
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor color = access.getHighlightColor();
-        return gl -> {
-            this.highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
-        };
+        return gl -> this.highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
     }
 
     @Override

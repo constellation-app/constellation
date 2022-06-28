@@ -70,8 +70,8 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
             }
         }
 
-        final float centreX = (minx + maxx) / 2f;
-        final float centreY = (miny + maxy) / 2f;
+        final float centreX = (minx + maxx) / 2F;
+        final float centreY = (miny + maxy) / 2F;
 
         final Comparator<Blob> sorter = (o1, o2) -> {
             final float d1 = o1.distanceFrom(centreX, centreY);
@@ -86,10 +86,7 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
         for (final Blob b : blobs) {
             b.x -= offsetX;
             b.y -= offsetY;
-//                graph.setFloatValue(xAttr, b.vxId, b.x);
-//                graph.setFloatValue(yAttr, b.vxId, b.y);
         }
-//            graph.firePropertyChange(GraphProperties.RELOAD);
 
         // Sort the blobs in order of distance from the centre, nearest first.
         Arrays.sort(blobs, sorter);
@@ -99,74 +96,44 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
         int remainingCandidates = 1;
         boolean checkForOverlaps = true;
         while (checkForOverlaps) {
-//                Arrays.sort(blobs, sorter);
-//            System.out.printf("@ANR sort %d %d\n", remainingCandidates, blobs.length);
             Arrays.sort(blobs, remainingCandidates - 1, blobs.length, sorter);
             boolean moved = false;
             for (int i = remainingCandidates; i < blobs.length; i++) {
                 final Blob b = blobs[i];
-//                System.out.printf("@ANR %d %s\n", i, b);
-//                    final float dc = b.distanceFrom(centreX, centreY);
-
                 // Compare this Blob with the Blobs that are closer to the centre.
                 // After this loop completes, this Blob won't overlap with any closer-to-the-centre Blobs.
-                //                    boolean bmoved = false;
                 for (int j = i - 1; j >= 0; j--) {
                     final Blob other = blobs[j];
-//                    System.out.printf("@ANR %d %s %d %s\n", i, b, j, other);
                     if (Thread.interrupted()) {
                         throw new InterruptedException();
                     }
                     if (b.overlaps(other)) {
                         // Move this Blob away from the one it overlaps.
-                        //                        System.out.printf("@ANR %d<>%d %s repulse from %s\n", i, j, b, other);
                         b.repulseFrom(other, centreX, centreY);
-
                         moved = true;
-//                            bmoved = true;
-
-//                            // Do this to watch the vertices move.
-//                            //                            graph.setFloatValue(xAttr, b.vxId, b.x);
-//                            graph.setFloatValue(yAttr, b.vxId, b.y);
-//                            graph.firePropertyChange(GraphProperties.RELOAD);
                         // If this blob moved, it's more likely to have moved onto a nearby more distant blob.
                         // Don't bother going all the way to the centre on this iteration.
-                        //                            break;
                     }
-//                        else if(dc-other.distanceFrom(centreX, centreY)>b.radius+other.radius)
-//                        {
-//                            break;
-//                        }
                 }
 
 //                    // This is the current furthest from the centre blob. If it didn't need to move,
 //                    // then we'll assume that its position is now fixed. It doesn't overlap any of the
 //                    // blobs nearer to the centre, and any blobs yet to be checked will move if there
 //                    // are any overlaps with this one.
-//                    //                    if(bmoved && i==remainingCandidates)
-//                    {
-//                        remainingCandidates++;
-////                        moved = false;
-//                    }
             }
 
             // This is the current furthest from the centre blob. If it didn't need to move,
             // then we'll assume that its position is now fixed. It doesn't overlap any of the
             // blobs nearer to the centre, and any blobs yet to be checked will move if there
             // are any overlaps with this one.
-            //                if(!moved)
-//                {
-//                    remainingCandidates++;
-//                }
             remainingCandidates++;
 
-//            System.out.println("remainingCandiates:" + remainingCandidates);
             // If this blob moved, do another iteration to see if it moved onto another blob.
             checkForOverlaps = moved;
         }
 
         // Copy the blob positions back into the graph.
-        for (Blob b : blobs) {
+        for (final Blob b : blobs) {
             graph.setFloatValue(xAttr, b.vxId, b.x);
             graph.setFloatValue(yAttr, b.vxId, b.y);
         }
@@ -182,7 +149,7 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
      */
     private static class Blob {
 
-        private static final float MIN_DISTANCE = 0.01f;
+        private static final float MIN_DISTANCE = 0.01F;
         private final int vxId;
         private float x;
         private float y;
@@ -238,7 +205,7 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
          *
          * @return The distance from the other x,y.
          */
-        float distanceFrom(final float ox, final float oy) {
+        private float distanceFrom(final float ox, final float oy) {
             return (float) Math.hypot(ox - x, oy - y);
         }
 
@@ -250,7 +217,7 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
          * @return True if this Blob and the other Blob overlap, false
          * otherwise.
          */
-        boolean overlaps(final Blob other) {
+        private boolean overlaps(final Blob other) {
             return distanceFrom(other.x, other.y) < radius + other.radius;
         }
 
@@ -270,24 +237,16 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
          * @param centreX The x position of the centre.
          * @param centreY The y position of the centre.
          */
-        void repulseFrom(final Blob other, final float centreX, final float centreY) {
+        private void repulseFrom(final Blob other, final float centreX, final float centreY) {
             final float d = distanceFrom(other.x, other.y);
             final float r = radius + other.radius;
             if (d > MIN_DISTANCE) {
                 x += (x - other.x) * r / d;
                 y += (y - other.y) * r / d;
             } else if (x != centreX && y != centreY) {
-//                Random rand = new Random();
-//                float angle = (rand.nextFloat() * (float) Math.PI) - ((float) Math.PI/2);
-//                float cosangle = (float) Math.cos(angle);
-//                float sinangle = (float) Math.sin(angle);
-//                float xdist = (x-centreX)*cosangle - (y-centreY)*sinangle;
-//                float ydist = (y-centreY)*cosangle + (x-centreX)*sinangle;
                 final float d2 = distanceFrom(centreX, centreY);
                 x += (x - centreX) * r / d2;
                 y += (y - centreY) * r / d2;
-//                x += xdist*r/d2;
-//                y += ydist*r/d2;
             } else {
                 y += r;
             }

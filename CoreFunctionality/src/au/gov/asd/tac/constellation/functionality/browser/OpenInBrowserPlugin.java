@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import java.awt.Desktop;
 import java.io.IOException;
@@ -40,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author arcturus
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.NONE, tags = {"UTILITY"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.UTILITY})
 @NbBundle.Messages("OpenInBrowserPlugin=Open In Browser")
 public class OpenInBrowserPlugin extends SimplePlugin {
 
@@ -65,11 +66,9 @@ public class OpenInBrowserPlugin extends SimplePlugin {
     }
 
     @Override
-    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-        final String url = parameters.getStringValue(URL_PARAMETER_ID);
-
+    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         try {
-            Desktop.getDesktop().browse(new URI(url));
+            Desktop.getDesktop().browse(new URI(parameters.getStringValue(URL_PARAMETER_ID)));
         } catch (IOException | URISyntaxException ex) {
             throw new PluginException(PluginNotificationLevel.FATAL, ex);
         }

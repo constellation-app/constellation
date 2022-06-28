@@ -75,9 +75,7 @@ public class ListPlugins extends RestService {
         PluginRegistry.getPluginClassNames()
                 .stream()
                 .map(name -> alias ? PluginRegistry.getAlias(name) : name)
-                .forEachOrdered(name -> {
-                    root.add(name);
-                });
+                .forEachOrdered(name -> root.add(name));
 
         mapper.writeValue(out, root);
     }

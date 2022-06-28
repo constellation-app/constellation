@@ -108,11 +108,10 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
             return null;
         }
 
-        final int r = (int) (color.getRed());
-        final int g = (int) (color.getGreen());
-        final int b = (int) (color.getBlue());
-        final String s = String.format("#%02x%02x%02x", r, g, b);
-        return s;
+        final int r = color.getRed();
+        final int g = color.getGreen();
+        final int b = color.getBlue();
+        return String.format("#%02x%02x%02x", r, g, b);
     }
 
     /**

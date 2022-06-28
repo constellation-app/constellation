@@ -41,15 +41,13 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
         final StringBuilder sb = new StringBuilder();
         result.values().forEach(score -> {
             sb.append(score.getElementId()).append(": {\n");
-            score.namedScores.forEach((name, value) -> {
-                sb.append("\tname: ").append(name).append(", value: ").append(value);
-            });
+            score.namedScores.forEach((name, value) -> sb.append("\tname: ").append(name).append(", value: ").append(value));
             sb.append(" }\n");
         });
         return sb.toString();
     }
 
-    public ScoreResult combine(ScoreResult otherResult) {
+    public ScoreResult combine(final ScoreResult otherResult) {
         otherResult.result.forEach((key, value)
                 -> result.merge(key, value, ElementScore::combineReplace)
         );

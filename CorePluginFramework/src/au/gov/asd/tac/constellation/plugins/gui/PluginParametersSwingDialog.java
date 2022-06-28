@@ -106,11 +106,6 @@ public class PluginParametersSwingDialog {
      * @param helpID The JavaHelp ID of the help.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String helpID) {
-//        if(!SwingUtilities.isEventDispatchThread())
-//        {
-//            throw new IllegalStateException("Not event dispatch thread");
-//        }
-
         this.title = title;
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -118,7 +113,7 @@ public class PluginParametersSwingDialog {
         Platform.runLater(() -> {
             final BorderPane root = new BorderPane();
             root.setPadding(new Insets(10));
-            root.setStyle("-fx-background-color: #DDDDDD;");
+            root.setStyle("-fx-background-color: #F0F0F0;");
 
             // Attempt to give the window a sensible width and/or height.
             root.setMinWidth(500);
@@ -147,14 +142,22 @@ public class PluginParametersSwingDialog {
     public void showAndWait() {
         final DialogDescriptor dd = new DialogDescriptor(xp, title);
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        result = r == DialogDescriptor.OK_OPTION ? OK : r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        if (r == DialogDescriptor.OK_OPTION) {
+            result = OK;
+        } else {
+            result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        }
     }
 
     public void showAndWaitNoFocus() {
         //Having 'No' button as initial value means focus is off of 'OK' and 'Cancel' buttons
         final DialogDescriptor dd = new DialogDescriptor(xp, title, true, DialogDescriptor.OK_CANCEL_OPTION, DialogDescriptor.NO_OPTION, null);
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        result = r == DialogDescriptor.OK_OPTION ? OK : r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        if (r == DialogDescriptor.OK_OPTION) {
+            result = OK;
+        } else {
+            result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        }
     }
 
     /**

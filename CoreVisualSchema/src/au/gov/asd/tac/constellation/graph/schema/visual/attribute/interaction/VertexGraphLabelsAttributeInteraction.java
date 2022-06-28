@@ -38,8 +38,8 @@ public class VertexGraphLabelsAttributeInteraction extends AbstractAttributeInte
             return null;
         }
 
-        GraphLabels labelsValue = ((GraphLabels) value);
-        StringBuilder labelsString = new StringBuilder();
+        final GraphLabels labelsValue = ((GraphLabels) value);
+        final StringBuilder labelsString = new StringBuilder();
         labelsValue.getLabels().forEach(label -> {
             labelsString.append(label.getAttributeName());
             labelsString.append(": (");

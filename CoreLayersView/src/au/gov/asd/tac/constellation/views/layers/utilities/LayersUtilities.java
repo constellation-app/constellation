@@ -24,9 +24,9 @@ import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
  * @author aldebaran30701
  */
 public class LayersUtilities {
-
+    
     private LayersUtilities() {
-        // added private constructor to hide implicit public constructor - S1118.
+        throw new IllegalStateException("Utility class");
     }
 
     public static int calculateCurrentLayerSelectionBitMask(final BitMaskQueryCollection vxQueriesCollection, final BitMaskQueryCollection txQueriesCollection) {
@@ -37,9 +37,9 @@ public class LayersUtilities {
             final BitMaskQuery txQuery = txQueriesCollection.getQuery(position);
 
             if (vxQuery != null) {// can use vx
-                newBitmask |= vxQuery.getVisibility() ? (1 << vxQuery.getIndex()) : 0;
+                newBitmask |= vxQuery.isVisible() ? (1 << vxQuery.getIndex()) : 0;
             } else if (txQuery != null) {// have to use tx
-                newBitmask |= txQuery.getVisibility() ? (1 << txQuery.getIndex()) : 0;
+                newBitmask |= txQuery.isVisible() ? (1 << txQuery.getIndex()) : 0;
             } else {
                 // cannot use any.
             }

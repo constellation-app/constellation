@@ -52,56 +52,56 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) {
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, final ImmutableObjectCache cache) {
         if (!jnode.isNull()) {
             final HierarchicalState coi = new HierarchicalState();
             if (jnode.has(MOD_COUNT)) {
-                coi.modificationCounter = jnode.get(MOD_COUNT).asLong();
+                coi.setModificationCounter(jnode.get(MOD_COUNT).asLong());
             }
             if (jnode.has(STRUC_MOD_COUNT)) {
-                coi.strucModificationCount = jnode.get(STRUC_MOD_COUNT).asLong();
+                coi.setStrucModificationCount(jnode.get(STRUC_MOD_COUNT).asLong());
             }
 
             if (jnode.has(INTERACTIVE)) {
-                coi.interactive = jnode.get(INTERACTIVE).asBoolean();
+                coi.setInteractive(jnode.get(INTERACTIVE).asBoolean());
             }
 
             if (jnode.has(COLORED)) {
-                coi.colored = jnode.get(COLORED).asBoolean();
+                coi.setColored(jnode.get(COLORED).asBoolean());
             }
 
-            coi.steps = jnode.get("steps").intValue();
-            coi.currentStep = jnode.get("current_step").asInt();
+            coi.setSteps(jnode.get("steps").intValue());
+            coi.setCurrentStep(jnode.get("current_step").asInt());
             if (jnode.has(OPTIMUM_STEP)) {
-                coi.optimumStep = jnode.get(OPTIMUM_STEP).asInt();
+                coi.setOptimumStep(jnode.get(OPTIMUM_STEP).asInt());
             }
-            coi.excludeSingleVertices = jnode.get("exclude_single_vertices").asBoolean();
-            coi.excludedElementsDimmed = jnode.get("exclude_elements_dimmed").asBoolean();
-            coi.redrawCount = jnode.get("redraw_count").asInt();
+            coi.setExcludeSingleVertices(jnode.get("exclude_single_vertices").asBoolean());
+            coi.setExcludedElementsDimmed(jnode.get("exclude_elements_dimmed").asBoolean());
+            coi.setRedrawCount(jnode.get("redraw_count").asInt());
 
-            coi.clusterNumbers = new int[graph.getVertexCapacity()];
+            coi.setClusterNumbers(new int[graph.getVertexCapacity()]);
             final ArrayNode cnNode = (ArrayNode) jnode.get("cluster_numbers");
             int ix = 0;
             for (final JsonNode jn : cnNode) {
                 if (vertexMap.containsKey(ix)) {
-                    coi.clusterNumbers[vertexMap.get(ix)] = jn.intValue();
+                    coi.getClusterNumbers()[vertexMap.get(ix)] = jn.intValue();
                 }
 
                 ix++;
             }
 
-            coi.clusterSeenBefore = new int[graph.getVertexCapacity()];
+            coi.setClusterSeenBefore(new int[graph.getVertexCapacity()]);
             final ArrayNode csbNode = (ArrayNode) jnode.get("cluster_seen_before");
             ix = 0;
             for (final JsonNode jn : csbNode) {
                 if (vertexMap.containsKey(ix)) {
-                    coi.clusterSeenBefore[vertexMap.get(ix)] = jn.intValue();
+                    coi.getClusterSeenBefore()[vertexMap.get(ix)] = jn.intValue();
                 }
 
                 ix++;
             }
 
-            coi.groups = new FastNewman.Group[graph.getVertexCapacity()];
+            coi.setGroups(new FastNewman.Group[graph.getVertexCapacity()]);
             final int[] parentLinks = new int[graph.getVertexCapacity()];
             Arrays.fill(parentLinks, Graph.NOT_FOUND);
 
@@ -116,7 +116,7 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
                     group.setColor(ConstellationColor.getColorValue(jn.get("color").asText()));
 
                     final int groupIx = graph.getVertexPosition(group.getVertex());
-                    coi.groups[groupIx] = group;
+                    coi.getGroups()[groupIx] = group;
 
                     if (jn.has(PARENT)) {
                         final int parentVxId = vertexMap.get(jn.get(PARENT).asInt());
@@ -128,7 +128,7 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
             // Use the parentLinks indices to hook up the Group parents.
             for (int i = 0; i < parentLinks.length; i++) {
                 if (parentLinks[i] != Graph.NOT_FOUND) {
-                    coi.groups[i].setParent(coi.groups[parentLinks[i]]);
+                    coi.getGroups()[i].setParent(coi.getGroups()[parentLinks[i]]);
                 }
             }
 
@@ -145,32 +145,32 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
             } else {
 
                 jsonGenerator.writeObjectFieldStart(attr.getName());
-                jsonGenerator.writeNumberField(MOD_COUNT, state.modificationCounter);
-                jsonGenerator.writeNumberField(STRUC_MOD_COUNT, state.strucModificationCount);
-                jsonGenerator.writeNumberField("steps", state.steps);
-                jsonGenerator.writeNumberField("current_step", state.currentStep);
-                jsonGenerator.writeNumberField(OPTIMUM_STEP, state.optimumStep);
-                jsonGenerator.writeBooleanField("exclude_single_vertices", state.excludeSingleVertices);
-                jsonGenerator.writeBooleanField("exclude_elements_dimmed", state.excludedElementsDimmed);
-                jsonGenerator.writeNumberField("redraw_count", state.redrawCount);
-                jsonGenerator.writeBooleanField(INTERACTIVE, state.interactive);
-                jsonGenerator.writeBooleanField(COLORED, state.colored);
+                jsonGenerator.writeNumberField(MOD_COUNT, state.getModificationCounter());
+                jsonGenerator.writeNumberField(STRUC_MOD_COUNT, state.getStrucModificationCount());
+                jsonGenerator.writeNumberField("steps", state.getSteps());
+                jsonGenerator.writeNumberField("current_step", state.getCurrentStep());
+                jsonGenerator.writeNumberField(OPTIMUM_STEP, state.getOptimumStep());
+                jsonGenerator.writeBooleanField("exclude_single_vertices", state.isExcludeSingleVertices());
+                jsonGenerator.writeBooleanField("exclude_elements_dimmed", state.isExcludedElementsDimmed());
+                jsonGenerator.writeNumberField("redraw_count", state.getRedrawCount());
+                jsonGenerator.writeBooleanField(INTERACTIVE, state.isInteractive());
+                jsonGenerator.writeBooleanField(COLORED, state.isColored());
 
                 jsonGenerator.writeArrayFieldStart("cluster_numbers");
-                for (final int value : state.clusterNumbers) {
+                for (final int value : state.getClusterNumbers()) {
                     jsonGenerator.writeNumber(value);
                 }
                 jsonGenerator.writeEndArray();
 
                 jsonGenerator.writeArrayFieldStart("cluster_seen_before");
-                for (final int value : state.clusterSeenBefore) {
+                for (final int value : state.getClusterSeenBefore()) {
                     jsonGenerator.writeNumber(value);
                 }
                 jsonGenerator.writeEndArray();
 
                 // TODO: groups array is sized for capacity, not max vertex id: this means too much stuff is being written.
                 jsonGenerator.writeArrayFieldStart("groups");
-                for (final FastNewman.Group group : state.groups) {
+                for (final FastNewman.Group group : state.getGroups()) {
                     if (group != null) {
                         jsonGenerator.writeStartObject();
                         jsonGenerator.writeNumberField("vertex", group.getVertex());

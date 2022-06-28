@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
@@ -68,7 +69,7 @@ public class ShowInAttributeEditorContextMenu implements ContextMenuProvider {
         PluginExecution.withPlugin(new ShowInEditorPlugin(elementType, elementId)).executeLater(graph);
     }
 
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     public static class ShowInEditorPlugin extends SimpleEditPlugin {
 
         final GraphElementType elementType;

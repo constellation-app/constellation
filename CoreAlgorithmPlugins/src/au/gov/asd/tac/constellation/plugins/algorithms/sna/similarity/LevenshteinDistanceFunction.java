@@ -25,12 +25,12 @@ public class LevenshteinDistanceFunction implements DistanceFunction<String> {
 
     private final int k;
 
-    LevenshteinDistanceFunction(int k) {
+    protected LevenshteinDistanceFunction(final int k) {
         this.k = k;
     }
 
     @Override
-    public double getDistance(String firstPoint, String secondPoint) {
+    public double getDistance(final String firstPoint, final String secondPoint) {
         if (firstPoint == null || secondPoint == null) {
             throw new IllegalArgumentException("Strings must not be null.");
         }

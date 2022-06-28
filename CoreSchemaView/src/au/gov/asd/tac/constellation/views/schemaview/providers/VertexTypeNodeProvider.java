@@ -202,13 +202,9 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         containsRadioButton.setToggleGroup(toggleGroup);
         containsRadioButton.setPadding(new Insets(0, 0, 0, 5));
 
-        toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-            populateTree();
-        });
+        toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> populateTree());
 
-        filterText.textProperty().addListener((observable, oldValue, newValue) -> {
-            populateTree();
-        });
+        filterText.textProperty().addListener((observable, oldValue, newValue) -> populateTree());
 
         final HBox headerBox = new HBox(new Label("Filter: "), filterText, startsWithRb, containsRadioButton);
         headerBox.setAlignment(Pos.CENTER_LEFT);
@@ -260,8 +256,8 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     private boolean isFilterMatchText(final String propertyValue) {
         final String filterInputText = filterText.getText().toLowerCase();
         return (StringUtils.isNotBlank(filterText.getText()) && StringUtils.isNotBlank(propertyValue))
-                && (startsWithRb.isSelected() ? propertyValue.toLowerCase().startsWith(filterInputText)
-                : propertyValue.toLowerCase().contains(filterInputText));
+                && (startsWithRb.isSelected() ? StringUtils.startsWithIgnoreCase(propertyValue, filterInputText)
+                : StringUtils.containsIgnoreCase(propertyValue, filterInputText));
 
     }
 
@@ -404,9 +400,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
 
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
 
-        Platform.runLater(() -> {
-            tab.setContent(contentNode);
-        });
+        Platform.runLater(() -> tab.setContent(contentNode));
     }
 
     /**

@@ -44,7 +44,7 @@ public class Extent {
     private final float nradius;
     private final float lradius;
 
-    Extent(final float[] xyz, final float nradius, final float lradius) {
+    protected Extent(final float[] xyz, final float nradius, final float lradius) {
         x = xyz[0];
         y = xyz[1];
         z = xyz[2];
@@ -129,7 +129,6 @@ public class Extent {
             lmaxz = Math.max(lmaxz, z + lradius);
         }
 
-//        Debug.debug("x %f %f (%f); y %f %f (%f); z %f %f (%f)\n", minx, maxx, (maxx-minx)/2, miny, maxy, (maxy-miny)/2, minz, maxz, (maxz-minz)/2);
         final float nextentRadius = Math.max(nmaxx - nminx, Math.max(nmaxy - nminy, nmaxz - nminz)) / 2;
         final float lextentRadius = Math.max(lmaxx - lminx, Math.max(lmaxy - lminy, lmaxz - lminz)) / 2;
 

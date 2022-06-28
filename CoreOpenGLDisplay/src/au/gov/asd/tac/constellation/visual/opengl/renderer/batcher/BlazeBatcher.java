@@ -101,9 +101,7 @@ public class BlazeBatcher implements SceneBatcher {
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-        return gl -> {
-            batch.dispose(gl);
-        };
+        return gl -> batch.dispose(gl);
     }
 
     public GLRenderableUpdateTask updateBlazes(final VisualAccess access, final VisualChange change) {
@@ -152,7 +150,7 @@ public class BlazeBatcher implements SceneBatcher {
     }
 
     private void bufferBlaze(final int pos, final FloatArray colorBuffer, final IntArray infoBuffer, final VisualAccess access) {
-        if (access.getBlazed(pos)) {
+        if (access.isBlazed(pos)) {
             final ConstellationColor blazeColor = access.getBlazeColor(pos);
             final int blazeAngle = access.getBlazeAngle(pos);
             final float visibility = access.getVertexVisibility(pos);

@@ -35,7 +35,6 @@ import org.openide.util.actions.Presenter;
  * This class is responsible for rendering in edge mode.
  */
 public final class DrawEdgesAction extends AbstractAction implements Presenter.Toolbar {
-//    static final String CONNECTION_ACTIONS = "__connectionActions__";
 
     private final GraphNode context;
     private final ButtonGroup buttonGroup;

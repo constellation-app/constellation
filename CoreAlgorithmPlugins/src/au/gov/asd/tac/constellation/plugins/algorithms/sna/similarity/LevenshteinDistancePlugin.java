@@ -36,14 +36,15 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -55,7 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("LevenshteinDistancePlugin=Levenshtein Distance")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class LevenshteinDistancePlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute LEVENSHTEIN_DISTANCE_ATTRIBUTE = SnaConcept.TransactionAttribute.LEVENSHTEIN_DISTANCE;
@@ -69,9 +70,10 @@ public class LevenshteinDistancePlugin extends SimpleEditPlugin {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> attributeType = SingleChoiceParameterType.build(ATTRIBUTE_PARAMETER_ID);
+        final PluginParameter<SingleChoiceParameterValue> attributeType = SingleChoiceParameterType.build(ATTRIBUTE_PARAMETER_ID);
         attributeType.setName("Compare Attribute");
         attributeType.setDescription("The node attribute to compare");
+        attributeType.setRequired(true);
         parameters.addParameter(attributeType);
 
         final PluginParameter<IntegerParameterValue> maxDistance = IntegerParameterType.build(MAXIMUM_DISTANCE_PARAMETER_ID);
@@ -84,13 +86,11 @@ public class LevenshteinDistancePlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> caseInsensitiveParameter = BooleanParameterType.build(CASE_INSENSITIVE_PARAMETER_ID);
         caseInsensitiveParameter.setName("Case Insensitive");
         caseInsensitiveParameter.setDescription("Ignore case when comparing attribute");
-        caseInsensitiveParameter.setBooleanValue(false);
         parameters.addParameter(caseInsensitiveParameter);
 
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
         selectedOnlyParameter.setName("Selected Only");
         selectedOnlyParameter.setDescription("Compare selected nodes only");
-        selectedOnlyParameter.setBooleanValue(false);
         parameters.addParameter(selectedOnlyParameter);
 
         return parameters;
@@ -134,8 +134,7 @@ public class LevenshteinDistancePlugin extends SimpleEditPlugin {
         final int vertexCompareAttributeId = graph.getAttribute(GraphElementType.VERTEX, compareAttribute);
 
         if (vertexCompareAttributeId == Graph.NOT_FOUND) {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("The specified attribute %s does not exist on the graph.", compareAttribute), NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display(String.format("The specified attribute %s does not exist on the graph.", compareAttribute), NotifyDescriptor.WARNING_MESSAGE);
             return;
         }
 

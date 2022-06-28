@@ -1,0 +1,7 @@
+<parent>
+  <child1>child1_value</child1>
+  <child2>child2_value</child2>
+  <child3>child3a_value</child3>
+  <child3>child3b_value</child3>
+  <child4><child4.1>child4.1</child4.1></child4>
+</parent>

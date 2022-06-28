@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
@@ -45,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("GatherNodesPlugin=Gather Selected Nodes")
-@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public final class GatherNodesPlugin extends SimpleEditPlugin {
 
     public static final String VXID_PARAMETER_ID = PluginParameter.buildId(GatherNodesPlugin.class, "vertex_id");
@@ -60,7 +61,6 @@ public final class GatherNodesPlugin extends SimpleEditPlugin {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-//        final int nradiusId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
 
         final int selectedVertexCount = gathers.cardinality();
@@ -94,7 +94,7 @@ public final class GatherNodesPlugin extends SimpleEditPlugin {
             // Skip the first position: when we get to vxId, we don't change it's position.
             int h = 1;
             int v = 0;
-            float scalingFactor = 4; // *maxRadius;
+            final float scalingFactor = 4;
             for (int vertex = gathers.nextSetBit(0); vertex >= 0; vertex = gathers.nextSetBit(vertex + 1)) {
                 if (vertex != vxId) {
                     wg.setFloatValue(xId, vertex, x + scalingFactor * (h * left.getX() + v * up.getX()));

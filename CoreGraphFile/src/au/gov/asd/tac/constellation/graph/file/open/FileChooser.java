@@ -43,8 +43,8 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
-import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.ArrayList;
@@ -56,6 +56,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -101,10 +102,9 @@ public class FileChooser extends JFileChooser {
      */
     @Override
     public Icon getIcon(final File f) {
-        final String s = f.getName().toLowerCase();
-        if (s.endsWith(GraphDataObject.FILE_EXTENSION)) {
+        if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.STAR)) {
             return SchemaFactoryUtilities.getDefaultSchemaFactory().getIcon().buildIcon(16);
-        } else if (s.endsWith(".nebula")) {
+        } else if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.NEBULA)) {
             return NEBULA_ICON;
         } else {
             // Do nothing
@@ -124,8 +124,7 @@ public class FileChooser extends JFileChooser {
         final FileFilter acceptAll = getAcceptAllFileFilter();
         removeChoosableFileFilter(acceptAll);
 
-        for (OpenFileDialogFilter f
-                : Lookup.getDefault().lookupAll(OpenFileDialogFilter.class)) {
+        for (final OpenFileDialogFilter f : Lookup.getDefault().lookupAll(OpenFileDialogFilter.class)) {
             addChoosableFileFilter(f);
         }
 
@@ -139,8 +138,8 @@ public class FileChooser extends JFileChooser {
         /* check the files: */
         List<String> errorMsgs = null;
         for (int i = 0; i < selectedFiles.length; i++) {
-            String msgPatternRef = null;
-            File file = selectedFiles[i];
+            final String msgPatternRef;
+            final File file = selectedFiles[i];
 
             if (!file.exists()) {
                 msgPatternRef = "MSG_FileDoesNotExist";                 //NOI18N
@@ -149,10 +148,6 @@ public class FileChooser extends JFileChooser {
             } else if (!file.isFile()) {
                 msgPatternRef = "MSG_FileIsNotPlainFile";               //NOI18N
             } else {
-                // Do nothing
-            }
-
-            if (msgPatternRef == null) {
                 continue;
             }
 
@@ -165,9 +160,8 @@ public class FileChooser extends JFileChooser {
         if (errorMsgs == null) {
             super.approveSelection();
         } else {
-            JPanel panel = new JPanel(new GridLayout(errorMsgs.size(), 0,
-                    0, 2));        //gaps
-            for (String errMsg : errorMsgs) {
+            final JPanel panel = new JPanel(new GridLayout(errorMsgs.size(), 0, 0, 2)); //gaps
+            for (final String errMsg : errorMsgs) {
                 panel.add(new JLabel(errMsg));
             }
             DialogDisplayer.getDefault().notify(
@@ -186,7 +180,7 @@ public class FileChooser extends JFileChooser {
 
         @Override
         public String[] getSuffixes() {
-            return new String[]{".java"};
+            return new String[]{FileExtensionConstants.JAVA};
         }
     }
 

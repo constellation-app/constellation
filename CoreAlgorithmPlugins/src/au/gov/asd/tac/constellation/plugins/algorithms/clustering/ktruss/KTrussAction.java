@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -59,7 +60,7 @@ public final class KTrussAction extends AbstractAction {
         PluginExecution.withPlugin(new KTrussPlugin()).executeLater(graph);
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"GENERAL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.GENERAL})
     public static class KTrussPlugin extends SimpleReadPlugin {
 
         @Override
@@ -80,6 +81,5 @@ public final class KTrussAction extends AbstractAction {
                 }
             });
         }
-
     }
 }

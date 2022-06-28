@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class PrimaryKeyEditOperation implements EditOperation {
         PluginExecution.withPlugin(new PrimaryKeyEditPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     private final class PrimaryKeyEditPlugin extends SimpleEditPlugin {
 
         @Override
@@ -55,9 +56,9 @@ public class PrimaryKeyEditOperation implements EditOperation {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            int[] keyIds = new int[keyAttributeNames.size()];
+            final int[] keyIds = new int[keyAttributeNames.size()];
             int i = 0;
-            for (String attrName : keyAttributeNames) {
+            for (final String attrName : keyAttributeNames) {
                 keyIds[i++] = graph.getAttribute(elementType, attrName);
             }
             graph.setPrimaryKey(elementType, keyIds);

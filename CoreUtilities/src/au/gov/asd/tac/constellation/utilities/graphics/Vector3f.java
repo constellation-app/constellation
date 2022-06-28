@@ -282,7 +282,7 @@ public final class Vector3f implements Serializable {
     public float normalize() {
         final float length = getLength();
         if (length != 0) {
-            scale(1.0f / length);
+            scale(1.0F / length);
         }
 
         return length;
@@ -383,6 +383,16 @@ public final class Vector3f implements Serializable {
      */
     public boolean isValid() {
         return Float.isFinite(a[0]) && Float.isFinite(a[1]) && Float.isFinite(a[2]);
+    }
+    
+    /**
+     * Method used for testing to check if Vector3f values are equal
+     * 
+     * @param vec the Vector3f to compare to this instance
+     * @return true if the Vector3f are the same, false otherwise
+     */
+    public boolean areSame(final Vector3f vec) {
+        return a[0] == vec.a[0] && a[1] == vec.a[1] && a[2] == vec.a[2];
     }
 
     @Override

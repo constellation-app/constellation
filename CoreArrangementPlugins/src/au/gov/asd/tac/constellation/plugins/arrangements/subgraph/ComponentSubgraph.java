@@ -51,16 +51,16 @@ public class ComponentSubgraph implements GraphWriteMethods {
     protected int[] transactionPositions = null;
 
     public static SubgraphFactory getSubgraphFactory() {
-        return (GraphWriteMethods wg, Set<Integer> vertexIDs) -> new ComponentSubgraph(wg, vertexIDs);
+        return (final GraphWriteMethods wg, final Set<Integer> vertexIDs) -> new ComponentSubgraph(wg, vertexIDs);
     }
 
-    public ComponentSubgraph(final GraphWriteMethods proxy, Set<Integer> includedVertexIDs) {
+    public ComponentSubgraph(final GraphWriteMethods proxy, final Set<Integer> includedVertexIDs) {
         this.proxy = proxy;
         this.includedVertexIDs = includedVertexIDs;
         vertexList = new int[includedVertexIDs.size()];
         vertexPositions = new int[proxy.getVertexCapacity()];
         int pos = 0;
-        for (int vert : includedVertexIDs) {
+        for (final int vert : includedVertexIDs) {
             vertexPositions[vert] = pos;
             vertexList[pos++] = vert;
         }
@@ -114,27 +114,27 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public final boolean linkExists(int link) {
+    public final boolean linkExists(final int link) {
         return includedVertexIDs.contains(getLinkLowVertex(link)) && includedVertexIDs.contains(getLinkHighVertex(link));
     }
 
     @Override
-    public final boolean edgeExists(int edge) {
+    public final boolean edgeExists(final int edge) {
         return includedVertexIDs.contains(getEdgeSourceVertex(edge)) && includedVertexIDs.contains(getEdgeDestinationVertex(edge));
     }
 
     @Override
-    public final boolean transactionExists(int transaction) {
+    public final boolean transactionExists(final int transaction) {
         return includedVertexIDs.contains(getTransactionSourceVertex(transaction)) && includedVertexIDs.contains(getTransactionDestinationVertex(transaction));
     }
 
     @Override
-    public int getVertex(int position) {
+    public int getVertex(final int position) {
         return vertexList[position];
     }
 
     @Override
-    public int getLink(int position) {
+    public int getLink(final int position) {
         if (linkList == null) {
             calculateLinks();
         }
@@ -142,7 +142,7 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public int getEdge(int position) {
+    public int getEdge(final int position) {
         if (edgeList == null) {
             calculateEdges();
         }
@@ -150,7 +150,7 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public int getTransaction(int position) {
+    public int getTransaction(final int position) {
         if (transactionList == null) {
             calculateTransactions();
         }
@@ -187,12 +187,12 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public int getVertexPosition(int vertex) {
+    public int getVertexPosition(final int vertex) {
         return vertexPositions[vertex];
     }
 
     @Override
-    public int getLinkPosition(int link) {
+    public int getLinkPosition(final int link) {
         if (linkList == null) {
             calculateLinks();
         }
@@ -200,7 +200,7 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public int getEdgePosition(int edge) {
+    public int getEdgePosition(final int edge) {
         if (edgeList == null) {
             calculateEdges();
         }
@@ -208,7 +208,7 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public int getTransactionPosition(int transaction) {
+    public int getTransactionPosition(final int transaction) {
         if (transactionList == null) {
             calculateTransactions();
         }
@@ -221,32 +221,32 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public void removeVertex(int vertex) {
+    public void removeVertex(final int vertex) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public int addTransaction(int sourceVertex, int destinationVertex, boolean directed) {
+    public int addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public int addTransaction(int transaction, int sourceVertex, int destinationVertex, boolean directed) {
+    public int addTransaction(final int transaction, final int sourceVertex, final int destinationVertex, final boolean directed) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void removeTransaction(int transaction) {
+    public void removeTransaction(final int transaction) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setTransactionSourceVertex(int transaction, int newSourceVertex) {
+    public void setTransactionSourceVertex(final int transaction, final int newSourceVertex) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setTransactionDestinationVertex(int transaction, int newDestinationVertex) {
+    public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex) {
         throw new UnsupportedOperationException();
     }
 
@@ -566,7 +566,7 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public String acceptsStringValue(int attribute, String value) {
+    public String acceptsStringValue(final int attribute, final String value) {
         return proxy.acceptsStringValue(attribute, value);
     }
 
@@ -636,12 +636,12 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public void validateKey(final GraphElementType elementType, boolean allowMerging) {
+    public void validateKey(final GraphElementType elementType, final boolean allowMerging) {
         proxy.validateKey(elementType, allowMerging);
     }
 
     @Override
-    public void validateKey(final GraphElementType elementType, int element, boolean allowMerging) {
+    public void validateKey(final GraphElementType elementType, final int element, final boolean allowMerging) {
         proxy.validateKey(elementType, element, allowMerging);
     }
 
@@ -671,52 +671,52 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public NativeAttributeType getNativeAttributeType(int attribute) {
+    public NativeAttributeType getNativeAttributeType(final int attribute) {
         return proxy.getNativeAttributeType(attribute);
     }
 
     @Override
-    public Object createWriteAttributeObject(int attribute, IntReadable indexReadable) {
+    public Object createWriteAttributeObject(final int attribute, final IntReadable indexReadable) {
         return proxy.createWriteAttributeObject(attribute, indexReadable);
     }
 
     @Override
-    public Object createReadAttributeObject(int attribute, IntReadable indexReadable) {
+    public Object createReadAttributeObject(final int attribute, final IntReadable indexReadable) {
         return proxy.createReadAttributeObject(attribute, indexReadable);
     }
 
     @Override
-    public boolean isPrimaryKey(int attribute) {
+    public boolean isPrimaryKey(final int attribute) {
         return proxy.isPrimaryKey(attribute);
     }
 
     @Override
-    public long getEdgeUID(int edge) {
+    public long getEdgeUID(final int edge) {
         return proxy.getEdgeUID(edge);
     }
 
     @Override
-    public long getLinkUID(int link) {
+    public long getLinkUID(final int link) {
         return proxy.getLinkUID(link);
     }
 
     @Override
-    public long getTransactionUID(int transaction) {
+    public long getTransactionUID(final int transaction) {
         return proxy.getTransactionUID(transaction);
     }
 
     @Override
-    public long getVertexUID(int vertex) {
+    public long getVertexUID(final int vertex) {
         return proxy.getVertexUID(vertex);
     }
 
     @Override
-    public long getAttributeUID(int attribute) {
+    public long getAttributeUID(final int attribute) {
         return proxy.getAttributeUID(attribute);
     }
 
     @Override
-    public void executeGraphOperation(GraphOperation operation) {
+    public void executeGraphOperation(final GraphOperation operation) {
         proxy.executeGraphOperation(operation);
     }
 
@@ -726,27 +726,27 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public void setAttributeIndexType(int attribute, GraphIndexType indexType) {
+    public void setAttributeIndexType(final int attribute, final GraphIndexType indexType) {
         proxy.setAttributeIndexType(attribute, indexType);
     }
 
     @Override
-    public boolean attributeSupportsIndexType(int attribute, GraphIndexType indexType) {
+    public boolean attributeSupportsIndexType(final int attribute, final GraphIndexType indexType) {
         return proxy.attributeSupportsIndexType(attribute, indexType);
     }
 
     @Override
-    public GraphIndexResult getElementsWithAttributeValue(int attribute, Object value) {
+    public GraphIndexResult getElementsWithAttributeValue(final int attribute, final Object value) {
         return proxy.getElementsWithAttributeValue(attribute, value);
     }
 
     @Override
-    public GraphIndexResult getElementsWithAttributeValueRange(int attribute, Object start, Object end) {
+    public GraphIndexResult getElementsWithAttributeValueRange(final int attribute, final Object start, final Object end) {
         return proxy.getElementsWithAttributeValueRange(attribute, start, end);
     }
 
     @Override
-    public GraphIndexType getAttributeIndexType(int attribute) {
+    public GraphIndexType getAttributeIndexType(final int attribute) {
         return proxy.getAttributeIndexType(attribute);
     }
 
@@ -771,7 +771,7 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public boolean isDefaultValue(int attribute, int id) {
+    public boolean isDefaultValue(final int attribute, final int id) {
         return proxy.isDefaultValue(attribute, id);
     }
 
@@ -781,27 +781,27 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public String getAttributeType(int attribute) {
+    public String getAttributeType(final int attribute) {
         return proxy.getAttributeType(attribute);
     }
 
     @Override
-    public String getAttributeDescription(int attribute) {
+    public String getAttributeDescription(final int attribute) {
         return proxy.getAttributeDescription(attribute);
     }
 
     @Override
-    public GraphElementType getAttributeElementType(int attribute) {
+    public GraphElementType getAttributeElementType(final int attribute) {
         return proxy.getAttributeElementType(attribute);
     }
 
     @Override
-    public Class<? extends AttributeDescription> getAttributeDataType(int attribute) {
+    public Class<? extends AttributeDescription> getAttributeDataType(final int attribute) {
         return proxy.getAttributeDataType(attribute);
     }
 
     @Override
-    public Object getAttributeDefaultValue(int attribute) {
+    public Object getAttributeDefaultValue(final int attribute) {
         return proxy.getAttributeDefaultValue(attribute);
     }
 }

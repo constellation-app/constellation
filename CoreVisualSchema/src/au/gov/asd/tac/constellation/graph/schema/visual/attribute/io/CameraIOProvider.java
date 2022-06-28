@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,58 +58,38 @@ public final class CameraIOProvider extends AbstractGraphIOProvider {
     private static final String BOUNDING_BOX = "bounding_box";
     private static final String VISIBILITY_LOW = "visibility_low";
     private static final String VISIBILITY_HIGH = "visibility_high";
-    private static final String VISIBILITY_VALUE = "visibility_value";
-    private static final String VISIBILITY_WIDTH = "visibility_width";
     private static final String MIX_RATIO = "mix_ratio";
 
+    /**
+     * Get a string representing the type of data that this provider handles.
+     * 
+     * @return A unique name indicating the type of data handled by this
+     * provider.
+     */
     @Override
     public String getName() {
         return CameraAttributeDescription.ATTRIBUTE_NAME;
     }
 
     /**
-     * Write a Camera object into a JSON ObjectNode.
-     *
-     * @param attr
-     * @param graph
-     *
-     * @throws IOException
-     */
-    @Override
-    public void writeObject(final Attribute attr, final int elementId, final com.fasterxml.jackson.core.JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
-        if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
-            final Camera camera = (Camera) graph.getObjectValue(attr.getId(), elementId);
-            if (camera == null) {
-                jsonGenerator.writeNullField(attr.getName());
-            } else {
-
-                jsonGenerator.writeObjectFieldStart(attr.getName());
-
-                addVector(jsonGenerator, LOOK_AT_EYE, camera.lookAtEye);
-                addVector(jsonGenerator, LOOK_AT_CENTRE, camera.lookAtCentre);
-                addVector(jsonGenerator, LOOK_AT_UP, camera.lookAtUp);
-                addVector(jsonGenerator, LOOK_AT_ROTATION, camera.lookAtRotation);
-                addVector(jsonGenerator, LOOK_AT_PREVIOUS_EYE, camera.lookAtPreviousEye);
-                addVector(jsonGenerator, LOOK_AT_PREVIOUS_CENTRE, camera.lookAtPreviousCentre);
-                addVector(jsonGenerator, LOOK_AT_PREVIOUS_UP, camera.lookAtPreviousUp);
-                addVector(jsonGenerator, LOOK_AT_PREVIOUS_ROTATION, camera.lookAtPreviousRotation);
-
-                addFrame(jsonGenerator, FRAME, camera.getObjectFrame());
-                addBoundingBox(jsonGenerator, BOUNDING_BOX, camera.boundingBox);
-                jsonGenerator.writeNumberField(VISIBILITY_LOW, camera.getVisibilityLow());
-                jsonGenerator.writeNumberField(VISIBILITY_HIGH, camera.getVisibilityHigh());
-                jsonGenerator.writeNumberField(MIX_RATIO, camera.getMixRatio());
-
-                jsonGenerator.writeEndObject();
-            }
-        }
-    }
-
-    /**
-     * Create a new Camera object from a JsonNode.
-     *
-     * @param jnode The JsonNode to deserialise a Camera instance from.
-     * @param graph
+     * Deserialise an object from a JsonNode.
+     * <p>
+     * Refer to base class for detailed description.
+     * 
+     * @param attributeId The id of the attribute being read.
+     * @param elementId The id of the element being read.
+     * @param jnode The JsonNode to read from.
+     * @param graph The graph that the resulting object will be placed in. Provided in case
+     * the object requires some graph data.
+     * @param vertexMap (not used) A mapping from a vertex id in the file to the vertex id
+     * in the graph.
+     * @param transactionMap (not used) A mapping from a transaction id in the file to the
+     * transaction id in the graph.
+     * @param byteReader (not used) The byte reader containing ancillary data (e.g. images)
+     * that doesn't easily fit into a JSON document.
+     * @param cache (not used) a cache that can be used to dedup identical instances of the
+     * same immutable objects.
+     * @throws java.io.IOException If there's a problem reading the document. 
      */
     @Override
     public void readObject(int attributeId, int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) {
@@ -155,11 +135,56 @@ public final class CameraIOProvider extends AbstractGraphIOProvider {
     }
 
     /**
+     * Write this object to the JSON generator.
+     * <p>
+     * Refer to base class for detailed description.
+     * 
+     * @param attr The attribute being written.
+     * @param elementId The id of the element being written.
+     * @param jsonGenerator The JsonGenerator used to write to the JSON document.
+     * @param graph The graph that the object belongs to. Provided in case the object requires some 
+     * graph data.
+     * @param byteWriter (not used)  For ancillary data (e.g. images) that doesn't easily
+     * fit into a JSON document.
+     * @param verbose Determines whether to write default values of attributes or not.
+     * @throws IOException 
+     */
+    @Override
+    public void writeObject(final Attribute attr, final int elementId, final com.fasterxml.jackson.core.JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
+        if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
+            final Camera camera = (Camera) graph.getObjectValue(attr.getId(), elementId);
+            if (camera == null) {
+                jsonGenerator.writeNullField(attr.getName());
+            } else {
+
+                jsonGenerator.writeObjectFieldStart(attr.getName());
+
+                addVector(jsonGenerator, LOOK_AT_EYE, camera.lookAtEye);
+                addVector(jsonGenerator, LOOK_AT_CENTRE, camera.lookAtCentre);
+                addVector(jsonGenerator, LOOK_AT_UP, camera.lookAtUp);
+                addVector(jsonGenerator, LOOK_AT_ROTATION, camera.lookAtRotation);
+                addVector(jsonGenerator, LOOK_AT_PREVIOUS_EYE, camera.lookAtPreviousEye);
+                addVector(jsonGenerator, LOOK_AT_PREVIOUS_CENTRE, camera.lookAtPreviousCentre);
+                addVector(jsonGenerator, LOOK_AT_PREVIOUS_UP, camera.lookAtPreviousUp);
+                addVector(jsonGenerator, LOOK_AT_PREVIOUS_ROTATION, camera.lookAtPreviousRotation);
+
+                addFrame(jsonGenerator, FRAME, camera.getObjectFrame());
+                addBoundingBox(jsonGenerator, BOUNDING_BOX, camera.boundingBox);
+                jsonGenerator.writeNumberField(VISIBILITY_LOW, camera.getVisibilityLow());
+                jsonGenerator.writeNumberField(VISIBILITY_HIGH, camera.getVisibilityHigh());
+                jsonGenerator.writeNumberField(MIX_RATIO, camera.getMixRatio());
+
+                jsonGenerator.writeEndObject();
+            }
+        }
+    }
+
+    /**
      * Helper method to get a Frame from a JsonNode.
      *
-     * @param node
-     * @param label
-     * @return
+     * @param node The node to get the frame from.
+     * @param label Label of field to extract.
+     * @return Extracted frame node containing origin, forward, and up fields.
      */
     private static Frame getFrame(final JsonNode node, final String label) {
         final JsonNode frameNode = node.get(label);
@@ -173,12 +198,15 @@ public final class CameraIOProvider extends AbstractGraphIOProvider {
 
     /**
      * Helper method to get a bounding box from a JsonNode.
+     * Returns bounding box found in supplied JsonNode with supplied label. If bounding box field isn't found,
+     * is invalid, or is empty the returned bounding box is set as empty.
      *
-     * @param bb
-     * @param node
-     * @param label
-     * @return
+     * @param bb The bounding box to return.
+     * @param node The node to get the bounding box from.
+     * @param label Label of field to extract.
+     * @return Extracted bounding box or an empty bounding box record if no box found.
      */
+    // TODO: why pass in the object, why not just return it - which is different to other helpers.
     private static BoundingBox getBoundingBox(final BoundingBox bb, final JsonNode node, final String label) {
         final JsonNode bbNode = node.isNull() ? null : node.get(label);
         final boolean isEmpty = bbNode == null || bbNode.get("is_empty").asBoolean();
@@ -204,7 +232,7 @@ public final class CameraIOProvider extends AbstractGraphIOProvider {
      * @param node The JsonNode to get the Vector3f from.
      * @param label The label of the Vector3f node.
      *
-     * @return
+     * @return The extracted vector, or null if child node with supplied label is null.
      */
     private static Vector3f getVector(final JsonNode node, final String label) {
         if (node.hasNonNull(label)) {

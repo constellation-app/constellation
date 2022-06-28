@@ -17,16 +17,11 @@ package au.gov.asd.tac.constellation.utilities.geospatial;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Fill;
@@ -37,15 +32,12 @@ import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Stroke;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.StyleFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory;
-import org.opengis.filter.FilterFactory2;
 
 /**
  * Style Generator.
@@ -55,7 +47,6 @@ import org.opengis.filter.FilterFactory2;
 public class StyleGenerator {
 
     private static final Logger LOGGER = Logger.getLogger(StyleGenerator.class.getName());
-    private static final String ATTRIBUTE = "name";
     private static final Iterator<Color> COLORS = Colors.iterator();
 
     public static Style createStyle(final SimpleFeatureCollection features) {
@@ -106,39 +97,6 @@ public class StyleGenerator {
         final Style style = styleFactory.createStyle();
         style.getDescription().setTitle("Polygon Style");
         style.featureTypeStyles().add(fts);
-
-        return style;
-    }
-
-    private static Style createPolygonStyle(final SimpleFeatureCollection features) {
-        // get name based rule names
-        final List<Rule> ruleList = new ArrayList<>();
-        final Set<String> nameSet = new HashSet<>();
-
-        // setup custom rules for polygons
-        final SimpleFeatureIterator featureIterator = features.features();
-        while (featureIterator.hasNext()) {
-            final SimpleFeature feature = featureIterator.next();
-            if (nameSet.add((String) feature.getAttribute(ATTRIBUTE))) {
-                ruleList.add(makeFillRule(feature));
-            }
-        }
-
-        // create a partially opaque outline stroke
-        final Rule defaultRule = makeFillRule();
-        defaultRule.setElseFilter(true);
-        defaultRule.setName("Default Rule");
-        ruleList.add(defaultRule);
-
-        // Create rule defined style
-        final Rule[] rules = ruleList.toArray(new Rule[ruleList.size()]);
-        final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory();
-        final FeatureTypeStyle featureTypeStyle = styleFactory.createFeatureTypeStyle(rules);
-
-        final StyleBuilder builder = new StyleBuilder();
-        final Style style = builder.createStyle();
-        style.getDescription().setTitle("Polygon Style");
-        style.featureTypeStyles().add(featureTypeStyle);
 
         return style;
     }
@@ -203,43 +161,6 @@ public class StyleGenerator {
         return style;
     }
 
-    private static Rule makeFillRule() {
-        final FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
-        final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory();
-
-        // create a partially opaque outline stroke
-        final Stroke stroke = styleFactory.createStroke(
-                filterFactory.literal(Color.BLACK),
-                filterFactory.literal(1),
-                filterFactory.literal(.5)
-        );
-
-        // create a partially opaque fill
-        Fill fill = styleFactory.createFill(
-                filterFactory.literal(COLORS.next()),
-                filterFactory.literal(.5)
-        );
-
-        // setting the geometryPropertyName arg to null signals that we want to draw the default geometry of features
-        final PolygonSymbolizer sym = styleFactory.createPolygonSymbolizer(stroke, fill, null);
-
-        final Rule rule = styleFactory.createRule();
-        rule.symbolizers().add(sym);
-
-        return rule;
-    }
-
-    private static Rule makeFillRule(final SimpleFeature feature) {
-        final Rule rule = makeFillRule();
-        rule.setName((String) feature.getAttribute(ATTRIBUTE));
-
-        // create a filter based on name
-        final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-        rule.setFilter(ff.equals(ff.property(ATTRIBUTE), ff.literal(feature.getAttribute(ATTRIBUTE))));
-
-        return rule;
-    }
-
     public static String formatColor(final Color color) {
         // convert a color to the expected kml format (aabbggrr)
         return "bf" + String.format("%02x", (0xFF & color.getBlue()))
@@ -258,7 +179,7 @@ public class StyleGenerator {
         public static Iterator<Color> iterator() {
             return new Iterator<Color>() {
 
-                private final AtomicDouble counter = new AtomicDouble(0d);
+                private final AtomicDouble counter = new AtomicDouble(0D);
 
                 @Override
                 public boolean hasNext() {
@@ -270,10 +191,10 @@ public class StyleGenerator {
                     if (!hasNext()) {
                         throw new NoSuchElementException();
                     }
-                    double currColorValue = counter.getAndAdd(1d);
+                    double currColorValue = counter.getAndAdd(1D);
                     double num = (currColorValue - 1.0) * 0.618033988749895;
                     double fmod = num - Math.floor(num);
-                    return Color.getHSBColor((float) num, (float) Math.sqrt(fmod), 0.8f);
+                    return Color.getHSBColor((float) num, (float) Math.sqrt(fmod), 0.8F);
                 }
 
                 @Override

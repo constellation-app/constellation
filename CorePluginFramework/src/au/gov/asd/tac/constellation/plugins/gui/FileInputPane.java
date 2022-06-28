@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextArea;
@@ -37,6 +36,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A text-box and file chooser that together allows the selection or manual
@@ -57,13 +57,14 @@ public class FileInputPane extends HBox {
     public static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
     private final Button fileAddButton;
     private final TextInputControl field;
+    private final boolean required;
     private static final Logger LOGGER = Logger.getLogger(FileInputPane.class.getName());
 
     public FileInputPane(final PluginParameter<FileParameterValue> parameter) {
         this(parameter, DEFAULT_WIDTH, null);
     }
 
-    public FileInputPane(final PluginParameter<FileParameterValue> parameter, int defaultWidth) {
+    public FileInputPane(final PluginParameter<FileParameterValue> parameter, final int defaultWidth) {
         this(parameter, defaultWidth, null);
     }
 
@@ -74,14 +75,16 @@ public class FileInputPane extends HBox {
      * @param defaultWidth default width (in pixels)
      * @param suggestedHeight suggested hight (in lines)
      */
-    public FileInputPane(final PluginParameter<FileParameterValue> parameter, int defaultWidth, Integer suggestedHeight) {
+    public FileInputPane(final PluginParameter<FileParameterValue> parameter, final int defaultWidth, Integer suggestedHeight) {
         if (suggestedHeight == null) {
             suggestedHeight = 1;
         }
+        
+        required = parameter.isRequired();
 
         final FileParameterValue paramaterValue = parameter.getParameterValue();
         fileAddButton = new Button(paramaterValue.getKind() == FileParameterKind.SAVE ? "Save" : "Open");
-        fileAddButton.setOnAction((ActionEvent event) -> {
+        fileAddButton.setOnAction(event -> {
             final FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(DEFAULT_DIRECTORY);
             final ExtensionFilter filter = FileParameterType.getFileFilters(parameter);
@@ -106,15 +109,6 @@ public class FileInputPane extends HBox {
                 case SAVE:
                     final File saveFile = fileChooser.showSaveDialog(getScene().getWindow());
                     if (saveFile != null) {
-//                        if (filter != null && filter.getExtensions().size() == 1) {
-//                            final String fileExtension = filter.getExtensions().get(0).substring(1);
-//                            if (!file.getName().endsWith(fileExtension)) {
-//                                final File fileWithExtension = new File(file.getAbsolutePath() + fileExtension);
-//                                files.add(fileWithExtension);
-//                            }
-//                        } else {
-//                            files.add(file);
-//                        }
                         files.add(saveFile);
                     }
                     break;
@@ -147,9 +141,9 @@ public class FileInputPane extends HBox {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
 
-        field.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+        field.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.DELETE) {
-                IndexRange selection = field.getSelection();
+                final IndexRange selection = field.getSelection();
                 if (selection.getLength() == 0) {
                     field.deleteNextChar();
                 } else {
@@ -196,9 +190,9 @@ public class FileInputPane extends HBox {
         tooltip.setStyle("-fx-text-fill: black;");
         field.textProperty().addListener((observableValue, oldValue, newValue) -> {
             // Validation
-            String error = parameter.validateString(field.getText());
-            if (error != null) {
-                tooltip.setText(error);
+            final String error = parameter.validateString(field.getText());
+            if ((required && StringUtils.isBlank(field.getText())) || error != null) {
+                tooltip.setText(StringUtils.isNotBlank(error) ? error : "File is required!");
                 field.setTooltip(tooltip);
                 field.setId("invalid");
             } else {
@@ -234,7 +228,7 @@ public class FileInputPane extends HBox {
             });
         });
 
-        HBox fieldAndAddButton = new HBox();
+        final HBox fieldAndAddButton = new HBox();
         fieldAndAddButton.setSpacing(2);
         fieldAndAddButton.getChildren().addAll(field, fileAddButton);
         getChildren().add(fieldAndAddButton);

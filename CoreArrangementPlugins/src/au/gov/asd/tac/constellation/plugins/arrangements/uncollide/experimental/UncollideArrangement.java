@@ -104,7 +104,7 @@ public class UncollideArrangement implements Arranger {
         }
     }
 
-    private int nudgeAllTwins(GraphWriteMethods wg, AbstractTree tree) {
+    private int nudgeAllTwins(final GraphWriteMethods wg, final AbstractTree tree) {
         List<Integer> twins;
         int numberNoTwins = 0;
         for (int subject = 0; subject < wg.getVertexCount(); subject++) {
@@ -198,7 +198,7 @@ public class UncollideArrangement implements Arranger {
         }
     }
 
-    private void nudge(GraphWriteMethods wg, final int axisId, final double delta, final int subject, final int twin, final double nudge) {
+    private void nudge(final GraphWriteMethods wg, final int axisId, final double delta, final int subject, final int twin, final double nudge) {
         if (delta > 0) {
             wg.setFloatValue(axisId, subject, wg.getFloatValue(axisId, subject) + (float) nudge);
             wg.setFloatValue(axisId, twin, wg.getFloatValue(axisId, twin) - (float) nudge);
@@ -211,7 +211,7 @@ public class UncollideArrangement implements Arranger {
     }
 
     @Override
-    public void setMaintainMean(boolean b) {
+    public void setMaintainMean(final boolean b) {
         maintainMean = b;
     }
 }

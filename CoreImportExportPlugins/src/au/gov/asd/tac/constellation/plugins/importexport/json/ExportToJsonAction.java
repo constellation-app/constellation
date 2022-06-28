@@ -18,10 +18,12 @@ package au.gov.asd.tac.constellation.plugins.importexport.json;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -36,8 +38,6 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_ExportToJsonAction=To JSON...")
 public final class ExportToJsonAction implements ActionListener {
 
-    private static final String EXT = ".json";
-
     final GraphNode context;
 
     public ExportToJsonAction(final GraphNode context) {
@@ -48,14 +48,13 @@ public final class ExportToJsonAction implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         final FileChooserBuilder fChooser = new FileChooserBuilder("ExportJson")
                 .setTitle("Export to JSON")
+                .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
-                        final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && name.toLowerCase().endsWith(EXT)) {
+                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(pathName.getName(), FileExtensionConstants.JSON)) {
                             return true;
                         }
-
                         return pathName.isDirectory();
                     }
 
@@ -68,13 +67,13 @@ public final class ExportToJsonAction implements ActionListener {
         final File file = fChooser.showSaveDialog();
         if (file != null) {
             String fnam = file.getAbsolutePath();
-            if (!fnam.toLowerCase().endsWith(EXT)) {
-                fnam += EXT;
+            if (!StringUtils.endsWithIgnoreCase(fnam, FileExtensionConstants.JSON)) {
+                fnam += FileExtensionConstants.JSON;
             }
 
-            PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_JSON)
+                PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_JSON)
                     .withParameter(ExportToJsonPlugin.FILE_NAME_PARAMETER_ID, fnam)
-                    .executeLater(context.getGraph());
+                        .executeLater(context.getGraph());
         }
     }
 }

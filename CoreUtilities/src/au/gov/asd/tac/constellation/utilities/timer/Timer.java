@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.timer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * A utility class to allow easy timing of sections of code.
  *
@@ -22,8 +25,14 @@ package au.gov.asd.tac.constellation.utilities.timer;
  */
 public class Timer {
 
+    private static final Logger LOGGER = Logger.getLogger(Timer.class.getName());
+
     private long startTime;
 
+    protected long getStartTime() {
+        return startTime;
+    }
+    
     /**
      * Starts the timer.
      *
@@ -44,8 +53,9 @@ public class Timer {
      */
     public void stop(final String message) {
         final long endTime = System.nanoTime();
-        long difference = endTime - startTime;
+        final long difference = endTime - startTime;
         startTime = endTime;
-        System.out.println(message + ": " + ((double) difference / 1000000000.0));
+        final double time = (difference / 1000000000.0);
+        LOGGER.log(Level.INFO, message, time);
     }
 }

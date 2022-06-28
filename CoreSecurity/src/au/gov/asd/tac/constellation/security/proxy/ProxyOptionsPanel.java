@@ -67,7 +67,7 @@ public class ProxyOptionsPanel extends javax.swing.JPanel {
         }
     }
 
-    boolean getUseDefaultSettings() {
+    boolean isUseDefaultSettingsSelected() {
         return useDefaultSettingsCheck.isSelected();
     }
 

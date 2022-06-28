@@ -111,13 +111,11 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
         // run plugins
         final List<R> analyticResults = new ArrayList<>();
         final Map<Future<?>, AnalyticPlugin<R>> pluginFutures = new HashMap<>();
-        pluginsWithParameters.forEach((plugin, parameters) -> {
-            pluginFutures.put(
-                    PluginExecution.withPlugin(plugin)
-                            .withParameters(parameters)
-                            .executeLater(graph),
-                    plugin);
-        });
+        pluginsWithParameters.forEach((plugin, parameters) -> pluginFutures.put(
+                PluginExecution.withPlugin(plugin)
+                        .withParameters(parameters)
+                        .executeLater(graph),
+                plugin));
         pluginFutures.forEach((future, plugin) -> {
             try {
                 future.get();
@@ -127,9 +125,7 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
                 }
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, "Analytic answering was interrupted");
-                pluginFutures.keySet().forEach(redundantFuture -> {
-                    redundantFuture.cancel(true);
-                });
+                pluginFutures.keySet().forEach(redundantFuture -> redundantFuture.cancel(true));
             } catch (final CancellationException | ExecutionException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 exceptions.add(ex);

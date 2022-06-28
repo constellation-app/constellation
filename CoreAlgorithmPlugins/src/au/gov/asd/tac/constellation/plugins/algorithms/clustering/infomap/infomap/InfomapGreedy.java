@@ -24,16 +24,16 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Con
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.InfoMath;
 import static au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.InfoMath.plogp;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.MultiMap;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -41,22 +41,24 @@ import java.util.TreeMap;
  */
 public abstract class InfomapGreedy extends InfomapBase {
 
+    private static final Logger LOGGER = Logger.getLogger(InfomapGreedy.class.getName());
+
     protected FlowBase[] moduleFlowData;
     protected int[] moduleMembers;
     protected ArrayList<Integer> emptyModules;
 
-    protected double nodeFlow_log_nodeFlow; // Constant while the leaf network is the same.
-    protected double flow_log_flow; // node.(flow + exitFlow)
-    protected double exit_log_exit;
-    protected double enter_log_enter;
+    protected double nodeFlowLogNodeFlow; // Constant while the leaf network is the same.
+    protected double flowLogFlow; // node.(flow + exitFlow)
+    protected double exitLogExit;
+    protected double enterLogEnter;
     protected double enterFlow;
-    protected double enterFlow_log_enterFlow;
+    protected double enterFlowLogEnterFlow;
 
     // For hierarchical.
     protected double exitNetworkFlow;
-    protected double exitNetworkFlow_log_exitNetworkFlow;
+    protected double exitNetworkFlowLogExitNetworkFlow;
 
-    public InfomapGreedy(final Config config, final NodeFactoryBase nodeFactory, final GraphReadMethods rg) {
+    protected InfomapGreedy(final Config config, final NodeFactoryBase nodeFactory, final GraphReadMethods rg) {
         super(config, nodeFactory, rg);
 
         moduleFlowData = new FlowBase[0];
@@ -65,7 +67,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     public void initEnterExitFlow() {
         if (DEBUG) {
-            System.out.printf("%s.initEnterExitFlow()%n", getClass().getSimpleName());
+            LOGGER.log(Level.INFO, "initEnterExitFlow() {0}", getClass().getSimpleName());
         }
 
         for (final NodeBase node : treeData.getLeaves()) {
@@ -84,12 +86,12 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     @Override
     protected void initConstantInfomapTerms() {
-        nodeFlow_log_nodeFlow = 0;
+        nodeFlowLogNodeFlow = 0;
 
         // For each module...
         for (final NodeBase nodeBase : activeNetwork) {
             final Node node = getNode(nodeBase);
-            nodeFlow_log_nodeFlow += plogp(node.getData().getFlow());
+            nodeFlowLogNodeFlow += plogp(node.getData().getFlow());
         }
     }
 
@@ -113,13 +115,14 @@ public abstract class InfomapGreedy extends InfomapBase {
         calculateCodelengthFromActiveNetwork(hasDetailedBalance());
     }
 
-    void calculateCodelengthFromActiveNetwork(final boolean detailedBalance) {
+    protected void calculateCodelengthFromActiveNetwork(final boolean detailedBalance) {
         if (DEBUG) {
-            System.out.printf("%s.calculateCodelengthFromActiveNetwork(%s)%n", getClass().getSimpleName(), detailedBalance);
+            final String log = String.format("%s.calculateCodelengthFromActiveNetwork(%s)%n", getClass().getSimpleName(), detailedBalance);
+            LOGGER.log(Level.INFO, log);
         }
 
-        flow_log_flow = 0;
-        exit_log_exit = 0;
+        flowLogFlow = 0;
+        exitLogExit = 0;
         enterFlow = 0;
 
         if (detailedBalance) {
@@ -128,40 +131,40 @@ public abstract class InfomapGreedy extends InfomapBase {
                 final Node node = getNode(nodeBase);
 
                 // Own node/module codebook.
-                flow_log_flow += plogp(node.getData().getFlow() + node.getData().getExitFlow());
+                flowLogFlow += plogp(node.getData().getFlow() + node.getData().getExitFlow());
 
                 // Use of index codebook.
                 enterFlow += node.getData().getExitFlow();
-                exit_log_exit += plogp(node.getData().getExitFlow());
+                exitLogExit += plogp(node.getData().getExitFlow());
             }
 
             enterFlow += exitNetworkFlow;
-            enterFlow_log_enterFlow = plogp(enterFlow);
+            enterFlowLogEnterFlow = plogp(enterFlow);
 
-            indexCodelength = enterFlow_log_enterFlow - exit_log_exit - exitNetworkFlow_log_exitNetworkFlow;
-            moduleCodelength = -exit_log_exit + flow_log_flow - nodeFlow_log_nodeFlow;
+            indexCodelength = enterFlowLogEnterFlow - exitLogExit - exitNetworkFlowLogExitNetworkFlow;
+            moduleCodelength = -exitLogExit + flowLogFlow - nodeFlowLogNodeFlow;
             codelength = indexCodelength + moduleCodelength;
         } else {
-            enter_log_enter = 0;
+            enterLogEnter = 0;
 
             // For each module...
             for (final NodeBase nodeBase : activeNetwork) {
                 final Node node = getNode(nodeBase);
 
                 // Own node/module codebook.
-                flow_log_flow += plogp(node.getData().getFlow() + node.getData().getExitFlow());
+                flowLogFlow += plogp(node.getData().getFlow() + node.getData().getExitFlow());
 
                 // Use of index codebook.
-                enter_log_enter += plogp(node.getData().getEnterFlow());
-                exit_log_exit += plogp(node.getData().getExitFlow());
+                enterLogEnter += plogp(node.getData().getEnterFlow());
+                exitLogExit += plogp(node.getData().getExitFlow());
                 enterFlow += node.getData().getEnterFlow();
             }
 
             enterFlow += exitNetworkFlow;
-            enterFlow_log_enterFlow = plogp(enterFlow);
+            enterFlowLogEnterFlow = plogp(enterFlow);
 
-            indexCodelength = enterFlow_log_enterFlow - enter_log_enter - exitNetworkFlow_log_exitNetworkFlow;
-            moduleCodelength = -exit_log_exit + flow_log_flow - nodeFlow_log_nodeFlow;
+            indexCodelength = enterFlowLogEnterFlow - enterLogEnter - exitNetworkFlowLogExitNetworkFlow;
+            moduleCodelength = -exitLogExit + flowLogFlow - nodeFlowLogNodeFlow;
             codelength = indexCodelength + moduleCodelength;
         }
     }
@@ -208,7 +211,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
         double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
 
-        final double delta_enter = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlow_log_enterFlow;
+        final double delta_enter = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlowLogEnterFlow;
 
         final double delta_enter_log_enter
                 = -plogp(moduleFlowData[oldModule].getEnterFlow())
@@ -251,13 +254,13 @@ public abstract class InfomapGreedy extends InfomapBase {
         enterFlow
                 -= moduleFlowData[oldModule].getEnterFlow()
                 + moduleFlowData[newModule].getEnterFlow();
-        enter_log_enter
+        enterLogEnter
                 -= plogp(moduleFlowData[oldModule].getEnterFlow())
                 + plogp(moduleFlowData[newModule].getEnterFlow());
-        exit_log_exit
+        exitLogExit
                 -= plogp(moduleFlowData[oldModule].getExitFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow());
-        flow_log_flow
+        flowLogFlow
                 -= plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow());
 
@@ -272,20 +275,20 @@ public abstract class InfomapGreedy extends InfomapBase {
         enterFlow
                 += moduleFlowData[oldModule].getEnterFlow()
                 + moduleFlowData[newModule].getEnterFlow();
-        enter_log_enter
+        enterLogEnter
                 += plogp(moduleFlowData[oldModule].getEnterFlow())
                 + plogp(moduleFlowData[newModule].getEnterFlow());
-        exit_log_exit
+        exitLogExit
                 += plogp(moduleFlowData[oldModule].getExitFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow());
-        flow_log_flow
+        flowLogFlow
                 += plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow());
 
-        enterFlow_log_enterFlow = plogp(enterFlow);
+        enterFlowLogEnterFlow = plogp(enterFlow);
 
-        indexCodelength = enterFlow_log_enterFlow - enter_log_enter - exitNetworkFlow_log_exitNetworkFlow;
-        moduleCodelength = -exit_log_exit + flow_log_flow - nodeFlow_log_nodeFlow;
+        indexCodelength = enterFlowLogEnterFlow - enterLogEnter - exitNetworkFlowLogExitNetworkFlow;
+        moduleCodelength = -exitLogExit + flowLogFlow - nodeFlowLogNodeFlow;
         codelength = indexCodelength + moduleCodelength;
     }
 
@@ -301,7 +304,6 @@ public abstract class InfomapGreedy extends InfomapBase {
                 node = node.getParent();
                 final double parentFlow = getNode(node).getData().getFlow();
                 getNode(node).getData().setFlow(parentFlow + flow);
-//                getNode(*node).data.flow += flow;
             }
         }
     }
@@ -342,7 +344,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected void generateNetworkFromChildren(final NodeBase parent) {
         if (DEBUG) {
-            System.out.printf("%s.generateNetworkFromChildren%n", getClass().getSimpleName());
+            LOGGER.log(Level.INFO, "{0}.generateNetworkFromChildren", getClass().getSimpleName());
         }
 
         exitNetworkFlow = 0;
@@ -375,7 +377,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         final double parentExit = getNode(parent).getData().getExitFlow();
 
         exitNetworkFlow = parentExit;
-        exitNetworkFlow_log_exitNetworkFlow = plogp(exitNetworkFlow);
+        exitNetworkFlowLogExitNetworkFlow = plogp(exitNetworkFlow);
     }
 
     @Override
@@ -394,7 +396,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected void moveNodesToPredefinedModules() {
         if (DEBUG) {
-            System.out.printf("%s.moveNodesToPredefinedModules%n", getClass().getSimpleName());
+            LOGGER.log(Level.INFO, "{0}.moveNodesToPredefinedModules", getClass().getSimpleName());
         }
 
         // Size of active network and cluster array should match.
@@ -403,8 +405,9 @@ public abstract class InfomapGreedy extends InfomapBase {
         final int numNodes = activeNetwork.size();
 
         if (DEBUG) {
-            System.out.printf("Begin moving %d nodes to predefined modules, starting with codelength %f...\n",
+            final String log = String.format("Begin moving %d nodes to predefined modules, starting with codelength %f...\n",
                     numNodes, codelength);
+            LOGGER.log(Level.INFO, log);
         }
 
         int numMoved = 0;
@@ -474,8 +477,9 @@ public abstract class InfomapGreedy extends InfomapBase {
         }
 
         if (DEBUG) {
-            System.out.printf("Done! Moved %d nodes into %d modules to codelength: %.5f\n",
+            final String log = String.format("Done! Moved %d nodes into %d modules to codelength: %.5f\n",
                     numMoved, getNumActiveModules(), codelength);
+            LOGGER.log(Level.INFO, log);
         }
     }
 
@@ -496,7 +500,7 @@ public abstract class InfomapGreedy extends InfomapBase {
      */
     int tryMoveEachNodeIntoBestModule() {
         if (DEBUG) {
-            System.out.printf("%s.tryMoveEachNodeIntoBestModule%n", getClass().getSimpleName());
+            LOGGER.log(Level.INFO, "{0}.tryMoveEachNodeIntoBestModule", getClass().getSimpleName());
         }
 
         final int numNodes = activeNetwork.size();
@@ -532,7 +536,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                     || (config.isIncludeSelfLinks()
                     && (current.getOutDegree() == 1 && current.getInDegree() == 1)
                     && current.getOutEdges().get(0).getTarget().equals(current))) {
-                Logf.printf("SKIPPING isolated node %s\n", current);
+                LOGGER.log(Level.INFO, "SKIPPING isolated node {0}", current);
                 //TODO: if not skipping self-links, this yields different results from moveNodesToPredefinedModules!!
                 assert !config.isIncludeSelfLinks();
                 continue;
@@ -611,11 +615,10 @@ public abstract class InfomapGreedy extends InfomapBase {
             // Store the DeltaFlow of the current module.
             final DeltaFlow oldModuleDelta = new DeltaFlow(moduleDeltaEnterExit[redirect[current.getIndex()] - offset]);
 
-            if (Logf.DEBUGF) {
+            if (DEBUG) {
                 for (int j = 0; j < numModuleLinks - 1; ++j) {
-                    Logf.printf("%d ", moduleDeltaEnterExit[j].getModule());
+                    LOGGER.log(Level.INFO, "{0}", moduleDeltaEnterExit[j].getModule());
                 }
-                Logf.printf(SeparatorConstants.NEWLINE);
             }
 
             // Randomize link order for optimized search.
@@ -646,7 +649,7 @@ public abstract class InfomapGreedy extends InfomapBase {
             // Make best possible move.
             if (bestDeltaModule.getModule() != current.getIndex()) {
                 final int bestModuleIndex = bestDeltaModule.getModule();
-                //Update empty module vector.
+                // Update empty module vector.
                 if (moduleMembers[bestModuleIndex] == 0) {
                     emptyModules.remove(emptyModules.size() - 1);
                 }
@@ -673,7 +676,8 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected int consolidateModules(final boolean replaceExistingStructure, final boolean asSubModules) {
         if (DEBUG) {
-            System.out.printf("%s.consolidateModules(%s,%s)%n", getClass().getSimpleName(), replaceExistingStructure, asSubModules);
+            final String log = String.format("%s.consolidateModules(%s,%s)%n", getClass().getSimpleName(), replaceExistingStructure, asSubModules);
+            LOGGER.log(Level.INFO, log);
         }
 
         final int numNodes = activeNetwork.size();
@@ -693,8 +697,9 @@ public abstract class InfomapGreedy extends InfomapBase {
             // Happens after optimizing fine-tune and when moving leaf nodes to super clusters.
             if (activeNetworkAlreadyHaveModuleLevel) {
                 if (DEBUG) {
-                    System.out.printf("Replace existing %d modules with its children before consolidating the %d dynamic modules...\n",
+                    final String log = String.format("Replace existing %d modules with its children before consolidating the %d dynamic modules...\n",
                             getNumTopModules(), getNumActiveModules());
+                    LOGGER.log(Level.INFO, log);
                 }
                 getRoot().replaceChildrenWithGrandChildren();
                 assert activeNetwork.get(0).getParent() == getRoot();
@@ -718,8 +723,9 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         if (asSubModules) {
             if (DEBUG) {
-                System.out.printf("Consolidated %d submodules under %d modules, store module structure before releasing it...\n",
+                final String log = String.format("Consolidated %d submodules under %d modules, store module structure before releasing it...\n",
                         getNumActiveModules(), getNumTopModules());
+                LOGGER.log(Level.INFO, log);
             }
 
             // Store the module structure on the submodules.
@@ -739,11 +745,11 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         // Aggregate links from lower level to the new modular level
         /*
-         typedef std::pair<NodeBase*, NodeBase*> NodePair;
-         typedef std::map<NodePair, double> EdgeMap;
-         EdgeMap moduleLinks;
+         typedef std::pair<NodeBase*, NodeBase*> NodePair
+         typedef std::map<NodePair, double> EdgeMap
+         EdgeMap moduleLinks
          */
-        final TreeMap<Tuple<NodeBase, NodeBase>, Double> moduleLinks = new TreeMap<>((lhs, rhs) -> {
+        final Map<Tuple<NodeBase, NodeBase>, Double> moduleLinks = new TreeMap<>((lhs, rhs) -> {
             if (lhs.getFirst().getId() < rhs.getFirst().getId()) {
                 return -1;
             }
@@ -761,7 +767,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         for (final NodeBase node : activeNetwork) {
             final NodeBase parent = node.getParent();
 
-            for (Edge<NodeBase> edge : node.getOutEdges()) {
+            for (final Edge<NodeBase> edge : node.getOutEdges()) {
                 final NodeBase otherParent = edge.getTarget().getParent();
 
                 if (otherParent != parent) {
@@ -842,11 +848,10 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         final MultiMap<Double, NodeBase> sortedModules = new MultiMap<>((d1, d2) -> (int) Math.signum(d2 - d1));
 
-        if (Logf.DEBUGF && parent.getChildDegree() > 0) {
+        if (DEBUG && parent.getChildDegree() > 0) {
             for (final NodeBase child : parent.getChildren()) {
-                Logf.printf("[%d]", child.getId());
+                LOGGER.log(Level.INFO, "{0}", child.getId());
             }
-            Logf.printf(SeparatorConstants.NEWLINE);
         }
 
         for (final NodeBase child : parent.getChildren()) {
@@ -866,7 +871,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         }
     }
 
-    int getNumActiveModules() {
+    protected int getNumActiveModules() {
         return activeNetwork.size() - emptyModules.size();
     }
 
@@ -886,7 +891,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     private void dumpActiveNetwork(final String prefix) {
         for (final NodeBase node : activeNetwork) {
-            Logf.printf("  %s %s\n", prefix, node);
+            LOGGER.log(Level.INFO, prefix + " " + node);
         }
     }
 }

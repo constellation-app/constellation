@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import java.util.Arrays;
 import java.util.Map;
@@ -46,7 +47,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @Messages("TestParameterBuildingPlugin=Test Parameter Building")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "DEVELOPER", "CREATE"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.DEVELOPER, PluginTags.CREATE})
 public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
 
     public static final String LOCALDATE_PARAMETER_ID = PluginParameter.buildId(TestParameterBuildingPlugin.class, "localdate");
@@ -69,9 +70,8 @@ public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) { //    protected void query(final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException
         final Map<String, PluginParameter<?>> pmap = parameters.getParameters();
-        pmap.entrySet().stream().forEach(entry -> {
-            LOGGER.log(Level.INFO, "{0}: {1}", new Object[]{entry.getKey(), entry.getValue().getStringValue()});
-        });
+        pmap.entrySet().stream().forEach(entry
+                -> LOGGER.log(Level.INFO, "{0}: {1}", new Object[]{entry.getKey(), entry.getValue().getStringValue()}));
     }
 
     @Override
@@ -99,16 +99,15 @@ public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
         final PluginParameter<FloatParameterValue> thresholdParam = FloatParameterType.build(FLOAT_PARAMETER_ID);
         thresholdParam.setName(FLOAT_NAME);
         thresholdParam.setDescription(FLOAT_DESCRIPTION);
-        thresholdParam.setFloatValue(0f);
+        thresholdParam.setFloatValue(0F);
         FloatParameterType.setMinimum(thresholdParam, 0);
         FloatParameterType.setMaximum(thresholdParam, 1);
-        FloatParameterType.setStep(thresholdParam, 0.1f);
+        FloatParameterType.setStep(thresholdParam, 0.1F);
         params.addParameter(thresholdParam);
 
         final PluginParameter<BooleanParameterValue> caseParam = BooleanParameterType.build(BOOLEAN_PARAMETER_ID);
         caseParam.setName(SOME_BOOLEAN_NAME);
         caseParam.setDescription(SOME_BOOLEAN_DESCRIPTION);
-//        caseParam.setObjectValue(true);
         params.addParameter(caseParam);
 
         for (int i = 0; i < 2; i++) {

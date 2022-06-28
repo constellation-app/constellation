@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.whatsnew;
 
-import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;

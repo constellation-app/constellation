@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javax.swing.SwingUtilities;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.Exceptions;
 
 /**
  * Provides a file chooser dialog that allows the user to select the directory

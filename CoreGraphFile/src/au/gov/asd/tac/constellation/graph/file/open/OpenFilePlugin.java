@@ -22,13 +22,13 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
-import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.UserCancelException;
 import org.openide.util.lookup.ServiceProvider;
@@ -42,7 +42,7 @@ import org.openide.windows.WindowManager;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("OpenFilePlugin=Open File")
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.LOW_LEVEL})
 public class OpenFilePlugin extends SimpleReadPlugin {
 
     private boolean running;
@@ -60,14 +60,7 @@ public class OpenFilePlugin extends SimpleReadPlugin {
     protected JFileChooser prepareFileChooser() {
         final JFileChooser chooser = new FileChooser();
         chooser.setCurrentDirectory(getCurrentDirectory());
-        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
-
         return chooser;
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return new HelpCtx(this.getClass().getName());
     }
 
     /**
@@ -78,12 +71,10 @@ public class OpenFilePlugin extends SimpleReadPlugin {
      * @exception org.openide.util.UserCancelException if the user cancelled the
      * operation
      */
-    public static File[] chooseFilesToOpen(final JFileChooser chooser)
-            throws UserCancelException {
+    public static File[] chooseFilesToOpen(final JFileChooser chooser) throws UserCancelException {
         File[] files;
         do {
-            final int selectedOption = chooser.showOpenDialog(
-                    WindowManager.getDefault().getMainWindow());
+            final int selectedOption = chooser.showOpenDialog(WindowManager.getDefault().getMainWindow());
 
             if (selectedOption != JFileChooser.APPROVE_OPTION) {
                 throw new UserCancelException();
