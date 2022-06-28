@@ -8,6 +8,9 @@
             <tocitem text="Import" mergetype="javax.help.SortMerge">
                 <tocitem text="Extract Types from Text" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin"/>
                 <tocitem text="Extract Words from Text" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin"/>
+                <tocitem text="Import From GML File" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromGMLPlugin"/>
+                <tocitem text="Import From GraphML File" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromGraphMLPlugin"/>
+                <tocitem text="Import From Pajek File" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromPajekPlugin"/>
             </tocitem>
             <tocitem text="Clean" mergetype="javax.help.SortMerge">
                 <tocitem text="Merge Nodes" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin"/>
