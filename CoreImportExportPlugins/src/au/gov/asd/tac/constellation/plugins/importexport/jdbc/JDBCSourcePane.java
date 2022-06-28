@@ -429,8 +429,10 @@ public class JDBCSourcePane extends SourcePane {
      */
     @Override
     public void update(final ImportController importController) {
-        graphComboBox.getSelectionModel().select(((JDBCImportController) importController).getDestination());
-
+        graphComboBox.getItems().stream()
+                .filter(importDestination -> importController.getDestination().toString().equals(importDestination.toString()))
+                .findAny()
+                .ifPresent(graphComboBox.getSelectionModel()::select);
     }
 
     private boolean validateDriverParams(final TextField driverFilePath, final ComboBox driverName) {
