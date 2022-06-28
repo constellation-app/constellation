@@ -241,7 +241,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testHashFilePath() {
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.hashFilePath(anyString())).thenCallRealMethod();
         final String actual = RecentGraphScreenshotUtilities.hashFilePath("/test/path");
-        final String expected = "A19F6C462322BEF8D3CAD086ECA0E32A";
+        final String expected = "0C695C8BFF7AF91D321C237BDF969ADDBFB859BE8095D880F1D034737FBC35D2";
 
         assertEquals(actual, expected);
     }

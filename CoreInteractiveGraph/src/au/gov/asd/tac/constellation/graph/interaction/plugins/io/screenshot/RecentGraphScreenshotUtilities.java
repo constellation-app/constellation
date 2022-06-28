@@ -96,7 +96,7 @@ public class RecentGraphScreenshotUtilities {
     protected static String hashFilePath(final String filepath) {
         final MessageDigest md;
         try {
-            md = MessageDigest.getInstance("MD5");
+            md = MessageDigest.getInstance("SHA-256");
             md.update(filepath.getBytes(StandardCharsets.UTF_8));
             final byte[] digest = md.digest();
             return DatatypeConverter.printHexBinary(digest).toUpperCase();
