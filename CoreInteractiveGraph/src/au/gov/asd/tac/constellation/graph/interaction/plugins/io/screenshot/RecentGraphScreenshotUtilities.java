@@ -119,10 +119,6 @@ public class RecentGraphScreenshotUtilities {
         final String screenshotFilename = String.format(screenshotFilenameFormat, screenshotHash);
         final String legacyScreenshotFilename = String.format(screenshotFilenameFormat, filename);
 
-        LOGGER.info("screenshotHash=" + screenshotHash);
-        LOGGER.info("screenshotFilename=" + screenshotFilename);
-        LOGGER.info("legacyScreenshotFilename=" + legacyScreenshotFilename);
-
         if (new File(screenshotFilename).exists()) {
             return Optional.of(new File(screenshotFilename));
         } else if (new File(legacyScreenshotFilename).exists()) {
@@ -133,7 +129,7 @@ public class RecentGraphScreenshotUtilities {
 
     /**
      * Take a screenshot of the graph and save it to the screenshots directory
-     * so that it can be used by the Welcome View. hashFilePath
+     * so that it can be used by the Welcome View.
      *
      * @param filepath The filepath of the graph
      */
