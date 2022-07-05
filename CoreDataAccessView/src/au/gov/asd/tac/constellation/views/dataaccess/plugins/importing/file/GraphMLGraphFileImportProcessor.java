@@ -1,42 +1,33 @@
 /*
  * Copyright 2010-2022 Australian Signals Directorate
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing;
+package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file;
 
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
+import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
+import au.gov.asd.tac.constellation.graph.processing.Record;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.Plugin;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
-import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.xml.XmlUtilities;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.FILE_NAME_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.RETRIEVE_TRANSACTIONS_PARAMETER_ID;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.GraphMLUtilities;
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,11 +36,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javax.xml.transform.TransformerException;
-import org.openide.util.NbBundle.Messages;
+import org.openide.NotifyDescriptor;
+import static org.openide.NotifyDescriptor.DEFAULT_OPTION;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.util.lookup.ServiceProviders;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -57,22 +48,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Read graph data from a GraphML .gml file and add it to a graph.
+ * Importer for the GraphML file type
  *
  * @author canis_majoris
+ * @author antares
  */
-@ServiceProviders({
-    @ServiceProvider(service = DataAccessPlugin.class),
-    @ServiceProvider(service = Plugin.class)})
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
-@Messages("ImportFromGraphMLPlugin=Import From GraphML File")
-public class ImportFromGraphMLPlugin extends RecordStoreQueryPlugin implements DataAccessPlugin {
-
-    private static final Logger LOGGER = Logger.getLogger(ImportFromGraphMLPlugin.class.getName());
-
-    // plugin parameters
-    public static final String FILE_PARAMETER_ID = PluginParameter.buildId(ImportFromGraphMLPlugin.class, "file");
-    public static final String EDGE_PARAMETER_ID = PluginParameter.buildId(ImportFromGraphMLPlugin.class, "edge");
+@ServiceProvider(service = GraphFileImportProcessor.class)
+public class GraphMLGraphFileImportProcessor implements GraphFileImportProcessor {
+    
+    private static final Logger LOGGER = Logger.getLogger(GraphMLGraphFileImportProcessor.class.getName());
+    
     public static final String GRAPHML_TAG = "graphml";
     public static final String GRAPH_TAG = "graph";
     public static final String DIRECTION_TAG = "edgedefault";
@@ -90,51 +75,23 @@ public class ImportFromGraphMLPlugin extends RecordStoreQueryPlugin implements D
     public static final String KEY_FOR_TAG = "for";
 
     @Override
-    public String getType() {
-        return DataAccessPluginCoreType.IMPORT;
+    public String getName() {
+        return "GraphML";
     }
 
     @Override
-    public int getPosition() {
-        return 100;
+    public ExtensionFilter getExtensionFilter() {
+        return new ExtensionFilter("GraphML files", "*.graphml");
     }
 
     @Override
-    public String getDescription() {
-        return "Select a GraphML File and Import it into your graph";
-    }
-
-    @Override
-    public PluginParameters createParameters() {
-        final PluginParameters params = new PluginParameters();
-
-        // The GraphML file to read from
-        final PluginParameter<FileParameterValue> file = FileParameterType.build(FILE_PARAMETER_ID);
-        FileParameterType.setFileFilters(file, new FileChooser.ExtensionFilter("GraphML files", "*.graphml"));
-        FileParameterType.setKind(file, FileParameterType.FileParameterKind.OPEN);
-        file.setName("GraphML File");
-        file.setDescription("File to extract graph from");
-        params.addParameter(file);
-
-        // A boolean option for whether to grab transactions
-        final PluginParameter<BooleanParameterValue> edge = BooleanParameterType.build(EDGE_PARAMETER_ID);
-        edge.setName("Retrieve Transactions");
-        edge.setDescription("Retrieve Transactions from GraphML File");
-        edge.setBooleanValue(true);
-        params.addParameter(edge);
-
-        return params;
-    }
-
-    @Override
-    protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public void process(final PluginParameters parameters, final Record input, final RecordStore output) throws ProcessingException {
         final RecordStore nodeRecords = new GraphRecordStore();
         final RecordStore edgeRecords = new GraphRecordStore();
 
-        interaction.setProgress(0, 0, "Importing...", true);
         // Initialize variables
-        final String filename = parameters.getParameters().get(FILE_PARAMETER_ID).getStringValue();
-        final boolean getEdges = parameters.getParameters().get(EDGE_PARAMETER_ID).getBooleanValue();
+        final String filename = parameters.getParameters().get(FILE_NAME_PARAMETER_ID).getStringValue();
+        final boolean retrieveTransactions = parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
         InputStream in = null;
         final Map<String, String> nodeAttributes = new HashMap<>();
         final Map<String, String> transactionAttributes = new HashMap<>();
@@ -217,7 +174,7 @@ public class ImportFromGraphMLPlugin extends RecordStoreQueryPlugin implements D
                                     break;
                                 }
                                 case EDGE_TAG: {
-                                    if (getEdges) {
+                                    if (retrieveTransactions) {
                                         final NamedNodeMap attributes = childNode.getAttributes();
                                         final String id = attributes.getNamedItem(ID_TAG).getNodeValue();
                                         final String source = attributes.getNamedItem(EDGE_SRC_TAG).getNodeValue();
@@ -255,7 +212,8 @@ public class ImportFromGraphMLPlugin extends RecordStoreQueryPlugin implements D
                 }
             }
         } catch (final FileNotFoundException ex) {
-            interaction.notify(PluginNotificationLevel.ERROR, "File " + filename + " not found");
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "File " + filename + " not found", "Import GraphML File", DEFAULT_OPTION, 
+                    NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             LOGGER.log(Level.SEVERE, ex, () -> "File " + filename + " not found");
         } catch (final TransformerException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -264,18 +222,15 @@ public class ImportFromGraphMLPlugin extends RecordStoreQueryPlugin implements D
                 try {
                     in.close();
                 } catch (final IOException ex) {
-                    interaction.notify(PluginNotificationLevel.ERROR, "Error reading file: " + filename);
+                    NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import GraphML File", DEFAULT_OPTION, 
+                            NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
                     LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
                 }
             }
         }
-        final RecordStore result = new GraphRecordStore();
-        result.add(nodeRecords);
-        result.add(edgeRecords);
-        result.add(nodeRecords);
 
-        interaction.setProgress(1, 0, "Completed successfully - added " + result.size() + " entities.", true);
-        return result;
+        output.add(nodeRecords);
+        output.add(edgeRecords);
     }
-
+    
 }

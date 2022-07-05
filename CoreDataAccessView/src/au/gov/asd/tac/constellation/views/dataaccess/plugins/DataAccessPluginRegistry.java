@@ -22,9 +22,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveUnusedA
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.SplitNodesPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromGMLPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromGraphMLPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromPajekPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectAllPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopNPlugin;
 
@@ -39,9 +37,7 @@ public class DataAccessPluginRegistry {
 
     public static final String EXTRACT_TYPES_FROM_TEXT = ExtractTypesFromTextPlugin.class.getName();
     public static final String EXTRACT_WORDS_FROM_TEXT = ExtractWordsFromTextPlugin.class.getName();
-    public static final String IMPORT_FROM_GML = ImportFromGMLPlugin.class.getName();
-    public static final String IMPORT_FROM_GRAPHML = ImportFromGraphMLPlugin.class.getName();
-    public static final String IMPORT_FROM_PAJEK = ImportFromPajekPlugin.class.getName();
+    public static final String IMPORT_GRAPH_FILE = ImportGraphFilePlugin.class.getName();
     public static final String MERGE_NODES = MergeNodesPlugin.class.getName();
     public static final String MERGE_TRANSACTIONS = MergeTransactionsPlugin.class.getName();
     public static final String REMOVE_NODES = RemoveNodesPlugin.class.getName();

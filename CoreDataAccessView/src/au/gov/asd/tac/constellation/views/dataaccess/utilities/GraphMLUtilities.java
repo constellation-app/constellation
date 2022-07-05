@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.dataaccess.utilities;
 
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromGraphMLPlugin.DATA_TAG;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromGraphMLPlugin.KEY_TAG;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromGraphMLPlugin.NAME_TYPE_DELIMITER;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphMLGraphFileImportProcessor.DATA_TAG;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphMLGraphFileImportProcessor.KEY_TAG;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphMLGraphFileImportProcessor.NAME_TYPE_DELIMITER;
 import java.util.Map;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -58,24 +58,24 @@ public class GraphMLUtilities {
      *
      * @param result
      * @param element
-     * @param attr_type
-     * @param attr_name
+     * @param attrType
+     * @param attrName
      * @param value
      */
-    public static void addAttribute(final RecordStore result, final String element, final String attr_type, final String attr_name, final String value) {
-        switch (attr_type) {
+    public static void addAttribute(final RecordStore result, final String element, final String attrType, final String attrName, final String value) {
+        switch (attrType) {
             case "boolean":
-                result.set(element + attr_name, Boolean.parseBoolean(value));
+                result.set(element + attrName, Boolean.parseBoolean(value));
             case "int":
-                result.set(element + attr_name, Integer.parseInt(value));
+                result.set(element + attrName, Integer.parseInt(value));
             case "long":
-                result.set(element + attr_name, Long.parseLong(value));
+                result.set(element + attrName, Long.parseLong(value));
             case "float":
-                result.set(element + attr_name, Float.parseFloat(value));
+                result.set(element + attrName, Float.parseFloat(value));
             case "double":
-                result.set(element + attr_name, Double.parseDouble(value));
+                result.set(element + attrName, Double.parseDouble(value));
             default:
-                result.set(element + attr_name, value);
+                result.set(element + attrName, value);
         }
     }
 

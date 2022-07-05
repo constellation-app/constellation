@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,9 +52,7 @@ public class DataAccessViewHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveUnusedAttributesPlugin", dataModulePath + "remove-unused-attributes.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin", dataModulePath + "extract-types-from-text.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin", dataModulePath + "extract-words-from-text.md");
-        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromPajekPlugin", dataModulePath + "import-from-pajek-file.md");
-        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromGraphMLPlugin", dataModulePath + "import-from-graphml-file.md");
-        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportFromGMLPlugin", dataModulePath + "import-from-gml-file.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin", dataModulePath + "import-graph-file.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin", dataModulePath + "merge-nodes.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionsPlugin", dataModulePath + "merge-transactions.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin", dataModulePath + "remove-nodes.md");
