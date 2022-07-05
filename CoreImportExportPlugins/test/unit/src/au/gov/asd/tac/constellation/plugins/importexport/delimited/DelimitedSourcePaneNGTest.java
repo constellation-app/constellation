@@ -68,22 +68,6 @@ public class DelimitedSourcePaneNGTest {
     }
 
     /**
-     * Test of addFile method, of class DelimitedSourcePane.
-     */
-    @Test
-    public void testAddFile() {
-        System.out.println("testAddFile");
-    }
-
-    /**
-     * Test of fileAlreadyAdded method, of class DelimitedSourcePane.
-     */
-    @Test
-    public void testFileAlreadyAdded() {
-        System.out.println("testFileAlreadyAdded");
-    }
-
-    /**
      * Test of removeFile method, of class DelimitedSourcePane.
      */
     @Test
