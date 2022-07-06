@@ -192,7 +192,7 @@ public class LayersViewPane extends BorderPane {
     }
 
     /**
-     * Create a new layer
+     * Recreate the layers
      *
      * @param layersnew
      * @param vxQueries
@@ -214,25 +214,36 @@ public class LayersViewPane extends BorderPane {
             final boolean queryVisibility = vxQuery != null ? vxQuery.isVisible() : txQuery.isVisible();
             final String vxqueryString = vxQuery != null ? vxQuery.getQueryString() : StringUtils.EMPTY;
             final String txqueryString = txQuery != null ? txQuery.getQueryString() : StringUtils.EMPTY;
-            final String queryDescription = vxQuery != null ? vxQuery.getDescription() : txQuery.getDescription();
+
+            // Set query description to either the vertex of transaction description if not null
+            String queryDescription = StringUtils.EMPTY;
+            if (vxQuery != null) {
+                queryDescription = vxQuery.getDescription();
+            } else if (txQuery != null) {
+                queryDescription = txQuery.getDescription();
+            }
             
             final Query q;
-            if(StringUtils.isEmpty(txqueryString) && StringUtils.isNotEmpty(vxqueryString)) {
+            if (StringUtils.isEmpty(txqueryString) && StringUtils.isNotEmpty(vxqueryString)) {
                 // VX query found
                 q = new Query(GraphElementType.VERTEX, vxqueryString);
 
-            }else{
+            } else {
                 // TX query found
                 q = new Query(GraphElementType.TRANSACTION, txqueryString);
             }
             
-            if(position != 0 && queryVisibility){
+            if (position != 0 && queryVisibility) {
                 // not default layer and a layer is visible.
                 isQueryActive = true;
             }
 
             final BitMaskQuery bmq = new BitMaskQuery(q, position, queryDescription);
             bmq.setVisibility(queryVisibility);
+            
+            if (position == 0 && !isQueryActive) {
+                bmq.setVisibility(!isQueryActive);
+            }
 
             if (layersnew.getChildren().size() - 1 < queryIndex) {
                 String creatingLayer = "Creating new layer: " + queryIndex + " - current layer count = " + (layersnew.getChildren().size() - 1);
@@ -258,6 +269,7 @@ public class LayersViewPane extends BorderPane {
         // set layer 0 selected when no other layer is enabled.
         LayerTitlePane oldTp = (LayerTitlePane) layersnew.getChildren().remove(0);
         oldTp.setSelected(!isQueryActive);
+        oldTp.getQuery().setVisibility(!isQueryActive);
         layersnew.getChildren().add(0, oldTp);
     }
 

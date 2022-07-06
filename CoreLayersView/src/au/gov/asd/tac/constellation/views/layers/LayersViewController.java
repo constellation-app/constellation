@@ -132,7 +132,7 @@ public class LayersViewController {
     }
 
     /**
-     * Get all layer queries from the Layer View and store them on the qraph.
+     * Get all layer queries from the Layer View and store them on the graph.
      * Update the bitmask used to determine visibility of elements on the graph.
      */
     public void execute() {
@@ -163,7 +163,6 @@ public class LayersViewController {
      * View pane.
      */
     public void readState() {
-        LOGGER.log(Level.SEVERE, "read state in method1");
         if (parent == null) {
             return;
         }
@@ -181,7 +180,6 @@ public class LayersViewController {
     }
 
     public void readStateFuture() {
-        LOGGER.log(Level.SEVERE, "read state in method2");
         if (parent == null) {
             return;
         }
@@ -209,7 +207,6 @@ public class LayersViewController {
      * @return a future of the plugin
      */
     public Future<?> writeState() {
-        LOGGER.log(Level.SEVERE, "write state in method");
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph == null) {
             return null;
@@ -351,7 +348,13 @@ public class LayersViewController {
         execute();
         writeState();
     }
-    
+
+    /**
+     * Change the visibility of the layer at the given index
+     *
+     * @param index
+     * @param isVisible
+     */
     public void changeLayerVisibility(final int index, final boolean isVisible) {
         final BitMaskQuery vxQuery = getVxQueryCollection().getQuery(index);
         final BitMaskQuery txQuery = getTxQueryCollection().getQuery(index);

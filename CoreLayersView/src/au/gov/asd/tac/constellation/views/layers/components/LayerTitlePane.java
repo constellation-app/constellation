@@ -152,23 +152,20 @@ public class LayerTitlePane extends TitledPane {
         
         if (type == GraphElementType.VERTEX) {
             setVxQuery(query.getQueryString());
-            setTxQuery(null);
         } else if (type == GraphElementType.TRANSACTION) {
             setTxQuery(query.getQueryString());
-            setVxQuery(null);
         }
     }
 
     /**
      * Set the current layer as selected
-       *
+     *
      * @param value
      */
     public void setSelected(final boolean value) {
         enabled.selectedProperty().removeListener(enabledChanged);
         enabled.setSelected(value);
         enabled.selectedProperty().addListener(enabledChanged);
-        query.setVisibility(value);
         recolourLayer();
     }
 
@@ -237,7 +234,6 @@ public class LayerTitlePane extends TitledPane {
             enabled.setDisable(false);
         }
     }
-    
     
     /**
      * Delete this layer

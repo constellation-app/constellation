@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
@@ -64,6 +65,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     private final String parameterId;
     private final LayerTitlePane parent;
     private final boolean validityCheckRequired;
+    private List<String> recentValues = new ArrayList<>();
 
     public QueryInputPane(final LayerTitlePane parent, final String parameter, final String description, final String value, final boolean requiresValidityCheck) {
         this(parent, parameter, description, value, DEFAULT_WIDTH, null, requiresValidityCheck);
@@ -110,7 +112,9 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
 
         recentValuesCombo.setTooltip(new Tooltip("Recent values"));
         recentValuesCombo.setMaxWidth(5);
-        final List<String> recentValues = RecentParameterValues.getRecentValues(parameterId);
+        if (RecentParameterValues.getRecentValues(parameterId) != null) {
+            recentValues = RecentParameterValues.getRecentValues(parameterId);
+        }
         setRecentValuesCombo(recentValues);
 
         final ListCell<String> button = new ListCell<String>() {
@@ -220,8 +224,10 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         attributeScrollPane.prefViewportWidthProperty().bind(this.widthProperty());
 
         getChildren().add(attributeScrollPane);
-        getChildren().add(recentValuesCombo);
-        
+
+        if (requiresValidityCheck) {
+            getChildren().add(recentValuesCombo);
+        }
     }
     
     public boolean validityCheckRequired() {
@@ -277,9 +283,9 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     public void recentValuesChanged(final RecentValuesChangeEvent e) {
         if (recentValuesCombo != null && parameterId.equals(e.getId())) {
             recentValuesCombo.getSelectionModel().selectedIndexProperty().removeListener(recentValueSelectionListener);
-            final List<String> recentValues = e.getNewValues();
+            final List<String> newRecentValues = e.getNewValues();
             if (recentValues != null) {
-                recentValuesCombo.setItems(FXCollections.observableList(recentValues));
+                recentValuesCombo.setItems(FXCollections.observableList(newRecentValues));
                 recentValuesCombo.setDisable(false);
             } else {
                 final List<String> empty = Collections.emptyList();

@@ -84,9 +84,18 @@ public class BitMaskQueryCollection {
     public void setActiveQueries(final long activeQueriesBitMask) {
         this.activeQueriesBitMask = activeQueriesBitMask;
         activeQueries.clear();
+        boolean anySelected = false;
         for (final BitMaskQuery query : queries) {
             if (query != null && query.isVisible()) {
                 activeQueries.add(query);
+                anySelected = true;
+            }
+        }
+        if (!anySelected) {
+            for (final BitMaskQuery query : queries) {
+                if (query != null && query.getIndex() == 0) {
+                    activeQueries.add(query);
+                }
             }
         }
     }
@@ -147,7 +156,7 @@ public class BitMaskQueryCollection {
     }
 
     /**
-     * Update the overall bit mask attribute and the attribute for which queries are currently actvie
+     * Update the overall bit mask attribute and the attribute for which queries are currently active
      * 
      * @param graph
      * @param bitMaskAttributeId
