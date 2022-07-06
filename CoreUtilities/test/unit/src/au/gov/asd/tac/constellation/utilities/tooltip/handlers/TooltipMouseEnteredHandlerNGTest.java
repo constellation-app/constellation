@@ -21,9 +21,6 @@ import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.control.Skin;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
@@ -43,7 +40,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.stubbing.Answer;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
@@ -59,25 +55,24 @@ import org.testng.annotations.Test;
  */
 public class TooltipMouseEnteredHandlerNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(TooltipMouseEnteredHandlerNGTest.class.getName());
-
+//    private static final Logger LOGGER = Logger.getLogger(TooltipMouseEnteredHandlerNGTest.class.getName());
     public TooltipMouseEnteredHandlerNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
+//        if (!FxToolkit.isFXApplicationThreadRunning()) {
+//            FxToolkit.registerPrimaryStage();
+//        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (final TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (final TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+//        }
     }
 
     @BeforeMethod
@@ -121,9 +116,7 @@ public class TooltipMouseEnteredHandlerNGTest {
         final TextArea textInputControl = spy(new TextArea());
         final TooltipPane tooltipPane = spy(new TooltipPane());
 
-        try (final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS);
-                final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS);
-                final MockedStatic<TooltipMouseEnteredHandler> melStatic = mockStatic(TooltipMouseEnteredHandler.class, CALLS_REAL_METHODS)) {
+        try (final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS); final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS); final MockedStatic<TooltipMouseEnteredHandler> melStatic = mockStatic(TooltipMouseEnteredHandler.class, CALLS_REAL_METHODS)) {
             // Initialise mocks
             final TooltipNode ttn = mock(TooltipNode.class);
             final HitInfo info = mock(HitInfo.class);
@@ -177,9 +170,7 @@ public class TooltipMouseEnteredHandlerNGTest {
         final TextArea textInputControl = spy(new TextArea());
         final TooltipPane tooltipPane = spy(new TooltipPane());
 
-        try (final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS);
-                final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS);
-                final MockedStatic<TooltipMouseEnteredHandler> melStatic = mockStatic(TooltipMouseEnteredHandler.class, CALLS_REAL_METHODS)) {
+        try (final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS); final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS); final MockedStatic<TooltipMouseEnteredHandler> melStatic = mockStatic(TooltipMouseEnteredHandler.class, CALLS_REAL_METHODS)) {
             // Initialise mocks
             final TooltipNode ttn = mock(TooltipNode.class);
             final HitInfo info = mock(HitInfo.class);
