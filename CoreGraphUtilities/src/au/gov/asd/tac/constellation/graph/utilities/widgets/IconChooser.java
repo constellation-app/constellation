@@ -377,17 +377,17 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                 .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
-                    public boolean accept(final File pathName) {
+                    public boolean accept(final File file) {
                         final int extlen = 4;
-                        final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && StringUtils.endsWithAny(name, (CharSequence[]) new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
+                        final String name = file.getName().toLowerCase();
+                        if (file.isFile() && StringUtils.endsWithAny(name, (CharSequence[]) new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
                             final String label = name.substring(0, name.length() - extlen);
 
                             // The name must contain at least one category (a '.' in position 1 or greater).
                             return label.indexOf('.') > 0;
                         }
 
-                        return pathName.isDirectory();
+                        return file.isDirectory();
                     }
 
                     @Override
