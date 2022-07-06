@@ -23,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
@@ -167,7 +168,8 @@ public class PlaneManagerTopComponentNGTest {
                 + FileExtensionConstants.PNG + ", "
                 + FileExtensionConstants.JPG + ")";
 
-        final PlaneManagerTopComponent instance = new PlaneManagerTopComponent();
+        final PlaneManagerTopComponent instance = mock(PlaneManagerTopComponent.class);
+        doCallRealMethod().when(instance).getPlaneFileChooser();
         final JFileChooser fileChooser = instance.getPlaneFileChooser().createFileChooser();
 
         // Ensure file chooser is constructed correctly.
