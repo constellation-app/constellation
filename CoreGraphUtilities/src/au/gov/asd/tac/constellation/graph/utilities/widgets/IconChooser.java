@@ -380,7 +380,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                     public boolean accept(final File file) {
                         final int extlen = 4;
                         final String name = file.getName().toLowerCase();
-                        if (file.isFile() && StringUtils.endsWithAny(name, (CharSequence[]) new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
+                        if (file.isFile() && StringUtils.endsWithAny(name, new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
                             final String label = name.substring(0, name.length() - extlen);
 
                             // The name must contain at least one category (a '.' in position 1 or greater).
