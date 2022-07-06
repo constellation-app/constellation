@@ -276,7 +276,8 @@ public class NotifyDisplayerNGTest {
 
             NotifyDisplayer.display(descriptor);
 
-//            verify(dialogDisplayer).notify(descriptor);
+            verify(dialogDisplayer).notify(descriptor);
+
             if (runThroughThread) {
                 completableFutureMockedStatic.verify(() -> CompletableFuture.runAsync(any(Runnable.class)));
             } else {
