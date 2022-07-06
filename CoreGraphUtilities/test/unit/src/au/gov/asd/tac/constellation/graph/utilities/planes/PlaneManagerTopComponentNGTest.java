@@ -57,7 +57,6 @@ public class PlaneManagerTopComponentNGTest {
     private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<PluginExecution> pluginExecutionStaticMock;
     private static PluginExecution withPluginMock;
-    private static PluginExecution withParameterMock;
 
     public PlaneManagerTopComponentNGTest() {
     }
@@ -83,7 +82,6 @@ public class PlaneManagerTopComponentNGTest {
         fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
         pluginExecutionStaticMock = Mockito.mockStatic(PluginExecution.class);
         withPluginMock = Mockito.mock(PluginExecution.class);
-        withParameterMock = Mockito.mock(PluginExecution.class);
     }
 
     @AfterMethod
