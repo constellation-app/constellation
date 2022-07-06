@@ -63,22 +63,18 @@ public class PlaneManagerTopComponentNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
+
         fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
         pluginExecutionStaticMock = Mockito.mockStatic(PluginExecution.class);
         withPluginMock = Mockito.mock(PluginExecution.class);
@@ -86,6 +82,12 @@ public class PlaneManagerTopComponentNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
+
         fileChooserStaticMock.close();
         pluginExecutionStaticMock.close();
     }
