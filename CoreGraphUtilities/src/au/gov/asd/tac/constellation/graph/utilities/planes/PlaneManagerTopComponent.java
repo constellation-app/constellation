@@ -162,7 +162,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         result.addLookupListener(this);
     }
 
-    private void importPlaneActionPerformed(final ActionEvent e) {
+    protected void importPlaneActionPerformed(final ActionEvent e) {
         FileChooser.openOpenDialog(getPlaneFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> PluginExecution.withPlugin(new ImportPlanePlugin(file)).executeLater(graph)));
     }
 
@@ -465,7 +465,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
      * Plugin to import the plane on the graph.
      */
     @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.IMPORT})
-    private static class ImportPlanePlugin extends SimpleEditPlugin {
+    protected static class ImportPlanePlugin extends SimpleEditPlugin {
 
         private static final Logger LOGGER = Logger.getLogger(ImportPlanePlugin.class.getName());
 
