@@ -43,9 +43,6 @@ public class PlaneManagerTopComponentNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(PlaneManagerTopComponentNGTest.class.getName());
 
-//    private static MockedStatic<FileChooser> fileChooserStaticMock;
-//    private static MockedStatic<PluginExecution> pluginExecutionStaticMock;
-//    private static PluginExecution withPluginMock;
     public PlaneManagerTopComponentNGTest() {
     }
 
@@ -67,15 +64,10 @@ public class PlaneManagerTopComponentNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-//        fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
-//        pluginExecutionStaticMock = Mockito.mockStatic(PluginExecution.class);
-//        withPluginMock = Mockito.mock(PluginExecution.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-//        fileChooserStaticMock.close();
-//        pluginExecutionStaticMock.close();
     }
 
     /**
@@ -85,25 +77,6 @@ public class PlaneManagerTopComponentNGTest {
     @Test
     public void testImportPlaneActionPerformed() {
         System.out.println("testImportPlaneActionPerformed");
-
-//        final PlaneManagerTopComponent instance = new PlaneManagerTopComponent();
-//        final ActionEvent e = null;
-//        final Graph graph = null;
-//
-//        pluginExecutionStaticMock.when(()
-//                -> PluginExecution.withPlugin(Mockito.any(ImportPlanePlugin.class)))
-//                .thenReturn(withPluginMock);
-//
-//        final File file = new File("file.png");
-//        final Optional<File> optionalFile = Optional.ofNullable(file);
-//
-//        fileChooserStaticMock.when(()
-//                -> FileChooser.openOpenDialog(Mockito.any(FileChooserBuilder.class)))
-//                .thenReturn(CompletableFuture.completedFuture(optionalFile));
-//
-//        instance.importPlaneActionPerformed(e);
-//
-//        verify(withPluginMock, times(1)).executeLater(graph);
     }
 
     /**
