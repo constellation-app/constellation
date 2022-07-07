@@ -92,13 +92,10 @@ public class NotifyDisplayer {
             // queue then blocks in this task waiting for input from the user closing the dialog.
             // Now because this thread (the UI thread) is blocked waiting for user input
             // the dialog is never rendered and a deadlock happens.
-            LOGGER.log(Level.INFO, "TITLE: {0} | MESSAGE: {1}", new Object[]{descriptor.getTitle(), descriptor.getMessage()});
             CompletableFuture.runAsync(() -> display(descriptor));
-            LOGGER.log(Level.INFO, "TITLE: {0} | MESSAGE: {1}", new Object[]{descriptor.getTitle(), descriptor.getMessage()});
         } else {
             EventQueue.invokeLater(() -> {
                 DialogDisplayer.getDefault().notify(descriptor);
-                LOGGER.log(Level.INFO, "TITLE: {0} | MESSAGE: {1}", new Object[]{descriptor.getTitle(), descriptor.getMessage()});
             });
         }
     }

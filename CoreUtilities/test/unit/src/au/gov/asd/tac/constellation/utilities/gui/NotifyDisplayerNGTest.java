@@ -276,7 +276,6 @@ public class NotifyDisplayerNGTest {
 
             NotifyDisplayer.display(descriptor);
 
-            // ERROR BELOW!
             verify(dialogDisplayer).notify(descriptor);
 
             if (runThroughThread) {
