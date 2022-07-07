@@ -46,9 +46,8 @@ public class SupportPackageActionNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(SupportPackageActionNGTest.class.getName());
 
-    private static MockedStatic<FileChooser> fileChooserStaticMock;
-    private static MockedStatic<Places> placesStaticMock;
-
+//    private static MockedStatic<FileChooser> fileChooserStaticMock;
+//    private static MockedStatic<Places> placesStaticMock;
     public SupportPackageActionNGTest() {
     }
 
@@ -70,14 +69,14 @@ public class SupportPackageActionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
-        placesStaticMock = Mockito.mockStatic(Places.class);
+//        fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
+//        placesStaticMock = Mockito.mockStatic(Places.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        fileChooserStaticMock.close();
-        placesStaticMock.close();
+//        fileChooserStaticMock.close();
+//        placesStaticMock.close();
     }
 
     /**
@@ -92,15 +91,17 @@ public class SupportPackageActionNGTest {
         final File file = spy(new File("testFolder"));
         final Optional<File> optionalFile = Optional.ofNullable(file);
 
-        fileChooserStaticMock.when(()
-                -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
-                .thenReturn(CompletableFuture.completedFuture(optionalFile));
+        try (final MockedStatic<FileChooser> fileChooserStaticMock = Mockito.mockStatic(FileChooser.class); final MockedStatic<Places> placesStaticMock = Mockito.mockStatic(Places.class);) {
+            fileChooserStaticMock.when(()
+                    -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
+                    .thenReturn(CompletableFuture.completedFuture(optionalFile));
 
-        placesStaticMock.when(()
-                -> Places.getUserDirectory()).thenReturn(new File(System.getProperty("user.home")));
+            placesStaticMock.when(()
+                    -> Places.getUserDirectory()).thenReturn(new File(System.getProperty("user.home")));
 
-        instance.actionPerformed(e);
+            instance.actionPerformed(e);
 
-        verify(file, times(1)).getPath();
+            verify(file, times(1)).getPath();
+        }
     }
 }
