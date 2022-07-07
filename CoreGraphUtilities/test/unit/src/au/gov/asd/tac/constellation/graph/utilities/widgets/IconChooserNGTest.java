@@ -137,6 +137,12 @@ public class IconChooserNGTest {
         assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file4), true);
         assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file5), true);
 
+        // If If files exist, are valid and end with correct extensions, but file name does not contain a '.' in position 1 or greater.
+        final File file6 = File.createTempFile("iconFilePng", FileExtensionConstants.PNG);
+        final File file7 = File.createTempFile("iconFileJpg", FileExtensionConstants.JPG);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file6), false);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file7), false);
+
         // If file is a directory.
         final File fileMock = mock(File.class);
         doReturn("directory").when(fileMock).getName();
@@ -145,6 +151,9 @@ public class IconChooserNGTest {
         assertEquals(fileChooser.getChoosableFileFilters()[0].accept(fileMock), true);
 
         Files.deleteIfExists(file1.toPath());
-        Files.deleteIfExists(file3.toPath());
+        Files.deleteIfExists(file4.toPath());
+        Files.deleteIfExists(file5.toPath());
+        Files.deleteIfExists(file6.toPath());
+        Files.deleteIfExists(file7.toPath());
     }
 }
