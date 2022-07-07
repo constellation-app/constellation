@@ -23,14 +23,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.modules.Places;
 import org.testfx.api.FxToolkit;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -101,11 +105,34 @@ public class SupportPackageActionNGTest {
 
         try {
             instance.actionPerformed(e);
+            verify(file, times(1)).getPath();
         } finally {
             LOGGER.log(Level.INFO, "SupportPackageNGTest - testActionPerformed - COMPLETED");
         }
-//            instance.actionPerformed(e);
+    }
 
-        verify(file, times(1)).getPath();
+    /**
+     * Test of getSupportPackageFileChooser method, of class
+     * SupportPackageAction.
+     */
+    @Test
+    public void testGetSupportPackageFileChooser() {
+        System.out.println("testGetSupportPackageFileChooser");
+
+        final String fileChooserTitle = "Select Folder";
+
+        final SupportPackageAction instance = new SupportPackageAction();
+        final JFileChooser fileChooser = instance.getSupportPackageFileChooser().createFileChooser();
+
+        // Ensure file chooser is constructed correctly.
+        assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
+        assertEquals(fileChooser.getChoosableFileFilters().length, 0);
+
+        // If file is a directory.
+        final File fileMock = mock(File.class);
+        doReturn("directory").when(fileMock).getName();
+        doReturn(false).when(fileMock).isFile();
+        doReturn(true).when(fileMock).isDirectory();
+        assertEquals(fileChooser.accept(fileMock), true);
     }
 }
