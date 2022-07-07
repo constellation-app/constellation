@@ -122,17 +122,22 @@ public class SupportPackageActionNGTest {
         final String fileChooserTitle = "Select Folder";
 
         final SupportPackageAction instance = new SupportPackageAction();
-        final JFileChooser fileChooser = instance.getSupportPackageFileChooser().createFileChooser();
 
-        // Ensure file chooser is constructed correctly.
-        assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
-        assertEquals(fileChooser.getChoosableFileFilters().length, 0);
+        try {
+            final JFileChooser fileChooser = instance.getSupportPackageFileChooser().createFileChooser();
 
-        // If file is a directory.
-        final File fileMock = mock(File.class);
-        doReturn("directory").when(fileMock).getName();
-        doReturn(false).when(fileMock).isFile();
-        doReturn(true).when(fileMock).isDirectory();
-        assertEquals(fileChooser.accept(fileMock), true);
+            // Ensure file chooser is constructed correctly.
+            assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
+            assertEquals(fileChooser.getChoosableFileFilters().length, 0);
+
+            // If file is a directory.
+            final File fileMock = mock(File.class);
+            doReturn("directory").when(fileMock).getName();
+            doReturn(false).when(fileMock).isFile();
+            doReturn(true).when(fileMock).isDirectory();
+            assertEquals(fileChooser.accept(fileMock), true);
+        } finally {
+            LOGGER.log(Level.INFO, "SupportPackageNGTest - testGetSupportPackageFileChooser - COMPLETED");
+        }
     }
 }
