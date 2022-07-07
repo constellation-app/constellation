@@ -96,10 +96,12 @@ public class NotifyDisplayer {
             CompletableFuture.runAsync(() -> display(descriptor));
             LOGGER.log(Level.INFO, "TITLE: {0} | MESSAGE: {1}", new Object[]{descriptor.getTitle(), descriptor.getMessage()});
         } else {
-            EventQueue.invokeLater(() -> {
-                DialogDisplayer.getDefault().notify(descriptor);
-                LOGGER.log(Level.INFO, "TITLE: {0} | MESSAGE: {1}", new Object[]{descriptor.getTitle(), descriptor.getMessage()});
-            });
+            DialogDisplayer.getDefault().notify(descriptor);
+//            EventQueue.invokeLater(() -> {
+//                //
+//                DialogDisplayer.getDefault().notify(descriptor);
+//                LOGGER.log(Level.INFO, "TITLE: {0} | MESSAGE: {1}", new Object[]{descriptor.getTitle(), descriptor.getMessage()});
+//            });
         }
     }
 
