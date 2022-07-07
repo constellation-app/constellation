@@ -94,9 +94,7 @@ public class NotifyDisplayer {
             // the dialog is never rendered and a deadlock happens.
             CompletableFuture.runAsync(() -> display(descriptor));
         } else {
-            EventQueue.invokeLater(() -> {
-                DialogDisplayer.getDefault().notify(descriptor);
-            });
+            EventQueue.invokeLater(() -> DialogDisplayer.getDefault().notify(descriptor));
         }
     }
 
