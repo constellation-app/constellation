@@ -62,7 +62,6 @@ public final class SupportPackageAction implements ActionListener {
                     supportPackage.createSupportPackage(new File(SupportPackage.getUserLogDirectory()), destination);
                     NotifyDisplayer.display("Support package saved successfully to " + destination.getPath(), NotifyDescriptor.INFORMATION_MESSAGE);
                 } catch (IOException ex) {
-                    // ERROR HERE
                     NotifyDisplayer.display("Failed to save support package. The error was " + ex.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
                 }
             });
