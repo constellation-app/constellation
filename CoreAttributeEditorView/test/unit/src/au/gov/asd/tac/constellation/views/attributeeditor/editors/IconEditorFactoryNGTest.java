@@ -16,12 +16,15 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.IconEditorFactory.IconEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,12 +94,62 @@ public class IconEditorFactoryNGTest {
     }
 
     /**
-     * Test of getIconEditorFileChooser method, of inner class IconEditor, in
+     * Test of getIconEditorFileChooser method, of inner class IconEditor, of
+     * class IconEditorFactory.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void getIconEditorFileChooser() throws IOException {
+        System.out.println("getIconEditorFileChooser");
+
+        final String fileChooserTitle = "Add New Icon(s)";
+        final String fileChooserDescription = "Image Files (" + FileExtensionConstants.PNG + ")";
+
+        final IconEditor instance = (IconEditor) new IconEditorFactory().createEditor(
+                mock(EditOperation.class),
+                Mockito.mock(DefaultGetter.class),
+                Mockito.mock(ValueValidator.class),
+                "",
+                Mockito.mock(ConstellationIcon.class));
+
+        final JFileChooser fileChooser = instance.getIconEditorFileChooser().createFileChooser();
+
+        // Ensure file chooser is constructed correctly.
+        assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
+        assertEquals(fileChooser.getChoosableFileFilters().length, 1);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].getDescription(), fileChooserDescription);
+
+        // If file is invalid and does not end with correct extension.
+        final File file1 = File.createTempFile("fileInvalid", ".invalid");
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file1), false);
+
+        // If file does not exist.
+        final File file2 = new File("/invalidPath/filePng" + FileExtensionConstants.PNG);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file2), false);
+
+        // If file exists, is valid and ends with correct extension.
+        final File file3 = File.createTempFile("filePng", FileExtensionConstants.PNG);
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file3), true);
+
+        // If file is a directory.
+        final File fileMock = mock(File.class);
+        doReturn("directory").when(fileMock).getName();
+        doReturn(false).when(fileMock).isFile();
+        doReturn(true).when(fileMock).isDirectory();
+        assertEquals(fileChooser.accept(fileMock), true);
+
+        Files.deleteIfExists(file1.toPath());
+        Files.deleteIfExists(file3.toPath());
+    }
+
+    /**
+     * Test of getIconEditorFolderChooser method, of inner class IconEditor, of
      * class IconEditorFactory.
      */
     @Test
-    public void getIconEditorFileChooser() {
-        System.out.println("getIconEditorFileChooser");
+    public void getIconEditorFolderChooser() {
+        System.out.println("getIconEditorFolderChooser");
 
         final String fileChooserTitle = "Add New Icon(s)";
 
@@ -107,7 +160,7 @@ public class IconEditorFactoryNGTest {
                 "",
                 Mockito.mock(ConstellationIcon.class));
 
-        final JFileChooser fileChooser = instance.getIconEditorFileChooser().createFileChooser();
+        final JFileChooser fileChooser = instance.getIconEditorFolderChooser().createFileChooser();
 
         // Ensure file chooser is constructed correctly.
         assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
