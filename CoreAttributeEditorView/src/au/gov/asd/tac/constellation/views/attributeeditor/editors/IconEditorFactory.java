@@ -280,29 +280,9 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             final Button addDirButton = new Button("Add Directory...");
             final Button removeButton = new Button("Remove");
 
-            addFilesButton.setOnAction(event -> {
-                final FileChooserBuilder iconEditorFileChooser = getIconEditorFileChooser()
-                        .setFilesOnly(true)
-                        .setFileFilter(new FileFilter() {
-                            @Override
-                            public boolean accept(final File file) {
-                                final String name = file.getName();
-                                return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG)) || file.isDirectory();
-                            }
+            addFilesButton.setOnAction(event -> FileChooser.openMultiDialog(getIconEditorFileChooser()).thenAccept(optionalFiles -> optionalFiles.ifPresent(files -> addIcons(files))));
 
-                            @Override
-                            public String getDescription() {
-                                return "Image Files (" + FileExtensionConstants.PNG + ")";
-                            }
-                        });
-
-                FileChooser.openMultiDialog(iconEditorFileChooser).thenAccept(optionalFiles -> optionalFiles.ifPresent(files -> addIcons(files)));
-            });
-
-            addDirButton.setOnAction(event -> {
-                final FileChooserBuilder iconEditorFileChooser = getIconEditorFileChooser().setDirectoriesOnly(true);
-                FileChooser.openOpenDialog(iconEditorFileChooser).thenAccept(optionalFolder -> optionalFolder.ifPresent(folder -> addIcons(pngWalk(folder))));
-            });
+            addDirButton.setOnAction(event -> FileChooser.openOpenDialog(getIconEditorFolderChooser()).thenAccept(optionalFolder -> optionalFolder.ifPresent(folder -> addIcons(pngWalk(folder)))));
 
             removeButton.setOnAction(event -> {
                 final boolean iconRemoved = IconManager.removeIcon(listView.getSelectionModel().getSelectedItem());
@@ -323,7 +303,32 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         public FileChooserBuilder getIconEditorFileChooser() {
             return new FileChooserBuilder(TITLE)
                     .setTitle(TITLE)
-                    .setAcceptAllFileFilterUsed(false);
+                    .setAcceptAllFileFilterUsed(false)
+                    .setFilesOnly(true)
+                    .setFileFilter(new FileFilter() {
+                        @Override
+                        public boolean accept(final File file) {
+                            final String name = file.getName();
+                            return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG)) || file.isDirectory();
+                        }
+
+                        @Override
+                        public String getDescription() {
+                            return "Image Files (" + FileExtensionConstants.PNG + ")";
+                        }
+                    });
+        }
+
+        /**
+         * Creates a new folder chooser.
+         *
+         * @return the created folder chooser.
+         */
+        public FileChooserBuilder getIconEditorFolderChooser() {
+            return new FileChooserBuilder(TITLE)
+                    .setTitle(TITLE)
+                    .setAcceptAllFileFilterUsed(false)
+                    .setDirectoriesOnly(true);
         }
     }
 
