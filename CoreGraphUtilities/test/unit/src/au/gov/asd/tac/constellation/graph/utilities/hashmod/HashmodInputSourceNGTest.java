@@ -91,6 +91,7 @@ public class HashmodInputSourceNGTest {
 
         final File file1 = File.createTempFile("fileCsv", FileExtensionConstants.COMMA_SEPARATED_VALUE);
         final File file2 = new File("/invalidPath/fileCsv" + FileExtensionConstants.COMMA_SEPARATED_VALUE);
+        final File file3 = null;
 
         // If inputStream is null and file exists.
         final HashmodInputSource instance1 = new HashmodInputSource(file1);
@@ -109,7 +110,7 @@ public class HashmodInputSourceNGTest {
         assertEquals(instance3.getInputStream(), inputStreamMock);
 
         // If inputStream is null and file is null.
-        final HashmodInputSource instance4 = new HashmodInputSource(mock(File.class));
+        final HashmodInputSource instance4 = new HashmodInputSource(file3);
         assertEquals(instance4.getInputStream(), null);
 
         Files.deleteIfExists(file1.toPath());
