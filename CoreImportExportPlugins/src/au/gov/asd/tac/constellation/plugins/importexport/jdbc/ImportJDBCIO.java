@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
@@ -25,11 +24,9 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportConstants;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
-import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.TemplateListDialog;
-import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.importexport.TemplateUtilities;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
@@ -41,12 +38,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javafx.scene.control.Alert;
 import javafx.stage.Window;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -55,7 +53,7 @@ import org.openide.util.NbPreferences;
 
 public final class ImportJDBCIO {
 
-    private static final String IMPORT_DELIMITED_DIR = "ImportDelimited";
+    private static final String IMPORT_JDBC_DIR = "ImportDatabase";
     private static final Logger LOGGER = Logger.getLogger(ImportJDBCIO.class.getName());
 
     private static final String SOURCE = "source";
@@ -74,6 +72,9 @@ public final class ImportJDBCIO {
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_ARGS = "translator_args";
     private static final String DEFAULT_VALUE = "default_value";
+    private static final String SHOW_ALL_SCHEMA_ATTRIBUTES = "show_all_schema_attributes";
+    private static final String LOAD_TEMPLATE = "Load Template";
+    private static final String SAVE_TEMPLATE = "Save Template";
 
     private ImportJDBCIO() {
         // add a private constructor to hide the implicit public one - java:S1118
@@ -82,14 +83,14 @@ public final class ImportJDBCIO {
     public static void saveParameters(final Window parentWindow, final JDBCImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-        final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
+        final File delimIoDir = new File(userDir, IMPORT_JDBC_DIR);
         if (!delimIoDir.exists()) {
             delimIoDir.mkdir();
         }
 
         if (!delimIoDir.isDirectory()) {
-            final String msg = String.format("Can't create directory '%s'.", delimIoDir);
-            NotifyDisplayer.display(msg, NotifyDescriptor.ERROR_MESSAGE);
+            final String message = String.format("Can't create directory '%s'.", delimIoDir);
+            NotifyDisplayer.displayAlert(SAVE_TEMPLATE, "Templates Directory Error", message, Alert.AlertType.ERROR);
             return;
         }
 
@@ -102,6 +103,7 @@ public final class ImportJDBCIO {
 
             final ObjectNode source = rootNode.putObject(SOURCE);
             source.put(SCHEMA_INIT, importController.isSchemaInitialised());
+            source.put(SHOW_ALL_SCHEMA_ATTRIBUTES, importController.isShowAllSchemaAttributesEnabled());
 
             // We don't want to rely on a particular kind of graph being current when we load this definition.
             // Therefore, we only save a schema factory as the destination.
@@ -197,7 +199,7 @@ public final class ImportJDBCIO {
     public static void loadParameters(final Window parentWindow, final JDBCImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-        final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
+        final File delimIoDir = new File(userDir, IMPORT_JDBC_DIR);
 
         final String templName = new TemplateListDialog(parentWindow, true).getName(delimIoDir);
         if (templName != null) {
@@ -214,78 +216,25 @@ public final class ImportJDBCIO {
         try {
             final ObjectMapper mapper = new ObjectMapper();
             final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON));
-            final JsonNode source = root.get(SOURCE);
+            final JsonNode source = TemplateUtilities.getRequiredFieldFromTemplate(root, SOURCE);
 
-            final boolean schemaInit = source.get(SCHEMA_INIT).booleanValue();
-            importController.setSchemaInitialised(schemaInit);
-
-            final String destination = source.get(DESTINATION).textValue();
+            final String destination = TemplateUtilities.getRequiredFieldFromTemplate(source, DESTINATION).textValue();
             final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(destination);
+
             if (schemaFactory != null) {
-                importController.setDestination(new SchemaDestination(schemaFactory));
+                final List<ImportDefinition> definitions = TemplateUtilities.getImportDefinitions(importController, root, templName);
 
-                final List<ImportDefinition> definitions = new ArrayList<>();
-                final ArrayNode definitionsArray = (ArrayNode) root.withArray(DEFINITIONS);
-                for (final JsonNode definitionNode : definitionsArray) {
-                    final int firstRow = definitionNode.get(FIRST_ROW).intValue();
-                    final RowFilter filter = new RowFilter();
-                    if (definitionNode.has(FILTER)) {
-                        final JsonNode filterNode = definitionNode.get(FILTER);
-                        final String script = filterNode.get(SCRIPT).textValue();
-                        final JsonNode columnsArray = filterNode.withArray(COLUMNS);
-                        final List<String> columns = new ArrayList<>();
-                        for (final JsonNode column : columnsArray) {
-                            columns.add(column.textValue());
-                        }
-
-                        filter.setScript(script);
-                        filter.setColumns(columns.toArray(new String[columns.size()]));
-                    }
-
-                    final ImportDefinition impdef = new ImportDefinition("", firstRow, filter);
-
-                    final JsonNode attributesNode = definitionNode.get(ATTRIBUTES);
-                    for (final AttributeType attrType : AttributeType.values()) {
-                        final ArrayNode columnArray = (ArrayNode) attributesNode.withArray(attrType.toString());
-                        for (final JsonNode column : columnArray) {
-                            final String columnLabel = column.get(COLUMN_LABEL).textValue();
-                            final String label = column.get(ATTRIBUTE_LABEL).textValue();
-                            if (!importController.hasAttribute(attrType.getElementType(), label)) {
-                                // Manually created attribute.
-                                final String type = column.get(ATTRIBUTE_TYPE).textValue();
-                                final String descr = column.get(ATTRIBUTE_DESCRIPTION).textValue();
-                                final NewAttribute a = new NewAttribute(attrType.getElementType(), type, label, descr);
-                                importController.createManualAttribute(a);
-                            }
-
-                            final Attribute attribute = importController.getAttribute(attrType.getElementType(), label);
-
-                            final AttributeTranslator translator = AttributeTranslator.getTranslator(column.get(TRANSLATOR).textValue());
-                            final String args = column.get(TRANSLATOR_ARGS).textValue();
-                            final String defaultValue = column.get(DEFAULT_VALUE).textValue();
-                            final PluginParameters params = translator.createParameters();
-                            translator.setParameterValues(params, args);
-
-                            final ImportAttributeDefinition iad = new ImportAttributeDefinition(columnLabel, defaultValue,
-                                    attribute, translator, params);
-                            impdef.addDefinition(attrType, iad);
-                        }
-                    }
-
-                    definitions.add(impdef);
-                }
-
-                importController.setClearManuallyAdded(false);
                 try {
-                    ((JDBCImportPane) importController.getStage()).update(importController, definitions);
+                    ((JDBCImportPane) importController.getImportPane()).update(importController, definitions);
                 } finally {
                     importController.setClearManuallyAdded(true);
                 }
             } else {
-                final String msg = String.format("Can't find schema factory '%s'", destination);
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
+                final String message = String.format("Can't find schema factory '%s'", destination);
+                NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Destination Schema Error", message, Alert.AlertType.ERROR);
             }
+        } catch (final NoSuchElementException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }

@@ -49,6 +49,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -61,7 +62,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -116,26 +116,24 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final PluginParameter<SingleChoiceParameterValue> attributeType = SingleChoiceParameterType.build(ATTRIBUTE_PARAMETER_ID);
         attributeType.setName("Content Attribute");
         attributeType.setDescription("Set the attribute from which to extract words");
+        attributeType.setRequired(true);
         params.addParameter(attributeType);
 
         final PluginParameter<StringParameterValue> text = StringParameterType.build(WORDS_PARAMETER_ID);
         StringParameterType.setLines(text, 15);
         text.setName("Words to Extract");
         text.setDescription("Whitelist of words to extract from content (new line delimited, extract all words if empty)");
-        text.setStringValue(null);
         params.addParameter(text);
 
         final PluginParameter<BooleanParameterValue> useRegex = BooleanParameterType.build(USE_REGEX_PARAMETER_ID);
         useRegex.setName("Use Regular Expressions");
         useRegex.setDescription("Words to Extract will be treated as regex patterns");
-        useRegex.setBooleanValue(false);
         useRegex.setEnabled(false);
         params.addParameter(useRegex);
 
         final PluginParameter<BooleanParameterValue> wholeWordsOnly = BooleanParameterType.build(WHOLE_WORDS_ONLY_PARAMETER_ID);
         wholeWordsOnly.setName("Whole Words Only");
         wholeWordsOnly.setDescription("Words to Extract will be treated as whole words only");
-        wholeWordsOnly.setBooleanValue(false);
         wholeWordsOnly.setEnabled(false);
         params.addParameter(wholeWordsOnly);
 
@@ -167,6 +165,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final PluginParameter<SingleChoiceParameterValue> inOrOutParam = SingleChoiceParameterType.build(IN_OR_OUT_PARAMETER_ID);
         inOrOutParam.setName("Transactions");
         inOrOutParam.setDescription("Link nodes to outgoing or incoming words: 'outgoing' or 'incoming'");
+        inOrOutParam.setRequired(true);
         SingleChoiceParameterType.setOptions(inOrOutParam, List.of(OUTGOING, INCOMING));
         inOrOutParam.setStringValue(OUTGOING);
         params.addParameter(inOrOutParam);
@@ -174,34 +173,25 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final PluginParameter<BooleanParameterValue> selected = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
         selected.setName("Selected Transactions Only");
         selected.setDescription("Only extract words from selected transactions only");
-        selected.setBooleanValue(false);
         params.addParameter(selected);
 
         final PluginParameter<BooleanParameterValue> regexOnlyParam = BooleanParameterType.build(REGEX_ONLY_PARAMETER_ID);
         regexOnlyParam.setName("Regular Expression Only");
         regexOnlyParam.setDescription("The regexes control everything");
-        regexOnlyParam.setBooleanValue(false);
         params.addParameter(regexOnlyParam);
 
         params.addController(WORDS_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String words = master.getStringValue();
-                if (StringUtils.isBlank(words)) {
-                    parameters.get(USE_REGEX_PARAMETER_ID).setEnabled(false);
-                    parameters.get(WHOLE_WORDS_ONLY_PARAMETER_ID).setEnabled(false);
-                    parameters.get(MIN_WORD_LENGTH_PARAMETER_ID).setEnabled(true);
-                    parameters.get(REMOVE_SPECIAL_CHARS_PARAMETER_ID).setEnabled(true);
-                } else {
-                    parameters.get(USE_REGEX_PARAMETER_ID).setEnabled(true);
-                    parameters.get(WHOLE_WORDS_ONLY_PARAMETER_ID).setEnabled(true);
-                    parameters.get(MIN_WORD_LENGTH_PARAMETER_ID).setEnabled(false);
-                    parameters.get(REMOVE_SPECIAL_CHARS_PARAMETER_ID).setEnabled(false);
-                }
+                final boolean noWords = StringUtils.isBlank(words);
+                parameters.get(USE_REGEX_PARAMETER_ID).setEnabled(!noWords);
+                parameters.get(WHOLE_WORDS_ONLY_PARAMETER_ID).setEnabled(!noWords);
+                parameters.get(MIN_WORD_LENGTH_PARAMETER_ID).setEnabled(noWords);
+                parameters.get(REMOVE_SPECIAL_CHARS_PARAMETER_ID).setEnabled(noWords);
             }
         });
 
         // How well does this interact with the controller above?
-        //
         params.addController(REGEX_ONLY_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final boolean regexOnly = master.getBooleanValue();
@@ -214,7 +204,6 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                 if (!regexOnly) {
                     // If the checkbox is being unchecked, trigger a WORDS_PARAMETER_ID
                     // change to set the GUI state.
-                    //
                     parameters.get(WORDS_PARAMETER_ID).fireChangeEvent(ParameterChange.VALUE);
                 }
             }
@@ -257,8 +246,10 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
             SingleChoiceParameterType.setOptions(contentAttribute, attributes);
             contentAttribute.suppressEvent(true, new ArrayList<>());
-            if (contentAttribute.getSingleChoice() == null && attributes.contains(ContentConcept.TransactionAttribute.CONTENT.getName())) {
-                SingleChoiceParameterType.setChoice(contentAttribute, ContentConcept.TransactionAttribute.CONTENT.getName());
+            if (!attributes.isEmpty() && contentAttribute.getSingleChoice() == null) {
+                final String contentAttributeName = ContentConcept.TransactionAttribute.CONTENT.getName();
+                // set the attribute to the Content attribute if it exists and the first option otherwise
+                SingleChoiceParameterType.setChoice(contentAttribute, attributes.contains(contentAttributeName) ? contentAttributeName : attributes.get(0));
             }
             contentAttribute.suppressEvent(false, new ArrayList<>());
             contentAttribute.setObjectValue(parameters.getObjectValue(ATTRIBUTE_PARAMETER_ID));
@@ -269,9 +260,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         interaction.setProgress(0, 0, "Extracting...", true);
 
-        /*
-         Retrieving attributes
-         */
+        // Retrieving attributes
         final Map<String, PluginParameter<?>> extractEntityParameters = parameters.getParameters();
         final String contentAttribute = extractEntityParameters.get(ATTRIBUTE_PARAMETER_ID).getStringValue();
         final String words = extractEntityParameters.get(WORDS_PARAMETER_ID).getStringValue() == null
@@ -288,15 +277,13 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final boolean regexOnly = extractEntityParameters.get(REGEX_ONLY_PARAMETER_ID).getBooleanValue();
 
         if (!OUTGOING.equals(inOrOut) && !INCOMING.equals(inOrOut)) {
-            var msg = String.format("Parameter %s must be '%s' or '%s'", REGEX_ONLY_PARAMETER_ID, OUTGOING, INCOMING);
+            final String msg = String.format("Parameter %s must be '%s' or '%s'", REGEX_ONLY_PARAMETER_ID, OUTGOING, INCOMING);
             throw new PluginException(PluginNotificationLevel.ERROR, msg);
         }
 
         final boolean outgoing = OUTGOING.equals(inOrOut);
 
-        /*
-         Retrieving attribute IDs
-         */
+        // Retrieving attribute IDs
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
         final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.ensure(wg);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(wg);
@@ -305,28 +292,26 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
 
         // Verify that the content transaction attribute exists.
-        //
         if (transactionContentAttributeId == Graph.NOT_FOUND) {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("The specified attribute %s does not exist.", contentAttribute), NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display(String.format("The specified attribute %s does not exist.", contentAttribute), NotifyDescriptor.WARNING_MESSAGE);
             return;
         }
 
         final int transactionCount = wg.getTransactionCount();
 
         if (regexOnly) {
-            // This choice ignores several other parameters, so is a bit simpler
-            // even if there code commonalities, but combining the if/else
-            // code would make things even more complex.
-            //
-            // The input words are treated as trusted regular expressions,
-            // so the caller has to know what they're doing.
-            // This is power-use mode.
-            //
+            /* 
+             This choice ignores several other parameters, so is a bit simpler 
+             even if there code commonalities, but combining the if/else
+             code would make things even more complex.
+            
+             The input words are treated as trusted regular expressions,
+             so the caller has to know what they're doing.
+             This is power-use mode.
 
-            // Each line of the input words is a regex.
-            // Use them as-is for the power users.
-            //
+             Each line of the input words is a regex.
+             Use them as-is for the power users.
+            */
             final List<Pattern> patterns = new ArrayList<>();
             if (StringUtils.isNotBlank(words)) {
                 for (String word : words.split(SeparatorConstants.NEWLINE)) {
@@ -341,11 +326,9 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             if (!patterns.isEmpty()) {
                 // Use a set to hold the words.
                 // If a word is found multiple times, there's no point adding multiple nodes.
-                //
                 final Set<String> matched = new HashSet<>();
 
                 // Iterate over all the transactions in the graph.
-                //
                 for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                     final int transactionId = wg.getTransaction(transactionPosition);
 
@@ -356,33 +339,25 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
                     final String content = wg.getStringValue(transactionContentAttributeId, transactionId);
 
-                    /*
-                     Does the transaction have content?
-                     */
+                    // Does the transaction have content?
                     if (StringUtils.isBlank(content)) {
                         continue;
                     }
 
-                    /*
-                     Ignore other "referenced" transactions because that's not useful
-                     */
+                    // Ignore other "referenced" transactions because that's not useful
                     if (wg.getObjectValue(transactionTypeAttributeId, transactionId) != null && wg.getObjectValue(transactionTypeAttributeId, transactionId).equals(AnalyticConcept.TransactionType.REFERENCED)) {
                         continue;
                     }
 
-                    patterns
-                            .stream()
-                            .map(pattern -> pattern.matcher(content))
+                    patterns.stream().map(pattern -> pattern.matcher(content))
                             .forEach(matcher -> {
                                 while (matcher.find()) {
                                     if (matcher.groupCount() == 0) {
                                         // The regex doesn't have an explicit capture group, so capture the lot.
-                                        //
                                         final String g = matcher.group();
                                         matched.add(toLowerCase ? g.toLowerCase() : g);
                                     } else {
                                         // The regex has one or more explicit capture groups: capture those.
-                                        //
                                         for (int i = 1; i <= matcher.groupCount(); i++) {
                                             final String g = matcher.group(i);
                                             matched.add(toLowerCase ? g.toLowerCase() : g);
@@ -392,11 +367,8 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                             });
 
                     // Add matched words to the graph.
-                    //
                     if (!matched.isEmpty()) {
-                        /*
-                         Retrieving information needed to create new transactions
-                         */
+                        // Retrieving information needed to create new transactions
                         final int sourceVertexId = wg.getTransactionSourceVertex(transactionId);
                         final int destinationVertexId = wg.getTransactionDestinationVertex(transactionId);
                         final ZonedDateTime datetime = wg.getObjectValue(transactionDatetimeAttributeId, transactionId);
@@ -420,9 +392,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         } else { // The original logic.
             final List<Pattern> patterns = patternsFromWords(words, useRegex, wholeWordOnly);
 
-            /*
-             Iterating over all the transactions in the graph
-             */
+            // Iterating over all the transactions in the graph
             final List<String> foundWords = new ArrayList<>();
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                 foundWords.clear();
@@ -434,30 +404,24 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                     continue;
                 }
 
-                String content = wg.getStringValue(transactionContentAttributeId, transactionId);
+                final String content = wg.getStringValue(transactionContentAttributeId, transactionId);
 
-                /*
-                 Does the transaction have content?
-                 */
+                // Does the transaction have content?
                 if (StringUtils.isBlank(content)) {
                     continue;
                 }
 
-                /*
-                 Ignore other "referenced" transactions because that's not useful
-                 */
+                // Ignore other "referenced" transactions because that's not useful
                 if (wg.getObjectValue(transactionTypeAttributeId, transactionId) != null && wg.getObjectValue(transactionTypeAttributeId, transactionId).equals(AnalyticConcept.TransactionType.REFERENCED)) {
                     continue;
                 }
 
-                /*
-                 Retrieving information needed to create new transactions
-                 */
+                // Retrieving information needed to create new transactions
                 final int sourceVertexId = wg.getTransactionSourceVertex(transactionId);
                 final int destinationVertexId = wg.getTransactionDestinationVertex(transactionId);
                 final ZonedDateTime datetime = wg.getObjectValue(transactionDatetimeAttributeId, transactionId);
 
-                final HashSet<String> typesExtracted = new HashSet<>();
+                final Set<String> typesExtracted = new HashSet<>();
 
                 /*
                  Extracting Schema Types
@@ -468,7 +432,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                     final Map<String, SchemaVertexType> identifiers = new HashMap<>();
                     extractedTypes.forEach(extractedType -> identifiers.put(extractedType.getIdentifier(), extractedType.getType()));
 
-                    for (String identifier : identifiers.keySet()) {
+                    for (final String identifier : identifiers.keySet()) {
                         final int newVertexId = wg.addVertex();
                         wg.setStringValue(vertexIdentifierAttributeId, newVertexId, identifier);
                         wg.setObjectValue(vertexTypeAttributeId, newVertexId, identifiers.get(identifier));
@@ -485,9 +449,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                 }
 
                 if (StringUtils.isBlank(words)) {
-                    /*
-                     Extracting all words of the specified length if no word list has been provided
-                     */
+                    // Extracting all words of the specified length if no word list has been provided
                     for (String word : content.split(" ")) {
                         if (toLowerCase) {
                             word = word.toLowerCase();
@@ -501,8 +463,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                         foundWords.add(word);
                     }
                 } else {
-                    patterns.stream()
-                            .map(pattern -> pattern.matcher(content))
+                    patterns.stream().map(pattern -> pattern.matcher(content))
                             .forEach(matcher -> {
                                 while (matcher.find()) {
                                     final String g = matcher.group();
@@ -514,7 +475,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                 /*
                  Add words to graph
                  */
-                for (String word : foundWords) {
+                for (final String word : foundWords) {
                     if (types && typesExtracted.contains(word.toLowerCase())) {
                         continue;
                     }

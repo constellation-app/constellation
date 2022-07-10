@@ -31,10 +31,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -45,6 +46,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = MergeNodeType.class)
 public class MergeNodesByPrefix implements MergeNodeType {
 
+    private static final Logger LOGGER = Logger.getLogger(MergeNodesByPrefix.class.getName());
+    
     private static final String MERGE_TYPE_NAME = "Identifier Prefix Length";
 
     @Override
@@ -87,14 +90,14 @@ public class MergeNodesByPrefix implements MergeNodeType {
                 }
             }
 
-            for (Map<Integer, String> matchingVertices : prefixMap.values()) {
+            for (final Map<Integer, String> matchingVertices : prefixMap.values()) {
                 if (matchingVertices.size() > 1) {
                     int leadVertex = Graph.NOT_FOUND;
                     String leadValue = null;
 
                     if (leadVertexChooser != null) {
                         // calculate the lead vertex
-                        for (Map.Entry<Integer, String> e : matchingVertices.entrySet()) {
+                        for (final Map.Entry<Integer, String> e : matchingVertices.entrySet()) {
                             if (leadVertex < 0 || leadVertexChooser.compare(e.getValue(), leadValue) < 0) {
                                 leadVertex = e.getKey();
                                 leadValue = e.getValue();
@@ -103,7 +106,7 @@ public class MergeNodesByPrefix implements MergeNodeType {
                     } else {
                         // ask user to choose the lead vertex
                         final ObservableList<ItemsRow<Integer>> duplicateVertices = FXCollections.observableArrayList();
-                        for (Map.Entry<Integer, String> e : matchingVertices.entrySet()) {
+                        for (final Map.Entry<Integer, String> e : matchingVertices.entrySet()) {
                             duplicateVertices.add(new ItemsRow<>(e.getKey(), e.getValue(), ""));
                         }
 
@@ -129,8 +132,8 @@ public class MergeNodesByPrefix implements MergeNodeType {
                         try {
                             latch.await();
                             leadVertex = selected[0];
-                        } catch (InterruptedException ex) {
-                            Exceptions.printStackTrace(ex);
+                        } catch (final InterruptedException ex) {
+                            LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
                             Thread.currentThread().interrupt();
                         }
                     }

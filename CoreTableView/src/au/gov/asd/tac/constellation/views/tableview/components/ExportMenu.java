@@ -333,13 +333,15 @@ public class ExportMenu {
          */
         public FileChooserBuilder getExportFileChooser() {
             return new FileChooserBuilder(fileChooserTitle)
-                .setTitle(fileChooserTitle)
-                .setFileFilter(new FileFilter() {
+                    .setTitle(fileChooserTitle)
+                    .setFilesOnly(true)
+                    .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File file) {
                         final String name = file.getName();
                         // if it is an actual file and it ends with the expected extension
-                        return file.isFile() && StringUtils.endsWithIgnoreCase(name, expectedFileExtension);
+
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, expectedFileExtension)) || file.isDirectory();
                     }
                     @Override
                     public String getDescription() {

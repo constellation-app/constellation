@@ -116,7 +116,7 @@ later time, using the "Options" menu in the top left corner.
 When a template is saved, the import definition name is used to name the
 saved query. If a query of that name has already been saved, you will be
 asked if you want to overwrite it. Templates are saved in the directory
-"&lt;HOME_DIRECTORY&gt;/.CONSTELLATION/ImportJDBC". (The name of the file in
+"&lt;HOME_DIRECTORY&gt;/.CONSTELLATION/ImportDatabase". (The name of the file in
 which the template is saved is encoded so it doesn't clash with file
 system limitations.) Files in this directory can be deleted using your
 favourite file management utility.
@@ -135,9 +135,9 @@ loaded and will appear as it was when it was saved.
 To share the template do the following:
 
 1.  Click on Help -> User Directory
-2.  Navigate to the folder called "ImportJDBC"
+2.  Navigate to the folder called "ImportDatabase"
 3.  Give the appropriate .json file to a recipient
 4.  Upon receiving the file, they can follow these steps to save that
-    .json file inside the "ImportJDBC" directory
+    .json file inside the "ImportDatabase" directory
 
 NOTE: The .json filename should not change!

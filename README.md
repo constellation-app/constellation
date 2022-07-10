@@ -108,6 +108,10 @@ Unzip the constellation.zip bundle and double click the
 `constellation64.bat` for Windows or run the `bin\constellation` shell
 script for Linux and MacOSX.
 
+Note that if you are running Constellation in a virtual machine and have issues 
+using VirtualBox then give VMWare a go as it seems to have better support for 
+OpenGL.
+
 ## Build Constellation
 
 To build Constellation from source code do the following:
@@ -123,25 +127,10 @@ To build Constellation from source code do the following:
 -   Download [NetBeans
     12](https://netbeans.apache.org/download/nb120/nb120.html)
 
--   Update `netbeans_jdkhome` in netbeans.conf to point to the Azul Zulu
+-   Update `netbeans_jdkhome` in netbeans.conf 
+    (e.g. `C:\Program Files\NetBeans-12\netbeans\etc`) to point to the Azul Zulu
     JDK you downloaded
-    (e.g. `C:\Program Files\NetBeans-12\netbeans\etc`)
-
--   Apache NetBeans dropped support for the Java Help system but is
-    still required by Constellation. Until we find a solution to \#15
-    there are 2 jar files that have to be manually copied into the
-    NetBeans installation folder.
-
-    -   Download
-        [org-netbeans-modules-javahelp.jar](https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/org-netbeans-modules-javahelp.jar?raw=true)
-        to `C:\Program Files\NetBeans 12\netbeans\platform\modules` (using
-        Windows as an example). Note that you will need to override this
-        file when prompted.
-
-    -   Download
-        [jhall-2.0\_05.jar](https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/jhall-2.0_05.jar?raw=true)
-        to `C:\Program Files\NetBeans 12\netbeans\platform\modules\ext`
-        (using Windows as an example)
+    (e.g. `C:\Program Files\Azul\zulu11.37.19-ca-fx-jdk11.0.6-win_x64`)
 
 -   Clone this repository
 

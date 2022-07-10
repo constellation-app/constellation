@@ -16,21 +16,18 @@
 package au.gov.asd.tac.constellation.utilities.json;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
@@ -543,6 +540,21 @@ public class JsonUtilitiesNGTest {
     }
     
     /**
+<<<<<<< HEAD
+=======
+     * Test calls to JsonUtilities.getGetTextValue when null
+     * @throws Exception 
+     */
+    @Test
+    public void testGetNodeTextWhenValueIsNull() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();   
+        JsonNode testJson = mapper.readTree("{\"key\":null}");
+        String text = JsonUtilities.getNodeText(testJson.get("key"));
+        assertEquals(text, null);
+    }
+    
+    /**
+>>>>>>> master
      * Test calls to JsonUtilities.PrettyPrint.
      */
     @Test

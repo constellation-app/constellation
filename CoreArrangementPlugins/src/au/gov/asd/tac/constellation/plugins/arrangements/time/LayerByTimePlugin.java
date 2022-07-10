@@ -181,6 +181,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         dtAttrParam = SingleChoiceParameterType.build(DATETIME_ATTRIBUTE_PARAMETER_ID);
         dtAttrParam.setName(DATETIME_PARAMETER_ID_NAME);
         dtAttrParam.setDescription(DATETIME_ATTRIBUTE_PARAMETER_ID_DESCRIPTION);
+        dtAttrParam.setRequired(true);
         parameters.addParameter(dtAttrParam);
 
         dateRangeParam = DateTimeRangeParameterType.build(DATE_RANGE_PARAMETER_ID);
@@ -304,6 +305,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 }
             }
         });
+        if (!dateTimeAttributes.isEmpty()) {
+            SingleChoiceParameterType.setChoice(dtAttrParam, dateTimeAttributes.get(0));
+        }
     }
 
     @Override
@@ -314,12 +318,14 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         final String dtAttrOrig = parameters.getParameters().get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();
         if (dtAttrOrig == null) {
             interaction.notify(PluginNotificationLevel.ERROR, "A date-time attribute must be specified.");
+            LOGGER.log(Level.SEVERE, "A date-time attribute must be specified.");
             return;
         }
 
         final int dtAttrOrigId = rg.getAttribute(GraphElementType.TRANSACTION, dtAttrOrig);
         if (dtAttrOrigId == Graph.NOT_FOUND) {
             interaction.notify(PluginNotificationLevel.ERROR, "A valid date-time attribute must be specified.");
+            LOGGER.log(Level.SEVERE, "A valid date-time attribute must be specified.");
             return;
         }
 
@@ -383,7 +389,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
             // Modify the copied graph to show our layers.
             int z = 0;
-            float step = getWidth(wgcopy) / values.size();
+            final float step = getWidth(wgcopy) / values.size();
             for (final Entry<Integer, List<Float>> entry : remappedLayers.entrySet()) {
                 for (final Entry<Float, List<Integer>> currentLayer : transactionLayers.entrySet()) {
                     if (entry.getValue().contains(currentLayer.getKey())) {

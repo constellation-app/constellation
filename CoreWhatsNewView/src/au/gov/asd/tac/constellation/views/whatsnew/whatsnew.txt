@@ -1,14 +1,29 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-06-17 Datetime Formatter
+<p>The Datetime formatter for attributes in the File Importer and Database Importer has been updated to include a new field 'Display Time Zone'. This field allows you to easily convert your datetime data to the desired timezone before importing.</p>
+
+== 2022-05-27 Option to specify time zone in Importers
+<p>A new field 'Time Zone' is added in the Datetime formatter of attributes in the File Importer and Database Importer. You can find it by right-clicking an attribute, navigating to Formatter -&gt; Datetime. Choosing 'EPOCH' as the Datetime format or entering a format that already contains a time zone will disable this field.</p>
+
+== 2022-04-13 Plugins
+<p>Some plugin parameters have been updated to have '*' at the end of the name to indicate that the plugin will require a value in order for the plugin to work.</p>
+
+== 2022-03-30 Data Access View
+<p>A new tab has been added in SetUp -&gt; Options -&gt; Data Access View to be able to hide data access categories that you don't want to see.</p>
+
+== 2022-03-22 New Datetime formatter in the File Importer
+<p>A new Datetime formatter has been added to the File Importer for parsing native Excel datetimes into Constellation. You can use it by right-clicking an attribute, navigating to Formatter -&gt; Datetime and choosing 'EXCEL' from the format dropdown list.</p>
+
 == 2022-02-22 Find View (Experimental)
-<p>A new version of the Find View can be accessed via Experimental -> Views or Ctrl + B. This version is intended to replace the current Find View at some stage.</p>
+<p>A new version of the Find View can be accessed via Experimental -&gt; Views or Ctrl + B. This version is intended to replace the current Find View at some stage.</p>
 
 == 2022-02-21 Compare Graph Parameters
-<p>The dialog for comparing graphs in the Tools -> Compare graph menu will now update to prevent the user from comparing against the original graph.</p>
+<p>The dialog for comparing graphs in the Tools -&gt; Compare graph menu will now update to prevent the user from comparing against the original graph.</p>
 
 == 2022-02-17 Add description to Step Tab names in Data Access View
-<p> The Step Tab names in the Data Access View can now be double clicked to add a brief decription. E.g. If "Initial run" is entered, "Step 1 - Initial run" will be displayed in the Tab name. This is also saved and loaded as part of the templates.</p>
+<p> The Step Tab names in the Data Access View can now be double clicked to add a brief description. E.g. If "Initial run" is entered, "Step 1 - Initial run" will be displayed in the Tab name. This is also saved and loaded as part of the templates.</p>
 
 == 2022-01-24 Histogram Bins Selected Count
 <p>The Histogram now shows the amount of bins selected out of the total bins present.</p>
@@ -28,10 +43,14 @@ first file added are removed.</p>
 == 2021-11-02 Data Access View Templates
 <p>A bug relating to the Data Access View template structure has been resolved. Unfortunately this change means that existing DAV templates will no longer work and therefore they will need to be re-created.</p>
 
-== 2021-10-29 New Online & Offline Help
+== 2021-10-29 New Online &amp; Offline Help
 <p>The help documentation is now able to be viewed both online through the constellation-app.com website and offline through a local server.</p>
 <p>A preference has been added where you choose to view help documentation either online or offline. This can be found via
+<<<<<<< HEAD
 Setup -> Options -> CONSTELLATION -> Help -> Online Help. The help documentation is accessible through the blue question mark icons found in each view. </p>
+=======
+Setup -&gt; Options -&gt; CONSTELLATION -&gt; Help -&gt; Online Help. The help documentation is accessible through the blue question mark icons found in each view. </p>
+>>>>>>> master
 
 == 2021-10-27 Layers View Graph Context
 <p> Layers View now requires a graph to be present before presenting the full feature set of the view.</p>
@@ -156,7 +175,7 @@ to the Getting Started help page.</p>
 == 2021-05-21 Application Font Setting
 <p>In the Constellation settings a tab has been added to set the default font family and font size for all of the views in Constellation.</p>
 <p>The setting requires a restart of Constellation for it to be applied. </p>
-<p>The setting can be found via Setup -> Options -> Constellation -> Application Font. </p>
+<p>The setting can be found via Setup -&gt; Options -&gt; Constellation -&gt; Application Font. </p>
 
 == 2021-05-19 Ability to Pin/Unpin Nodes
 <p>Nodes can now be pinned, either through the pin/unpin toolbar icons in the arrangements panel, or via the corresponding Arrange menu options. Once pinned, nodes do not move when arrangement plugins are run, but can be manually moved. The 'pinned' node attribute stores this information.</p>
@@ -176,7 +195,7 @@ to the Getting Started help page.</p>
 == 2021-02-25 Blaze Colors - Presets
 <p>The blaze menus have been updated to show preset blaze colors. An option to save a custom color as a preset is represented by a checkbox in the color dialog.</p>
 <p>The blaze toolbar menu now displays up to 10 preset colors. It now has the ability to change the color stored by clicking the tile to load a color picker.</p>
-<p>The preferences found via Setup -> Options -> Constellation -> Graph now stores preset blaze colors. These can be edited via the color picker upon clicking the colored tile.</p>
+<p>The preferences found via Setup -&gt; Options -&gt; Constellation -&gt; Graph now stores preset blaze colors. These can be edited via the color picker upon clicking the colored tile.</p>
 
 == 2021-02-24 Plugin Reporter Drop-Down Lists
 <p>To avoid confusion with the Plugin Reporter, the two drop-down lists for filtering and ignoring plugins to be displayed have been combined.</p>
