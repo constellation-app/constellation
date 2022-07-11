@@ -54,9 +54,9 @@ import org.w3c.dom.NodeList;
  * @author antares
  */
 @ServiceProvider(service = GraphFileImportProcessor.class)
-public class GraphMLGraphFileImportProcessor implements GraphFileImportProcessor {
+public class GraphMLImportProcessor implements GraphFileImportProcessor {
     
-    private static final Logger LOGGER = Logger.getLogger(GraphMLGraphFileImportProcessor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GraphMLImportProcessor.class.getName());
     
     public static final String GRAPHML_TAG = "graphml";
     public static final String GRAPH_TAG = "graph";

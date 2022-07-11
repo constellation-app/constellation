@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file;
 
+import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
 import au.gov.asd.tac.constellation.graph.processing.Record;
@@ -38,87 +39,104 @@ import static org.openide.NotifyDescriptor.DEFAULT_OPTION;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Importer for the Pajek .net file type
+ * Importer for the GML file type
  *
  * @author canis_majoris
  * @author antares
  */
 @ServiceProvider(service = GraphFileImportProcessor.class)
-public class PajekGraphFileImportProcessor implements GraphFileImportProcessor {
+public class GMLImportProcessor implements GraphFileImportProcessor {
     
-    private static final Logger LOGGER = Logger.getLogger(PajekGraphFileImportProcessor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GMLImportProcessor.class.getName());
     
-    public static final String VERTEX_HEADER = "*V";
-    public static final String EDGE_HEADER = "*E";
+    public static final String NODE_TAG = "node";
+    public static final String EDGE_TAG = "edge";
+    public static final String START_TAG = "[";
+    public static final String END_TAG = "]";
 
     @Override
     public String getName() {
-        return "Pajek";
+        return "GML";
     }
 
     @Override
     public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("Pajek files", "*.net");
+        return new ExtensionFilter("GML files", "*.gml");
     }
 
     @Override
     public void process(final PluginParameters parameters, final Record input, final RecordStore output) throws ProcessingException {
+        final RecordStore nodeRecords = new GraphRecordStore();
+        final RecordStore edgeRecords = new GraphRecordStore();
+
         // Initialize variables
         final String filename = parameters.getParameters().get(FILE_NAME_PARAMETER_ID).getStringValue();
         final boolean retrieveTransactions = parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
         BufferedReader in = null;
         String line;
-        boolean processNodes = false;
-        boolean processEdges = false;
+        boolean node = false;
+        boolean edge = false;
 
         try {
             // Open file and loop through lines
             in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
             while ((line = in.readLine()) != null) {
-                if (line.startsWith(VERTEX_HEADER)) {
-                    processNodes = true;
-                } else if (line.startsWith(EDGE_HEADER)) {
-                    processNodes = false;
-                    processEdges = true;
-                } else if (processNodes) {
+                line = line.trim();
+                if (line.startsWith(NODE_TAG)) {
+                    node = true;
+                    nodeRecords.add();
+                    nodeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SOURCE, filename);
+                } else if (line.startsWith(EDGE_TAG)) {
+                    edge = true;
+                    if (retrieveTransactions) {
+                        edgeRecords.add();
+                        edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE, filename);
+                    }
+                } else if (line.startsWith(START_TAG)) {
+                    //do nothing
+                } else if (line.startsWith(END_TAG)) {
+                    node = false;
+                    edge = false;
+                } else if (node) {
                     try {
                         // Read node data
-                        final String nodeId = line.split("\"")[0].trim();
-                        final String nodeLabel = line.split("\"")[1].trim();
-                        output.add();
-                        output.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, nodeId);
-                        output.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, nodeLabel);
-                        output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
-                        output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SOURCE, filename);
+                        final String key = line.split(" ")[0].trim();
+                        final String value = line.split(" ")[1].trim().replace("\"", "");
+                        if (key.equals("id")) {
+                            nodeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, value);
+                        } else {
+                            nodeRecords.set(GraphRecordStoreUtilities.SOURCE + key, value);
+                        }
                     } catch (final ArrayIndexOutOfBoundsException ex) {
                         // Do nothing
                     }
-                } else if (processEdges && retrieveTransactions) {
+                } else if (retrieveTransactions && edge) {
                     try {
-                        // Read edge data
-                        final String[] fields = line.split("\\s+");
-                        final String srcId = fields[1];
-                        final String dstId = fields[2];
-                        final String weight = fields[3];
-
-                        output.add();
-                        output.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, srcId);
-                        output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SOURCE, filename);
-                        output.set(GraphRecordStoreUtilities.DESTINATION + GraphRecordStoreUtilities.ID, dstId);
-                        output.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.SOURCE, filename);
-                        output.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.COUNT, weight);
-                        output.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE, filename);
+                        final String key = line.split(" ")[0].trim();
+                        final String value = line.split(" ")[1].trim().replace("\"", "");
+                        switch (key) {
+                            case "source":
+                                edgeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, value);
+                                break;
+                            case "target":
+                                edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, value);
+                                break;
+                            default:
+                                edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + key, value);
+                                break;
+                        }
                     } catch (final ArrayIndexOutOfBoundsException ex) {
                         // Do nothing
                     }
                 }
             }
+
         } catch (final FileNotFoundException ex) {
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "File " + filename + " not found", "Import Pajek File", DEFAULT_OPTION, 
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "File " + filename + " not found", "Import GML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             LOGGER.log(Level.SEVERE, ex, () -> "File " + filename + " not found");
         } catch (final IOException ex) {
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import Pajek File", DEFAULT_OPTION, 
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import GML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
         } finally {
@@ -126,11 +144,14 @@ public class PajekGraphFileImportProcessor implements GraphFileImportProcessor {
                 try {
                     in.close();
                 } catch (final IOException ex) {
-                    NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import Pajek File", DEFAULT_OPTION, 
+                    NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import GML File", DEFAULT_OPTION, 
                             NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
                     LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
                 }
             }
         }
+
+        output.add(nodeRecords);
+        output.add(edgeRecords);
     }
 }
