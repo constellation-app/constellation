@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.dataaccess.utilities;
 
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphMLGraphFileImportProcessor.DATA_TAG;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphMLGraphFileImportProcessor.KEY_TAG;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphMLGraphFileImportProcessor.NAME_TYPE_DELIMITER;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphMLImportProcessor.DATA_TAG;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphMLImportProcessor.KEY_TAG;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphMLImportProcessor.NAME_TYPE_DELIMITER;
 import java.util.Map;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
