@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.nifi.rest;
 
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.nifi.FlowFileV3Utilities;
 import au.gov.asd.tac.constellation.utilities.nifi.NifiConfig;
@@ -31,10 +32,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
@@ -55,7 +56,7 @@ public class NifiClient extends RestClient {
     // TODO: make this more robust and efficient.
     private static final HashMap<String, String> SUBMIT_CACHE = new HashMap<>();
 
-    private NifiFileSubmitResponse postToNodes(final Map<String, String> headers, final byte[] bytes, final Boolean stopAfterFirstAccept) throws IOException {
+    private NifiFileSubmitResponse postToNodes(final List<Tuple<String, String>> headers, final byte[] bytes, final Boolean stopAfterFirstAccept) throws IOException {
         final List<String> nodes = DEFAULT_CONFIG.getNifiNodes();
         boolean anyNodeResponded = false;
         String acceptingNode = null;
@@ -122,8 +123,11 @@ public class NifiClient extends RestClient {
         // To avoid using expensive identity mime type at nifi, we specify ffv3
         // in the headers and nifi will apply this as an attribute which can be
         // routed on instead.
-        final Map<String, String> headers = new TreeMap<>();
-        headers.put("flexloader.type", "flowfile-v3");
+        final List<Tuple<String, String>> headers = new ArrayList<>();
+        headers.add(new Tuple("flexloader.type", "flowfile-v3"));
+        
+        
+        
         return postToNodes(headers, os.toByteArray(), true);
     }
 
@@ -180,6 +184,12 @@ public class NifiClient extends RestClient {
 
     @Override
     public HttpsURLConnection makeGetConnection(final String url, final Map<String, String> params) throws IOException {
+        // Do nothing - overriding deprecated abstract method
+        return null;
+    }
+
+    @Override
+    public HttpsURLConnection makeGetConnection(final String url, final List<Tuple<String, String>> params) throws IOException {
         final URL nifiUrl = generateUrl(url, params);
         return HttpsConnection
                 .withUrl(nifiUrl.toString())
@@ -191,7 +201,13 @@ public class NifiClient extends RestClient {
     }
 
     @Override
-    public HttpsURLConnection makePostConnection(String url, Map<String, String> params) throws IOException {
+    public HttpsURLConnection makePostConnection(final String url, final Map<String, String> params) throws IOException {
+        // Do nothing - overriding deprecated abstract method
+        return null;
+    }
+
+    @Override
+    public HttpsURLConnection makePostConnection(String url, List<Tuple<String, String>> params) throws IOException {
         final URL nifiUrl = generateUrl(url, params);
         return HttpsConnection
                 .withUrl(nifiUrl.toString())
