@@ -24,6 +24,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
@@ -91,23 +92,48 @@ public class SupportPackageActionNGTest {
     public void testActionPerformed() {
         System.out.println("testActionPerformed");
 
-        final SupportPackageAction instance = new SupportPackageAction();
-        final ActionEvent e = null;
-        final File file = spy(new File("testFolder"));
-        final Optional<File> optionalFile = Optional.ofNullable(file);
+//        final SupportPackageAction instance = new SupportPackageAction();
+//        final ActionEvent e = null;
+//
+//        final File file = spy(new File("testFolder"));
+//        final Optional<File> optionalFile = Optional.ofNullable(file);
+//
+//        fileChooserStaticMock.when(()
+//                -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
+//                .thenReturn(CompletableFuture.completedFuture(optionalFile));
+//
+//        placesStaticMock.when(()
+//                -> Places.getUserDirectory()).thenReturn(new File(System.getProperty("user.home")));
+//
+//        boolean completed = false;
+//
+//        try {
+//            instance.actionPerformed(e);
+//            verify(file, times(1)).getPath();
+//
+//            completed = true;
+//        } finally {
+//            LOGGER.log(Level.INFO, "SupportPackageNGTest: testGetSupportPackageFileChooser | COMPLETED {0}", completed);
+//        }
+        if (SwingUtilities.isEventDispatchThread()) {
+            Thread thread = new Thread(() -> {
 
-        fileChooserStaticMock.when(()
-                -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
-                .thenReturn(CompletableFuture.completedFuture(optionalFile));
+                final SupportPackageAction instance = new SupportPackageAction();
+                final ActionEvent e = null;
 
-        placesStaticMock.when(()
-                -> Places.getUserDirectory()).thenReturn(new File(System.getProperty("user.home")));
+                final File file = spy(new File("testFolder"));
+                final Optional<File> optionalFile = Optional.ofNullable(file);
 
-        try {
-            instance.actionPerformed(e);
-            verify(file, times(1)).getPath();
-        } finally {
-            LOGGER.log(Level.INFO, "SupportPackageNGTest - testActionPerformed - COMPLETED");
+                fileChooserStaticMock.when(()
+                        -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
+                        .thenReturn(CompletableFuture.completedFuture(optionalFile));
+
+                placesStaticMock.when(()
+                        -> Places.getUserDirectory()).thenReturn(new File(System.getProperty("user.home")));
+
+                instance.actionPerformed(e);
+                verify(file, times(1)).getPath();
+            });
         }
     }
 
@@ -119,25 +145,26 @@ public class SupportPackageActionNGTest {
     public void testGetSupportPackageFileChooser() {
         System.out.println("testGetSupportPackageFileChooser");
 
-        final String fileChooserTitle = "Select Folder";
+        if (SwingUtilities.isEventDispatchThread()) {
+            Thread thread = new Thread(() -> {
 
-        final SupportPackageAction instance = new SupportPackageAction();
+                final String fileChooserTitle = "Select Folder";
 
-        try {
-            final JFileChooser fileChooser = instance.getSupportPackageFileChooser().createFileChooser();
+                final SupportPackageAction instance = new SupportPackageAction();
 
-            // Ensure file chooser is constructed correctly.
-            assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
-            assertEquals(fileChooser.getChoosableFileFilters().length, 0);
+                final JFileChooser fileChooser = instance.getSupportPackageFileChooser().createFileChooser();
 
-            // If file is a directory.
-            final File fileMock = mock(File.class);
-            doReturn("directory").when(fileMock).getName();
-            doReturn(false).when(fileMock).isFile();
-            doReturn(true).when(fileMock).isDirectory();
-            assertEquals(fileChooser.accept(fileMock), true);
-        } finally {
-            LOGGER.log(Level.INFO, "SupportPackageNGTest - testGetSupportPackageFileChooser - COMPLETED");
+                // Ensure file chooser is constructed correctly.
+                assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
+                assertEquals(fileChooser.getChoosableFileFilters().length, 0);
+
+                // If file is a directory.
+                final File fileMock = mock(File.class);
+                doReturn("directory").when(fileMock).getName();
+                doReturn(false).when(fileMock).isFile();
+                doReturn(true).when(fileMock).isDirectory();
+                assertEquals(fileChooser.accept(fileMock), true);
+            });
         }
     }
 }
