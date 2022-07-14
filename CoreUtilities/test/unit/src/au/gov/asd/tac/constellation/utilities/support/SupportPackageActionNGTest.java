@@ -16,26 +16,13 @@
 package au.gov.asd.tac.constellation.utilities.support;
 
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import org.openide.filesystems.FileChooserBuilder;
 import org.openide.modules.Places;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -113,28 +100,8 @@ public class SupportPackageActionNGTest {
 //
 //            completed = true;
 //        } finally {
-//            LOGGER.log(Level.INFO, "SupportPackageNGTest: testGetSupportPackageFileChooser | COMPLETED {0}", completed);
+//            LOGGER.log(Level.INFO, "SupportPackageNGTest -> testActionPerformed -> COMPLETED -> {0}", completed);
 //        }
-        if (SwingUtilities.isEventDispatchThread()) {
-            Thread thread = new Thread(() -> {
-
-                final SupportPackageAction instance = new SupportPackageAction();
-                final ActionEvent e = null;
-
-                final File file = spy(new File("testFolder"));
-                final Optional<File> optionalFile = Optional.ofNullable(file);
-
-                fileChooserStaticMock.when(()
-                        -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
-                        .thenReturn(CompletableFuture.completedFuture(optionalFile));
-
-                placesStaticMock.when(()
-                        -> Places.getUserDirectory()).thenReturn(new File(System.getProperty("user.home")));
-
-                instance.actionPerformed(e);
-                verify(file, times(1)).getPath();
-            });
-        }
     }
 
     /**
@@ -145,26 +112,20 @@ public class SupportPackageActionNGTest {
     public void testGetSupportPackageFileChooser() {
         System.out.println("testGetSupportPackageFileChooser");
 
-        if (SwingUtilities.isEventDispatchThread()) {
-            Thread thread = new Thread(() -> {
-
-                final String fileChooserTitle = "Select Folder";
-
-                final SupportPackageAction instance = new SupportPackageAction();
-
-                final JFileChooser fileChooser = instance.getSupportPackageFileChooser().createFileChooser();
-
-                // Ensure file chooser is constructed correctly.
-                assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
-                assertEquals(fileChooser.getChoosableFileFilters().length, 0);
-
-                // If file is a directory.
-                final File fileMock = mock(File.class);
-                doReturn("directory").when(fileMock).getName();
-                doReturn(false).when(fileMock).isFile();
-                doReturn(true).when(fileMock).isDirectory();
-                assertEquals(fileChooser.accept(fileMock), true);
-            });
-        }
+//        final String fileChooserTitle = "Select Folder";
+//
+//        final SupportPackageAction instance = new SupportPackageAction();
+//
+//        final JFileChooser fileChooser = instance.getSupportPackageFileChooser().createFileChooser();
+//
+//        // Ensure file chooser is constructed correctly.
+//        assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
+//        assertEquals(fileChooser.getChoosableFileFilters().length, 0);
+//
+//        // If file is a directory.
+//        final File fileMock = mock(File.class);
+//        doReturn("directory").when(fileMock).getName();
+//        doReturn(false).when(fileMock).isFile();
+//        doReturn(true).when(fileMock).isDirectory();
     }
 }
