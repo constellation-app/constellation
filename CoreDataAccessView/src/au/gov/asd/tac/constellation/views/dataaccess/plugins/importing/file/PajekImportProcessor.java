@@ -29,6 +29,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -79,6 +81,8 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
         String line;
         boolean processNodes = false;
         boolean processEdges = false;
+        
+        final Map<String, String> idLabelMap = new HashMap<>();
 
         try {
             // Open file and loop through lines
@@ -94,8 +98,11 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
                         // Read node data
                         final String nodeId = line.split("\"")[0].trim();
                         final String nodeLabel = line.split("\"")[1].trim();
+                        if (retrieveTransactions) {
+                            idLabelMap.put(nodeId, nodeLabel);
+                        }
+                        
                         output.add();
-                        output.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, nodeId);
                         output.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, nodeLabel);
                         output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
                         output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SOURCE, filename);
@@ -106,14 +113,16 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
                     try {
                         // Read edge data
                         final String[] fields = line.split("\\s+");
-                        final String srcId = fields[1];
-                        final String dstId = fields[2];
-                        final String weight = fields[3];
+                        final String srcId = fields[0];
+                        final String dstId = fields[1];
+                        final String weight = fields[2];
 
                         output.add();
-                        output.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, srcId);
+                        output.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, idLabelMap.get(srcId));
+                        output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
                         output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SOURCE, filename);
-                        output.set(GraphRecordStoreUtilities.DESTINATION + GraphRecordStoreUtilities.ID, dstId);
+                        output.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, idLabelMap.get(dstId));
+                        output.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
                         output.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.SOURCE, filename);
                         output.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.COUNT, weight);
                         output.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE, filename);
