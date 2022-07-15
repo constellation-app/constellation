@@ -17,15 +17,14 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file;
 
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
-import au.gov.asd.tac.constellation.graph.processing.Record;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.FILE_NAME_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.RETRIEVE_TRANSACTIONS_PARAMETER_ID;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -62,10 +61,20 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
     }
 
     @Override
-    public void process(final PluginParameters parameters, final Record input, final RecordStore output) throws ProcessingException {
+    public void process(final PluginParameters parameters, final File input, final RecordStore output) throws ProcessingException {
+        if (input == null) {
+            throw new ProcessingException("Please specify a file to read from");
+        }
+        
+        if (output == null) {
+            throw new ProcessingException("Please specify a record store to output to");
+        }
+        
         // Initialize variables
-        final String filename = parameters.getParameters().get(FILE_NAME_PARAMETER_ID).getStringValue();
-        final boolean retrieveTransactions = parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
+        final String filename = input.getPath();
+        final boolean retrieveTransactions = parameters == null
+                || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID) == null
+                || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
         BufferedReader in = null;
         String line;
         boolean processNodes = false;
@@ -73,7 +82,7 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
 
         try {
             // Open file and loop through lines
-            in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
+            in = new BufferedReader(new InputStreamReader(new FileInputStream(input), "UTF-8"));
             while ((line = in.readLine()) != null) {
                 if (line.startsWith(VERTEX_HEADER)) {
                     processNodes = true;

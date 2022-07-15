@@ -46,9 +46,9 @@ public class GraphMLUtilities {
                 final String attribute = childNode.getAttributes().getNamedItem(KEY_TAG).getNodeValue();
                 final String value = childNode.getTextContent();
                 final String attr = nodeAttributes.get(attribute);
-                final String attr_name = attr.split(NAME_TYPE_DELIMITER)[0];
-                final String attr_type = attr.split(NAME_TYPE_DELIMITER)[1];
-                addAttribute(result, element, attr_type, attr_name, value);
+                final String attrName = attr.split(NAME_TYPE_DELIMITER)[0];
+                final String attrType = attr.split(NAME_TYPE_DELIMITER)[1];
+                addAttribute(result, element, attrType, attrName, value);
             }
         }
     }

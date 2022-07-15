@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphFileImportProcessor;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,7 +70,7 @@ public class ImportGraphFilePlugin extends RecordStoreQueryPlugin implements Dat
     private static final List<String> GRAPH_FILE_IMPORT_PROCESSOR_NAMES = new ArrayList<>();
     private static final Map<String, GraphFileImportProcessor> GRAPH_FILE_IMPORT_PROCESSORS = new HashMap<>();
     
-    private GraphFileImportProcessor importProcessor;
+    private static GraphFileImportProcessor importProcessor;
     
     public ImportGraphFilePlugin() {
         if (GRAPH_FILE_IMPORT_PROCESSORS.isEmpty()) {
@@ -145,8 +146,9 @@ public class ImportGraphFilePlugin extends RecordStoreQueryPlugin implements Dat
         
         interaction.setProgress(0, 0, "Importing...", true);
         
+        final String filename = parameters.getParameters().get(FILE_NAME_PARAMETER_ID).getStringValue();       
         try {
-            importProcessor.process(parameters, null, result);
+            importProcessor.process(parameters, new File(filename), result);
         } catch (final ProcessingException ex) {
             LOGGER.log(Level.SEVERE, "Unable to process graph file");
         }

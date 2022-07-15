@@ -16,19 +16,16 @@
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file;
 
 import au.gov.asd.tac.constellation.graph.processing.DatumProcessor;
-import au.gov.asd.tac.constellation.graph.processing.Record;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.io.File;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  * Service provider for importing graph files
- * 
- * Note that the Record part won't be used as import only requires the file 
- * specified in the parameters as input
  *
  * @author antares
  */
-public interface GraphFileImportProcessor extends DatumProcessor<Record, PluginParameters> {
+public interface GraphFileImportProcessor extends DatumProcessor<File, PluginParameters> {
     
     /**
      * The name of the Graph File Type

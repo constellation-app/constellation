@@ -18,16 +18,15 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
-import au.gov.asd.tac.constellation.graph.processing.Record;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.xml.XmlUtilities;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.FILE_NAME_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.RETRIEVE_TRANSACTIONS_PARAMETER_ID;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.GraphMLUtilities;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -85,23 +84,31 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
     }
 
     @Override
-    public void process(final PluginParameters parameters, final Record input, final RecordStore output) throws ProcessingException {
+    public void process(final PluginParameters parameters, final File input, final RecordStore output) throws ProcessingException {
+        if (input == null) {
+            throw new ProcessingException("Please specify a file to read from");
+        }
+        
+        if (output == null) {
+            throw new ProcessingException("Please specify a record store to output to");
+        }
+        
         final RecordStore nodeRecords = new GraphRecordStore();
         final RecordStore edgeRecords = new GraphRecordStore();
 
         // Initialize variables
-        final String filename = parameters.getParameters().get(FILE_NAME_PARAMETER_ID).getStringValue();
-        final boolean retrieveTransactions = parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
+        final String filename = input.getPath();
+        final boolean retrieveTransactions = parameters == null
+                || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID) == null
+                || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
         InputStream in = null;
         final Map<String, String> nodeAttributes = new HashMap<>();
         final Map<String, String> transactionAttributes = new HashMap<>();
         final Map<String, String> defaultAttributes = new HashMap<>();
 
-        boolean undirected = false;
-
         try {
             // Open file and loop through lines
-            in = new FileInputStream(filename);
+            in = new FileInputStream(input);
 
             final XmlUtilities xml = new XmlUtilities();
             final Document document = xml.read(in, true);
@@ -140,11 +147,9 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
             final NodeList graphs = documentElement.getElementsByTagName(GRAPH_TAG);
             for (int index = 0; index < graphs.getLength(); index++) {
                 final Node graph = graphs.item(index);
-                final NamedNodeMap graph_attributes = graph.getAttributes();
-                final String direction = graph_attributes.getNamedItem(DIRECTION_TAG).getNodeValue();
-                if (direction.equals("undirected")) {
-                    undirected = true;
-                }
+                final NamedNodeMap graphAttributes = graph.getAttributes();
+                final String direction = graphAttributes.getNamedItem(DIRECTION_TAG).getNodeValue();
+                final boolean undirected = direction.equals("undirected");
                 if (graph.hasChildNodes()) {
                     final NodeList children = graph.getChildNodes();
                     // Just edges first
@@ -163,9 +168,9 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                         if (defaultAttributes.containsKey(key)) {
                                             final String value = defaultAttributes.get(key);
                                             final String attr = nodeAttributes.get(key);
-                                            final String attr_name = attr.split(NAME_TYPE_DELIMITER)[0];
-                                            final String attr_type = attr.split(NAME_TYPE_DELIMITER)[1];
-                                            GraphMLUtilities.addAttribute(nodeRecords, GraphRecordStoreUtilities.SOURCE, attr_type, attr_name, value);
+                                            final String attrName = attr.split(NAME_TYPE_DELIMITER)[0];
+                                            final String attrType = attr.split(NAME_TYPE_DELIMITER)[1];
+                                            GraphMLUtilities.addAttribute(nodeRecords, GraphRecordStoreUtilities.SOURCE, attrType, attrName, value);
                                         }
                                     }
                                     if (childNode.hasChildNodes()) {
@@ -193,9 +198,9 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                             if (defaultAttributes.containsKey(key)) {
                                                 final String value = defaultAttributes.get(key);
                                                 final String attr = transactionAttributes.get(key);
-                                                final String attr_name = attr.split(NAME_TYPE_DELIMITER)[0];
-                                                final String attr_type = attr.split(NAME_TYPE_DELIMITER)[1];
-                                                GraphMLUtilities.addAttribute(edgeRecords, GraphRecordStoreUtilities.TRANSACTION, attr_type, attr_name, value);
+                                                final String attrName = attr.split(NAME_TYPE_DELIMITER)[0];
+                                                final String attrType = attr.split(NAME_TYPE_DELIMITER)[1];
+                                                GraphMLUtilities.addAttribute(edgeRecords, GraphRecordStoreUtilities.TRANSACTION, attrType, attrName, value);
                                             }
                                         }
                                         if (childNode.hasChildNodes()) {
