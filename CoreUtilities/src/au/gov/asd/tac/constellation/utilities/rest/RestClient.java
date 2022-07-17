@@ -127,16 +127,15 @@ public abstract class RestClient {
             for (final Tuple<String, String> param : params) {
                 // Ensure the parameter has a non empty key. Rules for parameter names seem quite relaxed in HTTP, as
                 // such we wil not try and to too much validation
-                String key = param.getFirst();
+                String key =  URLEncoder.encode(param.getFirst(), StandardCharsets.UTF_8.name()).replace("+", paramSpaceToken);
+                String value = URLEncoder.encode(param.getSecond(), StandardCharsets.UTF_8.name()).replace("+", paramSpaceToken);
                 if (key != null && !key.trim().isEmpty()) {
                     if (query.length() > 0) {
                         query.append('&');
                     }
-                    query.append(String.format("%s=%s",
-                                 URLEncoder.encode(key, StandardCharsets.UTF_8.name()).replace("+", paramSpaceToken),
-                                 URLEncoder.encode(param.getSecond(), StandardCharsets.UTF_8.name()).replace("+", paramSpaceToken)));
+                    query.append(String.format("%s=%s", key, value));
                 } else {
-                    LOGGER.info("TODO");
+                    LOGGER.info(String.format("Unable to add rest key/value: %s=%s to URL=", key, value, url));
                 } 
             }
         }
