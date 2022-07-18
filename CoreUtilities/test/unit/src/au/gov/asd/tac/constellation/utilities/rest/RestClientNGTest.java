@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
  */
 public class RestClientNGTest {
     
-    StringBuilder _outputStreamString;  // This value is manipulated by the test
+    StringBuilder outputStreamString;  // This value is manipulated by the test
                                         // rest interface implementation
     
     public RestClientNGTest() {
@@ -67,7 +67,7 @@ public class RestClientNGTest {
     @Test
     public void testGenerateUrl_NullParams() throws Exception {
         System.out.println("testGenerateUrl");
-        String url = "https://testurl.asd/testEndpoint";
+        String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = null;
         URL result = RestClient.generateUrl(url, params);
         assertEquals(result, new URL(url));
@@ -80,7 +80,7 @@ public class RestClientNGTest {
     @Test
     public void testGenerateUrl_Empty() throws Exception {
         System.out.println("testGenerateUrl");
-        String url = "https://testurl.asd/testEndpoint";
+        String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = new ArrayList<>();
         URL result = RestClient.generateUrl(url, params);
         assertEquals(result, new URL(url));
@@ -92,7 +92,7 @@ public class RestClientNGTest {
     @Test
     public void testGenerateUrl_InvalidParamName() throws Exception {
         System.out.println("testGenerateUrl");
-        String url = "https://testurl.asd/testEndpoint";
+        String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = new ArrayList<>();
         params.add(new Tuple("", "value"));
         URL result = RestClient.generateUrl(url, params);
@@ -105,7 +105,7 @@ public class RestClientNGTest {
     @Test
     public void testGenerateUrl_ValidParams() throws Exception {
         System.out.println("testGenerateUrl");
-        String url = "https://testurl.asd/testEndpoint";
+        String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = new ArrayList<>();
         params.add(new Tuple("param1", "value1"));
         params.add(new Tuple("param2", "value2 with spaces"));
@@ -192,14 +192,14 @@ public class RestClientNGTest {
         Map<String, List<String>> headerFields = new HashMap<>();
         headerFields.put("hdr1", new ArrayList<>());
         RestClientImpl instance = new RestClientImpl(501, "message", headerFields);
-        _outputStreamString = new StringBuilder();
+        outputStreamString = new StringBuilder();
         instance.post(url, params);
         assertEquals(instance.getResponseCode(), 501);
         assertEquals(instance.getResponseMessage(), "message");
         assertEquals(instance.getHeaderFields().size(), headerFields.size());
         assertTrue(instance.getHeaderFields().containsKey("hdr1"));
         assertNull(instance.getBytes());
-        assertEquals(_outputStreamString.toString(), "{\"AAA\":\"BBB\"}");
+        assertEquals(outputStreamString.toString(), "{\"AAA\":\"BBB\"}");
     }
 
     /**
@@ -217,14 +217,14 @@ public class RestClientNGTest {
         Map<String, List<String>> headerFields = new HashMap<>();
         headerFields.put("hdr1", new ArrayList<>());
         RestClientImpl instance = new RestClientImpl(501, "message", headerFields);
-        _outputStreamString = new StringBuilder();
+        outputStreamString = new StringBuilder();
         instance.postWithJson(url, params, json);
         assertEquals(instance.getResponseCode(), 501);
         assertEquals(instance.getResponseMessage(), "message");
         assertEquals(instance.getHeaderFields().size(), headerFields.size());
         assertTrue(instance.getHeaderFields().containsKey("hdr1"));
         assertNull(instance.getBytes());
-        assertEquals(_outputStreamString.toString(), json);
+        assertEquals(outputStreamString.toString(), json);
     }
 
     /**
@@ -251,14 +251,14 @@ public class RestClientNGTest {
         Map<String, List<String>> headerFields = new HashMap<>();
         headerFields.put("hdr1", new ArrayList<>());
         RestClientImpl instance = new RestClientImpl(501, "message", headerFields);
-        _outputStreamString = new StringBuilder();
+        outputStreamString = new StringBuilder();
         instance.postWithBytes(url, params, bytes);
         assertEquals(instance.getResponseCode(), 501);
         assertEquals(instance.getResponseMessage(), "message");
         assertEquals(instance.getHeaderFields().size(), headerFields.size());
         assertTrue(instance.getHeaderFields().containsKey("hdr1"));
         assertNull(instance.getBytes());
-        assertEquals(_outputStreamString.toString(), byteString);
+        assertEquals(outputStreamString.toString(), byteString);
     }
 
     /**
@@ -288,9 +288,9 @@ public class RestClientNGTest {
         // Values to be returned by Mockito for mocked HttpsURLConnection
         // objecxt calls to getResponseCode, getResponseMessage, and
         // getHeaderFields
-        int _responseCode = 0;
-        String _responseMessage = null;
-        Map<String, List<String>> _headers  = null;
+        int mockedResponseCode = 0;
+        String mockedResponseMessage = null;
+        Map<String, List<String>> mockedHeaders  = null;
         
         /**
          * Constructor - allows calling test to set mocked connection return
@@ -300,9 +300,9 @@ public class RestClientNGTest {
          * @param headers Headers for mocked connection to return
          */
         public RestClientImpl(final int responseCode, final String responseMessage, final Map<String, List<String>> headers) {
-            _responseCode = responseCode;
-            _responseMessage = responseMessage;
-            _headers = headers;
+            mockedResponseCode = responseCode;
+            mockedResponseMessage = responseMessage;
+            mockedHeaders = headers;
         }
         
         /**
@@ -330,9 +330,9 @@ public class RestClientNGTest {
         @Override
         public HttpsURLConnection makeGetConnection(String url, List<Tuple<String, String>> params) throws IOException {
             HttpsURLConnection mockConnection = Mockito.mock(HttpsURLConnection.class);
-            when(mockConnection.getResponseCode()).thenReturn(_responseCode);
-            when(mockConnection.getResponseMessage()).thenReturn(_responseMessage);
-            when(mockConnection.getHeaderFields()).thenReturn(_headers);
+            when(mockConnection.getResponseCode()).thenReturn(mockedResponseCode);
+            when(mockConnection.getResponseMessage()).thenReturn(mockedResponseMessage);
+            when(mockConnection.getHeaderFields()).thenReturn(mockedHeaders);
             return mockConnection;
         }
         
@@ -364,14 +364,13 @@ public class RestClientNGTest {
         @Override
         public HttpsURLConnection makePostConnection(String url, List<Tuple<String, String>> params) throws IOException {
             HttpsURLConnection mockConnection = Mockito.mock(HttpsURLConnection.class);
-            when(mockConnection.getResponseCode()).thenReturn(_responseCode);
-            when(mockConnection.getResponseMessage()).thenReturn(_responseMessage);
-            when(mockConnection.getHeaderFields()).thenReturn(_headers);
-            when(mockConnection.getOutputStream()).thenReturn(
-                new OutputStream() {
+            when(mockConnection.getResponseCode()).thenReturn(mockedResponseCode);
+            when(mockConnection.getResponseMessage()).thenReturn(mockedResponseMessage);
+            when(mockConnection.getHeaderFields()).thenReturn(mockedHeaders);
+            when(mockConnection.getOutputStream()).thenReturn(new OutputStream() {
                     @Override
                     public void write(int b) throws IOException {
-                        _outputStreamString.append((char) b);
+                        outputStreamString.append((char) b);
                     }
                 }
             );
