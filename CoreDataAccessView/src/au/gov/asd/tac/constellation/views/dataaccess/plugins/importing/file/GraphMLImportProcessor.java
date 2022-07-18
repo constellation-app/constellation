@@ -150,9 +150,9 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                 final NamedNodeMap graphAttributes = graph.getAttributes();
                 final String direction = graphAttributes.getNamedItem(DIRECTION_TAG).getNodeValue();
                 final boolean undirected = direction.equals("undirected");
+                final Map<String, String> nodeIdToType = new HashMap<>();
                 if (graph.hasChildNodes()) {
                     final NodeList children = graph.getChildNodes();
-                    // Just edges first
                     for (int childIndex = 0; childIndex < children.getLength(); childIndex++) {
                         final Node childNode = children.item(childIndex);
                         if (childNode != null) {
@@ -176,6 +176,10 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                     if (childNode.hasChildNodes()) {
                                         GraphMLUtilities.addAttributes(childNode, nodeAttributes, nodeRecords, GraphRecordStoreUtilities.SOURCE);
                                     }
+                                    //store the type of each node id so that an edge can be matched to the correct source and destination
+                                    if (retrieveTransactions) {
+                                        nodeIdToType.put(id, nodeRecords.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE));
+                                    }
                                     break;
                                 }
                                 case EDGE_TAG: {
@@ -186,9 +190,9 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                         final String target = attributes.getNamedItem(EDGE_DST_TAG).getNodeValue();
                                         edgeRecords.add();
                                         edgeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, source);
-                                        edgeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
+                                        //edgeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, nodeIdToType.get(source));
                                         edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, target);
-                                        edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
+                                        //edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, nodeIdToType.get(target));
                                         edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.IDENTIFIER, id);
                                         edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE, filename);
                                         if (undirected) {
@@ -213,6 +217,14 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                     break;
                             }
                         }
+                    }
+                    
+                    // resolve the node types between edges so that each edge is correctly added to the graph
+                    for (int i = 0; i < edgeRecords.size(); i++) {
+                        edgeRecords.set(i, GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, 
+                                nodeIdToType.get(edgeRecords.get(i, GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER)));
+                        edgeRecords.set(i, GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, 
+                                nodeIdToType.get(edgeRecords.get(i, GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER)));
                     }
                 }
             }

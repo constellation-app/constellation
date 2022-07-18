@@ -30,6 +30,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -81,6 +83,7 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
         final boolean retrieveTransactions = parameters == null
                 || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID) == null
                 || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
+        final Map<String, String> nodeIdToType = new HashMap<>();
         BufferedReader in = null;
         String line;
         boolean node = false;
@@ -104,6 +107,15 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
                 } else if (line.startsWith(START_TAG)) {
                     //do nothing
                 } else if (line.startsWith(END_TAG)) {
+                    if (node) {
+                        // check the type of the node, if it doesn't exist, add one
+                        if (!nodeRecords.hasValue(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE)) {
+                            nodeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
+                        }
+                        nodeIdToType.put(
+                                nodeRecords.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER), 
+                                nodeRecords.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE));
+                    }
                     node = false;
                     edge = false;
                 } else if (node) {
@@ -139,7 +151,14 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
                     }
                 }
             }
-
+            
+            // resolve the node types between edges so that each edge is correctly added to the graph
+            for (int i = 0; i < edgeRecords.size(); i++) {
+                edgeRecords.set(i, GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, 
+                        nodeIdToType.get(edgeRecords.get(i, GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER)));
+                edgeRecords.set(i, GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, 
+                        nodeIdToType.get(edgeRecords.get(i, GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER)));
+            }
         } catch (final FileNotFoundException ex) {
             NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "File " + filename + " not found", "Import GML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
