@@ -49,6 +49,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -64,6 +66,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
     private final boolean selectAll;
     private final boolean selectNext;
+
+    private int resultsFoundSize = -45;
+    private static final Logger LOGGER = Logger.getLogger(AdvancedSearchPlugin.class.getName());
+
 
     private final AdvancedSearchParameters parameters;
     private final List<FindCriteriaValues> criteriaList;
@@ -128,6 +134,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         FindResultsList foundResult = graph.getObjectValue(stateId, 0);
 
+        LOGGER.log(Level.SEVERE, "Running edit method");
         /**
          * If it doesn't exist or is null, create a new list with the starting
          * index and the current find parameters. If it does exist, create a
@@ -150,6 +157,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             final int newIndex = getIndex(newParamters, oldparameters, foundResult.getCurrentIndex());
             foundResult = new FindResultsList(newIndex, newParamters, oldList.getGraphId());
         }
+
+        //LOGGER.log(Level.SEVERE, "Results found: " + foundResult.size());
+
+        resultsFoundSize = foundResult.size();
 
         foundResult.clear();
         graph.setObjectValue(stateId, 0, foundResult);
@@ -279,6 +290,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         }
         findAllMatchingResultsList.addAll(findResultSet);
 
+        resultsFoundSize = findAllMatchingResultsList.size();
+        LOGGER.log(Level.SEVERE, "Results display: " + resultsFoundSize);
+
+
         // if Find in select all the find in results
         if (FIND_IN.equals(currentSelection)) {
             selectFindInResults(FIND_IN.equals(currentSelection), findInCurrentSelectionList, foundResult, graph, selectedAttribute);
@@ -291,6 +306,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         } else if (selectAll) {
             selectMatchingAllResults(ALL.equals(allOrAny), findAllMatchingResultsList, foundResult, graph, selectedAttribute);
         }
+
 
         // if the user clicked find next or prev
         if (!selectAll) {
@@ -318,6 +334,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         }
         //If no results are found, set the meta attribute to null
         graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult);
+
     }
 
     /**
@@ -345,9 +362,12 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                     graph.setBooleanValue(selectedAttribute, fr.getID(), true);
                 }
             }
+
+            //resultsFoundSize = foundResult.size();
             // clear the found result and add the findAllmatching results to it
             foundResult.clear();
             foundResult.addAll(findAllMatchingResultsList);
+
         }
     }
 
@@ -373,10 +393,11 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             for (final FindResult fr : findInCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
             }
-
+            //resultsFoundSize = foundResult.size();
             // clear the foundResult and add the findIncurrentSelection list to it
             foundResult.clear();
             foundResult.addAll(findInCurrentSelectionList);
+
         }
     }
 
@@ -735,4 +756,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     public String getName() {
         return "Find: Advanced Search";
     }
+
+
+    public int getResultSize() {
+        return resultsFoundSize;
+    }
+
 }

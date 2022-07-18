@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find2.plugins.GraphAttributePlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.advanced.AdvancedSearchPlugin;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -280,9 +281,9 @@ public class FindViewController {
             }
         }
     }
-
+    private AdvancedSearchPlugin advancedSearchPlugin = null;
     public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext) {
-        final AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
+        advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
 
         /**
          * If search all graphs is true, execute the advanced find plugin on all
@@ -302,6 +303,17 @@ public class FindViewController {
                 PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
             }
         }
+    }
+
+    public int getAdvancedSearchResultsSize() {
+        if (advancedSearchPlugin != null) {
+
+            int resultSize = advancedSearchPlugin.getResultSize();
+
+            return resultSize;
+        }
+
+        return 99;
     }
 
     /**

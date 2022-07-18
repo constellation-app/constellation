@@ -39,7 +39,7 @@ import javafx.scene.layout.Priority;
 public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
 
     private final TextField searchField = new TextField();
-    private final CheckBox caseSensitiveCheckBox = new CheckBox("Aa");
+    private final CheckBox caseSensitiveCheckBox = new CheckBox("Ignore Case");
     private final CheckBox useListCheckBox = new CheckBox("Use List");
     private final Button moreDetailsButton = new Button("List");
 

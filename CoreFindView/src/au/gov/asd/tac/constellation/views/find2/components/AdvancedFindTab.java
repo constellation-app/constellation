@@ -89,6 +89,13 @@ public class AdvancedFindTab extends Tab {
     private final Pane widthSpacer = new Pane();
     private final Pane heightSpacer = new Pane();
 
+    private final GridPane currentSelectionPane = new GridPane();
+    private final GridPane matchesFoundPane = new GridPane();
+
+
+    private final Label matchesFoundLabel = new Label("Find: Advanced Search: Number of results found: ");
+    private final Label matchesFoundCountLabel = new Label("0");
+
     protected final HBox buttonsHBox = new HBox();
     protected final VBox buttonsVBox = new VBox();
     protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
@@ -122,16 +129,26 @@ public class AdvancedFindTab extends Tab {
         currentSelectionChoiceBox.getSelectionModel().select(0);
         matchCriteriaChoiceBox.getSelectionModel().select(0);
 
+        currentSelectionPane.add(currentSeletionLabel, 0, 0);
+        currentSelectionPane.add(currentSelectionChoiceBox, 0, 1);
+        currentSelectionPane.setPadding(new Insets(1, 0, 0, 25));
+        currentSelectionPane.setVgap(4.25);
+
+        matchesFoundPane.add(matchesFoundLabel, 0, 0);
+        matchesFoundPane.add(matchesFoundCountLabel, 1, 0);
+
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 0, 1);
         settingsGrid.add(matchCriteriaLabel, 1, 0);
         settingsGrid.add(matchCriteriaChoiceBox, 1, 1);
-        settingsGrid.add(currentSeletionLabel, 2, 0);
-        settingsGrid.add(currentSelectionChoiceBox, 2, 1);
+        settingsGrid.add(currentSelectionPane, 2, 0, 1, 2);
+        settingsGrid.add(matchesFoundPane, 0, 2, 3, 1);
+
 
         settingsGrid.setPadding(new Insets(5));
         settingsGrid.setHgap(5);
         settingsGrid.setVgap(5);
+
 
         settingsBorderPane.setCenter(settingsGrid);
         settingsBorderPane.setPadding(new Insets(0, 0, 10, 0));
@@ -449,6 +466,7 @@ public class AdvancedFindTab extends Tab {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             FindViewController.getDefault().retrieveAdvancedSearch(true, false);
+            matchesFoundCountLabel.setText("" + FindViewController.getDefault().getAdvancedSearchResultsSize());
         }
     }
 
@@ -461,6 +479,7 @@ public class AdvancedFindTab extends Tab {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             FindViewController.getDefault().retrieveAdvancedSearch(false, true);
+            matchesFoundCountLabel.setText("" + FindViewController.getDefault().getAdvancedSearchResultsSize());
         }
     }
 
