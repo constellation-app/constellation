@@ -19,14 +19,10 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -41,25 +37,15 @@ import org.testng.annotations.Test;
  */
 public class PlaneManagerTopComponentNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(PlaneManagerTopComponentNGTest.class.getName());
-
     public PlaneManagerTopComponentNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
     }
 
     @BeforeMethod
@@ -68,63 +54,6 @@ public class PlaneManagerTopComponentNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-    }
-
-    /**
-     * Test of importPlaneActionPerformed method, of class
-     * PlaneManagerTopComponent.
-     */
-    @Test
-    public void testImportPlaneActionPerformed() {
-        System.out.println("testImportPlaneActionPerformed");
-    }
-
-    /**
-     * Test of resultChanged method, of class PlaneManagerTopComponent.
-     */
-    @Test
-    public void testResultChanged() {
-        System.out.println("testResultChanged");
-    }
-
-    /**
-     * Test of componentOpened method, of class PlaneManagerTopComponent.
-     */
-    @Test
-    public void testComponentOpened() {
-        System.out.println("testComponentOpened");
-    }
-
-    /**
-     * Test of componentClosed method, of class PlaneManagerTopComponent.
-     */
-    @Test
-    public void testComponentClosed() {
-        System.out.println("testComponentClosed");
-    }
-
-    /**
-     * Test of writeProperties method, of class PlaneManagerTopComponent.
-     */
-    @Test
-    public void testWriteProperties() {
-        System.out.println("testWriteProperties");
-    }
-
-    /**
-     * Test of readProperties method, of class PlaneManagerTopComponent.
-     */
-    @Test
-    public void testReadProperties() {
-        System.out.println("testReadProperties");
-    }
-
-    /**
-     * Test of graphChanged method, of class PlaneManagerTopComponent.
-     */
-    @Test
-    public void testGraphChanged() {
-        System.out.println("testGraphChanged");
     }
 
     /**

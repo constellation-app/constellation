@@ -56,26 +56,6 @@ public class JSONImportFileParserNGTest {
     }
 
     /**
-     * Test of parse method, of class JSONImportFileParser.
-     *
-     * @throws IOException
-     */
-    @Test
-    public void testParse() throws IOException {
-        System.out.println("testParse");
-    }
-
-    /**
-     * Test of preview method, of class JSONImportFileParser.
-     *
-     * @throws IOException
-     */
-    @Test
-    public void testPreview() throws IOException {
-        System.out.println("testPreview");
-    }
-
-    /**
      * Test of getFileFilter method, of class JSONImportFileParser.
      *
      * @throws IOException

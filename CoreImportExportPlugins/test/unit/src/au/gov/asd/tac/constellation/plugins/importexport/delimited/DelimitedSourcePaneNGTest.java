@@ -68,14 +68,6 @@ public class DelimitedSourcePaneNGTest {
     }
 
     /**
-     * Test of removeFile method, of class DelimitedSourcePane.
-     */
-    @Test
-    public void testRemoveFile() {
-        System.out.println("testRemoveFile");
-    }
-
-    /**
      * Test of getDelimitedImportFileChooser method, of class
      * DelimitedSourcePane.
      *
@@ -100,13 +92,5 @@ public class DelimitedSourcePaneNGTest {
         doReturn(false).when(fileMock).isFile();
         doReturn(true).when(fileMock).isDirectory();
         assertEquals(fileChooser.accept(fileMock), true);
-    }
-
-    /**
-     * Test of update method, of class DelimitedSourcePane.
-     */
-    @Test
-    public void testUpdate() {
-        System.out.println("testUpdate");
     }
 }

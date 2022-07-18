@@ -106,6 +106,7 @@ import org.openide.windows.TopComponent;
 public final class PlaneManagerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
 
     private static final String TITLE = "Import plane";
+
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
     private Graph graph;

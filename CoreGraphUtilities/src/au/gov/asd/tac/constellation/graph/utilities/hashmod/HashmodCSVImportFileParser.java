@@ -41,11 +41,11 @@ public class HashmodCSVImportFileParser {
         final ArrayList<String[]> results = new ArrayList<>();
 
         try (final CSVParser csvFileParser = getCSVParser(input)) {
-            for (final CSVRecord record : csvFileParser) {
-                final String[] line = new String[record.size()];
+            for (final CSVRecord csvRecord : csvFileParser) {
+                final String[] line = new String[csvRecord.size()];
 
-                for (int i = 0; i < record.size(); i++) {
-                    line[i] = record.get(i);
+                for (int i = 0; i < csvRecord.size(); i++) {
+                    line[i] = csvRecord.get(i);
                 }
 
                 results.add(line);
@@ -62,11 +62,11 @@ public class HashmodCSVImportFileParser {
         try (final CSVParser csvFileParser = getCSVParser(input)) {
             int count = 0;
 
-            for (final CSVRecord record : csvFileParser) {
-                final String[] line = new String[record.size()];
+            for (final CSVRecord csvRecord : csvFileParser) {
+                final String[] line = new String[csvRecord.size()];
 
-                for (int i = 0; i < record.size(); i++) {
-                    line[i] = record.get(i);
+                for (int i = 0; i < csvRecord.size(); i++) {
+                    line[i] = csvRecord.get(i);
                 }
 
                 results.add(line);

@@ -23,9 +23,11 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.mockito.Mockito;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -35,6 +37,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
+ * Test class for HashmodCSVImportFileParser.
  *
  * @author sol695510
  */
@@ -59,11 +62,11 @@ public class HashmodCSVImportFileParserNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        hashmodInputSourceMock = Mockito.mock(HashmodInputSource.class);
-        pluginParametersMock = Mockito.mock(PluginParameters.class);
-        CSVParserMock = Mockito.mock(CSVParser.class);
-        iteratorMock = Mockito.mock(Iterator.class);
-        CSVRecordMock = Mockito.mock(CSVRecord.class);
+        hashmodInputSourceMock = mock(HashmodInputSource.class);
+        pluginParametersMock = mock(PluginParameters.class);
+        CSVParserMock = mock(CSVParser.class);
+        iteratorMock = mock(Iterator.class);
+        CSVRecordMock = mock(CSVRecord.class);
     }
 
     @AfterMethod
@@ -80,7 +83,7 @@ public class HashmodCSVImportFileParserNGTest {
         System.out.println("testParse");
 
         final HashmodCSVImportFileParser instance = spy(new HashmodCSVImportFileParser());
-        doCallRealMethod().when(instance).parse(Mockito.any(HashmodInputSource.class), Mockito.any(PluginParameters.class));
+        doCallRealMethod().when(instance).parse(any(HashmodInputSource.class), any(PluginParameters.class));
 
         // When the CSV file is empty.
         doReturn(CSVParserMock).when(instance).getCSVParser(hashmodInputSourceMock);
@@ -120,7 +123,7 @@ public class HashmodCSVImportFileParserNGTest {
         System.out.println("testPreview");
 
         final HashmodCSVImportFileParser instance = spy(new HashmodCSVImportFileParser());
-        doCallRealMethod().when(instance).preview(Mockito.any(HashmodInputSource.class), Mockito.any(PluginParameters.class), Mockito.anyInt());
+        doCallRealMethod().when(instance).preview(any(HashmodInputSource.class), any(PluginParameters.class), anyInt());
 
         // When the CSV file is empty.
         doReturn(CSVParserMock).when(instance).getCSVParser(hashmodInputSourceMock);

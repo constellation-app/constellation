@@ -25,14 +25,9 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.Edi
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -47,25 +42,15 @@ import org.testng.annotations.Test;
  */
 public class IconEditorFactoryNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(IconEditorFactoryNGTest.class.getName());
-
     public IconEditorFactoryNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
     }
 
     @BeforeMethod
@@ -85,10 +70,10 @@ public class IconEditorFactoryNGTest {
 
         final AbstractEditor<ConstellationIcon> instance = new IconEditorFactory().createEditor(
                 mock(EditOperation.class),
-                Mockito.mock(DefaultGetter.class),
-                Mockito.mock(ValueValidator.class),
+                mock(DefaultGetter.class),
+                mock(ValueValidator.class),
                 "",
-                Mockito.mock(ConstellationIcon.class));
+                mock(ConstellationIcon.class));
 
         assertEquals(instance.getClass(), IconEditor.class);
     }
@@ -108,10 +93,10 @@ public class IconEditorFactoryNGTest {
 
         final IconEditor instance = (IconEditor) new IconEditorFactory().createEditor(
                 mock(EditOperation.class),
-                Mockito.mock(DefaultGetter.class),
-                Mockito.mock(ValueValidator.class),
+                mock(DefaultGetter.class),
+                mock(ValueValidator.class),
                 "",
-                Mockito.mock(ConstellationIcon.class));
+                mock(ConstellationIcon.class));
 
         final JFileChooser fileChooser = instance.getIconEditorFileChooser().createFileChooser();
 
@@ -155,10 +140,10 @@ public class IconEditorFactoryNGTest {
 
         final IconEditor instance = (IconEditor) new IconEditorFactory().createEditor(
                 mock(EditOperation.class),
-                Mockito.mock(DefaultGetter.class),
-                Mockito.mock(ValueValidator.class),
+                mock(DefaultGetter.class),
+                mock(ValueValidator.class),
                 "",
-                Mockito.mock(ConstellationIcon.class));
+                mock(ConstellationIcon.class));
 
         final JFileChooser fileChooser = instance.getIconEditorFolderChooser().createFileChooser();
 

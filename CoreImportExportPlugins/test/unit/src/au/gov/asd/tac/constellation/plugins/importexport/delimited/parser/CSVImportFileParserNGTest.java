@@ -27,9 +27,11 @@ import java.util.List;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.mockito.Mockito;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -39,6 +41,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
+ * Test class for CSVImportFileParser.
  *
  * @author sol695510
  */
@@ -49,7 +52,6 @@ public class CSVImportFileParserNGTest {
     private static CSVParser CSVParserMock;
     private static Iterator<CSVRecord> iteratorMock;
     private static CSVRecord CSVRecordMock;
-    private static File fileMock;
 
     public CSVImportFileParserNGTest() {
     }
@@ -64,12 +66,11 @@ public class CSVImportFileParserNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        inputSourceMock = Mockito.mock(InputSource.class);
-        pluginParametersMock = Mockito.mock(PluginParameters.class);
-        CSVParserMock = Mockito.mock(CSVParser.class);
-        iteratorMock = Mockito.mock(Iterator.class);
-        CSVRecordMock = Mockito.mock(CSVRecord.class);
-        fileMock = Mockito.mock(File.class);
+        inputSourceMock = mock(InputSource.class);
+        pluginParametersMock = mock(PluginParameters.class);
+        CSVParserMock = mock(CSVParser.class);
+        iteratorMock = mock(Iterator.class);
+        CSVRecordMock = mock(CSVRecord.class);
     }
 
     @AfterMethod
@@ -86,7 +87,7 @@ public class CSVImportFileParserNGTest {
         System.out.println("testParse");
 
         final CSVImportFileParser instance = spy(new CSVImportFileParser());
-        doCallRealMethod().when(instance).parse(Mockito.any(InputSource.class), Mockito.any(PluginParameters.class));
+        doCallRealMethod().when(instance).parse(any(InputSource.class), any(PluginParameters.class));
 
         // When the CSV file is empty.
         doReturn(CSVParserMock).when(instance).getCSVParser(inputSourceMock);
@@ -126,7 +127,7 @@ public class CSVImportFileParserNGTest {
         System.out.println("testPreview");
 
         final CSVImportFileParser instance = spy(new CSVImportFileParser());
-        doCallRealMethod().when(instance).preview(Mockito.any(InputSource.class), Mockito.any(PluginParameters.class), Mockito.anyInt());
+        doCallRealMethod().when(instance).preview(any(InputSource.class), any(PluginParameters.class), anyInt());
 
         // When the CSV file is empty.
         doReturn(CSVParserMock).when(instance).getCSVParser(inputSourceMock);
@@ -201,6 +202,7 @@ public class CSVImportFileParserNGTest {
         assertEquals(fileFilter.accept(file3), true);
 
         // If file is a directory.
+        final File fileMock = mock(File.class);
         doReturn("directory").when(fileMock).getName();
         doReturn(false).when(fileMock).isFile();
         doReturn(true).when(fileMock).isDirectory();

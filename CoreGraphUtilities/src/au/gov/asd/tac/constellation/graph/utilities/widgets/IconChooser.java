@@ -59,6 +59,7 @@ import org.openide.filesystems.FileChooserBuilder;
 public final class IconChooser extends javax.swing.JPanel implements TreeSelectionListener, ListSelectionListener {
 
     private static final String TITLE = "Add icons";
+
     private final Set<ConstellationIcon> icons;
     private static final boolean ICON_ADDED = false;
 

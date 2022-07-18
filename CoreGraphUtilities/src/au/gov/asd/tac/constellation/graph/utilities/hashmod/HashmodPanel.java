@@ -49,6 +49,7 @@ import org.openide.util.NbBundle.Messages;
 public class HashmodPanel extends javax.swing.JPanel {
 
     private static final String TITLE = "Select a CSV for the Hashmod";
+
     private String hashmodCSVFileStr = "";
     private boolean isChainedHashmods = false;
     private int numChainedHashmods = 0;

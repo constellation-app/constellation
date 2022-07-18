@@ -24,15 +24,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import org.openide.filesystems.FileChooserBuilder;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -47,8 +47,6 @@ import org.testng.annotations.Test;
  */
 public class ExportGlyphTexturesActionNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(ExportGlyphTexturesActionNGTest.class.getName());
-
     private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<SharedDrawable> sharedDrawableStaticMock;
 
@@ -57,24 +55,16 @@ public class ExportGlyphTexturesActionNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
-        sharedDrawableStaticMock = Mockito.mockStatic(SharedDrawable.class);
+        fileChooserStaticMock = mockStatic(FileChooser.class);
+        sharedDrawableStaticMock = mockStatic(SharedDrawable.class);
     }
 
     @AfterMethod
@@ -98,13 +88,13 @@ public class ExportGlyphTexturesActionNGTest {
         final Optional<File> optionalFile = Optional.ofNullable(file);
 
         fileChooserStaticMock.when(()
-                -> FileChooser.openSaveDialog(Mockito.any(FileChooserBuilder.class)))
+                -> FileChooser.openSaveDialog(any(FileChooserBuilder.class)))
                 .thenReturn(CompletableFuture.completedFuture(optionalFile));
 
         instance.actionPerformed(e);
 
         sharedDrawableStaticMock.verify(()
-                -> SharedDrawable.exportGlyphTextures(Mockito.eq(file)), times(1));
+                -> SharedDrawable.exportGlyphTextures(eq(file)), times(1));
     }
 
     /**
@@ -139,6 +129,13 @@ public class ExportGlyphTexturesActionNGTest {
         // If file exists, is valid and ends with correct extension.
         final File file3 = File.createTempFile("filePng", FileExtensionConstants.PNG);
         assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file3), true);
+
+        // If file is a directory.
+        final File fileMock = mock(File.class);
+        doReturn("directory").when(fileMock).getName();
+        doReturn(false).when(fileMock).isFile();
+        doReturn(true).when(fileMock).isDirectory();
+        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(fileMock), true);
 
         Files.deleteIfExists(file1.toPath());
         Files.deleteIfExists(file3.toPath());

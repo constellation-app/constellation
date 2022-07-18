@@ -128,6 +128,7 @@ import org.openide.windows.WindowManager;
 public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
     private static final Logger LOGGER = Logger.getLogger(SaveAsAction.class.getName());
+
     private static final String TITLE = "Save As";
 
     /**

@@ -40,6 +40,7 @@ import org.openide.util.NbBundle.Messages;
 public final class ExportToJsonAction implements ActionListener {
 
     private static final String TITLE = "Export To JSON";
+
     private final GraphNode context;
 
     public ExportToJsonAction(final GraphNode context) {

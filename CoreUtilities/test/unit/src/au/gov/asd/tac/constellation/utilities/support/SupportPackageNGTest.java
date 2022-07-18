@@ -41,9 +41,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Support Package Test.
+ * Test class of SupportPackage.
  *
  * @author arcturus
+ * @author sol695510
  */
 public class SupportPackageNGTest {
 

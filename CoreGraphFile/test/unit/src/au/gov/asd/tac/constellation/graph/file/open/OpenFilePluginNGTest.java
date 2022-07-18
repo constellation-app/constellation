@@ -25,17 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import org.openide.filesystems.FileChooserBuilder;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -50,8 +47,6 @@ import org.testng.annotations.Test;
  */
 public class OpenFilePluginNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(OpenFilePluginNGTest.class.getName());
-
     private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<OpenFile> openFileStaticMock;
 
@@ -60,24 +55,16 @@ public class OpenFilePluginNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        fileChooserStaticMock = Mockito.mockStatic(FileChooser.class);
-        openFileStaticMock = Mockito.mockStatic(OpenFile.class);
+        fileChooserStaticMock = mockStatic(FileChooser.class);
+        openFileStaticMock = mockStatic(OpenFile.class);
     }
 
     @AfterMethod
@@ -109,7 +96,7 @@ public class OpenFilePluginNGTest {
         final Optional<List<File>> optionalFiles = Optional.ofNullable(files);
 
         fileChooserStaticMock.when(()
-                -> FileChooser.openMultiDialog(Mockito.any(FileChooserBuilder.class)))
+                -> FileChooser.openMultiDialog(any(FileChooserBuilder.class)))
                 .thenReturn(CompletableFuture.completedFuture(optionalFiles));
 
         openFileStaticMock.when(() -> OpenFile.openFile(file, -1)).thenCallRealMethod();

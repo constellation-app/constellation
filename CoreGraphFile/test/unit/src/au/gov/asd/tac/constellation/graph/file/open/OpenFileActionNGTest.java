@@ -20,8 +20,10 @@ import au.gov.asd.tac.constellation.graph.file.GraphFilePluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.event.ActionEvent;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.testng.annotations.AfterClass;
@@ -53,8 +55,8 @@ public class OpenFileActionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        pluginExecutionStaticMock = Mockito.mockStatic(PluginExecution.class);
-        pluginExecutionMock = Mockito.mock(PluginExecution.class);
+        pluginExecutionStaticMock = mockStatic(PluginExecution.class);
+        pluginExecutionMock = mock(PluginExecution.class);
     }
 
     @AfterMethod
@@ -80,6 +82,6 @@ public class OpenFileActionNGTest {
 
         instance.actionPerformed(e);
 
-        verify(pluginExecutionMock, times(1)).executeNow(Mockito.any(StoreGraph.class));
+        verify(pluginExecutionMock, times(1)).executeNow(any(StoreGraph.class));
     }
 }

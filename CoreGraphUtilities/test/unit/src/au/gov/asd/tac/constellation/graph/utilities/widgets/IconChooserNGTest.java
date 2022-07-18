@@ -59,46 +59,6 @@ public class IconChooserNGTest {
     }
 
     /**
-     * Test of getIconMap method, of class IconChooser.
-     */
-    @Test
-    public void testGetIconMap() {
-        System.out.println("testGetIconMap");
-    }
-
-    /**
-     * Test of getSelectedIconName method, of class IconChooser.
-     */
-    @Test
-    public void testGetSelectedIconName() {
-        System.out.println("testGetSelectedIconName");
-    }
-
-    /**
-     * Test of isIconAdded method, of class IconChooser.
-     */
-    @Test
-    public void testIsIconAdded() {
-        System.out.println("testIsIconAdded");
-    }
-
-    /**
-     * Test of valueChanged method, of class IconChooser.
-     */
-    @Test
-    public void testValueChanged_TreeSelectionEvent() {
-        System.out.println("testValueChanged_TreeSelectionEvent");
-    }
-
-    /**
-     * Test of valueChanged method, of class IconChooser.
-     */
-    @Test
-    public void testValueChanged_ListSelectionEvent() {
-        System.out.println("testValueChanged_ListSelectionEvent");
-    }
-
-    /**
      * Test of getAddIconFileChooser method, of class IconChooser.
      *
      * @throws IOException
