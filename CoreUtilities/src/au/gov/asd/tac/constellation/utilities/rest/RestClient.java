@@ -188,7 +188,9 @@ public abstract class RestClient {
      * @deprecated
      */
     @Deprecated
-    public abstract HttpsURLConnection makeGetConnection(final String url, final Map<String, String> params) throws IOException;
+    public HttpsURLConnection makeGetConnection(final String url, final Map<String, String> params) throws IOException {
+        throw new UnsupportedOperationException("This method is obsolete");
+    }
     
     /**
      * Manage the creation of a HTTP GET connection.
@@ -335,7 +337,9 @@ public abstract class RestClient {
      * @deprecated
      */
     @Deprecated
-    public abstract HttpsURLConnection makePostConnection(final String url, final Map<String, String> params) throws IOException;
+    public HttpsURLConnection makePostConnection(final String url, final Map<String, String> params) throws IOException {
+        throw new UnsupportedOperationException("This method is obsolete");
+    }
     
     /**
      * Manage the creation of a HTTP POST connection.
