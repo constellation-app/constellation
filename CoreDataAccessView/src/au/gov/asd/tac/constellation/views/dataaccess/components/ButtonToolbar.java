@@ -91,10 +91,10 @@ public class ButtonToolbar {
 
     static {
         FAVOURITES_DIALOG_MSG_FORMAT = new StringBuilder(300)
-                .append("Add or remove plugins from your favourites category.\n\n")
+                .append("Add or remove plugins from your Favourites category.\n\n")
                 .append("The following plugins were selected:\n")
                 .append("%s")
-                .append("\n\nNote that you need to restart before changes take effect.")
+                .append("\n\nNote, Favourites will be updated the next time you start Constellation.")
                 .toString();
     }
 

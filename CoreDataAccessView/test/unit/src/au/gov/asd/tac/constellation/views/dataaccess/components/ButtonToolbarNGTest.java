@@ -425,10 +425,9 @@ public class ButtonToolbarNGTest {
                     .thenAnswer(iom -> {
                         final NotifyDescriptor descriptor = iom.getArgument(0);
 
-                        final String expectedMessage = "Add or remove plugins from your favourites category.\n\n"
-                                + "The following plugins were selected:\n"
+                final String expectedMessage = "Add or remove plugins from your Favourites category.\n\n"                                + "The following plugins were selected:\n"
                                 + pluginTitle + "\n"
-                                + "\nNote that you need to restart before changes take effect.";
+                        + "\nNote, Favourites will be updated the next time you start Constellation.";
 
                         assertEquals(descriptor.getMessage(), expectedMessage);
                         assertEquals(descriptor.getTitle(), "Manage Favourites");
