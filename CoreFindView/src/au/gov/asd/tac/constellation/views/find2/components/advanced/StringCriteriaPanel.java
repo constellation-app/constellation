@@ -52,7 +52,7 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
     public StringCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
         setGridContent();
-        caseSensitiveCheckBox.setOnAction(action -> setAaText(caseSensitiveCheckBox.selectedProperty().get()));
+        //caseSensitiveCheckBox.setOnAction(action -> setAaText(caseSensitiveCheckBox.selectedProperty().get()));
         useListCheckBox.setOnAction(action -> activateMoreDetails(useListCheckBox.selectedProperty().get()));
 
         getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
