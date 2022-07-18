@@ -70,7 +70,8 @@ public class BasicFindTab extends Tab {
     protected final String[] elementTypes = {GraphElementType.VERTEX.getShortLabel(), GraphElementType.TRANSACTION.getShortLabel(), GraphElementType.EDGE.getShortLabel(), GraphElementType.LINK.getShortLabel()};
     protected final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(elementTypes));
 
-    protected final Label inAttributesLabel = new Label("In Attributes:");
+    private boolean onLoad = true;
+    protected final Label inAttributesLabel = new Label("Search Attributes:");
     protected final CheckComboBox<String> inAttributesMenu = new CheckComboBox<>();
     protected List<Attribute> attributes = new ArrayList<>();
     protected List<Attribute> selectedNodeAttributes = new ArrayList<>();
@@ -398,6 +399,7 @@ public class BasicFindTab extends Tab {
         }
     }
 
+
     /**
      * Retrieves the selected list of the matching type, clears it, then re adds
      * all selected elements to that list
@@ -414,11 +416,13 @@ public class BasicFindTab extends Tab {
             for (final Attribute a : attributes) {
                 // if there is attributes selected in the attributesMenu and
                 // if that attribute is selected
-                if (!inAttributesMenu.getCheckModel().isEmpty() && inAttributesMenu.getCheckModel().isChecked(a.getName())) {
+                if ((!inAttributesMenu.getCheckModel().isEmpty() && inAttributesMenu.getCheckModel().isChecked(a.getName())) || onLoad) {
                     // add it to the selected attributes list
                     selectedAttributes.add(a);
                 }
             }
+
+            onLoad = false;
         }
     }
 
