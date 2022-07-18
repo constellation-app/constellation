@@ -38,7 +38,6 @@ public class GraphMLUtilities {
      * @param element
      */
     public static void addAttributes(final Node node, final Map<String, String> nodeAttributes, final RecordStore result, final String element) {
-
         final NodeList children = node.getChildNodes();
         for (int childIndex = 0; childIndex < children.getLength(); childIndex++) {
             final Node childNode = children.item(childIndex);
@@ -66,16 +65,22 @@ public class GraphMLUtilities {
         switch (attrType) {
             case "boolean":
                 result.set(element + attrName, Boolean.parseBoolean(value));
+                break;
             case "int":
                 result.set(element + attrName, Integer.parseInt(value));
+                break;
             case "long":
                 result.set(element + attrName, Long.parseLong(value));
+                break;
             case "float":
                 result.set(element + attrName, Float.parseFloat(value));
+                break;
             case "double":
                 result.set(element + attrName, Double.parseDouble(value));
+                break;
             default:
                 result.set(element + attrName, value);
+                break;
         }
     }
 
