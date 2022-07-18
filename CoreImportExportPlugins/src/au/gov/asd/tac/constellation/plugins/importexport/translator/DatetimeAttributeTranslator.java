@@ -60,7 +60,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
 
     private static final String CUSTOM = "CUSTOM";
     private static final String EXCEL = "EXCEL";
-    private static final String EPOCH = "EPOCH";
+    private static final String EPOCH = "EPOCH (Unix)";
 
 
     private static final Map<String, String> DATETIME_FORMATS = new LinkedHashMap<>();
