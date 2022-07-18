@@ -569,14 +569,14 @@ public enum GraphElementType {
 
     private static final String META_LABEL = "Metadata";
     private static final String GRAPH_LABEL = "Graph";
-    private static final String VERTEX_LABEL = "Node";
+    private static final String VERTEX_LABEL = "Nodes";
     private static final String LINK_LABEL = "Link (full transaction merging)";
     private static final String EDGE_LABEL = "Edge (transactions merged by direction)";
     private static final String TRANSACTION_LABEL = "Transaction (no merging)";
 
-    private static final String LINK_SHORT_LABEL = "Link";
-    private static final String EDGE_SHORT_LABEL = "Edge";
-    private static final String TRANSACTION_SHORT_LABEL = "Transaction";
+    private static final String LINK_SHORT_LABEL = "Links";
+    private static final String EDGE_SHORT_LABEL = "Edges";
+    private static final String TRANSACTION_SHORT_LABEL = "Transactions";
 
     /**
      * Default constructor.

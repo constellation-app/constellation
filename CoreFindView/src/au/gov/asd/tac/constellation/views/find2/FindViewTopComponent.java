@@ -60,8 +60,8 @@ import org.openide.windows.WindowManager;
 )
 @NbBundle.Messages({
     "CTL_FindView2Action=Find View",
-    "CTL_FindViewTopComponent2=Find View",
-    "HINT_FindViewTopComponent2=Find View"
+    "CTL_FindViewTopComponent2=Find and Replace",
+    "HINT_FindViewTopComponent2=Find and Replace"
 })
 
 public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane> {
