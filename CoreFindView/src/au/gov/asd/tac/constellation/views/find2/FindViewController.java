@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find2.plugins.GraphAttributePlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.advanced.AdvancedSearchPlugin;
-import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -36,6 +35,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 /**
  * This controller class handles the interaction between the findView2 UI
@@ -54,6 +55,8 @@ public class FindViewController {
     private final BasicFindReplaceParameters currentBasicReplaceParameters;
     private final AdvancedSearchParameters currentAdvancedSearchParameters;
     private static final Logger LOGGER = Logger.getLogger(FindViewController.class.getName());
+
+    public BooleanProperty pluginCompletedSwitch = new SimpleBooleanProperty(false);
 
     /**
      * Private constructor for singleton
@@ -293,14 +296,19 @@ public class FindViewController {
             for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                 // check to see the graph is not null
                 if (graph != null && currentAdvancedSearchParameters.isSearchAllGraphs()) {
+
                     PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
+
+
                 }
             }
         } else {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
             // check to see the graph is not null
             if (graph != null) {
+
                 PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
+
             }
         }
     }
@@ -308,9 +316,7 @@ public class FindViewController {
     public int getAdvancedSearchResultsSize() {
         if (advancedSearchPlugin != null) {
 
-            int resultSize = advancedSearchPlugin.getResultSize();
-
-            return resultSize;
+            return advancedSearchPlugin.getResultSize();
         }
 
         return 99;
