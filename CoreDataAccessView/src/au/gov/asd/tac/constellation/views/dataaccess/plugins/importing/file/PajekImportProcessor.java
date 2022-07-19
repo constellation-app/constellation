@@ -77,16 +77,13 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
         final boolean retrieveTransactions = parameters == null
                 || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID) == null
                 || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
-        BufferedReader in = null;
         String line;
         boolean processNodes = false;
         boolean processEdges = false;
         
         final Map<String, String> idLabelMap = new HashMap<>();
 
-        try {
-            // Open file and loop through lines
-            in = new BufferedReader(new InputStreamReader(new FileInputStream(input), "UTF-8"));
+        try (final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(input), "UTF-8"))) {
             while ((line = in.readLine()) != null) {
                 if (line.startsWith(VERTEX_HEADER)) {
                     processNodes = true;
@@ -139,16 +136,6 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
             NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import Pajek File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (final IOException ex) {
-                    NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import Pajek File", DEFAULT_OPTION, 
-                            NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-                    LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
-                }
-            }
         }
     }
 }

@@ -84,14 +84,11 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
                 || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID) == null
                 || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
         final Map<String, String> nodeIdToType = new HashMap<>();
-        BufferedReader in = null;
         String line;
         boolean node = false;
         boolean edge = false;
 
-        try {
-            // Open file and loop through lines
-            in = new BufferedReader(new InputStreamReader(new FileInputStream(input), "UTF-8"));
+        try (final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(input), "UTF-8"))) {
             while ((line = in.readLine()) != null) {
                 line = line.trim();
                 if (line.startsWith(NODE_TAG)) {
@@ -167,16 +164,6 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
             NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import GML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (final IOException ex) {
-                    NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import GML File", DEFAULT_OPTION, 
-                            NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-                    LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
-                }
-            }
         }
 
         output.add(nodeRecords);

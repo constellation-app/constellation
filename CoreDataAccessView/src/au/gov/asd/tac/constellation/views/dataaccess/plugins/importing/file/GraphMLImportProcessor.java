@@ -101,15 +101,11 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
         final boolean retrieveTransactions = parameters == null
                 || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID) == null
                 || parameters.getParameters().get(RETRIEVE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
-        InputStream in = null;
         final Map<String, String> nodeAttributes = new HashMap<>();
         final Map<String, String> transactionAttributes = new HashMap<>();
         final Map<String, String> defaultAttributes = new HashMap<>();
 
-        try {
-            // Open file and loop through lines
-            in = new FileInputStream(input);
-
+        try (final InputStream in = new FileInputStream(input)) {
             final XmlUtilities xml = new XmlUtilities();
             final Document document = xml.read(in, true);
             final Element documentElement = document.getDocumentElement();
@@ -234,16 +230,10 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
             LOGGER.log(Level.SEVERE, ex, () -> "File " + filename + " not found");
         } catch (final TransformerException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (final IOException ex) {
-                    NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import GraphML File", DEFAULT_OPTION, 
-                            NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-                    LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
-                }
-            }
+        } catch (final IOException ex) {
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import GraphML File", DEFAULT_OPTION, 
+                    NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
+            LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
         }
 
         output.add(nodeRecords);
