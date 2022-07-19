@@ -183,12 +183,6 @@ public class NifiClient extends RestClient {
     }
 
     @Override
-    public HttpsURLConnection makeGetConnection(final String url, final Map<String, String> params) throws IOException {
-        // Do nothing - overriding deprecated abstract method
-        return null;
-    }
-
-    @Override
     public HttpsURLConnection makeGetConnection(final String url, final List<Tuple<String, String>> params) throws IOException {
         final URL nifiUrl = generateUrl(url, params);
         return HttpsConnection
@@ -198,12 +192,6 @@ public class NifiClient extends RestClient {
                 .addRequestProperty(HttpsConnection.CONTENT_TYPE, HttpsConnection.APPLICATION_FORM)
                 .withReadTimeout(60 * 1000)
                 .get();
-    }
-
-    @Override
-    public HttpsURLConnection makePostConnection(final String url, final Map<String, String> params) throws IOException {
-        // Do nothing - overriding deprecated abstract method
-        return null;
     }
 
     @Override

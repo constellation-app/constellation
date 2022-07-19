@@ -1,5 +1,13 @@
 # Constellation Changes	
 
+## Changes in July 2022
+
+-   Updated RestClient so that params are passed as List<Tuple<String, String>>
+    rather than Map<String, String> - this is to allow multiple parameters with
+    the same name to be supplied, which is required for some endpoints. This
+    change will break existing classes inheriting from RestClient if they are
+    not modified to reflect the new parameter type.
+
 ## Changes in March 2022
 
 -   Added abstract classes `AbstractCachedStringIOProvider` and 

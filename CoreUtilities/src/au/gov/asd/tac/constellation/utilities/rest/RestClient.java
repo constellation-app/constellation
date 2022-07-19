@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * REST Client
@@ -77,40 +78,6 @@ public abstract class RestClient {
     /**
      * Construct a URL string based on supplied URL and any supplied query
      * parameters.
-     * Deprecated - use generateUrl(final String url, final List<Tuple<String, String>> params)
-     * instead.
-     * 
-     * @param url URL to base generated URL on.
-     * @param params Any parameters to add to he URL (ie HTTP GET parameters)
-     * @return URL combining base URL and parameters.
-     * @throws UnsupportedEncodingException
-     * @throws MalformedURLException
-     * @deprecated
-     */
-    @Deprecated
-    public static URL generateUrl(final String url, final Map<String, String> params) throws UnsupportedEncodingException, MalformedURLException {
-        // Build the request parameters.
-        final StringBuilder query = new StringBuilder();
-        if (params != null) {
-            for (final Map.Entry<String, String> entry : params.entrySet()) {
-                if (query.length() > 0) {
-                    query.append('&');
-                }
-
-                query.append(String.format(
-                        "%s=%s",
-                        entry.getKey() == null ? "" : URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()),
-                        entry.getValue() == null ? "" : URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name())
-                ));
-            }
-        }
-
-        return new URL(url + (query.length() > 0 ? "?" + query : ""));
-    }
-
-    /**
-     * Construct a URL string based on supplied URL and any supplied query
-     * parameters.
      * 
      * @param url URL to base generated URL on.
      * @param params Any parameters to add to the URL (ie HTTP GET parameters)
@@ -126,10 +93,10 @@ public abstract class RestClient {
         if (params != null) {
             for (final Tuple<String, String> param : params) {
                 // Ensure the parameter has a non empty key. Rules for parameter names seem quite relaxed in HTTP, as
-                // such we wil not try and to too much validation
-                String key =  URLEncoder.encode(param.getFirst(), StandardCharsets.UTF_8.name()).replace("+", paramSpaceToken);
-                String value = URLEncoder.encode(param.getSecond(), StandardCharsets.UTF_8.name()).replace("+", paramSpaceToken);
-                if (key != null && !key.trim().isEmpty()) {
+                // such we will not try and do too much validation
+                final String key =  URLEncoder.encode(param.getFirst(), StandardCharsets.UTF_8.name()).replace("+", paramSpaceToken);
+                final String value = URLEncoder.encode(param.getSecond(), StandardCharsets.UTF_8.name()).replace("+", paramSpaceToken);
+                if (StringUtils.isNotBlank(key)) {
                     if (query.length() > 0) {
                         query.append('&');
                     }
@@ -178,46 +145,13 @@ public abstract class RestClient {
     
     /**
      * Manage the creation of a HTTP GET connection.
-     * Deprecated - use makeGetConnection(final String url, final List<Tuple<String, String>> params)
-     * instead.
-     * 
-     * @param url The URL to base the GET connection on.
-     * @param params Any parameters to add to the URL
-     * @return HttpsURLConnection object corresponding to the created connection
-     * @throws IOException 
-     * @deprecated
-     */
-    @Deprecated
-    public HttpsURLConnection makeGetConnection(final String url, final Map<String, String> params) throws IOException {
-        throw new UnsupportedOperationException("This method is obsolete");
-    }
-    
-    /**
-     * Manage the creation of a HTTP GET connection.
      * 
      * @param url The URL to base the GET connection on.
      * @param params Any parameters to add to the URL
      * @return HttpsURLConnection object corresponding to the created connection
      * @throws IOException 
      */
-    public HttpsURLConnection makeGetConnection(final String url, final List<Tuple<String, String>> params) throws IOException {
-        throw new UnsupportedOperationException("This method must be overridden");
-    }
-
-    /**
-     * Will be run before the GET connection - designed to be overridden as
-     * required.
-     * Deprecated - use beforeGet(final String url, final List<Tuple<String, String>> params)
-     * instead.
-     *
-     * @param url The URL to request.
-     * @param params Query parameters.
-     * @deprecated
-     */
-    @Deprecated
-    public void beforeGet(final String url, final Map<String, String> params) {
-        // DO NOTHING
-    }
+    public abstract HttpsURLConnection makeGetConnection(final String url, final List<Tuple<String, String>> params) throws IOException;
 
     /**
      * Will be run before the GET connection - designed to be overridden as
@@ -228,43 +162,6 @@ public abstract class RestClient {
      */
     public void beforeGet(final String url, final List<Tuple<String, String>> params) {
         // DO NOTHING
-    }
-    
-    /**
-     * A generic "send request / read response" method.
-     * <p>
-     * The REST calls each return a body containing a JSON document.
-     * Deprecated - use get(final String url, final List<Tuple<String, String>> params)
-     * instead.
-     *
-     * @param url The URL to request.
-     * @param params Query parameters.
-     * @throws IOException
-     * @deprecated
-     */
-    @Deprecated
-    public void get(final String url, final Map<String, String> params) throws IOException {
-        beforeGet(url, params);
-
-        HttpsURLConnection connection = null;
-        try {
-            connection = makeGetConnection(url, params);
-
-            responseCode = connection.getResponseCode();
-            responseMessage = connection.getResponseMessage();
-            headerFields = connection.getHeaderFields();
-
-            bytes = null;
-            if (Response.isCodeSuccess(responseCode)) {
-                bytes = getBody(connection, responseCode);
-            }
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-
-        afterGet(url, params);
     }
     
     /**
@@ -302,21 +199,6 @@ public abstract class RestClient {
     /**
      * Will be run after the GET connection has been disconnected - designed to
      * be overridden as required.
-     * Deprecated - use afterGet(final String url, final List<Tuple<String, String>> params)
-     * instead.
-     *
-     * @param url The URL to request.
-     * @param params Query parameters.
-     * @deprecated
-     */
-    @Deprecated
-    public void afterGet(final String url, final Map<String, String> params) {
-        // DO NOTHING
-    }
-
-    /**
-     * Will be run after the GET connection has been disconnected - designed to
-     * be overridden as required.
      *
      * @param url The URL to request.
      * @param params Query parameters.
@@ -327,46 +209,13 @@ public abstract class RestClient {
     
     /**
      * Manage the creation of a HTTP POST connection.
-     * Deprecated - use makePostConnection(final String url, final List<Tuple<String, String>> params)
-     * instead.
-     * 
-     * @param url The URL to base the POST connection on.
-     * @param params Any parameters to add to the URL
-     * @return HttpsURLConnection object corresponding to the created connection
-     * @throws IOException 
-     * @deprecated
-     */
-    @Deprecated
-    public HttpsURLConnection makePostConnection(final String url, final Map<String, String> params) throws IOException {
-        throw new UnsupportedOperationException("This method is obsolete");
-    }
-    
-    /**
-     * Manage the creation of a HTTP POST connection.
      * 
      * @param url The URL to base the POST connection on.
      * @param params Any parameters to add to the URL
      * @return HttpsURLConnection object corresponding to the created connection
      * @throws IOException
      */
-    public HttpsURLConnection makePostConnection(final String url, final List<Tuple<String, String>> params) throws IOException {
-        throw new UnsupportedOperationException("This method must be overridden");
-    }
-
-    /**
-     * Will be run before the POST connection - designed to be overridden as
-     * required.
-     * Deprecated - use beforePost(final String url, final List<Tuple<String, String>> params)
-     * instead.
-     *
-     * @param url The URL to request.
-     * @param params Query parameters.
-     * @deprecated
-     */
-    @Deprecated
-    public void beforePost(final String url, final Map<String, String> params) {
-        // DO NOTHING
-    }
+    public abstract HttpsURLConnection makePostConnection(final String url, final List<Tuple<String, String>> params) throws IOException;
 
     /**
      * Will be run before the POST connection - designed to be overridden as
@@ -377,51 +226,6 @@ public abstract class RestClient {
      */
     public void beforePost(final String url, final List<Tuple<String, String>> params) {
         // DO NOTHING
-    }
-
-    /**
-     * Post method which will convert the {@code params} to a JSON body. At the
-     * moment this method only supports a simple JSON object. That is, it does
-     * not convert arrays into JSON.
-     * Deprecated - use post(final String url, final List<Tuple<String, String>> params)
-     * instead.
-     *
-     * @param url The URL to request
-     * @param params A simple key/value pair in which values do not contain
-     * Arrays, Sets etc
-     * @throws IOException
-     * @deprecated
-     */
-    @Deprecated
-    public void post(final String url, final Map<String, String> params) throws IOException {
-        beforePost(url, params);
-
-        HttpsURLConnection connection = null;
-        try {
-            connection = makePostConnection(url, params);
-
-            try (final BufferedWriter request = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8.name()))) {
-                request.write(generateJsonFromFlatMap(params));
-                request.flush();
-            }
-
-            responseCode = connection.getResponseCode();
-            responseMessage = connection.getResponseMessage();
-            headerFields = connection.getHeaderFields();
-
-            bytes = null;
-            if (Response.isCodeSuccess(responseCode)) {
-                bytes = getBody(connection, responseCode);
-            }
-        } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-
-        afterPost(url, params);
     }
 
     /**
@@ -444,51 +248,6 @@ public abstract class RestClient {
 
             try (final BufferedWriter request = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8.name()))) {
                 request.write(generateJsonFromFlatMap(params));
-                request.flush();
-            }
-
-            responseCode = connection.getResponseCode();
-            responseMessage = connection.getResponseMessage();
-            headerFields = connection.getHeaderFields();
-
-            bytes = null;
-            if (Response.isCodeSuccess(responseCode)) {
-                bytes = getBody(connection, responseCode);
-            }
-        } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-
-        afterPost(url, params);
-    }
-
-    /**
-     * Post method similar to {@code post} but has the option to supply a json
-     * string that will be posted in the message body.
-     * Deprecated - use postWithJson(final String url, final List<Tuple<String, String>> params, final String json)
-     * instead.
-     *
-     * @param url The URL to request
-     * @param params A simple key/value pair in which values do not contain
-     * Arrays, Sets etc
-     * @param json The json string to be posted in the message body
-     * @throws IOException
-     * @deprecated
-     */
-    @Deprecated
-    public void postWithJson(final String url, final Map<String, String> params, final String json) throws IOException {
-        beforePost(url, params);
-
-        HttpsURLConnection connection = null;
-        try {
-            connection = makePostConnection(url, params);
-
-            try (final BufferedWriter request = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8.name()))) {
-                request.write(json);
                 request.flush();
             }
 
@@ -555,50 +314,6 @@ public abstract class RestClient {
     /**
      * Post method similar to {@code post} but has the option to supply a byte
      * array that will be posted in the message body.
-     * Deprecated - use postWithBytes(final String url, final List<Tuple<String, String>> params, final byte[] bytes)
-     * instead.
-     *
-     * @param url The URL to request
-     * @param params A simple key/value pair in which values do not contain
-     * Arrays, Sets etc
-     * @param bytes The bytes to be posted in the message body
-     * @throws IOException
-     * @deprecated
-     */
-    @Deprecated
-    public void postWithBytes(final String url, final Map<String, String> params, final byte[] bytes) throws IOException {
-        beforePost(url, params);
-
-        HttpsURLConnection connection = null;
-        try {
-            connection = makePostConnection(url, params);
-            try (final DataOutputStream request = new DataOutputStream(connection.getOutputStream())) {
-                request.write(bytes);
-                request.flush();
-            }
-
-            responseCode = connection.getResponseCode();
-            responseMessage = connection.getResponseMessage();
-            headerFields = connection.getHeaderFields();
-
-            this.bytes = null;
-            if (Response.isCodeSuccess(responseCode)) {
-                this.bytes = getBody(connection, responseCode);
-            }
-        } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-
-        afterPost(url, params);
-    }
-
-    /**
-     * Post method similar to {@code post} but has the option to supply a byte
-     * array that will be posted in the message body.
      *
      * @param url The URL to request
      * @param params A simple key/value pair in which values do not contain
@@ -640,52 +355,12 @@ public abstract class RestClient {
     /**
      * Will be run before the POST connection has been disconnected - designed
      * to be overridden as required.
-     * Deprecated - use afterPost(final String url, final List<Tuple<String, String>>
-     * instead.
-     *
-     * @param url The URL to request.
-     * @param params Query parameters.
-     * @deprecated
-     */
-    @Deprecated
-    public void afterPost(final String url, final Map<String, String> params) {
-        // DO NOTHING
-    }
-
-    /**
-     * Will be run before the POST connection has been disconnected - designed
-     * to be overridden as required.
      *
      * @param url The URL to request.
      * @param params Query parameters.
      */
     public void afterPost(final String url, final List<Tuple<String, String>> params) {
         // DO NOTHING
-    }
-
-    /**
-     * Generate a json string from a flat Map<String, String> of key and values
-     * Deprecated - use generateJsonFromFlatMap(final List<Tuple<String, String>> params)
-     * instead.
-     * @param params A Map of key/value pairs
-     * @return A json representation of a simple map
-     * @throws IOException
-     * @deprecated
-     */
-    @Deprecated
-    private String generateJsonFromFlatMap(final Map<String, String> params) throws IOException {
-        final ByteArrayOutputStream json = new ByteArrayOutputStream();
-        final JsonFactory jsonFactory = new MappingJsonFactory();
-        try (JsonGenerator jg = jsonFactory.createGenerator(json)) {
-            jg.writeStartObject();
-            for (final Map.Entry<String, String> param : params.entrySet()) {
-                jg.writeStringField(param.getKey(), param.getValue());
-            }
-            jg.writeEndObject();
-            jg.flush();
-        }
-
-        return json.toString(StandardCharsets.UTF_8.name());
     }
 
     /**
@@ -698,13 +373,13 @@ public abstract class RestClient {
     private String generateJsonFromFlatMap(final List<Tuple<String, String>> params) throws IOException {
         final ByteArrayOutputStream json = new ByteArrayOutputStream();
         final JsonFactory jsonFactory = new MappingJsonFactory();
-        try (JsonGenerator jg = jsonFactory.createGenerator(json)) {
+        try (final JsonGenerator jg = jsonFactory.createGenerator(json)) {
             jg.writeStartObject();
             
             for (final Tuple<String, String> param : params) {
                 // Ensure the parameter has a non empty key.
-                String key = param.getFirst();
-                if (key != null && !key.trim().isEmpty()) {
+                final String key = param.getFirst();
+                if (StringUtils.isNotBlank(key)) {
                     jg.writeStringField(key,  param.getSecond());
                 }
             }
@@ -714,5 +389,4 @@ public abstract class RestClient {
 
         return json.toString(StandardCharsets.UTF_8.name());
     }
-
 }

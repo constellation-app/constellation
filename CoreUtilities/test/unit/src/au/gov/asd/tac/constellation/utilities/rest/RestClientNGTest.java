@@ -304,18 +304,6 @@ public class RestClientNGTest {
             mockedResponseMessage = responseMessage;
             mockedHeaders = headers;
         }
-        
-        /**
-         * Override of deprecated version of makeGetConnection. Not used.
-         * @param url
-         * @param params
-         * @return
-         * @throws IOException 
-         */
-        @Override
-        public HttpsURLConnection makeGetConnection(String url, Map<String, String> params) throws IOException {
-            return null;
-        }
 
         /**
          * Test implementation of makeGetConnection. Uses mockito to mock
@@ -334,18 +322,6 @@ public class RestClientNGTest {
             when(mockConnection.getResponseMessage()).thenReturn(mockedResponseMessage);
             when(mockConnection.getHeaderFields()).thenReturn(mockedHeaders);
             return mockConnection;
-        }
-        
-        /**
-         * Override of deprecated version of makePostConnection. Not used.
-         * @param url
-         * @param params
-         * @return
-         * @throws IOException 
-         */
-        @Override
-        public HttpsURLConnection makePostConnection(String url, Map<String, String> params) throws IOException {
-            return null;
         }
 
         /**
