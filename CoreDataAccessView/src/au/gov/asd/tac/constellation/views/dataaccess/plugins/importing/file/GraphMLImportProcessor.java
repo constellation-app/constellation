@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -145,7 +147,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                 final Node graph = graphs.item(index);
                 final NamedNodeMap graphAttributes = graph.getAttributes();
                 final String direction = graphAttributes.getNamedItem(DIRECTION_TAG).getNodeValue();
-                final boolean undirected = direction.equals("undirected");
+                final boolean undirected = "undirected".equals(direction);
                 final Map<String, String> nodeIdToType = new HashMap<>();
                 if (graph.hasChildNodes()) {
                     final NodeList children = graph.getChildNodes();
@@ -158,12 +160,12 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                     final String id = attributes.getNamedItem(ID_TAG).getNodeValue();
                                     nodeRecords.add();
                                     nodeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, id);
-                                    nodeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
+                                    nodeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, SchemaVertexType.unknownType().getName());
                                     nodeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SOURCE, filename);
-                                    for (final String key : nodeAttributes.keySet()) {
-                                        if (defaultAttributes.containsKey(key)) {
-                                            final String value = defaultAttributes.get(key);
-                                            final String attr = nodeAttributes.get(key);
+                                    for (final Entry<String, String> nodeAttributeEntry : nodeAttributes.entrySet()) {
+                                        if (defaultAttributes.containsKey(nodeAttributeEntry.getKey())) {
+                                            final String value = defaultAttributes.get(nodeAttributeEntry.getKey());
+                                            final String attr = nodeAttributeEntry.getValue();
                                             final String attrName = attr.split(NAME_TYPE_DELIMITER)[0];
                                             final String attrType = attr.split(NAME_TYPE_DELIMITER)[1];
                                             GraphMLUtilities.addAttribute(nodeRecords, GraphRecordStoreUtilities.SOURCE, attrType, attrName, value);
@@ -186,18 +188,16 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                         final String target = attributes.getNamedItem(EDGE_DST_TAG).getNodeValue();
                                         edgeRecords.add();
                                         edgeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, source);
-                                        //edgeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, nodeIdToType.get(source));
                                         edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, target);
-                                        //edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, nodeIdToType.get(target));
                                         edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.IDENTIFIER, id);
                                         edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE, filename);
                                         if (undirected) {
                                             edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.DIRECTED, false);
                                         }
-                                        for (final String key : transactionAttributes.keySet()) {
-                                            if (defaultAttributes.containsKey(key)) {
-                                                final String value = defaultAttributes.get(key);
-                                                final String attr = transactionAttributes.get(key);
+                                        for (final Entry<String, String> transactionAttributeEntry : transactionAttributes.entrySet()) {
+                                            if (defaultAttributes.containsKey(transactionAttributeEntry.getKey())) {
+                                                final String value = defaultAttributes.get(transactionAttributeEntry.getKey());
+                                                final String attr = transactionAttributeEntry.getValue();
                                                 final String attrName = attr.split(NAME_TYPE_DELIMITER)[0];
                                                 final String attrType = attr.split(NAME_TYPE_DELIMITER)[1];
                                                 GraphMLUtilities.addAttribute(edgeRecords, GraphRecordStoreUtilities.TRANSACTION, attrType, attrName, value);

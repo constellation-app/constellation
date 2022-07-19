@@ -28,6 +28,10 @@ import org.w3c.dom.NodeList;
  * @author canis_majoris
  */
 public class GraphMLUtilities {
+    
+    private GraphMLUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * This method adds attributes to nodes or transactions

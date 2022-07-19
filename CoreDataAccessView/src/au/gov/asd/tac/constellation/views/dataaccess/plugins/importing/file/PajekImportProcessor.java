@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -29,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -83,7 +85,7 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
         
         final Map<String, String> idLabelMap = new HashMap<>();
 
-        try (final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(input), "UTF-8"))) {
+        try (final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(input), StandardCharsets.UTF_8))) {
             while ((line = in.readLine()) != null) {
                 if (line.startsWith(VERTEX_HEADER)) {
                     processNodes = true;
@@ -101,7 +103,7 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
                         
                         output.add();
                         output.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, nodeLabel);
-                        output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
+                        output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, SchemaVertexType.unknownType().getName());
                         output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SOURCE, filename);
                     } catch (final ArrayIndexOutOfBoundsException ex) {
                         // Do nothing
@@ -116,10 +118,10 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
 
                         output.add();
                         output.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, idLabelMap.get(srcId));
-                        output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
+                        output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, SchemaVertexType.unknownType().getName());
                         output.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SOURCE, filename);
                         output.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, idLabelMap.get(dstId));
-                        output.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
+                        output.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, SchemaVertexType.unknownType().getName());
                         output.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.SOURCE, filename);
                         output.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.COUNT, weight);
                         output.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE, filename);

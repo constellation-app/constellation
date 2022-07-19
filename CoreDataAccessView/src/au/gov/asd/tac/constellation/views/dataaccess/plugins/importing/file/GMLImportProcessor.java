@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -30,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -88,7 +90,7 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
         boolean node = false;
         boolean edge = false;
 
-        try (final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(input), "UTF-8"))) {
+        try (final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(input), StandardCharsets.UTF_8))) {
             while ((line = in.readLine()) != null) {
                 line = line.trim();
                 if (line.startsWith(NODE_TAG)) {
@@ -107,7 +109,7 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
                     if (node) {
                         // check the type of the node, if it doesn't exist, add one
                         if (!nodeRecords.hasValue(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE)) {
-                            nodeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Unknown");
+                            nodeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, SchemaVertexType.unknownType().getName());
                         }
                         nodeIdToType.put(
                                 nodeRecords.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER), 
@@ -120,7 +122,7 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
                         // Read node data
                         final String key = line.split(" ")[0].trim();
                         final String value = line.split(" ")[1].trim().replace("\"", "");
-                        if (key.equals("id")) {
+                        if ("id".equals(key)) {
                             nodeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, value);
                         } else {
                             nodeRecords.set(GraphRecordStoreUtilities.SOURCE + key, value);
