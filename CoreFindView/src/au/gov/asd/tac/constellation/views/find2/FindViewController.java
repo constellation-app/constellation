@@ -35,8 +35,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * This controller class handles the interaction between the findView2 UI
@@ -56,7 +56,7 @@ public class FindViewController {
     private final AdvancedSearchParameters currentAdvancedSearchParameters;
     private static final Logger LOGGER = Logger.getLogger(FindViewController.class.getName());
 
-    public BooleanProperty pluginCompletedSwitch = new SimpleBooleanProperty(false);
+    public IntegerProperty numResultsFoundFlag = new SimpleIntegerProperty(0);
 
     /**
      * Private constructor for singleton
@@ -284,9 +284,10 @@ public class FindViewController {
             }
         }
     }
-    private AdvancedSearchPlugin advancedSearchPlugin = null;
+
     public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext) {
-        advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
+
+        AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
 
         /**
          * If search all graphs is true, execute the advanced find plugin on all
@@ -313,14 +314,6 @@ public class FindViewController {
         }
     }
 
-    public int getAdvancedSearchResultsSize() {
-        if (advancedSearchPlugin != null) {
-
-            return advancedSearchPlugin.getResultSize();
-        }
-
-        return 99;
-    }
 
     /**
      * gets the controllers parent

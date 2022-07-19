@@ -159,9 +159,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             foundResult = new FindResultsList(newIndex, newParamters, oldList.getGraphId());
         }
 
-        //LOGGER.log(Level.SEVERE, "Results found: " + foundResult.size());
-
-        resultsFoundSize = foundResult.size();
 
         foundResult.clear();
         graph.setObjectValue(stateId, 0, foundResult);
@@ -292,7 +289,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         findAllMatchingResultsList.addAll(findResultSet);
 
         resultsFoundSize = findAllMatchingResultsList.size();
-        LOGGER.log(Level.SEVERE, "Results display: " + resultsFoundSize);
+
 
 
         // if Find in select all the find in results
@@ -337,7 +334,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult);
 
         Platform.runLater(() -> {
-            FindViewController.getDefault().pluginCompletedSwitch.setValue(!FindViewController.getDefault().pluginCompletedSwitch.get());
+            FindViewController.getDefault().numResultsFoundFlag.set(resultsFoundSize);
         });
 
     }
@@ -762,10 +759,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         return "Find: Advanced Search";
     }
 
-
-    public int getResultSize() {
-        return resultsFoundSize;
-    }
 
 
 }

@@ -23,12 +23,8 @@ import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
-import static au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTranslator.LOGGER;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.AdvancedCriteriaBorderPane;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.BooleanCriteriaPanel;
@@ -41,9 +37,6 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalu
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import javafx.application.Platform;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -126,9 +119,9 @@ public class AdvancedFindTab extends Tab {
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPreviousAction());
         
-        FindViewController.getDefault().pluginCompletedSwitch.addListener((observable, oldValue, newValue) -> {
+        FindViewController.getDefault().numResultsFoundFlag.addListener((observable, oldValue, newValue) -> {
 
-            updateMatchesFoundText();
+            matchesFoundCountLabel.setText("" + newValue);
 
         });
 
@@ -495,11 +488,6 @@ public class AdvancedFindTab extends Tab {
         }
     }
 
-    private void updateMatchesFoundText() {
-
-        matchesFoundCountLabel.setText("" + FindViewController.getDefault().getAdvancedSearchResultsSize());
-
-    }
 
     /**
      * This action is called when the find next prev is pressed. It calls the
