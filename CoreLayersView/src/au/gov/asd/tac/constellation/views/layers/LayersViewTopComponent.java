@@ -81,11 +81,6 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         });
     }
 
-    public void update() {
-        layersViewController.readState();
-        layersViewController.updateQueries(GraphManager.getDefault().getActiveGraph());
-    }
-
     public void removeValueHandlers(final List<AttributeValueMonitor> valueMonitors) {
         // remove all monitors before re-adding updated ones
         valueMonitors.forEach(monitor -> removeAttributeValueChangeHandler(monitor));
@@ -154,10 +149,6 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         createContent().setDefaultLayers();
         layersViewController.readState();
         layersViewController.addAttributes();
-    }
-    
-    protected void clearPane() {
-        createContent().setDefaultLayers();
     }
     
     /**

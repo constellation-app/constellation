@@ -36,16 +36,19 @@ public class BitMaskQueryCollection {
     public static final int MAX_QUERY_AMT = 64;
     private static final String INVALID_INDEX_ERROR = " is not a valid index for a layer";
 
-    public static final BitMaskQuery[] DEFAULT_VX_QUERIES = new BitMaskQuery[]{
-        new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
-        new BitMaskQuery(new Query(GraphElementType.VERTEX, null), 1, StringUtils.EMPTY)
-    };
+    public static BitMaskQuery[] getDefaultVxQueries() {
+        return new BitMaskQuery[]{
+            new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
+            new BitMaskQuery(new Query(GraphElementType.VERTEX, null), 1, StringUtils.EMPTY)
+        };
+    }
 
-    public static final BitMaskQuery[] DEFAULT_TX_QUERIES = new BitMaskQuery[]{
-        new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
-        new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), 1, StringUtils.EMPTY)
-    };
-
+    public static BitMaskQuery[] getDefaultTxQueries() {
+        return new BitMaskQuery[]{
+            new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
+            new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), 1, StringUtils.EMPTY)
+        };
+    }
     private final BitMaskQuery[] queries = new BitMaskQuery[MAX_QUERY_AMT];
     private final GraphElementType elementType;
     private final IntValue index = new IntValue();
@@ -181,11 +184,11 @@ public class BitMaskQueryCollection {
     public void setDefaultQueries() {
         this.clear();
         if (elementType == GraphElementType.VERTEX) {
-            for (final BitMaskQuery query : DEFAULT_VX_QUERIES) {
+            for (final BitMaskQuery query : getDefaultVxQueries()) {
                 this.add(query);
             }
         } else if (elementType == GraphElementType.TRANSACTION) {
-            for (final BitMaskQuery query : DEFAULT_TX_QUERIES) {
+            for (final BitMaskQuery query : getDefaultTxQueries()) {
                 this.add(query);
             }
         } else {

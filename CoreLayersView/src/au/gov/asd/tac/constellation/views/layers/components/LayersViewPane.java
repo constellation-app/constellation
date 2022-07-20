@@ -136,7 +136,6 @@ public class LayersViewPane extends BorderPane {
             controller.getTxQueryCollection().clear();
             controller.getVxQueryCollection().setQueries(vxLayers);
             controller.getTxQueryCollection().setQueries(txLayers);
-
             options.displayQueryErrorLabel(false);
             
             final VBox oldLayers = (VBox) attributeScrollPane.getContent();
@@ -165,7 +164,7 @@ public class LayersViewPane extends BorderPane {
             controller.getTxQueryCollection().setDefaultQueries();
             options.displayQueryErrorLabel(false);
             
-            final VBox oldLayers = (VBox) attributeScrollPane.getContent();
+            final VBox oldLayers = new VBox();
             createLayers(oldLayers, controller.getVxQueryCollection().getQueries(), controller.getTxQueryCollection().getQueries());
             attributeScrollPane.setContent(oldLayers);
             this.layersViewVBox = new VBox(layersHeading, attributeScrollPane, options);
@@ -178,7 +177,7 @@ public class LayersViewPane extends BorderPane {
         } catch (InterruptedException ex) {
             LOGGER.log(Level.WARNING, ex.getMessage());
             Thread.currentThread().interrupt();
-        }
+        } 
     }
 
     /**
@@ -246,13 +245,9 @@ public class LayersViewPane extends BorderPane {
             }
 
             if (layersnew.getChildren().size() - 1 < queryIndex) {
-                String creatingLayer = "Creating new layer: " + queryIndex + " - current layer count = " + (layersnew.getChildren().size() - 1);
-                LOGGER.log(Level.WARNING, creatingLayer);
                 LayerTitlePane tp = new LayerTitlePane(queryIndex,queryDescription, bmq);
                 layersnew.getChildren().add(queryIndex, tp);
             } else {
-                String usingLayer = "Using existing layer: " + queryIndex + " - current layer count = " + (layersnew.getChildren().size() - 1);
-                LOGGER.log(Level.WARNING, usingLayer);
                 LayerTitlePane oldTp = (LayerTitlePane) layersnew.getChildren().remove(queryIndex); // no 0 in list of 0
                 oldTp.setDescription(queryDescription);
                 oldTp.setQuery(bmq);

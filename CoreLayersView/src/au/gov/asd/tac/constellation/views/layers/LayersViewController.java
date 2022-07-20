@@ -77,8 +77,8 @@ public class LayersViewController {
     private LayersViewController() {
         this.valueMonitors = new ArrayList<>();
         this.changeListeners = new ArrayList<>();
-        vxBitMaskCollection.setQueries(BitMaskQueryCollection.DEFAULT_VX_QUERIES);
-        txBitMaskCollection.setQueries(BitMaskQueryCollection.DEFAULT_TX_QUERIES);
+        vxBitMaskCollection.setQueries(BitMaskQueryCollection.getDefaultVxQueries());
+        txBitMaskCollection.setQueries(BitMaskQueryCollection.getDefaultTxQueries());
     }
 
     /**
@@ -216,23 +216,20 @@ public class LayersViewController {
         return PluginExecution.withPlugin(new LayersStateWriterPlugin(vxBitMaskCollection.getQueries(),
                 txBitMaskCollection.getQueries()))
                 .executeLater(graph);
-
     }
 
     public void updateQueries(final Graph currentGraph) {
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-        if (graph == null) {
+        if (currentGraph == null) {
             return;
         }
-        PluginExecution.withPlugin(new UpdateQueryPlugin()).executeLater(graph);
+        PluginExecution.withPlugin(new UpdateQueryPlugin()).executeLater(currentGraph);
     }
 
     public void updateQueriesFuture(final Graph currentGraph) {
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-        if (graph == null) {
+        if (currentGraph == null) {
             return;
         }
-        final Future<?> f = PluginExecution.withPlugin(new UpdateQueryPlugin()).executeLater(graph);
+        final Future<?> f = PluginExecution.withPlugin(new UpdateQueryPlugin()).executeLater(currentGraph);
         try {
             f.get();
         } catch (final InterruptedException ex) {
@@ -273,7 +270,6 @@ public class LayersViewController {
         } catch (final ExecutionException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
-
     }
 
     /**
@@ -297,7 +293,6 @@ public class LayersViewController {
         } catch (final ExecutionException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
-
     }
 
     protected LayersViewTopComponent getParent() {
@@ -397,7 +392,6 @@ public class LayersViewController {
      * @param queryType
      */
     public void updateQuery(final String newQueryString, final int index, final String queryType) {
-        
         final BitMaskQuery vxQuery = getVxQueryCollection().getQuery(index);
         final BitMaskQuery txQuery = getTxQueryCollection().getQuery(index);
         
@@ -415,7 +409,7 @@ public class LayersViewController {
      * Read the current state from the graph.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
-    protected static final class LayersStateReaderPlugin extends SimpleReadPlugin {
+    protected final class LayersStateReaderPlugin extends SimpleReadPlugin {
 
         private final LayersViewPane pane;
 
@@ -452,7 +446,7 @@ public class LayersViewController {
      * Write the current state to the graph.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
-    protected static final class LayersStateWriterPlugin extends SimpleEditPlugin {
+    protected final class LayersStateWriterPlugin extends SimpleEditPlugin {
 
         private final BitMaskQuery[] vxLayers;
         private final BitMaskQuery[] txLayers;
@@ -473,8 +467,8 @@ public class LayersViewController {
             LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
             if (currentState == null) {
                 currentState = new LayersViewState();
-                currentState.setVxLayers(BitMaskQueryCollection.DEFAULT_VX_QUERIES);
-                currentState.setTxLayers(BitMaskQueryCollection.DEFAULT_TX_QUERIES);
+                currentState.setVxLayers(BitMaskQueryCollection.getDefaultVxQueries());
+                currentState.setTxLayers(BitMaskQueryCollection.getDefaultTxQueries());
             } else {
                 currentState = new LayersViewState(currentState);
             }
@@ -483,8 +477,8 @@ public class LayersViewController {
             currentState.setVxLayers(vxLayers);
             currentState.setTxLayers(txLayers);
             if (currentState.getVxQueriesCollection().getHighestQueryIndex() == 0 && currentState.getTxQueriesCollection().getHighestQueryIndex() == 0) {
-                currentState.setVxLayers(BitMaskQueryCollection.DEFAULT_VX_QUERIES);
-                currentState.setTxLayers(BitMaskQueryCollection.DEFAULT_TX_QUERIES);
+                currentState.setVxLayers(BitMaskQueryCollection.getDefaultVxQueries());
+                currentState.setTxLayers(BitMaskQueryCollection.getDefaultTxQueries());
             }
 
             graph.setObjectValue(stateAttributeId, 0, currentState);
@@ -506,7 +500,7 @@ public class LayersViewController {
      * vertex and transaction query collections.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
-    protected static class UpdateQueryPlugin extends SimpleEditPlugin {
+    protected class UpdateQueryPlugin extends SimpleEditPlugin {
 
         protected UpdateQueryPlugin() {
 
@@ -518,7 +512,7 @@ public class LayersViewController {
         }
 
         @Override
-        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             final int graphCurrentBitMaskAttrId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
             final long currentBitmask = graph.getLongValue(graphCurrentBitMaskAttrId, 0);
 
@@ -546,7 +540,7 @@ public class LayersViewController {
      * the view to update the graph when one of those attributes changes value.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
-    protected static class CaptureListenedAttributesPlugin extends SimpleReadPlugin {
+    protected class CaptureListenedAttributesPlugin extends SimpleReadPlugin {
 
         final List<SchemaAttribute> changeListeners;
 
@@ -579,7 +573,7 @@ public class LayersViewController {
      * Plugin to add the required Layers View attributes.
      */
     @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
-    protected static class AddAttributesPlugin extends SimpleEditPlugin {
+    protected class AddAttributesPlugin extends SimpleEditPlugin {
 
         @Override
         public String getName() {
