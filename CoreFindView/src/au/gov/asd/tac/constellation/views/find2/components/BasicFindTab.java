@@ -70,7 +70,7 @@ public class BasicFindTab extends Tab {
     protected final String[] elementTypes = {GraphElementType.VERTEX.getShortLabel(), GraphElementType.TRANSACTION.getShortLabel(), GraphElementType.EDGE.getShortLabel(), GraphElementType.LINK.getShortLabel()};
     protected final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(elementTypes));
 
-    private boolean onLoad = true;
+    protected boolean onLoad = true;
     protected final Label inAttributesLabel = new Label("Search Attributes:");
     protected final CheckComboBox<String> inAttributesMenu = new CheckComboBox<>();
     protected List<Attribute> attributes = new ArrayList<>();
