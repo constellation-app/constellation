@@ -1,5 +1,10 @@
 # Constellation Changes	
 
+## Changes in July 2022
+
+-   Removed unused class `FileChooser` from Core Graph File. Class became unused in lieu of
+    refactoring to use the class `FileChooser` in Core Utilities instead.
+
 ## Changes in March 2022
 
 -   Added abstract classes `AbstractCachedStringIOProvider` and 
@@ -11,7 +16,7 @@
 ## Changes in February 2022
 
 -   Removed unused classes `DecoratorUtilities` and `LabelUtilities` from Core 
-    Visual Schema
+    Visual Schema.
 
 -   Added a new parameter `tabCaption` in `newTab` public methods in `DataAccessTabPane` class 
 	to provide the Step tab caption when required. This is used when the user renames the 
