@@ -2,7 +2,7 @@
 
 ## Changes in July 2022
 
--   Removed unused class `FileChooser` from Core Graph File and `DataAccessResultsDirChooser` from Core Data Access View. Classes became unused in lieu of refactoring to utilize the class `FileChooser` in Core Utilities instead.
+-   Removed unused classes `FileChooser` from Core Graph File and `DataAccessResultsDirChooser` from Core Data Access View. Classes became unused in lieu of refactoring to utilize the class `FileChooser` in Core Utilities instead.
 
 ## Changes in March 2022
 
