@@ -2,8 +2,7 @@
 
 ## Changes in July 2022
 
--   Removed unused class `FileChooser` from Core Graph File. Class became unused in lieu of
-    refactoring to use the class `FileChooser` in Core Utilities instead.
+-   Removed unused class `FileChooser` from Core Graph File and `DataAccessResultsDirChooser` from Core Data Access View. Classes became unused in lieu of refactoring to utilize the class `FileChooser` in Core Utilities instead.
 
 ## Changes in March 2022
 
@@ -31,7 +30,6 @@
     summary status message after importing.
 
 ## Changes in November 2021
-
 
 -   Added `netbeans.exception.report.min.level=900` and
     `netbeans.exception.alert.min.level=900` with both set to `900` to make
@@ -62,6 +60,7 @@
     abstract classes should not have public constructors. 
 
 ## Changes in October 2021
+
 -   Added `PluginTags` class to hold all tags as constants for `PluginInfo`.
 
 -   Added `isRequired` in `PluginParameter` with a getter and a setter, which
