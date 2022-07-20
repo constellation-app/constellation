@@ -119,11 +119,7 @@ public class AdvancedFindTab extends Tab {
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPreviousAction());
         
-        FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> {
-
-            matchesFoundCountLabel.setText("" + newValue);
-
-        });
+        FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> matchesFoundCountLabel.setText("" + newValue));
 
     }
 
