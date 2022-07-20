@@ -27,9 +27,10 @@ public class ImportSingleton {
     private static ImportSingleton instance = null;
 
     // Property that triggers the different run windows in the configuration panel to clear
-    private BooleanProperty clearDataFlag = new SimpleBooleanProperty(false);
+    private final BooleanProperty clearDataFlag = new SimpleBooleanProperty();
 
     private ImportSingleton() {
+        clearDataFlag.set(false);
     }
 
     public static synchronized ImportSingleton getDefault() {
@@ -48,6 +49,10 @@ public class ImportSingleton {
         return clearDataFlag;
     }
 
+    /**
+     * Sets the value of the clearDataFlag to be the opposite of its current
+     * value
+     */
     public void triggerClearDataFlag() {
         clearDataFlag.set(!clearDataFlag.get());
     }

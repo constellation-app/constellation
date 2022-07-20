@@ -190,12 +190,14 @@ public class ConfigurationPane extends AnchorPane {
      * Clears the run pane that is currently selected
      */
     private void clearSelectedPane() {
-        RunPane currentSelected = (RunPane) tabPane.getSelectionModel().getSelectedItem().getContent();
+        if (tabPane.getSelectionModel().getSelectedItem() != null) {
+            RunPane currentSelected = (RunPane) tabPane.getSelectionModel().getSelectedItem().getContent();
 
-        String[] columns = {};
-        List<String[]> data = new ArrayList<String[]>();
+            String[] columns = {};
+            List<String[]> data = new ArrayList<>();
 
-        currentSelected.setSampleData(columns, createTableRows(data));
+            currentSelected.setSampleData(columns, createTableRows(data));
+        }
     }
 
     private static ObservableList<TableRow> createTableRows(final List<String[]> data) {
