@@ -66,7 +66,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     private final boolean selectAll;
     private final boolean selectNext;
 
-    private int resultsFoundSize = -45;
     private static final Logger LOGGER = Logger.getLogger(AdvancedSearchPlugin.class.getName());
 
 
@@ -78,7 +77,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
     private FindResultsList findInCurrentSelectionList;
 
-    //private FindViewController findViewController = null;
 
     private static final String ANY = "Any";
     private static final String ALL = "All";
@@ -288,7 +286,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         }
         findAllMatchingResultsList.addAll(findResultSet);
 
-        resultsFoundSize = findAllMatchingResultsList.size();
+        final int resultsFoundSize = findAllMatchingResultsList.size();
 
 
 
@@ -333,9 +331,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         //If no results are found, set the meta attribute to null
         graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult);
 
-        Platform.runLater(() -> {
-            FindViewController.getDefault().numResultsFoundFlag.set(resultsFoundSize);
-        });
+        Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(resultsFoundSize));
 
     }
 
@@ -365,7 +361,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                 }
             }
 
-            //resultsFoundSize = foundResult.size();
             // clear the found result and add the findAllmatching results to it
             foundResult.clear();
             foundResult.addAll(findAllMatchingResultsList);
@@ -395,7 +390,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             for (final FindResult fr : findInCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
             }
-            //resultsFoundSize = foundResult.size();
+
             // clear the foundResult and add the findIncurrentSelection list to it
             foundResult.clear();
             foundResult.addAll(findInCurrentSelectionList);

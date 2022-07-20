@@ -56,7 +56,7 @@ public class FindViewController {
     private final AdvancedSearchParameters currentAdvancedSearchParameters;
     private static final Logger LOGGER = Logger.getLogger(FindViewController.class.getName());
 
-    public IntegerProperty numResultsFoundFlag = new SimpleIntegerProperty(0);
+    private final IntegerProperty numResultsFoundFlag = new SimpleIntegerProperty(0);
 
     /**
      * Private constructor for singleton
@@ -349,6 +349,22 @@ public class FindViewController {
      */
     public AdvancedSearchParameters getCurrentAdvancedSearchParameters() {
         return currentAdvancedSearchParameters;
+    }
+
+    /**
+     * gets the amount of results found by advanced search
+     *
+     * @return
+     */
+    public IntegerProperty getNumResultsFound() {
+        return numResultsFoundFlag;
+    }
+
+    /**
+     * Sets amount of results found by advanced search
+     */
+    public void setNumResultsFound(int value) {
+        numResultsFoundFlag.set(value);
     }
 
 }

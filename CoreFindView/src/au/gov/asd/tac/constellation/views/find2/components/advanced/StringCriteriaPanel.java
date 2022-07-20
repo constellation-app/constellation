@@ -52,7 +52,6 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
     public StringCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
         setGridContent();
-        //caseSensitiveCheckBox.setOnAction(action -> setAaText(caseSensitiveCheckBox.selectedProperty().get()));
         useListCheckBox.setOnAction(action -> activateMoreDetails(useListCheckBox.selectedProperty().get()));
 
         getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
@@ -112,18 +111,6 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
         return searchField.getText();
     }
 
-    /**
-     * Changes the check box, Aa, text to alter between "aa" and "Aa" to
-     * indicate if the search is case sensitive or not. This is called when the
-     * check box changes selection status.
-     *
-     * Aa for case sensitive aa for not case sensitive
-     *
-     * @param isChecked
-     */
-    private void setAaText(final boolean isChecked) {
-        caseSensitiveCheckBox.setText(isChecked ? "aa" : "Aa");
-    }
 
     /**
      * Disables / enables the moreDetailsButton based on if the useList CheckBox
