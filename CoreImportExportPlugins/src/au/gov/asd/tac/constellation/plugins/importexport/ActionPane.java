@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -64,7 +65,7 @@ public class ActionPane extends BorderPane {
             }
         });
 
-        clearButton.setOnAction((ActionEvent e) -> importController.clear());
+        clearButton.setOnAction((ActionEvent e) -> ImportSingleton.getDefault().triggerClearDataFlag());
 
         runBox.getChildren().add(clearButton);
         runBox.getChildren().add(importButton);

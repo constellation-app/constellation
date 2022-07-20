@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportSingleton;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.lang.reflect.InvocationTargetException;
@@ -62,6 +63,7 @@ public class JDBCImportController extends ImportController {
     public JDBCImportController() {
         super();
         schemaInitialised = true;
+        ImportSingleton.getDefault().getClearDataFlag().addListener((observable, oldValue, newValue) -> clearSampleData());
     }
 
     public void setImportPane(final JDBCImportPane importPane) {

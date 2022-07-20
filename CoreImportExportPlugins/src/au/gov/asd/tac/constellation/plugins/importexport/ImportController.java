@@ -85,15 +85,6 @@ public abstract class ImportController<D> {
     // preference to show or hide all graph schema attributes
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
-    public void clear() {
-        autoAddedVertexAttributes.clear();
-        autoAddedTransactionAttributes.clear();
-        manuallyAddedVertexAttributes.clear();
-        manuallyAddedTransactionAttributes.clear();
-        displayedVertexAttributes.clear();
-        displayedTransactionAttributes.clear();
-    }
-
     protected ImportController() {
         showAllSchemaAttributes = false;
 

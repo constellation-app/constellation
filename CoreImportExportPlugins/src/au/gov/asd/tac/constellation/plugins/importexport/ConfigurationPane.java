@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
+import static au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTranslator.LOGGER;
 import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
@@ -25,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -39,6 +41,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import org.python.netty.util.ResourceLeakDetector;
 
 /**
  * The ConfigurationPane is a UI element that displays a sample of the imported
@@ -57,6 +60,7 @@ public class ConfigurationPane extends AnchorPane {
     protected final ImportController importController;
     protected final TabPane tabPane;
     private final String helpText;
+
 
     public ConfigurationPane(final ImportController importController, final String helpText) {
         this.importController = importController;
@@ -82,6 +86,8 @@ public class ConfigurationPane extends AnchorPane {
         AnchorPane.setTopAnchor(newRunButton, RUN_BUTTON_ANCHOR_POS);
         AnchorPane.setRightAnchor(newRunButton, RUN_BUTTON_ANCHOR_POS);
         getChildren().add(newRunButton);
+
+        ImportSingleton.getDefault().getClearDataFlag().addListener((observable, oldData, newData) -> clearSelectedPane());
 
         // Add a single run to start with
         createTab();
@@ -178,6 +184,18 @@ public class ConfigurationPane extends AnchorPane {
             runPane.setSampleData(columnLabels, createTableRows(currentData));
             runPane.refreshDataView();
         });
+    }
+
+    /**
+     * Clears the run pane that is currently selected
+     */
+    private void clearSelectedPane() {
+        RunPane currentSelected = (RunPane) tabPane.getSelectionModel().getSelectedItem().getContent();
+
+        String[] columns = {};
+        List<String[]> data = new ArrayList<String[]>();
+
+        currentSelected.setSampleData(columns, createTableRows(data));
     }
 
     private static ObservableList<TableRow> createTableRows(final List<String[]> data) {
