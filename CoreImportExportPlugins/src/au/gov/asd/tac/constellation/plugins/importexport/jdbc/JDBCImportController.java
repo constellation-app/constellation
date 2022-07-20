@@ -146,7 +146,7 @@ public class JDBCImportController extends ImportController {
         }
     }
 
-    private void clearSampleData() {
+    protected void clearSampleData() {
         currentColumns = new String[0];
         currentData = new ArrayList<>();
     }
@@ -216,5 +216,21 @@ public class JDBCImportController extends ImportController {
     // enables or disables the import button based on if there is data present
     void disableButton(final boolean b) {
         importPane.disableButton(b);
+    }
+
+    public String[] getColumns() {
+        return currentColumns;
+    }
+
+    public List<String[]> getData() {
+        return currentData;
+    }
+
+    public void setColumns(String[] cols) {
+        currentColumns = cols;
+    }
+
+    public void setData(List<String[]> data) {
+        currentData = data;
     }
 }
