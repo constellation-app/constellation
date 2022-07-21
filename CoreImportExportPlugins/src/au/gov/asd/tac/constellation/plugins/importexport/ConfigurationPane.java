@@ -189,7 +189,7 @@ public class ConfigurationPane extends AnchorPane {
     /**
      * Clears the run pane that is currently selected
      */
-    private void clearSelectedPane() {
+    protected void clearSelectedPane() {
         if (tabPane.getSelectionModel().getSelectedItem() != null) {
             RunPane currentSelected = (RunPane) tabPane.getSelectionModel().getSelectedItem().getContent();
 
