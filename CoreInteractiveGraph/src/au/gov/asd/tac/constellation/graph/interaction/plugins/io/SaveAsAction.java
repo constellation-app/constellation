@@ -61,11 +61,8 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -74,23 +71,17 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
 import org.openide.loaders.SaveAsCapable;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.Exceptions;
@@ -99,7 +90,6 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.Mutex;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
 import org.openide.util.WeakListeners;
 import org.openide.windows.TopComponent;
@@ -136,8 +126,10 @@ import org.openide.windows.WindowManager;
     "MSG_SaveAs_FileInUse_Title=Save Graph"
 })
 public class SaveAsAction extends AbstractAction implements ContextAwareAction {
-    
+
     private static final Logger LOGGER = Logger.getLogger(SaveAsAction.class.getName());
+
+    private static final String TITLE = "Save As";
 
     /**
      * Action to save document under a different file name and/or extension. The
@@ -194,23 +186,21 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         final Collection<? extends SaveAsCapable> inst = lkpInfo.allInstances();
         if (!inst.isEmpty()) {
             final SaveAsCapable saveAs = inst.iterator().next();
-            final File newFile = getNewFileName();
-
-            if (newFile != null) {
+            FileChooser.openSaveDialog(getSaveFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
                 try {
-                    saveAs.saveAs(FileUtil.toFileObject(newFile.getParentFile()), newFile.getName());
+                    saveAs.saveAs(FileUtil.toFileObject(file.getParentFile()), file.getName());
 
                     // take a screenshot in a separate thread in parrallel
-                    new Thread(() -> RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName()), "Take Graph Screenshot").start();
+                    new Thread(() -> RecentGraphScreenshotUtilities.takeScreenshot(file.getName()), "Take Graph Screenshot").start();
                 } catch (final IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(
-                                    newFile.getName(),
+                                    file.getName(),
                                     ioE.getLocalizedMessage()));
                     LOGGER.log(Level.SEVERE, null, ioE);
                 }
                 isSaved = true;
-            }
+            }));
         }
     }
 
@@ -235,143 +225,6 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         } catch (final Exception ex) {
         }
         return fileInUse;
-    }
-
-    /**
-     * Show file 'save as' dialog window to ask user for a new file name.
-     *
-     * @return File selected by the user or null if no file was selected.
-     */
-    private File getNewFileName() {
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
-        final boolean rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-        File newFile = null;
-        FileObject currentFileObject = getCurrentFileObject();
-        if (currentFileObject != null) {
-            newFile = FileUtil.toFile(currentFileObject);
-            if (newFile == null) {
-                newFile = new File(currentFileObject.getNameExt());
-            }
-        }
-
-        final JFileChooser chooser = new FileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter(String.format("%s graphs [.star]", BrandingUtilities.APPLICATION_NAME), "star"));
-        chooser.setDialogTitle(Bundle.MSG_SaveAsTitle());
-        chooser.setMultiSelectionEnabled(false);
-        if (newFile != null && newFile.exists()) {
-            chooser.setCurrentDirectory(newFile.getParentFile());
-            chooser.setSelectedFile(newFile);
-        } else {
-            final File initialFolder = getInitialFolderFrom(newFile, lastFileOpenAndSaveLocation, rememberOpenAndSaveLocation);
-            chooser.setCurrentDirectory(initialFolder);
-            chooser.setSelectedFile(newFile);
-        }
-
-        final File origFile = newFile;
-        while (true) {
-            if (JFileChooser.APPROVE_OPTION != chooser.showSaveDialog(WindowManager.getDefault().getMainWindow())) {
-                return null;
-            }
-            newFile = chooser.getSelectedFile();
-            if (newFile == null) {
-                break;
-            }
-            while (!newFile.getName().matches("^[\\w-_. ]*$") || !newFile.getParentFile().exists()) {
-                NotifyDisplayer.display("File names can only include alphanumeric characters, - or .", NotifyDescriptor.WARNING_MESSAGE);
-                if (JFileChooser.APPROVE_OPTION != chooser.showSaveDialog(WindowManager.getDefault().getMainWindow())) {
-                    return null;
-                }
-                newFile = chooser.getSelectedFile();
-            }
-            if (isFileInUse(newFile)) {
-                NotifyDescriptor nd = new NotifyDescriptor(
-                        Bundle.MSG_SaveAs_FileInUse(newFile),
-                        Bundle.MSG_SaveAs_FileInUse_Title(), //NOI18N
-                        NotifyDescriptor.DEFAULT_OPTION,
-                        NotifyDescriptor.ERROR_MESSAGE,
-                        new Object[]{
-                            NotifyDescriptor.OK_OPTION
-                        }, NotifyDescriptor.OK_OPTION);
-                DialogDisplayer.getDefault().notify(nd);
-            } else if (newFile.equals(origFile)) {
-                NotifyDescriptor nd = new NotifyDescriptor(
-                        Bundle.MSG_SaveAs_SameFileSelected(),
-                        Bundle.MSG_SaveAs_SameFileSelected_Title(),
-                        NotifyDescriptor.DEFAULT_OPTION,
-                        NotifyDescriptor.INFORMATION_MESSAGE,
-                        new Object[]{
-                            NotifyDescriptor.OK_OPTION
-                        }, NotifyDescriptor.OK_OPTION);
-                DialogDisplayer.getDefault().notify(nd);
-            } else if (newFile.exists()) {
-                NotifyDescriptor nd = new NotifyDescriptor(
-                        Bundle.MSG_SaveAs_OverwriteQuestion(newFile.getName()),
-                        Bundle.MSG_SaveAs_OverwriteQuestion_Title(),
-                        NotifyDescriptor.YES_NO_OPTION,
-                        NotifyDescriptor.QUESTION_MESSAGE,
-                        new Object[]{
-                            NotifyDescriptor.YES_OPTION, NotifyDescriptor.NO_OPTION
-                        }, NotifyDescriptor.NO_OPTION);
-                if (NotifyDescriptor.YES_OPTION == DialogDisplayer.getDefault().notify(nd)) {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-
-        // When the preference "Remember Open/Save Location" is set,
-        // save the curent directory if a file was selected
-        if (newFile != null) {
-            final String lastDir = chooser.getCurrentDirectory().getAbsolutePath();
-            if (!lastFileOpenAndSaveLocation.equals(lastDir) && rememberOpenAndSaveLocation) {
-                prefs.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, lastDir);
-            }
-        }
-        return newFile;
-    }
-
-    private FileObject getCurrentFileObject() {
-        TopComponent tc = TopComponent.getRegistry().getActivated();
-        if (tc != null) {
-            DataObject dob = tc.getLookup().lookup(DataObject.class);
-            if (dob != null) {
-                return dob.getPrimaryFile();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param newFile File being 'saved'
-     * @return Initial folder selected in file chooser. When the preference
-     * "Remember Open/Save Location" is set, get the Directory saved in the
-     * preference, otherwise use the user's home directory
-     */
-    private File getInitialFolderFrom(final File newFile, String lastFileOpenAndSaveLocation, boolean rememberOpenSaveLocation) {
-        if (newFile != null) {
-            File parent = newFile.getParentFile();
-            if (parent == null) {
-                //Check prefferences for last saved directory
-                return new File((lastFileOpenAndSaveLocation.isEmpty() || !rememberOpenSaveLocation) ? System.getProperty("user.home") : lastFileOpenAndSaveLocation);
-            } else {
-                return parent;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param file
-     * @return True if given file is netbeans user dir.
-     */
-    private boolean isFromUserDir(final File file) {
-        if (file == null) {
-            return false;
-        }
-        File nbUserDir = new File(System.getProperty("netbeans.user")); //NOI18N
-        return file.getAbsolutePath().startsWith(nbUserDir.getAbsolutePath());
     }
 
     @Override
@@ -452,21 +305,27 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         return super.isEnabled();
     }
 
-    private static class FileChooser extends JFileChooser {
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getSaveFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setFilesOnly(true)
+                .setAcceptAllFileFilterUsed(false)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.STAR)) || file.isDirectory();
+                    }
 
-        /**
-         * Add an icon to relevant files
-         *
-         * @param f A file.
-         *
-         * @return An icon for the file.
-         */
-        @Override
-        public Icon getIcon(final File f) {
-            if (StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.STAR)) {
-                return SchemaFactoryUtilities.getDefaultSchemaFactory().getIcon().buildIcon(16);
-            }
-            return super.getIcon(f);
-        }
+                    @Override
+                    public String getDescription() {
+                        return "Constellation Files (" + FileExtensionConstants.STAR + ")";
+                    }
+                });
     }
 }
