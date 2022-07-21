@@ -35,6 +35,9 @@ public class BitMaskQueryCollection {
 
     public static final int MAX_QUERY_AMT = 64;
     private static final String INVALID_INDEX_ERROR = " is not a valid index for a layer";
+    private final BitMaskQuery[] queries = new BitMaskQuery[MAX_QUERY_AMT];
+    private final GraphElementType elementType;
+    private final IntValue index = new IntValue();
 
     public static BitMaskQuery[] getDefaultVxQueries() {
         return new BitMaskQuery[]{
@@ -49,9 +52,6 @@ public class BitMaskQueryCollection {
             new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), 1, StringUtils.EMPTY)
         };
     }
-    private final BitMaskQuery[] queries = new BitMaskQuery[MAX_QUERY_AMT];
-    private final GraphElementType elementType;
-    private final IntValue index = new IntValue();
 
     // queries currently active
     private final List<BitMaskQuery> activeQueries = new ArrayList<>();
