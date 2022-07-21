@@ -133,7 +133,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         FindResultsList foundResult = graph.getObjectValue(stateId, 0);
 
-        LOGGER.log(Level.SEVERE, "Running edit method");
         /**
          * If it doesn't exist or is null, create a new list with the starting
          * index and the current find parameters. If it does exist, create a
@@ -287,8 +286,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         findAllMatchingResultsList.addAll(findResultSet);
 
         final int resultsFoundSize = findAllMatchingResultsList.size();
-
-
 
         // if Find in select all the find in results
         if (FIND_IN.equals(currentSelection)) {
@@ -753,7 +750,4 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     public String getName() {
         return "Find: Advanced Search";
     }
-
-
-
 }

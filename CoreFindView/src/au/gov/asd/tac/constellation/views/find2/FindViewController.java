@@ -287,7 +287,7 @@ public class FindViewController {
 
     public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext) {
 
-        AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
+        final AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
 
         /**
          * If search all graphs is true, execute the advanced find plugin on all
