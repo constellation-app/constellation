@@ -76,7 +76,7 @@ public class JDBCSourcePane extends SourcePane {
     private static final Insets GRIDPANE_PADDING = new Insets(5);
     private static final int GAP = 10;
     private static final String ACTION_CANCEL = "Cancel";
-    private static final String TITLE_JDBC_IMPORT = "JDBC Import";
+    private static final String TITLE_JDBC_IMPORT = "Database Import";
     private static final String PROMPT_TEXT_COLOUR = "-fx-prompt-text-fill: grey";
     private static final String ADD_CONNECTION = "Add Connection";
     private static final String MODIFY_CONNECTION = "Modify Connection";
