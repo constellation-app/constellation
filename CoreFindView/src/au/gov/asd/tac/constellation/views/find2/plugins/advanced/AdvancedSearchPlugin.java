@@ -66,9 +66,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     private final boolean selectAll;
     private final boolean selectNext;
 
-    private static final Logger LOGGER = Logger.getLogger(AdvancedSearchPlugin.class.getName());
-
-
     private final AdvancedSearchParameters parameters;
     private final List<FindCriteriaValues> criteriaList;
     private final GraphElementType elementType;
