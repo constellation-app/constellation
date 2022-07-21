@@ -36,6 +36,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -304,11 +305,15 @@ public class JDBCSourcePane extends SourcePane {
         final Button queryButton = new Button("Query");
         queryButton.setOnAction((final ActionEvent t) -> {
             if (!query.getText().isBlank() && dbConnectionComboBox.getValue() != null) {
+
                 importController.setDBConnection(dbConnectionComboBox.getValue());
                 importController.setQuery(query.getText());
                 importController.setUsername(username.getText());
                 importController.setPassword(password.getText());
                 importController.updateSampleData();
+            } else {
+                NotifyDisplayer.displayLargeAlert("JDBC Import", "No Query Entered",
+                        "Please enter a query.", Alert.AlertType.ERROR);
             }
         });
         GridPane.setConstraints(queryButton, 2, 4, 2, 1, HPos.RIGHT, VPos.TOP);
