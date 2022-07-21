@@ -93,9 +93,12 @@ public class AdvancedFindTab extends Tab {
     private final GridPane currentSelectionPane = new GridPane();
     private final GridPane matchesFoundPane = new GridPane();
 
+    private final GridPane bottomGrid = new GridPane();
 
-    private final Label matchesFoundLabel = new Label("Find: Advanced Search: Number of results found: ");
-    private final Label matchesFoundCountLabel = new Label("0");
+    private boolean firstSearch = true;
+    private final String foundLabelText = "Find: Advanced Search: Number of results found: ";
+    private final Label matchesFoundLabel = new Label("");
+    private final Label matchesFoundCountLabel = new Label("");
 
     protected final HBox buttonsHBox = new HBox();
     protected final VBox buttonsVBox = new VBox();
@@ -118,8 +121,19 @@ public class AdvancedFindTab extends Tab {
         findAllButton.setOnAction(action -> findAllAction());
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPreviousAction());
+
+        matchesFoundPane.add(matchesFoundLabel, 0, 0);
+        matchesFoundPane.add(matchesFoundCountLabel, 1, 0);
         
-        FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> matchesFoundCountLabel.setText("" + newValue));
+        FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> {
+
+            if (firstSearch) {
+                matchesFoundLabel.setText(foundLabelText);
+                firstSearch = false;
+            }
+
+            matchesFoundCountLabel.setText("" + newValue);
+        });
 
     }
 
@@ -137,15 +151,12 @@ public class AdvancedFindTab extends Tab {
         currentSelectionPane.setPadding(new Insets(1, 0, 0, 25));
         currentSelectionPane.setVgap(4.25);
 
-        matchesFoundPane.add(matchesFoundLabel, 0, 0);
-        matchesFoundPane.add(matchesFoundCountLabel, 1, 0);
 
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 0, 1);
         settingsGrid.add(matchCriteriaLabel, 1, 0);
         settingsGrid.add(matchCriteriaChoiceBox, 1, 1);
         settingsGrid.add(currentSelectionPane, 2, 0, 1, 2);
-        settingsGrid.add(matchesFoundPane, 0, 2, 3, 1);
 
 
         settingsGrid.setPadding(new Insets(5));
@@ -191,8 +202,12 @@ public class AdvancedFindTab extends Tab {
         buttonsHBox.getChildren().clear();
         buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
 
+        matchesFoundPane.setPadding(new Insets(10, 12, 5, 10));
+
         buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
-        parentComponent.getParentComponent().setBottom(buttonsHBox);
+        bottomGrid.add(buttonsHBox, 0, 0);
+        bottomGrid.add(matchesFoundPane, 0, 1);
+        parentComponent.getParentComponent().setBottom(bottomGrid);
     }
 
     /**
