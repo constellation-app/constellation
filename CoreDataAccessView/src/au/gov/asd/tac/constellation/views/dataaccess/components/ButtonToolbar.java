@@ -95,7 +95,8 @@ public class ButtonToolbar {
                 .append("Add or remove plugins from your Favourites category.\n\n")
                 .append("The following plugins were selected:\n")
                 .append("%s")
-                .append("\n\nNote, Favourites will be updated the next time you start " + BrandingUtilities.APPLICATION_NAME)
+                .append("\n\nNote, Favourites will be updated the next time you start ")
+                .append(BrandingUtilities.APPLICATION_NAME)
                 .toString();
     }
 
