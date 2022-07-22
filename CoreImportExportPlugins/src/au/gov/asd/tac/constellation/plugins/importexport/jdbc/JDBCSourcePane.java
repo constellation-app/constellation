@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
 import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportSingleton;
 import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -81,6 +82,7 @@ public class JDBCSourcePane extends SourcePane {
     private static final String ADD_CONNECTION = "Add Connection";
     private static final String MODIFY_CONNECTION = "Modify Connection";
     private static final String ADD_DRIVER = "Add Driver";
+    private static final String CLEAR_RESULTS = "Clear";
 
     private final ComboBox<JDBCConnection> dbConnectionComboBox;
 
@@ -301,6 +303,14 @@ public class JDBCSourcePane extends SourcePane {
         final Label destinationLabel = new Label("Destination:");
         GridPane.setConstraints(destinationLabel, 0, 4, 1, 1, HPos.LEFT, VPos.TOP);
 
+        final Button clearButton = new Button(CLEAR_RESULTS);
+        clearButton.setOnAction((ActionEvent e) -> {
+            query.setText("");
+            ImportSingleton.getDefault().triggerClearDataFlag();
+        });
+
+        //clearButton.setPadding(new Insets(0, 0, 0, 3.5));
+
         final Button queryButton = new Button("Query");
         queryButton.setOnAction((final ActionEvent t) -> {
             if (!query.getText().isBlank() && dbConnectionComboBox.getValue() != null) {
@@ -312,9 +322,11 @@ public class JDBCSourcePane extends SourcePane {
             }
         });
         GridPane.setConstraints(queryButton, 2, 4, 2, 1, HPos.RIGHT, VPos.TOP);
+        GridPane.setConstraints(clearButton, 2, 4, 2, 1, HPos.RIGHT, VPos.BOTTOM);
+
 
         getChildren().addAll(fileLabel, dbConnectionComboBox, manageConnectionsBtn, usernameLabel, username,
-                passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, queryButton);
+                passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, clearButton, queryButton);
     }
 
     private void openAddDriverDialog(final JDBCDriverManager driverManager, final TableView driverTable, final ComboBox<JDBCDriver> driver, final Stage dialog) {

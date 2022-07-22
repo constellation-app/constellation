@@ -41,7 +41,7 @@ public class ActionPane extends BorderPane {
     private static final Insets PADDING = new Insets(5, 5, 35, 5);
     private static final int HBOX_SPACING = 5;
     private final Button importButton;
-    private final Button clearButton;
+
 
     private final ImportController importController;
 
@@ -54,7 +54,6 @@ public class ActionPane extends BorderPane {
         setRight(runBox);
 
         importButton = new Button("Import");
-        clearButton = new Button("Clear");
         importButton.setDisable(true);
         importButton.setOnAction((ActionEvent t) -> {
             try {
@@ -65,9 +64,6 @@ public class ActionPane extends BorderPane {
             }
         });
 
-        clearButton.setOnAction((ActionEvent e) -> ImportSingleton.getDefault().triggerClearDataFlag());
-
-        runBox.getChildren().add(clearButton);
         runBox.getChildren().add(importButton);
     }
 
