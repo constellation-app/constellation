@@ -53,6 +53,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     private Graph currentGraph;
     private long lastGlobalModificationCounter;
     private long lastCameraModificationCounter;
+    private long lastAttributeModificationCounter;
 
     private final List<QualityControlListener> listeners;
 
@@ -151,13 +152,15 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
                 final long thisGlobalModificationCounter = readableGraph.getGlobalModificationCounter();
                 final long thisCameraModificationCounter = readableGraph.getValueModificationCounter(cameraAttribute);
+                final long thisAttributeModificationCounter = readableGraph.getAttributeModificationCounter();
 
                 if (thisGlobalModificationCounter != lastGlobalModificationCounter) {
-                    if (lastGlobalModificationCounter == -1 || lastCameraModificationCounter == thisCameraModificationCounter) {
+                    if (lastGlobalModificationCounter == -1 || lastCameraModificationCounter == thisCameraModificationCounter || lastAttributeModificationCounter != thisAttributeModificationCounter) {
                         updateQualityControlState(graph);
                     }
                     lastGlobalModificationCounter = thisGlobalModificationCounter;
                     lastCameraModificationCounter = thisCameraModificationCounter;
+                    lastAttributeModificationCounter = thisAttributeModificationCounter;
                 }
             } finally {
                 readableGraph.release();
