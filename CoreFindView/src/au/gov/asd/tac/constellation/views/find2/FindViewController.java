@@ -363,7 +363,7 @@ public class FindViewController {
     /**
      * Sets amount of results found by advanced search
      */
-    public void setNumResultsFound(int value) {
+    public void setNumResultsFound(final int value) {
         numResultsFoundFlag.set(value);
     }
 

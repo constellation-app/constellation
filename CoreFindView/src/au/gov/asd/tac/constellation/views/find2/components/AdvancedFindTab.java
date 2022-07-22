@@ -191,6 +191,9 @@ public class AdvancedFindTab extends Tab {
         buttonsHBox.setPadding(new Insets(10, 10, 5, 10));
         buttonsHBox.setSpacing(5);
 
+        matchesFoundPane.setPadding(new Insets(10, 12, 5, 10));
+
+
         updateGridColours(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
     }
 
@@ -202,11 +205,12 @@ public class AdvancedFindTab extends Tab {
         buttonsHBox.getChildren().clear();
         buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
 
-        matchesFoundPane.setPadding(new Insets(10, 12, 5, 10));
-
         buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
+
+        bottomGrid.getChildren().clear();
         bottomGrid.add(buttonsHBox, 0, 0);
         bottomGrid.add(matchesFoundPane, 0, 1);
+
         parentComponent.getParentComponent().setBottom(bottomGrid);
     }
 
