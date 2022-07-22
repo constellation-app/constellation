@@ -309,8 +309,6 @@ public class JDBCSourcePane extends SourcePane {
             ImportSingleton.getDefault().triggerClearDataFlag();
         });
 
-        //clearButton.setPadding(new Insets(0, 0, 0, 3.5));
-
         final Button queryButton = new Button("Query");
         queryButton.setOnAction((final ActionEvent t) -> {
             if (!query.getText().isBlank() && dbConnectionComboBox.getValue() != null) {
@@ -321,12 +319,17 @@ public class JDBCSourcePane extends SourcePane {
                 importController.updateSampleData();
             }
         });
-        GridPane.setConstraints(queryButton, 2, 4, 2, 1, HPos.RIGHT, VPos.TOP);
-        GridPane.setConstraints(clearButton, 2, 4, 2, 1, HPos.RIGHT, VPos.BOTTOM);
 
+        final GridPane buttonPane = new GridPane();
+        buttonPane.add(clearButton, 0, 0);
+        buttonPane.add(queryButton, 1, 0);
+        buttonPane.setHgap(10);
+        buttonPane.setPadding(new Insets(0, 0, 0, 25));
+
+        GridPane.setConstraints(buttonPane, 2, 4, 3, 1, HPos.RIGHT, VPos.TOP);
 
         getChildren().addAll(fileLabel, dbConnectionComboBox, manageConnectionsBtn, usernameLabel, username,
-                passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, clearButton, queryButton);
+                passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, buttonPane);
     }
 
     private void openAddDriverDialog(final JDBCDriverManager driverManager, final TableView driverTable, final ComboBox<JDBCDriver> driver, final Stage dialog) {
