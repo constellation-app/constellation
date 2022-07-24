@@ -35,6 +35,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * This controller class handles the interaction between the findView2 UI
@@ -53,6 +55,8 @@ public class FindViewController {
     private final BasicFindReplaceParameters currentBasicReplaceParameters;
     private final AdvancedSearchParameters currentAdvancedSearchParameters;
     private static final Logger LOGGER = Logger.getLogger(FindViewController.class.getName());
+
+    private final IntegerProperty numResultsFoundFlag = new SimpleIntegerProperty(0);
 
     /**
      * Private constructor for singleton
@@ -282,6 +286,7 @@ public class FindViewController {
     }
 
     public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext) {
+
         final AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
 
         /**
@@ -292,17 +297,23 @@ public class FindViewController {
             for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                 // check to see the graph is not null
                 if (graph != null && currentAdvancedSearchParameters.isSearchAllGraphs()) {
+
                     PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
+
+
                 }
             }
         } else {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
             // check to see the graph is not null
             if (graph != null) {
+
                 PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
+
             }
         }
     }
+
 
     /**
      * gets the controllers parent
@@ -338,6 +349,22 @@ public class FindViewController {
      */
     public AdvancedSearchParameters getCurrentAdvancedSearchParameters() {
         return currentAdvancedSearchParameters;
+    }
+
+    /**
+     * gets the amount of results found by advanced search
+     *
+     * @return
+     */
+    public IntegerProperty getNumResultsFound() {
+        return numResultsFoundFlag;
+    }
+
+    /**
+     * Sets amount of results found by advanced search
+     */
+    public void setNumResultsFound(final int value) {
+        numResultsFoundFlag.set(value);
     }
 
 }
