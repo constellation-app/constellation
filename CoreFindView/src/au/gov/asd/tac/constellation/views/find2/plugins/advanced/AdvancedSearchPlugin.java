@@ -49,6 +49,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -72,6 +74,9 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     private final String currentSelection;
 
     private FindResultsList findInCurrentSelectionList;
+
+    private static final Logger LOGGER = Logger.getLogger(AdvancedSearchPlugin.class.getName());
+
 
     private static final String ANY = "Any";
     private static final String ALL = "All";
@@ -209,6 +214,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                             break;
                         case BooleanAttributeDescription.ATTRIBUTE_NAME:
                             matches = searchAsBoolean(values, attributeInt, currElement, graph);
+                            if (matches) {
+                                LOGGER.log(Level.SEVERE, "Matches Selected");
+                            } else
+                                LOGGER.log(Level.SEVERE, "Matches not Selected");
                             break;
                         case ColorAttributeDescription.ATTRIBUTE_NAME:
                             matches = searchAsColor(values, attributeInt, currElement, graph);
@@ -230,8 +239,12 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         // If the serach is select all and match critera = any
                         if (selectAll && ANY.equals(allOrAny)) {
 
+                            LOGGER.log(Level.SEVERE, "INSIDE SELECT ANY");
                             // If the current selection = ignore or add to
                             if ((IGNORE.equals(currentSelection) || ADD_TO.equals(currentSelection))) {
+
+                                LOGGER.log(Level.SEVERE, "INSIDE IGNORE");
+
                                 // set the elements selection attribute to true
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                                 // add a new find result to the found results list
@@ -260,11 +273,16 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         }
                     }
                 }
+
                 /**
                  * if match criteria = all and the attributes values match all
                  * of the criteria.
                  */
-                if (allOrAny.equals(ALL) && matchesAllCount == criteriaList.size()) {
+                // BUG IS HERE!!!
+                if (allOrAny.contains(ALL) && matchesAllCount == criteriaList.size()) {
+
+                    LOGGER.log(Level.SEVERE, "inside ALL");
+
                     // add a new find result to the found results list
                     // of the element
                     foundResult.add(new FindResult(currElement, uid, elementType));
@@ -462,6 +480,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             case "Contains":
                 for (final String str : allSearchableString) {
                     if (value != null && value.contains(str)) {
+                        LOGGER.log(Level.SEVERE, "Matching value: " + value);
                         matches = true;
                     }
                 }
@@ -577,8 +596,15 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         final boolean value = graph.getBooleanValue(attributeInt, currElement);
         boolean matches = false;
 
+        if (value) {
+            LOGGER.log(Level.SEVERE, "value set to true");
+        } else {
+            LOGGER.log(Level.SEVERE, "value set to false");
+        }
+
         // if the attributes bool value == the users bool value matches = true
         if (booleanValues.getBoolValue() == value) {
+
             matches = true;
         }
         return matches;
