@@ -54,10 +54,9 @@ public class Startup implements Runnable {
                 ? String.format("%s %s", BrandingUtilities.APPLICATION_NAME, environment)
                 : BrandingUtilities.APPLICATION_NAME;
 
-        ConstellationLAFSettings.applyTabColorSettings();
-        
         // We only want to run this if headless is NOT set to true
         if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            ConstellationLAFSettings.applyTabColorSettings();        
             // update the main window title with the version number
             WindowManager.getDefault().invokeWhenUIReady(() -> {
                 final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
