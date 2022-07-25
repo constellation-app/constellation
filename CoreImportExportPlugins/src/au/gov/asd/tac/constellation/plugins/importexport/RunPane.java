@@ -87,7 +87,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;";
 
     private final ImportController importController;
-    protected final TableView<TableRow> sampleDataView = new TableView<>();
+    private final TableView<TableRow> sampleDataView = new TableView<>();
     private final AttributeList sourceVertexAttributeList;
     private final AttributeList destinationVertexAttributeList;
     private final AttributeList transactionAttributeList;
@@ -635,5 +635,9 @@ public final class RunPane extends BorderPane implements KeyListener {
      */
     public boolean hasDataQueried() {
         return !currentRows.isEmpty();
+    }
+
+    public TableView<TableRow> getSampleDataView() {
+        return sampleDataView;
     }
 }

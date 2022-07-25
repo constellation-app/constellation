@@ -304,7 +304,7 @@ public class JDBCSourcePane extends SourcePane {
         GridPane.setConstraints(destinationLabel, 0, 4, 1, 1, HPos.LEFT, VPos.TOP);
 
         final Button clearButton = new Button(CLEAR_RESULTS);
-        clearButton.setOnAction((ActionEvent e) -> {
+        clearButton.setOnAction(e -> {
             query.setText("");
             ImportSingleton.getDefault().triggerClearDataFlag();
         });

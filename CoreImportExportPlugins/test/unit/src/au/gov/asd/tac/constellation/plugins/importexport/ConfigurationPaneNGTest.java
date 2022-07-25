@@ -16,17 +16,20 @@
 package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
+import static au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTranslator.LOGGER;
 import au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import javafx.scene.DepthTest;
 import javafx.scene.control.Tab;
 import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -51,6 +54,13 @@ public class ConfigurationPaneNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages: ", ex);
+        }
+
     }
 
     @BeforeMethod
@@ -86,8 +96,8 @@ public class ConfigurationPaneNGTest {
 
         RunPane runPane = (RunPane) instance.tabPane.getSelectionModel().getSelectedItem().getContent();
 
-        assertEquals(0, runPane.sampleDataView.getItems().size());
-        assertEquals(0, runPane.sampleDataView.getColumns().size());
+        assertEquals(0, runPane.getSampleDataView().getItems().size());
+        assertEquals(0, runPane.getSampleDataView().getColumns().size());
 
     }
 
