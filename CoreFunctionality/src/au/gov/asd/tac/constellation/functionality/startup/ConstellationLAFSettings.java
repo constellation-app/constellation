@@ -84,6 +84,11 @@ public class ConstellationLAFSettings {
             if (displayerClass != null) {
                 final Class<?> tabDisplayer = displayerClass.getSuperclass();
 
+                if (tabDisplayer == null) {
+                    logger.info(" >>> Windows LAF error : no superclass for displayerClass :");
+                    ouputUIDefaultValues(null, null);
+                    return;
+                }
                 // reset static field "colorsReady" value to false
                 final Field colsReady = tabDisplayer.getDeclaredField("colorsReady");
                 colsReady.setAccessible(true);
@@ -92,9 +97,9 @@ public class ConstellationLAFSettings {
                 logger.info(" >>> Windows LAF error : org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI not defined :");
                 ouputUIDefaultValues(null, null);
             }
-        } catch (IllegalAccessException | IllegalArgumentException | 
+        } catch (final IllegalAccessException | IllegalArgumentException | 
                 NoSuchFieldException | SecurityException e) {
-            String errorMessage = " >>> Error applying Windows LaF colors : " + e.toString();
+            final String errorMessage = " >>> Error applying Windows LaF colors : " + e.toString();
             logger.info(errorMessage);
         }     
     }
@@ -197,9 +202,9 @@ public class ConstellationLAFSettings {
                 logger.info(" >>> FlatLAF error : org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI not defined :");
                 ouputUIDefaultValues(null, null);
             }
-        } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | 
+        } catch (final IllegalAccessException | IllegalArgumentException | NoSuchFieldException | 
                 NoSuchMethodException | SecurityException | InvocationTargetException e) {
-            String errorMessage = " >>> Error applying FlatLaf colors : " + e.toString();
+            final String errorMessage = " >>> Error applying FlatLaf colors : " + e.toString();
             logger.info(errorMessage);
         }
     }
@@ -248,9 +253,9 @@ public class ConstellationLAFSettings {
                 logger.info(" >>> Metal LAF error : org.netbeans.swing.tabcontrol.plaf.MetalViewTabDisplayerUI not defined :");
                 ouputUIDefaultValues(null, null);
             }
-        } catch (IllegalAccessException | IllegalArgumentException | 
+        } catch (final IllegalAccessException | IllegalArgumentException | 
                 NoSuchFieldException | SecurityException e) {
-            String errorMessage = " >>> Error applying Metal Laf colors : " + e.toString();
+            final String errorMessage = " >>> Error applying Metal Laf colors : " + e.toString();
             logger.info(errorMessage);
         }
     }
