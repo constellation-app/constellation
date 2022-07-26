@@ -40,8 +40,6 @@ public class ActionPane extends BorderPane {
     private static final Insets PADDING = new Insets(5, 5, 35, 5);
     private static final int HBOX_SPACING = 5;
     private final Button importButton;
-
-
     private final ImportController importController;
 
     public ActionPane(final ImportController controller) {

@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import static au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTranslator.LOGGER;
 import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
@@ -26,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -41,7 +39,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import org.python.netty.util.ResourceLeakDetector;
 
 /**
  * The ConfigurationPane is a UI element that displays a sample of the imported
@@ -191,12 +188,11 @@ public class ConfigurationPane extends AnchorPane {
      */
     protected void clearSelectedPane() {
         if (tabPane.getSelectionModel().getSelectedItem() != null) {
-            RunPane currentSelected = (RunPane) tabPane.getSelectionModel().getSelectedItem().getContent();
+            final RunPane currentSelected = (RunPane) tabPane.getSelectionModel().getSelectedItem().getContent();
 
-            String[] columns = {};
-            List<String[]> data = new ArrayList<>();
+            final String[] columns = {};
 
-            currentSelected.setSampleData(columns, createTableRows(data));
+            currentSelected.setSampleData(columns, createTableRows(FXCollections.observableArrayList()));
         }
     }
 

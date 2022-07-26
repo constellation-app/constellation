@@ -15,19 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
-import static au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTranslator.LOGGER;
 import au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportController;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 import java.util.logging.Level;
-import javafx.scene.DepthTest;
-import javafx.scene.control.Tab;
-import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -41,7 +34,7 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class ConfigurationPaneNGTest {
-
+    private static final Logger LOGGER = Logger.getLogger("ConfigurationPaneNGTest");
     public ConfigurationPaneNGTest() {
     }
 
@@ -58,6 +51,7 @@ public class ConfigurationPaneNGTest {
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
+
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages: ", ex);
         }
 

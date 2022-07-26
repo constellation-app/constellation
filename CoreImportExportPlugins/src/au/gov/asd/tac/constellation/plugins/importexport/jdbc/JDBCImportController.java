@@ -226,11 +226,11 @@ public class JDBCImportController extends ImportController {
         return currentData;
     }
 
-    public void setColumns(String[] cols) {
+    public void setColumns(final String[] cols) {
         currentColumns = cols;
     }
 
-    public void setData(List<String[]> data) {
+    public void setData(final List<String[]> data) {
         currentData = data;
     }
 }
