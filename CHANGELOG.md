@@ -8,6 +8,10 @@
     change will break existing classes inheriting from `RestClient` if they are
     not modified to reflect the new parameter type.
 
+-   Removed unused classes `FileChooser` from Core Graph File and `DataAccessResultsDirChooser`
+    from Core Data Access View. Classes became unused in lieu of refactoring to utilize the class
+    `FileChooser` in Core Utilities.
+
 ## Changes in March 2022
 
 -   Added abstract classes `AbstractCachedStringIOProvider` and 
@@ -19,7 +23,7 @@
 ## Changes in February 2022
 
 -   Removed unused classes `DecoratorUtilities` and `LabelUtilities` from Core 
-    Visual Schema
+    Visual Schema.
 
 -   Added a new parameter `tabCaption` in `newTab` public methods in `DataAccessTabPane` class 
 	to provide the Step tab caption when required. This is used when the user renames the 
@@ -34,7 +38,6 @@
     summary status message after importing.
 
 ## Changes in November 2021
-
 
 -   Added `netbeans.exception.report.min.level=900` and
     `netbeans.exception.alert.min.level=900` with both set to `900` to make
@@ -65,6 +68,7 @@
     abstract classes should not have public constructors. 
 
 ## Changes in October 2021
+
 -   Added `PluginTags` class to hold all tags as constants for `PluginInfo`.
 
 -   Added `isRequired` in `PluginParameter` with a getter and a setter, which

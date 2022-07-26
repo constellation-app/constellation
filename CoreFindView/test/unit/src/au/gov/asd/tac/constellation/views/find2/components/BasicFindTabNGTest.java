@@ -308,7 +308,7 @@ public class BasicFindTabNGTest {
     @Test
     public void testSaveSelected() {
         System.out.println("saveSelected");
-
+        basicFindTab.onLoad = false;
         setupGraph();
 
         /**
