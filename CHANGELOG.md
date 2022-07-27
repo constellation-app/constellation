@@ -2,7 +2,15 @@
 
 ## Changes in July 2022
 
--   Removed unused classes `FileChooser` from Core Graph File and `DataAccessResultsDirChooser` from Core Data Access View. Classes became unused in lieu of refactoring to utilize the class `FileChooser` in Core Utilities.
+-   Updated `RestClient` so that `params` are passed as `List<Tuple<String, String>>`
+    rather than `Map<String, String>` - this is to allow multiple parameters with
+    the same name to be supplied, which is required for some endpoints. This
+    change will break existing classes inheriting from `RestClient` if they are
+    not modified to reflect the new parameter type.
+
+-   Removed unused classes `FileChooser` from Core Graph File and `DataAccessResultsDirChooser`
+    from Core Data Access View. Classes became unused in lieu of refactoring to utilize the class
+    `FileChooser` in Core Utilities.
 
 ## Changes in March 2022
 
