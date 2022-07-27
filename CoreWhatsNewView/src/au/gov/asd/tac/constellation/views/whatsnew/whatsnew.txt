@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-07-19 Import Graph File
+<p>A new plugin "Import Graph File" has been added to the Import section of Data Access View. This allows you to import data from graph file types such as GML, GraphML, and Pajek.</p>
+
 == 2022-06-17 Datetime Formatter
 <p>The Datetime formatter for attributes in the File Importer and Database Importer has been updated to include a new field 'Display Time Zone'. This field allows you to easily convert your datetime data to the desired timezone before importing.</p>
 
