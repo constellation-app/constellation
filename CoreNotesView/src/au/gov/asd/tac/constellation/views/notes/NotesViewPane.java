@@ -420,7 +420,7 @@ public class NotesViewPane extends BorderPane {
     protected void setNotes(final List<NotesViewEntry> notesViewEntries) {
         synchronized (LOCK) {
             this.notesViewEntries.clear();
-            notesViewEntries.forEach(note -> addNote(note));
+            notesViewEntries.forEach(this::addNote);
         }
 
         SwingUtilities.invokeLater(() -> {
@@ -456,14 +456,10 @@ public class NotesViewPane extends BorderPane {
             });
         }
         if (this.selectedFilters.contains(AUTO_NOTES_FILTER)) {
-            Platform.runLater(() -> {
-                autoFilterCheckComboBox.setStyle("visibility: visible;");
-            });
+            Platform.runLater(() -> autoFilterCheckComboBox.setStyle("visibility: visible;"));
             updateTagsFiltersAvailable();
         } else {
-            Platform.runLater(() -> {
-                autoFilterCheckComboBox.setStyle("visibility: hidden;");
-            });
+            Platform.runLater(() -> autoFilterCheckComboBox.setStyle("visibility: hidden;"));
         }
         updateFilters();
     }
