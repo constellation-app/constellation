@@ -81,21 +81,19 @@ public abstract class RestClient {
      * 
      * @param url URL to base generated URL on.
      * @param params Any parameters to add to the URL (ie HTTP GET parameters)
-     * @param paramSpaceToken Allow the token used to replace spaces in param
-     * strings to be adjusted
      * @return URL combining base URL and parameters.
      * @throws UnsupportedEncodingException
      * @throws MalformedURLException
      */
-    public static URL generateUrl(final String url, final List<Tuple<String, String>> params, final String paramSpaceToken) throws UnsupportedEncodingException, MalformedURLException {
+    public static URL generateUrl(final String url, final List<Tuple<String, String>> params) throws UnsupportedEncodingException, MalformedURLException {
         // Build the request parameters.
         final StringBuilder query = new StringBuilder();
         if (params != null) {
             for (final Tuple<String, String> param : params) {
                 // Ensure the parameter has a non empty key. Rules for parameter names seem quite relaxed in HTTP, as
                 // such we will not try and do too much validation
-                final String key =  URLEncoder.encode(param.getFirst(), StandardCharsets.UTF_8.name()).replace("+", paramSpaceToken);
-                final String value = URLEncoder.encode(param.getSecond(), StandardCharsets.UTF_8.name()).replace("+", paramSpaceToken);
+                final String key = URLEncoder.encode(param.getFirst(), StandardCharsets.UTF_8.name()).replace("+", "%20").replace("%2B", "+");
+                final String value = URLEncoder.encode(param.getSecond(), StandardCharsets.UTF_8.name()).replace("+", "%20").replace("%2B", "+");
                 if (StringUtils.isNotBlank(key)) {
                     if (query.length() > 0) {
                         query.append('&');
@@ -107,20 +105,6 @@ public abstract class RestClient {
             }
         }
         return new URL(url + (query.length() > 0 ? "?" + query : ""));
-    }
-
-    /**
-     * Construct a URL string based on supplied URL and any supplied query
-     * parameters.
-     * 
-     * @param url URL to base generated URL on.
-     * @param params Any parameters to add to the URL (ie HTTP GET parameters)
-     * @return URL combining base URL and parameters.
-     * @throws UnsupportedEncodingException
-     * @throws MalformedURLException
-     */
-    public static URL generateUrl(final String url, final List<Tuple<String, String>> params) throws UnsupportedEncodingException, MalformedURLException {
-        return generateUrl(url, params, "+");
     }
 
     /**

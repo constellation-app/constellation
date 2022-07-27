@@ -105,14 +105,12 @@ public class RestClientNGTest {
     @Test
     public void testGenerateUrl_ValidParams() throws Exception {
         System.out.println("testGenerateUrl");
-        String url = "https://testurl.tst/testEndpoint";
+        String url = "https://testurl.tst/test  Endpoint";
         List<Tuple<String, String>> params = new ArrayList<>();
-        params.add(new Tuple("param1", "value1"));
-        params.add(new Tuple("param2", "value2 with spaces"));
+        params.add(new Tuple("param 1", "value1 with spaces"));
+        params.add(new Tuple("param+2", "value2+with+plusses"));
         URL result = RestClient.generateUrl(url, params);
-        assertEquals(result, new URL(String.format("%s?param1=value1&param2=value2+with+spaces", url)));
-        result = RestClient.generateUrl(url, params, "%20");
-        assertEquals(result, new URL(String.format("%s?param1=value1&param2=value2%%20with%%20spaces", url)));
+        assertEquals(result, new URL(String.format("%s?param%201=value2%20with+spaces&param+2=value2+with+plusses", url)));
     }
 
     /**
