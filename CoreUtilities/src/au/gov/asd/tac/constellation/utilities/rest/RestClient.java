@@ -92,8 +92,8 @@ public abstract class RestClient {
             for (final Tuple<String, String> param : params) {
                 // Ensure the parameter has a non empty key. Rules for parameter names seem quite relaxed in HTTP, as
                 // such we will not try and do too much validation
-                final String key = URLEncoder.encode(param.getFirst(), StandardCharsets.UTF_8.name()).replace("+", "%20").replace("%2B", "+");
-                final String value = URLEncoder.encode(param.getSecond(), StandardCharsets.UTF_8.name()).replace("+", "%20").replace("%2B", "+");
+                final String key = URLEncoder.encode(param.getFirst(), StandardCharsets.UTF_8.name()).replace("+", "%20");
+                final String value = URLEncoder.encode(param.getSecond(), StandardCharsets.UTF_8.name()).replace("+", "%20");
                 if (StringUtils.isNotBlank(key)) {
                     if (query.length() > 0) {
                         query.append('&');
