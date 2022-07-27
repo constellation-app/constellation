@@ -54,7 +54,9 @@ public class ConstellationLAFSettings {
         } else if (currentLafName.contains("METAL")) {
             initMetalTabColors(currentLafName.contains("DARK"));
         }
-        SwingUtilities.updateComponentTreeUI(mainframe);
+        if (mainframe != null) {
+            SwingUtilities.updateComponentTreeUI(mainframe);
+        }
     }
 
     /**
