@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,34 +20,36 @@ package au.gov.asd.tac.constellation.utilities.file;
  * @author aldebaran30701
  */
 public class FileExtensionConstants {
-    
+
     private FileExtensionConstants() {
         throw new IllegalStateException("Utility class");
     }
-    
+
     // Constellation file formats
     public static final String STAR = ".star";
     public static final String NEBULA = ".nebula";
     public static final String STAR_AUTOSAVE = ".star_auto";
-    
+
     // Infomap extensions
     public static final String TREE = ".tree";
     public static final String CLUSTER = ".clu";
     public static final String RANK = ".rank";
     public static final String FLOW = ".flow";
-    
+
     // Value file extensions
     public static final String TAB_SEPARATED_VALUE = ".tsv";
     public static final String COMMA_SEPARATED_VALUE = ".csv";
     public static final String XLSX = ".xlsx";
-    
+    public static final String XLS = ".xls";
+    public static final String XML = ".xml";
+
     // Font extensions
     public static final String OPEN_TYPE_FONT = ".otf";
     public static final String TRUE_TYPE_FONT = ".ttf";
-    
+
     // Zip extensions
     public static final String GZIP = ".gz";
-    
+
     // Common file extensions
     public static final String TEXT = ".txt";
     public static final String JAVA = ".java";
@@ -61,7 +63,7 @@ public class FileExtensionConstants {
     public static final String CASCADING_STYLE_SHEET = ".css";
     public static final String BINARY = ".bin";
     public static final String BACKUP = ".bak";
-    
+
     // Image extensions
     public static final String JPG = ".jpg";
     public static final String PNG = ".png";
