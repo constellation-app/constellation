@@ -66,6 +66,10 @@ public class BitMaskQueryCollection {
         this.elementType = elementType;
     }
 
+    protected List<BitMaskQuery> getActiveQueries() {
+        return activeQueries;
+    }
+
     /**
      * Set a query at a specific bit mask index
      * 
