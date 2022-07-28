@@ -162,7 +162,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         final int elementCount = elementType.getElementCount(graph);
 
         // do this if add to selection
-        if (IGNORE.equals(currentSelection)) {
+        if (ADD_TO.equals(currentSelection)) {
             clearSelection(graph);
         }
         findInCurrentSelectionList = new FindResultsList(graph.getId());
@@ -214,10 +214,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                             break;
                         case BooleanAttributeDescription.ATTRIBUTE_NAME:
                             matches = searchAsBoolean(values, attributeInt, currElement, graph);
-                            if (matches) {
-                                LOGGER.log(Level.SEVERE, "Matches Selected");
-                            } else
-                                LOGGER.log(Level.SEVERE, "Matches not Selected");
                             break;
                         case ColorAttributeDescription.ATTRIBUTE_NAME:
                             matches = searchAsColor(values, attributeInt, currElement, graph);
@@ -239,11 +235,9 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         // If the serach is select all and match critera = any
                         if (selectAll && ANY.equals(allOrAny)) {
 
-                            LOGGER.log(Level.SEVERE, "INSIDE SELECT ANY");
+                            //LOGGER.log(Level.SEVERE, "INSIDE SELECT ANY");
                             // If the current selection = ignore or add to
                             if ((IGNORE.equals(currentSelection) || ADD_TO.equals(currentSelection))) {
-
-                                LOGGER.log(Level.SEVERE, "INSIDE IGNORE");
 
                                 // set the elements selection attribute to true
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
@@ -280,8 +274,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                  */
                 // BUG IS HERE!!!
                 if (allOrAny.contains(ALL) && matchesAllCount == criteriaList.size()) {
-
-                    LOGGER.log(Level.SEVERE, "inside ALL");
 
                     // add a new find result to the found results list
                     // of the element
@@ -480,7 +472,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             case "Contains":
                 for (final String str : allSearchableString) {
                     if (value != null && value.contains(str)) {
-                        LOGGER.log(Level.SEVERE, "Matching value: " + value);
                         matches = true;
                     }
                 }
@@ -592,21 +583,16 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @return
      */
     private boolean searchAsBoolean(final FindCriteriaValues values, final int attributeInt, final int currElement, final GraphWriteMethods graph) {
+
         final BooleanCriteriaValues booleanValues = (BooleanCriteriaValues) values;
         final boolean value = graph.getBooleanValue(attributeInt, currElement);
         boolean matches = false;
 
-        if (value) {
-            LOGGER.log(Level.SEVERE, "value set to true");
-        } else {
-            LOGGER.log(Level.SEVERE, "value set to false");
-        }
-
         // if the attributes bool value == the users bool value matches = true
         if (booleanValues.getBoolValue() == value) {
-
             matches = true;
         }
+
         return matches;
     }
 
