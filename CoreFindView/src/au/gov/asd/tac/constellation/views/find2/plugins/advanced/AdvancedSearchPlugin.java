@@ -75,9 +75,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
     private FindResultsList findInCurrentSelectionList;
 
-    private static final Logger LOGGER = Logger.getLogger(AdvancedSearchPlugin.class.getName());
-
-
     private static final String ANY = "Any";
     private static final String ALL = "All";
     private static final String IGNORE = "Ignore";
