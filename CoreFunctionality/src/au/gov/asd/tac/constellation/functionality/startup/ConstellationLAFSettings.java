@@ -114,11 +114,14 @@ public class ConstellationLAFSettings {
                 if (displayerClass != null) {
                     // Update the UIManager with settings appropriate for Windows (XP) LAF
                     UIManager.getDefaults().put("TabbedPane.highlight", activeMidSectionBlue);
-                    UIManager.getDefaults().put("tab_sel_border", activeMidSectionBlue);
                     UIManager.getDefaults().put("tab_focus_fill_bright", selectedUpperLightBlue);
                     UIManager.getDefaults().put("tab_focus_fill_dark", selectedLowerDarkBlue);
                     UIManager.getDefaults().put("tab_unsel_fill_bright", unselectedUpperGray);
                     UIManager.getDefaults().put("tab_unsel_fill_dark", unselectedLowerGreyBlue);
+                    // Put a light blue highlight on the selected tab
+                    final Color activeLighterMidBlue = new Color(180, 220, 255);
+                    UIManager.getDefaults().put("tab_highlight_header", activeLighterMidBlue);
+                    UIManager.getDefaults().put("tab_highlight_header_fill", activeLighterMidBlue);
 
                     // reset static field "colorsReady" value to false
                     final Field colsReady = displayerClass.getDeclaredField("colorsReady"); //NOSONAR
