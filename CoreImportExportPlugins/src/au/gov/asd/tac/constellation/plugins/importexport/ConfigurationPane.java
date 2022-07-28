@@ -192,7 +192,7 @@ public class ConfigurationPane extends AnchorPane {
 
             final String[] columns = {};
 
-            currentSelected.setSampleData(columns, createTableRows(FXCollections.observableArrayList()));
+            currentSelected.setSampleData(columns, FXCollections.observableArrayList());
         }
     }
 

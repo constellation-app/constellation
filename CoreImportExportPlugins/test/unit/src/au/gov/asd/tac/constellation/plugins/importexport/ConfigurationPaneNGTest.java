@@ -34,7 +34,7 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class ConfigurationPaneNGTest {
-    private static final Logger LOGGER = Logger.getLogger("ConfigurationPaneNGTest");
+    private static final Logger LOGGER = Logger.getLogger(ConfigurationPaneNGTest.class.getName());
     public ConfigurationPaneNGTest() {
     }
 
