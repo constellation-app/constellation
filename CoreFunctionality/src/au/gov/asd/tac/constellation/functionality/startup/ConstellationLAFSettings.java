@@ -40,11 +40,16 @@ import org.openide.windows.WindowManager;
  */
 public class ConstellationLAFSettings {
 
-    private static final Logger logger = Logger.getLogger(ConstellationLAFSettings.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ConstellationLAFSettings.class.getName());
+    
+    private ConstellationLAFSettings() {
+        // Added this private constructor to hide the implicit public one
+    }
     
     public static void applyTabColorSettings() {
         final JFrame mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
         final String currentLafName = UIManager.getLookAndFeel().getName().toUpperCase();
+        // Call the appropriate init method for the current Look And Feel
         if (currentLafName.startsWith("WINDOWS")) {
             initWindowsTabColors();
         } else if (currentLafName.contains("NIMBUS")) {
@@ -70,39 +75,68 @@ public class ConstellationLAFSettings {
         final Color unselectedUpperGray = new Color(220, 220, 220);
         final Color unselectedLowerGreyBlue = new Color(165, 175, 185);
 
-        UIManager.getDefaults().put("tab_sel_fill", activeMidSectionBlue);
-        UIManager.getDefaults().put("tab_focus_fill_upper", selectedUpperLightBlue);
-        UIManager.getDefaults().put("tab_focus_fill_lower", selectedLowerDarkBlue);
-        UIManager.getDefaults().put("tab_unsel_fill_upper", unselectedUpperGray);
-        UIManager.getDefaults().put("tab_unsel_fill_lower", unselectedLowerGreyBlue);
-        UIManager.getDefaults().put("tab_mouse_over_fill_upper", selectedUpperLightBlue);
-        UIManager.getDefaults().put("tab_mouse_over_fill_lower", activeMidSectionBlue);
-        UIManager.getDefaults().put("tab_attention_fill_upper", activeMidSectionBlue);
-        UIManager.getDefaults().put("tab_attention_fill_lower", selectedLowerDarkBlue);
-
         try {
-            final Class<?> displayerClass = (Class<?>) UIManager.getDefaults()
+            Class<?> displayerClass = (Class<?>) UIManager.getDefaults()
                     .get("org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI");
             if (displayerClass != null) {
                 final Class<?> tabDisplayer = displayerClass.getSuperclass();
 
                 if (tabDisplayer == null) {
-                    logger.info(" >>> Windows LAF error : no superclass for displayerClass :");
+                    LOGGER.info(" >>> Windows LAF note : no superclass for displayerClass :");
                     ouputUIDefaultValues(null, null);
                     return;
                 }
+                
+                // Update the UIManager with settings appropriate for Windows (8+) LAF
+                UIManager.getDefaults().put("tab_sel_fill", activeMidSectionBlue);
+                UIManager.getDefaults().put("tab_focus_fill_upper", selectedUpperLightBlue);
+                UIManager.getDefaults().put("tab_focus_fill_lower", selectedLowerDarkBlue);
+                UIManager.getDefaults().put("tab_unsel_fill_upper", unselectedUpperGray);
+                UIManager.getDefaults().put("tab_unsel_fill_lower", unselectedLowerGreyBlue);
+                UIManager.getDefaults().put("tab_mouse_over_fill_upper", selectedUpperLightBlue);
+                UIManager.getDefaults().put("tab_mouse_over_fill_lower", activeMidSectionBlue);
+                UIManager.getDefaults().put("tab_attention_fill_upper", activeMidSectionBlue);
+                UIManager.getDefaults().put("tab_attention_fill_lower", selectedLowerDarkBlue);
+                
                 // reset static field "colorsReady" value to false
                 final Field colsReady = tabDisplayer.getDeclaredField("colorsReady");
-                colsReady.setAccessible(true);
-                colsReady.setBoolean(tabDisplayer, false);
+                colsReady.setAccessible(true); //NOSONAR
+                colsReady.setBoolean(tabDisplayer, false); //NOSONAR
             } else {
-                logger.info(" >>> Windows LAF error : org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI not defined :");
-                ouputUIDefaultValues(null, null);
+                LOGGER.info(" >>> Windows LAF note : org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI not defined :");
+                // check if XP settings are being used
+                displayerClass = (Class<?>) UIManager.getDefaults()
+                    .get("org.netbeans.swing.tabcontrol.plaf.WinXPViewTabDisplayerUI");
+                if (displayerClass != null) {
+                    // Update the UIManager with settings appropriate for Windows (XP) LAF
+                    UIManager.getDefaults().put("TabbedPane.highlight", activeMidSectionBlue);
+                    UIManager.getDefaults().put("tab_focus_fill_bright", selectedUpperLightBlue);
+                    UIManager.getDefaults().put("tab_focus_fill_dark", selectedLowerDarkBlue);
+                    UIManager.getDefaults().put("tab_unsel_fill_bright", unselectedUpperGray);
+                    UIManager.getDefaults().put("tab_unsel_fill_dark", unselectedLowerGreyBlue);
+
+                    // reset static field "colorsReady" value to false
+                    final Field colsReady = displayerClass.getDeclaredField("colorsReady");
+                    colsReady.setAccessible(true); //NOSONAR
+                    colsReady.setBoolean(displayerClass, false); //NOSONAR                
+                    
+                    Class<?>[] argList = null;
+                    final Method initCols = displayerClass.getDeclaredMethod("initColors", argList);
+                    initCols.setAccessible(true); //NOSONAR
+                    initCols.invoke(displayerClass);
+                } else {
+                    LOGGER.info(" >>> Windows LAF note : org.netbeans.swing.tabcontrol.plaf.WinXPViewTabDisplayerUI not defined :");
+                    /*  Unable to apply changes to Windows LAF
+                        Possibly caused by a change in a newer NetBeans version */
+                    ouputUIDefaultValues(null, null);
+                }
             }
-        } catch (final IllegalAccessException | IllegalArgumentException | 
-                NoSuchFieldException | SecurityException e) {
+        } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException |
+                NoSuchMethodException | NoSuchFieldException | SecurityException e) {
+            /*  An exception here would indicate a change in the internal LAF 
+                packages provided by NetBeans */
             final String errorMessage = " >>> Error applying Windows LaF colors : " + e.toString();
-            logger.info(errorMessage);
+            LOGGER.info(errorMessage);
         }     
     }
 
@@ -114,12 +148,12 @@ public class ConstellationLAFSettings {
      * <u>Dark Nimbus</u>, otherwise allocates colors suitable for <u>Nimbus</u>
      */
     private static void initNimbusTabColors(final boolean darkMode) {
-        final Color activeBlue,
-                activeDarkBlue,
-                selectedBlue,
-                selectedDarkBlue,
-                unselectedGreyBlue,
-                unselectedDarkGreyBlue;
+        final Color activeBlue;
+        final Color activeDarkBlue;
+        final Color selectedBlue;
+        final Color selectedDarkBlue;
+        final Color unselectedGreyBlue;
+        final Color unselectedDarkGreyBlue;
         
         if (darkMode) {
             activeBlue = new Color(125, 170, 225);
@@ -137,12 +171,13 @@ public class ConstellationLAFSettings {
             unselectedDarkGreyBlue = new Color(150, 160, 175);
         }
         
+        // Modifying the tab colors in Nimbus requires custom Tab background painters to be defined
         UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab[MouseOver+Selected].backgroundPainter", 
-                new NimbusCustomGradientTabPainter(activeBlue, activeDarkBlue));
+                new NimbusCustomGradientTabPainter<>(activeBlue, activeDarkBlue));
         UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab[Selected].backgroundPainter", 
-                new NimbusCustomGradientTabPainter(selectedBlue, selectedDarkBlue));
+                new NimbusCustomGradientTabPainter<>(selectedBlue, selectedDarkBlue));
         UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab[Enabled].backgroundPainter", 
-                new NimbusCustomGradientTabPainter(unselectedGreyBlue, unselectedDarkGreyBlue));
+                new NimbusCustomGradientTabPainter<>(unselectedGreyBlue, unselectedDarkGreyBlue));
         
         UIManager.getLookAndFeel().uninitialize();
         UIManager.getLookAndFeel().initialize();
@@ -156,10 +191,10 @@ public class ConstellationLAFSettings {
      * <u>FlatLafDark</u>, otherwise allocates colors suitable for <u>FlatLafLight</u>
      */
     private static void initFlatLafTabColors(final boolean darkMode) {
-        final Color selectedUnderlineBlue,
-                inactiveUnderlineBlue,
-                selectedBackgroundBlue,
-                hoverBackgroundBlue;
+        final Color selectedUnderlineBlue;
+        final Color inactiveUnderlineBlue;
+        final Color selectedBackgroundBlue;
+        final Color hoverBackgroundBlue;
 
         if (darkMode) {
             selectedUnderlineBlue = new Color(30, 110, 190);
@@ -173,41 +208,48 @@ public class ConstellationLAFSettings {
             hoverBackgroundBlue = new Color(190, 210, 255);
         }
 
-        UIManager.put("ViewTab.selectedBackground", selectedBackgroundBlue);
-        UIManager.put("ViewTab.hoverBackground", hoverBackgroundBlue);
-        UIManager.put("ViewTab.underlineHeight", 5);
-        UIManager.put("ViewTab.underlineColor", selectedUnderlineBlue);
-        UIManager.put("ViewTab.inactiveUnderlineColor", inactiveUnderlineBlue);
-
-        UIManager.put("EditorTab.selectedBackground", selectedBackgroundBlue);
-        UIManager.put("EditorTab.hoverBackground", hoverBackgroundBlue);
-        UIManager.put("EditorTab.underlineHeight", 5);
-        UIManager.put("EditorTab.underlineColor", selectedUnderlineBlue);
-        UIManager.put("EditorTab.inactiveUnderlineColor", inactiveUnderlineBlue);
-
         try {
             final Class<?> tabDisplayer = (Class<?>) UIManager.getDefaults()
                     .get("org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI");
             
             if (tabDisplayer != null) {
+
+                // Update the UIManager with settings appropriate for FlatLaf
+
+                UIManager.put("ViewTab.selectedBackground", selectedBackgroundBlue);
+                UIManager.put("ViewTab.hoverBackground", hoverBackgroundBlue);
+                UIManager.put("ViewTab.underlineHeight", 5);
+                UIManager.put("ViewTab.underlineColor", selectedUnderlineBlue);
+                UIManager.put("ViewTab.inactiveUnderlineColor", inactiveUnderlineBlue);
+
+                UIManager.put("EditorTab.selectedBackground", selectedBackgroundBlue);
+                UIManager.put("EditorTab.hoverBackground", hoverBackgroundBlue);
+                UIManager.put("EditorTab.underlineHeight", 5);
+                UIManager.put("EditorTab.underlineColor", selectedUnderlineBlue);
+                UIManager.put("EditorTab.inactiveUnderlineColor", inactiveUnderlineBlue);
+
                 // reset static field "colorsReady" value to false
                 final Field colready = tabDisplayer.getDeclaredField("colorsReady");
-                colready.setAccessible(true);
-                colready.setBoolean(tabDisplayer, false);
+                colready.setAccessible(true); //NOSONAR
+                colready.setBoolean(tabDisplayer, false); //NOSONAR
 
                 // re-run class method "initColors" to load the updated colors
                 Class<?>[] argList = null;
                 final Method initCols = tabDisplayer.getDeclaredMethod("initColors", argList);
-                initCols.setAccessible(true);
+                initCols.setAccessible(true); //NOSONAR
                 initCols.invoke(tabDisplayer);
             } else {
-                logger.info(" >>> FlatLAF error : org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI not defined :");
+                /*  Unable to apply changes to FlatLaf
+                    Possibly caused by a change in a newer NetBeans version */
+                LOGGER.info(" >>> FlatLAF note : org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI not defined :");
                 ouputUIDefaultValues(null, null);
             }
         } catch (final IllegalAccessException | IllegalArgumentException | NoSuchFieldException | 
                 NoSuchMethodException | SecurityException | InvocationTargetException e) {
+            /*  An exception here would indicate a change in the internal LAF 
+                packages provided by NetBeans */
             final String errorMessage = " >>> Error applying FlatLaf colors : " + e.toString();
-            logger.info(errorMessage);
+            LOGGER.info(errorMessage);
         }
     }
 
@@ -219,7 +261,9 @@ public class ConstellationLAFSettings {
      * <u>Dark Metal</u>, otherwise allocates colors suitable for <u>Metal</u>
      */
     private static void initMetalTabColors(final boolean darkMode) {
-        final Color activeTabBackground, inactiveTabBackground, tabDarkShadow;
+        final Color activeTabBackground;
+        final Color inactiveTabBackground;
+        final Color tabDarkShadow;
         
         if (darkMode) {
             activeTabBackground = new Color(45, 95, 180);
@@ -230,35 +274,41 @@ public class ConstellationLAFSettings {
             tabDarkShadow = new Color(220, 235, 250);
             inactiveTabBackground = new Color(170, 195, 230);
         }
-
-        UIManager.put("control", inactiveTabBackground);
-        UIManager.put("controlHighlight", activeTabBackground);
-        UIManager.put("controlDkShadow", tabDarkShadow);
-        UIManager.put("TabRenderer.selectedActivatedBackground", activeTabBackground);
-        UIManager.put("TabRenderer.selectedBackground", inactiveTabBackground);
         
         try {
             final Class<?> tabDisplayer = (Class<?>) UIManager.getDefaults()
                     .get("org.netbeans.swing.tabcontrol.plaf.MetalViewTabDisplayerUI");
             
             if (tabDisplayer != null) {
+
+                // Update the UIManager with settings appropriate for Metal LAF
+                UIManager.put("control", inactiveTabBackground);
+                UIManager.put("controlHighlight", activeTabBackground);
+                UIManager.put("controlDkShadow", tabDarkShadow);
+                UIManager.put("TabRenderer.selectedActivatedBackground", activeTabBackground);
+                UIManager.put("TabRenderer.selectedBackground", inactiveTabBackground);
+                
                 // reset static field "actBgColor" value to activeTabBackground
                 final Field actBgCol = tabDisplayer.getDeclaredField("actBgColor");
-                actBgCol.setAccessible(true);
-                actBgCol.set(tabDisplayer, activeTabBackground);
+                actBgCol.setAccessible(true); //NOSONAR
+                actBgCol.set(tabDisplayer, activeTabBackground); //NOSONAR
 
                 // reset static field "inactBgColor" value to inactiveTabBackground
                 final Field inactBgCol = tabDisplayer.getDeclaredField("inactBgColor");
-                inactBgCol.setAccessible(true);
-                inactBgCol.set(tabDisplayer, inactiveTabBackground);
+                inactBgCol.setAccessible(true); //NOSONAR
+                inactBgCol.set(tabDisplayer, inactiveTabBackground); //NOSONAR
             } else {
-                logger.info(" >>> Metal LAF error : org.netbeans.swing.tabcontrol.plaf.MetalViewTabDisplayerUI not defined :");
+                /*  Unable to apply changes to Metal LAF
+                    Possibly caused by a change in a newer NetBeans version */
+                LOGGER.info(" >>> Metal LAF note : org.netbeans.swing.tabcontrol.plaf.MetalViewTabDisplayerUI not defined :");
                 ouputUIDefaultValues(null, null);
             }
         } catch (final IllegalAccessException | IllegalArgumentException | 
                 NoSuchFieldException | SecurityException e) {
+            /*  An exception here would indicate a change in the internal LAF 
+                packages provided by NetBeans */
             final String errorMessage = " >>> Error applying Metal Laf colors : " + e.toString();
-            logger.info(errorMessage);
+            LOGGER.info(errorMessage);
         }
     }
 
@@ -271,22 +321,29 @@ public class ConstellationLAFSettings {
     public static void ouputUIDefaultValues(final String keyFilter, final String valueFilter) {        
         List<Object> uiList = new ArrayList<>();
         uiList.addAll(UIManager.getDefaults().keySet());
-        logger.info(">> :: UIDefaults ::");
+        LOGGER.info(">> :: UIDefaults ::");
+        String msg = "";
         for (Object uiKey : uiList) {
-            if (keyFilter == null || uiKey.toString().contains(keyFilter)) {
-                if (valueFilter == null || UIManager.get(uiKey).toString().contains(valueFilter)) {
-                    logger.info(">> :: " + uiKey + " = " + UIManager.get(uiKey));
-                }
+            // check each key stored in UIDefaults
+            // filter out any keys which do not contain the keyFilter string
+            // filter out any values which do not contain the valueFilter string
+            if ( (keyFilter == null || uiKey.toString().contains(keyFilter)) && 
+                 (valueFilter == null || UIManager.get(uiKey).toString().contains(valueFilter)) ) {
+                    msg = ">> :: " + uiKey + " = " + UIManager.get(uiKey);
+                    LOGGER.info(msg);                
             }
         }
         uiList.clear();
         uiList.addAll(UIManager.getLookAndFeelDefaults().keySet());
-        logger.info(">> :::: UILookAndFeelDefaults ::::");
+        LOGGER.info(">> :::: UILookAndFeelDefaults ::::");
         for (Object uiKey : uiList) {
-            if (keyFilter == null || uiKey.toString().contains(keyFilter)) {
-                if (valueFilter == null || UIManager.getLookAndFeelDefaults().get(uiKey).toString().contains(valueFilter)) {
-                    logger.info(">> :::: " + uiKey + " = " + UIManager.getLookAndFeelDefaults().get(uiKey));
-                }
+            // check each key stored in UILookAndFeelDefaults
+            // filter out any keys which do not contain the keyFilter string
+            // filter out any values which do not contain the valueFilter string
+            if ( (keyFilter == null || uiKey.toString().contains(keyFilter)) &&
+                 (valueFilter == null || UIManager.getLookAndFeelDefaults().get(uiKey).toString().contains(valueFilter)) ) {
+                    msg = ">> :::: " + uiKey + " = " + UIManager.getLookAndFeelDefaults().get(uiKey);
+                    LOGGER.info(msg);                
             }
         }
     }    
@@ -354,6 +411,7 @@ public class ConstellationLAFSettings {
         @Override
         public void paint(Graphics2D g, Object j, int w, int h) {
 
+            // set some fixed positioning values relating to the tab's height
             final int startOffset = h / 6;
             final int endOffset = h - startOffset;
             final int gradientRange = endOffset > startOffset ? endOffset - startOffset : 1;
@@ -362,14 +420,27 @@ public class ConstellationLAFSettings {
             g.setColor(upperColor);
             g.fillRect(1, 0, w - 2, startOffset);
 
+            // store "high" values for each color component
             final int highRed = upperColor.getRed();
             final int highGreen = upperColor.getGreen();
             final int highBlue = upperColor.getBlue();
+            
+            // store "low" values for each color component
             final int lowRed = lowerColor.getRed();
             final int lowGreen = lowerColor.getGreen();
             final int lowBlue = lowerColor.getBlue();
 
-            int newRedShade, newGreenShade, newBlueShade;
+            /*  note: whether the high and low values are actually higher or lower
+                than each other doesn't matter.
+                The gradient will still be calculated as a range between the
+                "high" and "low" values. */
+            
+            int newRedShade;
+            int newGreenShade;
+            int newBlueShade;
+
+            /*  The newShade colors will have step by step color adjustments
+                calculated as the gradient tab background is being painted */ 
 
             // draw a color gradient background in the middle section of the tab
             for (int heightPosition = startOffset; heightPosition < endOffset; heightPosition++) {
