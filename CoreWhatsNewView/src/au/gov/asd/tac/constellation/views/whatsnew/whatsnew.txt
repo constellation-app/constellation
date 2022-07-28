@@ -2,7 +2,7 @@
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
 == 2022-07-28 Clear Button in Database Importer
-<p>The "import from database pane now has a clear button next to the query button. Clicking clear will clear the results in the currently selected RunPane and will clear the query text</p>
+<p>The "import from database" pane now has a clear button next to the query button. Clicking clear will clear the results in the currently selected RunPane and will clear the query text</p>
 
 == 2022-06-17 Datetime Formatter
 <p>The Datetime formatter for attributes in the File Importer and Database Importer has been updated to include a new field 'Display Time Zone'. This field allows you to easily convert your datetime data to the desired timezone before importing.</p>
