@@ -69,13 +69,18 @@ public class ConstellationLAFSettings {
      * <b>Windows</b> or <b>Windows Classic</b> Look and Feel.
      */
     private static void initWindowsTabColors() {
+        // Fixed set of Blue shade colors
+        // appropriate for Windows LAF
         final Color selectedUpperLightBlue = new Color(225, 235, 255);
-        final Color activeMidSectionBlue = new Color(140, 185, 255);
-        final Color selectedLowerDarkBlue = new Color(50, 130, 255);
-        final Color unselectedUpperGray = new Color(220, 220, 220);
-        final Color unselectedLowerGreyBlue = new Color(165, 175, 185);
+        final Color activeMidSectionBlue = new Color(160, 205, 255);
+        final Color selectedLowerDarkBlue = new Color(80, 160, 255);
+        final Color unselectedUpperGray = new Color(225, 225, 225);
+        final Color unselectedLowerGreyBlue = new Color(175, 185, 195);
 
         try {
+            // To apply new tab colors to a Windows LAF
+            // we need to find the current TabDisplayerUI
+            // and force it to re-read from a revised set of colors
             Class<?> displayerClass = (Class<?>) UIManager.getDefaults()
                     .get("org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI");
             if (displayerClass != null) {
@@ -85,8 +90,7 @@ public class ConstellationLAFSettings {
                     LOGGER.info(" >>> Windows LAF note : no superclass for displayerClass :");
                     ouputUIDefaultValues(null, null);
                     return;
-                }
-                
+                }                
                 // Update the UIManager with settings appropriate for Windows (8+) LAF
                 UIManager.getDefaults().put("tab_sel_fill", activeMidSectionBlue);
                 UIManager.getDefaults().put("tab_focus_fill_upper", selectedUpperLightBlue);
@@ -99,7 +103,7 @@ public class ConstellationLAFSettings {
                 UIManager.getDefaults().put("tab_attention_fill_lower", selectedLowerDarkBlue);
                 
                 // reset static field "colorsReady" value to false
-                final Field colsReady = tabDisplayer.getDeclaredField("colorsReady");
+                final Field colsReady = tabDisplayer.getDeclaredField("colorsReady"); //NOSONAR
                 colsReady.setAccessible(true); //NOSONAR
                 colsReady.setBoolean(tabDisplayer, false); //NOSONAR
             } else {
@@ -110,13 +114,14 @@ public class ConstellationLAFSettings {
                 if (displayerClass != null) {
                     // Update the UIManager with settings appropriate for Windows (XP) LAF
                     UIManager.getDefaults().put("TabbedPane.highlight", activeMidSectionBlue);
+                    UIManager.getDefaults().put("tab_sel_border", activeMidSectionBlue);
                     UIManager.getDefaults().put("tab_focus_fill_bright", selectedUpperLightBlue);
                     UIManager.getDefaults().put("tab_focus_fill_dark", selectedLowerDarkBlue);
                     UIManager.getDefaults().put("tab_unsel_fill_bright", unselectedUpperGray);
                     UIManager.getDefaults().put("tab_unsel_fill_dark", unselectedLowerGreyBlue);
 
                     // reset static field "colorsReady" value to false
-                    final Field colsReady = displayerClass.getDeclaredField("colorsReady");
+                    final Field colsReady = displayerClass.getDeclaredField("colorsReady"); //NOSONAR
                     colsReady.setAccessible(true); //NOSONAR
                     colsReady.setBoolean(displayerClass, false); //NOSONAR                
                     
@@ -156,6 +161,8 @@ public class ConstellationLAFSettings {
         final Color unselectedDarkGreyBlue;
         
         if (darkMode) {
+            // Fixed set of Blue shade colors
+            // appropriate for Nimbus dark LAF
             activeBlue = new Color(125, 170, 225);
             activeDarkBlue = new Color(65, 100, 155);
             selectedBlue = new Color(110, 155, 200);
@@ -163,6 +170,8 @@ public class ConstellationLAFSettings {
             unselectedGreyBlue = new Color(140, 150, 155);
             unselectedDarkGreyBlue = new Color(100, 110, 115);
         } else {
+            // Fixed set of Blue shade colors
+            // appropriate for standard Nimbus LAF
             activeBlue = new Color(150, 200, 255);
             activeDarkBlue = new Color(90, 125, 180);
             selectedBlue = new Color(140, 180, 245);
@@ -179,6 +188,7 @@ public class ConstellationLAFSettings {
         UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab[Enabled].backgroundPainter", 
                 new NimbusCustomGradientTabPainter<>(unselectedGreyBlue, unselectedDarkGreyBlue));
         
+        // Some components may need to be reinitialized
         UIManager.getLookAndFeel().uninitialize();
         UIManager.getLookAndFeel().initialize();
     }
@@ -197,11 +207,15 @@ public class ConstellationLAFSettings {
         final Color hoverBackgroundBlue;
 
         if (darkMode) {
+            // Fixed set of Blue shade colors
+            // appropriate for FlatLafDark LAF
             selectedUnderlineBlue = new Color(30, 110, 190);
             inactiveUnderlineBlue = new Color(20, 100, 175);
             selectedBackgroundBlue = new Color(30, 60, 95);
             hoverBackgroundBlue = new Color(45, 75, 115);
         } else {
+            // Fixed set of Blue shade colors
+            // appropriate for FlatLafLight LAF
             selectedUnderlineBlue = new Color(105, 145, 240);
             inactiveUnderlineBlue = new Color(95, 130, 185);
             selectedBackgroundBlue = new Color(200, 220, 255);
@@ -266,10 +280,14 @@ public class ConstellationLAFSettings {
         final Color tabDarkShadow;
         
         if (darkMode) {
+            // Fixed set of Blue shade colors
+            // appropriate for Dark Metal LAF
             activeTabBackground = new Color(45, 95, 180);
             tabDarkShadow = new Color(20, 25, 30);
             inactiveTabBackground = new Color(40, 55, 90);
         } else {
+            // Fixed set of Blue shade colors
+            // appropriate for standard Metal LAF
             activeTabBackground = new Color(130, 170, 255);
             tabDarkShadow = new Color(220, 235, 250);
             inactiveTabBackground = new Color(170, 195, 230);
@@ -329,8 +347,8 @@ public class ConstellationLAFSettings {
             // filter out any values which do not contain the valueFilter string
             if ( (keyFilter == null || uiKey.toString().contains(keyFilter)) && 
                  (valueFilter == null || UIManager.get(uiKey).toString().contains(valueFilter)) ) {
-                    msg = ">> :: " + uiKey + " = " + UIManager.get(uiKey);
-                    LOGGER.info(msg);                
+                msg = ">> :: " + uiKey + " = " + UIManager.get(uiKey);
+                LOGGER.info(msg);                
             }
         }
         uiList.clear();
@@ -342,8 +360,8 @@ public class ConstellationLAFSettings {
             // filter out any values which do not contain the valueFilter string
             if ( (keyFilter == null || uiKey.toString().contains(keyFilter)) &&
                  (valueFilter == null || UIManager.getLookAndFeelDefaults().get(uiKey).toString().contains(valueFilter)) ) {
-                    msg = ">> :::: " + uiKey + " = " + UIManager.getLookAndFeelDefaults().get(uiKey);
-                    LOGGER.info(msg);                
+                msg = ">> :::: " + uiKey + " = " + UIManager.getLookAndFeelDefaults().get(uiKey);
+                LOGGER.info(msg);                
             }
         }
     }    
