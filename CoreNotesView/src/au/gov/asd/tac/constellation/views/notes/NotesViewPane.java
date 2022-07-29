@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -488,6 +489,7 @@ public class NotesViewPane extends BorderPane {
 
             synchronized (LOCK) {
                 notesViewEntries.forEach(entry -> {
+
                     // Add note to render list if its respective filter is selected.
                     if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated())) {
                         notesToRender.add(entry);
@@ -501,6 +503,7 @@ public class NotesViewPane extends BorderPane {
                         // If no nodes or transactions are selected, show notes applied to the whole graph.
                         if (entry.isGraphAttribute()) {
                             notesToRender.add(entry);
+
                         }
                         // Show notes related to the selected nodes.
                         for (final int node : nodesSelected) {
@@ -769,6 +772,7 @@ public class NotesViewPane extends BorderPane {
                 newNote.setNoteContent(contentTextArea.getText());
 
                 removeFromSelectedElements(newNote);
+
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (activeGraph != null) {
                     updateNotesUI();
@@ -776,11 +780,16 @@ public class NotesViewPane extends BorderPane {
                 }
             });
 
+            if (newNote.getNodesSelected() != null && newNote.getTransactionsSelected() != null && newNote.getNodesSelected().isEmpty() && newNote.getTransactionsSelected().isEmpty()) {
+                removeOnGraphMenuItem.disableProperty().set(true);
+            }
+
             // Context menu is only added to user created notes.
             final ContextMenu contextMenu = new ContextMenu();
             contextMenu.getItems().addAll(selectOnGraphMenuItem, addOnGraphMenuItem, removeOnGraphMenuItem);
 
             noteBody.setOnContextMenuRequested(event -> contextMenu.show(this, event.getScreenX(), event.getScreenY()));
+
         }
 
         deleteButton.setOnAction(event -> {

@@ -97,7 +97,7 @@
 <div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Import" aria-expanded="false" aria-controls="Import">Import</button></h2></div>
 <div id="Import" class="collapse" aria-labelledby="Import" data-parent="#Import"> <div class="card-body">        <a href="..\constellation\CoreDataAccessView\src\au\gov\asd\tac\constellation\views\dataaccess\docs\extract-types-from-text.md">Extract Types from Text</a><br/>
         <a href="..\constellation\CoreDataAccessView\src\au\gov\asd\tac\constellation\views\dataaccess\docs\extract-words-from-text.md">Extract Words from Text</a><br/>
-        <a href="..\constellation\CoreDataAccessView\src\au\gov\asd\tac\constellation\views\dataaccess\docs\import-graph-file.md">Import Graph File</a><br/>
+        Import Graph File
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Clean" aria-expanded="false" aria-controls="Clean">Clean</button></h2></div>
 <div id="Clean" class="collapse" aria-labelledby="Clean" data-parent="#Clean"> <div class="card-body">        <a href="..\constellation\CoreDataAccessView\src\au\gov\asd\tac\constellation\views\dataaccess\docs\merge-nodes.md">Merge Nodes</a><br/>
         <a href="..\constellation\CoreDataAccessView\src\au\gov\asd\tac\constellation\views\dataaccess\docs\merge-transactions.md">Merge Transactions</a><br/>
