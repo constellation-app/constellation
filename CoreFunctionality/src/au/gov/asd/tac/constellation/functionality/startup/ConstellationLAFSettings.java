@@ -122,6 +122,10 @@ public class ConstellationLAFSettings {
                     final Color activeLighterMidBlue = new Color(180, 220, 255);
                     UIManager.getDefaults().put("tab_highlight_header", activeLighterMidBlue);
                     UIManager.getDefaults().put("tab_highlight_header_fill", activeLighterMidBlue);
+                    // The following settings are used in the WinXPEditorTabCellRenderer
+                    UIManager.getDefaults().put("TabbedPane.selectionIndicator", activeLighterMidBlue);
+                    UIManager.getDefaults().put("tab_sel_fill_bright", selectedUpperLightBlue);
+                    UIManager.getDefaults().put("tab_sel_fill_dark", selectedLowerDarkBlue);
 
                     // reset static field "colorsReady" value to false
                     final Field colsReady = displayerClass.getDeclaredField("colorsReady"); //NOSONAR
