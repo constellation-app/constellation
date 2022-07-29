@@ -49,8 +49,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -232,7 +230,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         // If the serach is select all and match critera = any
                         if (selectAll && ANY.equals(allOrAny)) {
 
-                            //LOGGER.log(Level.SEVERE, "INSIDE SELECT ANY");
                             // If the current selection = ignore or add to
                             if ((IGNORE.equals(currentSelection) || ADD_TO.equals(currentSelection))) {
 
@@ -269,7 +266,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                  * if match criteria = all and the attributes values match all
                  * of the criteria.
                  */
-                // BUG IS HERE!!!
                 if (allOrAny.contains(ALL) && matchesAllCount == criteriaList.size()) {
 
                     // add a new find result to the found results list
