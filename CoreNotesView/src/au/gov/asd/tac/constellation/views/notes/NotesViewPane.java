@@ -776,6 +776,10 @@ public class NotesViewPane extends BorderPane {
                 }
             });
 
+            if (newNote.getNodesSelected() != null && newNote.getTransactionsSelected() != null && newNote.getNodesSelected().isEmpty() && newNote.getTransactionsSelected().isEmpty()) {
+                removeOnGraphMenuItem.disableProperty().set(true);
+            }
+
             // Context menu is only added to user created notes.
             final ContextMenu contextMenu = new ContextMenu();
             contextMenu.getItems().addAll(selectOnGraphMenuItem, addOnGraphMenuItem, removeOnGraphMenuItem);
