@@ -246,13 +246,26 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     public static final String SELECTED_STYLE = "titled-pane-selected";
     
     private static final String INVALID_ID = "invalid";
-    
+
+    /**
+     * Update the field UI to match whether the query is valid
+     * @param isValid
+     */
     public void setValidity(final boolean isValid) {
         if (isValid) {
             field.setId(StringUtils.EMPTY);
         } else {
             field.setId(INVALID_ID);
         }
+    }
+
+    /**
+     * For testing
+     * 
+     * @return field
+     */
+    protected TextInputControl getField() {
+        return field;
     }
     
     /**
