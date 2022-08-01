@@ -21,7 +21,8 @@ import au.gov.asd.tac.constellation.views.layers.query.Query;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.lang3.StringUtils;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.spy;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
@@ -81,7 +82,8 @@ public class QueryInputPaneNGTest {
         final Query query = new Query(GraphElementType.VERTEX, queryString);
         final BitMaskQuery bitMaskQuery = new BitMaskQuery(query, layerID, queryString);
         final LayerTitlePane ltp = new LayerTitlePane(layerID, queryString, bitMaskQuery);
-        final QueryInputPane instance = new QueryInputPane(ltp, title, description, queryString, 150, 75, true);
+        final LayerTitlePane spiedLtp = spy(ltp);
+        final QueryInputPane instance = new QueryInputPane(spiedLtp, title, description, queryString, 150, 75, true);
         final QueryInputPane spiedInstance = spy(instance);
 
         spiedInstance.setQuery(queryString);
@@ -101,11 +103,13 @@ public class QueryInputPaneNGTest {
         final Query query = new Query(GraphElementType.VERTEX, queryString);
         final BitMaskQuery bitMaskQuery = new BitMaskQuery(query, layerID, queryString);
         final LayerTitlePane ltp = new LayerTitlePane(layerID, queryString, bitMaskQuery);
-        final QueryInputPane instance = new QueryInputPane(ltp, title, description, queryString, 150, 75, true);
+        final LayerTitlePane spiedLtp = spy(ltp);
+        final QueryInputPane instance = new QueryInputPane(spiedLtp, title, description, queryString, 150, 75, true);
         final QueryInputPane spiedInstance = spy(instance);
 
-        spiedInstance.setValidity(true);
-        assertEquals(spiedInstance.getField().getId(), StringUtils.EMPTY);
+        doCallRealMethod().when(spiedInstance).setValidity(Mockito.anyBoolean());
+
+        assertEquals(spiedInstance.getField().getId(), null);
 
         spiedInstance.setValidity(false);
         assertEquals(spiedInstance.getField().getId(), "invalid");
