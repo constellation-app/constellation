@@ -69,16 +69,52 @@ public class LayersViewPaneNGTest {
 
     /**
      * Test of setLayers method, of class LayersViewPane.
+     * 
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testSetLayers() {
+    public void testSetLayers() throws InterruptedException {
+        LayersViewPane lvp = new LayersViewPane(LayersViewController.getDefault());
+        LayersViewPane spiedLvp = spy(lvp);
+
+        doCallRealMethod().when(spiedLvp).setLayers(Mockito.any(), Mockito.any());
+        spiedLvp.setLayers(LayersViewController.getDefault().getVxQueryCollection().getQueries(), LayersViewController.getDefault().getTxQueryCollection().getQueries());
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        Platform.runLater(() -> {
+            System.out.println("Queued platform task for test");
+            latch.countDown();
+        });
+
+        latch.await();
+
+        verify(spiedLvp).setLayers(Mockito.any(), Mockito.any());
     }
 
     /**
      * Test of setDefaultLayers method, of class LayersViewPane.
+     *
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testSetDefaultLayers() {
+    public void testSetDefaultLayers() throws InterruptedException {
+        LayersViewPane lvp = new LayersViewPane(LayersViewController.getDefault());
+        LayersViewPane spiedLvp = spy(lvp);
+
+        doCallRealMethod().when(spiedLvp).setDefaultLayers();
+        spiedLvp.setDefaultLayers();
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        
+        Platform.runLater(() -> {
+            System.out.println("Queued platform task for test");
+            latch.countDown();
+        });
+
+        latch.await();
+
+        verify(spiedLvp).setDefaultLayers();
     }
 
     /**
@@ -132,5 +168,5 @@ public class LayersViewPaneNGTest {
         verify(spiedLvp).setEnabled(Mockito.eq(false));
         verify(spiedLvp).setCenter(Mockito.same(spiedLvp.noGraphPane));
     }
-    
+
 }
