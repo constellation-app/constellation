@@ -52,7 +52,7 @@ public class JDBCImportController extends ImportController {
 
     // label constants
     private static final String QUERY_ERROR = "Query Error";
-    private static final String JDBC_IMPORT = "JDBC Import";
+    private static final String JDBC_IMPORT = "Database Import";
     private static final String ROW = "Row";
 
     private JDBCConnection connection;
