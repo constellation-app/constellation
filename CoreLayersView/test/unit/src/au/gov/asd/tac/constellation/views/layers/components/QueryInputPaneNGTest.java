@@ -18,9 +18,11 @@ package au.gov.asd.tac.constellation.views.layers.components;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.Query;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.spy;
@@ -93,9 +95,10 @@ public class QueryInputPaneNGTest {
 
     /**
      * Test of setValidity method, of class QueryInputPane.
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testSetValidity() {
+    public void testSetValidity() throws InterruptedException {
         final String title = "Vertex Query: ";
         final String queryString = "Type == 'Event'";
         final String description = "Description";
@@ -109,9 +112,16 @@ public class QueryInputPaneNGTest {
 
         doCallRealMethod().when(spiedInstance).setValidity(Mockito.anyBoolean());
         spiedInstance.setValidity(true);
-        verify(spiedInstance).setValidity(Mockito.eq(true));
 
-        spiedInstance.setValidity(false);
-        verify(spiedInstance).setValidity(Mockito.eq(false));
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        Platform.runLater(() -> {
+            System.out.println("Queued platform task for test");
+            latch.countDown();
+        });
+
+        latch.await();
+
+        verify(spiedInstance).setValidity(Mockito.eq(true));
     }
 }
