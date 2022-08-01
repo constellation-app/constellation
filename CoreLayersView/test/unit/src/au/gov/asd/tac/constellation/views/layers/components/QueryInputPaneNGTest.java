@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -108,10 +109,10 @@ public class QueryInputPaneNGTest {
         final QueryInputPane spiedInstance = spy(instance);
 
         doCallRealMethod().when(spiedInstance).setValidity(Mockito.anyBoolean());
-
-        assertEquals(spiedInstance.getField().getId(), null);
+        spiedInstance.setValidity(true);
+        verify(spiedInstance).setValidity(Mockito.eq(true));
 
         spiedInstance.setValidity(false);
-        assertEquals(spiedInstance.getField().getId(), "invalid");
+        verify(spiedInstance).setValidity(Mockito.eq(false));
     }
 }
