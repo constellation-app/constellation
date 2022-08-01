@@ -26,7 +26,6 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -74,23 +73,23 @@ public class QueryInputPaneNGTest {
      * 
      * @throws java.lang.InterruptedException
      */
-    @Test
-    public void testSetQuery() throws InterruptedException {
-        final String title = "Vertex Query: ";
-        final String queryString = "Type == 'Event'";
-        final String description = "Description";
-        final int layerID = 2;
-        final Query query = new Query(GraphElementType.VERTEX, queryString);
-        final BitMaskQuery bitMaskQuery = new BitMaskQuery(query, layerID, queryString);
-        final LayerTitlePane ltp = new LayerTitlePane(layerID, queryString, bitMaskQuery);
-        final LayerTitlePane spiedLtp = spy(ltp);
-        final QueryInputPane instance = new QueryInputPane(spiedLtp, title, description, queryString, 150, 75, true);
-        final QueryInputPane spiedInstance = spy(instance);
-
-        spiedInstance.setQuery(queryString);
-        String result = spiedInstance.getQuery();
-        assertEquals(queryString, result);        
-    }
+//    @Test
+//    public void testSetQuery() throws InterruptedException {
+//        final String title = "Vertex Query: ";
+//        final String queryString = "Type == 'Event'";
+//        final String description = "Description";
+//        final int layerID = 2;
+//        final Query query = new Query(GraphElementType.VERTEX, queryString);
+//        final BitMaskQuery bitMaskQuery = new BitMaskQuery(query, layerID, queryString);
+//        final LayerTitlePane ltp = new LayerTitlePane(layerID, queryString, bitMaskQuery);
+//        final LayerTitlePane spiedLtp = spy(ltp);
+//        final QueryInputPane instance = new QueryInputPane(spiedLtp, title, description, queryString, 150, 75, true);
+//        final QueryInputPane spiedInstance = spy(instance);
+//
+//        spiedInstance.setQuery(queryString);
+//        String result = spiedInstance.getQuery();
+//        assertEquals(queryString, result);
+//    }
 
     /**
      * Test of setValidity method, of class QueryInputPane.
