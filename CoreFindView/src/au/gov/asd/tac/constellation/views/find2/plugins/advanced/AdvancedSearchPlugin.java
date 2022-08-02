@@ -160,7 +160,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         final int elementCount = elementType.getElementCount(graph);
 
         // do this if add to selection
-        if (IGNORE.equals(currentSelection)) {
+        if (ADD_TO.equals(currentSelection)) {
             clearSelection(graph);
         }
         findInCurrentSelectionList = new FindResultsList(graph.getId());
@@ -235,6 +235,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
                             // If the current selection = ignore or add to
                             if ((IGNORE.equals(currentSelection) || ADD_TO.equals(currentSelection))) {
+
                                 // set the elements selection attribute to true
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                                 // add a new find result to the found results list
@@ -263,11 +264,13 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         }
                     }
                 }
+
                 /**
                  * if match criteria = all and the attributes values match all
                  * of the criteria.
                  */
-                if (allOrAny.equals(ALL) && matchesAllCount == criteriaList.size()) {
+                if (allOrAny.contains(ALL) && matchesAllCount == criteriaList.size()) {
+
                     // add a new find result to the found results list
                     // of the element
                     foundResult.add(new FindResult(currElement, uid, elementType));
@@ -585,6 +588,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @return
      */
     private boolean searchAsBoolean(final FindCriteriaValues values, final int attributeInt, final int currElement, final GraphWriteMethods graph) {
+
         final BooleanCriteriaValues booleanValues = (BooleanCriteriaValues) values;
         final boolean value = graph.getBooleanValue(attributeInt, currElement);
         boolean matches = false;
@@ -593,6 +597,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         if (booleanValues.getBoolValue() == value) {
             matches = true;
         }
+
         return matches;
     }
 

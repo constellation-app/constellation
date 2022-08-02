@@ -592,6 +592,7 @@ public class QueryServices {
          * @see FindRule
          */
         private boolean advancedFindBoolean(final FindRule rule, final int index) {
+
             // Retrieve content from the graph:
             final boolean item = rg.getBooleanValue(rule.getAttribute().getId(), index);
             boolean queryResult = false;
