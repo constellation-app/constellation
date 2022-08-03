@@ -317,7 +317,7 @@ public class LayersViewControllerNGTest {
         instance.getTxQueryCollection().setVisibilityOnAll(true);
 
         instance.deselectAll();
-        assertEquals(instance.getVxQueryCollection().getVisibilityOnAll(), false);
+        assertEquals(instance.getVxQueryCollection().isVisibilityOnAll(), false);
     }
 
     /**
@@ -330,6 +330,7 @@ public class LayersViewControllerNGTest {
         int index1 = 2;
         Query query1 = new Query(GraphElementType.VERTEX, "Type == 'Event'");
         instance.getVxQueryCollection().getQuery(index1).setQuery(query1);
+        instance.getTxQueryCollection().getQuery(index1).setQuery(null);
 
         instance.changeLayerVisibility(index1, true);
         assertTrue(instance.getVxQueryCollection().getQuery(index1).isVisible());
@@ -338,6 +339,7 @@ public class LayersViewControllerNGTest {
         int index2 = 3;
         Query query2 = new Query(GraphElementType.TRANSACTION, "Type == 'Network'");
         instance.getTxQueryCollection().getQuery(index2).setQuery(query2);
+        instance.getVxQueryCollection().getQuery(index2).setQuery(null);
 
         instance.changeLayerVisibility(index2, true);
         assertTrue(instance.getTxQueryCollection().getQuery(index2).isVisible());
@@ -353,6 +355,7 @@ public class LayersViewControllerNGTest {
         int index1 = 2;
         Query query1 = new Query(GraphElementType.VERTEX, "Type == 'Event'");
         instance.getVxQueryCollection().getQuery(index1).setQuery(query1);
+        instance.getTxQueryCollection().getQuery(index1).setQuery(null);
 
         instance.updateDescription(description1, index1);
         assertEquals(instance.getVxQueryCollection().getQuery(index1).getDescription(), description1);
@@ -361,6 +364,7 @@ public class LayersViewControllerNGTest {
         int index2 = 3;
         Query query2 = new Query(GraphElementType.TRANSACTION, "Type == 'Network'");
         instance.getTxQueryCollection().getQuery(index2).setQuery(query2);
+        instance.getVxQueryCollection().getQuery(index2).setQuery(null);
 
         instance.updateDescription(description2, index2);
         assertEquals(instance.getTxQueryCollection().getQuery(index2).getDescription(), description2);
@@ -376,6 +380,7 @@ public class LayersViewControllerNGTest {
         int index1 = 2;
         Query query1 = new Query(GraphElementType.VERTEX, "Type == 'Event'");
         instance.getVxQueryCollection().getQuery(index1).setQuery(query1);
+        instance.getTxQueryCollection().getQuery(index1).setQuery(null);
         assertEquals(instance.getVxQueryCollection().getQuery(index1).getQueryString(), "Type == 'Event'");
 
         instance.updateQuery(queryString1, index1, "Vertex Query: ");
@@ -385,8 +390,9 @@ public class LayersViewControllerNGTest {
         int index2 = 3;
         Query query2 = new Query(GraphElementType.TRANSACTION, "Type == 'Network'");
         instance.getTxQueryCollection().getQuery(index2).setQuery(query2);
+        instance.getVxQueryCollection().getQuery(index2).setQuery(null);
         assertEquals(instance.getTxQueryCollection().getQuery(index2).getQueryString(), "Type == 'Network'");
-
+        
         instance.updateQuery(queryString2, index2, "Transaction Query: ");
         assertEquals(instance.getTxQueryCollection().getQuery(index2).getQueryString(), queryString2);
 
