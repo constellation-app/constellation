@@ -96,8 +96,8 @@ public class NotesViewPane extends BorderPane {
     private final List<String> selectedFilters;
     private final CheckComboBox filterCheckComboBox;
     private CheckComboBox autoFilterCheckComboBox;
-    private Boolean isSelectedFiltersUpdating = false;
-    private Boolean isAutoSelectedFiltersUpdating = false;
+    private boolean isSelectedFiltersUpdating = false;
+    private boolean isAutoSelectedFiltersUpdating = false;
 
     private final HBox filterNotesHBox;
     private final VBox notesViewPaneVBox;
@@ -136,7 +136,6 @@ public class NotesViewPane extends BorderPane {
      * @param controller
      */
     public NotesViewPane(final NotesViewController controller) {
-
         notesViewController = controller;
         notesViewEntries = new ArrayList<>();
         notesDateTimeCache = new HashSet<>();
@@ -149,23 +148,19 @@ public class NotesViewPane extends BorderPane {
         filterCheckComboBox = new CheckComboBox(availableFilters);
         filterCheckComboBox.setTitle("Select a filter...");
         filterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        filterCheckComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener() {
-            @Override
-            public void onChanged(final ListChangeListener.Change event) {
-                if (!isSelectedFiltersUpdating) {
-
-                    setFilters(filterCheckComboBox.getCheckModel().getCheckedItems());
-
-                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-                    if (activeGraph != null) {
-                        updateNotesUI();
-                        controller.writeState(activeGraph);
-                    }
+        filterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
+            if (!isSelectedFiltersUpdating) {               
+                setFilters(filterCheckComboBox.getCheckModel().getCheckedItems());
+                
+                final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                if (activeGraph != null) {
+                    updateNotesUI();
+                    controller.writeState(activeGraph);
                 }
-                final ObservableList<String> filters = filterCheckComboBox.getCheckModel().getCheckedItems();
-                final String checkedFilters = String.join(", ", filters);
-                filterCheckComboBox.setTitle(filters.isEmpty()? "Select a filter..." : checkedFilters);
             }
+            final ObservableList<String> filters = filterCheckComboBox.getCheckModel().getCheckedItems();
+            final String checkedFilters = String.join(", ", filters);
+            filterCheckComboBox.setTitle(filters.isEmpty()? "Select a filter..." : checkedFilters);
         });
 
         notesViewEntries.forEach(entry -> {
@@ -187,7 +182,6 @@ public class NotesViewPane extends BorderPane {
         autoFilterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isAutoSelectedFiltersUpdating) {
-
                 updateSelectedTagsCombo(autoFilterCheckComboBox.getCheckModel().getCheckedItems());
 
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
@@ -337,10 +331,9 @@ public class NotesViewPane extends BorderPane {
     /**
      * Set the plugin reports that have executed on the current graph report.
      */
-    protected void setGraphReport(final NotesViewController controller) {
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        if (activeGraph != null) {
-            final GraphReport currentGraphReport = GraphReportManager.getGraphReport(activeGraph.getId());
+    protected void setGraphReport(final Graph graph, final NotesViewController controller) {
+        if (graph != null) {
+            final GraphReport currentGraphReport = GraphReportManager.getGraphReport(graph.getId());
 
             if (currentGraphReport != null) {
                 // Iterates the list of currently executed plugins.
@@ -360,7 +353,7 @@ public class NotesViewPane extends BorderPane {
                     }                   
                 });
                 
-                controller.writeState(activeGraph);
+                controller.writeState(graph);
             }
         }
     }
@@ -387,8 +380,6 @@ public class NotesViewPane extends BorderPane {
             }
             note.setTags(tagsList);
 
-            updateTagsFiltersAvailable();
-
             /**
              * Listener monitors changes to the plugin report as it executes and
              * finishes. Affects the output of getMessage().
@@ -398,6 +389,7 @@ public class NotesViewPane extends BorderPane {
             synchronized (LOCK) {
                 addNote(note);
             }
+            updateTagsFiltersAvailable();
         }
     }
 
@@ -426,19 +418,16 @@ public class NotesViewPane extends BorderPane {
      * notesViewEntries.
      */
     protected void setNotes(final List<NotesViewEntry> notesViewEntries) {
-        Platform.runLater(() -> {
-            synchronized (LOCK) {
-                this.notesViewEntries.clear();
+        synchronized (LOCK) {
+            this.notesViewEntries.clear();
+            notesViewEntries.forEach(this::addNote);
+        }
 
-                notesViewEntries.forEach(note -> addNote(note));
-            }
-
-            SwingUtilities.invokeLater(() -> {
-                final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
-                if (tc != null && tc.isOpened()) {
-                    updateNotesUI();
-                }                   
-            });
+        SwingUtilities.invokeLater(() -> {
+            final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
+            if (tc != null && tc.isOpened()) {
+                updateNotesUI();
+            }                   
         });
     }
 
@@ -448,76 +437,75 @@ public class NotesViewPane extends BorderPane {
      * @param selectFilters A list of String objects to add to selectedFilters.
      */
     protected void setFilters(final List<String> selectedFilters) {
-        Platform.runLater(() -> {
-            if (this.selectedFilters.contains(SELECTED_FILTER) && (selectedFilters.contains(USER_NOTES_FILTER) || selectedFilters.contains(AUTO_NOTES_FILTER))) {
-                this.selectedFilters.clear();
+        if (this.selectedFilters.contains(SELECTED_FILTER) && (selectedFilters.contains(USER_NOTES_FILTER) || selectedFilters.contains(AUTO_NOTES_FILTER))) {
+            this.selectedFilters.clear();
 
-                selectedFilters.forEach(filter -> {
-                    if (!filter.equals(SELECTED_FILTER)) {
-                        this.selectedFilters.add(filter);
-                    }
-                });
-            } else {
-                this.selectedFilters.clear();
-                selectedFilters.forEach(filter -> {
-                    if (selectedFilters.contains(SELECTED_FILTER)) {
-                        this.selectedFilters.add(SELECTED_FILTER);
-                    } else {
-                        this.selectedFilters.add(filter);
-                    }
-                });
-            }
-            if (this.selectedFilters.contains(AUTO_NOTES_FILTER)) {
-                autoFilterCheckComboBox.setStyle("visibility: visible;");
-                updateTagsFiltersAvailable();
-            } else {
-                autoFilterCheckComboBox.setStyle("visibility: hidden;");
-            }
-            updateFilters();
-        });
+            selectedFilters.forEach(filter -> {
+                if (!filter.equals(SELECTED_FILTER)) {
+                    this.selectedFilters.add(filter);
+                }
+            });
+        } else {
+            this.selectedFilters.clear();
+            selectedFilters.forEach(filter -> {
+                if (selectedFilters.contains(SELECTED_FILTER)) {
+                    this.selectedFilters.add(SELECTED_FILTER);
+                } else {
+                    this.selectedFilters.add(filter);
+                }
+            });
+        }
+        if (this.selectedFilters.contains(AUTO_NOTES_FILTER)) {
+            Platform.runLater(() -> autoFilterCheckComboBox.setStyle("visibility: visible;"));
+            updateTagsFiltersAvailable();
+        } else {
+            Platform.runLater(() -> autoFilterCheckComboBox.setStyle("visibility: hidden;"));
+        }
+        updateFilters();
     }
 
     /**
      * Updates the UI of the notes currently being displayed in the Notes View.
      */
     protected synchronized void updateNotesUI() {
-        Platform.runLater(() -> {
-            notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
-            final List<NotesViewEntry> notesToRender = new ArrayList<>();
-            updateSelectedElements();
+        final List<NotesViewEntry> notesToRender = new ArrayList<>();
+        updateSelectedElements();
+        
+        synchronized (LOCK) {
+            notesViewEntries.forEach(entry -> {
+                // Add note to render list if its respective filter is selected.
+                if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated())) {
+                    notesToRender.add(entry);
 
-            synchronized (LOCK) {
-                notesViewEntries.forEach(entry -> {
-                    // Add note to render list if its respective filter is selected.
-                    if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated())) {
+                } else if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated()) {
+                    if (updateAutoNotesDisplayed(entry)) {
                         notesToRender.add(entry);
+                    }
 
-                    } else if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated()) {
-                        if (updateAutoNotesDisplayed(entry)) {
+                } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated()) {
+                    // If no nodes or transactions are selected, show notes applied to the whole graph.
+                    if (entry.isGraphAttribute()) {
+                        notesToRender.add(entry);
+                    }
+                    // Show notes related to the selected nodes.
+                    for (final int node : nodesSelected) {
+                        if (entry.getNodesSelected() != null && entry.getNodesSelected().contains(node) && !notesToRender.contains(entry)) {
                             notesToRender.add(entry);
-                        }
-
-                    } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated()) {
-                        // If no nodes or transactions are selected, show notes applied to the whole graph.
-                        if (entry.isGraphAttribute()) {
-                            notesToRender.add(entry);
-                        }
-                        // Show notes related to the selected nodes.
-                        for (final int node : nodesSelected) {
-                            if (entry.getNodesSelected() != null && entry.getNodesSelected().contains(node) && !notesToRender.contains(entry)) {
-                                notesToRender.add(entry);
-                            }
-                        }
-                        // Shows notes related to the selected transactions.
-                        for (final int transaction : transactionsSelected) {
-                            if (entry.getTransactionsSelected() != null && entry.getTransactionsSelected().contains(transaction)
-                                    && !notesToRender.contains(entry)) {
-                                notesToRender.add(entry);
-                            }
                         }
                     }
-                });
-            }
+                    // Shows notes related to the selected transactions.
+                    for (final int transaction : transactionsSelected) {
+                        if (entry.getTransactionsSelected() != null && entry.getTransactionsSelected().contains(transaction)
+                                && !notesToRender.contains(entry)) {
+                            notesToRender.add(entry);
+                        }
+                    }
+                }
+            });
+        }
+        
+        Platform.runLater(() -> {
+            notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
 
             if (CollectionUtils.isNotEmpty(notesToRender)) {
                 notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
@@ -538,12 +526,11 @@ public class NotesViewPane extends BorderPane {
             isSelectedFiltersUpdating = true;
 
             filterCheckComboBox.getCheckModel().clearChecks();
-
             selectedFilters.forEach(filter -> filterCheckComboBox.getCheckModel().check(filter));
 
             isSelectedFiltersUpdating = false;
+            updateTagFilters();
         });
-        updateTagFilters();
     }
 
     /**
@@ -581,21 +568,16 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Adds all available filters to selectedFilters.
-     */
-    protected void selectAllFilters() {
-        setFilters(availableFilters);
-        updateSelectedTagsCombo(tagsFiltersList);
-    }
-
-    /**
      * Takes a NoteEntry object and creates the UI for it in the Notes View.
      *
      * @param newNote NoteEntry object used to create a the note UI in the Notes
      * View.
      */
     private void createNote(final NotesViewEntry newNote) {
-
+        if (!Platform.isFxApplicationThread()) {
+            throw new IllegalStateException("Not processing on the JavaFX Application Thread");
+        }
+        
         final String noteColour = newNote.isUserCreated() ? USER_COLOUR : AUTO_COLOUR;
 
         // Define dateTime label
@@ -655,7 +637,6 @@ public class NotesViewPane extends BorderPane {
                     newNote.getEditMode() ? contentTextArea : contentLabel, selectionLabel);
 
             HBox.setHgrow(noteInformation, Priority.ALWAYS);
-
         } else {
             // If the note to be created is in edit mode, ensure it is created
             // with the correct java fx elements
@@ -677,12 +658,9 @@ public class NotesViewPane extends BorderPane {
         deleteButton.setMinWidth(92);
         deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
-        final VBox noteButtons;
-
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
-        noteButtons = new VBox(DEFAULT_SPACING, newNote.getEditMode() ? saveTextButton : editTextButton, deleteButton);
-
+        final VBox noteButtons = new VBox(DEFAULT_SPACING, newNote.getEditMode() ? saveTextButton : editTextButton, deleteButton);
         noteButtons.setAlignment(Pos.CENTER);
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
@@ -719,16 +697,16 @@ public class NotesViewPane extends BorderPane {
                     // Select the specific nodes and/or transactions applied to the note.
                     // Add nodes that are selected to the note.
                     final int nodesLength = newNote.getNodesSelected().size();
-                    final List<Integer> nodesSelected = newNote.getNodesSelected();
+                    final List<Integer> selectedNodes = newNote.getNodesSelected();
                     for (int i = 0; i < nodesLength; i++) {
-                        elementIdsVx.set(nodesSelected.get(i));
+                        elementIdsVx.set(selectedNodes.get(i));
                     }
 
                     // Add transactions that are selected to the note.
                     final int transactionsLength = newNote.getTransactionsSelected().size();
-                    final List<Integer> transactionsSelected = newNote.getTransactionsSelected();
+                    final List<Integer> selectedTransactions = newNote.getTransactionsSelected();
                     for (int i = 0; i < transactionsLength; i++) {
-                        elementIdsTx.set(transactionsSelected.get(i));
+                        elementIdsTx.set(selectedTransactions.get(i));
                     }
                 }
 
@@ -746,9 +724,7 @@ public class NotesViewPane extends BorderPane {
             });
             final MenuItem addOnGraphMenuItem = new MenuItem("Add Selected");
             addOnGraphMenuItem.setOnAction(event -> {
-
-                // Save the current text in the text fields so they are not reset on
-                // updateNotesUI
+                // Save the current text in the text fields so they are not reset on updateNotesUI
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());
 
@@ -762,9 +738,7 @@ public class NotesViewPane extends BorderPane {
 
             final MenuItem removeOnGraphMenuItem = new MenuItem("Remove Selected");
             removeOnGraphMenuItem.setOnAction(event -> {
-
-                // Save the current text in the text fields so they are not reset on
-                // updateNotesUI
+                // Save the current text in the text fields so they are not reset on updateNotesUI
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());
 
@@ -809,7 +783,6 @@ public class NotesViewPane extends BorderPane {
                 event.consume();
             }
             deleteAlert.close();
-
         });
 
         // Edit button activates editable text boxs for title and label
@@ -853,31 +826,33 @@ public class NotesViewPane extends BorderPane {
 
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         final ReadableGraph rg = activeGraph.getReadableGraph();
-
-        // Get all currently selected nodes.
-        final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-        if (vxSelectedAttr != Graph.NOT_FOUND) {
-            final int vxCount = rg.getVertexCount();
-            for (int position = 0; position < vxCount; position++) {
-                final int vxId = rg.getVertex(position);
-                if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
-                    nodesSelected.add(vxId);
+        try {
+            // Get all currently selected nodes.
+            final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+            if (vxSelectedAttr != Graph.NOT_FOUND) {
+                final int vxCount = rg.getVertexCount();
+                for (int position = 0; position < vxCount; position++) {
+                    final int vxId = rg.getVertex(position);
+                    if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
+                        nodesSelected.add(vxId);
+                    }
                 }
             }
-        }
 
-        // Get all currently selected transactions.
-        final int txSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
-        if (txSelectedAttr != Graph.NOT_FOUND) {
-            final int txCount = rg.getTransactionCount();
-            for (int position = 0; position < txCount; position++) {
-                final int txId = rg.getTransaction(position);
-                if (rg.getBooleanValue(txSelectedAttr, txId)) {
-                    transactionsSelected.add(txId);
+            // Get all currently selected transactions.
+            final int txSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
+            if (txSelectedAttr != Graph.NOT_FOUND) {
+                final int txCount = rg.getTransactionCount();
+                for (int position = 0; position < txCount; position++) {
+                    final int txId = rg.getTransaction(position);
+                    if (rg.getBooleanValue(txSelectedAttr, txId)) {
+                        transactionsSelected.add(txId);
+                    }
                 }
-            }
+            }            
+        } finally {
+            rg.release();
         }
-        rg.release();
     }
 
     /**
@@ -952,7 +927,6 @@ public class NotesViewPane extends BorderPane {
      * Updates the tags filters array with what tags are currently available.
      */
     public void updateTagsFiltersAvailable() {
-
         notesViewEntries.forEach(entry -> {
             if (!entry.isUserCreated()) {
                 final List<String> tags = entry.getTags();
@@ -964,8 +938,8 @@ public class NotesViewPane extends BorderPane {
             }
         });
 
+        tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
         Platform.runLater(() -> {
-            tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
             autoFilterCheckComboBox.getItems().clear();
             autoFilterCheckComboBox.getItems().addAll(tagsFiltersList);
         });
@@ -978,27 +952,26 @@ public class NotesViewPane extends BorderPane {
      */
     public void updateSelectedTagsCombo(final List<String> selectedTagsFilters) {
         Platform.runLater(() -> {
-
             this.tagsSelectedFiltersList.clear();
             selectedTagsFilters.forEach(filter -> this.tagsSelectedFiltersList.add(filter));
+            updateTagFilters();
         });
-
-        updateTagFilters();
     }
 
     /**
      * Updates UI with what tags filters are selected.
      */
     public void updateTagFilters() {
-        Platform.runLater(() -> {
-            isAutoSelectedFiltersUpdating = true;
+        if (!Platform.isFxApplicationThread()) {
+            throw new IllegalStateException("Not processing on the JavaFX Application Thread");
+        }
+        
+        isAutoSelectedFiltersUpdating = true;
 
-            autoFilterCheckComboBox.getCheckModel().clearChecks();
+        autoFilterCheckComboBox.getCheckModel().clearChecks();
+        tagsSelectedFiltersList.forEach(filter -> autoFilterCheckComboBox.getCheckModel().check(filter));
 
-            tagsSelectedFiltersList.forEach(filter -> autoFilterCheckComboBox.getCheckModel().check(filter));
-
-            isAutoSelectedFiltersUpdating = false;
-        });
+        isAutoSelectedFiltersUpdating = false;
     }
 
     /**
