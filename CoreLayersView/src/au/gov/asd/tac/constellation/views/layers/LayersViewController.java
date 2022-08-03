@@ -422,7 +422,6 @@ public class LayersViewController {
             if (graph == null) {
                 return;
             }
-            LOGGER.log(Level.SEVERE, "Reading state in plugin");
 
             final int layersViewStateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
             if (layersViewStateAttributeId == Graph.NOT_FOUND) {
@@ -461,7 +460,6 @@ public class LayersViewController {
             if (graph == null) {
                 return;
             }
-            LOGGER.log(Level.SEVERE, "Writing state in plugin");
 
             final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
             LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);

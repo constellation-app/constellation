@@ -267,6 +267,17 @@ public class BitMaskQueryCollection {
         return attributes;
     }
 
+    public boolean getVisibilityOnAll() {
+        boolean visibility = false;
+        for (int position = 1; position < queries.length; position++) {
+            final BitMaskQuery query = queries[position];
+            if (query != null) {
+                visibility = query.isVisible();
+            }
+        }
+        return visibility;
+    }
+
     /**
      * Set the visibility of all queries
      *

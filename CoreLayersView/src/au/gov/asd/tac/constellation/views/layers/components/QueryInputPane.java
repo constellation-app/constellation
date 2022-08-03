@@ -260,15 +260,6 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     }
 
     /**
-     * For testing
-     * 
-     * @return field
-     */
-    protected TextInputControl getField() {
-        return field;
-    }
-    
-    /**
      * Update this query from a text edit event.
      *
      * @param fieldText 
