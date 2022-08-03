@@ -217,4 +217,30 @@ public class NotifyDisplayer {
         
         return dialog.showAndWait();
     }
+    
+    /**
+     * 
+     * @param title
+     * @param header
+     * @param message
+     * @param okButton
+     * @param cancelButton
+     * @return 
+     */
+     public static Optional<ButtonType> displayConfirmationAlert(final String title,
+                                                                final String header,
+                                                                final String message,
+                                                                final ButtonType okButton,
+                                                                final ButtonType cancelButton) {
+        final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "", cancelButton, okButton);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(message);
+        dialog.setResizable(true);
+        
+        final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);
+        
+        return dialog.showAndWait();
+    }
 }

@@ -84,6 +84,8 @@ public abstract class ImportController<D> {
 
     // preference to show or hide all graph schema attributes
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
+    
+    private boolean skipInvalidRows = false;
 
     protected ImportController() {
         showAllSchemaAttributes = false;
@@ -447,4 +449,14 @@ public abstract class ImportController<D> {
     public void setImportPane(final ImportPane importPane) {
         this.importPane = importPane;
     }
+
+    public boolean isSkipInvalidRows() {
+        return skipInvalidRows;
+    }
+
+    public void setSkipInvalidRows(boolean skipInvalidRows) {
+        this.skipInvalidRows = skipInvalidRows;
+    }
+    
+    
 }
