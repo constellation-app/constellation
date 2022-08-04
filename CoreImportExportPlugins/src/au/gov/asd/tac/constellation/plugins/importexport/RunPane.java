@@ -155,7 +155,7 @@ public final class RunPane extends BorderPane implements KeyListener {
                     Attribute attribute = null;
                     final Attribute[] selected = new Attribute[1];
                     final CountDownLatch latch = new CountDownLatch(1);
-                    final NewAttributeDialog[] dialog = new NewAttributeDialog(null)[1];
+                    final NewAttributeDialog[] dialog = {null};
                     Platform.runLater(() -> {
                         dialog[0] = new NewAttributeDialog(attributeList.getAttributeType().getElementType());
 //                        dialog.setOkButtonAction(e -> {
@@ -166,12 +166,12 @@ public final class RunPane extends BorderPane implements KeyListener {
 //                            dialog.hideDialog();
 //                        });
 
-                        dialog.showDialog("New Attribute");
+                        dialog[0].showDialog("New Attribute");
                     });
 
                     try {
                         latch.await();
-                        attribute = dialog.getAttribute();
+                        attribute = dialog[0].getAttribute();
                     } catch (InterruptedException ex) {
                         Exceptions.printStackTrace(ex);
                         Thread.currentThread().interrupt();
