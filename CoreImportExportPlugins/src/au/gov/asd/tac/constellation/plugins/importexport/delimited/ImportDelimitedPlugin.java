@@ -152,7 +152,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
      * @param emptyRunConfigs List of run config names that were found to not
      * have vertex of transaction mappings defined
      */
-    private void displaySummaryAlert(final int importedObjects, final int importedRows, final List<String> validFilenames,
+    private void displaySummaryAlert(final int importedObjects, final int importedRows, final int skippedRows, final List<String> validFilenames,
             final List<String> emptyFilenames, final List<String> invalidFilenames,
             final List<String> emptyRunConfigs) {
         Platform.runLater(() -> {
@@ -163,8 +163,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 // At least 1 object was successfully imported. List all successful file imports, as well as any files
                 // that there were issues for. If there were any files with issues use a warning dialog.
                 final String fileFiles = (validFilenames.size() == 1) ? "file" : "files";
-                sbHeader.append(String.format("Extracted data from %d rows in %d %s",
-                        importedRows, validFilenames.size(), fileFiles));
+                sbHeader.append(String.format("Extracted data from %d rows in %d %s. Skipped rows %d due to import error.",
+                        importedRows, validFilenames.size(), fileFiles, skippedRows));
                 sbMessage.append("Files with data: ");
                 for (int i = 0; i < validFilenames.size(); i++) {
                     if (i > 0) {
@@ -311,7 +311,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1} containing {2} total rows. Skipped {3} rows due to error.", new Object[]{importedRowsPerFile, file.getPath(), dataSize, skippedRowsPerFile});
         }
 
-        displaySummaryAlert(graph.getVertexCount() + graph.getTransactionCount(), totalImportedRows, validFiles, emptyFiles, invalidFiles, emptyRunConfigs);
+        displaySummaryAlert(graph.getVertexCount() + graph.getTransactionCount(), totalImportedRows, totalSkippedRows, validFiles, emptyFiles, invalidFiles, emptyRunConfigs);
 
         ConstellationLoggerHelper.importPropertyBuilder(
                 this,
