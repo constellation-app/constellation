@@ -74,7 +74,7 @@ public class LayerTitlePane extends TitledPane {
         isValid = testQueryValidity(query.getQueryString());
         enabled = new CheckBox();
         
-        enabledChanged = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+        enabledChanged = (final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
             recolourLayer();
             LayersViewController.getDefault().changeLayerVisibility(layerId, enabled.isSelected());
         };
@@ -252,9 +252,8 @@ public class LayerTitlePane extends TitledPane {
     }
     
     public void recheckValidity() {
-        boolean validity = query.getQueryString() == null || ExpressionUtilities.testQueryValidity(query.getQueryString());
+        final boolean validity = query.getQueryString() == null || ExpressionUtilities.testQueryValidity(query.getQueryString());
         this.isValid = validity;
-        setValidity(validity);
     }
     
     /**

@@ -47,7 +47,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Views", position = 600),
+    @ActionReference(path = "Menu/Views", position = 600),
     @ActionReference(path = "Shortcuts", name = "CS-L")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_LayersViewAction",

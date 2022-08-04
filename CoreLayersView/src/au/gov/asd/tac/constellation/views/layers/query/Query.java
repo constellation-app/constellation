@@ -61,7 +61,7 @@ public class Query {
         final Object result = ExpressionCompiler.compileSequenceExpression(expression, variableProvider, index, Operators.getDefault());
 
         attributeIds = variableProvider.getAttributeIds();
-        long[] valueModificationCounters = new long[attributeIds.length];
+        final long[] valueModificationCounters = new long[attributeIds.length];
         for (int i = 0; i < attributeIds.length; i++) {
             valueModificationCounters[i] = graph.getValueModificationCounter(attributeIds[i]);
         }

@@ -29,7 +29,7 @@ import javafx.scene.layout.VBox;
  */
 public class NoGraphPane extends VBox {
 
-    final Label noGraphLabel;
+    private final Label noGraphLabel;
     private final Button helpButton;
 
     private static final Insets PADDING = new Insets(0, 0, 0, 0);

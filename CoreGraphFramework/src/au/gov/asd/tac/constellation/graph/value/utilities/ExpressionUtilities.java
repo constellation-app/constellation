@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser;
 public final class ExpressionUtilities {
 
     private ExpressionUtilities() {
-        // intentionally left blank
+        throw new IllegalStateException("Utility class");
     }
 
     /**

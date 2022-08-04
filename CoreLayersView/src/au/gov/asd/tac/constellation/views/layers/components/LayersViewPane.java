@@ -130,7 +130,7 @@ public class LayersViewPane extends BorderPane {
      * @param txLayers
      */
     public synchronized void setLayers(final BitMaskQuery[] vxLayers, final BitMaskQuery[] txLayers) {
-        CountDownLatch cdl1 = new CountDownLatch(1);
+        final CountDownLatch cdl1 = new CountDownLatch(1);
         Platform.runLater(() -> {
             controller.getVxQueryCollection().clear();
             controller.getTxQueryCollection().clear();
@@ -148,8 +148,8 @@ public class LayersViewPane extends BorderPane {
         });
         try {
             cdl1.await();
-        } catch (InterruptedException ex) {
-            LOGGER.log(Level.WARNING, ex.getMessage());
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             Thread.currentThread().interrupt();
         }
     }
@@ -158,7 +158,7 @@ public class LayersViewPane extends BorderPane {
      * Set the layers to the defaults.
      */
     public synchronized void setDefaultLayers() {
-        CountDownLatch cdl1 = new CountDownLatch(1);
+        final CountDownLatch cdl1 = new CountDownLatch(1);
         Platform.runLater(() -> {
             controller.getVxQueryCollection().setDefaultQueries();
             controller.getTxQueryCollection().setDefaultQueries();
@@ -174,8 +174,8 @@ public class LayersViewPane extends BorderPane {
         });
         try {
             cdl1.await();
-        } catch (InterruptedException ex) {
-            LOGGER.log(Level.WARNING, ex.getMessage());
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             Thread.currentThread().interrupt();
         } 
     }
@@ -223,7 +223,7 @@ public class LayersViewPane extends BorderPane {
             }
             
             final Query q;
-            if (StringUtils.isEmpty(txqueryString) && StringUtils.isNotEmpty(vxqueryString)) {
+            if (StringUtils.isBlank(txqueryString) && StringUtils.isNotBlank(vxqueryString)) {
                 // VX query found
                 q = new Query(GraphElementType.VERTEX, vxqueryString);
 
@@ -245,10 +245,10 @@ public class LayersViewPane extends BorderPane {
             }
 
             if (layersnew.getChildren().size() - 1 < queryIndex) {
-                LayerTitlePane tp = new LayerTitlePane(queryIndex,queryDescription, bmq);
+                final LayerTitlePane tp = new LayerTitlePane(queryIndex,queryDescription, bmq);
                 layersnew.getChildren().add(queryIndex, tp);
             } else {
-                LayerTitlePane oldTp = (LayerTitlePane) layersnew.getChildren().remove(queryIndex); // no 0 in list of 0
+                final LayerTitlePane oldTp = (LayerTitlePane) layersnew.getChildren().remove(queryIndex); // no 0 in list of 0
                 oldTp.setDescription(queryDescription);
                 oldTp.setQuery(bmq);
                 layersnew.getChildren().add(queryIndex, oldTp);
@@ -257,12 +257,12 @@ public class LayersViewPane extends BorderPane {
 
         // remove the remaining old layers.
         final int totalLayers = layersnew.getChildren().size();
-        if(totalLayers > iteratorEnd) {
+        if (totalLayers > iteratorEnd) {
             layersnew.getChildren().remove(iteratorEnd, totalLayers);
         }
         
         // set layer 0 selected when no other layer is enabled.
-        LayerTitlePane oldTp = (LayerTitlePane) layersnew.getChildren().remove(0);
+        final LayerTitlePane oldTp = (LayerTitlePane) layersnew.getChildren().remove(0);
         oldTp.setSelected(!isQueryActive);
         oldTp.getQuery().setVisibility(!isQueryActive);
         layersnew.getChildren().add(0, oldTp);

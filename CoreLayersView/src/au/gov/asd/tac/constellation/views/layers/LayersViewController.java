@@ -306,14 +306,14 @@ public class LayersViewController {
         final int layerCount = Math.max(getTxQueryCollection().getHighestQueryIndex(), getVxQueryCollection().getHighestQueryIndex());
 
         if (layerCount <= BitMaskQueryCollection.MAX_QUERY_AMT) {
-            Query vxQuery = new Query(GraphElementType.VERTEX, "");
+            final Query vxQuery = new Query(GraphElementType.VERTEX, "");
             getVxQueryCollection().add(vxQuery, layerCount + 1, null);
-            Query txQuery = new Query(GraphElementType.TRANSACTION, "");
+            final Query txQuery = new Query(GraphElementType.TRANSACTION, "");
             getTxQueryCollection().add(txQuery, layerCount + 1, null);
             writeState();
         } else {
             NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers", NotifyDescriptor.WARNING_MESSAGE);
-            LOGGER.log(Level.INFO, "Layer count maximum reached. Maximum is currently: {0}", BitMaskQueryCollection.MAX_QUERY_AMT);
+            LOGGER.log(Level.WARNING, "Layer count maximum reached. Maximum is currently: {0}", BitMaskQueryCollection.MAX_QUERY_AMT);
         }
     }
     
@@ -471,7 +471,6 @@ public class LayersViewController {
                 currentState = new LayersViewState(currentState);
             }
 
-            LOGGER.log(Level.SEVERE, "is query visible already?: " + currentState.getVxQueriesCollection().getQuery(1).isVisible());
             currentState.setVxLayers(vxLayers);
             currentState.setTxLayers(txLayers);
             if (currentState.getVxQueriesCollection().getHighestQueryIndex() == 0 && currentState.getTxQueriesCollection().getHighestQueryIndex() == 0) {

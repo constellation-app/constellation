@@ -71,7 +71,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         this(parent, parameter, description, value, DEFAULT_WIDTH, null, requiresValidityCheck);
     }
 
-    public QueryInputPane(final LayerTitlePane parent, final String parameter, final String description, final String value, int defaultWidth, final boolean requiresValidityCheck) {
+    public QueryInputPane(final LayerTitlePane parent, final String parameter, final String description, final String value, final int defaultWidth, final boolean requiresValidityCheck) {
         this(parent, parameter, description,  value, defaultWidth, null, requiresValidityCheck);
     }
 
@@ -82,7 +82,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
      * @param defaultWidth default width (in pixels)
      * @param suggestedHeight suggested hight (in lines)
      */
-    public QueryInputPane(final LayerTitlePane parent, final String title, final String description, final String value, int defaultWidth, Integer suggestedHeight, final boolean requiresValidityCheck) {
+    public QueryInputPane(final LayerTitlePane parent, final String title, final String description, final String value, final int defaultWidth, Integer suggestedHeight, final boolean requiresValidityCheck) {
         this.parent = parent;
         this.validityCheckRequired = requiresValidityCheck;
         if (suggestedHeight == null) {
@@ -119,7 +119,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
 
         final ListCell<String> button = new ListCell<String>() {
             @Override
-            protected void updateItem(String item, boolean empty) {
+            protected void updateItem(final String item, final boolean empty) {
                 super.updateItem(item, empty);
                 setText("...");
             }
@@ -136,7 +136,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         field.setMinWidth(defaultWidth);
 
         recentValueSelectionListener = (ov, t, t1) -> {
-            String recentValue = recentValuesCombo.getValue();
+            final String recentValue = recentValuesCombo.getValue();
             if (recentValue != null) {
                 field.setText(recentValuesCombo.getValue());
                 final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
@@ -153,9 +153,9 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         this.setVisible(true);
         recentValuesCombo.setDisable(false);
 
-        field.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+        field.addEventFilter(KeyEvent.KEY_PRESSED, (final KeyEvent event) -> {
             if (event.getCode() == KeyCode.DELETE) {
-                IndexRange selection = field.getSelection();
+                final IndexRange selection = field.getSelection();
                 if (selection.getLength() == 0) {
                     field.deleteNextChar();
                 } else {
@@ -192,7 +192,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
 
         final Tooltip tooltip = new Tooltip("");
         tooltip.setStyle("-fx-text-fill: white;");
-        field.focusedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
+        field.focusedProperty().addListener((final ObservableValue<? extends Boolean> ov, final Boolean t, final Boolean t1) -> {
             if (!t1) {
                 if(validityCheckRequired) {
                     final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
@@ -252,11 +252,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
      * @param isValid
      */
     public void setValidity(final boolean isValid) {
-        if (isValid) {
-            field.setId(StringUtils.EMPTY);
-        } else {
-            field.setId(INVALID_ID);
-        }
+        field.setId(isValid ? StringUtils.EMPTY : INVALID_ID);
     }
 
     /**
