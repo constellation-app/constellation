@@ -37,6 +37,7 @@ import org.openide.awt.NotificationDisplayer;
  * @author aldebaran30701
  */
 public class NotifyDisplayer {
+
     private static final Logger LOGGER = Logger.getLogger(NotifyDisplayer.class.getName());
 
     /**
@@ -52,7 +53,7 @@ public class NotifyDisplayer {
         final NotifyDescriptor descriptor = new NotifyDescriptor.Message(message, descriptorType);
         display(descriptor);
     }
-    
+
     /**
      * Utility to notify the user of some fact. The passed icon can be used to
      * classify the severity or type of notification.
@@ -75,9 +76,10 @@ public class NotifyDisplayer {
             EventQueue.invokeLater(() -> NotificationDisplayer.getDefault().notify(title, icon, message, null));
         }
     }
-    
+
     /**
-     * Display the passed notify descriptor and do not worry about the user response.
+     * Display the passed notify descriptor and do not worry about the user
+     * response.
      *
      * @param descriptor the descriptor to display in a dialog
      */
@@ -95,11 +97,11 @@ public class NotifyDisplayer {
             EventQueue.invokeLater(() -> DialogDisplayer.getDefault().notify(descriptor));
         }
     }
-    
+
     /**
-     * Display the passed notify descriptor and wait for a response. This method will
-     * not block but return a future that can be used for dealing with carry on
-     * processing.
+     * Display the passed notify descriptor and wait for a response. This method
+     * will not block but return a future that can be used for dealing with
+     * carry on processing.
      *
      * @param descriptor the descriptor to display in a dialog
      * @return a future containing the user selection from the dialog
@@ -116,12 +118,12 @@ public class NotifyDisplayer {
             final ShowDialogRunner showDialogRunner = new ShowDialogRunner(descriptor);
             try {
                 EventQueue.invokeAndWait(showDialogRunner);
-                
+
                 return CompletableFuture.completedFuture(showDialogRunner.getSelection());
             } catch (InterruptedException ex) {
                 LOGGER.log(Level.WARNING, "Thread displaying the notify dialog was interrupted.", ex);
                 Thread.currentThread().interrupt();
-                
+
                 return CompletableFuture.completedFuture(null);
             } catch (InvocationTargetException ex) {
                 // An error happened when showing the dialog. Send it up the stack.
@@ -142,18 +144,18 @@ public class NotifyDisplayer {
      * @param alertType the alert icon to add to the alert
      */
     public static void displayAlert(final String title,
-                                    final String header,
-                                    final String message,
-                                    final Alert.AlertType alertType) {
+            final String header,
+            final String message,
+            final Alert.AlertType alertType) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
         dialog.setResizable(true);
-        
+
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
-        
+
         dialog.showAndWait();
     }
 
@@ -170,24 +172,24 @@ public class NotifyDisplayer {
      * @param alertType the alert icon to add to the alert
      */
     public static void displayLargeAlert(final String title,
-                                         final String header,
-                                         final String message,
-                                         final Alert.AlertType alertType) {
+            final String header,
+            final String message,
+            final Alert.AlertType alertType) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
-        
+
         final TextArea ta = new TextArea();
         ta.setEditable(false);
         ta.setWrapText(true);
         ta.setText(message);
-        
+
         dialog.getDialogPane().setExpandableContent(ta);
         dialog.setResizable(true);
-        
+
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
-        
+
         dialog.showAndWait();
     }
 
@@ -204,43 +206,43 @@ public class NotifyDisplayer {
      * @return the user confirmation type
      */
     public static Optional<ButtonType> displayConfirmationAlert(final String title,
-                                                                final String header,
-                                                                final String message) {
+            final String header,
+            final String message) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
         dialog.setResizable(true);
-        
+
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
-        
+
         return dialog.showAndWait();
     }
-    
+
     /**
-     * 
+     *
      * @param title
      * @param header
      * @param message
      * @param okButton
      * @param cancelButton
-     * @return 
+     * @return
      */
-     public static Optional<ButtonType> displayConfirmationAlert(final String title,
-                                                                final String header,
-                                                                final String message,
-                                                                final ButtonType okButton,
-                                                                final ButtonType cancelButton) {
+    public static Optional<ButtonType> displayConfirmationAlert(final String title,
+            final String header,
+            final String message,
+            final ButtonType okButton,
+            final ButtonType cancelButton) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "", cancelButton, okButton);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
         dialog.setResizable(true);
-        
+
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
-        
+
         return dialog.showAndWait();
     }
 }

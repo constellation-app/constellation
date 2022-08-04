@@ -233,7 +233,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final List<String> emptyFiles = new ArrayList<>();
         final List<String> invalidFiles = new ArrayList<>();
         final List<String> emptyRunConfigs = new ArrayList<>();
-        HashMap<String, Integer> results = new HashMap<>();
+        HashMap<String, Integer> results;
         int totalRows = 0;
         int totalImportedRows = 0;
         int totalSkippedRows = 0;
