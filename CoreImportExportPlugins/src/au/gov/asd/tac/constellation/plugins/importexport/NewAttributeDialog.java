@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.functionality.dialog.ConstellationDialog;
-import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -53,8 +52,6 @@ public class NewAttributeDialog extends ConstellationDialog {
     private final ComboBox<String> typeBox;
     private final TextField labelText;
     private final TextArea descriptionText;
-
-    private Attribute attribute;
 
     private final Button okButton;
 
@@ -116,22 +113,41 @@ public class NewAttributeDialog extends ConstellationDialog {
         fxPanel.setScene(scene);
     }
 
+    /**
+     * Implement the {@code setOnAction} that happens when OK is pressed. This
+     * should create the new attribute and use the get methods in this class to
+     * retrieve the values set in the attribute dialog.
+     *
+     * @param event The {@code setOnAction} that will run when the OK button is
+     * pressed.
+     */
     public void setOkButtonAction(EventHandler<ActionEvent> event) {
         okButton.setOnAction(event);
     }
 
-    public Attribute getAttribute() {
-        return attribute;
-    }
-
+    /**
+     * Get the attribute type
+     *
+     * @return The attribute type
+     */
     public String getType() {
         return typeBox.getSelectionModel().getSelectedItem();
     }
 
+    /**
+     * The attribute label
+     *
+     * @return The attribute label
+     */
     public String getLabel() {
         return labelText.getText();
     }
 
+    /**
+     * The attribute description
+     *
+     * @return The attribute description
+     */
     public String getDescription() {
         return descriptionText.getText();
     }
