@@ -219,7 +219,8 @@ public class NotifyDisplayer {
 
         return dialog.showAndWait();
     }
-
+    
+    
     /**
      *
      * @param title
@@ -245,4 +246,5 @@ public class NotifyDisplayer {
 
         return dialog.showAndWait();
     }
+    
 }
