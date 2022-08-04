@@ -64,7 +64,7 @@ public class NotifyDisplayer {
      */
     public static void display(final String title, final Icon icon, final String message) {
         if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
-            // If this was called from one of the UI threads we don't want to 
+            // If this was called from one of the UI threads we don't want to
             // display the dialog and block beacasue some OS's (macos) will go into deadlock
             // I think what happens is, instead of running the display dialog in this
             // "task" it creates a new one to display the dialog, puts it on the event
@@ -85,7 +85,7 @@ public class NotifyDisplayer {
      */
     public static void display(final NotifyDescriptor descriptor) {
         if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
-            // If this was called from one of the UI threads we don't want to 
+            // If this was called from one of the UI threads we don't want to
             // display the dialog and block beacasue some OS's (macos) will go into deadlock
             // I think what happens is, instead of running the display dialog in this
             // "task" it creates a new one to display the dialog, puts it on the event

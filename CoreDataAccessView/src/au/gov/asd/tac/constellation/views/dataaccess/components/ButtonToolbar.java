@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
@@ -91,10 +92,11 @@ public class ButtonToolbar {
 
     static {
         FAVOURITES_DIALOG_MSG_FORMAT = new StringBuilder(300)
-                .append("Add or remove plugins from your favourites category.\n\n")
+                .append("Add or remove plugins from your Favourites category.\n\n")
                 .append("The following plugins were selected:\n")
                 .append("%s")
-                .append("\n\nNote that you need to restart before changes take effect.")
+                .append("\n\nNote, Favourites will be updated the next time you start ")
+                .append(BrandingUtilities.APPLICATION_NAME)
                 .toString();
     }
 

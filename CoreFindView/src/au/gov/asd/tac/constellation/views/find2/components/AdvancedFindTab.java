@@ -53,6 +53,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.openide.util.NbBundle;
 
 /**
  * This class contains the UI tab for the Advanced Find Tab.
@@ -89,6 +90,16 @@ public class AdvancedFindTab extends Tab {
     private final Pane widthSpacer = new Pane();
     private final Pane heightSpacer = new Pane();
 
+    private final GridPane currentSelectionPane = new GridPane();
+    private final GridPane matchesFoundPane = new GridPane();
+
+    private final GridPane bottomGrid = new GridPane();
+
+    private boolean firstSearch = true;
+    private final String foundLabelText = "Find: Advanced Search: Number of results found: ";
+    private final Label matchesFoundLabel = new Label("");
+    private final Label matchesFoundCountLabel = new Label("");
+
     protected final HBox buttonsHBox = new HBox();
     protected final VBox buttonsVBox = new VBox();
     protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
@@ -111,6 +122,19 @@ public class AdvancedFindTab extends Tab {
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPreviousAction());
 
+        matchesFoundPane.add(matchesFoundLabel, 0, 0);
+        matchesFoundPane.add(matchesFoundCountLabel, 1, 0);
+        
+        FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> {
+
+            if (firstSearch) {
+                matchesFoundLabel.setText(foundLabelText);
+                firstSearch = false;
+            }
+
+            matchesFoundCountLabel.setText("" + newValue);
+        });
+
     }
 
     /**
@@ -122,16 +146,23 @@ public class AdvancedFindTab extends Tab {
         currentSelectionChoiceBox.getSelectionModel().select(0);
         matchCriteriaChoiceBox.getSelectionModel().select(0);
 
+        currentSelectionPane.add(currentSeletionLabel, 0, 0);
+        currentSelectionPane.add(currentSelectionChoiceBox, 0, 1);
+        currentSelectionPane.setPadding(new Insets(1, 0, 0, 25));
+        currentSelectionPane.setVgap(4.25);
+
+
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 0, 1);
         settingsGrid.add(matchCriteriaLabel, 1, 0);
         settingsGrid.add(matchCriteriaChoiceBox, 1, 1);
-        settingsGrid.add(currentSeletionLabel, 2, 0);
-        settingsGrid.add(currentSelectionChoiceBox, 2, 1);
+        settingsGrid.add(currentSelectionPane, 2, 0, 1, 2);
+
 
         settingsGrid.setPadding(new Insets(5));
         settingsGrid.setHgap(5);
         settingsGrid.setVgap(5);
+
 
         settingsBorderPane.setCenter(settingsGrid);
         settingsBorderPane.setPadding(new Insets(0, 0, 10, 0));
@@ -160,6 +191,9 @@ public class AdvancedFindTab extends Tab {
         buttonsHBox.setPadding(new Insets(10, 10, 5, 10));
         buttonsHBox.setSpacing(5);
 
+        matchesFoundPane.setPadding(new Insets(10, 12, 5, 10));
+
+
         updateGridColours(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
     }
 
@@ -172,7 +206,12 @@ public class AdvancedFindTab extends Tab {
         buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
 
         buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
-        parentComponent.getParentComponent().setBottom(buttonsHBox);
+
+        bottomGrid.getChildren().clear();
+        bottomGrid.add(buttonsHBox, 0, 0);
+        bottomGrid.add(matchesFoundPane, 0, 1);
+
+        parentComponent.getParentComponent().setBottom(bottomGrid);
     }
 
     /**
@@ -463,6 +502,7 @@ public class AdvancedFindTab extends Tab {
             FindViewController.getDefault().retrieveAdvancedSearch(false, true);
         }
     }
+
 
     /**
      * This action is called when the find next prev is pressed. It calls the

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+     http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="nType" for="node" attr.name="Type" attr.type="string"/>
+  <key id="eType" for="edge" attr.name="Type" attr.type="string"/>
+  <graph id="G" edgedefault="undirected">
+    <node id="n0">
+	  <data key="nType">Person</data>
+	</node>
+    <node id="n1">
+	  <data key="nType">Document</data>
+	</node>
+	<node id="n2">
+	  <data key="nType">Country</data>
+	</node>
+	<node id="n2">
+	  <data key="nType">Country</data>
+	</node>
+    <edge id="e1" source="n0" target="n1" directed="true">
+	  <data key="eType">Correlation</data>
+	</edge>
+	<edge id="e1" source="n2" target="n0">
+	  <data key="eType">Communication</data>
+	</edge>
+  </graph>
+</graphml>

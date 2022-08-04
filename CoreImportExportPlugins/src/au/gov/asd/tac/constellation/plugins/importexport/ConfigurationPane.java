@@ -58,6 +58,7 @@ public class ConfigurationPane extends AnchorPane {
     protected final TabPane tabPane;
     private final String helpText;
 
+
     public ConfigurationPane(final ImportController importController, final String helpText) {
         this.importController = importController;
         this.helpText = helpText;
@@ -82,6 +83,8 @@ public class ConfigurationPane extends AnchorPane {
         AnchorPane.setTopAnchor(newRunButton, RUN_BUTTON_ANCHOR_POS);
         AnchorPane.setRightAnchor(newRunButton, RUN_BUTTON_ANCHOR_POS);
         getChildren().add(newRunButton);
+
+        ImportSingleton.getDefault().getClearDataFlag().addListener((observable, oldData, newData) -> clearSelectedPane());
 
         // Add a single run to start with
         createTab();
@@ -178,6 +181,19 @@ public class ConfigurationPane extends AnchorPane {
             runPane.setSampleData(columnLabels, createTableRows(currentData));
             runPane.refreshDataView();
         });
+    }
+
+    /**
+     * Clears the run pane that is currently selected
+     */
+    protected void clearSelectedPane() {
+        if (tabPane.getSelectionModel().getSelectedItem() != null) {
+            final RunPane currentSelected = (RunPane) tabPane.getSelectionModel().getSelectedItem().getContent();
+
+            final String[] columns = {};
+
+            currentSelected.setSampleData(columns, FXCollections.observableArrayList());
+        }
     }
 
     private static ObservableList<TableRow> createTableRows(final List<String[]> data) {

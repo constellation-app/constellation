@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -137,11 +137,11 @@ public abstract class ImportFileParser {
     }
 
     /**
-     * Returns the extension filter to use when browsing for files of this type.
+     * Returns the file filter to use when browsing for files of this type.
      *
-     * @return the extension filter to use when browsing for files of this type.
+     * @return the file filter to use when browsing for files of this type.
      */
-    public ExtensionFilter getExtensionFilter() {
+    public FileFilter getFileFilter() {
         return null;
     }
 

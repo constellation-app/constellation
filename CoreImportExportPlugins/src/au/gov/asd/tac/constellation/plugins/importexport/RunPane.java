@@ -645,4 +645,8 @@ public final class RunPane extends BorderPane implements KeyListener {
     public boolean hasDataQueried() {
         return !currentRows.isEmpty();
     }
+
+    public TableView<TableRow> getSampleDataView() {
+        return sampleDataView;
+    }
 }
