@@ -17,9 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.functionality.dialog.ConstellationDialog;
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -33,7 +31,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javax.swing.SwingUtilities;
 
 /**
  * The NewAttributeDialog provides a dialog box allowing the user to create a
@@ -53,7 +50,6 @@ public class NewAttributeDialog extends ConstellationDialog {
     private static final int DESC_PREFHEIGHT = 100;
     private static final Insets BUTTONPANE_PADDING = new Insets(5);
 
-    private final GraphElementType elementType;
     private final ComboBox<String> typeBox;
     private final TextField labelText;
     private final TextArea descriptionText;
@@ -62,10 +58,7 @@ public class NewAttributeDialog extends ConstellationDialog {
 
     private final Button okButton;
 
-    public NewAttributeDialog(final GraphElementType elementType) {
-
-        this.elementType = elementType;
-
+    public NewAttributeDialog() {
         final BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #DDDDDD;");
 
@@ -113,14 +106,6 @@ public class NewAttributeDialog extends ConstellationDialog {
         root.setBottom(buttonPane);
 
         okButton = new Button("OK");
-        okButton.setOnAction((ActionEvent event) -> {
-            hideDialog();
-            attribute = new NewAttribute(
-                    elementType,
-                    typeBox.getSelectionModel().getSelectedItem(),
-                    labelText.getText(), descriptionText.getText()
-            );
-        });
         buttonPane.getChildren().add(okButton);
 
         final Button cancelButton = new Button("Cancel");
@@ -129,7 +114,6 @@ public class NewAttributeDialog extends ConstellationDialog {
 
         final Scene scene = new Scene(root);
         fxPanel.setScene(scene);
-
     }
 
     public void setOkButtonAction(EventHandler<ActionEvent> event) {
@@ -137,8 +121,19 @@ public class NewAttributeDialog extends ConstellationDialog {
     }
 
     public Attribute getAttribute() {
-        SwingUtilities.isEventDispatchThread();//false
-        Platform.isFxApplicationThread();//false
         return attribute;
     }
+
+    public String getType() {
+        return typeBox.getSelectionModel().getSelectedItem();
+    }
+
+    public String getLabel() {
+        return labelText.getText();
+    }
+
+    public String getDescription() {
+        return descriptionText.getText();
+    }
+
 }

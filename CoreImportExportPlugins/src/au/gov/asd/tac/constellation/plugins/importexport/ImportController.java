@@ -376,6 +376,8 @@ public abstract class ImportController<D> {
      * A List&lt;ImportDefinition&gt; where each list element corresponds to a
      * RunPane tab.
      *
+     * @param isFilesIncludeHeadersEnabled When true will skip the first row and
+     * when false will include the first row
      * @return A List&lt;ImportDefinition&gt; where each list element
      * corresponds to a RunPane tab.
      */
@@ -432,14 +434,6 @@ public abstract class ImportController<D> {
 
     public List<String[]> getCurrentData() {
         return currentData;
-    }
-
-    public Attribute showNewAttributeDialog(final GraphElementType elementType) {
-        SwingUtilities.isEventDispatchThread();//false
-        Platform.isFxApplicationThread();//false
-        final NewAttributeDialog dialog = new NewAttributeDialog(elementType);
-        dialog.showDialog("New Attribute");
-        return dialog.getAttribute();
     }
 
     public Set<Integer> getKeys() {

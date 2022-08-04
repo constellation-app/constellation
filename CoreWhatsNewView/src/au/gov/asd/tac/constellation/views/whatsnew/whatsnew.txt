@@ -1,6 +1,8 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-08-04 File & Database Importers
+<p>Fixed a bug with the new attributes fading behind Constellation. They are now modal dialogs.</p>
 
 == 2022-07-28 Clear Button in Database Importer
 <p>The "Import from Database" pane now has a clear button next to the query button. Clicking Clear will clear the results in the current run and will clear the query text</p>

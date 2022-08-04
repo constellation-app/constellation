@@ -31,13 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -65,9 +61,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 
 /**
  * A RunPane displays the UI necessary to allow the user to drag and drop
@@ -77,8 +71,6 @@ import org.openide.util.Exceptions;
  * @author sirius
  */
 public final class RunPane extends BorderPane implements KeyListener {
-
-    private static final Logger LOGGER = Logger.getLogger(RunPane.class.getName());
 
     private static final int SCROLLPANE_HEIGHT = 450;
     private static final int SCROLLPANE_VIEW_WIDTH = 400;
@@ -154,43 +146,21 @@ public final class RunPane extends BorderPane implements KeyListener {
             labelPane.setLeft(heading);
 
             final Button button = new Button("", new ImageView(ADD_IMAGE));
-            button.setOnAction((ActionEvent event) -> {
-                SwingUtilities.isEventDispatchThread();//false
-                Platform.isFxApplicationThread();//true
-                new Thread(() -> {
-                    SwingUtilities.isEventDispatchThread();//false
-                    Platform.isFxApplicationThread();//false
+            button.setOnAction(event -> {
+                final NewAttributeDialog dialog = new NewAttributeDialog();
+                dialog.setOkButtonAction(event2 -> {
+                    dialog.hideDialog();
+                    Attribute attribute = new NewAttribute(
+                            attributeList.getAttributeType().getElementType(),
+                            dialog.getType(),
+                            dialog.getLabel(),
+                            dialog.getDescription()
+                    );
 
-                    Attribute attribute = null;
-                    final Attribute[] selected = new Attribute[1];
-                    final CountDownLatch latch = new CountDownLatch(1);
-                    final NewAttributeDialog[] dialog = {null};
-                    Platform.runLater(() -> {
-                        dialog[0] = new NewAttributeDialog(attributeList.getAttributeType().getElementType());
-//                        dialog.setOkButtonAction(e -> {
-////                            attribute = new NewAttribute(
-////                                    elementType, typeBox.getSelectionModel().getSelectedItem(),
-////                                    labelText.getText(), descriptionText.getText()
-////                            );
-//                            dialog.hideDialog();
-//                        });
+                    importController.createManualAttribute(attribute);
+                });
 
-                        dialog[0].showDialog("New Attribute");
-                    });
-
-                    try {
-                        latch.await();
-                        attribute = dialog[0].getAttribute();
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
-                        Thread.currentThread().interrupt();
-                    }
-
-//                    Attribute attribute = importController.showNewAttributeDialog(attributeList.getAttributeType().getElementType());
-//                    if (attribute != null) {
-//                        importController.createManualAttribute(attribute);
-//                    }
-                }).start();
+                dialog.showDialog("New Attribute");
             });
             button.setTooltip(new Tooltip("Add a new " + attributeList.getAttributeType().getElementType() + " attribute"));
             labelPane.setRight(button);
