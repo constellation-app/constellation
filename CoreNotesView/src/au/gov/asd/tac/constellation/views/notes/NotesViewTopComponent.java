@@ -62,7 +62,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
      * NotesViewTopComponent constructor.
      */
     public NotesViewTopComponent() {
-
         setName(Bundle.CTL_NotesViewTopComponent());
         setToolTipText(Bundle.HINT_NotesViewTopComponent());
 
@@ -141,11 +140,10 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     public void newPluginReport(final PluginReport pluginReport) {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
 
-        if (activeGraph != null
-                && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())
-                && !pluginReport.hasLowLevelTag()) { // omit low level plugins which are not useful as notes
-            notesViewController.readState(activeGraph);
-            notesViewPane.setGraphReport(notesViewController);
+        // update the graph report if the new plugin report isn't a low level plugin (which aren't useful as notes)
+        if (activeGraph != null && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId()) 
+                && !pluginReport.hasLowLevelTag()) {            
+            notesViewPane.setGraphReport(activeGraph, notesViewController);
         }
     }
 

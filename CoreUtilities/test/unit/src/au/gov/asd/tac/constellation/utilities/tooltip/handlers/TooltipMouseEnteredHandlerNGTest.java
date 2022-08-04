@@ -121,9 +121,7 @@ public class TooltipMouseEnteredHandlerNGTest {
         final TextArea textInputControl = spy(new TextArea());
         final TooltipPane tooltipPane = spy(new TooltipPane());
 
-        try (final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS);
-                final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS);
-                final MockedStatic<TooltipMouseEnteredHandler> melStatic = mockStatic(TooltipMouseEnteredHandler.class, CALLS_REAL_METHODS)) {
+        try (final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS); final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS); final MockedStatic<TooltipMouseEnteredHandler> melStatic = mockStatic(TooltipMouseEnteredHandler.class, CALLS_REAL_METHODS)) {
             // Initialise mocks
             final TooltipNode ttn = mock(TooltipNode.class);
             final HitInfo info = mock(HitInfo.class);
@@ -177,9 +175,7 @@ public class TooltipMouseEnteredHandlerNGTest {
         final TextArea textInputControl = spy(new TextArea());
         final TooltipPane tooltipPane = spy(new TooltipPane());
 
-        try (final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS);
-                final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS);
-                final MockedStatic<TooltipMouseEnteredHandler> melStatic = mockStatic(TooltipMouseEnteredHandler.class, CALLS_REAL_METHODS)) {
+        try (final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS); final MockedStatic<TooltipProvider> ttpStatic = mockStatic(TooltipProvider.class, CALLS_REAL_METHODS); final MockedStatic<TooltipMouseEnteredHandler> melStatic = mockStatic(TooltipMouseEnteredHandler.class, CALLS_REAL_METHODS)) {
             // Initialise mocks
             final TooltipNode ttn = mock(TooltipNode.class);
             final HitInfo info = mock(HitInfo.class);
