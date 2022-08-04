@@ -29,6 +29,8 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -43,8 +45,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import org.openide.util.Exceptions;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -56,9 +60,11 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author sirius
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class, position = 1)
 public class TSVDropper implements GraphDropper {
+
+    private static final Logger LOGGER = Logger.getLogger(TSVDropper.class.getName());
 
     @Override
     public BiConsumer<Graph, DropInfo> drop(final DropTargetDropEvent dtde) {
@@ -84,9 +90,9 @@ public class TSVDropper implements GraphDropper {
                         // Only process files that have a .tsv or .tsv.gz extension
                         // If any file does not have this extension then reject all the files.
                         final InputStream in;
-                        if (file.getName().endsWith(".tsv.gz")) {
+                        if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TAB_SEPARATED_VALUE + FileExtensionConstants.GZIP)) {
                             in = new GZIPInputStream(new FileInputStream(file));
-                        } else if (file.getName().endsWith(".tsv")) {
+                        } else if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TAB_SEPARATED_VALUE)) {
                             in = new FileInputStream(file);
                         } else {
                             badData = true;
@@ -94,12 +100,12 @@ public class TSVDropper implements GraphDropper {
                         }
 
                         // Open a reader so that we can read the file line by line
-                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
+                        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
                             String[] columnHeaders = null;
 
                             String line = reader.readLine();
                             while (line != null) {
-                                String[] fields = line.split(SeparatorConstants.TAB);
+                                final String[] fields = line.split(SeparatorConstants.TAB);
 
                                 if (columnHeaders == null) {
                                     columnHeaders = fields;
@@ -122,19 +128,19 @@ public class TSVDropper implements GraphDropper {
                 }
 
                 if (!badData && recordStore.size() > 0) {
-                    return (graph, dropInfo) -> {
-                        PluginExecution.withPlugin(new TSVDropperToGraphPlugin(recordStore, files)).executeLater(graph);
-                    };
+                    return (graph, dropInfo) -> PluginExecution.withPlugin(new TSVDropperToGraphPlugin(recordStore, files)).executeLater(graph);
                 }
-            } catch (final UnsupportedFlavorException | IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final UnsupportedFlavorException ex) {
+                LOGGER.log(Level.SEVERE, "The requested data flavour isn''t supported", ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 
         return null;
     }
 
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     public static class TSVDropperToGraphPlugin extends RecordStoreQueryPlugin {
 
         private final RecordStore recordStore;

@@ -45,7 +45,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Extract From Content Plugin Test.
+ * Extract Words From Text Plugin Test.
  *
  * @author canis_majorus
  */

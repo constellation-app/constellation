@@ -40,7 +40,7 @@ public class SetRadiusForArrangement {
     private final int labelRadiusAttr;
     private final int nodeRadiusAttr;
     // There are approximately 8 characters in a label for each node radius unit
-    private static final float CHARACTERS_PER_NODE_RADIUS_UNIT = 8f;
+    private static final float CHARACTERS_PER_NODE_RADIUS_UNIT = 8F;
 
     public SetRadiusForArrangement(final GraphWriteMethods graph) {
         this.graph = graph;
@@ -60,11 +60,11 @@ public class SetRadiusForArrangement {
         labelSizeArray = new float[labelAttrArray.length];
 
         int labelNum = 0;
-        for (GraphLabel label : bottomLabels.getLabels()) {
+        for (final GraphLabel label : bottomLabels.getLabels()) {
             labelAttrArray[labelNum] = graph.getAttribute(GraphElementType.VERTEX, label.getAttributeName());
             labelSizeArray[labelNum++] = label.getSize();
         }
-        for (GraphLabel label : topLabels.getLabels()) {
+        for (final GraphLabel label : topLabels.getLabels()) {
             labelAttrArray[labelNum] = graph.getAttribute(GraphElementType.VERTEX, label.getAttributeName());
             labelSizeArray[labelNum++] = label.getSize();
         }
@@ -81,13 +81,13 @@ public class SetRadiusForArrangement {
 
     private void setRadius(final int vxId) {
         // We require the width of the label to be at least 1.5f, which is the radius of the standard node with a little extra padding
-        float maxLabelWidth = 1.5f;
+        float maxLabelWidth = 1.5F;
         for (int i = 0; i < labelAttrArray.length; i++) {
             if (labelAttrArray[i] < 0) {
                 continue;
             }
 
-            Object obj = graph.getObjectValue(labelAttrArray[i], vxId);
+            final Object obj = graph.getObjectValue(labelAttrArray[i], vxId);
             float currentLabelWidth;
 
             int characters = (obj == null || obj.toString() == null) ? 0 : obj.toString().length();
@@ -99,7 +99,7 @@ public class SetRadiusForArrangement {
             }
         }
 
-        float nodeRadius = graph.getFloatValue(nodeRadiusAttr, vxId);
+        final float nodeRadius = graph.getFloatValue(nodeRadiusAttr, vxId);
         graph.setFloatValue(labelRadiusAttr, vxId, maxLabelWidth * nodeRadius);
     }
 }

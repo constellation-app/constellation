@@ -43,30 +43,23 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.file.GraphFilePluginRegistry;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.prefs.Preferences;
-import javax.swing.JFileChooser;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
-import org.openide.util.HelpCtx;
-import org.openide.util.NbPreferences;
-import org.openide.util.UserCancelException;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
- * Action which allows user open file from disk. It is installed in Menu | File
- * | Open file... .
+ * Action which allows user to open a file.
  *
- * @author Jesse Glick
- * @author Marian Petras
+ * @author sol695510
  */
 @ActionRegistration(
         displayName = "#LBL_openFile",
@@ -78,65 +71,7 @@ import org.openide.windows.WindowManager;
     @ActionReference(path = "Shortcuts", name = "C-O")})
 public class OpenFileAction implements ActionListener {
 
-    private boolean running;
-
-    private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static String lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
-    private static boolean rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-
-    private HelpCtx getHelpCtx() {
-        return new HelpCtx(this.getClass().getName());
-    }
-
-    /**
-     * Creates and initializes a file chooser.
-     *
-     * @return the initialized file chooser
-     */
-    protected JFileChooser prepareFileChooser() {
-        JFileChooser chooser = new FileChooser();
-        chooser.setCurrentDirectory(getCurrentDirectory());
-        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
-
-        return chooser;
-    }
-
-    /**
-     * When the preference "Remember Open/Save Location" is set, save the
-     * Current Directory.
-     *
-     */
-    private static void saveCurrentDirectory(final File currentDir) {
-        lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
-        rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-
-        if (!lastFileOpenAndSaveLocation.equals(currentDir.getAbsolutePath()) && rememberOpenAndSaveLocation) {
-            prefs.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, currentDir.getAbsolutePath());
-        }
-    }
-
-    /**
-     * Displays the specified file chooser and returns a list of selected files.
-     *
-     * @param chooser file chooser to display
-     * @return array of selected files,
-     * @exception org.openide.util.UserCancelException if the user cancelled the
-     * operation
-     */
-    public static File[] chooseFilesToOpen(final JFileChooser chooser)
-            throws UserCancelException {
-        File[] files;
-        do {
-            int selectedOption = chooser.showOpenDialog(
-                    WindowManager.getDefault().getMainWindow());
-
-            if (selectedOption != JFileChooser.APPROVE_OPTION) {
-                throw new UserCancelException();
-            }
-            files = chooser.getSelectedFiles();
-        } while (files.length == 0);
-        return files;
-    }
+    private static final Logger LOGGER = Logger.getLogger(OpenFileAction.class.getName());
 
     /**
      * {@inheritDoc} Displays a file chooser dialog and opens the selected
@@ -144,51 +79,15 @@ public class OpenFileAction implements ActionListener {
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        if (running) {
-            return;
-        }
+        final StoreGraph sg = new StoreGraph();
+
         try {
-            running = true;
-            JFileChooser chooser = prepareFileChooser();
-            File[] files;
-            try {
-                files = chooseFilesToOpen(chooser);
-                saveCurrentDirectory(chooser.getCurrentDirectory());
-            } catch (UserCancelException ex) {
-                return;
-            }
-            for (final File file : files) {
-                OpenFile.openFile(file, -1);
-            }
-        } finally {
-            running = false;
+            PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE).executeNow(sg);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            Thread.currentThread().interrupt();
+        } catch (final PluginException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
-    }
-
-    /**
-     * When the preference "Remember Open/Save Location" is set, get the
-     * Directory saved in the preference, otherwise use the user's home
-     * directory
-     */
-    private static File getCurrentDirectory() {
-        if (Boolean.getBoolean("netbeans.openfile.197063")) {
-            // Prefer to open from parent of active editor, if any.
-            TopComponent activated = TopComponent.getRegistry().getActivated();
-            if (activated != null && WindowManager.getDefault().isOpenedEditorTopComponent(activated)) {
-                DataObject d = activated.getLookup().lookup(DataObject.class);
-                if (d != null) {
-                    File f = FileUtil.toFile(d.getPrimaryFile());
-                    if (f != null) {
-                        return f.getParentFile();
-                    }
-                }
-            }
-        }
-
-        lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
-        rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-
-        //Check prefferences for last saved directory
-        return new File((lastFileOpenAndSaveLocation.isEmpty() || !rememberOpenAndSaveLocation) ? System.getProperty("user.home") : lastFileOpenAndSaveLocation);
     }
 }

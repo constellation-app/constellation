@@ -44,6 +44,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -57,7 +58,7 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
 /**
- * Split nodes based on
+ * Split Nodes Based on Identifier Plugin
  *
  * @author canis_majoris
  * @author antares
@@ -66,14 +67,13 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @NbBundle.Messages("SplitNodesPlugin=Split Nodes Based on Identifier")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlugin {
 
     public static final String SPLIT_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split");
     public static final String DUPLICATE_TRANSACTIONS_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split_level");
     public static final String TRANSACTION_TYPE_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "transaction_type");
     public static final String ALL_OCCURRENCES_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "all_occurances");
-
     public static final String COMPLETE_WITH_SCHEMA_OPTION_ID = PluginParameter.buildId(SplitNodesPlugin.class, "complete_schema");
 
     @Override
@@ -98,13 +98,11 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         final PluginParameter<StringParameterValue> split = StringParameterType.build(SPLIT_PARAMETER_ID);
         split.setName("Split Character(s)");
         split.setDescription("A new term will be extracted from the first instance of this character(s) in the Identifier");
-        split.setStringValue(null);
         params.addParameter(split);
 
         final PluginParameter<BooleanParameterValue> duplicateTransactionsParameter = BooleanParameterType.build(DUPLICATE_TRANSACTIONS_PARAMETER_ID);
         duplicateTransactionsParameter.setName("Duplicate Transactions");
         duplicateTransactionsParameter.setDescription("Duplicate transactions for split nodes");
-        duplicateTransactionsParameter.setBooleanValue(false);
         params.addParameter(duplicateTransactionsParameter);
 
         final PluginParameter<SingleChoiceParameterValue> transactionType = SingleChoiceParameterType.build(TRANSACTION_TYPE_PARAMETER_ID);
@@ -115,7 +113,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         final PluginParameter<BooleanParameterValue> allOccurrences = BooleanParameterType.build(ALL_OCCURRENCES_PARAMETER_ID);
         allOccurrences.setName("Split on All Occurrences");
         allOccurrences.setDescription("Choose to split on all instances of the character(s) rather than just the first instance");
-        allOccurrences.setBooleanValue(false);
         params.addParameter(allOccurrences);
 
         final PluginParameter<BooleanParameterValue> completeSchema = BooleanParameterType.build(COMPLETE_WITH_SCHEMA_OPTION_ID);
@@ -152,8 +149,10 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
 
             SingleChoiceParameterType.setOptions(transactionType, types);
             transactionType.suppressEvent(true, new ArrayList<>());
-            if (transactionType.getSingleChoice() == null && types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
-                SingleChoiceParameterType.setChoice(transactionType, AnalyticConcept.TransactionType.CORRELATION.getName());
+            if (!types.isEmpty() && transactionType.getSingleChoice() == null) {
+                final String correlationTypeName = AnalyticConcept.TransactionType.CORRELATION.getName();
+                // set the transaction type to Correlation if it exists and the first option otherwise
+                SingleChoiceParameterType.setChoice(transactionType, types.contains(correlationTypeName) ? correlationTypeName : types.get(0));
             }
             transactionType.suppressEvent(false, new ArrayList<>());
 

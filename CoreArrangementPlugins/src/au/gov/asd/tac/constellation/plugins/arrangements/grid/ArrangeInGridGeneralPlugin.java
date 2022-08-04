@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.Map;
 import org.openide.util.NbBundle.Messages;
@@ -47,7 +48,7 @@ import org.openide.util.lookup.ServiceProvider;
     "ArrangeInGridGeneralPlugin=Arrange in Grid",
     "SelectedOnly=Arrange only selected nodes"
 })
-@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class ArrangeInGridGeneralPlugin extends SimpleEditPlugin {
 
     public static final String MAINTAIN_MEAN_PARAMETER_ID = PluginParameter.buildId(ArrangeInGridGeneralPlugin.class, "maintain_mean");

@@ -50,10 +50,10 @@ public final class ColorAttributeDescription extends AbstractObjectAttributeDesc
     }
 
     private ConstellationColor fromInt(final Integer integer) {
-        final float red = (integer >>> 24) / 255.0f;
-        final float green = ((integer >>> 16) & 0xFF) / 255.0f;
-        final float blue = ((integer >>> 8) & 0xFF) / 255.0f;
-        final float alpha = (integer & 0xFF) / 255.0f;
+        final float red = (integer >>> 24) / 255.0F;
+        final float green = ((integer >>> 16) & 0xFF) / 255.0F;
+        final float blue = ((integer >>> 8) & 0xFF) / 255.0F;
+        final float alpha = (integer & 0xFF) / 255.0F;
         return ConstellationColor.getColorValue(red, green, blue, alpha);
     }
 
@@ -73,29 +73,22 @@ public final class ColorAttributeDescription extends AbstractObjectAttributeDesc
 
     @Override
     protected ConstellationColor convertFromString(final String string) {
-        if (StringUtils.isBlank(string)) {
-            return getDefault();
-        } else {
-            return ConstellationColor.getColorValue(string);
-        }
+        return StringUtils.isBlank(string) ? getDefault() : ConstellationColor.getColorValue(string);
     }
 
     @Override
     public void setDefault(final Object value) {
-        if (value instanceof String) {
-            defaultValue = ConstellationColor.getColorValue((String) value);
-        } else {
-            defaultValue = (ConstellationColor) value;
-        }
+        defaultValue = value instanceof String ? ConstellationColor.getColorValue((String) value) : (ConstellationColor) value;
     }
 
     @Override
     public int getInt(final int id) {
-        ConstellationColor color = (ConstellationColor) data[id];
-        return ((int) (color.getRed() * 255) << 24)
+        final ConstellationColor color = (ConstellationColor) data[id];
+        return color != null ? ((int) (color.getRed() * 255) << 24)
                 | ((int) (color.getGreen() * 255) << 16)
                 | ((int) (color.getBlue() * 255) << 8)
-                | (int) (color.getAlpha() * 255);
+                | (int) (color.getAlpha() * 255) 
+                : 0;
     }
 
     @Override

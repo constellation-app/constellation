@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.Desktop;
@@ -46,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author arcturus
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.NONE, tags = {"UTILITY"})
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.UTILITY})
 @NbBundle.Messages("SendToEmailClientPlugin=Send To Email Client")
 public class SendToEmailClientPlugin extends SimplePlugin {
     
@@ -85,7 +86,7 @@ public class SendToEmailClientPlugin extends SimplePlugin {
     }
 
     @Override
-    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final String toEmail = parameters.getStringValue(TO_EMAIL_PARAMETER_ID);
         final String ccEmail = parameters.getStringValue(CC_EMAIL_PARAMETER_ID);
         final String subject = parameters.getStringValue(SUBJECT_PARAMETER_ID);
@@ -93,10 +94,14 @@ public class SendToEmailClientPlugin extends SimplePlugin {
 
         try {
             final StringBuilder sb = new StringBuilder();
-            sb.append("mailto:").append(toEmail)
-                    .append("?subject=").append(encodeString(subject))
-                    .append("&cc=").append(encodeString(ccEmail))
-                    .append("&body=").append(encodeString(body));
+            sb.append("mailto:")
+                .append(toEmail)
+                .append("?subject=")
+                .append(encodeString(subject))
+                .append("&cc=")
+                .append(encodeString(ccEmail))
+                .append("&body=")
+                .append(encodeString(body));
 
             final URI uri = new URI(sb.toString());
             Desktop.getDesktop().mail(uri);

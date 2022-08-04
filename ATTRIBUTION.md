@@ -614,5 +614,10 @@ of Constellation.
             <td>The 2-Clause BSD License</td>
             <td>https://opensource.org/licenses/BSD-2-Clause</td>
         </tr>
+        <tr class="even">
+            <td>txtmark-0.13.jar</td>
+            <td>Apache2</td>
+            <td></td>
+        </tr>
     </tbody>
 </table>

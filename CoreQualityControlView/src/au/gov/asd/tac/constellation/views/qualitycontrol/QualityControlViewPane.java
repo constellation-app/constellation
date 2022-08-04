@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -136,9 +137,7 @@ public final class QualityControlViewPane extends BorderPane {
 
         qualityColumn = new TableColumn<>("Category");
         qualityColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.15));
-        qualityColumn.setComparator((qce1, qce2) -> {
-            return QualityControlRule.testPriority(qce1.getCategory(), qce2.getCategory());
-        });
+        qualityColumn.setComparator((qce1, qce2) -> QualityControlRule.testPriority(qce1.getCategory(), qce2.getCategory()));
         qualityColumn.setSortType(TableColumn.SortType.DESCENDING);
 
         reasonColumn = new TableColumn<>("Reasons");
@@ -192,17 +191,13 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button priorityButton = new Button("Category Priority");
-        priorityButton.setOnAction(event -> {
-            showPriorityDialog();
-        });
+        priorityButton.setOnAction(event -> showPriorityDialog());
 
         // create help button
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Quality Control View"));
-        helpButton.setOnAction(event -> {
-            new HelpCtx(QualityControlViewTopComponent.class.getName()).display();
-        });
+        helpButton.setOnAction(event -> new HelpCtx(QualityControlViewTopComponent.class.getName()).display());
         // Get rid of the ugly button look so the icon stands alone.
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
@@ -364,7 +359,7 @@ public final class QualityControlViewPane extends BorderPane {
      * @return a javafx style based on the given quality value.
      */
     public static String qualityStyle(final QualityCategory category) {
-        return qualityStyle(category, 0.75f);
+        return qualityStyle(category, 0.75F);
     }
 
     /**
@@ -454,7 +449,9 @@ public final class QualityControlViewPane extends BorderPane {
             final RadioButton majorButton = new RadioButton();
             final RadioButton severeButton = new RadioButton();
             final RadioButton criticalButton = new RadioButton();
-            final Button resetButton = new Button("Reset");
+            final String resetText = rule.getCategory(0) == getPriorities().get(rule) ? "Reset" : "Reset to " + rule.getCategory(0).name();
+            
+            final Button resetButton = new Button(resetText);
             resetButton.setOnAction(event -> {
                 switch (rule.getCategory(0)) {
                     case MINOR:
@@ -475,6 +472,7 @@ public final class QualityControlViewPane extends BorderPane {
                     default:
                         break;
                 }
+                resetButton.setText("Reset");
             });
 
             getPriorities().putIfAbsent(rule, rule.getCategory(0));
@@ -695,7 +693,7 @@ public final class QualityControlViewPane extends BorderPane {
     /**
      * Delete nodes in a graph matching rows selected in QualityControlView.
      */
-    @PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE"})
+    @PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
     protected static class DeleteQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
@@ -728,7 +726,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Selects on the graph only nodes which have a corresponding selected
      * QualityControlEvent.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     protected static class SelectQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
@@ -775,7 +773,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Selects on the graph only nodes which do not have a corresponding
      * selected QualityControlEvent.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     protected static class DeselectQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
@@ -815,7 +813,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Zoom the camera of the Graph to the extents of nodes corresponding to any
      * selected QualityControlEvent.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
     private static class ZoomToQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;

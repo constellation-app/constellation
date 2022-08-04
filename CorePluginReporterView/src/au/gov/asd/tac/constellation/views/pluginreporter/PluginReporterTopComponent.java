@@ -72,7 +72,7 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
         initComponents();
         setName(Bundle.CTL_PluginReporterTopComponent());
         setToolTipText(Bundle.HINT_PluginReporterTopComponent());
-        reporterPane = new PluginReporterPane(this);
+        reporterPane = new PluginReporterPane();
         initContent();
     }
 

@@ -25,9 +25,19 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import java.util.concurrent.CompletableFuture;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import org.openide.NotifyDescriptor;
+import org.openide.awt.NotificationDisplayer;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -41,10 +51,31 @@ import org.testng.annotations.Test;
  */
 public class SelectAllPluginNGTest {
 
+    private static MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic;
+    private static MockedStatic<NotificationDisplayer> notificationDisplayerMockedStatic;
+    
     private Graph graph;
     private int selectedV, selectedT;
     private int vxId1, vxId2, txId1, txId2;
 
+    @BeforeClass
+    public static void beforeClass() {
+        notifyDisplayerMockedStatic = Mockito.mockStatic(NotifyDisplayer.class);
+        notificationDisplayerMockedStatic = Mockito.mockStatic(NotificationDisplayer.class);
+        
+        notifyDisplayerMockedStatic.when(() -> NotifyDisplayer.displayAndWait(any(NotifyDescriptor.class)))
+                .thenReturn(CompletableFuture.completedFuture(null));
+        
+        notificationDisplayerMockedStatic.when(NotificationDisplayer::getDefault)
+                .thenReturn(mock(NotificationDisplayer.class));
+    }
+    
+    @AfterClass
+    public static void afterClass() {
+        notifyDisplayerMockedStatic.close();
+        notificationDisplayerMockedStatic.close();
+    }
+    
     /**
      * Test of edit method, of class SelectAllPlugin. No attributes added so
      * should throw a pluginexception

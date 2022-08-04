@@ -124,7 +124,7 @@ public class StringCriteriaPanel extends javax.swing.JPanel implements ActionLis
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        if (e.getActionCommand().equals("OK")) {
+        if ("OK".equals(e.getActionCommand())) {
             txtString.setText(listPanel.getContent());
 
             parentPanel.saveStateToGraph();

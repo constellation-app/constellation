@@ -47,6 +47,10 @@ public class SchemaVertexTypeUtilities {
     private static final Map<Set<Class<? extends SchemaConcept>>, Collection<SchemaVertexType>> SCHEMA_VERTEX_TYPE_CACHE = new HashMap<>();
 
     private static final Set<Class<? extends SchemaConcept>> GET_ALL_TYPES = null;
+    
+    private SchemaVertexTypeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static SchemaVertexType getDefaultType() {
         return SchemaConceptUtilities.getDefaultVertexType();
@@ -195,7 +199,6 @@ public class SchemaVertexTypeUtilities {
             type = new SchemaVertexType.Builder(defaultType, name)
                     .setIncomplete(true)
                     .build();
-            //SchemaVertexTypeUtilities.addCustomType(type, false);
         }
 
         return type;

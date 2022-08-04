@@ -12,7 +12,7 @@
 #Right-clicking anywhere in the script editor pane reveals a list of simple edit 
 #functions.
 #
-#Clicking on "Actions" in the bottom-left reveals several file options:
+#Clicking on "Options" in the bottom-left reveals several file options:
 #-   "Open" launches a file dialog that lets you load an existing script from 
 #    your local profile into the pane.
 #-   "Save As..." launches a file dialog that lets you save the script currently 

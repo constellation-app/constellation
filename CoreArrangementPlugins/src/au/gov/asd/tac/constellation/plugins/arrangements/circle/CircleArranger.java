@@ -64,7 +64,7 @@ public class CircleArranger implements Arranger {
             final int vxId = wg.getVertex(position);
 
             final float nradius = (nradiusAttr != Graph.NOT_FOUND ? wg.getFloatValue(nradiusAttr, vxId) : 1) * sqrt2;
-            circleCircumference += 2f * nradius;
+            circleCircumference += 2F * nradius;
             maxRadius = Math.max(maxRadius, nradius);
         }
 
@@ -73,7 +73,7 @@ public class CircleArranger implements Arranger {
 
         // Now arrange the vertices on the circumference, positioned by their fraction of
         // the space they each take up.
-        final float circleRadius = circleCircumference / (2f * (float) Math.PI);
+        final float circleRadius = circleCircumference / (2F * (float) Math.PI);
         float angle = 0;
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
@@ -83,11 +83,11 @@ public class CircleArranger implements Arranger {
             // What fraction of the circumference is this?
             // And therefore, what is the angle subtended?
             // (if the circumference is 0 then we divide by 1 to avoid dividing by 0 (nradius will be 0 anyway))
-            final float arcfrac = (2f * nradius) / (circleCircumference != 0 ? circleCircumference : 1);
-            final float arclen = 2f * (float) Math.PI * arcfrac;
+            final float arcfrac = (2F * nradius) / (circleCircumference != 0 ? circleCircumference : 1);
+            final float arclen = 2F * (float) Math.PI * arcfrac;
             final float subtends = arclen;
 
-            final float positionOnCircle = angle + subtends / 2f;
+            final float positionOnCircle = angle + subtends / 2F;
 
             // Calculate the x & y position for each vertex.
             final float x = circleRadius * (float) (Math.sin(positionOnCircle));
@@ -113,7 +113,7 @@ public class CircleArranger implements Arranger {
     }
 
     @Override
-    public void setMaintainMean(boolean b) {
+    public void setMaintainMean(final boolean b) {
         maintainMean = b;
     }
 }

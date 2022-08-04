@@ -107,7 +107,6 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     private static final Logger LOGGER = Logger.getLogger(AttributeEditorTopComponent.class.getName());
 
     private static final String ATTRIBUTE_EDITOR_GRAPH_CHANGED_THREAD_NAME = "Attribute Editor Graph Changed Updater";
-    private static final String ATTRIBUTE_EDITOR_PREFERENCE_CHANGED_THREAD_NAME = "Attribute Editor Preference Changed Updater";
     private final AttributeEditorPanel attributePanel;
     private final Runnable refreshRunnable;
     private Graph activeGraph;
@@ -125,7 +124,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
         refreshRunnable = () -> {
             try {
-                ArrayList<Object> devNull = new ArrayList<>();
+                final ArrayList<Object> devNull = new ArrayList<>();
                 while (queue.drainTo(devNull) > 0) {
                     Thread.sleep(50);
                 }
@@ -145,11 +144,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     }
 
     public Object[] getMoreData(final AttributeData attribute) {
-        Object[] result = new Object[0];
-        if (reader != null) {
-            result = reader.loadMoreDataFor(attribute);
-        }
-        return result;
+        return reader != null ? reader.loadMoreDataFor(attribute) : new Object[0];
     }
 
     /**
@@ -192,11 +187,11 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         PreferenceUtilities.removePreferenceChangeListener(prefs.absolutePath(), this);
     }
 
-    void writeProperties(java.util.Properties p) {
+    void writeProperties(final java.util.Properties p) {
         // Required for @ConvertAsProperties
     }
 
-    void readProperties(java.util.Properties p) {
+    void readProperties(final java.util.Properties p) {
         // Required for @ConvertAsProperties
     }
 

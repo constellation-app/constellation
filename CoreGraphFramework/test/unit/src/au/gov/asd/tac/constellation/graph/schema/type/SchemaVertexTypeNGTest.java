@@ -247,13 +247,9 @@ public class SchemaVertexTypeNGTest {
         Assert.assertEquals(type.getProperties(), new HashMap<>());
         Assert.assertEquals(type.incomplete, false);
         Assert.assertEquals(type.isIncomplete(), false);
-        Assert.assertEquals(type.foregroundIcon, DefaultIconProvider.UNKNOWN);
         Assert.assertEquals(type.getForegroundIcon(), DefaultIconProvider.UNKNOWN);
-        Assert.assertEquals(type.backgroundIcon, DefaultIconProvider.FLAT_SQUARE);
         Assert.assertEquals(type.getBackgroundIcon(), DefaultIconProvider.FLAT_SQUARE);
-        Assert.assertEquals(type.detectionRegex, null);
         Assert.assertEquals(type.getDetectionRegex(), null);
-        Assert.assertEquals(type.validationRegex, null);
         Assert.assertEquals(type.getValidationRegex(), null);
         Assert.assertEquals(type.overridenType, null);
         Assert.assertEquals(type.getOverridenType(), null);
@@ -290,13 +286,9 @@ public class SchemaVertexTypeNGTest {
         Assert.assertEquals(type.getProperties(), properties);
         Assert.assertEquals(type.incomplete, true);
         Assert.assertEquals(type.isIncomplete(), true);
-        Assert.assertEquals(type.foregroundIcon, CharacterIconProvider.CHAR_0020);
         Assert.assertEquals(type.getForegroundIcon(), CharacterIconProvider.CHAR_0020);
-        Assert.assertEquals(type.backgroundIcon, DefaultIconProvider.FLAT_CIRCLE);
         Assert.assertEquals(type.getBackgroundIcon(), DefaultIconProvider.FLAT_CIRCLE);
-        Assert.assertEquals(type.detectionRegex, detectRegex);
         Assert.assertEquals(type.getDetectionRegex(), detectRegex);
-        Assert.assertEquals(type.validationRegex, validationRegex);
         Assert.assertEquals(type.getValidationRegex(), validationRegex);
         Assert.assertEquals(type.overridenType, null);
         Assert.assertEquals(type.getOverridenType(), null);
@@ -338,13 +330,9 @@ public class SchemaVertexTypeNGTest {
         Assert.assertEquals(child.getProperties(), new HashMap<>()); // not inherited as expected ??
         Assert.assertEquals(child.incomplete, false); // not inherited as expected
         Assert.assertEquals(child.isIncomplete(), false); // not inherited as expected
-        Assert.assertEquals(child.foregroundIcon, CharacterIconProvider.CHAR_0020);
         Assert.assertEquals(child.getForegroundIcon(), CharacterIconProvider.CHAR_0020);
-        Assert.assertEquals(child.backgroundIcon, DefaultIconProvider.FLAT_CIRCLE);
         Assert.assertEquals(child.getBackgroundIcon(), DefaultIconProvider.FLAT_CIRCLE);
-        Assert.assertEquals(child.detectionRegex, null); // not inherited as expected
         Assert.assertEquals(child.getDetectionRegex(), null); // not inherited as expected
-        Assert.assertEquals(child.validationRegex, null); // not inherited as expected
         Assert.assertEquals(child.getValidationRegex(), null); // not inherited as expected
         Assert.assertEquals(child.overridenType, null);
         Assert.assertEquals(child.getOverridenType(), null);

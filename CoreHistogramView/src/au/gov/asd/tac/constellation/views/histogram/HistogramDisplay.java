@@ -60,14 +60,14 @@ import javax.swing.event.MouseInputListener;
 public class HistogramDisplay extends JPanel implements MouseInputListener, MouseWheelListener, KeyListener, PropertyChangeListener, ComponentListener {
 
     public static final Color BACKGROUND_COLOR = new Color(0x44, 0x44, 0x44);
-    public static final Color BAR_COLOR = new Color(0.1176f, 0.5647f, 1.0f);
+    public static final Color BAR_COLOR = new Color(0.1176F, 0.5647F, 1.0F);
     public static final Color SELECTED_COLOR = Color.RED.darker();
     public static final Color ACTIVE_COLOR = Color.YELLOW;
 
     static final String NO_VALUE = "<No Value>";
     private static final String PROPERTY_VALUE = "Property Value";
     private static final String COUNT = "Count";
-    private static final String TOTAL_BINS_COUNT = "Total Bin Count: ";
+    private static final String TOTAL_BINS_COUNT = "Selected / Total Bin Count: ";
 
     // The color that shows where a bar would be if it was bigger.
     // This provides a guide to the user so they can click anywhere level with a bar,
@@ -79,10 +79,10 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private static final int GAP_BETWEEN_BARS = 5;
     static final int MINIMUM_BAR_HEIGHT = FontUtilities.getApplicationFontSize() <= 18 ? 18 : FontUtilities.getApplicationFontSize();
     static final int MAXIMUM_BAR_HEIGHT = FontUtilities.getApplicationFontSize() <= 18 ? 18 : FontUtilities.getApplicationFontSize() + 10;
-    private static final int PREFERRED_BAR_LENGTH = 200;
+    private static final int PREFERRED_BAR_LENGTH = 250;
     private static final int MINIMUM_BAR_WIDTH = 4;
     private static final int MINIMUM_SELECTED_WIDTH = 3;
-    private static final int MINIMUM_TEXT_WIDTH = 80;
+    private static final int MINIMUM_TEXT_WIDTH = 100;
     private static final int PREFERRED_HEIGHT = 600;
     private static final int MIN_FONT_SIZE = FontUtilities.getApplicationFontSize();
     private static final int TOP_MARGIN = 3;
@@ -90,14 +90,15 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private static final int LEFT_MARGIN = 3;
     private static final int RIGHT_MARGIN = 3;
     private static final int TEXT_TO_BAR_GAP = 10;
+    private static final int MAX_USER_SET_BAR_HEIGHT = 99;
+    private static final int MIN_USER_SET_BAR_HEIGHT = 2;
     private final HistogramTopComponent topComponent;
     private int preferredHeight;
     private int iconPadding;
     private int barHeight;   // the vertical thickness of the bars
+    private int userSetBarHeight = -1;   // the vertical thickness of the bars as set by the user
     private int barsWidth; // the length of the longest bar
     private int textWidth; // the width of the space allocated to text
-    private float scaleFactor; // the scale factor from histogram count to bar length in pixels
-    private int preferredTextWidth = 80; // this will be modified when the component is painted and the actual size of the text is measured.
     private final Dimension preferredSize = new Dimension(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2, PREFERRED_HEIGHT);
     private BinCollection binCollection = null;
     private BinIconMode binIconMode = BinIconMode.NONE;
@@ -117,15 +118,11 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         initializeListeners();
 
         final JMenuItem copyValuesMenuItem = new JMenuItem("Copy Selected Property Values");
-        copyValuesMenuItem.addActionListener(e -> {
-            copySelectedToClipboard(false);
-        });
+        copyValuesMenuItem.addActionListener(e -> copySelectedToClipboard(false));
         copyMenu.add(copyValuesMenuItem);
 
         final JMenuItem copyValuesAndCountsMenuItem = new JMenuItem("Copy Selected Property Values & Counts");
-        copyValuesAndCountsMenuItem.addActionListener(e -> {
-            copySelectedToClipboard(true);
-        });
+        copyValuesAndCountsMenuItem.addActionListener(e -> copySelectedToClipboard(true));
         copyMenu.add(copyValuesAndCountsMenuItem);
     }
 
@@ -214,21 +211,21 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         } while (--fontSize > MIN_FONT_SIZE && size > barSize - 4);
 
         g.setFont(font);
-        return Math.round(size / 2f) - metrics.getMaxDescent();
+        return Math.round(size / 2F) - metrics.getMaxDescent();
     }
 
     private int getPreferredTextWidth(Graphics g) {
         FontMetrics metrics = g.getFontMetrics();
-        int maxWidth = metrics.stringWidth(PROPERTY_VALUE); // Property Value is the largest string that always appears in a histogram
+        int minWidth = metrics.stringWidth(PROPERTY_VALUE);
         for (Bin bin : binCollection.getBins()) {
             final String label = bin.toString();
             int width = label == null ? 0 : metrics.stringWidth(label);
-            if (width > maxWidth) {
-                maxWidth = width;
+            if (width > minWidth) {
+                minWidth = width + 10;
             }
         }
 
-        return maxWidth;
+        return minWidth;
     }
 
     /**
@@ -243,11 +240,11 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
      * preferred length and give the rest to the bars.**
      */
     private void calculateTextAndBarLength(Graphics g, int padding) {
-        int parentWidth = getParent().getWidth();
-        preferredTextWidth = getPreferredTextWidth(g);
+        final int parentWidth = getParent().getWidth();
+        final int preferredTextWidth = getPreferredTextWidth(g);
+        textWidth = MINIMUM_TEXT_WIDTH;
 
         if (parentWidth < LEFT_MARGIN + padding + MINIMUM_TEXT_WIDTH + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
-            textWidth = MINIMUM_TEXT_WIDTH;
             barsWidth = Math.max(1, parentWidth - LEFT_MARGIN - padding - MINIMUM_TEXT_WIDTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN);
 
         } else { // Bars are at desired length. Expand text space unless it is already sufficient
@@ -293,6 +290,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                 final int[] dims = calculateHeightAndBarWidth();
                 preferredHeight = dims[0];
                 barHeight = dims[1];
+                if (userSetBarHeight != -1) {
+                    barHeight = userSetBarHeight;
+                }
 
                 iconPadding = (int) (binIconMode.getWidth() * barHeight);
 
@@ -305,13 +305,15 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
             g2.setColor(BACKGROUND_COLOR);
             g2.fillRect(0, 0, getWidth(), preferredHeight - 1);
+            calculateTextAndBarLength(g2, iconPadding);
 
             final int arc = barHeight / 3;
 
             final int maxCount = binCollection.getMaxElementCount();
             if (maxCount > 0) {
 
-                scaleFactor = barsWidth / (float) maxCount;
+                // the scale factor from histogram count to bar length in pixels
+                final float scaleFactor = barsWidth / (float) maxCount;
 
                 // Only draw the bars that are visible
                 JViewport viewPort = (JViewport) getParent();
@@ -341,7 +343,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
                 final String headerStringValue = getStringToFit(PROPERTY_VALUE, textWidth, g2);
                 final String headerStringCount = getStringToFit(COUNT, barsWidth, g2);
-                final String headerStringTotalBins = getStringToFit(TOTAL_BINS_COUNT + bins.length, barsWidth, g2);
+                final String headerStringTotalBins = getStringToFit(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + bins.length, barsWidth, g2);
 
                 final int countTextWidth = g2.getFontMetrics().stringWidth(headerStringTotalBins);
 
@@ -511,12 +513,40 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
      * bar doesn't exist.
      */
     private int getBarAtPoint(Point p, boolean bounded) {
-        int n = (int) ((p.y - 2 + GAP_BETWEEN_BARS / 2f) / (GAP_BETWEEN_BARS + barHeight)) - 1;
+        int n = (int) ((p.y - 2 + GAP_BETWEEN_BARS / 2F) / (GAP_BETWEEN_BARS + barHeight)) - 1;
         if (bounded) {
             n = Math.min(Math.max(n, 0), binCollection.getBins().length - 1);
         }
 
         return n;
+    }
+
+    /**
+     * Decrease height of barHeight
+     *
+     */
+    public void decreaseBarHeight() {
+        if (userSetBarHeight == -1 && barHeight > 2) {
+            userSetBarHeight = barHeight - 2;
+        } else if (userSetBarHeight > MIN_USER_SET_BAR_HEIGHT) {
+            userSetBarHeight -= 2;
+        }
+        barHeight = userSetBarHeight;
+        repaint();
+    }
+
+    /**
+     * Increase height of barHeight
+     *
+     */
+    public void increaseBarHeight() {
+        if (userSetBarHeight == -1) {
+            userSetBarHeight = barHeight + 2;
+        } else if (userSetBarHeight < MAX_USER_SET_BAR_HEIGHT) {
+            userSetBarHeight += 2;
+        }
+        barHeight = userSetBarHeight;
+        repaint();
     }
 
     /**

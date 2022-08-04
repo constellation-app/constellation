@@ -114,9 +114,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
             try {
                 worker.get();
             } catch (InterruptedException ex) {
-                workerPlugins.forEach(workerToInterrupt -> {
-                    workerToInterrupt.cancel(true);
-                });
+                workerPlugins.forEach(workerToInterrupt -> workerToInterrupt.cancel(true));
                 throw ex;
             } catch (ExecutionException ex) {
                 workerFailCount[0]++;
@@ -128,9 +126,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
         if (!exceptions.isEmpty()) {
             final StringBuilder entireException = new StringBuilder();
             entireException.append(workerFailCount[0]).append(" workers failed.").append(SeparatorConstants.NEWLINE);
-            exceptions.forEach(ex -> {
-                entireException.append(ex.getMessage()).append(SeparatorConstants.NEWLINE);
-            });
+            exceptions.forEach(ex -> entireException.append(ex.getMessage()).append(SeparatorConstants.NEWLINE));
             throw new PluginException(PluginNotificationLevel.ERROR, entireException.toString());
         }
     }
@@ -181,6 +177,11 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
         return parameters;
     }
 
+    @Override
+    public void updateParameters(final Graph graph, final PluginParameters parameters) {
+        getWorkflow().forEach(pluginName -> PluginRegistry.get(pluginName).updateParameters(graph, parameters));
+    }
+    
     protected int getDefaultBatchSize() {
         return BATCH_SIZE_PARAM_DEFAULT;
     }
@@ -209,9 +210,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
         final int pluginNumber;
 
         private WorkerQueryPlugin(final List<String> pluginNames, final StoreGraph batchGraph, final List<PluginException> wholeOfWorkflowExceptions, final String errorHandlingPlugin, final boolean addPartialResults) {
-            pluginNames.forEach(pluginName -> {
-                plugins.add(PluginRegistry.get(pluginName));
-            });
+            pluginNames.forEach(pluginName -> plugins.add(PluginRegistry.get(pluginName)));
             this.errorHandlingPlugin = errorHandlingPlugin == null ? null : PluginRegistry.get(errorHandlingPlugin);
             this.batchGraph = batchGraph;
             this.originalGraph = new StoreGraph(batchGraph);

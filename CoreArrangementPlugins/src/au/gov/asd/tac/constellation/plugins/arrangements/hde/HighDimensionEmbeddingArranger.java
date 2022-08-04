@@ -55,7 +55,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
     private int[] distance;
 
     // Coordinates of each node relative to pivot.
-    private double[][] X;
+    private double[][] xMatrix;
 
     private static final boolean PART_ONLY = false;
 
@@ -75,7 +75,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
         pivot = new boolean[vxCapacity];
         distance = new int[vxCapacity];
 
-        X = new double[M][vxCapacity];
+        xMatrix = new double[M][vxCapacity];
     }
 
     @Override
@@ -96,7 +96,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
         int currx = 0;
 
         // Find coordinates of nodes relative to first pivot.
-        positionFrom(0, X[currx]);
+        positionFrom(0, xMatrix[currx]);
 
         // For the remaining pivot points...
         for (int m = 1; m < M; m++) {
@@ -125,7 +125,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
 
             // View the graph relative to this new pivot.
             currx++;
-            positionFrom(m, X[currx]);
+            positionFrom(m, xMatrix[currx]);
         }
 
         // Centre the coordinates by subtracting the mean.
@@ -135,7 +135,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
             for (int vpos = 0; vpos < vxCount; vpos++) {
                 final int v = wg.getVertex(vpos);
 
-                X[currx][v] -= mean[a];
+                xMatrix[currx][v] -= mean[a];
             }
 
             currx++;
@@ -143,20 +143,20 @@ public class HighDimensionEmbeddingArranger implements Arranger {
 
         // Compute the covariance matrix.
         // S = *X*X^T)/n.
-        final double[][] S = new double[M][M];
+        final double[][] sMatrix = new double[M][M];
 
         for (int r = 0; r < M; r++) {
             for (int c = 0; c < M; c++) {
-                S[r][c] = 0;
+                sMatrix[r][c] = 0;
                 for (int vpos = 0; vpos < vxCount; vpos++) {
                     final int v = wg.getVertex(vpos);
 
-                    S[r][c] += X[r][v] * X[c][v];
+                    sMatrix[r][c] += xMatrix[r][v] * xMatrix[c][v];
                 }
 
                 // Not necessary because multiplication by a constant does not change the eigenvectors?
                 // But we said we're computing the covariance matrix, so do it.
-                S[r][c] /= vxCount;
+                sMatrix[r][c] /= vxCount;
             }
         }
 
@@ -168,7 +168,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
         final double[] uihat = new double[M];
 
         // Compute the first C eigenvectors of S.
-        final double[][] U = new double[dimensions][M];
+        final double[][] uMatrix = new double[dimensions][M];
 
         for (int u = 0; u < dimensions; u++) {
             // Initialise uihat to a normalised random vector.
@@ -183,7 +183,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
                 uihat[s] /= norm;
             }
 
-            final double ε = 0.001;
+            final double epsilon = 0.001;
             double dot = 1000;
             double prevDot;
             int counter = 100;
@@ -196,13 +196,13 @@ public class HighDimensionEmbeddingArranger implements Arranger {
                     // Compute dot product ui*U[j].
                     dot = 0;
                     for (int m = 0; m < M; m++) {
-                        dot += ui[m] * U[j][m];
+                        dot += ui[m] * uMatrix[j][m];
                     }
 
                     // Subtract ui = ui - (transpose(ui).uj)uj.
                     norm = 0;
                     for (int m = 0; m < M; m++) {
-                        ui[m] -= dot * U[j][m];
+                        ui[m] -= dot * uMatrix[j][m];
                         norm += ui[m] * ui[m];
                     }
 
@@ -215,7 +215,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
                 for (int i = 0; i < M; i++) {
                     uihat[i] = 0;
                     for (int j = 0; j < M; j++) {
-                        uihat[i] += S[i][j] * ui[j];
+                        uihat[i] += sMatrix[i][j] * ui[j];
                     }
                 }
 
@@ -232,9 +232,9 @@ public class HighDimensionEmbeddingArranger implements Arranger {
                     uihat[r] /= norm;
                     dot += uihat[r] * ui[r];
                 }
-            } while ((dot < (1 - ε) && Math.abs(dot - prevDot) > ε) && --counter == 0);
+            } while ((dot < (1 - epsilon) && Math.abs(dot - prevDot) > epsilon) && --counter == 0);
 
-            System.arraycopy(uihat, 0, U[u], 0, M);
+            System.arraycopy(uihat, 0, uMatrix[u], 0, M);
         }
 
         // Now compute actual coordinates.
@@ -253,7 +253,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
             for (int c = 0; c < dimensions; c++) {
                 pos[c] = 0;
                 for (int m = 0; m < M; m++) {
-                    pos[c] += X[m][n] * U[c][m];
+                    pos[c] += xMatrix[m][n] * uMatrix[c][m];
                 }
             }
 

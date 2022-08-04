@@ -21,12 +21,13 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.Import
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -47,8 +48,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileFilter;
+import org.openide.filesystems.FileChooserBuilder;
 
 /**
  * The SourcePane provides the UI necessary to allow the user to specify where
@@ -60,6 +61,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class DelimitedSourcePane extends SourcePane {
 
     private static final Logger LOGGER = Logger.getLogger(DelimitedSourcePane.class.getName());
+    private static final String TITLE = "Import";
     private static final int FILESCROLLPANE_MAX_HEIGHT = 100;
     private static final int FILESCROLLPANE_PREF_HEIGHT = 100;
     private static final int FILEVBOX_SPACING = 10;
@@ -172,64 +174,73 @@ public class DelimitedSourcePane extends SourcePane {
     }
 
     private void addFile(final DelimitedImportController importController) {
-        final FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(defaultDirectory);
-
         final ImportFileParser parser = DelimitedSourcePane.this.importFileParserComboBox.getSelectionModel().getSelectedItem();
 
         if (parser != null) {
-            final ExtensionFilter extensionFilter = parser.getExtensionFilter();
+            final FileFilter fileFilter = parser.getFileFilter();
 
-            if (extensionFilter != null) {
-                fileChooser.getExtensionFilters().add(extensionFilter);
-                fileChooser.setSelectedExtensionFilter(extensionFilter);
-            }
-        }
+            if (fileFilter != null) {
+                FileChooser.openMultiDialog(getDelimitedImportFileChooser().setFileFilter(fileFilter)).thenAccept(optionalFiles -> optionalFiles.ifPresent(newFiles -> Platform.runLater(() -> {
+                    DelimitedSourcePane.this.importFileParserComboBox.setDisable(true);
 
-        final List<File> newFiles = fileChooser.showOpenMultipleDialog(DelimitedSourcePane.this.getScene().getWindow());
+                    final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
+                    final StringBuilder sb = new StringBuilder();
+                    final String alertText = "The following files could not be parsed and have been excluded from the import set:\n";
+                    sb.append(alertText);
 
-        if (newFiles != null) {
-            if (!newFiles.isEmpty()) {
-                defaultDirectory = newFiles.get(0).getParentFile();
-                DelimitedSourcePane.this.importFileParserComboBox.setDisable(true);
-            }
+                    for (final File file : newFiles) {
+                        // prevent adding the same file again
+                        if (fileAlreadyAdded(file)) {
+                            continue;
+                        }
 
-            final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
-            final StringBuilder sb = new StringBuilder();
-            final String alertText = "The following files could not be parsed and have been excluded from the import set:\n";
-            sb.append(alertText);
-
-            for (final File file : newFiles) {
-                // Iterate over files and attempt to parse/preview, if a failure is detected don't add the file to the set of files to import.
-                try {
-                    if (parser != null) {
-                        parser.preview(new InputSource(file), null, PREVIEW_LIMIT);
-                        files.add(file);
+                        // Attempt to parse/preview, if a failure is detected don't add the file to the set of files to import.
+                        try {
+                            parser.preview(new InputSource(file), null, PREVIEW_LIMIT);
+                            files.add(file);
+                        } catch (final IOException ex) {
+                            // Append the name of each file that could not be imported.
+                            sb.append("\n");
+                            sb.append(file.getName());
+                            LOGGER.log(Level.WARNING, "Unable to parse the file {0}, excluding from import set.", new Object[]{file.toString()});
+                            LOGGER.log(Level.WARNING, ex.toString());
+                        }
                     }
-                } catch (final IOException ex) {
-                    // Append the name of each file that could not be imported.
-                    sb.append("\n");
-                    sb.append(file.getName());
-                    LOGGER.log(Level.INFO, "Unable to parse the file {0}, " + "excluding from import set.", new Object[]{file.toString()});
-                    LOGGER.log(Level.WARNING, ex.toString());
-                }
+
+                    // If file names have been appended to sb, then some files could not be imported, so notify user.
+                    if (!sb.toString().equals(alertText)) {
+                        NotifyDisplayer.displayAlert("Import from File", "Invalid file(s) found", sb.toString(), Alert.AlertType.WARNING);
+                    }
+
+                    fileListView.setItems(files);
+
+                    if (!newFiles.isEmpty()) {
+                        fileListView.getSelectionModel().select(newFiles.get(0));
+                        fileListView.requestFocus();
+                    }
+
+                    final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
+
+                    importController.setFiles(files, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
+                    importController.validateFileStructure(newFiles);
+                })));
             }
-
-            // If file names have been appended to sb, then some files could not be imported, so notify user.
-            if (!sb.toString().equals(alertText)) {
-                NotifyDisplayer.displayAlert("Import from File", "Invalid file(s) found", sb.toString(), Alert.AlertType.WARNING);
-            }
-
-            fileListView.setItems(files);
-
-            if (!newFiles.isEmpty()) {
-                fileListView.getSelectionModel().select(newFiles.get(0));
-                fileListView.requestFocus();
-            }
-
-            final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
-            importController.setFiles(files, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
         }
+    }
+
+    private boolean fileAlreadyAdded(final File newFile) {
+        final ObservableList<File> files = fileListView.getItems();
+
+        for (final File file : files) {
+            try {
+                if (file.getCanonicalPath().equals(newFile.getCanonicalPath())) {
+                    return true;
+                }
+            } catch (final IOException ex) {
+                LOGGER.log(Level.WARNING, ex.getMessage(), ex);
+            }
+        }
+        return false;
     }
 
     /**
@@ -252,15 +263,31 @@ public class DelimitedSourcePane extends SourcePane {
     }
 
     /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getDelimitedImportFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true);
+    }
+
+    /**
      * The import controller has been modified: update the GUI to match.
      *
      * @param importController The ImportController.
      */
     @Override
     public void update(final ImportController importController) {
-        graphComboBox.getSelectionModel().select(importController.getDestination());
-        importFileParserComboBox.getSelectionModel().select(((DelimitedImportController) importController)
-                .getImportFileParser());
+        graphComboBox.getItems().stream()
+                .filter(importDestination -> importController.getDestination().toString().equals(importDestination.toString()))
+                .findAny()
+                .ifPresent(graphComboBox.getSelectionModel()::select);
+
+        importFileParserComboBox.getSelectionModel().select(((DelimitedImportController) importController).getImportFileParser());
         schemaCheckBox.setSelected(importController.isSchemaInitialised());
+        filesIncludeHeadersCheckBox.setSelected(((DelimitedImportController) importController).isFilesIncludeHeadersEnabled());
     }
 }

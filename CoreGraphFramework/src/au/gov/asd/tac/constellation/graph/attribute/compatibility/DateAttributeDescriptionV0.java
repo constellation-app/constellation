@@ -73,7 +73,6 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
      */
     public static final Pattern RE_DATE = Pattern.compile("^(\\d{4})-(\\d{2})-(\\d{2})$");
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
-//    private static final SimpleDateFormat SDF_DT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public String getName() {

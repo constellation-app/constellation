@@ -113,9 +113,9 @@ public final class Mathd {
     }
 
     public static void transformVector(final Vector3d vOut, final Vector3d v, final Matrix44d m) {
-        vOut.a[0] = m.getA()[0] * v.a[0] + m.getA()[4] * v.a[1] + m.getA()[8] * v.a[2] + m.getA()[12];// * v[3];       // Assuming 1
-        vOut.a[1] = m.getA()[1] * v.a[0] + m.getA()[5] * v.a[1] + m.getA()[9] * v.a[2] + m.getA()[13];// * v[3];
-        vOut.a[2] = m.getA()[2] * v.a[0] + m.getA()[6] * v.a[1] + m.getA()[10] * v.a[2] + m.getA()[14];// * v[3];
+        vOut.a[0] = m.getA()[0] * v.a[0] + m.getA()[4] * v.a[1] + m.getA()[8] * v.a[2] + m.getA()[12];
+        vOut.a[1] = m.getA()[1] * v.a[0] + m.getA()[5] * v.a[1] + m.getA()[9] * v.a[2] + m.getA()[13];
+        vOut.a[2] = m.getA()[2] * v.a[0] + m.getA()[6] * v.a[1] + m.getA()[10] * v.a[2] + m.getA()[14];
     }
 
     public static void transformVector(final Vector4d vOut, final Vector4d v, final Matrix44d m) {
@@ -181,7 +181,7 @@ public final class Mathd {
         mag = Math.sqrt(x * x + y * y + z * z);
 
         // Identity matrix
-        if (mag == 0.0f) {
+        if (mag == 0.0F) {
             m.identity();
             return;
         }
@@ -200,7 +200,7 @@ public final class Mathd {
         xs = x * s;
         ys = y * s;
         zs = z * s;
-        one_c = 1.0f - c;
+        one_c = 1.0F - c;
 
         m.getA()[index33(0, 0)] = (one_c * xx) + c;
         m.getA()[index33(0, 1)] = (one_c * xy) - zs;
@@ -264,27 +264,27 @@ public final class Mathd {
         xs = x * s;
         ys = y * s;
         zs = z * s;
-        one_c = 1.0f - c;
+        one_c = 1.0F - c;
 
         m.getA()[index44(0, 0)] = (one_c * xx) + c;
         m.getA()[index44(0, 1)] = (one_c * xy) - zs;
         m.getA()[index44(0, 2)] = (one_c * zx) + ys;
-        m.getA()[index44(0, 3)] = 0.0f;
+        m.getA()[index44(0, 3)] = 0.0F;
 
         m.getA()[index44(1, 0)] = (one_c * xy) + zs;
         m.getA()[index44(1, 1)] = (one_c * yy) + c;
         m.getA()[index44(1, 2)] = (one_c * yz) - xs;
-        m.getA()[index44(1, 3)] = 0.0f;
+        m.getA()[index44(1, 3)] = 0.0F;
 
         m.getA()[index44(2, 0)] = (one_c * zx) - ys;
         m.getA()[index44(2, 1)] = (one_c * yz) + xs;
         m.getA()[index44(2, 2)] = (one_c * zz) + c;
-        m.getA()[index44(2, 3)] = 0.0f;
+        m.getA()[index44(2, 3)] = 0.0F;
 
-        m.getA()[index44(3, 0)] = 0.0f;
-        m.getA()[index44(3, 1)] = 0.0f;
-        m.getA()[index44(3, 2)] = 0.0f;
-        m.getA()[index44(3, 3)] = 1.0f;
+        m.getA()[index44(3, 0)] = 0.0F;
+        m.getA()[index44(3, 1)] = 0.0F;
+        m.getA()[index44(3, 2)] = 0.0F;
+        m.getA()[index44(3, 3)] = 1.0F;
     }
 
     public static void makeTranslationMatrix(Matrix44d m, final double x, final double y, final double z) {
@@ -470,7 +470,7 @@ public final class Mathd {
         }
 
         if (t < 0.0) {
-            t = 0.0f;
+            t = 0.0F;
         }
 
         return t * t * (3.0 - 2.0 * t);

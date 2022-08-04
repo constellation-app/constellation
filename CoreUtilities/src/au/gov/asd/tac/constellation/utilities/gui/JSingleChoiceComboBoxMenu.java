@@ -19,6 +19,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -88,16 +89,7 @@ public class JSingleChoiceComboBoxMenu<E> extends JComponent implements ListSele
             this.button = new JButton(text, arrow);
         }
         button.setHorizontalTextPosition(SwingConstants.LEFT);
-        button.addActionListener(event -> {
-            if (!menu.isVisible()) {
-                final Point p = button.getLocationOnScreen();
-                menu.setInvoker(button);
-                menu.setLocation((int) p.getX(), (int) p.getY() + button.getHeight());
-                menu.setVisible(true);
-            } else {
-                menu.setVisible(false);
-            }
-        });
+        addButtonActionListener(button, menu);
         add(button);
 
         selectedItems = new HashSet<>();
@@ -106,16 +98,7 @@ public class JSingleChoiceComboBoxMenu<E> extends JComponent implements ListSele
         items.forEach(item -> {
             final JMenuItem menuItem = new JCheckBoxMenuItem(item.toString());
             menuItem.addActionListener(new OpenAction(menu, button));
-            menuItem.addActionListener(event -> {
-                final JMenuItem changedMenuItem = (JMenuItem) event.getSource();
-                final E changedItem = menuItems.get(changedMenuItem);
-                setSelectedItem(changedItem);
-                listeners.forEach(listener -> {
-                    final int menuIndex = menu.getComponentIndex(changedMenuItem);
-                    final ListSelectionEvent selectionEvent = new ListSelectionEvent(changedItem, menuIndex, menuIndex, false);
-                    listener.valueChanged(selectionEvent);
-                });
-            });
+            addMenuItemActionListener(menuItem);
             menuItems.put(menuItem, item);
             menu.add(menuItem);
         });
@@ -158,20 +141,63 @@ public class JSingleChoiceComboBoxMenu<E> extends JComponent implements ListSele
         }
     }
 
+    protected Map<JMenuItem, E> getMenuItems() {
+        return menuItems;
+    }
+
+    protected final void addMenuItemActionListener(final JMenuItem menuItem) {
+        menuItem.addActionListener(event -> {
+            final JMenuItem changedMenuItem = (JMenuItem) event.getSource();
+            final E changedItem = menuItems.get(changedMenuItem);
+            setSelectedItem(changedItem);
+            final int menuIndex = menu.getComponentIndex(changedMenuItem);
+            final ListSelectionEvent selectionEvent = new ListSelectionEvent(changedItem, menuIndex, menuIndex, false);
+            valueChanged(selectionEvent);
+        });
+    }
+
+    protected final void addButtonActionListener(final JButton button, final JPopupMenu menu) {
+        button.addActionListener(event -> {
+            if (!menu.isVisible()) {
+                final Point p = button.getLocationOnScreen();
+                menu.setInvoker(button);
+                menu.setLocation((int) p.getX(), (int) p.getY() + button.getHeight());
+                menu.setVisible(true);
+            } else {
+                menu.setVisible(false);
+            }
+        });
+    }
+
     public final void addSelectionListener(final ListSelectionListener listener) {
         listeners.add(listener);
     }
 
+    protected Set<ListSelectionListener> getListeners() {
+        return Collections.unmodifiableSet(listeners);
+    }
+
+    protected JButton getButton() {
+        return button;
+    }
+
+    protected JPopupMenu getMenu() {
+        return menu;
+    }
+
     @Override
     public final void valueChanged(final ListSelectionEvent event) {
-        listeners.forEach(listener -> {
-            listener.valueChanged(event);
-        });
+        listeners.forEach(listener -> listener.valueChanged(event));
     }
 
     @Override
     public void setToolTipText(final String text) {
         button.setToolTipText(text);
+    }
+
+    @Override
+    public final String getToolTipText() {
+        return button.getToolTipText();
     }
 
     public static class OpenAction implements ActionListener {

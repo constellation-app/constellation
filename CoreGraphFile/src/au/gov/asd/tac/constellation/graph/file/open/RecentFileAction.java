@@ -43,7 +43,6 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
-import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import java.awt.Component;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -51,7 +50,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.beans.BeanInfo;
 import java.io.File;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -90,6 +90,8 @@ import org.openide.util.actions.Presenter;
 @ActionReference(path = "Menu/File", position = 400)
 public class RecentFileAction extends AbstractAction
         implements Presenter.Menu, PopupMenuListener, ChangeListener {
+
+    private static final Logger LOGGER = Logger.getLogger(RecentFileAction.class.getName());
 
     /**
      * property of menu items where we store fileobject to open
@@ -172,8 +174,7 @@ public class RecentFileAction extends AbstractAction
      * Fills submenu with recently closed files got from RecentFiles support
      */
     private void fillSubMenu() {
-        List<HistoryItem> files = RecentFiles.getRecentFiles();
-        for (final HistoryItem hItem : files) {
+        RecentFiles.getUniqueRecentFiles().forEach(hItem -> {
             // Attempt to create a menu item for the history item.
             // We will skip the creation if the file object corresponding to the
             // history item is null (indicating that the file no longer exists)
@@ -181,12 +182,13 @@ public class RecentFileAction extends AbstractAction
             try {
                 final FileObject fo = RecentFiles.convertPath2File(hItem.getPath());
                 if (fo != null) {
-                    JMenuItem jmi = newSubMenuItem(fo);
+                    final JMenuItem jmi = newSubMenuItem(fo);
                     menu.add(jmi);
                 }
-            } catch (DataObjectNotFoundException ex) {
+            } catch (final DataObjectNotFoundException ex) {
+                LOGGER.log(Level.FINE, "Icon for file was not found, skipping the creation of the menu item");
             }
-        }
+        });
         ensureSelected();
     }
 
@@ -203,7 +205,7 @@ public class RecentFileAction extends AbstractAction
         // eg. because the file no longer exists, then a DataObjectNotFoundException
         // is thrown. The caller should catch this exception and skip the history item
         // it was trying to create a menu item for.
-        Icon icon = getIcon(fo);
+        final Icon icon = getIcon(fo);
         final String path = fo.getPath();
         final JMenuItem jmi = new JMenuItem(fo.getName()) {
             public @Override
@@ -221,9 +223,8 @@ public class RecentFileAction extends AbstractAction
     }
 
     private Icon getIcon(final FileObject fo) throws DataObjectNotFoundException {
-        DataObject dObj = DataObject.find(fo);
-        return new ImageIcon(
-                dObj.getNodeDelegate().getIcon(BeanInfo.ICON_COLOR_16x16));
+        final DataObject dObj = DataObject.find(fo);
+        return new ImageIcon(dObj.getNodeDelegate().getIcon(BeanInfo.ICON_COLOR_16x16));
     }
 
     /**
@@ -235,15 +236,14 @@ public class RecentFileAction extends AbstractAction
             return;
         }
 
-        Component first = menu.getMenuComponent(0);
+        final Component first = menu.getMenuComponent(0);
         if (!(first instanceof JMenuItem)) {
             return;
         }
 
-        Point loc = MouseInfo.getPointerInfo().getLocation();
+        final Point loc = MouseInfo.getPointerInfo().getLocation();
         SwingUtilities.convertPointFromScreen(loc, menu);
-        MenuElement[] selPath
-                = MenuSelectionManager.defaultManager().getSelectedPath();
+        final MenuElement[] selPath = MenuSelectionManager.defaultManager().getSelectedPath();
 
         // apply workaround only when mouse is not hovering over menu
         // (which signalizes mouse driven menu traversing) and only
@@ -251,9 +251,9 @@ public class RecentFileAction extends AbstractAction
         if (!menu.contains(loc) && selPath.length > 0
                 && menu.getPopupMenu() == selPath[selPath.length - 1]) {
             // select first item in submenu through MenuSelectionManager
-            MenuElement[] newPath = new MenuElement[selPath.length + 1];
+            final MenuElement[] newPath = new MenuElement[selPath.length + 1];
             System.arraycopy(selPath, 0, newPath, 0, selPath.length);
-            JMenuItem firstItem = (JMenuItem) first;
+            final JMenuItem firstItem = (JMenuItem) first;
             newPath[selPath.length] = firstItem;
             MenuSelectionManager.defaultManager().setSelectedPath(newPath);
         }
@@ -267,11 +267,11 @@ public class RecentFileAction extends AbstractAction
      */
     @Override
     public void actionPerformed(final ActionEvent evt) {
-        Object source = evt.getSource();
+        final Object source = evt.getSource();
         if (source instanceof JMenuItem) {
-            JMenuItem menuItem = (JMenuItem) source;
-            String path = (String) menuItem.getClientProperty(PATH_PROP);
-            String msg = openFile(path);
+            final JMenuItem menuItem = (JMenuItem) source;
+            final String path = (String) menuItem.getClientProperty(PATH_PROP);
+            final String msg = openFile(path);
             if (msg != null) {
                 StatusDisplayer.getDefault().setStatusText(msg);
                 Toolkit.getDefaultToolkit().beep();
@@ -293,11 +293,11 @@ public class RecentFileAction extends AbstractAction
         if (StringUtils.isBlank(path)) {
             return OFMSG_PATH_IS_NOT_DEFINED;
         }
-        File f = new File(path);
+        final File f = new File(path);
         if (!f.exists()) {
             return OFMSG_FILE_NOT_EXISTS;
         }
-        File nf = FileUtil.normalizeFile(f);
+        final File nf = FileUtil.normalizeFile(f);
         return OpenFile.open(FileUtil.toFileObject(nf), -1);
     }
 

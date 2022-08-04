@@ -109,9 +109,7 @@ public class IconBatcher implements SceneBatcher {
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-        return gl -> {
-            batch.dispose(gl);
-        };
+        return gl -> batch.dispose(gl);
     }
 
     public int updateIconTexture(final GL3 gl) {
@@ -123,11 +121,9 @@ public class IconBatcher implements SceneBatcher {
     }
 
     public GLRenderableUpdateTask updateIcons(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateIntBufferTask(change, access, this::bufferIconInfo, gl -> {
-            return batch.connectIntBuffer(gl, iconTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, iconTarget);
-        }, ICON_BUFFER_WIDTH);
+        return SceneBatcher.updateIntBufferTask(change, access, this::bufferIconInfo, gl -> batch.connectIntBuffer(gl, iconTarget),
+                gl -> batch.disconnectBuffer(gl, iconTarget),
+                ICON_BUFFER_WIDTH);
     }
 
     @Override
@@ -198,11 +194,9 @@ public class IconBatcher implements SceneBatcher {
     }
 
     public GLRenderableUpdateTask updateColors(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
-            return batch.connectFloatBuffer(gl, colorTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, colorTarget);
-        }, COLOR_BUFFER_WIDTH);
+        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> batch.connectFloatBuffer(gl, colorTarget),
+                gl -> batch.disconnectBuffer(gl, colorTarget),
+                COLOR_BUFFER_WIDTH);
     }
 
     private int bufferColorInfo(final int pos, final FloatBuffer colorBuffer, final VisualAccess access) {
@@ -216,12 +210,9 @@ public class IconBatcher implements SceneBatcher {
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor highlightColor = access.getHighlightColor();
-        return gl -> {
-            highlightColorMatrix = new float[]{highlightColor.getRed(), 0, 0, 0,
-                0, highlightColor.getGreen(), 0, 0,
-                0, 0, highlightColor.getBlue(), 0,
-                0, 0, 0, 1
-            };
+        return gl -> highlightColorMatrix = new float[]{highlightColor.getRed(), 0, 0, 0, 0,
+            highlightColor.getGreen(), 0, 0, 0, 0,
+            highlightColor.getBlue(), 0, 0, 0, 0, 1
         };
     }
 

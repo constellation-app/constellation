@@ -63,13 +63,9 @@ public class AttributeEditorDialog extends ConstellationDialog {
             hideDialog();
         });
 
-        cancelButton.setOnAction(e -> {
-            hideDialog();
-        });
+        cancelButton.setOnAction(e -> hideDialog());
 
-        defaultButton.setOnAction(e -> {
-            editor.setDefaultValue();
-        });
+        defaultButton.setOnAction(e -> editor.setDefaultValue());
 
         okCancelHBox = new HBox(20);
         okCancelHBox.setPadding(new Insets(10));
@@ -92,5 +88,4 @@ public class AttributeEditorDialog extends ConstellationDialog {
         scene.getStylesheets().add(AttributeEditorDialog.class.getResource(DARK_THEME).toExternalForm());
         fxPanel.setScene(scene);
     }
-
 }

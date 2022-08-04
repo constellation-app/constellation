@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
  * @author algol
  * @author Nova
  */
-class BoundingBox2D extends AbstractBoundingBox {
+public class BoundingBox2D extends AbstractBoundingBox {
 
     /**
      * Generate a 2D bounding box for the graph.
@@ -35,11 +35,11 @@ class BoundingBox2D extends AbstractBoundingBox {
      * @param wg the graph
      * @return instance of class BoundingBox2D based on input graph
      */
-    BoundingBox2D(final GraphReadMethods wg) {
+    protected BoundingBox2D(final GraphReadMethods wg) {
         super(wg);
     }
 
-    private BoundingBox2D(float minX, float maxX, float minY, float maxY) {
+    private BoundingBox2D(final float minX, final float maxX, final float minY, final float maxY) {
         super(minX, maxX, minY, maxY);
     }
 
@@ -48,7 +48,7 @@ class BoundingBox2D extends AbstractBoundingBox {
      *
      * @return BoundingBox2D
      */
-    BoundingBox2D topLeftQuadrant() {
+    protected BoundingBox2D topLeftQuadrant() {
         return new BoundingBox2D(minX, midX, midY, maxY);
     }
 
@@ -57,7 +57,7 @@ class BoundingBox2D extends AbstractBoundingBox {
      *
      * @return BoundingBox2D
      */
-    BoundingBox2D topRightQuadrant() {
+    protected BoundingBox2D topRightQuadrant() {
         return new BoundingBox2D(midX, maxX, midY, maxY);
     }
 
@@ -66,7 +66,7 @@ class BoundingBox2D extends AbstractBoundingBox {
      *
      * @return BoundingBox2D
      */
-    BoundingBox2D bottomLeftQuadrant() {
+    protected BoundingBox2D bottomLeftQuadrant() {
         return new BoundingBox2D(minX, midX, minY, midY);
     }
 
@@ -75,7 +75,7 @@ class BoundingBox2D extends AbstractBoundingBox {
      *
      * @return BoundingBox2D
      */
-    BoundingBox2D bottomRightQuadrant() {
+    protected BoundingBox2D bottomRightQuadrant() {
         return new BoundingBox2D(midX, maxX, minY, midY);
     }
 }

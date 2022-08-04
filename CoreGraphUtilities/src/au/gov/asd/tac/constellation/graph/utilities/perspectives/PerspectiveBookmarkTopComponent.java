@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
@@ -143,9 +144,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
                 if (!newLabel.equals(p.label)) {
                     perspectiveModel.removeElementAt(pix);
                     final int ix = perspectiveModel.addElement(new Perspective(newLabel, p));
-                    SwingUtilities.invokeLater(() -> {
-                        perspectivesList.setSelectedIndex(ix);
-                    });
+                    SwingUtilities.invokeLater(() -> perspectivesList.setSelectedIndex(ix));
 
                     final Graph graph = GraphManager.getDefault().getActiveGraph();
                     if (graph != null) {
@@ -361,7 +360,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     /**
      * Plugin to change the camera perspective
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
     private static class ChangePerspectivePlugin extends SimpleEditPlugin {
 
         private final Perspective p;
@@ -402,7 +401,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     /**
      * Plugin to update the perspective model for the graph
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
     private static class UpdatePerspectivePlugin extends SimpleEditPlugin {
 
         private final PerspectiveModel perspectiveModel;
@@ -434,7 +433,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     /**
      * Plugin to update the perspective model for the graph
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
     private static class AddPerspectivePlugin extends SimpleEditPlugin {
 
         private final PerspectiveModel perspectiveModel;
@@ -464,9 +463,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
 
             final Perspective p = new Perspective(perspectiveModel.getNewLabel(), Graph.NOT_FOUND, camera.lookAtCentre, camera.lookAtEye, camera.lookAtUp, camera.lookAtRotation);
             final int ix = perspectiveModel.addElement(p);
-            SwingUtilities.invokeLater(() -> {
-                perspectivesList.setSelectedIndex(ix);
-            });
+            SwingUtilities.invokeLater(() -> perspectivesList.setSelectedIndex(ix));
         }
     }
 }

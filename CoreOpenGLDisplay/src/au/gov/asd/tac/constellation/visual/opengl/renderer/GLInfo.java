@@ -23,6 +23,8 @@ import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 
@@ -34,6 +36,8 @@ import org.openide.NotifyDescriptor;
  * @author algol
  */
 public class GLInfo {
+
+    private static final Logger LOGGER = Logger.getLogger(GLInfo.class.getName());
 
     public static final String MINIMUM_OPEN_GL_VERSION = "3.3";
     private final String basicInfo;
@@ -86,7 +90,8 @@ public class GLInfo {
         b.append(String.format("GL: MAX_ARRAY_TEXTURE_LAYERS %d%n", v[7]));
         b.append(String.format("GL: MAX_DRAW_BUFFERS %d%n", v[8]));
         b.append(String.format("GL: MAX_COLOR_ATTACHMENTS %d%n", v[9]));
-        System.out.printf(b.toString());
+        final String log = b.toString();
+        LOGGER.log(Level.INFO, log);
     }
 
     public GLInfo(final GL gl) {

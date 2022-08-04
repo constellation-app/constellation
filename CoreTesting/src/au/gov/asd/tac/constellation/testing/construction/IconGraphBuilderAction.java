@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
@@ -97,7 +98,7 @@ public class IconGraphBuilderAction extends AbstractAction {
     /**
      * Plugin to create an icon graph
      */
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE", "EXPERIMENTAL"})
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE, PluginTags.EXPERIMENTAL})
     public static class BuildIconGraphPlugin extends SimpleEditPlugin {
 
         @Override

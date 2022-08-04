@@ -33,5 +33,7 @@ public class SeparatorConstants {
     public static final String TAB = "\t";
     public static final String UNDERSCORE = "_";
     public static final String WHITESPACE = "\\s";
+    public static final String ASTERISK = "*";
+    public static final String BLANKSPACE = " ";
     public static final String QUOTE = "\"";
 }

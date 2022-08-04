@@ -23,10 +23,12 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("DegreeCentralityPlugin=Degree Centrality")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class DegreeCentralityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute DEGREE_ATTRIBUTE = SnaConcept.VertexAttribute.DEGREE_CENTRALITY;
@@ -82,20 +84,31 @@ public class DegreeCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> normaliseByPossibleParameter = BooleanParameterType.build(NORMALISE_POSSIBLE_PARAMETER_ID);
         normaliseByPossibleParameter.setName("Normalise By Max Possible Score");
         normaliseByPossibleParameter.setDescription("Normalise calculated scores by the maximum possible score");
-        normaliseByPossibleParameter.setBooleanValue(false);
         parameters.addParameter(normaliseByPossibleParameter);
 
         final PluginParameter<BooleanParameterValue> normaliseByAvailableParameter = BooleanParameterType.build(NORMALISE_AVAILABLE_PARAMETER_ID);
         normaliseByAvailableParameter.setName("Normalise By Max Available Score");
         normaliseByAvailableParameter.setDescription("Normalise calculated scores by the maximum calculated score");
-        normaliseByAvailableParameter.setBooleanValue(false);
         parameters.addParameter(normaliseByAvailableParameter);
 
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
         selectedOnlyParameter.setName("Selected Only");
         selectedOnlyParameter.setDescription("Calculate using only selected elements");
-        selectedOnlyParameter.setBooleanValue(false);
         parameters.addParameter(selectedOnlyParameter);
+        
+        parameters.addController(NORMALISE_POSSIBLE_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE && master.getBooleanValue()) {
+                // only one of normalise by max possible or max available can be enabled
+                params.get(NORMALISE_AVAILABLE_PARAMETER_ID).setBooleanValue(false);
+            }
+        });
+        
+        parameters.addController(NORMALISE_AVAILABLE_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE && master.getBooleanValue()) {
+                // only one of normalise by max possible or max available can be enabled
+                params.get(NORMALISE_POSSIBLE_PARAMETER_ID).setBooleanValue(false);
+            }
+        });
 
         return parameters;
     }

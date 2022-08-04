@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute.io;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.TransactionAttributeNameAttributeDescription;
-import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
-import java.io.IOException;
-import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,31 +25,16 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twinkle2_little
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
-public class TransactionAttributeNameIOProvider extends AbstractGraphIOProvider {
+public class TransactionAttributeNameIOProvider extends AbstractCachedStringIOProvider {
 
+    /**
+     * Get a string representing the type of data that this provider handles.
+     * 
+     * @return A unique name indicating the type of data handled by this
+     * provider.
+     */
     @Override
     public String getName() {
         return TransactionAttributeNameAttributeDescription.ATTRIBUTE_NAME;
-    }
-
-    @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
-            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
-            final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
-        final String attributeValue = jnode.isNull() ? null : jnode.textValue();
-        graph.setStringValue(attributeId, elementId, cache.deduplicate(attributeValue));
-    }
-
-    @Override
-    public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator,
-            final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
-        if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
-            final String attributeValue = graph.getStringValue(attr.getId(), elementId);
-            if (attributeValue == null) {
-                jsonGenerator.writeNullField(attr.getName());
-            } else {
-                jsonGenerator.writeStringField(attr.getName(), attributeValue);
-            }
-        }
     }
 }

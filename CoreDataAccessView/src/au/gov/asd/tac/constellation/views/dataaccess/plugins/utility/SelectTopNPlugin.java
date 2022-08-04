@@ -38,6 +38,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -64,7 +65,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @Messages("SelectTopNPlugin=Select Top N")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SelectTopNPlugin.class.getName());
@@ -105,17 +106,20 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final PluginParameter<SingleChoiceParameterValue> modeParameter = SingleChoiceParameterType.build(MODE_PARAMETER_ID);
         modeParameter.setName("Mode");
         modeParameter.setDescription("Select either the Node or Transaction mode");
+        modeParameter.setRequired(true);
         SingleChoiceParameterType.setOptions(modeParameter, modes);
         params.addParameter(modeParameter);
 
         final PluginParameter<SingleChoiceParameterValue> typeCategoryParameter = SingleChoiceParameterType.build(TYPE_CATEGORY_PARAMETER_ID);
         typeCategoryParameter.setName("Type Category");
         typeCategoryParameter.setDescription("The high level type category");
+        typeCategoryParameter.setRequired(true);
         params.addParameter(typeCategoryParameter);
 
         final PluginParameter<MultiChoiceParameterValue> typeParameter = MultiChoiceParameterType.build(TYPE_PARAMETER_ID);
         typeParameter.setName("Specific Types");
         typeParameter.setDescription("The specific types to include when calculating the top N");
+        typeParameter.setRequired(true);
         params.addParameter(typeParameter);
 
         final PluginParameter<IntegerParameterValue> limitParameter = IntegerParameterType.build(LIMIT_PARAMETER_ID);
@@ -124,7 +128,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         limitParameter.setIntegerValue(10);
         params.addParameter(limitParameter);
 
-        params.addController(MODE_PARAMETER_ID, (PluginParameter<?> master, Map<String, PluginParameter<?>> parameters, ParameterChange change) -> {
+        params.addController(MODE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String mode = parameters.get(MODE_PARAMETER_ID).getStringValue();
                 if (mode != null) {
@@ -152,11 +156,14 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                     final PluginParameter<SingleChoiceParameterValue> typeCategoryParamter = (PluginParameter<SingleChoiceParameterValue>) parameters.get(TYPE_CATEGORY_PARAMETER_ID);
                     types.sort(String::compareTo);
                     SingleChoiceParameterType.setOptions(typeCategoryParamter, types);
+                    if (!types.isEmpty()) {
+                        SingleChoiceParameterType.setChoice(typeCategoryParamter, types.get(0));
+                    }
                 }
             }
         });
 
-        params.addController(TYPE_CATEGORY_PARAMETER_ID, (PluginParameter<?> master, Map<String, PluginParameter<?>> parameters, ParameterChange change) -> {
+        params.addController(TYPE_CATEGORY_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String mode = parameters.get(MODE_PARAMETER_ID).getStringValue();
                 final String typeCategory = parameters.get(TYPE_CATEGORY_PARAMETER_ID).getStringValue();
@@ -307,9 +314,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                             LinkedHashMap::new
                     ));
 
-            sortedMap.keySet().stream().limit(limit).forEach(id -> {
-                graph.setBooleanValue(vertexSelectedAttribute, id, true);
-            });
+            sortedMap.keySet().stream().limit(limit).forEach(id -> graph.setBooleanValue(vertexSelectedAttribute, id, true));
 
             interaction.setProgress(1, 0, "Selected " + sortedMap.size() + " nodes.", true);
         }

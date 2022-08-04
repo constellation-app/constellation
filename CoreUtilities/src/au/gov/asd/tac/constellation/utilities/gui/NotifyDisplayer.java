@@ -26,16 +26,18 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import javax.swing.Icon;
 import javax.swing.SwingUtilities;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.util.Exceptions;
+import org.openide.awt.NotificationDisplayer;
 
 /**
  *
  * @author aldebaran30701
  */
 public class NotifyDisplayer {
+
     private static final Logger LOGGER = Logger.getLogger(NotifyDisplayer.class.getName());
 
     /**
@@ -51,15 +53,39 @@ public class NotifyDisplayer {
         final NotifyDescriptor descriptor = new NotifyDescriptor.Message(message, descriptorType);
         display(descriptor);
     }
-    
+
     /**
-     * Display the passed notify descriptor and do not worry about the user response.
+     * Utility to notify the user of some fact. The passed icon can be used to
+     * classify the severity or type of notification.
+     *
+     * @param title the title of the notification
+     * @param icon the icon to be added to the dialog
+     * @param message the notification message
+     */
+    public static void display(final String title, final Icon icon, final String message) {
+        if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
+            // If this was called from one of the UI threads we don't want to
+            // display the dialog and block beacasue some OS's (macos) will go into deadlock
+            // I think what happens is, instead of running the display dialog in this
+            // "task" it creates a new one to display the dialog, puts it on the event
+            // queue then blocks in this task waiting for input from the user closing the dialog.
+            // Now because this thread (the UI thread) is blocked waiting for user input
+            // the dialog is never rendered and a deadlock happens.
+            CompletableFuture.runAsync(() -> display(title, icon, message));
+        } else {
+            EventQueue.invokeLater(() -> NotificationDisplayer.getDefault().notify(title, icon, message, null));
+        }
+    }
+
+    /**
+     * Display the passed notify descriptor and do not worry about the user
+     * response.
      *
      * @param descriptor the descriptor to display in a dialog
      */
     public static void display(final NotifyDescriptor descriptor) {
         if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
-            // If this was called from one of the UI threads we don't want to 
+            // If this was called from one of the UI threads we don't want to
             // display the dialog and block beacasue some OS's (macos) will go into deadlock
             // I think what happens is, instead of running the display dialog in this
             // "task" it creates a new one to display the dialog, puts it on the event
@@ -71,11 +97,11 @@ public class NotifyDisplayer {
             EventQueue.invokeLater(() -> DialogDisplayer.getDefault().notify(descriptor));
         }
     }
-    
+
     /**
-     * Display the passed notify descriptor and wait for a response. This method will
-     * not block but return a future that can be used for dealing with carry on
-     * processing.
+     * Display the passed notify descriptor and wait for a response. This method
+     * will not block but return a future that can be used for dealing with
+     * carry on processing.
      *
      * @param descriptor the descriptor to display in a dialog
      * @return a future containing the user selection from the dialog
@@ -92,19 +118,16 @@ public class NotifyDisplayer {
             final ShowDialogRunner showDialogRunner = new ShowDialogRunner(descriptor);
             try {
                 EventQueue.invokeAndWait(showDialogRunner);
-                
+
                 return CompletableFuture.completedFuture(showDialogRunner.getSelection());
             } catch (InterruptedException ex) {
-                LOGGER.log(Level.WARNING, "Thread displaying the a notify dialog was interrupted.", ex);
+                LOGGER.log(Level.WARNING, "Thread displaying the notify dialog was interrupted.", ex);
                 Thread.currentThread().interrupt();
-                
+
                 return CompletableFuture.completedFuture(null);
             } catch (InvocationTargetException ex) {
-                LOGGER.log(Level.SEVERE, "Error occured during user dialog notification", ex);
-                Exceptions.printStackTrace(ex);
-                
                 // An error happened when showing the dialog. Send it up the stack.
-                throw new RuntimeException(ex.getCause());
+                throw new RuntimeException("Error occured during user dialog notification" + ex.getCause());
             }
         }
     }
@@ -121,18 +144,18 @@ public class NotifyDisplayer {
      * @param alertType the alert icon to add to the alert
      */
     public static void displayAlert(final String title,
-                                    final String header,
-                                    final String message,
-                                    final Alert.AlertType alertType) {
+            final String header,
+            final String message,
+            final Alert.AlertType alertType) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
         dialog.setResizable(true);
-        
+
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
-        
+
         dialog.showAndWait();
     }
 
@@ -149,24 +172,24 @@ public class NotifyDisplayer {
      * @param alertType the alert icon to add to the alert
      */
     public static void displayLargeAlert(final String title,
-                                         final String header,
-                                         final String message,
-                                         final Alert.AlertType alertType) {
+            final String header,
+            final String message,
+            final Alert.AlertType alertType) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
-        
+
         final TextArea ta = new TextArea();
         ta.setEditable(false);
         ta.setWrapText(true);
         ta.setText(message);
-        
+
         dialog.getDialogPane().setExpandableContent(ta);
         dialog.setResizable(true);
-        
+
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
-        
+
         dialog.showAndWait();
     }
 
@@ -183,17 +206,17 @@ public class NotifyDisplayer {
      * @return the user confirmation type
      */
     public static Optional<ButtonType> displayConfirmationAlert(final String title,
-                                                                final String header,
-                                                                final String message) {
+            final String header,
+            final String message) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
         dialog.setResizable(true);
-        
+
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
-        
+
         return dialog.showAndWait();
     }
 }

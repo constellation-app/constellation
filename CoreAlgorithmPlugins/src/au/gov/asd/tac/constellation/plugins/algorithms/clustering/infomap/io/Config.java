@@ -109,14 +109,8 @@ public final class Config {
     }
 
     // Input
-    //TODO: Check whether unused fields are needed
     private String networkFile;
-    private String inputFormat;
-    private boolean parseWithoutIOStreams;
-    private boolean zeroBasedNodeNumbers;
     private boolean includeSelfLinks;
-    private boolean ignoreEdgeWeights;
-    private int nodeLimit;
     private String clusterDataFile;
     private boolean noInfomap;
 
@@ -146,20 +140,17 @@ public final class Config {
     private int fastHierarchicalSolution;
 
     // Output
-    //TODO: Check whether unused fields are needed
     private String outDirectory;
     private boolean printTree;
     private boolean printMap;
     private boolean printClu;
     private boolean printNodeRanks;
     private boolean printFlowNetwork;
-    private boolean printPajekNetwork;
     private boolean printBinaryTree;
     private boolean printBinaryFlowTree; // tree including horizontal links (hierarchical network)
     private boolean noFileOutput;
     private int verbosity;
     private int verboseNumberPrecision;
-    private boolean benchmark;
 
     // Custom for Graph.
     private ConnectionType connectionType;

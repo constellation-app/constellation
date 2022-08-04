@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.GeometryType;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.SpatialReference;
@@ -43,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 @Messages("ExportToShapefilePlugin=Export to Shapefile")
 public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
 
@@ -56,6 +57,7 @@ public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
         final PluginParameter<SingleChoiceParameterValue> geometryTypeParameter = SingleChoiceParameterType.build(GEOMETRY_TYPE_PARAMETER_ID, GeometryTypeParameterValue.class);
         geometryTypeParameter.setName("Geometry Type");
         geometryTypeParameter.setDescription("The GeometryType enum value to export");
+        geometryTypeParameter.setRequired(true);
         final List<GeometryTypeParameterValue> geometryTypeOptions = new ArrayList<>();
         Arrays.asList(GeometryType.values()).forEach(geometryType -> geometryTypeOptions.add(new GeometryTypeParameterValue(geometryType)));
         SingleChoiceParameterType.setOptionsData(geometryTypeParameter, geometryTypeOptions);

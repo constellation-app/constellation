@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     
     private static final Logger LOGGER = Logger.getLogger(QualityControlAutoVetter.class.getName());
 
-    private static QualityControlAutoVetter INSTANCE = null;
+    private static QualityControlAutoVetter instance = null;
     private static final List<QualityControlAutoVetterListener> buttonListeners = new ArrayList<>();
 
     private QualityControlState state;
@@ -53,11 +53,12 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     private Graph currentGraph;
     private long lastGlobalModificationCounter;
     private long lastCameraModificationCounter;
+    private long lastAttributeModificationCounter;
 
     private final List<QualityControlListener> listeners;
 
-    private static List<QualityControlRule> RULES = null;
-    private static List<QualityControlRule> U_RULES = null;
+    private static List<QualityControlRule> rules = null;
+    private static List<QualityControlRule> uRules = null;
 
     /**
      * Constructor for QualityControlAutoVetter.
@@ -151,13 +152,15 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
                 final long thisGlobalModificationCounter = readableGraph.getGlobalModificationCounter();
                 final long thisCameraModificationCounter = readableGraph.getValueModificationCounter(cameraAttribute);
+                final long thisAttributeModificationCounter = readableGraph.getAttributeModificationCounter();
 
                 if (thisGlobalModificationCounter != lastGlobalModificationCounter) {
-                    if (lastGlobalModificationCounter == -1 || lastCameraModificationCounter == thisCameraModificationCounter) {
+                    if (lastGlobalModificationCounter == -1 || lastCameraModificationCounter == thisCameraModificationCounter || lastAttributeModificationCounter != thisAttributeModificationCounter) {
                         updateQualityControlState(graph);
                     }
                     lastGlobalModificationCounter = thisGlobalModificationCounter;
                     lastCameraModificationCounter = thisCameraModificationCounter;
+                    lastAttributeModificationCounter = thisAttributeModificationCounter;
                 }
             } finally {
                 readableGraph.release();
@@ -225,12 +228,12 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     }
 
     protected static List<QualityControlRule> getRules() {
-        if (RULES == null) {
-            RULES = new ArrayList<>(Lookup.getDefault().lookupAll(QualityControlRule.class));
-            U_RULES = Collections.unmodifiableList(RULES);
+        if (rules == null) {
+            rules = new ArrayList<>(Lookup.getDefault().lookupAll(QualityControlRule.class));
+            uRules = Collections.unmodifiableList(rules);
         }
 
-        return U_RULES;
+        return uRules;
     }
 
     /**
@@ -296,14 +299,14 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      * @return singleton instance of QualityControlAutoVetter
      */
     public static synchronized QualityControlAutoVetter getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new QualityControlAutoVetter();
+        if (instance == null) {
+            instance = new QualityControlAutoVetter();
         }
-        return INSTANCE;
+        return instance;
     }
 
     protected static synchronized void destroyInstance() {
-        GraphManager.getDefault().removeGraphManagerListener(INSTANCE);
-        INSTANCE = null;
+        GraphManager.getDefault().removeGraphManagerListener(instance);
+        instance = null;
     }
 }

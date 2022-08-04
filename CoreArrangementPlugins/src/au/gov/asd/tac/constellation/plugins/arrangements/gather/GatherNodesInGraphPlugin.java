@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
@@ -46,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("GatherNodesInGraphPlugin=Gather Selected Nodes Plugin")
-@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public final class GatherNodesInGraphPlugin extends SimpleEditPlugin {
 
     public static final String XYZ_PARAMETER_ID = PluginParameter.buildId(GatherNodesInGraphPlugin.class, "xyz");
@@ -92,7 +93,7 @@ public final class GatherNodesInGraphPlugin extends SimpleEditPlugin {
 
             int h = 0;
             int v = 0;
-            float scalingFactor = 4; // *maxRadius;
+            float scalingFactor = 4;
 
             for (int vxId = gathers.nextSetBit(0); vxId >= 0; vxId = gathers.nextSetBit(vxId + 1)) {
                 if (h == 0 && v == 0) {

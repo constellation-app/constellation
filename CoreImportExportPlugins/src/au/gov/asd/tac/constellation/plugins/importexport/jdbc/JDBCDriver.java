@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+import org.apache.commons.lang3.StringUtils;
 
 public class JDBCDriver {
 
@@ -71,7 +73,7 @@ public class JDBCDriver {
                             for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
                                 final JarEntry je = e.nextElement();
                                 final String classname = je.getName();
-                                if (classname.endsWith(".class")) {
+                                if (StringUtils.endsWithIgnoreCase(classname, FileExtensionConstants.CLASS)) {
                                     try {
                                         // Remove ".class", convert '/' to '.' to create a proper class name.
                                         final int len = classname.length();
@@ -118,8 +120,7 @@ public class JDBCDriver {
 
         // Note: we can't use DriverManager here: it only uses classes that have been loaded by the system class loader.
         // Since we're loading the class on the fly with our own Classloader, DriverManager will refuse to recognise it.
-        final Driver driver = (Driver) Class.forName(driverName, true, clloader).getDeclaredConstructor().newInstance();
-        return driver;
+        return (Driver) Class.forName(driverName, true, clloader).getDeclaredConstructor().newInstance();
     }
 
     @Override

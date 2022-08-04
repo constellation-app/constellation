@@ -79,9 +79,7 @@ public class AnalyticViewPane extends BorderPane {
         // the pane holding the analytic option buttons
         this.analyticOptionButtons = new HBox();
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
-        helpButton.setOnAction(event -> {
-            new HelpCtx(this.getClass().getName()).display();
-        });
+        helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
         this.runButton = new Button(RUN_START_TEXT);
         runButton.setStyle(RUN_START_STYLE);
         runButton.setOnAction(event -> {
@@ -110,7 +108,7 @@ public class AnalyticViewPane extends BorderPane {
                 progressTab.setContent(analyticResultsPane.getProgressIndicatorPane());
                 analyticResultsPane.getInternalVisualisationPane().getTabs().add(progressTab);
                 // answer the current analytic question and display the results
-                Thread answerQuestionThread = new Thread(() -> {
+                final Thread answerQuestionThread = new Thread(() -> {
                     Platform.runLater(() -> {
                         runButton.setText(RUN_STOP_TEXT);
                         runButton.setStyle(RUN_STOP_STYLE);
@@ -171,8 +169,6 @@ public class AnalyticViewPane extends BorderPane {
     }
 
     protected final void setIsRunnable(final boolean isRunnable) {
-        Platform.runLater(() -> {
-            runButton.setDisable(!isRunnable);
-        });
+        Platform.runLater(() -> runButton.setDisable(!isRunnable));
     }
 }

@@ -21,13 +21,13 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
  *
  * @author Nova
  */
-class TreeFactory {
+public class TreeFactory {
 
     private TreeFactory() {
         throw new IllegalStateException("Utility class");
     }
 
-    static AbstractTree create(GraphReadMethods wg, Dimensions d) {
+    protected static AbstractTree create(final GraphReadMethods wg, final Dimensions d) {
         switch (d) {
             case TWO:
                 return new QuadTree(wg);

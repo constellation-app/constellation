@@ -97,7 +97,12 @@ public class NumberInputPane<T> extends Pane {
 
         if (shrinkWidth != null && shrinkWidth) {
             final int maxIntegers = max == null ? 10 : (int) Math.floor(Math.log10(max.doubleValue()) + 1);
-            final int maxDecimals = step == null ? 3 : Math.log10(step.doubleValue()) < 0 ? (int) -Math.ceil((Math.log10(step.doubleValue()) - 1)) : 0;
+            final int maxDecimals;
+            if (step == null) {
+                maxDecimals = 3;
+            } else {
+                maxDecimals = Math.log10(step.doubleValue()) < 0 ? (int) -Math.ceil((Math.log10(step.doubleValue()) - 1)) : 0;
+            }
             final int width = (maxIntegers + maxDecimals) * CHAR_SIZE + BASE_WIDTH;
             field.setPrefWidth(width);
             field.setMinWidth(width);
@@ -141,38 +146,7 @@ public class NumberInputPane<T> extends Pane {
                 switch (change) {
                     case VALUE:
                         if (StringUtils.isNotBlank(currentTextValue) && (!currentTextValue.equals(parameter.getStringValue()) || parameter.getError() != null)) {
-                            try {
-                                parameter.setError(null);
-                                switch (parameter.getType().getId()) {
-                                    case IntegerParameterType.ID:
-                                        final int currentIntegerValue = Integer.valueOf(currentTextValue);
-                                        if ((min != null && currentIntegerValue < min.intValue()) 
-                                                || (max != null && currentIntegerValue > max.intValue())) {
-                                            field.setId(INVALID_ID);
-                                            parameter.setError(INVALID_VALUE);
-                                        }
-                                        // this won't succeed if we entered the if block before this but it will
-                                        // add some helpful logging to indicate the problem in that instance
-                                        parameter.setIntegerValue(currentIntegerValue);
-                                        break;
-                                    case FloatParameterType.ID:
-                                        final float currentFloatValue = Float.valueOf(currentTextValue);
-                                        if ((min != null && currentFloatValue < min.doubleValue())
-                                                || (max != null && currentFloatValue > max.doubleValue())) {
-                                            field.setId(INVALID_ID);
-                                            parameter.setError(INVALID_VALUE);
-                                        }
-                                        // this won't succeed if we entered the if block before this but it will
-                                        // add some helpful logging to indicate the problem in that instance
-                                        parameter.setFloatValue(currentFloatValue);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            } catch (final NumberFormatException ex) {
-                                field.setId(INVALID_ID);
-                                parameter.setError(INVALID_VALUE);
-                            }
+                            setParameterBasedOnType(parameter, min, max);
                         } else if (currentTextValue != null && currentTextValue.isEmpty()) {
                             field.setId(INVALID_ID);
                             parameter.setError(INVALID_VALUE);
@@ -196,5 +170,40 @@ public class NumberInputPane<T> extends Pane {
             })
         );
         getChildren().add(field);
+    }
+
+    private void setParameterBasedOnType(final PluginParameter<?> parameter, final Number min, final Number max) {
+        try {
+            parameter.setError(null);
+            switch (parameter.getType().getId()) {
+                case IntegerParameterType.ID:
+                    final int currentIntegerValue = Integer.valueOf(currentTextValue);
+                    if ((min != null && currentIntegerValue < min.intValue())
+                            || (max != null && currentIntegerValue > max.intValue())) {
+                        field.setId(INVALID_ID);
+                        parameter.setError(INVALID_VALUE);
+                    }
+                    // this won't succeed if we entered the if block before this but it will
+                    // add some helpful logging to indicate the problem in that instance
+                    parameter.setIntegerValue(currentIntegerValue);
+                    break;
+                case FloatParameterType.ID:
+                    final float currentFloatValue = Float.valueOf(currentTextValue);
+                    if ((min != null && currentFloatValue < min.doubleValue())
+                            || (max != null && currentFloatValue > max.doubleValue())) {
+                        field.setId(INVALID_ID);
+                        parameter.setError(INVALID_VALUE);
+                    }
+                    // this won't succeed if we entered the if block before this but it will
+                    // add some helpful logging to indicate the problem in that instance
+                    parameter.setFloatValue(currentFloatValue);
+                    break;
+                default:
+                    break;
+            }
+        } catch (final NumberFormatException ex) {
+            field.setId(INVALID_ID);
+            parameter.setError(INVALID_VALUE);
+        }
     }
 }

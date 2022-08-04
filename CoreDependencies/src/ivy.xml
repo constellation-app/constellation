@@ -90,6 +90,8 @@
         <!-- Downloaded Manually -->
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
         <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
+        
+        <dependency org="com.github.rjeschke" name="txtmark" rev="0.13"/>
 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>

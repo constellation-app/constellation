@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -31,7 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javafx.stage.FileChooser;
+import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -392,7 +395,7 @@ public class JSONImportFileParser extends ImportFileParser {
             final ArrayNode childNode = mapper.createArrayNode();
             JsonNode node = null;
             int counter = 0;
-            
+
             // read in all JSON object from input
             final MappingIterator<JsonNode> it = mapper.readerFor(JsonNode.class)
                     .readValues(in);
@@ -401,7 +404,7 @@ public class JSONImportFileParser extends ImportFileParser {
                 childNode.add(node);
                 counter++;
             }
-            // Maps newline delimited JSON to valid JSON in the format 
+            // Maps newline delimited JSON to valid JSON in the format
             // {"results": [<ndjson>]}
             switch(counter){
                 case(0):
@@ -414,7 +417,7 @@ public class JSONImportFileParser extends ImportFileParser {
                     final ObjectMapper newJSON = new ObjectMapper();
                     final ObjectNode rootNode = newJSON.createObjectNode();
                     rootNode.set("results", childNode);
-                    root = rootNode;                         
+                    root = rootNode;
             }
             lookForChildArrays(root, "", 0);
 
@@ -425,9 +428,7 @@ public class JSONImportFileParser extends ImportFileParser {
                 // number.
                 ArrayList<String> columns = extractAllColNames(selectedList, null, "");
                 Map<String, Integer> columnMap = new HashMap<>();
-                columns.forEach(column -> {
-                    columnMap.put(column, columnMap.size());
-                });
+                columns.forEach(column -> columnMap.put(column, columnMap.size()));
 
                 // Add a heading row to the return data
                 String[] headings = new String[columns.size()];
@@ -495,12 +496,23 @@ public class JSONImportFileParser extends ImportFileParser {
     }
 
     /**
-     * Returns the extension filter to use when browsing for files of this type.
+     * Returns the file filter to use when browsing for files of this type.
      *
-     * @return the extension filter to use when browsing for files of this type.
+     * @return the file filter to use when browsing for files of this type.
      */
     @Override
-    public FileChooser.ExtensionFilter getExtensionFilter() {
-        return new FileChooser.ExtensionFilter("JSON Files", "*.json");
+    public FileFilter getFileFilter() {
+        return new FileFilter() {
+            @Override
+            public boolean accept(final File file) {
+                final String name = file.getName();
+                return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)) || file.isDirectory();
+            }
+
+            @Override
+            public String getDescription() {
+                return "JSON Files (" + FileExtensionConstants.JSON + ")";
+            }
+        };
     }
 }

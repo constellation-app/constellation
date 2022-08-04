@@ -370,9 +370,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
             final Button helpButton = new Button("", new ImageView(HELP_ICON));
             helpButton.paddingProperty().set(HELP_INSETS);
             helpButton.setTooltip(new Tooltip(String.format("Display help for %s", plugin.getName())));
-            helpButton.setOnAction(event -> {
-                plugin.getHelpCtx().display();
-            });
+            helpButton.setOnAction(event -> plugin.getHelpCtx().display());
 
             // Get rid of the ugly button look so the icon stands alone.
             helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");

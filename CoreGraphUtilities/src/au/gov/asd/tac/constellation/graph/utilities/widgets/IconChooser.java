@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -45,6 +47,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
@@ -55,8 +58,10 @@ import org.openide.filesystems.FileChooserBuilder;
  */
 public final class IconChooser extends javax.swing.JPanel implements TreeSelectionListener, ListSelectionListener {
 
+    private static final String TITLE = "Add icons";
+
     private final Set<ConstellationIcon> icons;
-    private final boolean iconAdded = false;
+    private static final boolean ICON_ADDED = false;
 
     public IconChooser(final Set<ConstellationIcon> icons, final String selectedIconName) {
         initComponents();
@@ -170,7 +175,7 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
     }
 
     public boolean isIconAdded() {
-        return iconAdded;
+        return ICON_ADDED;
     }
 
     /**
@@ -257,34 +262,10 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
     }// </editor-fold>//GEN-END:initComponents
 
 private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        // Add an icon to the icon list.
-        String addedIcon = null;
+        FileChooser.openMultiDialog(getAddIconFileChooser()).thenAccept(optionalFiles -> optionalFiles.ifPresent(files -> {
+            // Add an icon to the icon list.
+            String addedIcon = null;
 
-        final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
-                .setTitle("Add icons")
-                .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File pathName) {
-                        final int extlen = 4;
-                        final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && (name.endsWith(".png") || name.endsWith(".jpg"))) {
-                            final String label = name.substring(0, name.length() - extlen);
-
-                            // The name must contain at least one category (a '.' in position 1 or greater).
-                            return label.indexOf('.') > 0;
-                        }
-
-                        return pathName.isDirectory();
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "Graph Icon";
-                    }
-                });
-
-        final File[] files = fChooser.showMultiOpenDialog();
-        if (files != null) {
             for (File file : files) {
                 // The name must contain at least one category (a '.' in position 1 or greater).
                 final int extlen = 4;
@@ -301,13 +282,13 @@ private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                     }
                 }
             }
-        }
 
-        if (addedIcon != null) {
-            icons.clear();
-            icons.addAll(IconManager.getIcons());
-            init(addedIcon);
-        }
+            if (addedIcon != null) {
+                icons.clear();
+                icons.addAll(IconManager.getIcons());
+                init(addedIcon);
+            }
+        }));
 }//GEN-LAST:event_addButtonActionPerformed
 
 private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
@@ -319,7 +300,6 @@ private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
             final IconListElement element = listModel.getElementAt(index);
             final TreePath path = iconFolders.getSelectionPath();
             if (path != null) {
-//            final IconFoldersTreeModel treeModel = (IconFoldersTreeModel)iconFolders.getModel();
                 final IconTreeFolder folder = (IconTreeFolder) path.getLastPathComponent();
                 folder.removeChild(new IconTreeFolder(element.name));
             }
@@ -331,13 +311,13 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         final String iconName = getSelectedIconName();
         if (iconName != null) {
             final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
+                    .setFilesOnly(true)
                     .setTitle("Save icon");
-//        final File file = fChooser.showSaveDialog();
 
             // We need to get a JFileChooser because FileChooserBuilder doesn't have setSelectedFile().
             final JFileChooser chooser = fChooser.createFileChooser();
 
-            chooser.setSelectedFile(new File(iconName + ".png"));
+            chooser.setSelectedFile(new File(iconName + FileExtensionConstants.PNG));
             final int result = chooser.showSaveDialog(this);
             final File file = result == JFileChooser.APPROVE_OPTION ? chooser.getSelectedFile() : null;
 
@@ -389,6 +369,33 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     public void valueChanged(final ListSelectionEvent e) {
         saveButton.setEnabled(true);
         removeButton.setEnabled(true);
+    }
+
+    public FileChooserBuilder getAddIconFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final int extlen = 4;
+                        final String name = file.getName().toLowerCase();
+                        if (file.isFile() && StringUtils.endsWithAny(name, new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
+                            final String label = name.substring(0, name.length() - extlen);
+
+                            // The name must contain at least one category (a '.' in position 1 or greater).
+                            return label.indexOf('.') > 0;
+                        }
+
+                        return file.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Graph Icon";
+                    }
+                });
     }
 }
 

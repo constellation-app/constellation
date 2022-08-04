@@ -46,7 +46,7 @@ public class EdgeMinTransactionDatetimeAttributeBin extends DateTimeBin {
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getEdgeTransaction(element, t);
             final ZonedDateTime zdt = graph.getObjectValue(attribute, transaction);
-            if (zdt.isBefore(currentMin)) {
+            if (zdt != null && zdt.isBefore(currentMin)) {
                 currentMin = zdt;
             }
         }

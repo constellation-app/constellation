@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -52,7 +53,6 @@ import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -71,12 +71,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.CheckComboBox;
-import org.netbeans.api.javahelp.Help;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 
 /**
  * The ConversationBox represents the entire GUI for the conversation view.
@@ -102,34 +99,34 @@ public final class ConversationBox extends StackPane {
     private final ListView<ConversationMessage> bubbles;
     private final BorderPane contributionsPane;
 
-    protected TooltipPane tipsPane = new TooltipPane();
-    protected CheckBox showToolTip = new CheckBox("Hovering translations");
-    protected Font font = Font.getDefault();
-    protected ToolBar optionsPane = new ToolBar();
+    private TooltipPane tipsPane = new TooltipPane();
+    private CheckBox showToolTip = new CheckBox("Hovering translations");
+    private final ToolBar optionsPane = new ToolBar();
 
     // A cache to hold bubble for the listview.
     private final Map<ConversationMessage, BubbleBox> bubbleCache = new HashMap<>();
 
     // Allow the user to choose the displayed actor name.
-    protected final ObservableList<String> senderAttributesChoices = FXCollections.observableArrayList();
-    protected final CheckComboBox<String> senderAttributesCombo = new CheckComboBox<>(senderAttributesChoices);
+    private final ObservableList<String> senderAttributesChoices = FXCollections.observableArrayList();
+    private final CheckComboBox<String> senderAttributesCombo = new CheckComboBox<>(senderAttributesChoices);
 
-    protected ToggleButton changeLabels;
-    protected ComboBox<CheckBox> labelsCombo = new ComboBox<>();
-    protected HBox togglesPane;
-    protected Map<String, ToggleButton> typeToggles = new HashMap<>();
+    private HBox togglesPane;
 
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
 
     private int foundCount;
-    private static final String FOUND_TEXT = "Found: ";
+    private int searchCount;
+
+    private static final String FOUND_TEXT = "Showing ";
     private static final String FOUND_PASS_COLOUR = "-fx-text-fill: yellow;";
     private static final String FOUND_FAIL_COLOUR = "-fx-text-fill: red;";
     private final Label foundLabel = new Label();
 
     private final TextField searchTextField = new TextField();
-    private final VBox searchVBox = new VBox();
+    private final Button nextButton = new Button("Next");
+    private final Button prevButton = new Button("Previous");
+    private final HBox searchHBox = new HBox();
 
     /**
      * Create a ConversationBox with the given Conversation.
@@ -149,9 +146,7 @@ public final class ConversationBox extends StackPane {
         content.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
 
         showToolTip.setSelected(true);
-        showToolTip.setOnAction((ActionEvent t) -> {
-            tipsPane.setEnabled(showToolTip.isSelected());
-        });
+        showToolTip.setOnAction((ActionEvent t) -> tipsPane.setEnabled(showToolTip.isSelected()));
 
         conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
             isAdjustingSenderLabels = true;
@@ -172,15 +167,8 @@ public final class ConversationBox extends StackPane {
 
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         final Button helpButton = new Button("", helpImage);
-        helpButton.setOnAction(event -> {
-            final Help help = Lookup.getDefault().lookup(Help.class);
-            if (help != null) {
-                final String helpId = this.getClass().getPackage().getName();
-                if (help.isValidID(helpId, true)) {
-                    new HelpCtx(helpId).display();
-                }
-            }
-        });
+        helpButton.setOnAction(event
+                -> new HelpCtx(this.getClass().getName()).display());
 
         final Button addAttributesButton = new Button("Add Content Attributes");
         addAttributesButton.setOnAction(event
@@ -256,13 +244,34 @@ public final class ConversationBox extends StackPane {
         searchTextField.setOnKeyTyped(e -> {
             foundLabel.setText("searching...");
             foundLabel.setStyle(FOUND_PASS_COLOUR);
+
+            // If they hit enter iterate through the results
+            searchCount = "\r".equals(e.getCharacter()) ? (searchCount + 1) % foundCount : 0;
+
             highlightRegions();
             refreshCountUI(false);
         });
-        foundLabel.setPadding(new Insets(4, 8, 4, 8));
-        searchVBox.getChildren().addAll(searchTextField, foundLabel);
 
-        content.getChildren().addAll(optionsPane, searchVBox, contributionsPane, bubbles);
+        prevButton.setOnAction(event -> {
+            if (foundCount > 0) {
+                searchCount = searchCount <= 0 ? foundCount - 1 : (searchCount - 1) % foundCount;
+                highlightRegions();
+                foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+            }
+        });
+        nextButton.setOnAction(event -> {
+            if (foundCount > 0) {
+                searchCount = Math.abs((searchCount + 1) % foundCount);
+                highlightRegions();
+                foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+            }
+        });
+        searchTextField.setPrefWidth(300);
+
+        foundLabel.setPadding(new Insets(4, 8, 4, 8));
+        searchHBox.getChildren().addAll(searchTextField, prevButton, nextButton, foundLabel);
+
+        content.getChildren().addAll(optionsPane, searchHBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);
     }
 
@@ -275,9 +284,14 @@ public final class ConversationBox extends StackPane {
     protected void refreshCountUI(final boolean resetCount) {
         if (resetCount) {
             foundCount = 0;
+            searchCount = 0;
         }
 
-        foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + foundCount);
+        foundLabel.setText(
+                StringUtils.isBlank(searchTextField.getText()) || foundCount == 0
+                ? ""
+                : FOUND_TEXT + (searchCount + 1) + " of " + foundCount
+        );
         foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
     }
 
@@ -288,6 +302,7 @@ public final class ConversationBox extends StackPane {
     private void highlightRegions() {
         foundCount = 0;
 
+        final Map<Integer, ConversationMessage> matches = new HashMap<>();
         final List<ConversationMessage> visibleMessages = conversation.getVisibleMessages();
 
         visibleMessages.forEach(message -> {
@@ -298,17 +313,22 @@ public final class ConversationBox extends StackPane {
 
                 if (region instanceof EnhancedTextArea) {
                     foundCount += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
+                    matches.put(foundCount, message);
                 }
 
                 if (region instanceof GridPane) {
                     ((GridPane) region).getChildren().forEach(child -> {
                         if (child instanceof EnhancedTextArea) {
                             foundCount += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
+                            matches.put(foundCount, message);
                         }
                     });
                 }
             });
         });
+        if (foundCount > 0) {
+            bubbles.scrollTo(matches.get(searchCount));
+        }
     }
 
     // A VBox to hold a bubble and a sender.
@@ -477,7 +497,7 @@ public final class ConversationBox extends StackPane {
     /**
      * Plugin to update hidden contribution providers.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
     private class UpdateHiddenContributorProviders extends SimpleEditPlugin {
 
         private final boolean visible;
@@ -514,7 +534,7 @@ public final class ConversationBox extends StackPane {
     /**
      * Plugin to update sender attributes.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
     private class UpdateSenderAttributes extends SimpleEditPlugin {
 
         private final List<String> senderAttributes;

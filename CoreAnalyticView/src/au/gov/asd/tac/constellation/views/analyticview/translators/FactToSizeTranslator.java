@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult;
@@ -63,7 +64,7 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
-    @PluginInfo(tags = {"MODIFY"})
+    @PluginInfo(tags = {PluginTags.MODIFY})
     private class SizeElementsPlugin extends SimpleEditPlugin {
 
         protected static final String RESET_PARAMETER_ID = "SizeElementsPlugin.reset";
@@ -101,10 +102,10 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                     final int elementId = factResult.getElementId();
                     switch (elementType) {
                         case VERTEX:
-                            graph.setFloatValue(vertexSizeAttribute, elementId, 1.0f);
+                            graph.setFloatValue(vertexSizeAttribute, elementId, 1.0F);
                             break;
                         case TRANSACTION:
-                            graph.setFloatValue(transactionSizeAttribute, elementId, 1.0f);
+                            graph.setFloatValue(transactionSizeAttribute, elementId, 1.0F);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Size Elements' is not supported "
@@ -124,14 +125,14 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                 for (final ElementFact factResult : factResults.get()) {
                     final GraphElementType elementType = factResult.getElementType();
                     final int elementId = factResult.getElementId();
-                    final float elementValue = factResult.getFactValue() ? 1f : 0f;
+                    final float elementValue = factResult.getFactValue() ? 1F : 0F;
                     final float sizeIntensity = (float) Math.log((double) (elementValue * graphEstimatedDiameter));
                     switch (elementType) {
                         case VERTEX:
-                            graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0f ? sizeIntensity : 1.0f);
+                            graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
                             break;
                         case TRANSACTION:
-                            graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0f ? sizeIntensity : 1.0f);
+                            graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Size Elements' is not supported "

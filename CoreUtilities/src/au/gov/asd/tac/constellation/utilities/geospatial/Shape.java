@@ -90,10 +90,7 @@ public class Shape {
         GEOPACKAGE_ATTRIBUTE_TYPES.add(Long.class);
         GEOPACKAGE_ATTRIBUTE_TYPES.add(Float.class);
         GEOPACKAGE_ATTRIBUTE_TYPES.add(Double.class);
-//        GEOPACKAGE_ATTRIBUTE_TYPES.add(Boolean.class);
         GEOPACKAGE_ATTRIBUTE_TYPES.add(Date.class);
-//        GEOPACKAGE_ATTRIBUTE_TYPES.add(LocalDateTime.class);
-//        GEOPACKAGE_ATTRIBUTE_TYPES.add(ZonedDateTime.class);
     }
 
     private static final String SHAPEFILE_GEOMETRY_ATTRIBUTE = "the_geom";
@@ -103,7 +100,7 @@ public class Shape {
         SHAPEFILE_ATTRIBUTE_TYPES.put(String.class, "");
         SHAPEFILE_ATTRIBUTE_TYPES.put(Integer.class, 0);
         SHAPEFILE_ATTRIBUTE_TYPES.put(Long.class, 0L);
-        SHAPEFILE_ATTRIBUTE_TYPES.put(Float.class, 0f);
+        SHAPEFILE_ATTRIBUTE_TYPES.put(Float.class, 0F);
         SHAPEFILE_ATTRIBUTE_TYPES.put(Double.class, 0.0);
         SHAPEFILE_ATTRIBUTE_TYPES.put(Boolean.class, false);
         SHAPEFILE_ATTRIBUTE_TYPES.put(Date.class, Date.from(Instant.EPOCH));
@@ -302,7 +299,7 @@ public class Shape {
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         if (attributes != null) {
             for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
-                if (shapes.keySet().contains(entry.getKey())) {
+                if (shapes.keySet().contains(entry.getKey()) && entry.getValue() != null) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
                             schemaAttributes.put(attributeName, attributeValue.getClass());
@@ -331,7 +328,9 @@ public class Shape {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
-                    if (attributes != null && attributes.containsKey(entry.getKey())) {
+                    if (attributes != null
+                            && attributes.containsKey(entry.getKey())
+                            && attributes.get(entry.getKey()) != null) {
                         attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                             if (attributeValue != null) {
                                 feature.setAttribute(attributeName, attributeValue);
@@ -343,7 +342,6 @@ public class Shape {
             } catch (final IOException ex) {
                 // this shape is not valid geojson, so move on to the next
                 LOGGER.severe(ex.getLocalizedMessage());
-                continue;
             }
         }
 
@@ -375,7 +373,7 @@ public class Shape {
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         if (attributes != null) {
             for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
-                if (shapes.keySet().contains(entry.getKey())) {
+                if (shapes.keySet().contains(entry.getKey()) && entry.getValue() != null) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
                             schemaAttributes.put(attributeName, attributeValue.getClass());
@@ -404,7 +402,9 @@ public class Shape {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
-                    if (attributes != null && attributes.containsKey(entry.getKey())) {
+                    if (attributes != null 
+                            && attributes.containsKey(entry.getKey()) 
+                            && attributes.get(entry.getKey()) != null) {
                         attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                             if (attributeValue != null) {
                                 feature.setAttribute(attributeName, attributeValue);
@@ -416,7 +416,6 @@ public class Shape {
             } catch (final IOException ex) {
                 // this shape is not valid geojson, so move on to the next
                 LOGGER.severe(ex.getLocalizedMessage());
-                continue;
             }
         }
 
@@ -453,7 +452,7 @@ public class Shape {
         final Map<String, List<String>> attributesOfValidType = new HashMap<>();
         if (attributes != null) {
             for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
-                if (shapes.keySet().contains(entry.getKey())) {
+                if (shapes.keySet().contains(entry.getKey()) && entry.getValue() != null) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
                             boolean validType = false;
@@ -500,10 +499,13 @@ public class Shape {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
-                    if (attributes != null && attributes.containsKey(entry.getKey())) {
+                    if (attributes != null 
+                            && attributes.containsKey(entry.getKey()) 
+                            && attributes.get(entry.getKey()) != null) {
                         attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                             final String compatibleAttributeName = generateSqliteCompatibleHeader(attributeName);
                             if (schemaAttributes.containsKey(compatibleAttributeName)
+                                    && attributesOfValidType.get(entry.getKey()) != null
                                     && attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
                                 feature.setAttribute(compatibleAttributeName, attributeValue);
                             } else if (schemaAttributes.containsKey(compatibleAttributeName)) {
@@ -519,7 +521,6 @@ public class Shape {
             } catch (final IOException ex) {
                 // this shape is not valid geojson, so move on to the next
                 LOGGER.severe(ex.getLocalizedMessage());
-                continue;
             }
         }
 
@@ -535,12 +536,9 @@ public class Shape {
         featureEntry.setSrid(spatialReference.getSrid());
 
         // write feature collection to geopackage
-        final GeoPackage geoPackage = new GeoPackage(output);
-        try {
+        try (GeoPackage geoPackage = new GeoPackage(output)) {
             geoPackage.add(featureEntry, featureCollection);
             geoPackage.createSpatialIndex(featureEntry);
-        } finally {
-            geoPackage.close();
         }
     }
 
@@ -565,7 +563,7 @@ public class Shape {
         final Map<String, List<String>> attributesOfValidType = new HashMap<>();
         if (attributes != null) {
             for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
-                if (shapes.keySet().contains(entry.getKey())) {
+                if (shapes.keySet().contains(entry.getKey()) && entry.getValue() != null) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
                             boolean validType = false;
@@ -652,10 +650,14 @@ public class Shape {
                                 writableFeature.getUserData().putAll(feature.getUserData());
                             }
 
-                            if (attributes != null && attributes.containsKey(entry.getKey())) {
+                            if (attributes != null 
+                                    && attributes.containsKey(entry.getKey()) 
+                                    && attributes.get(entry.getKey()) != null) {
                                 attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                                     final String compatibleAttributeName = generateShapefileCompatibleHeader(attributeName);
-                                    if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null
+                                    if (schemaAttributes.containsKey(compatibleAttributeName) 
+                                            && attributeValue != null
+                                            && attributesOfValidType.get(entry.getKey()) != null
                                             && attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
                                         writableFeature.setAttribute(compatibleAttributeName, attributeValue);
                                     } else if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null) {
@@ -672,7 +674,6 @@ public class Shape {
                 } catch (final IOException | TransformException | FactoryException ex) {
                     // this shape is not valid geojson, so move on to the next
                     LOGGER.severe(ex.getLocalizedMessage());
-                    continue;
                 }
             }
         }

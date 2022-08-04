@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.graphics.FloatArray;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
@@ -34,7 +35,7 @@ import org.openide.util.NbBundle;
  * @author twilight_sparkle
  */
 @NbBundle.Messages("DragElementsPlugin=Drag Graph Elements")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 public final class DragElementsPlugin extends SimpleEditPlugin {
 
     final IntArray vertexIds;

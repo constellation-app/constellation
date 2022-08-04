@@ -35,7 +35,7 @@ public final class Orb2D {
         return x;
     }
 
-    public void setX(float x) {
+    public void setX(final float x) {
         this.x = x;
     }
 
@@ -43,16 +43,10 @@ public final class Orb2D {
         return y;
     }
 
-    public void setY(float y) {
+    public void setY(final float y) {
         this.y = y;
     }
 
-//    public boolean contains(final float x2, final float y2)
-//    {
-//        final double dx = x - x2;
-//        final double dy = y - y2;
-//        return Math.hypot(dx, dy) <= r;
-//    }
     @Override
     public String toString() {
         return String.format("[Orb2D {%d} %f,%f %f]", hashCode(), x, y, r);

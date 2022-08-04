@@ -72,8 +72,8 @@ public class VertexFlagsTexturiser {
     }
 
     private int bufferFlagsInfo(final int pos, final ByteBuffer flagsBuffer, final VisualAccess access) {
-        final boolean isSelected = access.getVertexSelected(pos);
-        final boolean isDimmed = access.getVertexDimmed(pos);
+        final boolean isSelected = access.isVertexSelected(pos);
+        final boolean isDimmed = access.isVertexDimmed(pos);
         flagsBuffer.put((byte) ((isDimmed ? DIMMED_BIT : 0) | (isSelected ? SELECTED_BIT : 0)));
         return pos;
     }

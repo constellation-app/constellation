@@ -71,8 +71,8 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
                 return null;
             }
             final String dateString = datePicker.getEditor().getText();
-            //The converter is being used here to try and determine if the entered date is a LocalDate
-            //It will throw an exception and won't convert it if its invalid
+            // The converter is being used here to try and determine if the entered date is a LocalDate
+            // It will throw an exception and won't convert it if its invalid
             try {
                 if (!StringUtils.isBlank(dateString)) {
                     datePicker.setValue(datePicker.getConverter().fromString(dateString));
@@ -99,13 +99,9 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
-            datePicker.getEditor().textProperty().addListener((v, o, n) -> {
-                update();
-            });
+            datePicker.getEditor().textProperty().addListener((v, o, n) -> update());
             datePicker.setValue(LocalDate.now());
-            datePicker.valueProperty().addListener((v, o, n) -> {
-                update();
-            });
+            datePicker.valueProperty().addListener((v, o, n) -> update());
 
             controls.addRow(0, datePicker);
             controls.addRow(1, noValueCheckBox);

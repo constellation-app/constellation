@@ -12,11 +12,19 @@ jobs:
         pr-message: >
           Hello @${{ github.actor }}, thank you for submitting a PR! We will respond as soon as possible.
           
+          In the meantime, ensure that you review the `sonarcloud (bot)` recommendations (if applicable) and rectify any failed `CI / Unit Tests` runs once complete.
+          
+          **PS:** _I'm just an automated script, not a human being._
+          
         issue-message: >
           Hello @${{ github.actor }}, thank you for your interest in our work!
           
           If you have a question about using Constellation then please have a read of our [Quick Start Guide](https://github.com/constellation-app/constellation/raw/master/docs/Constellation_Quick_Start_Guide.pdf).
           
-          If you are a developer then it is advised to go through the [Developer Training Guide](https://github.com/constellation-app/constellation-training). Note that we have recently migrated to NetBeans 11 however the examples in the training guide still reference NetBeans 8.2. We are working on a new version so just bear that in mind.
+          If you are a developer then it is advised to go through the [Developer Training Guide](https://github.com/constellation-app/constellation-training). 
           
-          PS: I'm just an automated script, not a human being.
+          **Note:** _We have already migrated to NetBeans 12, however the examples in the training guide still reference NetBeans 8.2._
+          We are working on a new version so just bear that in mind.
+          
+          **PS:** _I'm just an automated script, not a human being._
+          

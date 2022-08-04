@@ -57,7 +57,7 @@ public final class ArrangeInGridHorizontalLineAction extends AbstractAction {
     public void actionPerformed(final ActionEvent e) {
         PluginExecutor.startWith(ArrangementPluginRegistry.GRID_GENERAL)
                 .set(ArrangeInGridGeneralPlugin.GRID_CHOICE_PARAMETER_ID, GridChoice.HORIZONTAL_LINE.toString())
-                .set(ArrangeInGridGeneralPlugin.SIZE_GAIN_PARAMETER_ID, 1.25f)
+                .set(ArrangeInGridGeneralPlugin.SIZE_GAIN_PARAMETER_ID, 1.25F)
                 .set(ArrangeInGridGeneralPlugin.HORIZONTAL_GAP_PARAMETER_ID, 1)
                 .set(ArrangeInGridGeneralPlugin.OFFSET_ROWS_PARAMETER_ID, false)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)

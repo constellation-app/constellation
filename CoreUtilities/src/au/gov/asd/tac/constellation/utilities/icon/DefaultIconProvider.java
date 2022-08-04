@@ -32,7 +32,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
 
     private static final String BACKGROUND_CATEGORY = "Background";
 
-    public static final ConstellationIcon HIGHLIGHTED = new ConstellationIcon.Builder("Highlighted", new ImageIconData(getHighlightImage(256, 0.1f, 4)))
+    public static final ConstellationIcon HIGHLIGHTED = new ConstellationIcon.Builder("Highlighted", new ImageIconData(getHighlightImage(256, 0.1F, 4)))
             .build();
     public static final ConstellationIcon NOISE = new ConstellationIcon.Builder("Noise", new FileIconData("modules/ext/icons/noise.png", CODE_NAME_BASE))
             .build();
@@ -92,8 +92,8 @@ public class DefaultIconProvider implements ConstellationIconProvider {
     private static BufferedImage getHighlightImage(int size, float radius, int samples) {
         final BufferedImage highlightImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 
-        final float sampleSize = 1.0f / (size * samples);
-        final float sampleOffset = sampleSize * 0.5f;
+        final float sampleSize = 1.0F / (size * samples);
+        final float sampleOffset = sampleSize * 0.5F;
 
         for (int x = 0; x < size; x++) {
             float xMin = (float) x / size + sampleOffset;
@@ -103,7 +103,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
                 float yMin = (float) y / size + sampleOffset;
                 float yMax = (float) (y + 1) / size + sampleOffset;
 
-                float alpha = 0.0f;
+                float alpha = 0.0F;
                 for (float xx = xMin; xx < xMax; xx += sampleSize) {
                     for (float yy = yMin; yy < yMax; yy += sampleSize) {
                         alpha += calculateAlpha(xx, yy, radius);
@@ -121,29 +121,29 @@ public class DefaultIconProvider implements ConstellationIconProvider {
     }
 
     private static float calculateAlpha(float x, float y, float radius) {
-        float xDiameter = 0.0f;
-        float yDiameter = 0.0f;
+        float xDiameter = 0.0F;
+        float yDiameter = 0.0F;
 
         if (x < radius) {
             xDiameter = radius - x;
-        } else if (x > 1.0f - radius) {
-            xDiameter = x - (1.0f - radius);
+        } else if (x > 1.0F - radius) {
+            xDiameter = x - (1.0F - radius);
         } else {
             // Do nothing
         }
 
         if (y < radius) {
             yDiameter = radius - y;
-        } else if (y > 1.0f - radius) {
-            yDiameter = y - (1.0f - radius);
+        } else if (y > 1.0F - radius) {
+            yDiameter = y - (1.0F - radius);
         } else {
             // Do nothing
         }
 
         if (xDiameter * xDiameter + yDiameter * yDiameter > radius * radius) {
-            return 0.0f;
+            return 0.0F;
         }
 
-        return 2.0f * Math.max(Math.abs(0.5f - x), Math.abs(0.5f - y));
+        return 2.0F * Math.max(Math.abs(0.5F - x), Math.abs(0.5F - y));
     }
 }

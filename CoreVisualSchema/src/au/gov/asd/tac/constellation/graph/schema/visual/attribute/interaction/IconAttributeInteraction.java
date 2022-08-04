@@ -40,17 +40,17 @@ public class IconAttributeInteraction extends AbstractAttributeInteraction<Const
     }
 
     @Override
-    public String getDisplayText(Object value) {
-        final ConstellationIcon icon = (ConstellationIcon) value;
-        if (icon == null) {
+    public String getDisplayText(final Object value) {
+        if (value == null) {
             return null;
         }
+        final ConstellationIcon icon = (ConstellationIcon) value;
 
         return icon.getExtendedName();
     }
 
     @Override
-    public List<Node> getDisplayNodes(Object value, double width, double height) {
+    public List<Node> getDisplayNodes(final Object value, final double width, final double height) {
         Image iconImage = null;
 
         final ConstellationIcon icon = (ConstellationIcon) value;
@@ -58,7 +58,13 @@ public class IconAttributeInteraction extends AbstractAttributeInteraction<Const
             iconImage = icon.buildImage();
         }
 
-        final double rectWidth = width == -1 ? height == -1 ? DEFAULT_NODE_SIZE : height : width;
+        final double rectWidth;
+        if (width == -1) {
+            rectWidth = height == -1 ? DEFAULT_NODE_SIZE : height;
+        } else {
+            rectWidth = width;
+        }
+
         final double rectHeight = height == -1 ? rectWidth : height;
 
         final ImageView imageView = new ImageView(iconImage);

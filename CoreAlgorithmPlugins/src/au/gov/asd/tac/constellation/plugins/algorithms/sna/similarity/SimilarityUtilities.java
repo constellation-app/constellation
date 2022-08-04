@@ -34,6 +34,10 @@ public class SimilarityUtilities {
     private static int uniqueIdAttribute;
     private static int typeAttribute;
     private static int similarityAttribute;
+    
+    private SimilarityUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void setGraphAndEnsureAttributes(final GraphWriteMethods graph, final SchemaAttribute schemaSimilarityAttribute) {
         SimilarityUtilities.graph = graph;
@@ -46,9 +50,7 @@ public class SimilarityUtilities {
      * Adds similarity scores to the graph while ensuring there is only ever a
      * single similarity transactions between any pair of nodes.
      *
-     * @param graph - graph to add scores to
      * @param scores - the scores of each vertex pair
-     * @param schemaSimilarityAttribute - similarity schema attribute to change
      */
     public static void addScoresToGraph(final Map<Tuple<Integer, Integer>, Float> scores) {
         scores.forEach((pair, score) -> addScoreToGraph(pair.getFirst(), pair.getSecond(), score));
@@ -58,11 +60,9 @@ public class SimilarityUtilities {
      * Adds a similarity score to the graph while ensuring there is only ever a
      * single similarity transactions between any pair of nodes.
      *
-     * @param graph - graph to add scores to
      * @param vertexOne - id of the first vertex
      * @param vertexTwo - id of the second vertex
      * @param score - score to add
-     * @param schemaSimilarityAttribute - similarity schema attribute to change
      */
     public static void addScoreToGraph(final int vertexOne, final int vertexTwo, final float score) {
         final int linkId = graph.getLink(vertexOne, vertexTwo);

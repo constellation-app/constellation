@@ -64,7 +64,7 @@ public abstract class SchemaElementType<T extends SchemaElementType<?>> {
      * modify this SchemaElementType or replace it altogether based on other
      * attributes of the element this SchemaElementType is assigned to.
      */
-    public SchemaElementType(final String name, final String description, final ConstellationColor color,
+    protected SchemaElementType(final String name, final String description, final ConstellationColor color,
             final SchemaElementType<T> superType, final SchemaElementType<T> overridenType,
             final Map<String, String> properties, final boolean incomplete) {
         this.name = name;

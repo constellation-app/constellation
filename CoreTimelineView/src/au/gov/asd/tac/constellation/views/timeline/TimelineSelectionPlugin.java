@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +34,7 @@ import org.openide.util.NbBundle.Messages;
  * @author betelgeuse
  */
 @Messages("TimelineSelectionPlugin=Timeline: Update Selection")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 public class TimelineSelectionPlugin extends SimpleEditPlugin {
 
     private final Set<Integer> vertices;

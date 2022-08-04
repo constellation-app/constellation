@@ -65,7 +65,7 @@ public class Octree {
         return boxes;
     }
 
-    private void getSubs(List<Box3D> boxes) {
+    private void getSubs(final List<Box3D> boxes) {
         boxes.add(box);
         for (final Octree qt : nodes) {
             if (qt != null) {
@@ -128,9 +128,9 @@ public class Octree {
      */
     private int getIndex(final Orb3D orb) {
         int index = -1;
-        final double midx = box.minx + ((box.maxx - box.minx) / 2f);
-        final double midy = box.miny + ((box.miny - box.maxy) / 2f);
-        final double midz = box.minz + ((box.minz - box.maxz) / 2f);
+        final double midx = box.minx + ((box.maxx - box.minx) / 2F);
+        final double midy = box.miny + ((box.miny - box.maxy) / 2F);
+        final double midz = box.minz + ((box.minz - box.maxz) / 2F);
 
         // Object can completely fit within the top/bottom quadrants.
         final boolean topQuadrant = orb.getY() + orb.r < midy;
@@ -143,18 +143,34 @@ public class Octree {
         // Object can completely fit within the left quadrants.
         if (orb.getX() + orb.r < midx) {
             if (topQuadrant) {
-                index = frontQuadrant ? TOP_L_F : backQuadrant ? TOP_L_B : -1;
+                if (frontQuadrant) {
+                    index = TOP_L_F;
+                } else {
+                    index = backQuadrant ? TOP_L_B : -1;
+                }
             } else if (bottomQuadrant) {
-                index = frontQuadrant ? BOT_L_F : backQuadrant ? BOT_L_B : -1;
+                if (frontQuadrant) {
+                    index = BOT_L_F;
+                } else {
+                    index = backQuadrant ? BOT_L_B : -1;
+                }
             } else {
                 // Do nothing
             }
         } // Object can completely fit within the right quadrants.
         else if (orb.getX() - orb.r > midx) {
             if (topQuadrant) {
-                index = frontQuadrant ? TOP_R_F : backQuadrant ? TOP_R_B : -1;
+                if (frontQuadrant) {
+                    index = TOP_R_F;
+                } else {
+                    index = backQuadrant ? TOP_R_B : -1;
+                }
             } else if (bottomQuadrant) {
-                index = frontQuadrant ? BOT_R_F : backQuadrant ? BOT_R_B : -1;
+                if (frontQuadrant) {
+                    index = BOT_R_F;
+                } else {
+                    index = backQuadrant ? BOT_R_B : -1;
+                }
             } else {
                 // Do nothing
             }
@@ -230,7 +246,7 @@ public class Octree {
         // We need to deal with pathological cases such as everything at the same x,y point,
         // or everything co-linear.
         // We add a perturbation so points go different ways at different stages.
-        float perturbation = 1e-4f;
+        float perturbation = 1e-4F;
         int collided = 0;
         for (final Orb3D possible : possibles) {
             if (orb != possible) {
@@ -242,7 +258,7 @@ public class Octree {
                 if (ll <= r * r) {
                     final double l = Math.sqrt(ll);
                     collided++;
-                    final float nudge = l != 0 ? (float) Math.min((l - r) / l * 0.5, -0.1) : -0.1f;
+                    final float nudge = l != 0 ? (float) Math.min((l - r) / l * 0.5, -0.1) : -0.1F;
                     x *= nudge;
                     x += perturbation;
                     y *= nudge;
@@ -250,7 +266,6 @@ public class Octree {
                     z *= nudge;
                     z += perturbation;
                     perturbation = -perturbation;
-//                    System.out.printf("-Collided %f %f %f x=%f y=%f z=%f\n  %s <> %s\n", l, r, nudge, x, y, z, orb, possible);
                     orb.setX(orb.getX() - x);
                     orb.setY(orb.getY() - y);
                     orb.setZ(orb.getZ() - z);

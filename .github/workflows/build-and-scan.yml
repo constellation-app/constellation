@@ -1,11 +1,11 @@
-# build-and-scan.yml 
-name: CI
+name: Build and Scan
 
 on:
   push:
     branches:
     - master
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
     branches:
     - master
 
@@ -28,6 +28,12 @@ jobs:
     - name: Checkout Branch
       uses: actions/checkout@v1
       
+      # Set the verbose flag as a variable
+    - name: Set Verbosity
+      run: |
+        if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo '::set-output name=VERBOSITY::-v -verbose' && echo 'Verbose Logging Enabled'; else echo '::set-output name=VERBOSITY::-v " "' && echo 'Verbose Logging Disabled'; fi
+      id: verbosity
+
     - name: Create Cache Folder
       run: mkdir -p ${HOME}/.ivy2/cache
 
@@ -40,16 +46,16 @@ jobs:
       with:
         path: ${HOME}/.ivy2/cache
         key: ${{ runner.os }}-dependencies-${{ env.cache-name }}-${{ hashFiles('CoreDependencies/src/ivy.xml') }}
-      
+
       # Update the project dependencies and run tests
     - name: Run Tests
       run: |
         chmod +x /home/runner/work/constellation/constellation/.githubutilities/run-tests.sh
         docker pull "${RUNNER_IMAGE}"
-        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" .githubutilities/run-tests.sh
-        
+        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" .githubutilities/run-tests.sh ${{ steps.verbosity.outputs.VERBOSITY }}
+
     - name: Run Sonar
       run: |
         chmod +x /home/runner/work/constellation/constellation/.githubutilities/sonar.sh
         docker pull "${RUNNER_IMAGE}"
-        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" .githubutilities/sonar.sh "${GITHUB_REPOSITORY}" "${PULL_REQUEST_NUMBER}" "${DESTINATION_BRANCH}" "${SOURCE_BRANCH}" "${SONAR_TOKEN}"     
+        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" .githubutilities/sonar.sh "${GITHUB_REPOSITORY}" "${PULL_REQUEST_NUMBER}" "${DESTINATION_BRANCH}" "${SOURCE_BRANCH}" "${SONAR_TOKEN}"

@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
@@ -212,7 +213,7 @@ public class AddRecordStore extends RestService {
         }
     }
 
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
     private static class ImportFromRestApiPlugin extends SimpleEditPlugin {
         
         private static final Logger LOGGER = Logger.getLogger(ImportFromRestApiPlugin.class.getName());
@@ -250,7 +251,7 @@ public class AddRecordStore extends RestService {
                             .followedBy(ArrangementPluginRegistry.PENDANTS)
                             .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
                             .executeNow(graph);
-                } else if (arrange.isEmpty() || arrange.equalsIgnoreCase("None")) {
+                } else if (arrange.isEmpty() || "None".equalsIgnoreCase(arrange)) {
                     // Don't do anything.
                 } else {
                     PluginExecution.withPlugin(arrange).executeNow(graph);

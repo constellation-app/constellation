@@ -253,7 +253,6 @@ public class OverviewPanel extends Pane {
                 if (isFullRefresh) {
                     histogram.getData().clear();
                     histogram.getData().addAll(totalSeries, selectedSeries);
-                    //histogram.setData(FXCollections.observableArrayList(totalSeries, selectedSeries));
                 } else {
                     //causes flickers on remove
                     if (selectedOnly) {
@@ -297,7 +296,7 @@ public class OverviewPanel extends Pane {
         chart.setVerticalGridLinesVisible(false);
 
         // Set the min height so that elements can be sized to whatever level necessary:
-        chart.setMinHeight(0d);
+        chart.setMinHeight(0D);
 
         // Return the newly created histogram:
         return chart;
@@ -324,7 +323,7 @@ public class OverviewPanel extends Pane {
 
         // Style the rectangle:
         rect.setStroke(Color.DODGERBLUE);
-        rect.setStrokeWidth(2d);
+        rect.setStrokeWidth(2D);
         final LinearGradient gradient
                 = new LinearGradient(0.0, 0.0, 0.0, 0.5, true, CycleMethod.NO_CYCLE, new Stop[]{
             new Stop(0, Color.LIGHTBLUE.darker()),

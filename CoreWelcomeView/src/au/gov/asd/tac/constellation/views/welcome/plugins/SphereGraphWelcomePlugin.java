@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.welcome.plugins;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
-import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
@@ -26,10 +25,15 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.testing.CoreTestingPluginRegistry;
 import au.gov.asd.tac.constellation.testing.construction.SphereGraphBuilderPlugin;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -43,9 +47,11 @@ import org.openide.util.NbBundle;
  *
  * @author canis_majoris
  */
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE", "EXPERIMENTAL", " WELCOME"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE, PluginTags.EXPERIMENTAL, PluginTags.WELCOME})
 @NbBundle.Messages("SphereGraphWelcomePlugin=Sphere Graph Welcome Plugin")
-public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
+public class SphereGraphWelcomePlugin implements WelcomePluginInterface {    
+
+    private static final Logger LOGGER = Logger.getLogger(SphereGraphWelcomePlugin.class.getName());
 
     public static final String NEW_SPHERE = "resources/welcome_add_sphere.png";
     final ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));
@@ -73,7 +79,7 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
         schema.newGraph(sg);
         final Graph dualGraph = new DualGraph(sg, false);
 
-        PluginExecutor.startWith(CoreTestingPluginRegistry.SPHERE_GRAPH_BUILDER)
+        final Future<?> f = PluginExecutor.startWith(CoreTestingPluginRegistry.SPHERE_GRAPH_BUILDER)
                 .set(SphereGraphBuilderPlugin.ADD_CHARS_PARAMETER_ID, true)
                 .set(SphereGraphBuilderPlugin.DRAW_MANY_DECORATORS_PARAMETER_ID, true)
                 .set(SphereGraphBuilderPlugin.DRAW_MANY_TX_PARAMETER_ID, true)
@@ -83,11 +89,19 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
                 .set(SphereGraphBuilderPlugin.USE_ALL_DISPLAYABLE_CHARS_PARAMETER_ID, true)
                 .set(SphereGraphBuilderPlugin.USE_LABELS_PARAMETER_ID, true)
                 .set(SphereGraphBuilderPlugin.USE_RANDOM_ICONS_PARAMETER_ID, true)
-                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .executeWriteLater(dualGraph);
 
-        final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().replace(" ", "").toLowerCase();
-        GraphOpener.getDefault().openGraph(dualGraph, graphName);
+        try {
+            // ensure sphere graph has finished before opening the graph
+            f.get();
+            final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().trim().toLowerCase();
+            GraphOpener.getDefault().openGraph(dualGraph, graphName);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            LOGGER.log(Level.SEVERE, "Sphere graph creation was interrupted", ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+        }
     }
 
     /**

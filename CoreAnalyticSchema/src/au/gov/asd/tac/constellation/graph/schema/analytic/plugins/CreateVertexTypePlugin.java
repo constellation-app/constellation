@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.CharacterIconProvider;
@@ -47,7 +48,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
 @Messages("CreateVertexTypePlugin=Create Vertex Type")
 public class CreateVertexTypePlugin extends SimpleEditPlugin {
 
@@ -69,13 +70,13 @@ public class CreateVertexTypePlugin extends SimpleEditPlugin {
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(NAME_PARAMETER_ID);
         nameParam.setName("Name");
         nameParam.setDescription("The name of the new vertex type");
-        nameParam.setStringValue(null);
+        nameParam.setRequired(true);
         params.addParameter(nameParam);
 
         final PluginParameter<StringParameterValue> descriptionParam = StringParameterType.build(DESCRIPTION_PARAMETER_ID);
         descriptionParam.setName("Description");
         descriptionParam.setDescription("The description of the new vertex type");
-        descriptionParam.setStringValue(null);
+        descriptionParam.setRequired(true);
         params.addParameter(descriptionParam);
 
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
@@ -99,31 +100,26 @@ public class CreateVertexTypePlugin extends SimpleEditPlugin {
         final PluginParameter<StringParameterValue> detectionRegexParam = StringParameterType.build(DETECTION_REGEX_PARAMETER_ID);
         detectionRegexParam.setName("Detection Regular Expression");
         detectionRegexParam.setDescription("The detection regular expression (case of the new vertex type");
-        detectionRegexParam.setStringValue(null);
         params.addParameter(detectionRegexParam);
 
         final PluginParameter<StringParameterValue> validationRegexParam = StringParameterType.build(VALIDATION_REGEX_PARAMETER_ID);
         validationRegexParam.setName("Validation Regular Expression");
         validationRegexParam.setDescription("The detection regular expression of the new vertex type");
-        validationRegexParam.setStringValue(null);
         params.addParameter(validationRegexParam);
 
         final PluginParameter<StringParameterValue> superTypeParam = StringParameterType.build(SUPER_TYPE_PARAMETER_ID);
         superTypeParam.setName("Super Type");
         superTypeParam.setDescription("The name of the super type of the new vertex type");
-        superTypeParam.setStringValue(null);
         params.addParameter(superTypeParam);
 
         final PluginParameter<StringParameterValue> overriddenTypeParam = StringParameterType.build(OVERRIDDEN_TYPE_PARAMETER_ID);
         overriddenTypeParam.setName("Overridden Type");
         overriddenTypeParam.setDescription("The name of the overridden type of the new vertex type");
-        overriddenTypeParam.setStringValue(null);
         params.addParameter(overriddenTypeParam);
 
         final PluginParameter<BooleanParameterValue> incompleteParam = BooleanParameterType.build(INCOMPLETE_PARAMETER_ID);
         incompleteParam.setName("Incomplete");
         incompleteParam.setDescription("Is the new vertex type incomplete?");
-        incompleteParam.setBooleanValue(false);
         params.addParameter(incompleteParam);
 
         return params;

@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.Point;
@@ -46,8 +47,8 @@ public class SelectionFreeformRenderable implements GLRenderable {
 
     // How many vertices do we need to draw a freeform shape?
     // What color is the selection freeform shape?
-    private static final Vector4f SELECTION_COLOR = new Vector4f(0, 0.5f, 1, 0.375f);
-    private static final Vector4f SECOND_SELECTION_COLOR = new Vector4f(1, 0.5f, 0, 0.375f);
+    private static final Vector4f SELECTION_COLOR = new Vector4f(0, 0.5F, 1, 0.375F);
+    private static final Vector4f SECOND_SELECTION_COLOR = new Vector4f(1, 0.5F, 0, 0.375F);
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private int shader;
     private int shaderMvp;
@@ -63,7 +64,7 @@ public class SelectionFreeformRenderable implements GLRenderable {
     private final int vertexTarget;
 
     public SelectionFreeformRenderable() {
-        batch = new Batch(GL3.GL_TRIANGLE_FAN);
+        batch = new Batch(GL.GL_TRIANGLE_FAN);
         vertexTarget = batch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
     }
@@ -135,8 +136,8 @@ public class SelectionFreeformRenderable implements GLRenderable {
             final GL3 gl = drawable.getGL().getGL3();
 
             // Map the vertex buffer.
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, batch.getBufferName(vertexTarget));
-            final ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_WRITE_ONLY);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, batch.getBufferName(vertexTarget));
+            final ByteBuffer bbuf = gl.glMapBuffer(GL.GL_ARRAY_BUFFER, GL.GL_WRITE_ONLY);
             final FloatBuffer fbuf = bbuf.asFloatBuffer();
 
             // We should have the same buffer size we started with.
@@ -146,17 +147,17 @@ public class SelectionFreeformRenderable implements GLRenderable {
             final float[] v = new float[150];
 
             for (int i = 0; i < 50; i++) {
-                v[i * 3] = ((float) selectionFreeformModel.getPoint(i).getX() / width) * 2 - 1f;
-                v[i * 3 + 1] = ((float) (height - selectionFreeformModel.getPoint(i).getY()) / height) * 2 - 1f;
-                v[i * 3 + 2] = 0.0f;
+                v[i * 3] = ((float) selectionFreeformModel.getPoint(i).getX() / width) * 2 - 1F;
+                v[i * 3 + 1] = ((float) (height - selectionFreeformModel.getPoint(i).getY()) / height) * 2 - 1F;
+                v[i * 3 + 2] = 0.0F;
             }
 
             fbuf.put(v);
 
-            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
+            gl.glUnmapBuffer(GL.GL_ARRAY_BUFFER);
 
             // Disable depth so the freeform shape is drawn over everything else.
-            gl.glDisable(GL3.GL_DEPTH_TEST);
+            gl.glDisable(GL.GL_DEPTH_TEST);
             gl.glDepthMask(false);
 
             final Matrix44f mvpMatrix = new Matrix44f();
@@ -168,7 +169,7 @@ public class SelectionFreeformRenderable implements GLRenderable {
             batch.draw(gl);
 
             // Reenable depth.
-            gl.glEnable(GL3.GL_DEPTH_TEST);
+            gl.glEnable(GL.GL_DEPTH_TEST);
             gl.glDepthMask(true);
         }
     }

@@ -88,7 +88,7 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         protected Node createEditorControls() {
             // get all vertex attributes currently in the graph
             final List<String> attributeNames = new ArrayList<>();
-            ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
+            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
             try {
                 for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
                     attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));
@@ -104,21 +104,13 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
             final Label seLabel = new Label("SE:");
             final Label swLabel = new Label("SW:");
             nwCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
-            nwCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                update();
-            });
+            nwCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
             neCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
-            neCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                update();
-            });
+            neCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
             seCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
-            seCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                update();
-            });
+            seCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
             swCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
-            swCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                update();
-            });
+            swCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
             final GridPane controls = new GridPane();
             controls.getColumnConstraints().add(new ColumnConstraints(50));

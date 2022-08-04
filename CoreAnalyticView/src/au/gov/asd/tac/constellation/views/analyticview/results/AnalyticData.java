@@ -26,7 +26,7 @@ public abstract class AnalyticData {
     protected final IdentificationData id;
     protected final boolean isNull;
 
-    public AnalyticData(final GraphElementType elementType, final int elementId, final String identifier, final boolean isNull) {
+    protected AnalyticData(final GraphElementType elementType, final int elementId, final String identifier, final boolean isNull) {
         this.id = new IdentificationData(elementType, elementId, identifier);
         this.isNull = isNull;
     }

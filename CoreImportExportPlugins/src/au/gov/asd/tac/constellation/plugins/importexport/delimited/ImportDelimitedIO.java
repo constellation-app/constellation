@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
@@ -25,13 +24,12 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportConstants;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
-import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.TemplateListDialog;
+import au.gov.asd.tac.constellation.plugins.importexport.TemplateUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
-import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -41,14 +39,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javafx.scene.control.Alert;
 import javafx.stage.Window;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbPreferences;
@@ -82,7 +80,8 @@ public final class ImportDelimitedIO {
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_ARGS = "translator_args";
     private static final String DEFAULT_VALUE = "default_value";
-    private static final String JSON_EXTENSION = ".json";
+    private static final String LOAD_TEMPLATE = "Load Template";
+    private static final String SAVE_TEMPLATE = "Save Template";
 
     private ImportDelimitedIO() {
         // private constructor to hide implicit public one - java:S1118
@@ -97,9 +96,8 @@ public final class ImportDelimitedIO {
         }
 
         if (!delimIoDir.isDirectory()) {
-            final String msg = String.format("Can't create directory '%s'.", delimIoDir);
-            final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            final String message = String.format("Can't create directory '%s'.", delimIoDir);
+            NotifyDisplayer.displayAlert(SAVE_TEMPLATE, "Templates Directory Error", message, Alert.AlertType.ERROR);
             return;
         }
 
@@ -195,7 +193,7 @@ public final class ImportDelimitedIO {
 
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-            final File f = new File(delimIoDir, FilenameEncoder.encode(templName + JSON_EXTENSION));
+            final File f = new File(delimIoDir, FilenameEncoder.encode(templName + FileExtensionConstants.JSON));
             try {
                 mapper.writeValue(f, rootNode);
                 StatusDisplayer.getDefault().setStatusText(String.format("Import definition saved to %s.", f.getPath()));
@@ -213,7 +211,7 @@ public final class ImportDelimitedIO {
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
         final String templName = new TemplateListDialog(parentWindow, true).getName(delimIoDir);
         if (templName != null) {
-            final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION);
+            final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON);
             if (!template.canRead()) {
                 NotifyDisplayer.display(String.format("Template %s does not exist", templName), NotifyDescriptor.ERROR_MESSAGE);
             } else {
@@ -222,93 +220,41 @@ public final class ImportDelimitedIO {
         }
     }
 
-    private static void loadParameterFile(final DelimitedImportController importController, final File delimIoDir,
-            final String templName) {
+    private static void loadParameterFile(final DelimitedImportController importController, final File delimIoDir, final String templName) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
-            final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION));
-            final JsonNode source = root.get(SOURCE);
-            final String parser = source.get(PARSER).textValue();
+            final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON));
+            final JsonNode source = TemplateUtilities.getRequiredFieldFromTemplate(root, SOURCE);
+            final String parser = TemplateUtilities.getRequiredFieldFromTemplate(source, PARSER).textValue();
             final ImportFileParser ifp = ImportFileParser.getParser(parser);
+
+            if (!importController.getImportFileParser().getLabel().equals(parser)) {
+                final String message = String.format("Template is for a different file Parser '%s'.", parser);
+                NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "File Parser Mismatch", message, Alert.AlertType.ERROR);
+                return;
+            }
             importController.setImportFileParser(ifp);
 
-            final boolean schemaInit = source.get(SCHEMA_INIT).booleanValue();
-            importController.setSchemaInitialised(schemaInit);
-
-            final boolean filesIncludeHeaders = source.get(FILES_INCLUDE_HEADERS).booleanValue();
+            final boolean filesIncludeHeaders = TemplateUtilities.getRequiredFieldFromTemplate(source, FILES_INCLUDE_HEADERS).booleanValue();
             importController.setfilesIncludeHeaders(filesIncludeHeaders);
 
-            final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) != null
-                    && source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();
-            importController.setShowAllSchemaAttributes(showAllSchemaAttributes);
-
-            final String destination = source.get(DESTINATION).textValue();
+            final String destination = TemplateUtilities.getRequiredFieldFromTemplate(source, DESTINATION).textValue();
             final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(destination);
+
             if (schemaFactory != null) {
-                importController.setDestination(new SchemaDestination(schemaFactory));
+                final List<ImportDefinition> definitions = TemplateUtilities.getImportDefinitions(importController, root, templName);
 
-                final List<ImportDefinition> definitions = new ArrayList<>();
-                final ArrayNode definitionsArray = (ArrayNode) root.withArray(DEFINITIONS);
-                for (final JsonNode definitionNode : definitionsArray) {
-                    final int firstRow = definitionNode.get(FIRST_ROW).intValue();
-                    final RowFilter filter = new RowFilter();
-                    if (definitionNode.has(FILTER)) {
-                        final JsonNode filterNode = definitionNode.get(FILTER);
-                        final String script = filterNode.get(SCRIPT).textValue();
-                        final JsonNode columnsArray = filterNode.withArray(COLUMNS);
-                        final ArrayList<String> columns = new ArrayList<>();
-                        for (final JsonNode column : columnsArray) {
-                            columns.add(column.textValue());
-                        }
-
-                        filter.setScript(script);
-                        filter.setColumns(columns.toArray(new String[columns.size()]));
-                    }
-
-                    final ImportDefinition impdef = new ImportDefinition("", firstRow, filter);
-
-                    final JsonNode attributesNode = definitionNode.get(ATTRIBUTES);
-                    for (final AttributeType attrType : AttributeType.values()) {
-                        final ArrayNode columnArray = (ArrayNode) attributesNode.withArray(attrType.toString());
-                        for (final JsonNode column : columnArray) {
-                            final String columnLabel = column.get(COLUMN_LABEL).textValue();
-                            final String label = column.get(ATTRIBUTE_LABEL).textValue();
-                            if (!importController.hasAttribute(attrType.getElementType(), label)) {
-                                // Manually created attribute.
-                                final String type = column.get(ATTRIBUTE_TYPE).textValue();
-                                final String descr = column.get(ATTRIBUTE_DESCRIPTION).textValue();
-                                final NewAttribute a = new NewAttribute(attrType.getElementType(), type, label, descr);
-                                importController.createManualAttribute(a);
-                            }
-
-                            final Attribute attribute = importController.getAttribute(attrType.getElementType(), label);
-
-                            final AttributeTranslator translator = AttributeTranslator.getTranslator(column.get(TRANSLATOR).textValue());
-                            final String args = column.get(TRANSLATOR_ARGS).textValue();
-                            final String defaultValue = column.get(DEFAULT_VALUE).textValue();
-                            final PluginParameters params = translator.createParameters();
-                            translator.setParameterValues(params, args);
-
-                            final ImportAttributeDefinition iad = new ImportAttributeDefinition(columnLabel, defaultValue,
-                                    attribute, translator, params);
-                            impdef.addDefinition(attrType, iad);
-                        }
-                    }
-
-                    definitions.add(impdef);
-                }
-
-                importController.setClearManuallyAdded(false);
                 try {
-                    ((DelimitedImportPane) importController.getStage()).update(importController, definitions);
+                    ((DelimitedImportPane) importController.getImportPane()).update(importController, definitions);
                 } finally {
                     importController.setClearManuallyAdded(true);
                 }
             } else {
-                final String msg = String.format("Can't find schema factory '%s'", destination);
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
+                final String message = String.format("Can't find schema factory '%s'", destination);
+                NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Destination Schema Error", message, Alert.AlertType.ERROR);
             }
+        } catch (final NoSuchElementException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }

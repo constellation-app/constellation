@@ -57,7 +57,7 @@ public final class SmallWorldGraphBuilderAction implements ActionListener {
         PluginExecution.withPlugin(CoreTestingPluginRegistry.SMALL_WORLD_GRAPH_BUILDER)
                 .withParameter(SmallWorldGraphBuilderPlugin.N_PARAMETER_ID, 10)
                 .withParameter(SmallWorldGraphBuilderPlugin.K_PARAMETER_ID, 4)
-                .withParameter(SmallWorldGraphBuilderPlugin.P_PARAMETER_ID, 0.5f)
+                .withParameter(SmallWorldGraphBuilderPlugin.P_PARAMETER_ID, 0.5F)
                 .withParameter(SmallWorldGraphBuilderPlugin.T_PARAMETER_ID, 100)
                 .withParameter(SmallWorldGraphBuilderPlugin.BUILD_MODE_PARAMETER_ID, "Default")
                 .withParameter(SmallWorldGraphBuilderPlugin.RANDOM_WEIGHTS_PARAMETER_ID, true)

@@ -66,7 +66,6 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         private CheckBox noValueCheckBox;
         private TextField angleTextField;
-        private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
 
         protected BlazeEditor(final EditOperation editOperation, final DefaultGetter<Blaze> defaultGetter, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
@@ -109,41 +108,23 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             final Label angleLabel = new Label("Angle:");
             final HBox angleHBox = new HBox();
             angleTextField = new TextField();
-            angleTextField.textProperty().addListener((v, o, n) -> {
-                update();
-            });
+            angleTextField.textProperty().addListener((v, o, n) -> update());
             final Button northButton = new Button("N");
-            northButton.setOnAction(e -> {
-                angleTextField.setText("0");
-            });
+            northButton.setOnAction(e -> angleTextField.setText("0"));
             final Button northEastButton = new Button("NE");
-            northEastButton.setOnAction(e -> {
-                angleTextField.setText("45");
-            });
+            northEastButton.setOnAction(e -> angleTextField.setText("45"));
             final Button eastButton = new Button("E");
-            eastButton.setOnAction(e -> {
-                angleTextField.setText("90");
-            });
+            eastButton.setOnAction(e -> angleTextField.setText("90"));
             final Button southEastButton = new Button("SE");
-            southEastButton.setOnAction(e -> {
-                angleTextField.setText("135");
-            });
+            southEastButton.setOnAction(e -> angleTextField.setText("135"));
             final Button southButton = new Button("S");
-            southButton.setOnAction(e -> {
-                angleTextField.setText("180");
-            });
+            southButton.setOnAction(e -> angleTextField.setText("180"));
             final Button southWestButton = new Button("SW");
-            southWestButton.setOnAction(e -> {
-                angleTextField.setText("225");
-            });
+            southWestButton.setOnAction(e -> angleTextField.setText("225"));
             final Button westButton = new Button("W");
-            westButton.setOnAction(e -> {
-                angleTextField.setText("270");
-            });
+            westButton.setOnAction(e -> angleTextField.setText("270"));
             final Button northWestButton = new Button("NW");
-            northWestButton.setOnAction(e -> {
-                angleTextField.setText("315");
-            });
+            northWestButton.setOnAction(e -> angleTextField.setText("315"));
             angleHBox.getChildren().addAll(northButton, northEastButton, eastButton, southEastButton, southButton, southWestButton, westButton, northWestButton);
             angleLabel.setLabelFor(angleHBox);
 
@@ -157,7 +138,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
                 namedColors.add(c);
             }
-            colorCombo = new ComboBox<>(namedColors);
+            final ComboBox<ConstellationColor> colorCombo = new ComboBox<>(namedColors);
             final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
                 @Override
                 protected void updateItem(final ConstellationColor item, boolean empty) {
@@ -205,9 +186,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
             noValueCheckBox.setAlignment(Pos.CENTER);
             noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                angleHBox.getChildren().forEach(button -> {
-                    button.setDisable(noValueCheckBox.isSelected());
-                });
+                angleHBox.getChildren().forEach(button -> button.setDisable(noValueCheckBox.isSelected()));
                 angleTextField.setDisable(noValueCheckBox.isSelected());
                 colorCombo.setDisable(noValueCheckBox.isSelected());
                 picker.setDisable(noValueCheckBox.isSelected());

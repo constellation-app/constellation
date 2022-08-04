@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 
@@ -29,7 +30,7 @@ import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
  *
  * @author aldebaran30701
  */
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public final class UpdateLayerSelectionPlugin extends SimpleEditPlugin {
 
     private final long bitmask;

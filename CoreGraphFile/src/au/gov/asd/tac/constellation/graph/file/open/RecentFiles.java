@@ -44,6 +44,7 @@
 package au.gov.asd.tac.constellation.graph.file.open;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
+import com.google.common.collect.ImmutableList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -69,7 +70,7 @@ import org.openide.windows.WindowManager;
  * @author Dafe Simonek
  */
 public final class RecentFiles {
-    
+
     private static final Logger LOGGER = Logger.getLogger(RecentFiles.class.getName());
 
     private static final WindowRegistryL RECENT_FILE_SAVED = new WindowRegistryL();
@@ -80,25 +81,31 @@ public final class RecentFiles {
      * List of recently closed files
      */
     private static final List<HistoryItem> HISTORY = new ArrayList<>();
+
     /**
      * Preferences node for storing history info
      */
     private static Preferences prefs;
+
     private static final Object HISTORY_LOCK = new Object();
+
     /**
      * Name of preferences node where we persist history
      */
     private static final String PREFS_NODE = "RecentFilesHistory"; //NOI18N
+
     /**
      * Prefix of property for recent file URL
      */
     private static final String PROP_URL_PREFIX = "RecentFilesURL."; //NOI18N
+
     /**
      * Boundary for items count in history
      */
-    static final int MAX_HISTORY_ITEMS = 15;
+    private static final int MAX_HISTORY_ITEMS = 10;
 
     private RecentFiles() {
+        // Intentionally left blank
     }
 
     /**
@@ -128,13 +135,28 @@ public final class RecentFiles {
 
     /**
      * Returns read-only list of recently closed files
+     *
+     * @return list of recent files
      */
-    static List<HistoryItem> getRecentFiles() {
+    protected static List<HistoryItem> getRecentFiles() {
         synchronized (HISTORY_LOCK) {
             checkHistory();
             return Collections.unmodifiableList(HISTORY);
         }
     }
+
+    /**
+     * Gets the read-only list of unique, existing recent closed files
+     *
+     * @return list of recent files
+     */
+    public static List<HistoryItem> getUniqueRecentFiles() {
+        return getRecentFiles().stream()
+                .filter(file -> convertPath2File(file.getPath()) != null)
+                .distinct()
+                .collect(ImmutableList.toImmutableList());
+    }
+
     private static volatile boolean historyProbablyValid;
 
     /**
@@ -159,39 +181,39 @@ public final class RecentFiles {
      *
      * @return list of stored recent files
      */
-    static List<HistoryItem> load() {
+    protected static List<HistoryItem> load() {
         final String[] keys;
-        final Preferences _prefs = getPrefs();
+        final Preferences localPrefs = getPrefs();
         try {
-            keys = _prefs.keys();
+            keys = localPrefs.keys();
         } catch (final BackingStoreException ex) {
             LOGGER.log(Level.FINE, ex.getMessage(), ex);
             return Collections.emptyList();
         }
 
-        List<HistoryItem> result = new ArrayList<>();
-        for (String curKey : keys) {
-            String value = _prefs.get(curKey, null);
+        final List<HistoryItem> result = new ArrayList<>();
+        for (final String curKey : keys) {
+            final String value = localPrefs.get(curKey, null);
             if (value != null) {
                 try {
-                    int id = Integer.parseInt(curKey.substring(PROP_URL_PREFIX.length()));
-                    HistoryItem hItem = new HistoryItem(id, value);
-                    int ind = result.indexOf(hItem);
+                    final int id = Integer.parseInt(curKey.substring(PROP_URL_PREFIX.length()));
+                    final HistoryItem hItem = new HistoryItem(id, value);
+                    final int ind = result.indexOf(hItem);
                     if (ind == -1) {
                         result.add(hItem);
                     } else {
-                        _prefs.remove(PROP_URL_PREFIX
+                        localPrefs.remove(PROP_URL_PREFIX
                                 + Math.max(result.get(ind).id, id));
                         result.get(ind).id = Math.min(result.get(ind).id, id);
                     }
                 } catch (final NumberFormatException ex) {
                     LOGGER.log(Level.FINE, ex.getMessage(), ex);
-                    _prefs.remove(curKey);
+                    localPrefs.remove(curKey);
                 }
             } else {
-                //clear the recent files history file from the old,
+                // clear the recent files history file from the old,
                 // not known and broken keys
-                _prefs.remove(curKey);
+                localPrefs.remove(curKey);
             }
         }
         Collections.sort(result);
@@ -200,23 +222,23 @@ public final class RecentFiles {
         return result;
     }
 
-    static void store() {
+    protected static void store() {
         store(HISTORY);
     }
 
-    static void store(final List<HistoryItem> history) {
-        final Preferences _prefs = getPrefs();
+    protected static void store(final List<HistoryItem> history) {
+        final Preferences localPrefs = getPrefs();
         for (int i = 0; i < history.size(); i++) {
-            HistoryItem hi = history.get(i);
+            final HistoryItem hi = history.get(i);
             if ((hi.id != i) && (hi.id >= history.size())) {
-                _prefs.remove(PROP_URL_PREFIX + hi.id);
+                localPrefs.remove(PROP_URL_PREFIX + hi.id);
             }
             hi.id = i;
-            _prefs.put(PROP_URL_PREFIX + i, hi.getPath());
+            localPrefs.put(PROP_URL_PREFIX + i, hi.getPath());
         }
     }
 
-    static Preferences getPrefs() {
+    protected static Preferences getPrefs() {
         if (prefs == null) {
             prefs = NbPreferences.forModule(RecentFiles.class).node(PREFS_NODE);
         }
@@ -264,10 +286,10 @@ public final class RecentFiles {
     private static void removeFile(final TopComponent tc) {
         historyProbablyValid = false;
         if (tc instanceof CloneableTopComponent) {
-            String path = obtainPath(tc);
+            final String path = obtainPath(tc);
             if (path != null) {
                 synchronized (HISTORY_LOCK) {
-                    HistoryItem hItem = findHistoryItem(path);
+                    final HistoryItem hItem = findHistoryItem(path);
                     if (hItem != null) {
                         HISTORY.remove(hItem);
                     }
@@ -280,7 +302,7 @@ public final class RecentFiles {
     private static String obtainPath(final TopComponent tc) {
         final DataObject dObj = tc.getLookup().lookup(DataObject.class);
         if (dObj != null) {
-            FileObject fo = dObj.getPrimaryFile();
+            final FileObject fo = dObj.getPrimaryFile();
             if (fo != null) {
                 return convertFile2Path(fo);
             }
@@ -289,7 +311,7 @@ public final class RecentFiles {
     }
 
     private static HistoryItem findHistoryItem(final String path) {
-        for (HistoryItem hItem : HISTORY) {
+        for (final HistoryItem hItem : HISTORY) {
             if (path.equals(hItem.getPath())) {
                 return hItem;
             }
@@ -297,12 +319,12 @@ public final class RecentFiles {
         return null;
     }
 
-    static String convertFile2Path(final FileObject fo) {
+    protected static String convertFile2Path(final FileObject fo) {
         final File f = FileUtil.toFile(fo);
         return f == null ? null : f.getPath();
     }
 
-    static FileObject convertPath2File(final String path) {
+    public static FileObject convertPath2File(final String path) {
         File f = new File(path);
         f = FileUtil.normalizeFile(f);
         return f == null ? null : FileUtil.toFileObject(f);
@@ -316,12 +338,12 @@ public final class RecentFiles {
         historyProbablyValid = !HISTORY.isEmpty();
     }
 
-    static void pruneHistory() {
+    protected static void pruneHistory() {
         synchronized (HISTORY_LOCK) {
-            Iterator<HistoryItem> it = HISTORY.iterator();
+            final Iterator<HistoryItem> it = HISTORY.iterator();
             while (it.hasNext()) {
-                HistoryItem historyItem = it.next();
-                File f = new File(historyItem.getPath());
+                final HistoryItem historyItem = it.next();
+                final File f = new File(historyItem.getPath());
                 if (!f.exists()) {
                     it.remove();
                 }
@@ -333,13 +355,13 @@ public final class RecentFiles {
      * One item of the recently closed files history. Comparable by the time
      * field, ascending from most recent to older items.
      */
-    static final class HistoryItem implements Comparable<HistoryItem> {
+    public static final class HistoryItem implements Comparable<HistoryItem> {
 
         private int id;
         private final String path;
         private String fileName;
 
-        HistoryItem(final int id, final String path) {
+        public HistoryItem(final int id, final String path) {
             this.path = path;
             this.id = id;
         }

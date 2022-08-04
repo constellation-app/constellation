@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileReader;
@@ -127,14 +128,13 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
     /**
      * Filename extension for nebula files.
      */
-    public static final String FILE_EXTENSION = ".nebula";
+    public static final String FILE_EXTENSION = FileExtensionConstants.NEBULA;
 
     // Remember nebula colors.
     private static final Map<String, Color> NEBULA_COLOR = new HashMap<>();
 
     public NebulaDataObject(final FileObject pf, final MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(pf, loader);
-//        registerEditor("application/x-nebula", false);
     }
 
     @Override
@@ -175,7 +175,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
         // Otherwise, create a random color for this nebula.
         if (c == null) {
             final float h = new SecureRandom().nextFloat();
-            c = Color.getHSBColor(h, 0.5f, 0.95f);
+            c = Color.getHSBColor(h, 0.5F, 0.95F);
             NEBULA_COLOR.put(getPrimaryFile().getPath(), c);
         }
 
@@ -193,8 +193,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
         // However, the recent files stuff works by watching for opening TopComponents (which is bad).
         // So, do it manually.
         // FileObject.getPath() returns a path containing "/"; we need to convert it to local separators for RecentFiles.
-        String path = getPrimaryFile().getPath();
-        path = new File(path).getAbsolutePath();
+        final String path = new File(getPrimaryFile().getPath()).getAbsolutePath();
         RecentFiles.addFile(path);
     }
 

@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportSingleton;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.lang.reflect.InvocationTargetException;
@@ -51,7 +52,7 @@ public class JDBCImportController extends ImportController {
 
     // label constants
     private static final String QUERY_ERROR = "Query Error";
-    private static final String JDBC_IMPORT = "JDBC Import";
+    private static final String JDBC_IMPORT = "Database Import";
     private static final String ROW = "Row";
 
     private JDBCConnection connection;
@@ -62,6 +63,7 @@ public class JDBCImportController extends ImportController {
     public JDBCImportController() {
         super();
         schemaInitialised = true;
+        ImportSingleton.getDefault().getClearDataFlag().addListener((observable, oldValue, newValue) -> clearSampleData());
     }
 
     public void setImportPane(final JDBCImportPane importPane) {
@@ -144,6 +146,11 @@ public class JDBCImportController extends ImportController {
         }
     }
 
+    protected void clearSampleData() {
+        currentColumns = new String[0];
+        currentData = new ArrayList<>();
+    }
+
     @Override
     protected void updateSampleData() {
         final StringBuilder previewQuery = new StringBuilder(query);
@@ -155,8 +162,7 @@ public class JDBCImportController extends ImportController {
         }
 
         if (connection == null || StringUtils.isBlank(previewQuery)) {
-            currentColumns = new String[0];
-            currentData = new ArrayList<>();
+            clearSampleData();
         } else {
             try (final Connection dbConnection = connection.getConnection(username, password);
                     final PreparedStatement ps = dbConnection.prepareStatement(previewQuery.toString());
@@ -186,6 +192,7 @@ public class JDBCImportController extends ImportController {
             } catch (final MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException
                     | InstantiationException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException ex) {
+                clearSampleData();
                 NotifyDisplayer.displayAlert(JDBC_IMPORT, QUERY_ERROR, ex.getMessage(), AlertType.ERROR);
                 LOGGER.log(Level.WARNING, ex.getMessage());
             }
@@ -209,5 +216,21 @@ public class JDBCImportController extends ImportController {
     // enables or disables the import button based on if there is data present
     void disableButton(final boolean b) {
         importPane.disableButton(b);
+    }
+
+    public String[] getColumns() {
+        return currentColumns;
+    }
+
+    public List<String[]> getData() {
+        return currentData;
+    }
+
+    public void setColumns(final String[] cols) {
+        currentColumns = cols;
+    }
+
+    public void setData(final List<String[]> data) {
+        currentData = data;
     }
 }

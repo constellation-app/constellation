@@ -86,12 +86,12 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute BLAZE_OPACITY = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "blaze_opacity")
                 .setDescription("The opacity of blazes on the graph")
-                .setDefaultValue(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT) / 100f)
+                .setDefaultValue(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT) / 100F)
                 .create()
                 .build();
         public static final SchemaAttribute BLAZE_SIZE = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "blaze_size")
                 .setDescription("The size of blazes on the graph")
-                .setDefaultValue(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT) / 100f)
+                .setDefaultValue(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT) / 100F)
                 .create()
                 .build();
         public static final SchemaAttribute BOTTOM_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_bottom_labels_colours")
@@ -218,11 +218,11 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute LABEL_RADIUS = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "lradius")
                 .setDescription("The radius of the label")
-                .setDefaultValue(1.0f)
+                .setDefaultValue(1.0F)
                 .build();
         public static final SchemaAttribute NODE_RADIUS = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "nradius")
                 .setDescription("The radius of the vertex")
-                .setDefaultValue(1.0f)
+                .setDefaultValue(1.0F)
                 .create()
                 .build();
         public static final SchemaAttribute OVERLAY_COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "overlay_color")
@@ -236,37 +236,37 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute VISIBILITY = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "visibility")
                 .setDescription("The visibility of the vertex")
-                .setDefaultValue(1.0f)
+                .setDefaultValue(1.0F)
                 .create()
                 .build();
         public static final SchemaAttribute X = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x")
                 .setDescription("The x coordinate of the vertex")
-                .setDefaultValue(0.0f)
+                .setDefaultValue(0.0F)
                 .create()
                 .build();
         public static final SchemaAttribute X2 = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2")
                 .setDescription("The alternative x coordinate of the vertex")
-                .setDefaultValue(0.0f)
+                .setDefaultValue(0.0F)
                 .create()
                 .build();
         public static final SchemaAttribute Y = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y")
                 .setDescription("The y coordinate of the vertex")
-                .setDefaultValue(0.0f)
+                .setDefaultValue(0.0F)
                 .create()
                 .build();
         public static final SchemaAttribute Y2 = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2")
                 .setDescription("The alternative y coordinate of the vertex")
-                .setDefaultValue(0.0f)
+                .setDefaultValue(0.0F)
                 .create()
                 .build();
         public static final SchemaAttribute Z = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z")
                 .setDescription("The z coordinate of the vertex")
-                .setDefaultValue(0.0f)
+                .setDefaultValue(0.0F)
                 .create()
                 .build();
         public static final SchemaAttribute Z2 = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2")
                 .setDescription("The alternative z coordinate of the vertex")
-                .setDefaultValue(0.0f)
+                .setDefaultValue(0.0F)
                 .create()
                 .build();
         public static final SchemaAttribute PINNED = new SchemaAttribute.Builder(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "pinned")
@@ -317,12 +317,12 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute VISIBILITY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "visibility")
                 .setDescription("The visibility of the transaction")
-                .setDefaultValue(1.0f)
+                .setDefaultValue(1.0F)
                 .create()
                 .build();
         public static final SchemaAttribute WIDTH = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "width")
                 .setDescription("The width of the transaction")
-                .setDefaultValue(1.0f)
+                .setDefaultValue(1.0F)
                 .create()
                 .build();
     }

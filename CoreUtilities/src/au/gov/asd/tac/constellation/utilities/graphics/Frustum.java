@@ -152,7 +152,7 @@ public final class Frustum {
     public void setOrthographic(final float xMin, final float xMax, final float yMin, final float yMax, final float zMin, final float zMax) {
         init();
         projMatrix.makeOrthographicMatrix(xMin, xMax, yMin, yMax, zMin, zMax);
-        projMatrix.a[15] = 1.0f;
+        projMatrix.a[15] = 1.0F;
 
         // Fill in values for untransformed frustum corners
         // Near upper left.
@@ -241,13 +241,13 @@ public final class Frustum {
 
         // Construct the projection matrix.
         projMatrix.makeIdentity();
-        projMatrix.a[0] = (2.0f * near) / (xmax - xmin);
-        projMatrix.a[5] = (2.0f * near) / (ymax - ymin);
+        projMatrix.a[0] = (2.0F * near) / (xmax - xmin);
+        projMatrix.a[5] = (2.0F * near) / (ymax - ymin);
         projMatrix.a[8] = (xmax + xmin) / (xmax - xmin);
         projMatrix.a[9] = (ymax + ymin) / (ymax - ymin);
         projMatrix.a[10] = -((far + near) / (far - near));
         projMatrix.a[11] = -1;
-        projMatrix.a[14] = -((2.0f * far * near) / (far - near));
+        projMatrix.a[14] = -((2.0F * far * near) / (far - near));
         projMatrix.a[15] = 0;
 
         // Do the calculations for the far clipping plane.

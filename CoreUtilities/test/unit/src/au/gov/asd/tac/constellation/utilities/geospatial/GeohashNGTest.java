@@ -120,7 +120,7 @@ public class GeohashNGTest {
      *
      * @throws java.io.IOException
      */
-    @Test
+    @Test(dependsOnGroups = {"ShapeNGTest.emptyCrsCache"})
     public void testGetGeoJSON() throws IOException {
         String expResult = "{\"type\":\"FeatureCollection\",\"bbox\":[104.798583984375,-27.301025390625,104.8040771484375,-27.2955322265625],\"features\":[{\"type\":\"Feature\",\"bbox\":[104.798583984375,-27.301025390625,104.8040771484375,-27.2955322265625],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[104.79858398,-27.30102539],[104.79858398,-27.29553223],[104.80407715,-27.29553223],[104.80407715,-27.30102539],[104.79858398,-27.30102539]]]},\"properties\":{\"name\":\"b4d8c13c\",\"centreLat\":-27.2982788,\"centreLon\":104.80133057,\"radius\":0.00274659},\"id\":\"b4d8c13c\"}]}";
         String result = Geohash.getGeoJson(geohash);

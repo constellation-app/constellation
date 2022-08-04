@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -47,9 +47,7 @@ public abstract class ImportFileParser {
     private static synchronized void init() {
         if (PARSERS.isEmpty()) {
             final List<ImportFileParser> parsers = new ArrayList<>(Lookup.getDefault().lookupAll(ImportFileParser.class));
-            Collections.sort(parsers, (ImportFileParser o1, ImportFileParser o2) -> {
-                return Integer.compare(o1.position, o2.position);
-            });
+            Collections.sort(parsers, (ImportFileParser o1, ImportFileParser o2) -> Integer.compare(o1.position, o2.position));
             parsers.stream().forEach(parser -> PARSERS.put(parser.label, parser));
         }
     }
@@ -91,7 +89,7 @@ public abstract class ImportFileParser {
      * @param position the position of the ImportFileParser used for sorting a
      * list of parsers.
      */
-    public ImportFileParser(final String label, final int position) {
+    protected ImportFileParser(final String label, final int position) {
         this.label = label;
         this.position = position;
     }
@@ -139,11 +137,11 @@ public abstract class ImportFileParser {
     }
 
     /**
-     * Returns the extension filter to use when browsing for files of this type.
+     * Returns the file filter to use when browsing for files of this type.
      *
-     * @return the extension filter to use when browsing for files of this type.
+     * @return the file filter to use when browsing for files of this type.
      */
-    public ExtensionFilter getExtensionFilter() {
+    public FileFilter getFileFilter() {
         return null;
     }
 

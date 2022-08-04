@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.apache.commons.lang3.StringUtils;
@@ -71,6 +72,10 @@ public class DataAccessParametersIoProvider {
                     DataAccessTabPane.getQueryPhasePane(step)
             );
 
+            final Label tabCaption = (Label) step.getGraphic();
+            final Label defaultCaption = (Label) tabCaption.getGraphic();
+            preferences.setStepCaption(!StringUtils.isBlank(tabCaption.getText()) ? tabCaption.getText() : defaultCaption.getText());
+
             // Remember the first non-null, non-blank query name.
             if (queryName == null
                     && preferences.getGlobalParameters().containsKey(
@@ -112,7 +117,7 @@ public class DataAccessParametersIoProvider {
             dataAccessPane.getDataAccessTabPane().removeTabs();
 
             loadedParameters.forEach(loadedParameter -> {
-                final QueryPhasePane pluginPane = dataAccessPane.getDataAccessTabPane().newTab();
+                final QueryPhasePane pluginPane = dataAccessPane.getDataAccessTabPane().newTab(loadedParameter.getStepCaption());
 
                 // If an existing global parameter is in the JSON then update it,
                 // otherwise ignore it
@@ -126,21 +131,21 @@ public class DataAccessParametersIoProvider {
 
                 // Groups all the parameters in to the plugin groups. Common parameters
                 // are based on the plugin name that is before the first '.' in the key values
-                //final Map<String, Map<String, String>> ppmap = loadedParameter.toPerPluginParamMap();
 
                 pluginPane.getDataAccessPanes().stream()
                         // Plugins are disabled by defult. Only load and enable from
                         // the JSON if the JSON contains data for this plugin and it's
                         // enabled.
                         .filter(pane ->
-                                loadedParameter.getPluginParameters().containsKey(getEnabledPluginKey(pane))
+                                loadedParameter.getPluginParameters().containsKey(pane.getPlugin().getClass().getSimpleName())
+                                        && loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName()).containsKey(getEnabledPluginKey(pane))
                                         && Boolean.valueOf(
-                                                loadedParameter.getPluginParameters().get(
+                                                loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName()).get(
                                                         getEnabledPluginKey(pane)
                                                 ))
                         )
                         .forEach(pane -> pane.setParameterValues(
-                                loadedParameter.getPluginParameters()
+                                loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName())
                         ));
             });
         }

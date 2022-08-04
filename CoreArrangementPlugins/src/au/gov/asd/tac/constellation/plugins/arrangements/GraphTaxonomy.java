@@ -145,7 +145,7 @@ public final class GraphTaxonomy {
      * @param otherTaxa the new taxa to add.
      */
     public void add(final GraphTaxonomy otherTaxa) {
-        for (Integer k : otherTaxa.getTaxa().keySet()) {
+        for (final Integer k : otherTaxa.getTaxa().keySet()) {
             taxa.put(k, otherTaxa.getTaxa().get(k));
             if (otherTaxa.arrangeRectangularly.contains(k)) {
                 arrangeRectangularly.add(k);
@@ -163,12 +163,12 @@ public final class GraphTaxonomy {
      */
     public void setArrangeRectangularly(final Set<Integer> keys) {
         arrangeRectangularly.clear();
-        for (Integer k : keys) {
+        for (final Integer k : keys) {
             arrangeRectangularly.add(k);
         }
     }
 
-    public boolean getArrangeRectangularly(final int key) {
+    public boolean isArrangeRectangularly(final int key) {
         return arrangeRectangularly.contains(key);
     }
 
@@ -182,7 +182,7 @@ public final class GraphTaxonomy {
     public int mergeSingletonTaxa() {
         final Set<Integer> singletons = new HashSet<>();
 
-        for (Iterator<Integer> ii = taxa.keySet().iterator(); ii.hasNext();) {
+        for (final Iterator<Integer> ii = taxa.keySet().iterator(); ii.hasNext();) {
             final Integer k = ii.next();
             final Set<Integer> members = taxa.get(k);
             if (members.size() == 1) {
@@ -211,7 +211,7 @@ public final class GraphTaxonomy {
     public int mergeDoubletTaxa() {
         final Set<Integer> doublets = new HashSet<>();
 
-        for (Iterator<Integer> ii = taxa.keySet().iterator(); ii.hasNext();) {
+        for (final Iterator<Integer> ii = taxa.keySet().iterator(); ii.hasNext();) {
             final Integer k = ii.next();
             final Set<Integer> members = taxa.get(k);
             if (members.size() == 2) {
@@ -223,7 +223,7 @@ public final class GraphTaxonomy {
                     continue;
                 }
 
-                for (Integer m : members) {
+                for (final Integer m : members) {
                     doublets.add(m);
                 }
                 ii.remove();
@@ -255,7 +255,6 @@ public final class GraphTaxonomy {
      * TODO: sometimes its not worth adding the transactions.
      */
     public Condensation getCondensedGraph() throws InterruptedException {
-//        final Map<Integer, Extent> taxonKeyToExtent = new HashMap<>();
         final Map<Integer, Integer> cVxIdToTaxonKey = new HashMap<>();
         final Map<Integer, Integer> taxonKeyToVxId = new HashMap<>();
 
@@ -282,7 +281,7 @@ public final class GraphTaxonomy {
             final int cVxId = condensedGraph.addVertex();
 
             final BitSet vertices = new BitSet();
-            for (Integer member : taxa.get(k)) {
+            for (final Integer member : taxa.get(k)) {
                 vertices.set(member);
             }
 
@@ -301,10 +300,8 @@ public final class GraphTaxonomy {
             condensedGraph.setFloatValue(cRadiusAttr, cVxId, extent.getLRadius());
             cVxIdToTaxonKey.put(cVxId, k);
             taxonKeyToVxId.put(k, cVxId);
-//            taxonKeyToExtent.put(k, extent);
         }
 
-//        System.out.printf("@GT Condensation (nTaxa=%d) (vxCount %d->%d)\n", taxa.keySet().size(), graph.getVertexCount(), wg.getVertexCount());
         // Add the transactions.
         //        final long t0 = System.currentTimeMillis();
         // We search through all of the taxa to find sources,
@@ -321,7 +318,7 @@ public final class GraphTaxonomy {
             final Integer src = sources.removeFirst();
             found.add(src);
             final Set<Integer> members = taxa.get(src);
-            for (Integer mm : members) {
+            for (final Integer mm : members) {
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
@@ -332,7 +329,6 @@ public final class GraphTaxonomy {
                     final Integer dst = nodeToTaxa != null ? nodeToTaxa.get(nbId) : findTaxonContainingVertex(sources, nbId);
                     // Found the test for null was required to avoid issues
                     if (dst != null && dst != Graph.NOT_FOUND && !found.contains(dst)) {
-                        //                            Debug.debug("condense src=%s(%s) dst=%s(%s)\n", src, taxonKeyToVxId.get(src), dst, taxonKeyToVxId.get(dst));
                         condensedGraph.addTransaction(taxonKeyToVxId.get(src), taxonKeyToVxId.get(dst), true);
                         found.add(dst);
                     }
@@ -340,7 +336,7 @@ public final class GraphTaxonomy {
             }
         }
 
-        return new Condensation(condensedGraph, cVxIdToTaxonKey);//, taxonKeyToExtent);
+        return new Condensation(condensedGraph, cVxIdToTaxonKey);
     }
 
     /**
@@ -395,7 +391,7 @@ public final class GraphTaxonomy {
             final float dz = cz - czorig;
 
             final int k = c.cVxIdToTaxonKey.get(cVxId);
-            for (int vxId : taxa.get(k)) {
+            for (final int vxId : taxa.get(k)) {
                 final float x = wg.getFloatValue(xAttr, vxId);
                 final float y = wg.getFloatValue(yAttr, vxId);
                 final float z = wg.getFloatValue(zAttr, vxId);
@@ -446,7 +442,7 @@ public final class GraphTaxonomy {
      */
     private ArrayList<Integer> getSortedTaxaKeys() {
         final ArrayList<Integer> keys = new ArrayList<>(taxa.size());
-        for (Integer k : taxa.keySet()) {
+        for (final Integer k : taxa.keySet()) {
             keys.add(k);
         }
 
@@ -480,7 +476,7 @@ public final class GraphTaxonomy {
      * @return The key of the taxon that contains the given vertex.
      */
     private Integer findTaxonContainingVertex(final ArrayDeque<Integer> dstKeys, final Integer vxId) {
-        for (Integer k : dstKeys) {
+        for (final Integer k : dstKeys) {
             final Set<Integer> members = taxa.get(k);
             if (members.contains(vxId)) {
                 return k;

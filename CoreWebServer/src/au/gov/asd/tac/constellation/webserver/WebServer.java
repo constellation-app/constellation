@@ -180,10 +180,6 @@ public class WebServer {
                 //
                 Lookup.getDefault().lookupAll(ConstellationHttpServlet.class).forEach(servlet -> {
                     if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
-//                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).value()) {
-//                            Logger.getGlobal().info(String.format("value %s %s", servlet, urlPattern));
-//                            context.addServlet(new ServletHolder(servlet), urlPattern);
-//                        }
                         for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
                             Logger.getGlobal().info(String.format("urlpattern %s %s", servlet, urlPattern));
                             context.addServlet(new ServletHolder(servlet), urlPattern);

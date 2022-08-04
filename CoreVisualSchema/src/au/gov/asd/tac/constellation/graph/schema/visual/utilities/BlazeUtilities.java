@@ -24,7 +24,9 @@ import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -53,8 +55,10 @@ public class BlazeUtilities {
     public static final String PRESET_PARAMETER_ID = PluginParameter.buildId(BlazeUtilities.class, "save_color_as_preset");
     public static final int MAXIMUM_CUSTOM_BLAZE_COLORS = 10;
 
-    private static final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
-
+    private BlazeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Selected vertices, and the color of the blaze of the first selected
      * vertex with a blaze.
@@ -108,12 +112,12 @@ public class BlazeUtilities {
      */
     public static Pair<Boolean, ConstellationColor> colorDialog(final ConstellationColor blazeColor) {
         final PluginParameters dlgParams = new PluginParameters();
-        final PluginParameter<ColorParameterType.ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
+        final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
         colorParam.setDescription(BLAZE_COLOR_PARAMETER_ID);
         dlgParams.addParameter(colorParam);
 
-        final PluginParameter<BooleanParameterType.BooleanParameterValue> presetParam = BooleanParameterType.build(PRESET_PARAMETER_ID);
+        final PluginParameter<BooleanParameterValue> presetParam = BooleanParameterType.build(PRESET_PARAMETER_ID);
         presetParam.setName("Preset");
         presetParam.setDescription("Save as Preset");
         presetParam.setBooleanValue(false);
@@ -138,9 +142,16 @@ public class BlazeUtilities {
      * @param newColor the new selected color to add as a preset
      */
     public static void savePreset(final Color newColor) {
-        final String colorString = prefs.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
+        final String colorString = getGraphPreferences().get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
         final List<String> colorsList = Arrays.asList(colorString.split(SeparatorConstants.SEMICOLON));
-        final int freePosition = colorsList.indexOf("null") == -1 ? MAXIMUM_CUSTOM_BLAZE_COLORS - 1 : colorsList.indexOf("null");
+        final int freePosition;
+        if (colorsList.indexOf("null") != -1) {
+            freePosition = colorsList.indexOf("null");
+        } else if (colorsList.size() < MAXIMUM_CUSTOM_BLAZE_COLORS) {
+            freePosition = colorsList.size();
+        } else {
+            freePosition = MAXIMUM_CUSTOM_BLAZE_COLORS - 1;
+        }
         savePreset(newColor, freePosition);
     }
 
@@ -155,21 +166,21 @@ public class BlazeUtilities {
             return;
         }
 
-        final String colorString = prefs.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
+        final String colorString = getGraphPreferences().get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
         final List<String> colorsList = new ArrayList<>();
 
         colorsList.addAll(Arrays.asList(colorString.split(SeparatorConstants.SEMICOLON)));
-        for (int i = colorsList.size(); i < 10; i++) {
+        for (int i = colorsList.size(); i < MAXIMUM_CUSTOM_BLAZE_COLORS; i++) {
             colorsList.add(null);
         }
         colorsList.set(position, getHTMLColor(newColor));
 
         final StringBuilder preferencesBuilder = new StringBuilder();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < MAXIMUM_CUSTOM_BLAZE_COLORS; i++) {
             preferencesBuilder.append(colorsList.get(i));
             preferencesBuilder.append(SeparatorConstants.SEMICOLON);
         }
-        prefs.put(GraphPreferenceKeys.BLAZE_PRESET_COLORS, preferencesBuilder.toString());
+        getGraphPreferences().put(GraphPreferenceKeys.BLAZE_PRESET_COLORS, preferencesBuilder.toString());
     }
 
     /**
@@ -183,10 +194,13 @@ public class BlazeUtilities {
             return null;
         }
 
-        final int r = (int) (color.getRed());
-        final int g = (int) (color.getGreen());
-        final int b = (int) (color.getBlue());
-        final String s = String.format("#%02x%02x%02x", r, g, b);
-        return s;
+        final int r = color.getRed();
+        final int g = color.getGreen();
+        final int b = color.getBlue();
+        return String.format("#%02x%02x%02x", r, g, b);
+    }
+    
+    protected static Preferences getGraphPreferences() {
+        return NbPreferences.forModule(GraphPreferenceKeys.class);
     }
 }

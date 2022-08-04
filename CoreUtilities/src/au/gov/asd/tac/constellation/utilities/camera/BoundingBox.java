@@ -241,7 +241,6 @@ public final class BoundingBox implements Serializable {
         final float dz = Graphics3DUtilities.mix(max.getZ(), max2.getZ(), mix) - Graphics3DUtilities.mix(cz, cz2, mix);
 
         final float radius = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
-//        System.out.printf("@BB %f <- %f %s %s %s %s\n", radius, mix, min, max, min2, max2);
 
         return radius != 0F ? radius : 1F;
     }
@@ -340,6 +339,16 @@ public final class BoundingBox implements Serializable {
         this.max2 = max2;
 
         isEmpty = false;
+    }
+    
+    /**
+     * Method used for testing to check if BoundingBox values are equal
+     * 
+     * @param bbox the BoundingBox to compare to this instance
+     * @return true if the BoundingBox are the same, false otherwise
+     */
+    public boolean areSame(final BoundingBox bbox) {
+        return min.areSame(bbox.getMin()) && min2.areSame(bbox.getMin2()) && max.areSame(bbox.getMax()) && max2.areSame(bbox.getMax2()) && Boolean.compare(isEmpty, bbox.isEmpty()) == 0;
     }
 
     @Override

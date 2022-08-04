@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributeData;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributePrototype;
@@ -36,7 +37,7 @@ public class ModifyAttributeEditOperation implements EditOperation {
     private final AttributeData attributeData;
     private AttributePrototype attrNew;
 
-    public ModifyAttributeEditOperation(AttributeData attributeData) {
+    public ModifyAttributeEditOperation(final AttributeData attributeData) {
         this.attributeData = attributeData;
     }
 
@@ -46,7 +47,7 @@ public class ModifyAttributeEditOperation implements EditOperation {
         PluginExecution.withPlugin(new ModifyAttributePlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     private final class ModifyAttributePlugin extends SimpleEditPlugin {
 
         @Override

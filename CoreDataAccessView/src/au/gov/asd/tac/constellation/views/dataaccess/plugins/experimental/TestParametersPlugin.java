@@ -54,13 +54,14 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.QueryNameValidator;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -77,7 +78,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,7 +91,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import org.netbeans.api.annotations.common.StaticResource;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -109,7 +108,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("TestParametersPlugin=Test Parameters")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"DEVELOPER", "MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.DEVELOPER, PluginTags.MODIFY})
 public class TestParametersPlugin extends RecordStoreQueryPlugin implements DataAccessPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(TestParametersPlugin.class.getName());
@@ -230,18 +229,16 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             @SuppressWarnings("unchecked") //control will be of type ComboBox<ParameterValue> which extends from Region
             final ComboBox<ParameterValue> field = (ComboBox<ParameterValue>) control;
             final Image img = new Image(ALIEN_ICON);
-            field.setCellFactory((ListView<ParameterValue> param) -> {
-                return new ListCell<ParameterValue>() {
-                    @Override
-                    protected void updateItem(final ParameterValue item, final boolean empty) {
-                        super.updateItem(item, empty);
-                        this.setText(empty ? "" : item.toString());
-                        final float f = empty ? 0 : item.toString().length() / 11f;
-                        final Color c = Color.color(1 - f / 2f, 0, 0);
-                        setTextFill(c);
-                        setGraphic(new ImageView(img));
-                    }
-                };
+            field.setCellFactory((ListView<ParameterValue> param) -> new ListCell<ParameterValue>() {
+                @Override
+                protected void updateItem(final ParameterValue item, final boolean empty) {
+                    super.updateItem(item, empty);
+                    this.setText(empty ? "" : item.toString());
+                    final float f = empty ? 0 : item.toString().length() / 11F;
+                    final Color c = Color.color(1 - f / 2F, 0, 0);
+                    setTextFill(c);
+                    setGraphic(new ImageView(img));
+                }
             });
         });
         final PluginParameter<SingleChoiceParameterValue> robotOptions = SingleChoiceParameterType.build(ROBOT_PARAMETER_ID, robotpv);
@@ -281,10 +278,10 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<FloatParameterValue> probability = FloatParameterType.build(PROBABILITY_PARAMETER_ID);
         probability.setName("Probability");
         probability.setDescription("0 <= p <= 1");
-        FloatParameterType.setMinimum(probability, 0f);
-        FloatParameterType.setMaximum(probability, 1f);
-        FloatParameterType.setStep(probability, 0.1f);
-        probability.setFloatValue(1f);
+        FloatParameterType.setMinimum(probability, 0F);
+        FloatParameterType.setMaximum(probability, 1F);
+        FloatParameterType.setStep(probability, 0.1F);
+        probability.setFloatValue(1F);
         params.addParameter(probability);
 
         final PluginParameter<FileParameterValue> openFileParam = FileParameterType.build(INPUT_FILE_PARAMETER_ID);
@@ -331,7 +328,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         sleepParam.setIntegerValue(0);
         params.addParameter(sleepParam);
 
-        params.addController(SELECTED_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> parameters, final ParameterChange change) -> {
+        params.addController(SELECTED_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final boolean masterBoolean = master.getBooleanValue();
 
@@ -357,7 +354,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             }
         });
 
-        params.addController(REFRESH_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> parameters, final ParameterChange change) -> {
+        params.addController(REFRESH_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
                 @SuppressWarnings("unchecked") //ROBOT_PARAMETER will always be of type SingleChoiceParameter
                 final PluginParameter<SingleChoiceParameterValue> robot = (PluginParameter<SingleChoiceParameterValue>) parameters.get(ROBOT_PARAMETER_ID);
@@ -377,17 +374,14 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             LOGGER.log(Level.INFO, "sleep {0}/{1}", new Object[]{i, sleep});
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Thread sleep was interrupted", ex);
                 Thread.currentThread().interrupt();
             }
         }
         LOGGER.log(Level.INFO, "slept for {0} seconds", sleep);
 
         LOGGER.log(Level.INFO, "parameters: {0}", parameters);
-//        final List<String> searchTerms = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
-//        AuditLogHelpers.generateSearchLog(getName(), searchTerms, "Test", 0);
-
         LOGGER.log(Level.INFO, "GraphElementType: {0}", parameters.getSingleChoice(ELEMENT_TYPE_PARAMETER_ID));
         final LocalDate localDate = parameters.getLocalDateValue(LOCAL_DATE_PARAMETER_ID);
         LOGGER.log(Level.INFO, "localdate: {0} ", localDate);
@@ -400,14 +394,11 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         }
 
         final MultiChoiceParameterValue planets = parameters.getMultiChoiceValue(PLANETS_PARAMETER_ID);
-        planets.getChoices().stream().forEach(planet -> {
-            LOGGER.log(Level.INFO, "Planet: {0}", planet);
-        });
+        planets.getChoices().stream().forEach(planet -> LOGGER.log(Level.INFO, "Planet: {0}", planet));
 
         LOGGER.log(Level.INFO, "==== begin string values");
-        parameters.getParameters().values().stream().forEach(param -> {
-            LOGGER.log(Level.INFO, "String {0}: \"{1}\"", new Object[]{param.getName(), param.getStringValue()});
-        });
+        parameters.getParameters().values().stream().forEach(param ->
+                LOGGER.log(Level.INFO, "String {0}: \"{1}\"", new Object[]{param.getName(), param.getStringValue()}));
         LOGGER.log(Level.INFO, "==== end string values");
 
         final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDir();
@@ -416,16 +407,16 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             final File fout = new File(outputDir, fnam);
             try (final PrintWriter writer = new PrintWriter(fout, StandardCharsets.UTF_8.name())) {
                 parameters.getParameters().values().stream().forEach(param -> writer.printf("%s: '%s'", param.getName(), param.getStringValue()));
-            } catch (final FileNotFoundException | UnsupportedEncodingException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final FileNotFoundException ex) {
+                LOGGER.log(Level.SEVERE, "File not found", ex);
+            } catch (final UnsupportedEncodingException ex) {
+                LOGGER.log(Level.SEVERE, "The specified file encoding is unsupported", ex);
             }
         }
 
         final List<String> keys = query.keys();
         while (query.next()) {
-            keys.stream().forEach(key -> {
-                LOGGER.log(Level.INFO, String.format("%-20s: %s", key, query.get(key)));
-            });
+            keys.stream().forEach(key -> LOGGER.log(Level.INFO, String.format("%-20s: %s", key, query.get(key))));
 
             LOGGER.log(Level.INFO, "--");
         }
@@ -437,8 +428,8 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         try {
             interaction.setProgress(1, 0, String.format("Pretended to add %d node(s), modify %d node(s)", r.nextInt(100) + 1, r.nextInt(100) + 1), false);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
         }
 
@@ -526,7 +517,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         return results;
     }
 
-    public class GraphElementTypeParameterValue extends ParameterValue {
+    public static class GraphElementTypeParameterValue extends ParameterValue {
 
         private GraphElementType elementType;
 
@@ -592,10 +583,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             final GraphElementTypeParameterValue other = (GraphElementTypeParameterValue) obj;

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -117,7 +118,7 @@ public abstract class ImportController<D> {
         dialog.showAndWait();
     }
 
-    public ImportPane getStage() {
+    public ImportPane getImportPane() {
         return importPane;
     }
 
@@ -164,12 +165,18 @@ public abstract class ImportController<D> {
         }
         keys.clear();
 
-        Platform.runLater(() -> {
+        CompletableFuture.runAsync(() -> {
             final boolean showSchemaAttributes = importExportPrefs.getBoolean(
                     ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
                     ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
+
             loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
-            updateDisplayedAttributes();
+        }).thenRun(() -> {
+            if (Platform.isFxApplicationThread()) {
+                updateDisplayedAttributes();
+            } else {
+                Platform.runLater(() -> updateDisplayedAttributes());
+            }
         });
     }
 
@@ -301,6 +308,7 @@ public abstract class ImportController<D> {
             displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes,
                     manuallyAddedTransactionAttributes);
 
+            //This adds the previously allocated attributes if they are missing
             for (Attribute attribute : configurationPane.getAllocatedAttributes()) {
                 if (attribute.getElementType() == GraphElementType.VERTEX) {
                     if (!displayedVertexAttributes.containsKey(attribute.getName())) {

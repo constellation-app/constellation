@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Hierarchical layout (Sugiyama based).
@@ -58,6 +60,7 @@ public class HierarchicalArranger implements Arranger {
 
     private final Set<Integer> roots;
     private boolean maintainMean;
+    private static final Logger LOGGER = Logger.getLogger(HierarchicalArranger.class.getName());
 
     public HierarchicalArranger(final Set<Integer> roots) {
         this.roots = roots;
@@ -167,7 +170,7 @@ public class HierarchicalArranger implements Arranger {
      * like normal vertices.
      * @param pendantSets The sets of pendants.
      */
-    private static void findPendants(final GraphReadMethods rg, final Set<Integer> roots, final int minPendants, Map<Integer, Set<Integer>> pendantSets) {
+    private static void findPendants(final GraphReadMethods rg, final Set<Integer> roots, final int minPendants, final Map<Integer, Set<Integer>> pendantSets) {
         final int vxCount = rg.getVertexCount();
         for (int position = 0; position < vxCount; position++) {
             final int vxId = rg.getVertex(position);
@@ -304,7 +307,7 @@ public class HierarchicalArranger implements Arranger {
         for (int level = 0; level < vxLevels.size(); level++) {
             final ArrayList<Integer> vxLevel = vxLevels.get(level);
             final int levelVertices = vxLevel.size();
-            final float startxgap = (maxLevelVertices - levelVertices) * xgap / 2f;
+            final float startxgap = (maxLevelVertices - levelVertices) * xgap / 2F;
             for (int i = 0; i < vxLevel.size(); i++) {
                 final int vxId = vxLevel.get(i);
                 wg.setFloatValue(xId, vxId, startxgap + i * xgap);
@@ -321,12 +324,11 @@ public class HierarchicalArranger implements Arranger {
 
     private static void dump(final ArrayList<ArrayList<Integer>> vxLevels) {
         for (int i = 0; i < vxLevels.size(); i++) {
-            System.out.printf("@@H level %d:%n", i);
+            LOGGER.log(Level.INFO, "@@H level {0}", i);
             final ArrayList<Integer> vxLevel = vxLevels.get(i);
             for (Integer vxLevel1 : vxLevel) {
-                System.out.printf(" %d", vxLevel1);
+                LOGGER.log(Level.INFO, "is {0}", vxLevel1);
             }
-            System.out.printf("%n");
         }
     }
 

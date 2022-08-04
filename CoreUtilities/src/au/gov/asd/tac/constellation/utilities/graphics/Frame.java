@@ -38,13 +38,13 @@ public final class Frame implements Serializable {
      */
     public Frame() {
         // At origin.
-        origin = new Vector3f(0.0f, 0.0f, 0.0f);
+        origin = new Vector3f(0.0F, 0.0F, 0.0F);
 
         // Forward is -Z (default OpenGL).
-        forward = new Vector3f(0.0f, 0.0f, -1.0f);
+        forward = new Vector3f(0.0F, 0.0F, -1.0F);
 
         // Up is up (+Y).
-        up = new Vector3f(0.0f, 1.0f, 0.0f);
+        up = new Vector3f(0.0F, 1.0F, 0.0F);
 
         absm = -1;
     }
@@ -241,9 +241,9 @@ public final class Frame implements Serializable {
 
         // Translation (already done)
         if (rotationOnly) {
-            matrix.a[12] = 0.0f;
-            matrix.a[13] = 0.0f;
-            matrix.a[14] = 0.0f;
+            matrix.a[12] = 0.0F;
+            matrix.a[13] = 0.0F;
+            matrix.a[14] = 0.0F;
         } else {
             matrix.setRow(origin, 3);
         }
@@ -512,9 +512,9 @@ public final class Frame implements Serializable {
     public void transformPoint(final Vector3f pointSrc, final Vector3f pointDst) {
         final Matrix44f m = new Matrix44f();
         getMatrix(m, false);    // Rotate and translate
-        pointDst.a[0] = m.a[0] * pointSrc.a[0] + m.a[4] * pointSrc.a[1] + m.a[8] * pointSrc.a[2] + m.a[12];// * v[3];
-        pointDst.a[1] = m.a[1] * pointSrc.a[0] + m.a[5] * pointSrc.a[1] + m.a[9] * pointSrc.a[2] + m.a[13];// * v[3];
-        pointDst.a[2] = m.a[2] * pointSrc.a[0] + m.a[6] * pointSrc.a[1] + m.a[10] * pointSrc.a[2] + m.a[14];// * v[3];
+        pointDst.a[0] = m.a[0] * pointSrc.a[0] + m.a[4] * pointSrc.a[1] + m.a[8] * pointSrc.a[2] + m.a[12];
+        pointDst.a[1] = m.a[1] * pointSrc.a[0] + m.a[5] * pointSrc.a[1] + m.a[9] * pointSrc.a[2] + m.a[13];
+        pointDst.a[2] = m.a[2] * pointSrc.a[0] + m.a[6] * pointSrc.a[1] + m.a[10] * pointSrc.a[2] + m.a[14];
     }
 
     /**
@@ -539,6 +539,14 @@ public final class Frame implements Serializable {
         }
 
         return array;
+    }
+    
+    
+    public boolean areSame(final Frame frame) {
+        return origin.areSame(frame.origin)
+                && forward.areSame(frame.forward)
+                && up.areSame(frame.up)
+                && absm == frame.absm;
     }
 
     @Override

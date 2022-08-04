@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.BitSet;
 import org.openide.util.NbBundle.Messages;
@@ -34,10 +35,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("ExpandGraphPlugin=Expand Graph")
-@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class ExpandGraphPlugin extends SimpleEditPlugin {
 
-    private static final float SCALE = 11f / 10f;
+    private static final float SCALE = 11F / 10F;
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -60,7 +61,7 @@ public class ExpandGraphPlugin extends SimpleEditPlugin {
 
         int currentStep = 0;
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-            int newStep = vertexPosition * 10 / vertexCount;
+            final int newStep = vertexPosition * 10 / vertexCount;
             if (newStep > currentStep) {
                 currentStep = newStep;
                 interaction.setProgress(currentStep, 10, "Working...", true);
