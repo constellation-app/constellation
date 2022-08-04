@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.components;
 
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
@@ -425,10 +426,9 @@ public class ButtonToolbarNGTest {
                     .thenAnswer(iom -> {
                         final NotifyDescriptor descriptor = iom.getArgument(0);
 
-                        final String expectedMessage = "Add or remove plugins from your favourites category.\n\n"
-                                + "The following plugins were selected:\n"
-                                + pluginTitle + "\n"
-                                + "\nNote that you need to restart before changes take effect.";
+                final String expectedMessage = "Add or remove plugins from your Favourites category.\n\n"
+                        + "The following plugins were selected:\n" + pluginTitle + "\n"
+                        + "\nNote, Favourites will be updated the next time you start " + BrandingUtilities.APPLICATION_NAME;
 
                         assertEquals(descriptor.getMessage(), expectedMessage);
                         assertEquals(descriptor.getTitle(), "Manage Favourites");
