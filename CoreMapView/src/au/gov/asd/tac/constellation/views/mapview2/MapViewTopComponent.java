@@ -67,7 +67,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     @Override
     protected String createStyle() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
+        return "";
     }
 
     @Override
