@@ -95,6 +95,8 @@ public class BitMaskQuery {
             if (compiledExpression != null) {
                 this.result = Access.getDefault().getRegistry(BooleanReadable.class).convert(compiledExpression);
             }
+        } else {
+            this.result = null;
         }
         return true;
     }
