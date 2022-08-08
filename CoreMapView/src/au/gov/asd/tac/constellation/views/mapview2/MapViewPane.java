@@ -18,13 +18,19 @@ package au.gov.asd.tac.constellation.views.mapview2;
 import au.gov.asd.tac.constellation.plugins.gui.MultiChoiceInputPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
+import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
 import au.gov.asd.tac.constellation.views.mapview.layers.MapLayer;
 import au.gov.asd.tac.constellation.views.mapview.overlays.MapOverlay;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
+import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -57,13 +63,18 @@ public class MapViewPane extends BorderPane {
     private static final String ZOOM_LOCATION = "Zoom to Location";
 
     private final List<? extends MapProvider> providers;
+    private final List<? extends MapExporter> exporters;
 
-    private final ChoiceBox<String> mapProviderDropDown;
+    private final ChoiceBox<MapProvider> mapProviderDropDown;
     private final MenuButton zoomDropDown;
     private final CheckComboBox markerDropDown;
-    private final CheckComboBox layersDropDown;
-    private final CheckComboBox overlaysDropDown;
+    private final CheckComboBox<MapLayer> layersDropDown;
+    private final CheckComboBox<MapOverlay> overlaysDropDown;
     private final ChoiceBox colourDropDown;
+    private final ChoiceBox markerLabelDropDown;
+    private final ComboBox exportDropDown;
+    private final Button helpButton;
+
 
     private final List<String> dropDownOptions = new ArrayList<>();
 
@@ -73,27 +84,28 @@ public class MapViewPane extends BorderPane {
         toolBar = new ToolBar();
 
         providers = new ArrayList<>(Lookup.getDefault().lookupAll(MapProvider.class));
+        exporters = new ArrayList<>(Lookup.getDefault().lookupAll(MapExporter.class));
 
 
         providers.forEach((p) -> {
             dropDownOptions.add(p.toString());
         });
 
-        mapProviderDropDown = new ChoiceBox<>(FXCollections.observableArrayList(dropDownOptions.toArray(String[]::new)));
+        mapProviderDropDown = new ChoiceBox(FXCollections.observableList(providers));
         mapProviderDropDown.getSelectionModel().selectFirst();
         mapProviderDropDown.setTooltip(new Tooltip("Select a basemap for the Map View"));
 
         final List<? extends MapLayer> layers = new ArrayList<>(Lookup.getDefault().lookupAll(MapLayer.class));
         setDropDownOptions(layers);
 
-        layersDropDown = new CheckComboBox(FXCollections.observableArrayList(dropDownOptions.toArray(String[]::new)));
+        layersDropDown = new CheckComboBox(FXCollections.observableList(layers));
         layersDropDown.setTitle("Layers");
         layersDropDown.setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
 
         final List<? extends MapOverlay> overlays = new ArrayList<>(Lookup.getDefault().lookupAll(MapOverlay.class));
         setDropDownOptions(overlays);
 
-        overlaysDropDown = new CheckComboBox(FXCollections.observableArrayList(dropDownOptions.toArray(String[]::new)));
+        overlaysDropDown = new CheckComboBox(FXCollections.observableList(overlays));
         overlaysDropDown.setTitle("Overlays");
         overlaysDropDown.setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
 
@@ -105,9 +117,21 @@ public class MapViewPane extends BorderPane {
         markerDropDown.setTitle("Markers");
         markerDropDown.setTooltip(new Tooltip("Choose which markers are displayed in the Map View"));
 
-        colourDropDown = new ChoiceBox<>(FXCollections.observableArrayList());
+        colourDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(MarkerState.MarkerColorScheme.values())));
+        colourDropDown.getSelectionModel().selectFirst();
+        colourDropDown.setTooltip(new Tooltip("Chose the color scheme for markers displayed in the Map View"));
 
-        toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown);
+        markerLabelDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(MarkerState.MarkerLabel.values())));
+        markerLabelDropDown.getSelectionModel().selectFirst();
+        markerLabelDropDown.setTooltip(new Tooltip("Chose the label for markers displayed in the Map View"));
+
+        final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(MapExporterWrapper::new).collect(Collectors.toList());
+        exportDropDown = new ComboBox(FXCollections.observableList(exporterWrappers));
+        exportDropDown.setTooltip(new Tooltip("Export from the Map View"));
+
+        helpButton = new Button("Help");
+
+        toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton);
         setTop(toolBar);
 
     }
