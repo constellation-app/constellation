@@ -396,7 +396,7 @@ public class ConstellationIcon {
      * cache.
      *
      * @param size The size of the icon
-     * @param color The colour of the icon
+     * @param color The color of the icon
      *
      * @return A unique key represented as a ThreeTuple
      */
@@ -409,7 +409,7 @@ public class ConstellationIcon {
      *
      * @param iconData The icon data object
      * @param size The size of the icon
-     * @param color The colour of the icon
+     * @param color The color of the icon
      * @return The icon data byte array
      */
     private byte[] retrieveIconData(final IconData iconData, final int size, final Color color) {

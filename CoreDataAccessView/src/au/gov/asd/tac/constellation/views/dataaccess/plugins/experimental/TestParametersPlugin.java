@@ -298,7 +298,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         final PluginParameter<ColorParameterValue> color = ColorParameterType.build(COLOR_PARAMETER_ID);
         color.setName("Color");
-        color.setDescription("Your favourite colour");
+        color.setDescription("Your favourite color");
         color.setColorValue(ConstellationColor.BLUE);
         params.addParameter(color);
 

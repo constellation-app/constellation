@@ -33,7 +33,7 @@ Dialog" />
 
 </div>
 
-In the new graph, each node and transaction will be coloured according
+In the new graph, each node and transaction will be colored according
 to the change detected. An attribute will also be added called Compare
 with value set to whatever change was detected (Added, Removed,
 Modified, or Unchanged).
@@ -48,11 +48,11 @@ Modified, or Unchanged).
     comparison
 -   *Ignore Transaction Attributes* - transaction attribute to ignore
     for the comparison
--   *Added Colour* - the colour to indicate an node/transaction addition
+-   *Added Color* - the color to indicate an node/transaction addition
     (default is Green)
--   *Removed Colour* - the colour to indicate a node/transaction removal
+-   *Removed Color* - the color to indicate a node/transaction removal
     (default is Red)
--   *Changed Colour* - the colour to indicate a node/transaction
+-   *Changed Color* - the color to indicate a node/transaction
     attribute value change (default is Yellow)
--   *Unchanged Colour* - the colour to indicate no change to a
+-   *Unchanged Color* - the color to indicate no change to a
     node/transaction (default is Grey)

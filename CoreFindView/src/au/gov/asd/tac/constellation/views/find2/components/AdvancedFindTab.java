@@ -28,10 +28,10 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeD
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.AdvancedCriteriaBorderPane;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.BooleanCriteriaPanel;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.ColourCriteriaPanel;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.ColorCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.DateTimeCriteriaPanel;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.IconCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.FloatCriteriaPanel;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.IconCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.StringCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
@@ -53,7 +53,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.openide.util.NbBundle;
 
 /**
  * This class contains the UI tab for the Advanced Find Tab.
@@ -194,7 +193,7 @@ public class AdvancedFindTab extends Tab {
         matchesFoundPane.setPadding(new Insets(10, 12, 5, 10));
 
 
-        updateGridColours(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+        updateGridColors(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
     }
 
     /**
@@ -261,7 +260,7 @@ public class AdvancedFindTab extends Tab {
      *
      * @param type
      */
-    private void updateGridColours(final GraphElementType type) {
+    private void updateGridColors(final GraphElementType type) {
         int i = 0;
         final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
 
@@ -297,8 +296,8 @@ public class AdvancedFindTab extends Tab {
             gridPane.add(cirteriaPane, 0, i);
             i++;
         }
-        // update the grid colours to match the new list order
-        updateGridColours(type);
+        // update the grid colors to match the new list order
+        updateGridColors(type);
     }
 
     /**
@@ -317,8 +316,8 @@ public class AdvancedFindTab extends Tab {
         gridPane.add(criteriaList.get(criteriaList.size() - 1), 0, gridPane.getRowCount());
         GridPane.setHgrow(criteriaList.get(criteriaList.size() - 1), Priority.ALWAYS);
 
-        // update the grid colours to match the new list order
-        updateGridColours(type);
+        // update the grid colors to match the new list order
+        updateGridColors(type);
     }
 
     /**
@@ -360,8 +359,8 @@ public class AdvancedFindTab extends Tab {
                             pane.getTypeChoiceBox().getSelectionModel().select(attributeName);
                             GridPane.setHgrow(criteriaList.get(paneIndex), Priority.ALWAYS);
 
-                            // update the colours of the list to match
-                            updateGridColours(type);
+                            // update the colors of the list to match
+                            updateGridColors(type);
 
                             return;
                         }
@@ -395,7 +394,7 @@ public class AdvancedFindTab extends Tab {
             case BooleanAttributeDescription.ATTRIBUTE_NAME:
                 return new BooleanCriteriaPanel(this, attributeName, type);
             case ColorAttributeDescription.ATTRIBUTE_NAME:
-                return new ColourCriteriaPanel(this, attributeName, type);
+                return new ColorCriteriaPanel(this, attributeName, type);
             case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME:
                 return new DateTimeCriteriaPanel(this, attributeName, type);
             case IconAttributeDescription.ATTRIBUTE_NAME:

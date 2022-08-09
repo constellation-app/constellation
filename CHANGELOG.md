@@ -162,7 +162,7 @@
 
 ## Changes in July 2021
 
--   Update to Quality Control category names and colours in
+-   Update to Quality Control category names and colors in
     `QualityControlEvent` to be easier to understand.
 
 -   Update to `openEdit`, `updateNotesUI`, `createNote` and the constructor in

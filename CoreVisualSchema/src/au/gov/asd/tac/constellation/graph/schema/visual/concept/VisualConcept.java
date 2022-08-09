@@ -94,7 +94,7 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT) / 100F)
                 .create()
                 .build();
-        public static final SchemaAttribute BOTTOM_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_bottom_labels_colours")
+        public static final SchemaAttribute BOTTOM_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_bottom_labels_colors")
                 .setDescription("The labels beneath nodes")
                 .setDefaultValue(GraphLabels.NO_LABELS)
                 .create()
@@ -150,7 +150,7 @@ public class VisualConcept extends SchemaConcept {
                 .create()
                 .build();
         public static final SchemaAttribute MIX_COLOR = new SchemaAttribute.Builder(GraphElementType.GRAPH, ColorAttributeDescription.ATTRIBUTE_NAME, "mix_color")
-                .setDescription("The colour to use for edges and links that contain transactions with a variety of colours.")
+                .setDescription("The color to use for edges and links that contain transactions with a variety of colors.")
                 .setDefaultValue(ConstellationColor.CLOUDS)
                 .create()
                 .build();
@@ -158,7 +158,7 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The name of the node attribute that will determine node colors")
                 .create()
                 .build();
-        public static final SchemaAttribute TOP_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_top_labels_colours")
+        public static final SchemaAttribute TOP_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_top_labels_colors")
                 .setDescription("The labels above nodes")
                 .setDefaultValue(GraphLabels.NO_LABELS)
                 .create()
@@ -167,7 +167,7 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The name of the transaction attribute that will determine transaction colors")
                 .create()
                 .build();
-        public static final SchemaAttribute TRANSACTION_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, TransactionGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "transaction_labels_colours")
+        public static final SchemaAttribute TRANSACTION_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, TransactionGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "transaction_labels_colors")
                 .setDescription("The labels on transactions")
                 .setDefaultValue(GraphLabels.NO_LABELS)
                 .create()

@@ -412,7 +412,7 @@ public class GLVisualProcessor extends VisualProcessor {
                 new VisualChangeBuilder(VisualProperty.VERTICES_REBUILD).build(),
                 new VisualChangeBuilder(VisualProperty.CONNECTIONS_REBUILD).build(),
                 new VisualChangeBuilder(VisualProperty.BACKGROUND_COLOR).forItems(1).build(),
-                new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOUR).forItems(1).build(),
+                new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOR).forItems(1).build(),
                 new VisualChangeBuilder(VisualProperty.CONNECTIONS_OPACITY).forItems(1).build(),
                 new VisualChangeBuilder(VisualProperty.BLAZE_SIZE).forItems(1).build(),
                 //                new VisualChangeBuilder(VisualProperty.DRAW_FLAGS).forItems(1).build(),

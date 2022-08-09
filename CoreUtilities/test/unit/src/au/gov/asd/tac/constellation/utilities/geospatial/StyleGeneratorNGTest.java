@@ -234,10 +234,10 @@ public class StyleGeneratorNGTest {
     
     /**
      * Every time a Polygon style is generated StyleGenerator will attempt to 
-     * use a different colour. This is based on the number of times an internal
-     * static class is called meaning that the colour returned may not be
+     * use a different color. This is based on the number of times an internal
+     * static class is called meaning that the color returned may not be
      * deterministic within a suite of tests running in parallel. It's also 
-     * possible (albeit unlikely) that the same colour is returned more than 
+     * possible (albeit unlikely) that the same color is returned more than 
      * once. However, it is possible to test that StyleGenerator is constructing 
      * a new Color object every time a Polygon style is generated.
      */

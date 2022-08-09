@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.find2.components.AdvancedFindTab;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,17 +36,17 @@ import javafx.util.Callback;
  *
  * @author Atlas139mkm
  */
-public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
+public class ColorCriteriaPanel extends AdvancedCriteriaBorderPane {
 
-    private final ColorPicker colourPicker = new ColorPicker();
-    private final Rectangle colourRectangle = new Rectangle();
+    private final ColorPicker colorPicker = new ColorPicker();
+    private final Rectangle colorRectangle = new Rectangle();
     private ComboBox<ConstellationColor> colorComboPicker;
 
-    public ColourCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
+    public ColorCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
 
         /**
-         * This creates a list of all the named constellation colours
+         * This creates a list of all the named constellation colors
          */
         final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList();
         for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
@@ -55,12 +55,12 @@ public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
         colorComboPicker = new ComboBox<>(namedColors);
 
         /**
-         * This listener updates the colour combo picker with the colour
-         * selected in the colour picker.
+         * This listener updates the color combo picker with the color
+         * selected in the color picker.
          *
-         * NOTE - This is taken from the attribute editor for the colour picker
+         * NOTE - This is taken from the attribute editor for the color picker
          */
-        colourPicker.valueProperty().addListener((o, oldValue, newValue) -> {
+        colorPicker.valueProperty().addListener((o, oldValue, newValue) -> {
             if (newValue != null && !newValue.equals(oldValue)) {
                 boolean foundNamedColor = false;
                 for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
@@ -78,8 +78,8 @@ public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
         });
 
         /**
-         * This takes all the colours within the named colours and updates the
-         * item to contain a small rectangle representing of the said colour.
+         * This takes all the colors within the named colors and updates the
+         * item to contain a small rectangle representing of the said color.
          */
         final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
             @Override
@@ -97,18 +97,18 @@ public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
         colorComboPicker.setButtonCell(cellFactory.call(null));
 
         /**
-         * This listener updates the colour picker with the colour selected in
+         * This listener updates the color picker with the color selected in
          * the colorComboPicker.
          */
         colorComboPicker.valueProperty().addListener((o, oldValue, newValue) -> {
             if (newValue != null && !newValue.equals(oldValue)) {
-                colourPicker.setValue(newValue.getJavaFXColor());
+                colorPicker.setValue(newValue.getJavaFXColor());
             }
         });
 
-        // set action so that the rectangle changes to the selected colour
-        colourPicker.setOnAction(action -> colourRectangle.setFill(colourPicker.getValue()));
-        colorComboPicker.setOnAction(action -> colourRectangle.setFill(colourPicker.getValue()));
+        // set action so that the rectangle changes to the selected color
+        colorPicker.setOnAction(action -> colorRectangle.setFill(colorPicker.getValue()));
+        colorComboPicker.setOnAction(action -> colorRectangle.setFill(colorPicker.getValue()));
 
         setGridContent();
 
@@ -119,32 +119,32 @@ public class ColourCriteriaPanel extends AdvancedCriteriaBorderPane {
      */
     private void setGridContent() {
         // Default select the color blue for the color picker
-        colourPicker.setValue(Color.BLUE);
+        colorPicker.setValue(Color.BLUE);
 
         // set the sizes for a larger rectangle which mimics the color of the
         // color picker and set its size.
-        colourRectangle.setWidth(50);
-        colourRectangle.setHeight(50);
-        colourRectangle.setFill(colourPicker.getValue());
+        colorRectangle.setWidth(50);
+        colorRectangle.setHeight(50);
+        colorRectangle.setFill(colorPicker.getValue());
 
-        getHboxBot().getChildren().addAll(colourPicker, colorComboPicker);
-        setCenter(colourRectangle);
+        getHboxBot().getChildren().addAll(colorPicker, colorComboPicker);
+        setCenter(colorRectangle);
     }
 
     /**
      * This returns a FindCriteriaValue, specifically a ColorCriteriaValue
-     * containing this panes selections and the current constellationn colour
+     * containing this panes selections and the current constellationn color
      * selected.
      *
      * @return
      */
     @Override
     public FindCriteriaValues getCriteriaValues() {
-        final float red = (float) colourPicker.getValue().getRed();
-        final float green = (float) colourPicker.getValue().getGreen();
-        final float blue = (float) colourPicker.getValue().getBlue();
-        final float opacity = (float) colourPicker.getValue().getOpacity();
-        return new ColourCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(),
+        final float red = (float) colorPicker.getValue().getRed();
+        final float green = (float) colorPicker.getValue().getGreen();
+        final float blue = (float) colorPicker.getValue().getBlue();
+        final float opacity = (float) colorPicker.getValue().getOpacity();
+        return new ColorCriteriaValues(getType(), getAttributeName(), getFilterChoiceBox().getSelectionModel().getSelectedItem(),
                 ConstellationColor.getColorValue(red, green, blue, opacity));
 
     }

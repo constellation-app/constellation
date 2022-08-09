@@ -148,11 +148,11 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
         return makeSquare(GREY, GREY);
     }
 
-    private Shape makeSquare(final Color colour, final Color border) {
+    private Shape makeSquare(final Color color, final Color border) {
         final Stop[] stops = new Stop[]{
-            new Stop(0, colour),
-            new Stop(0.95, colour.deriveColor(1, 1, .75, 1)),
-            new Stop(1.0, colour.deriveColor(1, 1, 0.5, 1))
+            new Stop(0, color),
+            new Stop(0.95, color.deriveColor(1, 1, .75, 1)),
+            new Stop(1.0, color.deriveColor(1, 1, 0.5, 1))
         };
         
         final LinearGradient gradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);

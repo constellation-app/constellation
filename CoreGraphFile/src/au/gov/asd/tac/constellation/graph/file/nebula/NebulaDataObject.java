@@ -154,7 +154,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
         // Generate a color for the nebula marker.
         // First, see if the user has specified a color in the nebula file.
         Color c = null;
-        final String cname = props.getProperty("colour") != null ? props.getProperty("colour") : props.getProperty("color");
+        final String cname = props.getProperty("color") != null ? props.getProperty("color") : props.getProperty("color");
         if (cname != null) {
             ConstellationColor cv = ConstellationColor.fromHtmlColor(cname);
             if (cv == null) {

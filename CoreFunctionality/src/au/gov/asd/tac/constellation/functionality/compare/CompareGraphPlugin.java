@@ -81,10 +81,10 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
     public static final String COMPARE_GRAPH_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "compare_graph_name");
     public static final String IGNORE_VERTEX_ATTRIBUTES_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "ignore_vertex_attribites");
     public static final String IGNORE_TRANSACTION_ATTRIBUTES_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "ignore_transaction_attribites");
-    public static final String ADDED_COLOUR_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "added_colour");
-    public static final String REMOVED_COLOUR_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "removed_colour");
-    public static final String CHANGED_COLOUR_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "changed_colour");
-    public static final String UNCHANGED_COLOUR_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "unchanged_colour");
+    public static final String ADDED_COLOR_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "added_color");
+    public static final String REMOVED_COLOR_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "removed_color");
+    public static final String CHANGED_COLOR_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "changed_color");
+    public static final String UNCHANGED_COLOR_PARAMETER_ID = PluginParameter.buildId(CompareGraphPlugin.class, "unchanged_color");
 
     public static final String GLOBAL_MODIFICATION_COUNT = "Global Modification Count";
     public static final String NODES_COUNT = "Nodes Count";
@@ -159,29 +159,29 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         ignoreTransactionAttributes.setDescription("Ignore these attributes when comparing transactions");
         parameters.addParameter(ignoreTransactionAttributes);
 
-        final PluginParameter<ColorParameterValue> addedColour = ColorParameterType.build(ADDED_COLOUR_PARAMETER_ID);
-        addedColour.setName("Added Color");
-        addedColour.setDescription("The colour to indicate a node/transaction addition");
-        addedColour.setColorValue(ConstellationColor.GREEN);
-        parameters.addParameter(addedColour);
+        final PluginParameter<ColorParameterValue> addedColor = ColorParameterType.build(ADDED_COLOR_PARAMETER_ID);
+        addedColor.setName("Added Color");
+        addedColor.setDescription("The color to indicate a node/transaction addition");
+        addedColor.setColorValue(ConstellationColor.GREEN);
+        parameters.addParameter(addedColor);
 
-        final PluginParameter<ColorParameterValue> removedColour = ColorParameterType.build(REMOVED_COLOUR_PARAMETER_ID);
-        removedColour.setName("Removed Color");
-        removedColour.setDescription("The colour to indicate a node/transaction removal");
-        removedColour.setColorValue(ConstellationColor.RED);
-        parameters.addParameter(removedColour);
+        final PluginParameter<ColorParameterValue> removedColor = ColorParameterType.build(REMOVED_COLOR_PARAMETER_ID);
+        removedColor.setName("Removed Color");
+        removedColor.setDescription("The color to indicate a node/transaction removal");
+        removedColor.setColorValue(ConstellationColor.RED);
+        parameters.addParameter(removedColor);
 
-        final PluginParameter<ColorParameterValue> changedColour = ColorParameterType.build(CHANGED_COLOUR_PARAMETER_ID);
-        changedColour.setName("Changed Color");
-        changedColour.setDescription("The colour to indicate a node/transaction change");
-        changedColour.setColorValue(ConstellationColor.YELLOW);
-        parameters.addParameter(changedColour);
+        final PluginParameter<ColorParameterValue> changedColor = ColorParameterType.build(CHANGED_COLOR_PARAMETER_ID);
+        changedColor.setName("Changed Color");
+        changedColor.setDescription("The color to indicate a node/transaction change");
+        changedColor.setColorValue(ConstellationColor.YELLOW);
+        parameters.addParameter(changedColor);
 
-        final PluginParameter<ColorParameterValue> unchangedColour = ColorParameterType.build(UNCHANGED_COLOUR_PARAMETER_ID);
-        unchangedColour.setName("Unchanged Color");
-        unchangedColour.setDescription("The colour to indicate no node/transaction change");
-        unchangedColour.setColorValue(ConstellationColor.GREY);
-        parameters.addParameter(unchangedColour);
+        final PluginParameter<ColorParameterValue> unchangedColor = ColorParameterType.build(UNCHANGED_COLOR_PARAMETER_ID);
+        unchangedColor.setName("Unchanged Color");
+        unchangedColor.setDescription("The color to indicate no node/transaction change");
+        unchangedColor.setColorValue(ConstellationColor.GREY);
+        parameters.addParameter(unchangedColor);
 
         return parameters;
     }
@@ -258,15 +258,15 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final List<String> ignoreVertexAttributes = new ArrayList<>(parameters.getParameters().get(IGNORE_VERTEX_ATTRIBUTES_PARAMETER_ID).getMultiChoiceValue().getChoices());
         final List<String> ignoreTransactionAttributes = new ArrayList<>(parameters.getParameters().get(IGNORE_TRANSACTION_ATTRIBUTES_PARAMETER_ID).getMultiChoiceValue().getChoices());
 
-        final ConstellationColor addedColour = parameters.getParameters().get(ADDED_COLOUR_PARAMETER_ID).getColorValue();
-        final ConstellationColor removedColour = parameters.getParameters().get(REMOVED_COLOUR_PARAMETER_ID).getColorValue();
-        final ConstellationColor changedColour = parameters.getParameters().get(CHANGED_COLOUR_PARAMETER_ID).getColorValue();
-        final ConstellationColor unchangedColour = parameters.getParameters().get(UNCHANGED_COLOUR_PARAMETER_ID).getColorValue();
+        final ConstellationColor addedColor = parameters.getParameters().get(ADDED_COLOR_PARAMETER_ID).getColorValue();
+        final ConstellationColor removedColor = parameters.getParameters().get(REMOVED_COLOR_PARAMETER_ID).getColorValue();
+        final ConstellationColor changedColor = parameters.getParameters().get(CHANGED_COLOR_PARAMETER_ID).getColorValue();
+        final ConstellationColor unchangedColor = parameters.getParameters().get(UNCHANGED_COLOR_PARAMETER_ID).getColorValue();
 
-        final ConstellationColor addedColourValue = ConstellationColor.getColorValue(addedColour.getRed(), addedColour.getGreen(), addedColour.getBlue(), ConstellationColor.ZERO_ALPHA);
-        final ConstellationColor removedColourValue = ConstellationColor.getColorValue(removedColour.getRed(), removedColour.getGreen(), removedColour.getBlue(), ConstellationColor.ZERO_ALPHA);
-        final ConstellationColor changedColourValue = ConstellationColor.getColorValue(changedColour.getRed(), changedColour.getGreen(), changedColour.getBlue(), ConstellationColor.ZERO_ALPHA);
-        final ConstellationColor unchangedColourValue = ConstellationColor.getColorValue(unchangedColour.getRed(), unchangedColour.getGreen(), unchangedColour.getBlue(), ConstellationColor.ZERO_ALPHA);
+        final ConstellationColor addedColorValue = ConstellationColor.getColorValue(addedColor.getRed(), addedColor.getGreen(), addedColor.getBlue(), ConstellationColor.ZERO_ALPHA);
+        final ConstellationColor removedColorValue = ConstellationColor.getColorValue(removedColor.getRed(), removedColor.getGreen(), removedColor.getBlue(), ConstellationColor.ZERO_ALPHA);
+        final ConstellationColor changedColorValue = ConstellationColor.getColorValue(changedColor.getRed(), changedColor.getGreen(), changedColor.getBlue(), ConstellationColor.ZERO_ALPHA);
+        final ConstellationColor unchangedColorValue = ConstellationColor.getColorValue(unchangedColor.getRed(), unchangedColor.getGreen(), unchangedColor.getBlue(), ConstellationColor.ZERO_ALPHA);
 
         final Graph originalGraph = getGraphFromName(originalGraphName);
         final Graph compareGraph = getGraphFromName(compareGraphName);
@@ -308,7 +308,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
 
         // graph changes
         final String title = String.format("Compare: %s <> %s", originalGraphName, compareGraphName);
-        final GraphRecordStore changes = compareGraphs(title, originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, addedColourValue, removedColourValue, changedColourValue, unchangedColourValue);
+        final GraphRecordStore changes = compareGraphs(title, originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, addedColorValue, removedColorValue, changedColorValue, unchangedColorValue);
 
         // create new graph
         createComparisonGraph(originalGraph, changes);
@@ -328,7 +328,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
      * @return A {@link GraphRecordStore} containing the differences
      * @throws PluginException
      */
-    protected GraphRecordStore compareGraphs(final String title, final GraphRecordStore original, final GraphRecordStore compare, final Set<String> vertexPrimaryKeys, final Set<String> transactionPrimaryKeys, final List<String> ignoreVertexAttributes, final List<String> ignoreTransactionAttributes, final ConstellationColor addedColour, final ConstellationColor removedColour, final ConstellationColor changedColour, final ConstellationColor unchangedColour) throws PluginException {
+    protected GraphRecordStore compareGraphs(final String title, final GraphRecordStore original, final GraphRecordStore compare, final Set<String> vertexPrimaryKeys, final Set<String> transactionPrimaryKeys, final List<String> ignoreVertexAttributes, final List<String> ignoreTransactionAttributes, final ConstellationColor addedColor, final ConstellationColor removedColor, final ConstellationColor changedColor, final ConstellationColor unchangedColor) throws PluginException {
         final GraphRecordStore result = new GraphRecordStore();
         original.reset();
         compare.reset();
@@ -406,7 +406,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
             if (!seenVertices.contains(vertex) && !originalVertexKeysToIndex.containsKey(vertex) && compareVertexKeysToIndex.containsKey(vertex)) { // added
                 changes.add();
                 changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, ADDED);
-                changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, addedColour);
+                changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, addedColor);
 
                 addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                 addAttributesToRecord(result, changes, GraphRecordStoreUtilities.SOURCE, result.index());
@@ -415,7 +415,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
             } else if (!seenVertices.contains(vertex) && originalVertexKeysToIndex.containsKey(vertex) && !compareVertexKeysToIndex.containsKey(vertex)) { // removed
                 changes.add();
                 changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, REMOVED);
-                changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, removedColour);
+                changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, removedColor);
 
                 addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                 addAttributesToRecord(result, changes, GraphRecordStoreUtilities.SOURCE, result.index());
@@ -453,14 +453,14 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                 if (vertexChanged) {
                     changes.add();
                     changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, CHANGED);
-                    changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, changedColour);
+                    changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, changedColor);
 
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                     addAttributesToRecord(result, changes, GraphRecordStoreUtilities.SOURCE, result.index());
                 } else {
                     changes.add();
                     changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, UNCHANGED);
-                    changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, unchangedColour);
+                    changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, unchangedColor);
 
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                     addAttributesToRecord(result, changes, GraphRecordStoreUtilities.SOURCE, result.index());
@@ -476,7 +476,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
             if (!seenTransactions.contains(transaction) && !originalTransactionKeysToIndex.containsKey(transaction) && compareTransactionKeysToIndex.containsKey(transaction)) { // added
                 changes.add();
                 changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, ADDED);
-                changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, addedColour);
+                changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, addedColor);
 
                 addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                 addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.DESTINATION, vertexDestinationRecordPrimaryValues);
@@ -487,7 +487,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
             } else if (!seenTransactions.contains(transaction) && originalTransactionKeysToIndex.containsKey(transaction) && !compareTransactionKeysToIndex.containsKey(transaction)) { // removed
                 changes.add();
                 changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, REMOVED);
-                changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, removedColour);
+                changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, removedColor);
 
                 addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                 addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.DESTINATION, vertexDestinationRecordPrimaryValues);
@@ -528,7 +528,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                 if (transactionChanged) {
                     changes.add();
                     changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, CHANGED);
-                    changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, changedColour);
+                    changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, changedColor);
 
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.DESTINATION, vertexDestinationRecordPrimaryValues);
@@ -537,7 +537,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                 } else {
                     changes.add();
                     changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, UNCHANGED);
-                    changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, unchangedColour);
+                    changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, unchangedColor);
 
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.DESTINATION, vertexDestinationRecordPrimaryValues);

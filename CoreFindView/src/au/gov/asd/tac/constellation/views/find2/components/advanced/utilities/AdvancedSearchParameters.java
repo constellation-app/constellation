@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescri
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
@@ -210,9 +210,9 @@ public class AdvancedSearchParameters {
                             break;
                         // treat values as colors
                         case ColorAttributeDescription.ATTRIBUTE_NAME:
-                            ColourCriteriaValues colourParameterValues = (ColourCriteriaValues) values;
-                            ColourCriteriaValues colourActualValues = (ColourCriteriaValues) parameters.getCriteriaValuesList().get(i);
-                            if (!colourParameterValues.getColorValue().equals(colourActualValues.getColorValue())) {
+                            ColorCriteriaValues colorParameterValues = (ColorCriteriaValues) values;
+                            ColorCriteriaValues colorActualValues = (ColorCriteriaValues) parameters.getCriteriaValuesList().get(i);
+                            if (!colorParameterValues.getColorValue().equals(colorActualValues.getColorValue())) {
                                 return false;
                             }
                             break;

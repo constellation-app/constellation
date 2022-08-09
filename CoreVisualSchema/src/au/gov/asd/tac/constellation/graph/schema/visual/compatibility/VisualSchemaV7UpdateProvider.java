@@ -1,12 +1,12 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
- * 
+ * Copyright 2010-2022 Australian Signals Directorate
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,21 +26,19 @@ import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Update provider to ensure that previous attributes using the spelling "colour" are updated
+ * to the new spelling "color" to be consistent throughout the application 
  *
- * This update ensures that the node_labels_top and node_labels bottom graph
- * attributes appropriately change name to node_top_labels_colors and
- * node_bottom_labels_colors
- *
- * @author Atlas139mkm
+ * @author Delphinus8821
  */
 @ServiceProvider(service = UpdateProvider.class)
-public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
+public class VisualSchemaV7UpdateProvider extends SchemaUpdateProvider {
 
-    private static final String GRAPH_BOTTOM_LABELS = "node_labels_bottom";
-    private static final String GRAPH_TOP_LABELS = "node_labels_top";
-    private static final String GRAPH_TRANSACTION_LABELS = "transaction_labels";
+    public static final int SCHEMA_VERSION_THIS_UPDATE = 7;
 
-    public static final int SCHEMA_VERSION_THIS_UPDATE = 6;
+    private static final String NODE_BOTTOM_LABELS_COLOURS = "node_bottom_labels_colours";
+    private static final String NODE_TOP_LABEL_COLOURS = "node_top_labels_colours";
+    private static final String TRANSACTION_LABEL_COLOURS = "transaction_labels_colours";
 
     @Override
     protected SchemaFactory getSchema() {
@@ -49,7 +47,7 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
 
     @Override
     public int getFromVersionNumber() {
-        return VisualSchemaV5UpdateProvider.SCHEMA_VERSION_THIS_UPDATE;
+        return VisualSchemaV6UpdateProvider.SCHEMA_VERSION_THIS_UPDATE;
     }
 
     @Override
@@ -60,25 +58,22 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
     @Override
     protected void schemaUpdate(final StoreGraph graph) {
 
-        // retrieve the attribute Id of both the graph_labels_top/bottom
-        final int oldGraphBottomlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, GRAPH_BOTTOM_LABELS);
-        final int oldGraphToplabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, GRAPH_TOP_LABELS);
-        final int oldGraphTransactionlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, GRAPH_TRANSACTION_LABELS);
+        // Retrieve the attributes IDs of the previous attributes 
+        final int oldGraphBottomlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, NODE_BOTTOM_LABELS_COLOURS);
+        final int oldGraphToplabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, NODE_TOP_LABEL_COLOURS);
+        final int oldGraphTransactionlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, TRANSACTION_LABEL_COLOURS);
 
-        // retrieve the new values for the graph_labels_bottom and set it to the
-        // new values
+        // retrieve the new values for the graph_labels_bottom and set it to the new values
         final int newGraphBottomLabelsAttributeId = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(graph);
         final String bottomLabelValue = graph.getStringValue(oldGraphBottomlabelsAttributeId, 0);
         graph.setStringValue(newGraphBottomLabelsAttributeId, 0, bottomLabelValue);
 
-        // retrieve the new values for the graph_labels_top and set it to the
-        // new values
+        // retrieve the new values for the graph_labels_top and set it to the new values
         final int newGraphTopLabelsAttributeId = VisualConcept.GraphAttribute.TOP_LABELS.ensure(graph);
         final String topLabelValue = graph.getStringValue(oldGraphToplabelsAttributeId, 0);
         graph.setStringValue(newGraphTopLabelsAttributeId, 0, topLabelValue);
 
-        // retrieve the new values for the transaction_labels and set it to the
-        // new values
+        // retrieve the new values for the transaction_labels and set it to the new values
         final int newGraphTransactionlabelsAttributeId = VisualConcept.GraphAttribute.TRANSACTION_LABELS.ensure(graph);
         final String transactionLabelValue = graph.getStringValue(oldGraphTransactionlabelsAttributeId, 0);
         graph.setStringValue(newGraphTransactionlabelsAttributeId, 0, transactionLabelValue);
@@ -87,7 +82,7 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
         graph.removeAttribute(oldGraphBottomlabelsAttributeId);
         graph.removeAttribute(oldGraphToplabelsAttributeId);
         graph.removeAttribute(oldGraphTransactionlabelsAttributeId);
-
+    
     }
 
 }

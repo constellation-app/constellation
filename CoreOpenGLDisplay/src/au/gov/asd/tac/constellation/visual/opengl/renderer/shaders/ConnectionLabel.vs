@@ -34,7 +34,7 @@ uniform samplerBuffer xyzTexture;
 uniform mat4 mvMatrix;
 
 // Each column is a connection label with the following structure:
-// [0..2] rgb colour (note label colours do not habve an alpha)
+// [0..2] rgb color (note label colors do not habve an alpha)
 // [3] label size
 uniform mat4 labelInfo;
 
@@ -60,7 +60,7 @@ in vec4 glyphLocationData;
 // [3] Unused
 in ivec4 graphLocationData;
 
-// Information about the texture location, colour and scale of the glyph
+// Information about the texture location, color and scale of the glyph
 out int glyphIndex;
 out vec4 labelColor;
 out float glyphScale;
@@ -123,7 +123,7 @@ void main(void) {
     }
     vec4 connectionLocation = vec4(mix(v1.xyz, v2.xyz, stagger), 1);
 
-    // Get the size and colour of this label from the relevant label information matrix
+    // Get the size and color of this label from the relevant label information matrix
     glyphScale = labelInfo[labelNumber][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
 
     // Determine visiblity of this label based both on the visibility of the associated node, and the fade out distance for labels.
@@ -137,7 +137,7 @@ void main(void) {
     // since we want the connection to align with the first label's centre (rather than its top).
     labelYOffset -= 0.5 * labelInfo[0][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
 
-    // Set the colour appropritely - this comes from the labelInfo matrix for a normal glyph, or the graph background colour
+    // Set the color appropritely - this comes from the labelInfo matrix for a normal glyph, or the graph background color
     // if it is a background glyph.
     labelColor = glyphIndex == backgroundGlyphIndex ?
         vec4(backgroundColor.xyz * BACKGROUND_DARKENING_FACTOR, alpha) : vec4(labelInfo[labelNumber].xyz, alpha);

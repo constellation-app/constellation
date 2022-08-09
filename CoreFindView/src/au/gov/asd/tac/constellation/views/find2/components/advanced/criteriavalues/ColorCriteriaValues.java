@@ -18,22 +18,22 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriaval
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 
 /**
- * This Class is for the ColourCriteriaValues which are created from a
- * ColourCriteriaPanel
+ * This Class is for the ColorCriteriaValues which are created from a
+ ColorCriteriaPanel
  *
  * @author Atlas139mkm
  */
-public class ColourCriteriaValues extends FindCriteriaValues {
+public class ColorCriteriaValues extends FindCriteriaValues {
 
     private final ConstellationColor color;
 
-    public ColourCriteriaValues(final String attributeType, final String attribute, final String filter, final ConstellationColor color) {
+    public ColorCriteriaValues(final String attributeType, final String attribute, final String filter, final ConstellationColor color) {
         super(attributeType, attribute, filter);
         this.color = color;
     }
 
     /**
-     * Gets the current color value of this ColourCriteriaValues Object
+     * Gets the current color value of this ColorCriteriaValues Object
      *
      * @return color
      */
