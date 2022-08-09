@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = UpdateProvider.class)
 public class AnalyticSchemaV5UpdateProvider extends SchemaUpdateProvider {
 
-     public static final int SCHEMA_VERSION_THIS_UPDATE = 5;
+    public static final int SCHEMA_VERSION_THIS_UPDATE = 5;
 
     private static final String K_TRUSS_COLOUR = "Cluster.KTruss.Colour";
     private static final String HIERARCHICAL_COLOUR = "Cluster.Hierarchical.Colour";
