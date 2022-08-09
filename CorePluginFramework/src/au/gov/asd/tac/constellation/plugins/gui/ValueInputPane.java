@@ -63,7 +63,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
     public static final int DEFAULT_WIDTH = 300;
     public static final int INTEGER_WIDTH = 75;
     private static final int EMPTY_WIDTH = 100;
-    private static final int STRING_LENGTH = 10;
+    private static final int STRING_LENGTH = 8;
 
     private final ChangeListener<Number> recentValueSelectionListener;
     private final ComboBox<String> recentValuesCombo;
@@ -154,22 +154,23 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 recentValuesCombo.setButtonCell(button);
 
                 recentValuesCombo.setCellFactory((final ListView<String> param) -> {
-                     return new ListCell<String>() {
+                    return new ListCell<String>() {
                         @Override
-                        public void updateItem(String item, boolean empty) {
-                            super.updateItem(item, empty);  
+                        public void updateItem(final String item, final boolean empty) {
+                            super.updateItem(item, empty);
                             if (item != null) {
                                 setText(item);
-                                if (getText().length() > STRING_LENGTH) {
-                                    comboBoxWidth = DEFAULT_WIDTH;
-                                }      
+                                final int textLength = getText().length();
+                                if ((textLength > STRING_LENGTH) && (comboBoxWidth < DEFAULT_WIDTH) && (comboBoxWidth < STRING_LENGTH * textLength)) {
+                                    comboBoxWidth = (STRING_LENGTH * textLength) > DEFAULT_WIDTH ? DEFAULT_WIDTH : STRING_LENGTH * textLength;
+                                }
                             } else {
                                 setText(null);
                             }
                             getListView().setPrefWidth(comboBoxWidth);
                         }
                     };
-                });   
+                }); 
             }
 
             if (isPassword) {
