@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.analytic.compatibility;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
@@ -68,38 +69,44 @@ public class AnalyticSchemaV5UpdateProvider extends SchemaUpdateProvider {
         final int oldChineseWhispersColourAttributeIdVertex = graph.getAttribute(GraphElementType.VERTEX, CHINESE_WHISPERS_COLOUR);
         final int oldInformapColourAttributeIdVertex = graph.getAttribute(GraphElementType.VERTEX, INFOMAP_COLOUR);
 
-        // Retrieve the new values for the vertex attributes
-        final int newKTrussColorAttributeId = ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.get(graph);
-        final int newHierarchicalColorAttributeId = ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOR.get(graph);
-        final int newChineseWhispersColorAttributeId = ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_COLOR.get(graph);
-        final int newInfomapColorAttributeId = ClusteringConcept.VertexAttribute.INFOMAP_COLOR.ensure(graph);
-
         // Go through the vertexs
         for (int vertex = 0; vertex < graph.getVertexCount(); vertex++) {
             final int vertexId = graph.getVertex(vertex);
 
             // K Truss
-            final SchemaAttribute oldKTruss = graph.getObjectValue(oldKTrussColourAttributeIdVertex, vertexId);
-            if (oldKTruss != null) {
-                graph.setObjectValue(newKTrussColorAttributeId, vertexId, ClusteringConcept.VertexAttribute.K_TRUSS_COLOR);
-            }
+            if (oldKTrussColourAttributeIdVertex != Graph.NOT_FOUND) {
+                final int newKTrussColorAttributeId = ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.ensure(graph);
+                final SchemaAttribute oldKTruss = graph.getObjectValue(oldKTrussColourAttributeIdVertex, vertexId);
+                graph.setObjectValue(newKTrussColorAttributeId, vertexId, oldKTruss);
 
+                graph.removeAttribute(oldKTrussColourAttributeIdVertex);
+            }
+            
             // Hierarchical
-            final SchemaAttribute oldHierarchical = graph.getObjectValue(oldHierarchicalColourAttributeIdVertex, vertexId);
-            if (oldHierarchical != null) {
-                graph.setObjectValue(newHierarchicalColorAttributeId, vertexId,ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOR);
-            }
+            if (oldHierarchicalColourAttributeIdVertex != Graph.NOT_FOUND) {
+                final int newHierarchicalColorAttributeId = ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOR.ensure(graph);
+                final SchemaAttribute oldHierarchical = graph.getObjectValue(oldHierarchicalColourAttributeIdVertex, vertexId);
+                graph.setObjectValue(newHierarchicalColorAttributeId, vertexId, oldHierarchical);
 
+                graph.removeAttribute(oldHierarchicalColourAttributeIdVertex);
+            }
+            
             // Chinese Whispers
-            final SchemaAttribute oldChineseWhispers = graph.getObjectValue(oldChineseWhispersColourAttributeIdVertex, vertexId);
-            if (oldChineseWhispers != null) {
-                graph.setObjectValue(newChineseWhispersColorAttributeId, vertexId, ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_COLOR);
+            if (oldChineseWhispersColourAttributeIdVertex != Graph.NOT_FOUND) {
+                final int newChineseWhispersColorAttributeId = ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_COLOR.ensure(graph);
+                final SchemaAttribute oldChineseWhispers = graph.getObjectValue(oldChineseWhispersColourAttributeIdVertex, vertexId);
+                graph.setObjectValue(newChineseWhispersColorAttributeId, vertexId, oldChineseWhispers);
+
+                graph.removeAttribute(oldChineseWhispersColourAttributeIdVertex);
             }
 
             // Infomap
-            final SchemaAttribute oldInfomap = graph.getObjectValue(oldInformapColourAttributeIdVertex, vertexId);
-            if (oldInfomap != null) {
-                graph.setObjectValue(newInfomapColorAttributeId, vertexId, ClusteringConcept.VertexAttribute.INFOMAP_COLOR);
+            if (oldInformapColourAttributeIdVertex != Graph.NOT_FOUND) {
+                final int newInfomapColorAttributeId = ClusteringConcept.VertexAttribute.INFOMAP_COLOR.ensure(graph);
+                final SchemaAttribute oldInfomap = graph.getObjectValue(oldInformapColourAttributeIdVertex, vertexId);
+                graph.setObjectValue(newInfomapColorAttributeId, vertexId, oldInfomap);
+
+                graph.removeAttribute(oldInformapColourAttributeIdVertex);
             }
         }
 
@@ -111,41 +118,45 @@ public class AnalyticSchemaV5UpdateProvider extends SchemaUpdateProvider {
         final int oldChineseWhispersColourAttributeIdTransaction = graph.getAttribute(GraphElementType.TRANSACTION, CHINESE_WHISPERS_COLOUR);
         final int oldInformapColourAttributeIdTransaction = graph.getAttribute(GraphElementType.TRANSACTION, INFOMAP_COLOUR);
 
-        // Retrieve the new values for the transaction attributes
-        final int newKTrussColorAttributeIdTransaction = ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.get(graph);
-        final int newHierarchicalColorAttributeIdTransaction = ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOR.get(graph);
-        final int newChineseWhispersColorAttributeIdTransaction = ClusteringConcept.TransactionAttribute.CHINESE_WHISPERS_COLOR.get(graph);
-        final int newInfomapColorAttributeIdTransaction = ClusteringConcept.TransactionAttribute.INFOMAP_COLOR.ensure(graph);
-
         // Go through the transactions
         for (int transaction = 0; transaction < graph.getTransactionCount(); transaction++) {
             final int transactionId = graph.getTransaction(transaction);
 
             // K Truss
-            final SchemaAttribute oldKTruss = graph.getObjectValue(oldKTrussColourAttributeIdTransaction, transactionId);
-            if (oldKTruss != null) {
-                graph.setObjectValue(newKTrussColorAttributeIdTransaction, transactionId, ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR);
+            if (oldKTrussColourAttributeIdTransaction != Graph.NOT_FOUND) {
+                final int newKTrussColorAttributeIdTransaction = ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.ensure(graph);
+                final SchemaAttribute oldKTruss = graph.getObjectValue(oldKTrussColourAttributeIdTransaction, transactionId);
+                graph.setObjectValue(newKTrussColorAttributeIdTransaction, transactionId, oldKTruss);
+
+                graph.removeAttribute(oldKTrussColourAttributeIdTransaction);
             }
 
             // Hierarchical
-            final SchemaAttribute oldHierarchical = graph.getObjectValue(oldHierarchicalColourAttributeIdTransaction, transactionId);
-            if (oldHierarchical != null) {
-                graph.setObjectValue(newHierarchicalColorAttributeIdTransaction, transactionId,ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOR);
+            if (oldHierarchicalColourAttributeIdTransaction != Graph.NOT_FOUND) {
+                final int newHierarchicalColorAttributeIdTransaction = ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOR.ensure(graph);
+                final SchemaAttribute oldHierarchical = graph.getObjectValue(oldHierarchicalColourAttributeIdTransaction, transactionId);
+                graph.setObjectValue(newHierarchicalColorAttributeIdTransaction, transactionId, oldHierarchical);
+
+                graph.removeAttribute(oldHierarchicalColourAttributeIdTransaction);
             }
 
             // Chinese Whispers
-            final SchemaAttribute oldChineseWhispers = graph.getObjectValue(oldChineseWhispersColourAttributeIdTransaction, transactionId);
-            if (oldChineseWhispers != null) {
-                graph.setObjectValue(newChineseWhispersColorAttributeIdTransaction, transactionId, ClusteringConcept.TransactionAttribute.CHINESE_WHISPERS_COLOR);
+            if (oldChineseWhispersColourAttributeIdTransaction != Graph.NOT_FOUND) {
+                final int newChineseWhispersColorAttributeIdTransaction = ClusteringConcept.TransactionAttribute.CHINESE_WHISPERS_COLOR.ensure(graph);
+                final SchemaAttribute oldChineseWhispers = graph.getObjectValue(oldChineseWhispersColourAttributeIdTransaction, transactionId);
+                graph.setObjectValue(newChineseWhispersColorAttributeIdTransaction, transactionId, oldChineseWhispers);
+
+                graph.removeAttribute(oldChineseWhispersColourAttributeIdTransaction);
             }
 
             // Infomap
-            final SchemaAttribute oldInfomap = graph.getObjectValue(oldInformapColourAttributeIdTransaction, transactionId);
-            if (oldInfomap != null) {
-                graph.setObjectValue(newInfomapColorAttributeIdTransaction, transactionId, ClusteringConcept.TransactionAttribute.INFOMAP_COLOR);
+            if (oldInformapColourAttributeIdTransaction != Graph.NOT_FOUND) {
+                final int newInfomapColorAttributeIdTransaction = ClusteringConcept.TransactionAttribute.INFOMAP_COLOR.ensure(graph);
+                final SchemaAttribute oldInfomap = graph.getObjectValue(oldInformapColourAttributeIdTransaction, transactionId);
+                graph.setObjectValue(newInfomapColorAttributeIdTransaction, transactionId, oldInfomap);
+
+                graph.removeAttribute(oldInformapColourAttributeIdTransaction);
             }
         }
-
     }
-
 }
