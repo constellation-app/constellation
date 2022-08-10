@@ -28,8 +28,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * This update ensures that the node_labels_top and node_labels bottom graph
- * attributes appropriately change name to node_top_labels_colors and
- * node_bottom_labels_colors
+ * attributes appropriately change name to node_top_labels_colours and
+ * node_bottom_labels_colours
  *
  * @author Atlas139mkm
  */

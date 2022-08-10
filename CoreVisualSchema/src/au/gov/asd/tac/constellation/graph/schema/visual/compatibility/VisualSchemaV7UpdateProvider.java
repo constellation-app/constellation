@@ -28,7 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Update provider to ensure that previous attributes using the spelling "colour" are updated
- * to remove the word color altogether as this label was confusing for users. 
+ * to remove the word colour altogether as this label was confusing for users.
  *
  * @author Delphinus8821
  */
