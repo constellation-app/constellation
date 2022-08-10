@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.compatibility;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
@@ -27,7 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Update provider to ensure that previous attributes using the spelling "colour" are updated
- * to the new spelling "color" to be consistent throughout the application 
+ * to remove the word color altogether as this label was confusing for users. 
  *
  * @author Delphinus8821
  */
@@ -63,26 +64,25 @@ public class VisualSchemaV7UpdateProvider extends SchemaUpdateProvider {
         final int oldGraphToplabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, NODE_TOP_LABEL_COLOURS);
         final int oldGraphTransactionlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, TRANSACTION_LABEL_COLOURS);
 
-        // retrieve the new values for the graph_labels_bottom and set it to the new values
-        final int newGraphBottomLabelsAttributeId = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(graph);
-        final String bottomLabelValue = graph.getStringValue(oldGraphBottomlabelsAttributeId, 0);
-        graph.setStringValue(newGraphBottomLabelsAttributeId, 0, bottomLabelValue);
+        if (oldGraphBottomlabelsAttributeId != Graph.NOT_FOUND) {
+            final int newGraphBottomLabelsAttributeId = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(graph);
+            final String bottomLabelValue = graph.getStringValue(oldGraphBottomlabelsAttributeId, 0);
+            graph.setStringValue(newGraphBottomLabelsAttributeId, 0, bottomLabelValue);
+            graph.removeAttribute(oldGraphBottomlabelsAttributeId);
+        }
 
-        // retrieve the new values for the graph_labels_top and set it to the new values
-        final int newGraphTopLabelsAttributeId = VisualConcept.GraphAttribute.TOP_LABELS.ensure(graph);
-        final String topLabelValue = graph.getStringValue(oldGraphToplabelsAttributeId, 0);
-        graph.setStringValue(newGraphTopLabelsAttributeId, 0, topLabelValue);
+        if (oldGraphToplabelsAttributeId != Graph.NOT_FOUND) {
+            final int newGraphTopLabelsAttributeId = VisualConcept.GraphAttribute.TOP_LABELS.ensure(graph);
+            final String topLabelValue = graph.getStringValue(oldGraphToplabelsAttributeId, 0);
+            graph.setStringValue(newGraphTopLabelsAttributeId, 0, topLabelValue);
+            graph.removeAttribute(oldGraphToplabelsAttributeId);
+        }
 
-        // retrieve the new values for the transaction_labels and set it to the new values
-        final int newGraphTransactionlabelsAttributeId = VisualConcept.GraphAttribute.TRANSACTION_LABELS.ensure(graph);
-        final String transactionLabelValue = graph.getStringValue(oldGraphTransactionlabelsAttributeId, 0);
-        graph.setStringValue(newGraphTransactionlabelsAttributeId, 0, transactionLabelValue);
-
-        // remove the old attributes
-        graph.removeAttribute(oldGraphBottomlabelsAttributeId);
-        graph.removeAttribute(oldGraphToplabelsAttributeId);
-        graph.removeAttribute(oldGraphTransactionlabelsAttributeId);
-    
+        if (oldGraphTransactionlabelsAttributeId != Graph.NOT_FOUND) {
+            final int newGraphTransactionlabelsAttributeId = VisualConcept.GraphAttribute.TRANSACTION_LABELS.ensure(graph);
+            final String transactionLabelValue = graph.getStringValue(oldGraphTransactionlabelsAttributeId, 0);
+            graph.setStringValue(newGraphTransactionlabelsAttributeId, 0, transactionLabelValue);
+            graph.removeAttribute(oldGraphTransactionlabelsAttributeId);
+        }
     }
-
 }
