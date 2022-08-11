@@ -37,7 +37,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="blazeSizePanel" max="32767" attributes="0"/>
-                  <Component id="blazeColourPanel" max="32767" attributes="0"/>
+                  <Component id="blazeColorPanel" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="warningLabel" min="-2" max="-2" attributes="0"/>
@@ -55,7 +55,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="blazeSizePanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="blazeColourPanel" min="-2" max="-2" attributes="0"/>
+              <Component id="blazeColorPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -135,12 +135,12 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="blazeColourPanel">
+    <Container class="javax.swing.JPanel" name="blazeColorPanel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Blaze Custom Colors">
-              <ResourceString PropertyName="titleX" bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.blazeColourPanel.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            <TitledBorder title="&lt;GraphOptionsPanel.blazeColorPanel.border.title&gt;">
+              <ResourceString PropertyName="titleX" bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.blazeColorPanel.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </TitledBorder>
           </Border>
         </Property>
@@ -151,7 +151,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-                  <Component id="blazeColourDescription" min="-2" max="-2" attributes="0"/>
+                  <Component id="blazeColorDescription" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="126" max="32767" attributes="0"/>
                   <Component id="colorPanel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -188,7 +188,7 @@
                               <Component id="colorPanel10" max="32767" attributes="0"/>
                               <Component id="colorPanel9" max="32767" attributes="0"/>
                               <Component id="colorPanel7" max="32767" attributes="0"/>
-                              <Component id="blazeColourDescription" min="-2" max="-2" attributes="0"/>
+                              <Component id="blazeColorDescription" min="-2" max="-2" attributes="0"/>
                               <Component id="colorPanel6" alignment="1" max="32767" attributes="0"/>
                               <Component id="colorPanel5" alignment="1" max="32767" attributes="0"/>
                               <Component id="colorPanel4" alignment="1" pref="25" max="32767" attributes="0"/>
@@ -203,10 +203,10 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="blazeColourDescription">
+        <Component class="javax.swing.JLabel" name="blazeColorDescription">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.blazeColourDescription.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.blazeColorDescription.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>

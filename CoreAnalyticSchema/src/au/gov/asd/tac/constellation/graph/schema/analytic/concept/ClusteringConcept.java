@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.algorithms.clustering;
+package au.gov.asd.tac.constellation.graph.schema.analytic.concept;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.HierarchicalStateAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.KTrussStateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.HierarchicalStateAttributeDescription;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTrussStateAttributeDescription;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -68,28 +67,28 @@ public class ClusteringConcept extends SchemaConcept {
         public static final SchemaAttribute K_TRUSS_CLUSTER = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.KTruss.Highest")
                 .setDescription("The highest k-truss this node belongs to")
                 .build();
-        public static final SchemaAttribute K_TRUSS_COLOUR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.KTruss.Colour")
-                .setDescription("The colour of the k-truss this node belongs to")
+        public static final SchemaAttribute K_TRUSS_COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.KTruss.Color")
+                .setDescription("The color of the k-truss this node belongs to")
                 .build();
         public static final SchemaAttribute HIERARCHICAL_CLUSTER = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.Hierarchical")
                 .setDescription("The hierarchical cluster this node belongs to")
                 .setDefaultValue(-1)
                 .build();
-        public static final SchemaAttribute HIERARCHICAL_COLOUR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Hierarchical.Colour")
-                .setDescription("The colour of the hierarchical cluster this node belongs to")
+        public static final SchemaAttribute HIERARCHICAL_COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Hierarchical.Color")
+                .setDescription("The color of the hierarchical cluster this node belongs to")
                 .build();
         public static final SchemaAttribute CHINESE_WHISPERS_CLUSTER = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers")
                 .setDescription("The chinese whispers cluster this node belongs to")
                 .setDefaultValue(-1)
                 .build();
-        public static final SchemaAttribute CHINESE_WHISPERS_COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers.Colour")
+        public static final SchemaAttribute CHINESE_WHISPERS_COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers.Color")
                 .setDescription("The chinese whispers cluster color")
                 .build();
         public static final SchemaAttribute INFOMAP_CLUSTER = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.Infomap")
                 .setDescription("The Infomap cluster this node belongs to")
                 .setDefaultValue(-1)
                 .build();
-        public static final SchemaAttribute INFOMAP_COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Infomap.Colour")
+        public static final SchemaAttribute INFOMAP_COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Infomap.Color")
                 .setDescription("The Infomap cluster color")
                 .build();
     }
@@ -103,28 +102,28 @@ public class ClusteringConcept extends SchemaConcept {
         public static final SchemaAttribute K_TRUSS_CLUSTER = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.KTruss.Highest")
                 .setDescription("The highest k-truss this transaction belongs to")
                 .build();
-        public static final SchemaAttribute K_TRUSS_COLOUR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.KTruss.Colour")
-                .setDescription("The colour of the k-truss this transaction belongs to")
+        public static final SchemaAttribute K_TRUSS_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.KTruss.Color")
+                .setDescription("The color of the k-truss this transaction belongs to")
                 .build();
         public static final SchemaAttribute HIERARCHICAL_CLUSTER = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.Hierarchical")
                 .setDescription("The hierarchical cluster this transaction belongs to")
                 .setDefaultValue(-1)
                 .build();
-        public static final SchemaAttribute HIERARCHICAL_COLOUR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Hierarchical.Colour")
-                .setDescription("The colour of the hierarchical cluster this transaction belongs to")
+        public static final SchemaAttribute HIERARCHICAL_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Hierarchical.Color")
+                .setDescription("The color of the hierarchical cluster this transaction belongs to")
                 .build();
         public static final SchemaAttribute CHINESE_WHISPERS_CLUSTER = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers")
                 .setDescription("The chinese whispers cluster this transaction belongs to")
                 .setDefaultValue(-1)
                 .build();
-        public static final SchemaAttribute CHINESE_WHISPERS_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers.Colour")
+        public static final SchemaAttribute CHINESE_WHISPERS_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers.Color")
                 .setDescription("The chinese whispers cluster color")
                 .build();
         public static final SchemaAttribute INFOMAP_CLUSTER = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.Infomap")
                 .setDescription("The Infomap cluster this node belongs to")
                 .setDefaultValue(-1)
                 .build();
-        public static final SchemaAttribute INFOMAP_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Infomap.Colour")
+        public static final SchemaAttribute INFOMAP_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Infomap.Color")
                 .setDescription("The Infomap cluster color")
                 .build();
     }
@@ -136,18 +135,18 @@ public class ClusteringConcept extends SchemaConcept {
         schemaAttributes.add(MetaAttribute.HIERARCHICAL_CLUSTERING_STATE);
         schemaAttributes.add(VertexAttribute.NAMED_CLUSTER);
         schemaAttributes.add(VertexAttribute.K_TRUSS_CLUSTER);
-        schemaAttributes.add(VertexAttribute.K_TRUSS_COLOUR);
+        schemaAttributes.add(VertexAttribute.K_TRUSS_COLOR);
         schemaAttributes.add(VertexAttribute.HIERARCHICAL_CLUSTER);
-        schemaAttributes.add(VertexAttribute.HIERARCHICAL_COLOUR);
+        schemaAttributes.add(VertexAttribute.HIERARCHICAL_COLOR);
         schemaAttributes.add(VertexAttribute.CHINESE_WHISPERS_CLUSTER);
         schemaAttributes.add(VertexAttribute.CHINESE_WHISPERS_COLOR);
         schemaAttributes.add(VertexAttribute.INFOMAP_CLUSTER);
         schemaAttributes.add(VertexAttribute.INFOMAP_COLOR);
         schemaAttributes.add(TransactionAttribute.NAMED_CLUSTER);
         schemaAttributes.add(TransactionAttribute.K_TRUSS_CLUSTER);
-        schemaAttributes.add(TransactionAttribute.K_TRUSS_COLOUR);
+        schemaAttributes.add(TransactionAttribute.K_TRUSS_COLOR);
         schemaAttributes.add(TransactionAttribute.HIERARCHICAL_CLUSTER);
-        schemaAttributes.add(TransactionAttribute.HIERARCHICAL_COLOUR);
+        schemaAttributes.add(TransactionAttribute.HIERARCHICAL_COLOR);
         schemaAttributes.add(TransactionAttribute.CHINESE_WHISPERS_CLUSTER);
         schemaAttributes.add(TransactionAttribute.CHINESE_WHISPERS_COLOR);
         schemaAttributes.add(TransactionAttribute.INFOMAP_CLUSTER);

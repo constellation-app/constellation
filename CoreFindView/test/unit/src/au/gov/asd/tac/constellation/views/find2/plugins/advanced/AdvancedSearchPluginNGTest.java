@@ -28,7 +28,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
@@ -320,8 +320,8 @@ public class AdvancedSearchPluginNGTest {
         //Constellation Color
         //Is
         findCriteriaValuesList = new ArrayList<>();
-        ColourCriteriaValues colourCriteriaValue = new ColourCriteriaValues("color", "color", "Is", ConstellationColor.BLUE);
-        findCriteriaValuesList.add(colourCriteriaValue);
+        ColorCriteriaValues colorCriteriaValue = new ColorCriteriaValues("color", "color", "Is", ConstellationColor.BLUE);
+        findCriteriaValuesList.add(colorCriteriaValue);
         parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
@@ -336,8 +336,8 @@ public class AdvancedSearchPluginNGTest {
 
         //Is Not
         findCriteriaValuesList = new ArrayList<>();
-        colourCriteriaValue = new ColourCriteriaValues("color", "color", "Is Not", ConstellationColor.BLUE);
-        findCriteriaValuesList.add(colourCriteriaValue);
+        colorCriteriaValue = new ColorCriteriaValues("color", "color", "Is Not", ConstellationColor.BLUE);
+        findCriteriaValuesList.add(colorCriteriaValue);
         parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);

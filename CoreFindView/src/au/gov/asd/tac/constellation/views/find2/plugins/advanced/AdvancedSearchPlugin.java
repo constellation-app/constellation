@@ -33,7 +33,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
@@ -603,7 +603,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
     /**
      * This function checks to see if a graph elements color attribute matches
-     * the criteria specified by the ColourCriteriaValues.
+ the criteria specified by the ColorCriteriaValues.
      *
      * @param values the color criteriaValues
      * @param attributeInt the int of the attribute
@@ -612,7 +612,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @return
      */
     private boolean searchAsColor(final FindCriteriaValues values, final int attributeInt, final int currElement, final GraphWriteMethods graph) {
-        final ColourCriteriaValues colorValues = (ColourCriteriaValues) values;
+        final ColorCriteriaValues colorValues = (ColorCriteriaValues) values;
         final ConstellationColor color = graph.getObjectValue(attributeInt, currElement);
         boolean matches = false;
 

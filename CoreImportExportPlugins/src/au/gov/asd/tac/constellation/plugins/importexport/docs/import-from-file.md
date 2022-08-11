@@ -43,7 +43,7 @@ The following is a high level workflow an analyst can follow (explained
 in detail later on):
 
 1.  Select the file type you want to import with File Parser
-2.  Click on the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_coloured.png" alt="Add File
+2.  Click on the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_colored.png" alt="Add File
     Button" />
     to add files.
 3.  Select your destination graph.
@@ -63,9 +63,9 @@ Hints:
 
 ## Add and Remove Files to Import
 
-Add files to import using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_coloured.png" alt="Add File
+Add files to import using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_colored.png" alt="Add File
 Button" />
-and remove a file using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/minus_coloured.png" alt="Remove File
+and remove a file using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/minus_colored.png" alt="Remove File
 Button" />.
 
 All the files that are being added should have the same column structure. When the "Files Include Headers" option is enabled, the column headings of all 
