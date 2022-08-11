@@ -386,7 +386,7 @@ public class ConstellationLAFSettings {
      * Will fill the background color of the tab with a gradient transition of
      * color between the color(s) specified in the constructor call.
      */
-    private static class NimbusCustomGradientTabPainter<T> implements Painter<T> {
+    public static class NimbusCustomGradientTabPainter<T> implements Painter<T> {
 
         private final Color upperColor;
         private final Color lowerColor;
