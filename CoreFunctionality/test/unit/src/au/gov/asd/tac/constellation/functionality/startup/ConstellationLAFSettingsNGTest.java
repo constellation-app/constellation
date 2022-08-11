@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,16 @@
 package au.gov.asd.tac.constellation.functionality.startup;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.LookAndFeel;
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.openide.windows.WindowManager;
@@ -36,90 +39,208 @@ import org.testng.annotations.Test;
 public class ConstellationLAFSettingsNGTest {
     
     private static final Logger LOGGER = Logger.getLogger(ConstellationLAFSettingsNGTest.class.getName());
+    final static PseudoLookAndFeel pseudoLAF = new PseudoLookAndFeel();
+    final static PseudoUIDefaults pseudoUIdefaults = new PseudoUIDefaults();
     
     @Test
     public void runSetLAFTabColors() {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);
-            doAnswer(mockInvocation -> {
-                final Runnable runnable = (Runnable) mockInvocation.getArgument(0);
+            
+            LOGGER.info("TESTING ConstellationLAFSettings ...");
+            UIManager.setLookAndFeel(pseudoLAF);
+            final JFrame frame = mock(JFrame.class);
+            when(windowManager.getMainWindow()).thenReturn(frame);
 
-                final JFrame frame = mock(JFrame.class);
-                when(windowManager.getMainWindow()).thenReturn(frame);
+            PseudoViewTabDisplayerUI pseudoViewDisplayerUI = new PseudoViewTabDisplayerUI();
+            PseudoTabDisplayerUI pseudoTabDisplayerUI = new PseudoTabDisplayerUI();
+            Class<?> pseudoViewDisplayerUIclass = pseudoViewDisplayerUI.getClass();
+            Class<?> pseudoTabDisplayerUIclass = pseudoTabDisplayerUI.getClass();
 
-                runnable.run();
-                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                    LOGGER.info("\n------ Found LAF: " + info.getName() + "\n");
-                    if (info.getName().toUpperCase().contains("NIMBUS")) {
-                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                        ConstellationLAFSettings.applyTabColorSettings();
-                        final String painterName = UIManager.getLookAndFeelDefaults().get("TabbedPane:TabbedPaneTab[Enabled].backgroundPainter").getClass().getName();
-                        Assert.assertTrue(painterName.contains("NimbusCustomGradientTabPainter"));
-                    } else if (info.getName().toUpperCase().contains("FLATLAF")) {
-                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                        final Class<?> tabDisplayer = (Class<?>) UIManager.getDefaults()
-                                .get("org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI");
-                        if (tabDisplayer != null) {
-                            ConstellationLAFSettings.applyTabColorSettings();
-                            final String underlineHeight = (String) UIManager.get("ViewTab.underlineHeight");
-                            Assert.assertEquals(underlineHeight, "5");
-                        } else {
-                            ConstellationLAFSettings.ouputUIDefaultValues(null, null);
-                        }
-                    } else if (info.getName().toUpperCase().contains("METAL")) {
-                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                        final Class<?> tabDisplayer = (Class<?>) UIManager.getDefaults()
-                            .get("org.netbeans.swing.tabcontrol.plaf.MetalViewTabDisplayerUI");            
-                        if (tabDisplayer != null) {
-                            ConstellationLAFSettings.applyTabColorSettings();
-                            final Color selectedActivatedBackground = (Color) UIManager.get("TabRenderer.selectedActivatedBackground");
-                            final Color expectedDarkBackground = new Color(45, 95, 180);
-                            final Color expectedLightBackground = new Color(130, 170, 255);
-                            if (info.getName().toUpperCase().contains("DARK")) {
-                                Assert.assertTrue(selectedActivatedBackground.equals(expectedDarkBackground));
-                            } else {
-                                Assert.assertTrue(selectedActivatedBackground.equals(expectedLightBackground));
-                            }
-                        } else {
-                            ConstellationLAFSettings.ouputUIDefaultValues(null, null);
-                        }
-                    } else if (info.getName().toUpperCase().contains("WINDOWS")) {
-                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                        Class<?> displayerClass = (Class<?>) UIManager.getDefaults()
-                            .get("org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI");
-                        if (displayerClass == null) {
-                            displayerClass = (Class<?>) UIManager.getDefaults()
-                                .get("org.netbeans.swing.tabcontrol.plaf.WinXPViewTabDisplayerUI");
-                            if (displayerClass != null) {
-                                // check XP settings
-                                ConstellationLAFSettings.applyTabColorSettings();
-                                final Color selectionIndicator = (Color) UIManager.get("TabbedPane.selectionIndicator");
-                                final Color expectedSelectionIndicator = new Color(180, 220, 255);                                                                
-                                Assert.assertTrue(selectionIndicator.equals(expectedSelectionIndicator));                                                              
-                            } else {
-                               ConstellationLAFSettings.ouputUIDefaultValues(null, null);
-                            }
-                        } else {
-                            // check Win8+ settings
-                            ConstellationLAFSettings.applyTabColorSettings();
-                            final Color selectedBackgroundFiller = (Color) UIManager.get("tab_sel_fill");
-                            final Color expectedBackgroundFiller = new Color(160, 205, 255);                                                                
-                            Assert.assertTrue(selectedBackgroundFiller.equals(expectedBackgroundFiller));                                                              
-                        }
-                    }
+            // Test XP LAF settings
+            pseudoLAF.setName("Windows XP");
+            UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI", null);
+            UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.WinXPViewTabDisplayerUI", pseudoTabDisplayerUIclass);
 
-                }
+            ConstellationLAFSettings.applyTabColorSettings();
+            final Color selectionIndicator = (Color) UIManager.getDefaults().get("TabbedPane.selectionIndicator");
+            final Color expectedSelectionIndicator = new Color(180, 220, 255);                                                                
+            Assert.assertTrue(selectionIndicator != null && selectionIndicator.equals(expectedSelectionIndicator));                                                              
+            LOGGER.info("Testing LAF: Windows XP : PASSED");
 
-                return null;
-            }).when(windowManager).invokeWhenUIReady(any(Runnable.class));
+            // Test Win 8+ LAF settings
+            pseudoLAF.setName("Windows 8+");
+            UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI", pseudoViewDisplayerUIclass);
+            ConstellationLAFSettings.applyTabColorSettings();
+            final Color selectedBackgroundFiller = (Color) UIManager.getDefaults().get("tab_sel_fill");
+            final Color expectedBackgroundFiller = new Color(160, 205, 255);                                                                
+            Assert.assertTrue(selectedBackgroundFiller != null && selectedBackgroundFiller.equals(expectedBackgroundFiller));                                                              
+            LOGGER.info("Testing LAF: Windows 8+ : PASSED");
+            
+            // Test Nimbus LAF settings
+            pseudoLAF.setName("Nimbus");
+            ConstellationLAFSettings.applyTabColorSettings();
+            final String nimbusPainterName = UIManager.getDefaults().get("TabbedPane:TabbedPaneTab[Enabled].backgroundPainter").getClass().getName();
+            Assert.assertTrue(nimbusPainterName != null && nimbusPainterName.contains("NimbusCustomGradientTabPainter"));
+            LOGGER.info("Testing LAF: Nimbus : PASSED");
 
-            new Startup().run();
+            pseudoLAF.setName("Dark Nimbus");
+            UIManager.getDefaults().put("TabbedPane:TabbedPaneTab[Enabled].backgroundPainter", null);
+            ConstellationLAFSettings.applyTabColorSettings();
+            final String darkNimbusPainterName = UIManager.getDefaults().get("TabbedPane:TabbedPaneTab[Enabled].backgroundPainter").getClass().getName();
+            Assert.assertTrue(darkNimbusPainterName != null && darkNimbusPainterName.contains("NimbusCustomGradientTabPainter"));
+            LOGGER.info("Testing LAF: Dark Nimbus : PASSED");
+
+            // Test FlatLaf settings
+            pseudoLAF.setName("FlatLafLight");
+            UIManager.getDefaults().put("org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI", pseudoTabDisplayerUIclass);
+            ConstellationLAFSettings.applyTabColorSettings();
+            final Color inactiveUnderlineColor = (Color) UIManager.getDefaults().get("ViewTab.inactiveUnderlineColor");
+            final Color expectedInactiveUnderlineColor = new Color(95, 130, 185);
+            Assert.assertTrue(inactiveUnderlineColor != null && inactiveUnderlineColor.equals(expectedInactiveUnderlineColor));
+            LOGGER.info("Testing LAF: FlatLafLight : PASSED");
+
+            pseudoLAF.setName("FlatLafDark");
+            UIManager.getDefaults().put("ViewTab.underlineHeight", 1);
+            ConstellationLAFSettings.applyTabColorSettings();
+            final Color inactiveDarkUnderlineColor = (Color) UIManager.getDefaults().get("ViewTab.inactiveUnderlineColor");
+            final Color expectedInactiveDarkUnderlineColor = new Color(20, 100, 175);
+            Assert.assertTrue(inactiveDarkUnderlineColor != null && inactiveDarkUnderlineColor.equals(expectedInactiveDarkUnderlineColor));
+            LOGGER.info("Testing LAF: FlatLafDark : PASSED");
+
+            // Test Metal LAF settings
+            pseudoLAF.setName("Metal");
+            UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.MetalViewTabDisplayerUI", pseudoTabDisplayerUIclass);
+            ConstellationLAFSettings.applyTabColorSettings();
+            final Color highlight = (Color) UIManager.getDefaults().get("controlHighlight");
+            final Color expectedHighlight = new Color(130, 170, 255);
+            Assert.assertTrue(highlight != null && highlight.equals(expectedHighlight));
+            LOGGER.info("Testing LAF: Metal : PASSED");
+
+            pseudoLAF.setName("Dark Metal");
+            ConstellationLAFSettings.applyTabColorSettings();
+            final Color darkHighlight = (Color) UIManager.getDefaults().get("controlHighlight");
+            final Color expectedDarkHighlight = new Color(45, 95, 180);
+            Assert.assertTrue(darkHighlight != null && darkHighlight.equals(expectedDarkHighlight));
+            LOGGER.info("Testing LAF: Dark Metal : PASSED");
+            
+            // Test that no changes are made when exceptions occur
+            pseudoLAF.setName("Windows XP");
+            UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI", null);
+            UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.WinXPViewTabDisplayerUI", pseudoViewDisplayerUIclass); 
+            // Incorrect class used as the WinXPViewTabDisplayerUI should log an exception and make no color changes
+            
+            UIManager.getDefaults().put("TabbedPane.selectionIndicator", Color.BLACK);            
+            ConstellationLAFSettings.applyTabColorSettings();
+            final Color selectionIndicatorSetting = (Color) UIManager.getDefaults().get("TabbedPane.selectionIndicator");
+            Assert.assertTrue(selectionIndicatorSetting != null && selectionIndicatorSetting.equals(Color.BLACK));
+            
+            
+            pseudoLAF.setName("FlatLafLight");
+            UIManager.getDefaults().put("org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI", pseudoViewDisplayerUIclass);
+            // Incorrect class used as the FlatViewTabDisplayerUI should log an exception and make no color changes
+            
+            UIManager.getDefaults().put("ViewTab.inactiveUnderlineColor", Color.BLACK); 
+            ConstellationLAFSettings.applyTabColorSettings();
+            final Color inactiveUnderlineColorSetting = (Color) UIManager.getDefaults().get("ViewTab.inactiveUnderlineColor");
+            Assert.assertTrue(inactiveUnderlineColorSetting != null && inactiveUnderlineColorSetting.equals(Color.BLACK));
+
+
+            pseudoLAF.setName("Metal");
+            UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.MetalViewTabDisplayerUI", pseudoViewDisplayerUIclass);
+            // Incorrect class used as the MetalViewTabDisplayerUI should log an exception and make no color changes
+            
+            UIManager.getDefaults().put("TabRenderer.selectedBackground", Color.BLACK); 
+            ConstellationLAFSettings.applyTabColorSettings();
+            final Color selectedBackgroundSetting = (Color) UIManager.getDefaults().get("TabRenderer.selectedBackground");
+            Assert.assertTrue(selectedBackgroundSetting != null && selectedBackgroundSetting.equals(Color.BLACK));
+            
+            LOGGER.info("Testing exceptions / Processing invalid settings: PASSED\n");
+            LOGGER.info("TESTING ConstellationLAFSettings : COMPLETE");
             
         } catch (Exception e) {
-            LOGGER.info("\n******* EXCEPTION \n" + e.toString());
+            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
         }
     }
 
+    /**
+     * This Pseudo class is used for testing purposes to simulate
+     * a changeable look and feel.
+     */
+    private static class PseudoLookAndFeel extends LookAndFeel {
+        
+        String lafName = "Windows";
+        
+        PseudoLookAndFeel(){
+            super();
+        }
+        
+        @Override
+        public String getName() {
+            return lafName;
+        }
+        
+        public void setName(String newLafName){
+            lafName = newLafName;
+        }
+        
+        @Override
+        public UIDefaults getDefaults(){
+            return pseudoUIdefaults;
+        }
+
+        @Override
+        public String getID() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public String getDescription() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public boolean isNativeLookAndFeel() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public boolean isSupportedLookAndFeel() {
+            return true;
+        }
+    }
     
+    /**
+     * This Pseudo class is used for testing purposes to simulate
+     * a custom empty UIDefaults class.
+     */
+    private static class PseudoUIDefaults extends UIDefaults {
+        
+        Map<String, Object> settings = new HashMap<>();
+        
+        PseudoUIDefaults() {
+            super();
+        }
+        
+        public Object get(String key) {
+            return settings.get(key);
+        }
+        
+        public void put(String key, Object value) {
+            settings.put(key, value);
+        }
+        
+    }
+    
+//    /**
+//     * This Pseudo class is used for testing purposes to simulate
+//     * an invalid entry to intentionally cause an exception.
+//     */
+//    public class PseudoInvalidTabDisplayerUI extends PseudoViewTabDisplayerUI {
+//        PseudoInvalidTabDisplayerUI(){
+//            super();
+//        }
+//    }
+
 }
