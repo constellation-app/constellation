@@ -88,7 +88,7 @@ public class ConstellationLAFSettings {
                 final Class<?> tabDisplayer = displayerClass.getSuperclass();
 
                 if (tabDisplayer == null) {
-                    LOGGER.info(" >>> Unable to apply Tab coloring to Windows LAF : no superclass for displayerClass :");
+                    LOGGER.log(Level.WARNING, " >>> Unable to apply Tab coloring to Windows LAF : no superclass for displayerClass :");
                     ouputUIDefaultValues(null, null);
                     return;
                 }
@@ -117,8 +117,7 @@ public class ConstellationLAFSettings {
                 if (displayerClass != null) {
                     // get Reflection objects before updating any UI settings
                     final Field colsReady = displayerClass.getDeclaredField("colorsReady"); //NOSONAR
-                    Class<?>[] argList = null;
-                    final Method initCols = displayerClass.getDeclaredMethod("initColors", argList);
+                    final Method initCols = displayerClass.getDeclaredMethod("initColors");
 
                     // Update the UIManager with settings appropriate for Windows (XP) LAF
                     UIManager.getDefaults().put("TabbedPane.highlight", activeMidSectionBlue);
@@ -145,7 +144,7 @@ public class ConstellationLAFSettings {
                 } else {
                     // Unable to apply changes to Windows LAF
                     // Possibly caused by a change in a newer NetBeans version
-                    LOGGER.info(" >>> Unable to apply Tab coloring to Windows LAF : neither Windows8VectorViewTabDisplayerUI nor WinXPViewTabDisplayerUI are defined :");
+                    LOGGER.log(Level.WARNING, " >>> Unable to apply Tab coloring to Windows LAF : neither Windows8VectorViewTabDisplayerUI nor WinXPViewTabDisplayerUI are defined :");
                     ouputUIDefaultValues(null, null);
                 }
             }
@@ -242,8 +241,7 @@ public class ConstellationLAFSettings {
             if (tabDisplayer != null) {
                 // get Reflection objects before updating any UI settings
                 final Field colready = tabDisplayer.getDeclaredField("colorsReady");
-                Class<?>[] argList = null;
-                final Method initCols = tabDisplayer.getDeclaredMethod("initColors", argList);
+                final Method initCols = tabDisplayer.getDeclaredMethod("initColors");
 
                 // Update the UIManager with settings appropriate for FlatLaf
                 UIManager.getDefaults().put("ViewTab.selectedBackground", selectedBackgroundBlue);
@@ -268,7 +266,7 @@ public class ConstellationLAFSettings {
             } else {
                 // Unable to apply changes to FlatLaf
                 // Possibly caused by a change in a newer NetBeans version
-                LOGGER.info(" >>> Unable to apply Tab coloring to FlatLAF : org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI not defined :");
+                LOGGER.log(Level.WARNING, " >>> Unable to apply Tab coloring to FlatLAF : org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI not defined :");
                 ouputUIDefaultValues(null, null);
             }
         } catch (final IllegalAccessException | IllegalArgumentException | NoSuchFieldException | 
@@ -332,7 +330,7 @@ public class ConstellationLAFSettings {
             } else {
                 // Unable to apply changes to Metal LAF
                 // Possibly caused by a change in a newer NetBeans version
-                LOGGER.info(" >>> Unable to apply Tab coloring to Metal LAF : org.netbeans.swing.tabcontrol.plaf.MetalViewTabDisplayerUI not defined.");
+                LOGGER.log(Level.WARNING, " >>> Unable to apply Tab coloring to Metal LAF : org.netbeans.swing.tabcontrol.plaf.MetalViewTabDisplayerUI not defined.");
                 ouputUIDefaultValues(null, null);
             }
         } catch (final IllegalAccessException | IllegalArgumentException | 
@@ -427,21 +425,13 @@ public class ConstellationLAFSettings {
          * @param bottomShadeColor Color to paint at bottom of Tab
          */
         public NimbusCustomGradientTabPainter(final Color topShadeColor, final Color bottomShadeColor) {
-            if (topShadeColor != null) {
-                upperColor = topShadeColor;
-            } else {
-                upperColor = Color.WHITE;
-            }
-            if (bottomShadeColor != null) {
-                lowerColor = bottomShadeColor;
-            } else {
-                lowerColor = Color.BLACK;
-            }
+            upperColor = (topShadeColor != null) ? topShadeColor : Color.WHITE;
+            lowerColor = (bottomShadeColor != null) ? bottomShadeColor : Color.BLACK;
         }
 
         
         @Override
-        public void paint(Graphics2D g, Object j, int w, int h) {
+        public void paint(final Graphics2D g, final Object j, final int w, final int h) {
 
             // set some fixed positioning values relating to the tab's height
             final int startOffset = h / 6;
