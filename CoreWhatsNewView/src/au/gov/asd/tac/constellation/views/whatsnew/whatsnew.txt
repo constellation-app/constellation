@@ -1,6 +1,11 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-08-03 Layers View
+<p>Layers View has had a complete UI rework and is now available under the Views menu.</p>
+<p>Layers View allows you to add vertices and transactions to up to 32 layers by either using the right click context menu or defining a query.</p>
+<p>The view allows for toggling of layers via a checkbox which links to subsets of graph elements.
+This will either hide or show the subsets based on element visibility changes to reduce clutter when analysing large data sets.</p>
 
 == 2022-07-28 Clear Button in Database Importer
 <p>The "Import from Database" pane now has a clear button next to the query button. Clicking Clear will clear the results in the current run and will clear the query text</p>

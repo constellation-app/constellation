@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.layers;
+package au.gov.asd.tac.constellation.views.layers.components;
 
+import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -68,16 +69,52 @@ public class LayersViewPaneNGTest {
 
     /**
      * Test of setLayers method, of class LayersViewPane.
+     * 
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testSetLayers() {
+    public void testSetLayers() throws InterruptedException {
+        LayersViewPane lvp = new LayersViewPane(LayersViewController.getDefault());
+        LayersViewPane spiedLvp = spy(lvp);
+
+        doCallRealMethod().when(spiedLvp).setLayers(Mockito.any(), Mockito.any());
+        spiedLvp.setLayers(LayersViewController.getDefault().getVxQueryCollection().getQueries(), LayersViewController.getDefault().getTxQueryCollection().getQueries());
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        Platform.runLater(() -> {
+            System.out.println("Queued platform task for test");
+            latch.countDown();
+        });
+
+        latch.await();
+
+        verify(spiedLvp).setLayers(Mockito.any(), Mockito.any());
     }
 
     /**
      * Test of setDefaultLayers method, of class LayersViewPane.
+     *
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testSetDefaultLayers() {
+    public void testSetDefaultLayers() throws InterruptedException {
+        LayersViewPane lvp = new LayersViewPane(LayersViewController.getDefault());
+        LayersViewPane spiedLvp = spy(lvp);
+
+        doCallRealMethod().when(spiedLvp).setDefaultLayers();
+        spiedLvp.setDefaultLayers();
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        
+        Platform.runLater(() -> {
+            System.out.println("Queued platform task for test");
+            latch.countDown();
+        });
+
+        latch.await();
+
+        verify(spiedLvp).setDefaultLayers();
     }
 
     /**
@@ -103,7 +140,7 @@ public class LayersViewPaneNGTest {
         latch.await();
         
         verify(spiedLvp).setEnabled(Mockito.eq(true));
-        verify(spiedLvp).setCenter(Mockito.same(spiedLvp.layersViewPane));
+        verify(spiedLvp).setCenter(Mockito.same(spiedLvp.layersViewVBox));
     }
     
     /**
@@ -131,5 +168,5 @@ public class LayersViewPaneNGTest {
         verify(spiedLvp).setEnabled(Mockito.eq(false));
         verify(spiedLvp).setCenter(Mockito.same(spiedLvp.noGraphPane));
     }
-    
+
 }
