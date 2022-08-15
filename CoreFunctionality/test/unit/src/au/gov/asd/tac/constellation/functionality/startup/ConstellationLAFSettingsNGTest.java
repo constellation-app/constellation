@@ -66,7 +66,8 @@ public class ConstellationLAFSettingsNGTest {
             LOGGER.info("Windows XP LAF Test: PASSED");
 
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
     
@@ -88,7 +89,8 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(selectedBackgroundFiller != null && selectedBackgroundFiller.equals(expectedBackgroundFiller));                                                              
             LOGGER.info("Windows 8+ LAF Test: PASSED");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
     
@@ -108,7 +110,8 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(nimbusPainterName != null && nimbusPainterName.contains("NimbusCustomGradientTabPainter"));
             LOGGER.info("Nimbus LAF Test: PASSED");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
@@ -129,7 +132,8 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(darkNimbusPainterName != null && darkNimbusPainterName.contains("NimbusCustomGradientTabPainter"));
             LOGGER.info("Dark Nimbus LAF Test: PASSED");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
@@ -151,7 +155,8 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(highlight != null && highlight.equals(expectedHighlight));
             LOGGER.info("Metal LAF Test: PASSED");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
     
@@ -173,7 +178,8 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(darkHighlight != null && darkHighlight.equals(expectedDarkHighlight));
             LOGGER.info("Dark Metal LAF Test: PASSED");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
     
@@ -195,7 +201,8 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(inactiveUnderlineColor != null && inactiveUnderlineColor.equals(expectedInactiveUnderlineColor));
             LOGGER.info("FlatLafLight LAF Test: PASSED");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
@@ -217,7 +224,8 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(inactiveDarkUnderlineColor != null && inactiveDarkUnderlineColor.equals(expectedInactiveDarkUnderlineColor));
             LOGGER.info("FlatLafDark LAF Test: PASSED");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
@@ -242,7 +250,8 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(selectionIndicatorSetting != null && selectionIndicatorSetting.equals(Color.BLACK));                        
             LOGGER.info("ERROR TESTS on Windows: PASSED");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
@@ -266,7 +275,8 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(selectedBackgroundSetting != null && selectedBackgroundSetting.equals(Color.BLACK));
             LOGGER.info("ERROR TESTS on Metal: PASSED");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
@@ -290,7 +300,8 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(inactiveUnderlineColorSetting != null && inactiveUnderlineColorSetting.equals(Color.BLACK));
             LOGGER.info("ERROR TESTS on FlatLafLight: PASSED");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
@@ -335,7 +346,8 @@ public class ConstellationLAFSettingsNGTest {
 
             LOGGER.info("CLASS COVERAGE TESTS COMPLETE");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* EXCEPTION *******\n", e);            
+            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
+            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
    
