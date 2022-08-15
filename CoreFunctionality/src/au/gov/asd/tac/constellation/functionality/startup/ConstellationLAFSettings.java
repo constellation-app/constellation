@@ -152,8 +152,7 @@ public class ConstellationLAFSettings {
                 NoSuchMethodException | NoSuchFieldException | SecurityException e) {
             // An exception here would indicate a change in the internal LAF 
             // packages provided by NetBeans
-            final String errorMessage = " >>> Error applying Windows LaF colors : " + e.toString();
-            LOGGER.log(Level.SEVERE, errorMessage, e);
+            LOGGER.log(Level.SEVERE, " >>> Error applying Windows LaF colors :", e);
         }     
     }
 
@@ -273,8 +272,7 @@ public class ConstellationLAFSettings {
                 NoSuchMethodException | SecurityException | InvocationTargetException e) {
             // An exception here would indicate a change in the internal LAF 
             // packages provided by NetBeans
-            final String errorMessage = " >>> Error applying FlatLaf colors : " + e.toString();
-            LOGGER.log(Level.SEVERE, errorMessage, e);
+            LOGGER.log(Level.SEVERE, " >>> Error applying FlatLaf colors :", e);
         }
     }
 
@@ -337,13 +335,16 @@ public class ConstellationLAFSettings {
                 NoSuchFieldException | SecurityException e) {
             // An exception here would indicate a change in the internal LAF 
             // packages provided by NetBeans
-            final String errorMessage = " >>> Error applying Metal Laf colors : " + e.toString();
-            LOGGER.log(Level.SEVERE, errorMessage, e);
+            LOGGER.log(Level.SEVERE, " >>> Error applying Metal Laf colors :", e);
         }
     }
 
     /**
      * Convenience method to assist with identifying UImanager settings
+     * 
+     * Note: This method should only remain in the code temporarily, 
+     * for a few releases after its introduction, to assist in any additional changes
+     * that may be needed for other Look and Feels being used     
      * 
      * @param keyFilter limit output to key entries containing the keyFilter
      * @param valueFilter limit output to values containing the valueFilter
