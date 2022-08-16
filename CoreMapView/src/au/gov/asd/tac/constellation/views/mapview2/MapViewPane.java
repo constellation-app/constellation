@@ -15,21 +15,28 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.gui.MultiChoiceInputPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
 import au.gov.asd.tac.constellation.views.mapview.layers.MapLayer;
 import au.gov.asd.tac.constellation.views.mapview.overlays.MapOverlay;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.embed.swing.SwingNode;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ChoiceBox;
@@ -40,6 +47,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import org.controlsfx.control.CheckComboBox;
 import org.openide.util.Lookup;
 
@@ -62,8 +71,10 @@ public class MapViewPane extends BorderPane {
     private static final String ZOOM_SELECTION = "Zoom to Selection";
     private static final String ZOOM_LOCATION = "Zoom to Location";
 
+    private final MapProvider defaultProvider;
     private final List<? extends MapProvider> providers;
     private final List<? extends MapExporter> exporters;
+    private final MarkerState markerState = null;
 
     private final ChoiceBox<MapProvider> mapProviderDropDown;
     private final MenuButton zoomDropDown;
@@ -75,6 +86,11 @@ public class MapViewPane extends BorderPane {
     private final ComboBox exportDropDown;
     private final Button helpButton;
 
+    private MapView mapView;
+
+    //private final Consumer<Graph> updateMarkers;
+    private au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer renderer = null;
+    private Component glComponent;
 
     private final List<String> dropDownOptions = new ArrayList<>();
 
@@ -83,6 +99,7 @@ public class MapViewPane extends BorderPane {
 
         toolBar = new ToolBar();
 
+        defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
         providers = new ArrayList<>(Lookup.getDefault().lookupAll(MapProvider.class));
         exporters = new ArrayList<>(Lookup.getDefault().lookupAll(MapExporter.class));
 
@@ -134,6 +151,53 @@ public class MapViewPane extends BorderPane {
         toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton);
         setTop(toolBar);
 
+
+
+
+    }
+
+    public void setUpMap() {
+        mapView = new MapView();
+
+        Platform.runLater(() -> {
+            setCenter(mapView);
+        });
+
+    }
+
+    public MapProvider getDefaultProvider() {
+        return defaultProvider;
+    }
+
+    public MarkerState getMarkerState() {
+        return markerState;
+    }
+
+    public List<? extends MapProvider> getProviders() {
+        return providers;
+    }
+
+    public void resetContent() {
+
+        /*Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                if (renderer != null) {
+                    renderer.dispose();
+                }
+
+                renderer = new MapViewTileRenderer(parent);
+                glComponent = renderer.init();
+                parent.setMapImage(glComponent);
+
+                //mapView.setContent((JComponent) glComponent);
+
+                //setCenter(mapView);
+
+            }
+
+        });*/
     }
 
     private void setDropDownOptions(List<?> options) {
