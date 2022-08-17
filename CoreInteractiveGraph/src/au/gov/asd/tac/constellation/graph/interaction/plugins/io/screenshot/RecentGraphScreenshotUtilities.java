@@ -135,7 +135,7 @@ public class RecentGraphScreenshotUtilities {
      */
     public static void takeScreenshot(final String filepath) {
         final String pathHash = hashFilePath(filepath);
-        final String imageFile = getScreenshotsDir() + File.separator + pathHash + ".png";
+        final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
 
         final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(GraphManager.getDefault().getActiveGraph());
