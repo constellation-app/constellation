@@ -37,7 +37,7 @@ public class LinkMinTransactionDatetimeAttributeBin extends DateTimeBin {
         super(formatter);
     }
 
-    private static final ZonedDateTime MAX_DATE_TIME = TemporalFormatting.zonedDateTimeFromLong(Long.MAX_VALUE);
+    private static final ZonedDateTime MAX_DATE_TIME = TemporalFormatting.zonedDateTimeFromLong(Integer.MAX_VALUE);
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
