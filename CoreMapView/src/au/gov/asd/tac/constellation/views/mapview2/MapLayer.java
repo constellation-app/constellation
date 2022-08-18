@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.mapview.layers;
+package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.views.mapview.MapViewTileRenderer;
+import au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -32,7 +32,7 @@ public abstract class MapLayer {
     private static final int WAIT_MILLIS = 100;
 
     protected boolean enabled;
-    protected MapViewTileRenderer renderer;
+    protected au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer renderer;
     protected UnfoldingMap map;
     protected Graph graph;
     protected PImage layer;
@@ -49,7 +49,7 @@ public abstract class MapLayer {
         this.layer = null;
     }
 
-    public void initialise(final MapViewTileRenderer renderer, final UnfoldingMap map) {
+    public void initialise(final au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer renderer, final UnfoldingMap map) {
         this.renderer = renderer;
         this.map = map;
     }
@@ -90,7 +90,6 @@ public abstract class MapLayer {
 
                 // update layer
                 layer = update();
-
             }).start();
             mouseIsReleased = false;
             mouseIsScrolling = false;

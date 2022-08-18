@@ -150,10 +150,6 @@ public class MapViewPane extends BorderPane {
 
         toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton);
         setTop(toolBar);
-
-
-
-
     }
 
     public void setUpMap() {

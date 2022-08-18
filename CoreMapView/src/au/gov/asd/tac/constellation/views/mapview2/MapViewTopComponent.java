@@ -87,6 +87,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         setName(Bundle.CTL_MapViewTopComponent2());
         setToolTipText(Bundle.HINT_MapViewTopComponent2());
 
+        initComponents();
         mapViewPane = new MapViewPane(this);
         initContent();
 
@@ -190,6 +191,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         super.handleNewGraph(graph);
         //UpdateUI();
     }
+
 
     /**
      * Get the findViewPane
