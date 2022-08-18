@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
@@ -156,7 +156,7 @@ public class AdvancedSearchParametersNGTest {
         result = paramatersOne.equals(paramatersTwo);
         assertEquals(result, false);
 
-        //float , colour, boolean, zoned datetime, icon
+        //float , color, boolean, zoned datetime, icon
         FindCriteriaValues valueOne = new FloatCriteriaValues("float", "x", "Is", 1);
         FindCriteriaValues valueTwo = new FloatCriteriaValues("float", "x", "Is", 6);
         criteriaValuesListOne.clear();
@@ -179,8 +179,8 @@ public class AdvancedSearchParametersNGTest {
         result = paramatersOne.equals(paramatersTwo);
         assertEquals(result, false);
 
-        valueOne = new ColourCriteriaValues("color", "color", "Is", ConstellationColor.BLUE);
-        valueTwo = new ColourCriteriaValues("color", "color", "Is", ConstellationColor.GREEN);
+        valueOne = new ColorCriteriaValues("color", "color", "Is", ConstellationColor.BLUE);
+        valueTwo = new ColorCriteriaValues("color", "color", "Is", ConstellationColor.GREEN);
         criteriaValuesListOne.clear();
         criteriaValuesListTwo.clear();
         criteriaValuesListOne.add(valueOne);

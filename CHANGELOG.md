@@ -1,5 +1,12 @@
 # Constellation Changes	
 
+## Changes in August 2022
+
+-   Moved `ClusteringConcept`, `HierarchicalStateAttributeDescription` and
+    `KTrussStateAttributeDescription` from `CoreAlgorithmPlugins` to
+    `CoreAnalyticSchema` so that they could be used in an schema updater to 
+    update the spelling of 'color' in some attributes changed.
+
 ## Changes in July 2022
 
 -   Updated `RestClient` so that `params` are passed as `List<Tuple<String, String>>`
@@ -162,7 +169,7 @@
 
 ## Changes in July 2021
 
--   Update to Quality Control category names and colours in
+-   Update to Quality Control category names and colors in
     `QualityControlEvent` to be easier to understand.
 
 -   Update to `openEdit`, `updateNotesUI`, `createNote` and the constructor in

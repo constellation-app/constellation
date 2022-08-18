@@ -81,7 +81,7 @@ following types will be searched as 'strings.' The types are as follows:
 
 -   Boolean searches:  
     <img src="../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-boolean.png" />
--   Colour searches:  
+-   Color searches:  
     <img src="../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-color.png" />
 -   Date searches:  
     <img src="../constellation/CoreFindView/src/au/gov/asd/tac/constellation/views/find/docs/resources/find-date.png" />

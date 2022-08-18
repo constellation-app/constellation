@@ -42,7 +42,7 @@ View" />
 
 When timeline events overlap at the current zoom level, these events are
 grouped into a temporal cluster. These clusters are represented as
-rectangular blocks on the timeline. They are coloured blue if none of
+rectangular blocks on the timeline. They are colored blue if none of
 the events in the cluster are selected and red if all of the events in
 the cluster are selected. If only a portion of events in the cluster are
 selected, the block will be both red and blue with the proportion of red

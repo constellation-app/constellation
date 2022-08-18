@@ -32,7 +32,7 @@ import au.gov.asd.tac.constellation.views.find2.components.BasicFindTab;
 import au.gov.asd.tac.constellation.views.find2.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find2.components.FindViewTabs;
 import au.gov.asd.tac.constellation.views.find2.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +59,7 @@ import org.testng.annotations.Test;
  *
  * @author Atlas139mkm
  */
-public class ColourCriteriaPanelNGTest {
+public class ColorCriteriaPanelNGTest {
 
     private Map<String, Graph> graphMap = new HashMap<>();
     private Graph graph;
@@ -80,7 +80,7 @@ public class ColourCriteriaPanelNGTest {
     FindViewTabs findViewTabs;
     private static final Logger LOGGER = Logger.getLogger(FloatCriteriaPanelNGTest.class.getName());
 
-    public ColourCriteriaPanelNGTest() {
+    public ColorCriteriaPanelNGTest() {
     }
 
     @BeforeClass
@@ -130,7 +130,7 @@ public class ColourCriteriaPanelNGTest {
     }
 
     /**
-     * Test of getCriteriaValues method, of class ColourCriteriaPanel.
+     * Test of getCriteriaValues method, of class ColorCriteriaPanel.
      */
     @Test
     public void testGetCriteriaValues() {
@@ -141,12 +141,12 @@ public class ColourCriteriaPanelNGTest {
         AdvancedFindTab parentComponent = spy(advancedTab);
         final GraphElementType type = GraphElementType.VERTEX;
 
-        ColourCriteriaPanel colourCriteriaPanel = new ColourCriteriaPanel(parentComponent, "color", type);
-        colourCriteriaPanel.getFilterChoiceBox().getSelectionModel().select("Is");
+        ColorCriteriaPanel colorCriteriaPanel = new ColorCriteriaPanel(parentComponent, "color", type);
+        colorCriteriaPanel.getFilterChoiceBox().getSelectionModel().select("Is");
 
         final List<AdvancedCriteriaBorderPane> tempList = new ArrayList<>();
         final GridPane tempGrid = new GridPane();
-        tempList.add(colourCriteriaPanel);
+        tempList.add(colorCriteriaPanel);
         tempGrid.add(tempList.get(0), 0, 0);
 
         when(parentComponent.getCorrespondingCriteriaList(Mockito.eq(type))).thenReturn(tempList);
@@ -155,16 +155,16 @@ public class ColourCriteriaPanelNGTest {
         final List<AdvancedCriteriaBorderPane> criteriaList = parentComponent.getCorrespondingCriteriaList(type);
 
         final FindCriteriaValues result = criteriaList.get(0).getCriteriaValues();
-        final ColourCriteriaValues colourResult = (ColourCriteriaValues) result;
+        final ColorCriteriaValues colorResult = (ColorCriteriaValues) result;
 
-        assertEquals(colourResult.getAttribute(), "color");
-        assertEquals(colourResult.getAttributeType(), "color");
-        assertEquals(colourResult.getFilter(), "Is");
-        assertEquals(colourResult.getColorValue(), ConstellationColor.BLUE);
+        assertEquals(colorResult.getAttribute(), "color");
+        assertEquals(colorResult.getAttributeType(), "color");
+        assertEquals(colorResult.getFilter(), "Is");
+        assertEquals(colorResult.getColorValue(), ConstellationColor.BLUE);
     }
 
     /**
-     * Test of getType method, of class ColourCriteriaPanel.
+     * Test of getType method, of class ColorCriteriaPanel.
      */
     @Test
     public void testGetType() {
@@ -175,8 +175,8 @@ public class ColourCriteriaPanelNGTest {
         AdvancedFindTab parentComponent = spy(advancedTab);
         final GraphElementType type = GraphElementType.VERTEX;
 
-        ColourCriteriaPanel colourCriteriaPanel = new ColourCriteriaPanel(parentComponent, "color", type);
-        assertEquals(colourCriteriaPanel.getType(), ColorAttributeDescription.ATTRIBUTE_NAME);
+        ColorCriteriaPanel colorCriteriaPanel = new ColorCriteriaPanel(parentComponent, "color", type);
+        assertEquals(colorCriteriaPanel.getType(), ColorAttributeDescription.ATTRIBUTE_NAME);
     }
 
     private void setupGraph() {

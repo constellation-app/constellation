@@ -61,10 +61,10 @@ public class MarkerState {
     }
 
     public enum MarkerColorScheme {
-        DEFAULT("Default Colours", null, null),
-        COLOR("Use Colour Attribute", VisualConcept.VertexAttribute.COLOR, VisualConcept.TransactionAttribute.COLOR),
-        OVERLAY("Use Overlay Colour", VisualConcept.VertexAttribute.OVERLAY_COLOR, VisualConcept.TransactionAttribute.OVERLAY_COLOR),
-        BLAZE("Use Blaze Colour", VisualConcept.VertexAttribute.BLAZE, null);
+        DEFAULT("Default Colors", null, null),
+        COLOR("Use Color Attribute", VisualConcept.VertexAttribute.COLOR, VisualConcept.TransactionAttribute.COLOR),
+        OVERLAY("Use Overlay Color", VisualConcept.VertexAttribute.OVERLAY_COLOR, VisualConcept.TransactionAttribute.OVERLAY_COLOR),
+        BLAZE("Use Blaze Color", VisualConcept.VertexAttribute.BLAZE, null);
 
         private final String displayName;
         private final SchemaAttribute vertexAttribute;

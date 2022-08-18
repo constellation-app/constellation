@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss;
+package au.gov.asd.tac.constellation.graph.schema.analytic.attribute;
 
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * A placeholder attribute type to hold a HierarchicalAttributeDescription
+ * instance.
  *
- * @author twilight_sparkle
+ * @author algol
  */
 @ServiceProvider(service = AttributeDescription.class)
-public class KTrussStateAttributeDescription extends ObjectAttributeDescription {
+public class HierarchicalStateAttributeDescription extends ObjectAttributeDescription {
 
-    public static final String ATTRIBUTE_NAME = "KTrussState";
+    public static final String ATTRIBUTE_NAME = "community_of_interest";
 
-    public KTrussStateAttributeDescription() {
+    public HierarchicalStateAttributeDescription() {
         super(ATTRIBUTE_NAME);
     }
 }

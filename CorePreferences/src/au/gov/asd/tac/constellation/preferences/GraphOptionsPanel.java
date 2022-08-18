@@ -165,8 +165,8 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
         blazeSizeDescription = new JLabel();
         blazeOpacitySlider = new JSlider();
         blazeOpacityDescription = new JLabel();
-        blazeColourPanel = new JPanel();
-        blazeColourDescription = new JLabel();
+        blazeColorPanel = new JPanel();
+        blazeColorDescription = new JLabel();
         colorPanel1 = new JPanel();
         colorPanel2 = new JPanel();
         colorPanel3 = new JPanel();
@@ -221,9 +221,9 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        blazeColourPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeColourPanel.border.title"))); // NOI18N
+        blazeColorPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeColorPanel.border.title"))); // NOI18N
 
-        Mnemonics.setLocalizedText(blazeColourDescription, NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeColourDescription.text")); // NOI18N
+        Mnemonics.setLocalizedText(blazeColorDescription, NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeColorDescription.text")); // NOI18N
 
         colorPanel1.setPreferredSize(new Dimension(25, 25));
         colorPanel1.addMouseListener(new MouseAdapter() {
@@ -383,12 +383,12 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
             .addGap(0, 25, Short.MAX_VALUE)
         );
 
-        GroupLayout blazeColourPanelLayout = new GroupLayout(blazeColourPanel);
-        blazeColourPanel.setLayout(blazeColourPanelLayout);
-        blazeColourPanelLayout.setHorizontalGroup(blazeColourPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(blazeColourPanelLayout.createSequentialGroup()
+        GroupLayout blazeColorPanelLayout = new GroupLayout(blazeColorPanel);
+        blazeColorPanel.setLayout(blazeColorPanelLayout);
+        blazeColorPanelLayout.setHorizontalGroup(blazeColorPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(blazeColorPanelLayout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addComponent(blazeColourDescription)
+                .addComponent(blazeColorDescription)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
                 .addComponent(colorPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -411,18 +411,18 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
                 .addComponent(colorPanel10, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(42, 42, 42))
         );
-        blazeColourPanelLayout.setVerticalGroup(blazeColourPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(blazeColourPanelLayout.createSequentialGroup()
+        blazeColorPanelLayout.setVerticalGroup(blazeColorPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(blazeColorPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(blazeColourPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                .addGroup(blazeColorPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                     .addComponent(colorPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addGroup(blazeColourPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addGroup(blazeColorPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(colorPanel8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addGroup(blazeColourPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                        .addGroup(blazeColorPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                             .addComponent(colorPanel10, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(colorPanel9, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(colorPanel7, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(blazeColourDescription)
+                            .addComponent(blazeColorDescription)
                             .addComponent(colorPanel6, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(colorPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(colorPanel4, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
@@ -443,7 +443,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(blazeSizePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(blazeColourPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(blazeColorPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(warningLabel)))
@@ -456,7 +456,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(blazeSizePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(blazeColourPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(blazeColorPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -504,8 +504,8 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_colorPanel10MouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JLabel blazeColourDescription;
-    private JPanel blazeColourPanel;
+    private JLabel blazeColorDescription;
+    private JPanel blazeColorPanel;
     private JLabel blazeOpacityDescription;
     private JSlider blazeOpacitySlider;
     private JLabel blazeSizeDescription;

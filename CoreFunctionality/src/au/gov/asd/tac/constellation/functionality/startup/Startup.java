@@ -56,6 +56,7 @@ public class Startup implements Runnable {
 
         // We only want to run this if headless is NOT set to true
         if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            ConstellationLAFSettings.applyTabColorSettings();        
             // update the main window title with the version number
             WindowManager.getDefault().invokeWhenUIReady(() -> {
                 final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
@@ -69,4 +70,5 @@ public class Startup implements Runnable {
 
         ProxyUtilities.setProxySelector(null);
     }
+
 }

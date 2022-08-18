@@ -1,8 +1,14 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
-== 2022-08-04 File & Database Importers
+== 2022-08-19 File & Database Importers
 <p>Fixed a bug with the new attributes fading behind Constellation. They are now modal dialogs.</p>
+
+== 2022-08-03 Layers View
+<p>Layers View has had a complete UI rework and is now available under the Views menu.</p>
+<p>Layers View allows you to add vertices and transactions to up to 32 layers by either using the right click context menu or defining a query.</p>
+<p>The view allows for toggling of layers via a checkbox which links to subsets of graph elements.
+This will either hide or show the subsets based on element visibility changes to reduce clutter when analysing large data sets.</p>
 
 == 2022-07-28 Clear Button in Database Importer
 <p>The "Import from Database" pane now has a clear button next to the query button. Clicking Clear will clear the results in the current run and will clear the query text</p>
@@ -110,8 +116,8 @@ downwards.</p>
 to the Getting Started help page.</p>
 
 == 2021-09-13 node_labels_bottom/top and transaction_labels changed
-<p>The above three graph attributes have been changed to node_bottom/top_labels_colours and transaction_labels_colours.</p>
-<p>The attributes now also show the colours for example: Label: (White), Identifier: (#9980e6)</p>
+<p>The above three graph attributes have been changed to node_bottom/top_labels_colors and transaction_labels_colors.</p>
+<p>The attributes now also show the colors for example: Label: (White), Identifier: (#9980e6)</p>
 
 == 2021-09-10 Histogram View
 <p>Options selected for the Category and Property are now associated with the chosen Graph Element; Node, Transaction, Edge, or Link, and will not reset to defaults when switching between Graph Element options.</p>
@@ -156,11 +162,11 @@ to the Getting Started help page.</p>
 <p>When the graph selection is changed, any expanded node or transaction attributes in the Attribute Editor will now remain expanded and populate values of the new selection.</p>
 <p>When the graph is zoomed in or out, any expanded attribute will remain expanded with the same values.</p>
 
-== 2021-07-27 Default Graph Label Colour Change
-<p>The default graph label colour has been changed to white to improve visibility of the label on the graph background. The label colour is able to be changed in the Attribute Editor as a Graph Attribute.</p>
+== 2021-07-27 Default Graph Label Color Change
+<p>The default graph label color has been changed to white to improve visibility of the label on the graph background. The label color is able to be changed in the Attribute Editor as a Graph Attribute.</p>
 
 == 2021-07-26 Quality Control Category Changes
-<p>Quality Control category names and colours have been updated to match commonly seen category names and colours. The category names are now Minor, Medium, Major, Severe and Critical.</p>
+<p>Quality Control category names and colors have been updated to match commonly seen category names and colors. The category names are now Minor, Medium, Major, Severe and Critical.</p>
 <p>A new category OK has been added for when a Quality Control rule has not been flagged.</p>
 
 == 2021-07-21 Conversation View
@@ -430,7 +436,7 @@ For more information click on the help button located at the bottom right corner
 <p>We've upgraded to newer versions of open source libraries we use which should improve performance and stability.</p>
 
 == 2019-12-20 Quality Control View
-<p>The colours used to represent a warning when the score is 80 have been improved to be readable.</p>
+<p>The colors used to represent a warning when the score is 80 have been improved to be readable.</p>
 
 == 2019-12-16 Delimited File Importer
 <p>In the delimited file importer you can assign an attribute to the row column which is the first column.</p>
@@ -461,7 +467,7 @@ Access View has been modified based on UX feedback.</p>
 <p>The Constellation new graph icons have been redone.</p>
 
 == 2019-05-06 Analytic Schema Update
-<p>Added support for HASH types like MD5, SHA1 and SHA256. The HASH icon background colour is now cyan.</p>
+<p>Added support for HASH types like MD5, SHA1 and SHA256. The HASH icon background color is now cyan.</p>
 
 == 2019-05-01 Gather Nodes Bug Fix
 <p>Gathered nodes will now maintain their depth instead of being moved forward</p>
@@ -674,7 +680,7 @@ triangles and triplets on the graph.</li>
 == 2017-10-12 Map View Update
 <p>A few new features have been added to the Map View:</p>
 <ul>
-<li>You can add custom labels and colours to markers in the Map View using the new label and color menus.</li>
+<li>You can add custom labels and colors to markers in the Map View using the new label and color menus.</li>
 <li>Markers on the map now respond to the 'dim' and 'visibility' attributes. This allows you to, for example, use the
 'Dim Other Events' option in the Timeline to visualise locations within a sliding time window.</li>
 <li>The draw and measure tools now have support for circles by holding <i>shift</i> as you click. Note that the measure
@@ -710,7 +716,7 @@ supported by ArcGIS (and most other GIS tools) and is significantly more flexibl
 File &gt; Export as well as in the toolbar of the Map View</p>
 
 == 2017-08-23 Blaze Menu Changes
-<p>There are now more options available for modifying blazes in the right-click menu and toolbar drop-down menu, including three default colour options.</p>
+<p>There are now more options available for modifying blazes in the right-click menu and toolbar drop-down menu, including three default color options.</p>
 
 == 2017-08-15 Scripting View
 <p>Removed support for Groovy and Javascript in the Scripting View. We are mandating that all scripts be written in Python.</p>
@@ -737,7 +743,7 @@ File &gt; Export as well as in the toolbar of the Map View</p>
 <p>The following bugs with the attribute editor have been fixed:</p>
 <ul>
 <li>Fixed a bug preventing setting an icon when multiple nodes are selected.</li>
-<li>Fixed a bug with changing colours in Options &gt; Attribute Editor Colours.</li>
+<li>Fixed a bug with changing colors in Options &gt; Attribute Editor Colors.</li>
 </ul>
 
 == 2017-07-25 Extract Words from Content
@@ -896,7 +902,7 @@ so that the map controls and graph controls are consistent.</p>
 == 2016-11-10 Icons Refresh
 <p>Icons used for visualisation of nodes on a Constellation graph have undergone a refresh. We have made foreground icons more symbolic, where possible, meaning that they tend to
 be smaller icons with transparency filling the rest of the image space. In addition to this, the default background icon for all nodes is now the 'Flat Square' icon as it has a
-larger surface area, making it stand out more, and it more accurately represents the colour assigned to it. These changes will allow us to make better use of icons in an analytic
+larger surface area, making it stand out more, and it more accurately represents the color assigned to it. These changes will allow us to make better use of icons in an analytic
 context by allowing us to visually differentiate nodes using background icons.</p>
 
 == 2016-11-04 Freeze Graph View Shortcut
@@ -929,8 +935,8 @@ help page.</p>
 
 == 2016-06-06 Visual Attributes and Templates
 <p>A number of visual properties, such as labels and decorators, have been exposed as graph attributes so that they can be edited in the attribute editor like everything else (rather than through obscure menu items).</p>
-<p>Default values of visual attributes have been removed from preferences too - if you had a custom default background colour or labels set up you may notice that this is now missing. Don't worry! You can get this back by using templates:</p>
-<p>To make a template, simply open a new graph (with the schema you want), set the graph attributes to their desired values (like background_colour, bottom_labels, and top_labels), then choose "File &gt; Save Template" and enter a name.</p>
+<p>Default values of visual attributes have been removed from preferences too - if you had a custom default background color or labels set up you may notice that this is now missing. Don't worry! You can get this back by using templates:</p>
+<p>To make a template, simply open a new graph (with the schema you want), set the graph attributes to their desired values (like background_color, bottom_labels, and top_labels), then choose "File &gt; Save Template" and enter a name.</p>
 <p>You can then make your template the default new graph (that is opened with Control+N) by choosing "File &gt; Manage Templates", selecting your template name, and then pressing the "Set Default" button.</p>
 <p>You can have as many templates as you like - the options will be listed in the "File &gt; New Graph" menu beneath the schema graphs.</p>
 

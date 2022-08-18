@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispe
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;

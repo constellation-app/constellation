@@ -443,7 +443,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 }
                 count = graphHighlightColor == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(graphHighlightColor);
                 if (!Objects.equals(count, modCounts.put(VisualConcept.GraphAttribute.HIGHLIGHT_COLOR, count))) {
-                    changes.add(new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOUR).forItems(1).build());
+                    changes.add(new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOR).forItems(1).build());
                 }
                 count = graphBlazeOpacity == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(graphBlazeOpacity);
                 if (!Objects.equals(count, modCounts.put(VisualConcept.GraphAttribute.BLAZE_OPACITY, count))) {

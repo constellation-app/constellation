@@ -78,7 +78,7 @@ public class OverviewOverlay extends MapOverlay {
     @Override
     public void overlay() {
         renderer.noStroke();
-        renderer.fill(BACKGROUND_COLOUR);
+        renderer.fill(BACKGROUND_COLOR);
         renderer.rect(x, y, width, height);
 
         if (!overviewMap.mapDisplay.getMapProvider().equals(map.mapDisplay.getMapProvider())) {
@@ -162,7 +162,7 @@ public class OverviewOverlay extends MapOverlay {
         public void draw() {
             renderer.noFill();
             renderer.strokeWeight(2);
-            renderer.stroke(HIGHLIGHT_COLOUR);
+            renderer.stroke(HIGHLIGHT_COLOR);
 
             final float viewportX = Math.min(Math.max(x, getX()), getX() + getWidth());
             final float viewportY = Math.min(Math.max(y, getY()), getY() + getHeight());

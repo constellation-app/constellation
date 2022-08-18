@@ -22,7 +22,7 @@ import java.io.IOException;
 
 /**
  * A {@link GraphDisplayer} that allows the graph to be displayed in greyscale
- * or full colour.
+ * or full color.
  * <p>
  * This effect is currently used to show that the graph is busy when a user
  * tries to interact with it. More effects may be added here later as needed.
