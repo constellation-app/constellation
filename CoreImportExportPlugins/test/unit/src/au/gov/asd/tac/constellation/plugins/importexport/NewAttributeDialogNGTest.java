@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.stage.Window;
-import org.openide.util.Exceptions;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
@@ -114,7 +113,7 @@ public class NewAttributeDialogNGTest {
      * Test of getType method, of class NewAttributeDialog.
      */
     @Test
-    public void testGetType() {
+    public void testGetType() throws InterruptedException {
         System.out.println("getType");
         final String expResult = "string";
         final String[] result = new String[1];
@@ -124,11 +123,7 @@ public class NewAttributeDialogNGTest {
             result[0] = instance.getType();
             latch.countDown();
         });
-        try {
-            latch.await();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        latch.await();
         assertEquals(result[0], expResult);
     }
 
@@ -136,7 +131,7 @@ public class NewAttributeDialogNGTest {
      * Test of getLabel method, of class NewAttributeDialog.
      */
     @Test
-    public void testGetLabel() {
+    public void testGetLabel() throws InterruptedException {
         System.out.println("getLabel");
         final String expResult = "";
         final String[] result = new String[1];
@@ -146,11 +141,7 @@ public class NewAttributeDialogNGTest {
             result[0] = instance.getLabel();
             latch.countDown();
         });
-        try {
-            latch.await();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        latch.await();
         assertEquals(result[0], expResult);
     }
 
@@ -158,7 +149,7 @@ public class NewAttributeDialogNGTest {
      * Test of getDescription method, of class NewAttributeDialog.
      */
     @Test
-    public void testGetDescription() {
+    public void testGetDescription() throws InterruptedException {
         System.out.println("getDescription");
         final String expResult = "";
         final String[] result = new String[1];
@@ -168,11 +159,7 @@ public class NewAttributeDialogNGTest {
             result[0] = instance.getDescription();
             latch.countDown();
         });
-        try {
-            latch.await();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        latch.await();
         assertEquals(result[0], expResult);
     }
 
