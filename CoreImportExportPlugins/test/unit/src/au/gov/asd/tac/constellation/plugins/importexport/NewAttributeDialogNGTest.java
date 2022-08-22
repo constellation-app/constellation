@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.stage.Window;
+import org.openide.util.Exceptions;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
@@ -114,12 +116,20 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testGetType() {
         System.out.println("getType");
+        final String expResult = "string";
+        final String[] result = new String[1];
+        final CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
             final NewAttributeDialog instance = new NewAttributeDialog();
-            final String expResult = "string";
-            final String result = instance.getType();
-            assertEquals(result, expResult);
+            result[0] = instance.getType();
+            latch.countDown();
         });
+        try {
+            latch.await();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        assertEquals(result[0], expResult);
     }
 
     /**
@@ -128,12 +138,20 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testGetLabel() {
         System.out.println("getLabel");
+        final String expResult = "";
+        final String[] result = new String[1];
+        final CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
             final NewAttributeDialog instance = new NewAttributeDialog();
-            final String expResult = "";
-            final String result = instance.getLabel();
-            assertEquals(result, expResult);
+            result[0] = instance.getLabel();
+            latch.countDown();
         });
+        try {
+            latch.await();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        assertEquals(result[0], expResult);
     }
 
     /**
@@ -142,12 +160,20 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testGetDescription() {
         System.out.println("getDescription");
+        final String expResult = "";
+        final String[] result = new String[1];
+        final CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
             final NewAttributeDialog instance = new NewAttributeDialog();
-            final String expResult = "";
-            final String result = instance.getDescription();
-            assertEquals(result, expResult);
+            result[0] = instance.getDescription();
+            latch.countDown();
         });
+        try {
+            latch.await();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        assertEquals(result[0], expResult);
     }
 
     /**

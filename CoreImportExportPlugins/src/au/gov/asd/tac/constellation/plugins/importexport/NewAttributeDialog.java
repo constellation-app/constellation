@@ -121,7 +121,7 @@ public class NewAttributeDialog extends ConstellationDialog {
      * @param event The {@code setOnAction} that will run when the OK button is
      * pressed.
      */
-    public void setOkButtonAction(EventHandler<ActionEvent> event) {
+    public void setOkButtonAction(final EventHandler<ActionEvent> event) {
         okButton.setOnAction(event);
     }
 
