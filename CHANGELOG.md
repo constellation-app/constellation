@@ -78,7 +78,10 @@
 
 -   Added `PluginTags` class to hold all tags as constants for `PluginInfo`.
 
--   Added `isRequired` in `PluginParameter` with a getter and a setter, which
+-   Changed the parameter for takeScreenshot in RecentGraphScreenshotUtilities 
+    from filename to filepath.
+
+-   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
     can be used to configure the required plugin parameters to mark as `*required`
     in the swagger.
 

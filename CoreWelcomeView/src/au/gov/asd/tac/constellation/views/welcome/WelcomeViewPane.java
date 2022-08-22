@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -60,7 +61,7 @@ import org.openide.util.NbPreferences;
  * @author Delphinus8821
  */
 public class WelcomeViewPane extends BorderPane {
-    
+
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
     private final BorderPane pane;
@@ -71,7 +72,7 @@ public class WelcomeViewPane extends BorderPane {
 
     // place holder image
     public static final String LOGO = "resources/constellation_logo.png";
-    private static final Image PLACEHOLDER_IMAGE =  new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"));
+    private static final Image PLACEHOLDER_IMAGE = new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"));
 
     private static final Button[] recentGraphButtons = new Button[10];
 
@@ -166,8 +167,8 @@ public class WelcomeViewPane extends BorderPane {
 
             // Create a preferenceListener in order to identify when user preference is changed
             // Keeps tutorial page and options tutorial selections in-sync when both are open
-            PREFERENCES.addPreferenceChangeListener(evt ->
-                showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()))
+            PREFERENCES.addPreferenceChangeListener(evt
+                    -> showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()))
             );
 
             leftVBox.getChildren().add(lowerLeftHBox);
@@ -198,10 +199,10 @@ public class WelcomeViewPane extends BorderPane {
                     recentGraphButtons[i].setTooltip(toolTip);
                     final String text = recentGraphButtons[i].getText();
 
-                    final String screenshotFilename = String.format(screenshotFilenameFormat, text);
-                    if (new File(screenshotFilename).exists()) {
+                    final Optional<File> screenshotFile = RecentGraphScreenshotUtilities.findScreenshot(fileDetails.get(i).getPath(), fileDetails.get(i).getFileName());
+                    if (screenshotFile.isPresent()) {
                         recentGraphButtons[i].setGraphic(buildGraphic(
-                                new Image("file:///" + screenshotFilename)
+                                new Image("file:///" + screenshotFile.get().getAbsolutePath())
                         ));
                     } else if (i < fileDetails.size()) {
                         recentGraphButtons[i].setGraphic(buildGraphic(PLACEHOLDER_IMAGE));
@@ -209,7 +210,7 @@ public class WelcomeViewPane extends BorderPane {
 
                     //Calls the method for the recent graphs to open
                     //on the button action
-                    final String path = fileDetails.get(i).getPath(); 
+                    final String path = fileDetails.get(i).getPath();
                     recentGraphButtons[i].setOnAction(e -> {
                         OpenFile.open(RecentFiles.convertPath2File(path), -1);
                         saveCurrentDirectory(path);
@@ -265,10 +266,11 @@ public class WelcomeViewPane extends BorderPane {
         button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
     }
-    
+
     /**
-     * If the remember open and save location preference is enabled, this saves the current directory as that location
-     * 
+     * If the remember open and save location preference is enabled, this saves
+     * the current directory as that location
+     *
      * @param path the new location to open from when opening or saving a graph
      */
     private static void saveCurrentDirectory(final String path) {
