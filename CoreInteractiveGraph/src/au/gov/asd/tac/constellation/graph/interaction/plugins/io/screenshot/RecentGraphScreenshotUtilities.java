@@ -115,7 +115,7 @@ public class RecentGraphScreenshotUtilities {
      * @return the filepath to the screenshot png
      */
     public static Optional<File> findScreenshot(final String filepath, final String filename) {
-        final String screenshotFilenameFormat = getScreenshotsDir() + File.separator + "%s.png";
+        final String screenshotFilenameFormat = getScreenshotsDir() + File.separator + "%s" + FileExtensionConstants.PNG;
         final String screenshotHash = RecentGraphScreenshotUtilities.hashFilePath(filepath);
         final String screenshotFilename = String.format(screenshotFilenameFormat, screenshotHash);
         final String legacyScreenshotFilename = String.format(screenshotFilenameFormat, filename);
@@ -215,7 +215,7 @@ public class RecentGraphScreenshotUtilities {
         }
 
         RecentFiles.getUniqueRecentFiles().forEach(item -> {
-            filesInHistory.add(item.getFileName() + ".png");
+            filesInHistory.add(item.getFileName() + FileExtensionConstants.PNG);
             findScreenshot(item.getPath(), item.getFileName()).ifPresent(file
                     -> filesInHistory.add(file.getAbsolutePath())
             );
