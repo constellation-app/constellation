@@ -67,8 +67,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
         final AttributeNode attributeNode = getAttributeNode();
 
         boolean columnFailed = false;
-        boolean prevColumnFailed = false;
-        
+                
         if (attributeNode != null) {
             final AttributeTranslator parser = attributeNode.getTranslator();
             final PluginParameters parserParameters = attributeNode.getTranslatorParameters();
@@ -85,9 +84,8 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                         ? attributeDescriptionClass.getDeclaredConstructor().newInstance()
                         : BooleanAttributeDescription.class.getDeclaredConstructor().newInstance();
 
-                for (final TableRow row : data) {
-                    prevColumnFailed = columnFailed;
-                    columnFailed = processRow(row, attributeDescription, parser, parserParameters, defaultValue) || prevColumnFailed;
+                for (final TableRow row : data) {                    
+                    columnFailed = processRow(row, attributeDescription, parser, parserParameters, defaultValue) || columnFailed;
                 }
             } catch (final IllegalAccessException | IllegalArgumentException
                     | InstantiationException | NoSuchMethodException

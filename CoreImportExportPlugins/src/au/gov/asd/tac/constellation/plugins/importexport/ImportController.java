@@ -454,7 +454,7 @@ public abstract class ImportController<D> {
         return skipInvalidRows;
     }
 
-    public void setSkipInvalidRows(boolean skipInvalidRows) {
+    public void setSkipInvalidRows(final boolean skipInvalidRows) {
         this.skipInvalidRows = skipInvalidRows;
     }
     

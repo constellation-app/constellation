@@ -54,9 +54,11 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -86,8 +88,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     public static final String SKIP_INVALID_ROWS_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "skip_invalid_rows");
 
     public static final String IMPORTED_ROWS = "IMPORTED_ROWS";
-    public static final String SKIPPED_ROWS = "SKIPPED_ROWS";
-
+    public static final String SKIPPED_ROWS = "SKIPPED_ROWS";    
+    
     @Override
     public PluginParameters createParameters() {
         final PluginParameters params = new PluginParameters();
@@ -233,7 +235,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final List<String> emptyFiles = new ArrayList<>();
         final List<String> invalidFiles = new ArrayList<>();
         final List<String> emptyRunConfigs = new ArrayList<>();
-        HashMap<String, Integer> results;
+        Map<String, Integer> results;
         int totalRows = 0;
         int totalImportedRows = 0;
         int totalSkippedRows = 0;
@@ -353,8 +355,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
-    private static HashMap<String, Integer> processVertices(ImportDefinition definition, GraphWriteMethods graph, List<String[]> data, AttributeType attributeType,
-            boolean initialiseWithSchema, boolean skipInvalidRows, PluginInteraction interaction, String source) throws InterruptedException {
+    private static Map<String, Integer> processVertices(ImportDefinition definition, GraphWriteMethods graph, List<String[]> data, AttributeType attributeType,
+            boolean initialiseWithSchema, final boolean skipInvalidRows, PluginInteraction interaction, String source) throws InterruptedException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
 
         addAttributes(graph, GraphElementType.VERTEX, attributeDefinitions);
@@ -362,7 +364,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         int currentRow = 0;
         int importedRows = 0;
         int skippedRow = 0;
-        HashMap<String, Integer> results = new HashMap<>();
+        Map<String, Integer> results = new HashMap<>();
         final int totalRows = data.size() - definition.getFirstRow();
 
         final RowFilter filter = definition.getRowFilter();
@@ -387,7 +389,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     // Count the number of processed rows to notify in the status message
                     ++importedRows;
 
-                } catch (Exception ex) {
+                } catch (final DateTimeException | IllegalArgumentException | SecurityException  ex ) {
                     if (skipInvalidRows) {
                         ++skippedRow;
                     } else {
@@ -401,7 +403,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return results;
     }
 
-    private static HashMap<String, Integer> processTransactions(ImportDefinition definition, GraphWriteMethods graph, List<String[]> data, boolean initialiseWithSchema, boolean skipInvalidRows, PluginInteraction interaction, String source) throws InterruptedException {
+    private static Map<String, Integer> processTransactions(ImportDefinition definition, GraphWriteMethods graph, List<String[]> data, boolean initialiseWithSchema, final boolean skipInvalidRows, PluginInteraction interaction, String source) throws InterruptedException {
         final List<ImportAttributeDefinition> sourceVertexDefinitions = definition.getDefinitions(AttributeType.SOURCE_VERTEX);
         final List<ImportAttributeDefinition> destinationVertexDefinitions = definition.getDefinitions(AttributeType.DESTINATION_VERTEX);
         final List<ImportAttributeDefinition> transactionDefinitions = definition.getDefinitions(AttributeType.TRANSACTION);
@@ -421,7 +423,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         int currentRow = 0;
         int importedRows = 0;
         int skippedRow = 0;
-        HashMap<String, Integer> results = new HashMap<>();
+        Map<String, Integer> results = new HashMap<>();
         final int totalRows = data.size() - definition.getFirstRow();
 
         final RowFilter filter = definition.getRowFilter();
@@ -467,7 +469,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     // Count the number of processed rows to notify in the status message
                     ++importedRows;
 
-                } catch (Exception ex) {
+                } catch (final DateTimeException | IllegalArgumentException | SecurityException  ex ) {
                     if (skipInvalidRows) {
                         ++skippedRow;
                     } else {
