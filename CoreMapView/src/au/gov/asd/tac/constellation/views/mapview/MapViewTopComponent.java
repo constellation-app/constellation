@@ -374,6 +374,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         if (markerState.getColorScheme().getTransactionAttribute() != null) {
             addAttributeValueChangeHandler(markerState.getColorScheme().getTransactionAttribute(), updateMarkers);
         }
+
     }
 
     private void zoomLocationBasedOnGeoType(final String geoType, final String location) throws AssertionError {
