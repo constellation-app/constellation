@@ -48,8 +48,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -159,10 +157,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         final int elementCount = elementType.getElementCount(graph);
 
-        // do this if add to selection
-        if (ADD_TO.equals(currentSelection)) {
-            clearSelection(graph);
-        }
         findInCurrentSelectionList = new FindResultsList(graph.getId());
         final FindResultsList findAllMatchingResultsList = new FindResultsList(graph.getId());
 
@@ -303,6 +297,12 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         // if the user clicked find next or prev
         if (!selectAll) {
+            
+            // do this if ignore selection
+            if (IGNORE.equals(currentSelection)) {
+                clearSelection(graph);
+            }
+            
             // Clean the find results list to only contain unique graph elements
             final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
             foundResult.clear();

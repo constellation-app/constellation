@@ -133,10 +133,10 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         rg.close();
 
         //Contains
@@ -165,10 +165,10 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         rg.close();
 
         //Begins With
@@ -246,10 +246,10 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         rg.close();
 
         //Is Less Than
@@ -344,10 +344,10 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         rg.close();
 
         //Constellation Icon
@@ -377,10 +377,10 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         rg.close();
 
         //DateTime
@@ -417,8 +417,8 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedT, txId1), false);
-        assertEquals(rg.getBooleanValue(selectedT, txId2), false);
+        assertEquals(rg.getBooleanValue(selectedT, txId1), true);
+        assertEquals(rg.getBooleanValue(selectedT, txId2), true);
         assertEquals(rg.getBooleanValue(selectedT, txId3), true);
         assertEquals(rg.getBooleanValue(selectedT, txId4), true);
         rg.close();
@@ -437,7 +437,7 @@ public class AdvancedSearchPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedT, txId1), true);
         assertEquals(rg.getBooleanValue(selectedT, txId2), true);
         assertEquals(rg.getBooleanValue(selectedT, txId3), true);
-        assertEquals(rg.getBooleanValue(selectedT, txId4), false);
+        assertEquals(rg.getBooleanValue(selectedT, txId4), true);
         rg.close();
 
         //Occured After
@@ -451,8 +451,8 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedT, txId1), false);
-        assertEquals(rg.getBooleanValue(selectedT, txId2), false);
+        assertEquals(rg.getBooleanValue(selectedT, txId1), true);
+        assertEquals(rg.getBooleanValue(selectedT, txId2), true);
         assertEquals(rg.getBooleanValue(selectedT, txId3), true);
         assertEquals(rg.getBooleanValue(selectedT, txId4), true);
         rg.close();
@@ -468,10 +468,10 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedT, txId1), false);
-        assertEquals(rg.getBooleanValue(selectedT, txId2), false);
+        assertEquals(rg.getBooleanValue(selectedT, txId1), true);
+        assertEquals(rg.getBooleanValue(selectedT, txId2), true);
         assertEquals(rg.getBooleanValue(selectedT, txId3), true);
-        assertEquals(rg.getBooleanValue(selectedT, txId4), false);
+        assertEquals(rg.getBooleanValue(selectedT, txId4), true);
         rg.close();
 
         //Test multiple criteria (any)
@@ -493,7 +493,7 @@ public class AdvancedSearchPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId6), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
 
         rg.close();
 
@@ -543,7 +543,7 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
 
@@ -553,8 +553,8 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
 
         rg.close();
@@ -567,9 +567,9 @@ public class AdvancedSearchPluginNGTest {
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
 
         rg.close();
 
@@ -578,8 +578,8 @@ public class AdvancedSearchPluginNGTest {
         rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
 
         rg.close();
 
