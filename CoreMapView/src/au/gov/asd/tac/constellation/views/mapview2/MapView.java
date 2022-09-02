@@ -32,12 +32,14 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -71,6 +73,11 @@ public class MapView extends ScrollPane {
     private double scale = 1.0;
     //private final SVGPath p = new SVGPath();
     private final List<SVGPath> countrySVGPaths = new ArrayList<>();
+
+    private double mouseAnchorX;
+    private double mouseAnchorY;
+    private double transalateX;
+    private double transalateY;
 
     public MapView() {
         LOGGER.log(Level.SEVERE, "In MapView constructor");
@@ -122,6 +129,7 @@ public class MapView extends ScrollPane {
         //});
 
         mapStackPane = new StackPane();
+        mapStackPane.setBackground(Background.fill(Color.BLUE));
         mapStackPane.getChildren().add(countryGroup);
 
         mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
@@ -155,8 +163,36 @@ public class MapView extends ScrollPane {
                 countryGroup.setScaleY(newYScale);
                 //mapStackPane.setScaleX(newXScale);
                 //mapStackPane.setScaleY(newYScale);
+                //mapStackPane.setScaleX(newXScale);
 
             }
+        });
+
+        mapStackPane.setOnMousePressed(event -> {
+            mouseAnchorX = event.getSceneX();
+            mouseAnchorY = event.getSceneY();
+
+            Node node = (Node) event.getSource();
+
+            transalateX = node.getTranslateX();
+            transalateY = node.getTranslateY();
+        });
+
+        mapStackPane.setOnMouseDragged(event -> {
+            if (event.isPrimaryButtonDown()) {
+                return;
+            }
+
+            double scaleX = mapStackPane.getScaleX();
+            double scaleY = mapStackPane.getScaleY();
+
+            Node node = (Node) event.getSource();
+
+            node.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX) / scaleX));
+            node.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY) / scaleY));
+
+            event.consume();
+
         });
 
         mapDisplay = new ImageView(mapImage);
@@ -177,76 +213,10 @@ public class MapView extends ScrollPane {
         mapCanvas.scaleXProperty().bind(zoomProperty);
         mapCanvas.scaleYProperty().bind(zoomProperty);
 
-        /*zoomProperty.addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                LOGGER.log(Level.SEVERE, "Firing zooming event");
-                gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
-                gc.scale(mapCanvas.getWidth() * zoomProperty.get(), mapCanvas.getHeight() * zoomProperty.get());
-        
 
 
-                //mapCanvas.scaleXProperty().set(zoomProperty.get());
-                //mapCanvas.scaleYProperty().set(zoomProperty.get());
-
-                countryDrawings.forEach(path -> gc.appendSVGPath(path));
-
-                draw(gc);
-            }
-
-        });*/
-
- /*addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
-            @Override
-            public void handle(ScrollEvent event) {
-                if (event.getDeltaY() > 0) {
-                    zoomProperty.set(zoomProperty.get() * 1.1);
-                } else if (event.getDeltaY() < 0) {
-                    zoomProperty.set(zoomProperty.get() / 1.1);
-                }
-
-
-
-            }
-
-        });*/
-
- /*mapCanvas.setOnScroll(e -> {
-            if (e.getDeltaY() == 0) {
-                return;
-            } else if (e.getDeltaY() > 0) {
-                scale *= 1.1;
-            } else {
-                scale /= 1.1;
-            }
-
-            gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
-            double scaleFactor = 1.35;
-            double newScale = zoomProperty.get();
-            double oldScale = newScale;
-
-            newScale = e.getDeltaY() > 0 ? newScale * scaleFactor : newScale / scaleFactor;
-
-            double adjust = (newScale / oldScale) - 1;
-
-            double moveX = e.getSceneX() - (mapCanvas.getBoundsInParent().getWidth() / 2 + mapCanvas.getBoundsInParent().getMinX());
-            double moveY = e.getSceneY() - (mapCanvas.getBoundsInParent().getHeight() / 2 + mapCanvas.getBoundsInParent().getMinY());
-
-            mapCanvas.setTranslateX(mapCanvas.getTranslateX() - adjust * moveX);
-            mapCanvas.setTranslateY(mapCanvas.getTranslateY() - adjust * moveY);
-
-            zoomProperty.set(newScale);
-
-            gc.scale(newScale, newScale);
-            countryDrawings.forEach(path -> gc.appendSVGPath(path));
-            draw(gc);
-
-
-        });*/
-
-
-        //this.setHvalue(this.getHmin() + (this.getHmax() - this.getHmin()) / 2);
-        //this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
+        this.setHvalue(this.getHmin() + (this.getHmax() - this.getHmin()) / 2);
+        this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
 
     }
 
