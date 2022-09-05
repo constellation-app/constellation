@@ -139,10 +139,9 @@ public final class RecentFiles {
      * @return list of recent files
      */
     protected static List<HistoryItem> getRecentFiles() {
-        synchronized (HISTORY_LOCK) {
-            checkHistory();
-            return Collections.unmodifiableList(HISTORY);
-        }
+        assert Thread.holdsLock(HISTORY_LOCK);
+        checkHistory();
+        return Collections.unmodifiableList(HISTORY);
     }
 
     /**
@@ -151,10 +150,12 @@ public final class RecentFiles {
      * @return list of recent files
      */
     public static List<HistoryItem> getUniqueRecentFiles() {
-        return getRecentFiles().stream()
-                .filter(file -> convertPath2File(file.getPath()) != null)
-                .distinct()
-                .collect(ImmutableList.toImmutableList());
+        synchronized (HISTORY_LOCK) {
+            return getRecentFiles().stream()
+                    .filter(file -> convertPath2File(file.getPath()) != null)
+                    .distinct()
+                    .collect(ImmutableList.toImmutableList());
+        }
     }
 
     private static volatile boolean historyProbablyValid;
