@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RUNNER_IMAGE: "constellationapplication/netbeans-runner:12.0.4"
-      ADAPTORS_VERSION: "v2.8.0-rc1"
+      ADAPTORS_VERSION: "v2.8.0"
     container:
       image: docker://pandoc/latex:2.9
       options: --entrypoint=bash
