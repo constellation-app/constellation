@@ -130,9 +130,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         params.addParameter(filesIncludeHeadersParam);
 
         final PluginParameter<BooleanParameterValue> skipInvalidRows = BooleanParameterType.build(SKIP_INVALID_ROWS_ID);
-        filesIncludeHeadersParam.setName("Skip invalid rows");
-        filesIncludeHeadersParam.setDescription("True if the skip invalid rows");
-        filesIncludeHeadersParam.setBooleanValue(true);
+        skipInvalidRows.setName("Skip invalid rows");
+        skipInvalidRows.setDescription("True if the skip invalid rows");
+        skipInvalidRows.setBooleanValue(true);
         params.addParameter(skipInvalidRows);
 
         return params;
@@ -355,8 +355,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
-    private static Map<String, Integer> processVertices(ImportDefinition definition, GraphWriteMethods graph, List<String[]> data, AttributeType attributeType,
-            boolean initialiseWithSchema, final boolean skipInvalidRows, PluginInteraction interaction, String source) throws InterruptedException {
+    private static Map<String, Integer> processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType,
+            final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
 
         addAttributes(graph, GraphElementType.VERTEX, attributeDefinitions);
@@ -364,7 +364,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         int currentRow = 0;
         int importedRows = 0;
         int skippedRow = 0;
-        Map<String, Integer> results = new HashMap<>();
+        final Map<String, Integer> results = new HashMap<>();
         final int totalRows = data.size() - definition.getFirstRow();
 
         final RowFilter filter = definition.getRowFilter();
@@ -423,7 +423,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         int currentRow = 0;
         int importedRows = 0;
         int skippedRow = 0;
-        Map<String, Integer> results = new HashMap<>();
+        final Map<String, Integer> results = new HashMap<>();
         final int totalRows = data.size() - definition.getFirstRow();
 
         final RowFilter filter = definition.getRowFilter();
@@ -456,15 +456,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     }
                     if (initialiseWithSchema && graph.getSchema() != null) {
                         graph.getSchema().completeVertex(graph, sourceVertexId);
-                    }
-
-                    if (initialiseWithSchema && graph.getSchema() != null) {
                         graph.getSchema().completeVertex(graph, destinationVertexId);
-                    }
-
-                    if (initialiseWithSchema && graph.getSchema() != null) {
                         graph.getSchema().completeTransaction(graph, transactionId);
-                    }
+                    }                  
 
                     // Count the number of processed rows to notify in the status message
                     ++importedRows;
