@@ -75,12 +75,16 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+//import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -152,6 +156,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private int cachedWidth;
     private int cachedHeight;
     private final Consumer<Graph> updateMarkers;
+
 
     public MapViewTopComponent() {
         super();
@@ -606,7 +611,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         private final GraphElementType graphElementType;
         private final Set<Integer> elementIds;
-
+        private final Logger LOGGER = Logger.getLogger("test");
         public SelectOnGraphPlugin(final GraphElementType graphElementType, final Set<Integer> elementIds) {
             this.graphElementType = graphElementType;
             this.elementIds = elementIds;
@@ -619,6 +624,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            LOGGER.log(Level.SEVERE, "inside edit mehtod");
             switch (graphElementType) {
                 case VERTEX:
                     final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);

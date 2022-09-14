@@ -15,6 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -40,6 +47,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -79,47 +87,23 @@ public class MapView extends ScrollPane {
     private double transalateX;
     private double transalateY;
 
+    private double canvasTransalateX;
+    private double canvasTransalateY;
+
     public MapView() {
         LOGGER.log(Level.SEVERE, "In MapView constructor");
 
         mapImage = new Image("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\resources\\world-map.jpg");
         countryGroup = new Group();
-        SVGPath worldMapSVG = new SVGPath();
 
-        worldMapSVG.setContent("m 479.68275,331.6274 -0.077,0.025 -0.258,0.155 -0.147,0.054 -0.134,0.027 -0.105,-0.011 -0.058,-0.091 0.006,-0.139 -0.024,-0.124 -0.02,-0.067 0.038,-0.181 0.086,-0.097 0.119,-0.08 0.188,0.029 0.398,0.116 0.083,0.109 10e-4,0.072 -0.073,0.119 z");
-        worldMapSVG.setFill(Color.web("#81c483"));
-
-        worldMapSVG.setScaleX(1009.6727);
-        worldMapSVG.setScaleY(665.96301);
-        //super.setWidth(10000);
-        //super.setWidth(10000);
-        mapCanvas = new Canvas(3000, 750);
-        //mapCanvas.maxWidth(10000);
-        //mapCanvas.maxHeight(10000);
-        //mapCanvas.prefWidth(1000);
-        //mapCanvas.prefHeight(750);
-        //mapCanvas.setScaleX(1009);
-        //mapCanvas.setScaleY(665);
+        mapCanvas = new Canvas();
         gc = mapCanvas.getGraphicsContext2D();
-        //setUp(gc);
 
 
-        //draw(gc, "m 479.68275,331.6274 -0.077,0.025 -0.258,0.155 -0.147,0.054 -0.134,0.027 -0.105,-0.011 -0.058,-0.091 0.006,-0.139 -0.024,-0.124 -0.02,-0.067 0.038,-0.181 0.086,-0.097 0.119,-0.08 0.188,0.029 0.398,0.116 0.083,0.109 10e-4,0.072 -0.073,0.119 z");
-        //Platform.runLater(() -> {
-            //gc.beginPath();
-            //gc.setFill(Color.RED);
-            //gc.setStroke(Color.BLUE);
-            //gc.scale(1.85, 1.85);
-            //countryDrawings.forEach(path -> {
-                //path = String.toUpperCase(path);
-       // mapCanvas.setScaleX(5);
-        //mapCanvas.setScaleY(5);
-        //gc.clearRect(0, 0, mapCanvas.getScaleX(), mapCanvas.getScaleY());
-        //gc.scale(mapCanvas.getScaleX(), mapCanvas.getScaleY());
         countrySVGPaths.clear();
-        setUp(gc);
+        setUp();
         LOGGER.log(Level.SEVERE, "Size of country array: " + countrySVGPaths.size());
-        //draw(gc);
+
 
         //});
 
@@ -129,8 +113,18 @@ public class MapView extends ScrollPane {
         //});
 
         mapStackPane = new StackPane();
-        mapStackPane.setBackground(Background.fill(Color.BLUE));
-        mapStackPane.getChildren().add(countryGroup);
+
+        mapStackPane.setBorder(Border.EMPTY);
+
+        mapStackPane.getChildren().addAll(countryGroup, mapCanvas);
+        mapStackPane.setBackground(Background.fill(Color.BLACK));
+
+        /*mapStackPane.minWidth(3000);
+        mapStackPane.minHeight(750);
+        mapStackPane.prefWidth(3000);
+        mapStackPane.prefHeight(750);
+        mapStackPane.maxWidth(3000);
+        mapStackPane.maxHeight(750);*/
 
         mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
@@ -143,8 +137,8 @@ public class MapView extends ScrollPane {
 
                 double scaleFactor = (e.getDeltaY() > 0) ? mapScaleFactor : 1 / mapScaleFactor;
 
-                double oldXScale = countryGroup.getScaleY();
-                double oldYScale = countryGroup.getScaleX();
+                double oldXScale = mapCanvas.getScaleY();
+                double oldYScale = mapCanvas.getScaleX();
 
                 double newXScale = oldXScale * scaleFactor;
                 double newYScale = oldYScale * scaleFactor;
@@ -152,19 +146,24 @@ public class MapView extends ScrollPane {
                 double xAdjust = (newXScale / oldXScale) - 1;
                 double yAdjust = (newYScale / oldYScale) - 1;
 
-                double moveX = e.getSceneX() - (countryGroup.getBoundsInParent().getWidth() / 2 + countryGroup.getBoundsInParent().getMinX());
-                double moveY = e.getSceneY() - (countryGroup.getBoundsInParent().getHeight() / 2 + countryGroup.getBoundsInParent().getMinY());
+                double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
+                double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
 
-                countryGroup.setTranslateX(countryGroup.getTranslateX() - xAdjust * moveX);
-                countryGroup.setTranslateY(countryGroup.getTranslateY() - yAdjust * moveY);
+                mapCanvas.setTranslateX(mapCanvas.getTranslateX() - xAdjust * moveX);
+                mapCanvas.setTranslateY(mapCanvas.getTranslateY() - yAdjust * moveY);
+                mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
+                mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
 
 
-                countryGroup.setScaleX(newXScale);
-                countryGroup.setScaleY(newYScale);
-                //mapStackPane.setScaleX(newXScale);
-                //mapStackPane.setScaleY(newYScale);
-                //mapStackPane.setScaleX(newXScale);
+                //countryGroup.setScaleX(newXScale);
+                //countryGroup.setScaleY(newYScale);
+                mapCanvas.setScaleX(newXScale);
+                mapCanvas.setScaleY(newYScale);
+                mapStackPane.setScaleX(newXScale);
+                mapStackPane.setScaleY(newYScale);
 
+                //gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
+                //drawMarker();
             }
         });
 
@@ -176,6 +175,9 @@ public class MapView extends ScrollPane {
 
             transalateX = node.getTranslateX();
             transalateY = node.getTranslateY();
+
+            canvasTransalateX = mapCanvas.getTranslateX();
+            canvasTransalateY = mapCanvas.getTranslateY();
         });
 
         mapStackPane.setOnMouseDragged(event -> {
@@ -186,14 +188,21 @@ public class MapView extends ScrollPane {
             double scaleX = mapStackPane.getScaleX();
             double scaleY = mapStackPane.getScaleY();
 
+            double canvasScaleX = mapCanvas.getScaleX();
+            double canvasScaleY = mapCanvas.getScaleY();
+
             Node node = (Node) event.getSource();
 
-            node.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX) / scaleX));
-            node.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY) / scaleY));
+            node.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX)));
+            node.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY)));
+
+            //mapCanvas.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX) / canvasScaleX));
+            //mapCanvas.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY) / canvasScaleY));
 
             event.consume();
 
         });
+
 
         mapDisplay = new ImageView(mapImage);
         //mapStackPane.getChildren().add(mapCanvas);
@@ -203,46 +212,62 @@ public class MapView extends ScrollPane {
         }
 
         this.setPannable(true);
-        this.setPrefSize(1009.6727, 665.96301);
+        //this.setPrefSize(1009.6727, 665.96301);
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         //countryGroup.getChildren().add(p);
 
         setContent(mapStackPane);
 
-        mapCanvas.scaleXProperty().bind(zoomProperty);
-        mapCanvas.scaleYProperty().bind(zoomProperty);
-
+        //mapCanvas.scaleXProperty().bind(zoomProperty);
+        //mapCanvas.scaleYProperty().bind(zoomProperty);
 
 
         this.setHvalue(this.getHmin() + (this.getHmax() - this.getHmin()) / 2);
         this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
+        //drawMarker();
+        draw();
+        drawMarker();
+    }
+
+    private void drawMarker() {
+        double longitude = 138.599503;
+        double lattitude = -34.92123;
+
+        int x = (int) ((950 / 360.0) * (180.0 + longitude));
+        int y = (int) ((590 / 180.0) * (90.0 - lattitude));
+
+        LOGGER.log(Level.SEVERE, "x: " + mapStackPane.getWidth());
+
+        //x = 600;
+        //y = 600;
+
+        String markerPath = "C21.732,0 28,5.641 28,12.6 C28,23.963 14,36 14,36 C14,36 0,24.064 0,12.6 C0,5.641 6.268,0 14,0 z";
+        markerPath = "M " + Integer.toString(x) + "," + Integer.toString(y) + " " + markerPath;
+
+        LOGGER.log(Level.SEVERE, markerPath);
+
+        SVGPath marker = new SVGPath();
+        marker.setContent(markerPath);
+        gc.appendSVGPath(markerPath);
+        //marker.translateXProperty().add(4000);
+        //marker.translateYProperty().add(5000);
+        marker.setStroke(Color.BLACK);
+        marker.setFill(Color.RED);
+        marker.scaleXProperty().divide(10);
+        marker.scaleYProperty().divide(10);
+
+        gc.rect(x, y, 50, 50);
+
+        countryGroup.getChildren().add(marker);
+        //drawMarker();
+        //draw();
 
     }
 
-    private void draw(GraphicsContext gc) {
-        //svgPath = svgPath.toUpperCase();
-        //gc.scale(20, 20);
-        //gc.beginPath();
-        gc.setFill(Color.BLACK);
-        gc.setStroke(Color.WHITE);
-        //gc.appendSVGPath(svgPath);
-        gc.fill();
-        gc.stroke();
-    }
-
-    private void draw(GraphicsContext gc, String svgPath) {
-        //gc.beginPath();
-        gc.setFill(Color.BLACK);
-        gc.setStroke(Color.WHITE);
-        gc.appendSVGPath(svgPath);
-        gc.fill();
-        gc.stroke();
-    }
 
 
-
-    private void setUp(GraphicsContext gc) {
+    private void setUp() {
         //gc.appendSVGPath("M 0 0 L 1 1 L 2 2 z");
         countryGroup.getChildren().clear();
         LOGGER.log(Level.SEVERE, "Inside setup");
@@ -255,7 +280,6 @@ public class MapView extends ScrollPane {
                 String worldMap = "";
 
                 while ((line = bFileReader.readLine()) != null) {
-                    //LOGGER.log(Level.SEVERE, "test1\ntest2");
                     line = line.strip();
                     if (line.startsWith("d=")) {
                         SVGPath p = new SVGPath();
@@ -266,52 +290,18 @@ public class MapView extends ScrollPane {
 
                         path = path.strip();
                         p.setContent(path);
-                        //p.scaleXProperty().set(60);
-                        //p.scaleYProperty().set(60);
+
                         gc.appendSVGPath(p.getContent());
-                        p.setStroke(Color.WHITE);
-                        p.setFill(Color.BLACK);
+                        p.setStroke(Color.BLACK);
+                        p.setFill(Color.WHITE);
                         countrySVGPaths.add(p);
-                        //countrySVGPaths.get(countrySVGPaths.size() - 1).setContent(path);
-                        //Region countryRegion = new Region();
-                        //countryRegion.setShape(p);
-                        //countryRegion.setPrefSize(50, 30);
-                        //countryGroup.getChildren().add(countryRegion);
 
-                        //path = path.replaceFirst("^", "M");
-                        //pathWithLines = pathWithLines.trim();
                         LOGGER.log(Level.SEVERE, "path : " + p.getContent());
-                        //LOGGER.log(Level.SEVERE, "AUSTRALIA!!");
 
-                        //countryDrawings.add(p.getContent());
                         path = "";
 
                     }
 
-                    /*if (line.startsWith("d=")) {
-                        path = line.substring(4, line.length() - 1);
-                        path = "M" + path;
-
-                        int index = path.indexOf(' ', 5);
-                        path = path.substring(0, index) + lineEnds + path.substring(index + 1);
-
-                        path = path.strip();
-
-                        worldMap += " " + path;
-
-                    }
-
-                    worldMap = worldMap.strip();
-                    p.setContent(worldMap);
-                    p.setFill(Color.BLACK);
-                    p.setStroke(Color.WHITE);
-                    LOGGER.log(Level.SEVERE, "map : " + p.getContent());*/
-                    //gc.appendSVGPath(p.getContent());
-                    //p.setScaleX(5);
-                    //p.setScaleY(5);
-
-                    //countryGroup.setScaleX(countryGroup.getScaleX() * 5);
-                    //countryGroup.setScaleY(countryGroup.getScaleY() * 5);
                 }
                 bFileReader.close();
             }
@@ -320,16 +310,24 @@ public class MapView extends ScrollPane {
         }
     }
 
-    /*private String getImgElement() {
-        String img = "";
+    private void draw() {
+        gc.setStroke(Color.BLACK);
+        gc.setFill(Color.RED);
+        gc.stroke();
+        gc.fill();
+    }
 
-        File imgFiles = new File("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\resources\\world.svg");
+    private static class ReadLocationData extends SimpleEditPlugin {
 
-        img += "<img src=\"" + imgFiles.toURI() + "\" width=950 height=740/>";
+        @Override
+        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            final int vertexCount = graph.getVertexCount();
+            for (int vertexPos = 0; vertexPos < vertexCount; ++vertexPos) {
+                // do something
+            }
+        }
 
-        LOGGER.log(Level.SEVERE, imgFiles.toURI() + "");
-        return img;
 
-    }*/
+    }
 
 }
