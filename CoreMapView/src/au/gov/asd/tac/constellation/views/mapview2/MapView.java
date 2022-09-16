@@ -222,17 +222,16 @@ public class MapView extends ScrollPane {
         //mapCanvas.scaleXProperty().bind(zoomProperty);
         //mapCanvas.scaleYProperty().bind(zoomProperty);
 
-
         this.setHvalue(this.getHmin() + (this.getHmax() - this.getHmin()) / 2);
         this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
         //drawMarker();
-        draw();
+        //draw();
         drawMarker();
     }
 
     private void drawMarker() {
-        double longitude = 138.599503;
-        double lattitude = -34.92123;
+        double longitude = 116.383331;
+        double lattitude = 39.916668;
 
         int x = (int) ((950 / 360.0) * (180.0 + longitude));
         int y = (int) ((590 / 180.0) * (90.0 - lattitude));
@@ -242,7 +241,7 @@ public class MapView extends ScrollPane {
         //x = 600;
         //y = 600;
 
-        String markerPath = "C21.732,0 28,5.641 28,12.6 C28,23.963 14,36 14,36 C14,36 0,24.064 0,12.6 C0,5.641 6.268,0 14,0 z";
+        String markerPath = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12Z";
         markerPath = "M " + Integer.toString(x) + "," + Integer.toString(y) + " " + markerPath;
 
         LOGGER.log(Level.SEVERE, markerPath);
@@ -254,10 +253,12 @@ public class MapView extends ScrollPane {
         //marker.translateYProperty().add(5000);
         marker.setStroke(Color.BLACK);
         marker.setFill(Color.RED);
-        marker.scaleXProperty().divide(10);
-        marker.scaleYProperty().divide(10);
+        marker.setScaleX(0.05);
+        marker.setScaleY(0.05);
+        
 
         gc.rect(x, y, 50, 50);
+
 
         countryGroup.getChildren().add(marker);
         //drawMarker();
