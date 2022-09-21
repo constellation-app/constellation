@@ -161,6 +161,10 @@ public class MapViewPane extends BorderPane {
 
     }
 
+    //public void drawMarker()
+    //{
+    //}
+
     public MapProvider getDefaultProvider() {
         return defaultProvider;
     }

@@ -48,6 +48,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -87,6 +88,8 @@ public class MapView extends ScrollPane {
     private double transalateX;
     private double transalateY;
 
+    private final Pane mapGroupHolder = new Pane();
+
     private double canvasTransalateX;
     private double canvasTransalateY;
 
@@ -99,9 +102,12 @@ public class MapView extends ScrollPane {
         mapCanvas = new Canvas();
         gc = mapCanvas.getGraphicsContext2D();
 
+        //mapGroupHolder.setPrefWidth(1009.6727);
+        //mapGroupHolder.setPrefHeight(665.96301);
 
         countrySVGPaths.clear();
-        setUp();
+        //setUp();
+        parseMapSVG();
         LOGGER.log(Level.SEVERE, "Size of country array: " + countrySVGPaths.size());
 
 
@@ -116,8 +122,9 @@ public class MapView extends ScrollPane {
 
         mapStackPane.setBorder(Border.EMPTY);
 
-        mapStackPane.getChildren().addAll(countryGroup, mapCanvas);
-        mapStackPane.setBackground(Background.fill(Color.BLACK));
+
+        mapStackPane.getChildren().addAll(mapGroupHolder);
+        mapStackPane.setBackground(Background.fill(Color.WHITE));
 
         /*mapStackPane.minWidth(3000);
         mapStackPane.minHeight(750);
@@ -227,22 +234,26 @@ public class MapView extends ScrollPane {
         //drawMarker();
         //draw();
         drawMarker();
+        mapGroupHolder.getChildren().add(countryGroup);
     }
 
     private void drawMarker() {
-        double longitude = 116.383331;
-        double lattitude = 39.916668;
+        double longitude = -46.625290;
+        double lattitude = -23.533773;
 
-        int x = (int) ((950 / 360.0) * (180.0 + longitude));
-        int y = (int) ((590 / 180.0) * (90.0 - lattitude));
+        double x = ((mapGroupHolder.getPrefWidth() / 360.0) * (180.0 + longitude));
+        double y = ((mapGroupHolder.getPrefHeight() / 180.0) * (90.0 - lattitude));
 
-        LOGGER.log(Level.SEVERE, "x: " + mapStackPane.getWidth());
+        //x = Math.toRadians(longitude) * 450;
+        //y = Math.log(Math.tan(Math.PI / 4 + Math.toRadians(lattitude) / 2)) * 590;
+
+        LOGGER.log(Level.SEVERE, "x: " + mapGroupHolder.getPrefWidth());
 
         //x = 600;
         //y = 600;
 
-        String markerPath = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12Z";
-        markerPath = "M " + Integer.toString(x) + "," + Integer.toString(y) + " " + markerPath;
+        String markerPath = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
+        markerPath = "M " + Double.toString(x) + "," + Double.toString(y) + " Z " + markerPath;
 
         LOGGER.log(Level.SEVERE, markerPath);
 
@@ -273,10 +284,11 @@ public class MapView extends ScrollPane {
         countryGroup.getChildren().clear();
         LOGGER.log(Level.SEVERE, "Inside setup");
         try {
-            try (BufferedReader bFileReader = new BufferedReader(new FileReader("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapView\\resources\\mapSVGPaths.txt"))) {
+            try (BufferedReader bFileReader = new BufferedReader(new FileReader("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapView\\resources\\MercratorMapView4.txt"))) {
                 String line = "";
                 String path = "";
-                String lineEnds = " z m ";
+                String lineEnds = " z m 0,0 ";
+                String lineEnds2 = " z m ";
 
                 String worldMap = "";
 
@@ -287,14 +299,27 @@ public class MapView extends ScrollPane {
                         path = line.substring(4, line.length() - 1);
                         path = "M" + path;
                         int index = path.indexOf(' ', 5);
-                        path = path.substring(0, index) + lineEnds + path.substring(index + 1);
+
+                        LOGGER.log(Level.SEVERE, "pre-path :" + path.substring(index + 3));
+
+                        //if (path.substring(index + 1).startsWith("c")) {
+                        //continue;
+                        //}
+
+
+                        if (!(path.substring(index + 3).startsWith("c") || path.substring(index + 3).startsWith("v") || path.substring(index + 3).startsWith("h"))) {
+                            path = path.substring(0, index) + lineEnds + path.substring(index + 1);
+                        } //else {
+                        //path = path.substring(0, index) + lineEnds2 + path.substring(index + 1);
+                        //}
+
 
                         path = path.strip();
                         p.setContent(path);
 
                         gc.appendSVGPath(p.getContent());
-                        p.setStroke(Color.BLACK);
-                        p.setFill(Color.WHITE);
+                        p.setStroke(Color.WHITE);
+                        p.setFill(Color.BLACK);
                         countrySVGPaths.add(p);
 
                         LOGGER.log(Level.SEVERE, "path : " + p.getContent());
@@ -309,6 +334,51 @@ public class MapView extends ScrollPane {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage());
         }
+    }
+
+    private void parseMapSVG() {
+        countryGroup.getChildren().clear();
+        LOGGER.log(Level.SEVERE, "in parse svg map");
+
+        try {
+            try (BufferedReader bFileReader = new BufferedReader(new FileReader("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapView\\resources\\MercratorMapView4.txt"))) {
+                String path = "";
+                String line = "";
+
+                int l = 0;
+                //LOGGER.log(Level.SEVERE, "Line: " + ++l);
+                while ((line = bFileReader.readLine()) != null) {
+                    line = line.strip();
+                    LOGGER.log(Level.SEVERE, "Line:" + line);
+                    //for (int i = 0; i < line.length(); ++i) {
+
+                    if (line.startsWith("<path")) {
+                        int startIndex = line.indexOf("d=");
+
+                        int endIndex = line.indexOf(">");
+
+                        path = line.substring(startIndex + 3, endIndex - 2);
+
+                        SVGPath svgPath = new SVGPath();
+                        svgPath.setFill(Color.GREY);
+                        svgPath.setContent(path);
+
+                        LOGGER.log(Level.SEVERE, "Path: " + path);
+
+                        countrySVGPaths.add(svgPath);
+
+                        path = "";
+                    }
+
+                    //}
+                }
+            }
+
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Exception thrown");
+            LOGGER.log(Level.SEVERE, e.getMessage());
+        }
+
     }
 
     private void draw() {
