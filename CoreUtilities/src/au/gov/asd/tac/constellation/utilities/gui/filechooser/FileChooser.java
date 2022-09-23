@@ -68,8 +68,7 @@ public class FileChooser {
      *     an empty optional if the user selects cancel
      */
     public static CompletableFuture<Optional<File>> openOpenDialog(final FileChooserBuilder fileChooserBuilder) {
-            return CompletableFuture.completedFuture(
-                openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.OPEN));
+        return CompletableFuture.completedFuture(openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.OPEN));
     }
     
     /**
@@ -86,8 +85,7 @@ public class FileChooser {
      *     an empty optional if the user selects cancel
      */
     public static CompletableFuture<Optional<List<File>>> openMultiDialog(final FileChooserBuilder fileChooserBuilder) {
-            return CompletableFuture.completedFuture(
-                openFileDialog(fileChooserBuilder, FileChooserMode.MULTI));
+        return CompletableFuture.completedFuture(openFileDialog(fileChooserBuilder, FileChooserMode.MULTI));
     }
     
     /**
@@ -99,10 +97,8 @@ public class FileChooser {
      * @param fileDialogMode the type of file chooser dialog to open, save, open or multi
      * @return the selected file(s) or an empty optional if the user selects cancel
      */
-    private static Optional<List<File>> openFileDialog(final FileChooserBuilder fileChooserBuilder,
-            final FileChooserMode fileDialogMode) {
-        final ShowFileChooserDialog showDialog = new ShowFileChooserDialog(
-                fileChooserBuilder, fileDialogMode);
+    private static Optional<List<File>> openFileDialog(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
+        final ShowFileChooserDialog showDialog = new ShowFileChooserDialog(fileChooserBuilder, fileDialogMode);
         showDialog.run();
 
         return showDialog.getSelectedFiles();
