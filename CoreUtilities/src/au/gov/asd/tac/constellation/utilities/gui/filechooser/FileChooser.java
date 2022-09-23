@@ -19,8 +19,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import javafx.application.Platform;
-import javax.swing.SwingUtilities;
 import org.openide.filesystems.FileChooserBuilder;
 
 /**
@@ -70,17 +68,8 @@ public class FileChooser {
      *     an empty optional if the user selects cancel
      */
     public static CompletableFuture<Optional<File>> openOpenDialog(final FileChooserBuilder fileChooserBuilder) {
-        if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
-            // Wrap the open call in a completable future so this happens on another
-            // thread and return immediately
-            return CompletableFuture.supplyAsync(() ->
-                    openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.OPEN));
-        } else {
-            // This is not the UI thread so just call the open dialog method
             return CompletableFuture.completedFuture(
-                    openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.OPEN)
-            );
-        }
+                openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.OPEN));
     }
     
     /**
@@ -97,17 +86,8 @@ public class FileChooser {
      *     an empty optional if the user selects cancel
      */
     public static CompletableFuture<Optional<List<File>>> openMultiDialog(final FileChooserBuilder fileChooserBuilder) {
-        if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
-            // Wrap the open call in a completable future so this happens on another
-            // thread and return immediately
-            return CompletableFuture.supplyAsync(() ->
-                    openFileDialog(fileChooserBuilder, FileChooserMode.MULTI));
-        } else {
-            // This is not the UI thread so just call the open dialog method
             return CompletableFuture.completedFuture(
-                    openFileDialog(fileChooserBuilder, FileChooserMode.MULTI)
-            );
-        }
+                openFileDialog(fileChooserBuilder, FileChooserMode.MULTI));
     }
     
     /**
@@ -120,7 +100,7 @@ public class FileChooser {
      * @return the selected file(s) or an empty optional if the user selects cancel
      */
     private static Optional<List<File>> openFileDialog(final FileChooserBuilder fileChooserBuilder,
-                                                       final FileChooserMode fileDialogMode) {
+            final FileChooserMode fileDialogMode) {
         final ShowFileChooserDialog showDialog = new ShowFileChooserDialog(
                 fileChooserBuilder, fileDialogMode);
         showDialog.run();
