@@ -140,23 +140,24 @@ public class RecentGraphScreenshotUtilities {
 
         final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(GraphManager.getDefault().getActiveGraph());
-        final VisualManager visualManager = graphNode.getVisualManager();
+        if (graphNode != null) {
+            final VisualManager visualManager = graphNode.getVisualManager();
 
-        final BufferedImage[] originalImage = new BufferedImage[1];
-        originalImage[0] = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
+            final BufferedImage[] originalImage = new BufferedImage[1];
+            originalImage[0] = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
 
-        if (visualManager != null) {
-            final Semaphore waiter = new Semaphore(0);
-            visualManager.exportToBufferedImage(originalImage, waiter);
-            waiter.acquireUninterruptibly();
-        }
-
-        try {
-            // resizeAndSave the buffered image in memory and write the image to disk
-            resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
-            refreshScreenshotsDir();
-        } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            if (visualManager != null) {
+                final Semaphore waiter = new Semaphore(0);
+                visualManager.exportToBufferedImage(originalImage, waiter);
+                waiter.acquireUninterruptibly();
+            }
+            try {
+                // resizeAndSave the buffered image in memory and write the image to disk
+                resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
+                refreshScreenshotsDir();
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
         }
     }
 

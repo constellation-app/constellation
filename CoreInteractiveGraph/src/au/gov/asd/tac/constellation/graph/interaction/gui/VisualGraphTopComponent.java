@@ -673,9 +673,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             } else if (o.equals(SAVE)) {
                 try {
                     savable.handleSave();
-                    if (!savable.isSaved()) {
-                        return false;
-                    }
+                    return savable.isSaved();
+                    
                 } catch (final IOException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
@@ -977,7 +976,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 // graph will get saved each time.
                 requestActive();
 
-                SaveAsAction action = new SaveAsAction();
+                SaveAsAction action = new SaveAsAction();               
                 action.actionPerformed(null);
                 isSaved = action.isSaved();
                 return;
@@ -1179,7 +1178,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             PluginExecution.withPlugin(new WriteGraphFile(copy, freshGdo)).executeLater(null);
 
-            GraphNode.getGraphNode(graph).makeBusy(false);
+            if (GraphNode.getGraphNode(graph) != null) {
+                GraphNode.getGraphNode(graph).makeBusy(false);
+            }
         }
     }
 
