@@ -989,6 +989,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
             final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, true);
             writer.execute();
+            isSaved = true;
         }
 
         /**
