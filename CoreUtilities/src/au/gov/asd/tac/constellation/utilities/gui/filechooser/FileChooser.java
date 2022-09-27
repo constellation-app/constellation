@@ -15,10 +15,16 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.filechooser;
 
+import java.awt.EventQueue;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javax.swing.SwingUtilities;
 import org.openide.filesystems.FileChooserBuilder;
 
 /**
@@ -29,7 +35,9 @@ import org.openide.filesystems.FileChooserBuilder;
  * @author formalhaunt
  */
 public class FileChooser {
-    
+
+    private static final Logger LOGGER = Logger.getLogger(FileChooser.class.getName());
+
     /**
      * Private constructor to prevent external initialization.
      */
@@ -99,7 +107,22 @@ public class FileChooser {
      */
     private static Optional<List<File>> openFileDialog(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
         final ShowFileChooserDialog showDialog = new ShowFileChooserDialog(fileChooserBuilder, fileDialogMode);
-        showDialog.run();
+
+        // Check if the calling thread is able to run this
+        if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
+            showDialog.run();
+        } else {
+            try {
+                // Make a request to open the file chooser dialog on the UI thread
+                EventQueue.invokeAndWait(showDialog);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.WARNING, "Thread displaying the file chooser was interrupted.", ex);
+                Thread.currentThread().interrupt();
+            } catch (final InvocationTargetException ex) {
+                LOGGER.log(Level.SEVERE, "Error occurred during selection in file chooser.", ex);
+            }
+        }
+
 
         return showDialog.getSelectedFiles();
     }
