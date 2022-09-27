@@ -154,9 +154,9 @@ public class MapViewPane extends BorderPane {
 
     public void setUpMap() {
         mapView = new MapView();
-
         Platform.runLater(() -> {
             setCenter(mapView);
+
         });
 
     }

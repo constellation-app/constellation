@@ -102,8 +102,6 @@ public class MapView extends ScrollPane {
         mapCanvas = new Canvas();
         gc = mapCanvas.getGraphicsContext2D();
 
-        //mapGroupHolder.setPrefWidth(1009.6727);
-        //mapGroupHolder.setPrefHeight(665.96301);
 
         countrySVGPaths.clear();
         //setUp();
@@ -233,29 +231,52 @@ public class MapView extends ScrollPane {
         this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
         //drawMarker();
         //draw();
+        mapGroupHolder.setPrefWidth(1009.6);
+        mapGroupHolder.setPrefHeight(967.25);
         drawMarker();
         mapGroupHolder.getChildren().add(countryGroup);
+
+
     }
 
     private void drawMarker() {
-        double longitude = -46.625290;
-        double lattitude = -23.533773;
+        double minLong = -169.1110266;
+        double maxLong = 190.48712;
+        double minLat = -58.488473;
+        double maxLat = 83.63001;
 
-        double x = ((mapGroupHolder.getPrefWidth() / 360.0) * (180.0 + longitude));
-        double y = ((mapGroupHolder.getPrefHeight() / 180.0) * (90.0 - lattitude));
+        double lonDelta = maxLong - minLong;
 
-        //x = Math.toRadians(longitude) * 450;
-        //y = Math.log(Math.tan(Math.PI / 4 + Math.toRadians(lattitude) / 2)) * 590;
+        double longitude = 151.209900;
+        double lattitude = -33.865143;
 
-        LOGGER.log(Level.SEVERE, "x: " + mapGroupHolder.getPrefWidth());
+        /*lattitude = lattitude * Math.PI / 180;
+        double mapWidth = ((mapGroupHolder.getPrefWidth() / lonDelta) * 360) / (2 * Math.PI);
+        double bottomDegree = minLat * Math.PI / 180;
+        double mapOffsetY = (mapWidth / 2 * Math.log((1 + Math.sin(bottomDegree)) / (1 - Math.sin(bottomDegree))));
+
+
+        double x = (longitude + 180) * (mapGroupHolder.getPrefWidth() / 360);
+        double y = mapGroupHolder.getPrefHeight() - ((mapWidth / 2 * Math.log((1 + Math.sin(lattitude)) / (1 - Math.sin(lattitude)))) - mapOffsetY);*/
+        double xScale = mapGroupHolder.getPrefWidth() / (maxLong - minLong);
+        double yScale = mapGroupHolder.getPrefHeight() / (maxLat - minLat);
+
+        double x = (longitude - minLong) * xScale;
+        double y = -(lattitude + minLat) * yScale;
+
+
+        x += 95;
+        y -= 95;
+
+        LOGGER.log(Level.SEVERE, "x: " + x + " y: " + y);
 
         //x = 600;
         //y = 600;
 
         String markerPath = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
-        markerPath = "M " + Double.toString(x) + "," + Double.toString(y) + " Z " + markerPath;
+        markerPath = "M " + x + "," + y + " Z " + markerPath;
 
-        LOGGER.log(Level.SEVERE, markerPath);
+        //LOGGER.log(Level.SEVERE, markerPath);
 
         SVGPath marker = new SVGPath();
         marker.setContent(markerPath);
@@ -266,7 +287,6 @@ public class MapView extends ScrollPane {
         marker.setFill(Color.RED);
         marker.setScaleX(0.05);
         marker.setScaleY(0.05);
-        
 
         gc.rect(x, y, 50, 50);
 
@@ -349,7 +369,7 @@ public class MapView extends ScrollPane {
                 //LOGGER.log(Level.SEVERE, "Line: " + ++l);
                 while ((line = bFileReader.readLine()) != null) {
                     line = line.strip();
-                    LOGGER.log(Level.SEVERE, "Line:" + line);
+                    //LOGGER.log(Level.SEVERE, "Line:" + line);
                     //for (int i = 0; i < line.length(); ++i) {
 
                     if (line.startsWith("<path")) {
@@ -363,7 +383,7 @@ public class MapView extends ScrollPane {
                         svgPath.setFill(Color.GREY);
                         svgPath.setContent(path);
 
-                        LOGGER.log(Level.SEVERE, "Path: " + path);
+                        //LOGGER.log(Level.SEVERE, "Path: " + path);
 
                         countrySVGPaths.add(svgPath);
 
