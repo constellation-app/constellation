@@ -90,14 +90,11 @@ Refer to the
 [Options](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/data-access-options.md)
 page for more details on the Workflow Options menu.
 
-## Data Access Categories
+## Configuring Data Access Categories
 
-You can hide data access categories by selecting Setup -> Options -> CONSTELLATION -> Data Access View
+Refer to the
+[Preferences](../constellation/CorePreferences/src/au/gov/asd/tac/constellation/preferences/docs/dataaccess-category-preferences.md)
+page for more details on Configuring Data Access Categories.
 
 
-<div style="text-align: center">
 
-<img src="../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessCategory.png" alt="Data Access
-Category" />
-
-</div>

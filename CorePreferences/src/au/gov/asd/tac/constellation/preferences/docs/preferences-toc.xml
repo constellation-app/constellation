@@ -6,5 +6,6 @@
         <tocitem text="Application Font" target="au.gov.asd.tac.constellation.preferences.applicationfont"/>
         <tocitem text="Developer" target="au.gov.asd.tac.constellation.preferences.developer"/>
         <tocitem text="Graph" target="au.gov.asd.tac.constellation.preferences.graph"/>
+        <tocitem text="DataAccessView Categories" target="au.gov.asd.tac.constellation.preferences.dataaccessview"/>
     </tocitem>
 </toc>
