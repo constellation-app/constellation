@@ -120,37 +120,39 @@ public final class GraphJsonReader {
         boolean iconsUpdated = false;
         try {
             // Load the custom icons first
-            final String directoryPath = DefaultCustomIconProvider.getIconDirectory().getAbsolutePath();
-            final ZipFile zFile = new ZipFile(name);
-            for (final ZipEntry entry : Collections.list(zFile.entries())) {
-                // Check for Icon entries in the source star/zip file
-                if (entry.getName().startsWith(DefaultCustomIconProvider.USER_ICON_DIR) && !entry.isDirectory()) {
-                    final String iconName = entry.getName().substring(DefaultCustomIconProvider.USER_ICON_DIR.length());
-                    // prepare a link to an icon entry in the star/zip file
-                    final InputStream zin = zFile.getInputStream(entry);
-                    boolean saveCustomFile = true;
-                    final File file = new File(directoryPath + iconName);
-                    if (file.exists()) {
-                        if (entry.getLastModifiedTime().toMillis() < file.lastModified()) {
-                            // do not overwrite current icon with an older icon
-                            saveCustomFile = false;
-                        } else {
-                            // the icon in the graph file is newer than the current constellation icon
-                            // so we remove the current constellation icon
-                            file.delete();
-                            file.createNewFile();
+            if (DefaultCustomIconProvider.getIconDirectory() != null) {
+                final String directoryPath = DefaultCustomIconProvider.getIconDirectory().getAbsolutePath();
+                final ZipFile zFile = new ZipFile(name);
+                for (final ZipEntry entry : Collections.list(zFile.entries())) {
+                    // Check for Icon entries in the source star/zip file
+                    if (entry.getName().startsWith(DefaultCustomIconProvider.USER_ICON_DIR) && !entry.isDirectory()) {
+                        final String iconName = entry.getName().substring(DefaultCustomIconProvider.USER_ICON_DIR.length());
+                        // prepare a link to an icon entry in the star/zip file
+                        final InputStream zin = zFile.getInputStream(entry);
+                        boolean saveCustomFile = true;
+                        final File file = new File(directoryPath + iconName);
+                        if (file.exists()) {
+                            if (entry.getLastModifiedTime().toMillis() < file.lastModified()) {
+                                // do not overwrite current icon with an older icon
+                                saveCustomFile = false;
+                            } else {
+                                // the icon in the graph file is newer than the current constellation icon
+                                // so we remove the current constellation icon
+                                file.delete();
+                                file.createNewFile();
+                            }
                         }
-                    }
-                    if (saveCustomFile) {
-                        // copy the icon image from the zip file to the constellation user's icon directory
-                        final FileOutputStream os = new FileOutputStream(file);
-                        for (int c = zin.read(); c != -1; c = zin.read()) {
-                            os.write(c);
+                        if (saveCustomFile) {
+                            // copy the icon image from the zip file to the constellation user's icon directory
+                            final FileOutputStream os = new FileOutputStream(file);
+                            for (int c = zin.read(); c != -1; c = zin.read()) {
+                                os.write(c);
+                            }
+                            os.close();
+                            // new image file has now been written to the constellation folder
+                            // set a flag to have all icon images reloaded
+                            iconsUpdated = true;
                         }
-                        os.close();
-                        // new image file has now been written to the constellation folder
-                        // set a flag to have all icon images reloaded
-                        iconsUpdated = true;
                     }
                 }
             }
@@ -510,7 +512,7 @@ public final class GraphJsonReader {
             progress.finish();
         }
 
-        LOGGER.log(Level.INFO, "immutableObjectCache={0}", immutableObjectCache);
+        LOGGER.log(Level.FINE, "immutableObjectCache={0}", immutableObjectCache);
 
         return graph;
     }
