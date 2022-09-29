@@ -26,6 +26,11 @@ import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultCustomIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
+import au.gov.asd.tac.constellation.utilities.icon.IconData;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -44,6 +49,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Cancellable;
 
@@ -69,6 +75,8 @@ public final class GraphJsonWriter implements Cancellable {
     private final HashMap<String, AbstractGraphIOProvider> graphIoProviders = new HashMap<>();
 
     private static final String DEFAULT_FIELD = "default";
+
+    private final List<String> customIconList = new ArrayList<>();
 
     /**
      * Construct a new GraphJsonWriter.
@@ -170,15 +178,35 @@ public final class GraphJsonWriter implements Cancellable {
             final ZipEntry zentry = new ZipEntry("graph" + GraphFileConstants.FILE_EXTENSION);
             zout.putNextEntry(zentry);
             writeGraphToStream(graph, zout, false, elementTypes);
+            zout.closeEntry();
             try {
                 if (!isCancelled) {
                     for (final Map.Entry<String, File> entry : byteWriter.getFileMap().entrySet()) {
                         final String reference = entry.getKey();
                         final File f = entry.getValue();
-
                         final ZipEntry ze = new ZipEntry(reference);
                         zout.putNextEntry(ze);
                         GraphByteWriter.copy(new FileInputStream(f), zout);
+                        zout.closeEntry();
+                    }
+                    for (final String iconName : customIconList) {
+                        // get each of the custom icon images present in the graph being saved
+                        final ConstellationIcon icon = IconManager.getIcon(iconName);
+                        final IconData iconData = icon.getIconData();
+                        String filePath = "";
+                        if (iconData instanceof FileIconData) {
+                            filePath = ((FileIconData) iconData).getFilePath();
+                        }
+                        if (!filePath.equals("")) {
+                            // prepare to put the icon image into the star/zip file
+                            final FileInputStream is = new FileInputStream(filePath);
+                            final ZipEntry zent = new ZipEntry(DefaultCustomIconProvider.USER_ICON_DIR + "/" + icon.getExtendedName() + ".png");
+                            // create an entry in the zip archive to store the icon image
+                            zout.putNextEntry(zent);
+                            // copy the icon image from the constellation folder to the zip archive
+                            IOUtils.copy(is, zout);
+                            zout.closeEntry();
+                        }
                     }
                 }
             } finally {
@@ -403,6 +431,17 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeStartObject();
                 jg.writeNumberField(GraphFileConstants.VX_ID, vxId);
                 for (final Attribute attr : attrs) {
+                    if (attr.getName().equals("icon")) {
+                        // get each of the custom icon images present in the graph being saved
+                        final String attr_data = graph.getStringValue(attr.getId(), vxId);
+                        if (!customIconList.contains(attr_data)) {
+                            // confirmed that the icon is part of the custom set
+                            // store it in a custom list (no duplication)
+                            if (DefaultCustomIconProvider.containsIcon(attr_data)) {
+                                customIconList.add(attr_data);
+                            }
+                        }
+                    }
                     final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
                     if (ioProvider != null) {
                         // Get the provider to write its data into an ObjectNode.

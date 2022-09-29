@@ -50,7 +50,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = CustomIconProvider.class)})
 public class DefaultCustomIconProvider implements CustomIconProvider {
 
-    private static final String USER_ICON_DIR = "Icons";
+    public static final String USER_ICON_DIR = "Icons";
     private static final Logger LOGGER = Logger.getLogger(DefaultCustomIconProvider.class.getName());
 
     private static final Map<ConstellationIcon, File> CUSTOM_ICONS = new HashMap<>();
@@ -100,12 +100,38 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
         return removed;
     }
 
+    /**
+     * Check for the presence of a specific icon in the local cache
+     *
+     * @param iconName name of the icon entry we're looking for
+     * @return <b>true</b> if iconName is found in the local cache, otherwise
+     * <b>false</b>
+     */
+    public static boolean containsIcon(final String iconName) {
+        for (final ConstellationIcon custIcon : CUSTOM_ICONS.keySet()) {
+            // check the name of each icon in the local cache
+            if (custIcon.getExtendedName().equalsIgnoreCase(iconName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void reloadIcons() {
+        // clear the local cache
+        CUSTOM_ICONS.clear();
+        // clear the IconManager cache
+        IconManager.removeIcon("");
+        // load the updated/current set of icons
+        loadIcons();
+    }
+
     @Override
     public List<ConstellationIcon> getIcons() {
         return new ArrayList<>(CUSTOM_ICONS.keySet());
     }
 
-    protected static File getIconDirectory() {
+    public static File getIconDirectory() {
         // If for whatever reason we are not running as a netbeans application then it doesn't make sense to check preferences for a user icon directory.
         if (!NetbeansUtilities.isNetbeansApplicationRunning()) {
             return null;

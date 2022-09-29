@@ -43,4 +43,8 @@ public class FileIconData extends IconData {
     protected InputStream createInputStream() throws IOException {
         return new FileInputStream(file);
     }
+
+    public String getFilePath() {
+        return file.getAbsolutePath();
+    }
 }
