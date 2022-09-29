@@ -231,8 +231,9 @@ public class MapView extends ScrollPane {
         this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
         //drawMarker();
         //draw();
-        mapGroupHolder.setPrefWidth(1009.6);
-        mapGroupHolder.setPrefHeight(967.25);
+        mapGroupHolder.setPrefWidth(1010);
+        //mapGroupHolder.setPrefHeight(967.25);
+        mapGroupHolder.setPrefHeight(1224);
         drawMarker();
         mapGroupHolder.getChildren().add(countryGroup);
 
@@ -247,26 +248,27 @@ public class MapView extends ScrollPane {
 
         double lonDelta = maxLong - minLong;
 
-        double longitude = 151.209900;
-        double lattitude = -33.865143;
+        double longitude = -0.118092;
+        double lattitude = 51.509865;
 
-        /*lattitude = lattitude * Math.PI / 180;
-        double mapWidth = ((mapGroupHolder.getPrefWidth() / lonDelta) * 360) / (2 * Math.PI);
-        double bottomDegree = minLat * Math.PI / 180;
-        double mapOffsetY = (mapWidth / 2 * Math.log((1 + Math.sin(bottomDegree)) / (1 - Math.sin(bottomDegree))));
-
-
-        double x = (longitude + 180) * (mapGroupHolder.getPrefWidth() / 360);
-        double y = mapGroupHolder.getPrefHeight() - ((mapWidth / 2 * Math.log((1 + Math.sin(lattitude)) / (1 - Math.sin(lattitude)))) - mapOffsetY);*/
         double xScale = mapGroupHolder.getPrefWidth() / (maxLong - minLong);
-        double yScale = mapGroupHolder.getPrefHeight() / (maxLat - minLat);
+        //double yScale = mapGroupHolder.getPrefHeight() / (maxLat - minLat);
 
         double x = (longitude - minLong) * xScale;
-        double y = -(lattitude + minLat) * yScale;
+
+        double minLatRad = minLat * (Math.PI / 180);
+
+        double worldMapWidth = ((mapGroupHolder.getPrefWidth() / lonDelta) * 360) / (2 * Math.PI);
+        double yOffset = (worldMapWidth / 2 * Math.log((1 + Math.sin(minLatRad)) / (1 - Math.sin(minLatRad))));
+
+        double lattitudeRad = lattitude * (Math.PI / 180);
+        //double y = mapGroupHolder.getPrefHeight() - ((worldMapWidth * Math.log((1 + Math.sin(lattitudeRad)) / (1 - Math.sin(lattitudeRad)))) - yOffset);
+        double y = Math.log(Math.tan((Math.PI / 4) + (lattitudeRad / 2)));
+        y = (mapGroupHolder.getPrefHeight() / 2) - (mapGroupHolder.getPrefWidth() * y / (2 * Math.PI));
 
 
         x += 95;
-        y -= 95;
+        y -= 244;
 
         LOGGER.log(Level.SEVERE, "x: " + x + " y: " + y);
 
@@ -290,11 +292,9 @@ public class MapView extends ScrollPane {
 
         gc.rect(x, y, 50, 50);
 
-
         countryGroup.getChildren().add(marker);
         //drawMarker();
         //draw();
-
     }
 
 
