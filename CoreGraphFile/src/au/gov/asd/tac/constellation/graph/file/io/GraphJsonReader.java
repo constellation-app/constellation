@@ -140,7 +140,9 @@ public final class GraphJsonReader {
                                     // the icon in the graph file is newer than the current constellation icon
                                     // so we remove the current constellation icon
                                     Files.delete(file.toPath());
-                                    file.createNewFile();
+                                    if (!file.createNewFile()){
+                                        LOGGER.log(Level.WARNING, "Potential problem creating new image icon file.");
+                                    }
                                 }
                             }
                             if (saveCustomFile) {

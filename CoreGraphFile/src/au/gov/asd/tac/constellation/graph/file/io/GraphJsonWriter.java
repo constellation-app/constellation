@@ -199,12 +199,13 @@ public final class GraphJsonWriter implements Cancellable {
                         }
                         if (!"".equals(filePath)) {
                             // prepare to put the icon image into the star/zip file
-                            final FileInputStream is = new FileInputStream(filePath);
-                            final ZipEntry zent = new ZipEntry(DefaultCustomIconProvider.USER_ICON_DIR + "/" + icon.getExtendedName() + ".png");
-                            // create an entry in the zip archive to store the icon image
-                            zout.putNextEntry(zent);
-                            // copy the icon image from the constellation folder to the zip archive
-                            IOUtils.copy(is, zout);
+                            try (final FileInputStream is = new FileInputStream(filePath)) {
+                                final ZipEntry zent = new ZipEntry(DefaultCustomIconProvider.USER_ICON_DIR + "/" + icon.getExtendedName() + ".png");
+                                // create an entry in the zip archive to store the icon image
+                                zout.putNextEntry(zent);
+                                // copy the icon image from the constellation folder to the zip archive
+                                IOUtils.copy(is, zout);
+                            }
                             zout.closeEntry();
                         }
                     }
