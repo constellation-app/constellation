@@ -118,12 +118,15 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
     }
 
     public static void reloadIcons() {
+        LOGGER.info("reloading icons ...");
         // clear the local cache
         CUSTOM_ICONS.clear();
         // clear the IconManager cache
         IconManager.removeIcon("");
         // load the updated/current set of icons
         loadIcons();
+        // rebuild cache (done indirectly as part of the iconExists call)
+        IconManager.iconExists("Unknown");
     }
 
     @Override
