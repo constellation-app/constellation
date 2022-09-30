@@ -197,7 +197,7 @@ public final class GraphJsonWriter implements Cancellable {
                         if (iconData instanceof FileIconData) {
                             filePath = ((FileIconData) iconData).getFilePath();
                         }
-                        if (!filePath.equals("")) {
+                        if (!"".equals(filePath)) {
                             // prepare to put the icon image into the star/zip file
                             final FileInputStream is = new FileInputStream(filePath);
                             final ZipEntry zent = new ZipEntry(DefaultCustomIconProvider.USER_ICON_DIR + "/" + icon.getExtendedName() + ".png");
@@ -431,15 +431,13 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeStartObject();
                 jg.writeNumberField(GraphFileConstants.VX_ID, vxId);
                 for (final Attribute attr : attrs) {
-                    if (attr.getName().equals("icon")) {
+                    if ("icon".equals(attr.getName())) {
                         // get each of the custom icon images present in the graph being saved
                         final String attr_data = graph.getStringValue(attr.getId(), vxId);
-                        if (!customIconList.contains(attr_data)) {
+                        if (!customIconList.contains(attr_data) && DefaultCustomIconProvider.containsIcon(attr_data)) {
                             // confirmed that the icon is part of the custom set
                             // store it in a custom list (no duplication)
-                            if (DefaultCustomIconProvider.containsIcon(attr_data)) {
-                                customIconList.add(attr_data);
-                            }
+                            customIconList.add(attr_data);
                         }
                     }
                     final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];

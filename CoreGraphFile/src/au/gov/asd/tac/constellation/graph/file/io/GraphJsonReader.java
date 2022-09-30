@@ -43,6 +43,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -118,11 +119,11 @@ public final class GraphJsonReader {
         }
 
         boolean iconsUpdated = false;
-        try {
+        try (final ZipFile zFile = new ZipFile(name)){
             // Load the custom icons first
             if (DefaultCustomIconProvider.getIconDirectory() != null) {
                 final String directoryPath = DefaultCustomIconProvider.getIconDirectory().getAbsolutePath();
-                final ZipFile zFile = new ZipFile(name);
+                
                 for (final ZipEntry entry : Collections.list(zFile.entries())) {
                     // Check for Icon entries in the source star/zip file
                     if (entry.getName().startsWith(DefaultCustomIconProvider.USER_ICON_DIR) && !entry.isDirectory()) {
@@ -138,13 +139,13 @@ public final class GraphJsonReader {
                             } else {
                                 // the icon in the graph file is newer than the current constellation icon
                                 // so we remove the current constellation icon
-                                file.delete();
+                                Files.delete(file.toPath());
                                 file.createNewFile();
                             }
                         }
                         if (saveCustomFile) {
                             // copy the icon image from the zip file to the constellation user's icon directory
-                            final FileOutputStream os = new FileOutputStream(file);
+                            final FileOutputStream os = new FileOutputStream(file); //NOSONAR
                             for (int c = zin.read(); c != -1; c = zin.read()) {
                                 os.write(c);
                             }
