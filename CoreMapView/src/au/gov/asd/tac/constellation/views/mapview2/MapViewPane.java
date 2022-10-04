@@ -161,6 +161,12 @@ public class MapViewPane extends BorderPane {
 
     }
 
+    public void drawMarker(double lat, double lon, double scale) {
+        if (mapView != null) {
+            mapView.drawMarker(lat, lon, scale);
+        }
+    }
+
     //public void drawMarker()
     //{
     //}

@@ -169,6 +169,9 @@ public class MapView extends ScrollPane {
 
                 //gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
                 //drawMarker();
+                //countryGroup.getChildren().remove(countryGroup.getChildren().size() - 1);
+                //drawMarker(-22.908333, -43.196388, 0.05 * scaleFactor);
+
             }
         });
 
@@ -234,22 +237,22 @@ public class MapView extends ScrollPane {
         mapGroupHolder.setPrefWidth(1010);
         //mapGroupHolder.setPrefHeight(967.25);
         mapGroupHolder.setPrefHeight(1224);
-        drawMarker();
+        //drawMarker(51.509865, -0.118092, 0.05);
+        //drawMarker(-22.908333, -43.196388, 0.05);
+        //drawMarker(31.224361, 121.469170, 0.05);
+        //drawMarker(-33.868820, 151.209296, 0.05);
         mapGroupHolder.getChildren().add(countryGroup);
 
 
     }
 
-    private void drawMarker() {
+    public void drawMarker(double lattitude, double longitude, double xyScale) {
         double minLong = -169.1110266;
         double maxLong = 190.48712;
         double minLat = -58.488473;
         double maxLat = 83.63001;
 
         double lonDelta = maxLong - minLong;
-
-        double longitude = -0.118092;
-        double lattitude = 51.509865;
 
         double xScale = mapGroupHolder.getPrefWidth() / (maxLong - minLong);
         //double yScale = mapGroupHolder.getPrefHeight() / (maxLat - minLat);
@@ -287,73 +290,14 @@ public class MapView extends ScrollPane {
         //marker.translateYProperty().add(5000);
         marker.setStroke(Color.BLACK);
         marker.setFill(Color.RED);
-        marker.setScaleX(0.05);
-        marker.setScaleY(0.05);
+        marker.setScaleX(xyScale);
+        marker.setScaleY(xyScale);
 
         gc.rect(x, y, 50, 50);
 
         countryGroup.getChildren().add(marker);
         //drawMarker();
         //draw();
-    }
-
-
-
-    private void setUp() {
-        //gc.appendSVGPath("M 0 0 L 1 1 L 2 2 z");
-        countryGroup.getChildren().clear();
-        LOGGER.log(Level.SEVERE, "Inside setup");
-        try {
-            try (BufferedReader bFileReader = new BufferedReader(new FileReader("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapView\\resources\\MercratorMapView4.txt"))) {
-                String line = "";
-                String path = "";
-                String lineEnds = " z m 0,0 ";
-                String lineEnds2 = " z m ";
-
-                String worldMap = "";
-
-                while ((line = bFileReader.readLine()) != null) {
-                    line = line.strip();
-                    if (line.startsWith("d=")) {
-                        SVGPath p = new SVGPath();
-                        path = line.substring(4, line.length() - 1);
-                        path = "M" + path;
-                        int index = path.indexOf(' ', 5);
-
-                        LOGGER.log(Level.SEVERE, "pre-path :" + path.substring(index + 3));
-
-                        //if (path.substring(index + 1).startsWith("c")) {
-                        //continue;
-                        //}
-
-
-                        if (!(path.substring(index + 3).startsWith("c") || path.substring(index + 3).startsWith("v") || path.substring(index + 3).startsWith("h"))) {
-                            path = path.substring(0, index) + lineEnds + path.substring(index + 1);
-                        } //else {
-                        //path = path.substring(0, index) + lineEnds2 + path.substring(index + 1);
-                        //}
-
-
-                        path = path.strip();
-                        p.setContent(path);
-
-                        gc.appendSVGPath(p.getContent());
-                        p.setStroke(Color.WHITE);
-                        p.setFill(Color.BLACK);
-                        countrySVGPaths.add(p);
-
-                        LOGGER.log(Level.SEVERE, "path : " + p.getContent());
-
-                        path = "";
-
-                    }
-
-                }
-                bFileReader.close();
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
-        }
     }
 
     private void parseMapSVG() {

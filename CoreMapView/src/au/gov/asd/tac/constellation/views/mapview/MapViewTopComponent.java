@@ -157,7 +157,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private int cachedHeight;
     private final Consumer<Graph> updateMarkers;
 
-
+    private Logger LOGGER = Logger.getLogger("Test");
     public MapViewTopComponent() {
         super();
 
@@ -541,17 +541,20 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     }
 
     public void selectOnGraph(final GraphElementType graphElementType, final Set<Integer> elementIds) {
+
         PluginExecution.withPlugin(new SelectOnGraphPlugin(graphElementType, elementIds)).executeLater(getCurrentGraph());
     }
 
     @Override
     protected void handleComponentOpened() {
+        LOGGER.log(Level.SEVERE, "Inside handleComponentOpened()");
         super.handleComponentOpened();
         resetContent();
     }
 
     @Override
     protected void handleNewGraph(final Graph graph) {
+        LOGGER.log(Level.SEVERE, "Inside handleNewGraph()");
         if (needsUpdate() && renderer != null) {
             renderer.updateMarkers(currentGraph, markerState);
         }
@@ -559,6 +562,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     @Override
     protected void componentShowing() {
+        LOGGER.log(Level.SEVERE, "Inside componentShowing()");
         super.componentShowing();
         if (renderer != null) {
             renderer.updateMarkers(currentGraph, markerState);
